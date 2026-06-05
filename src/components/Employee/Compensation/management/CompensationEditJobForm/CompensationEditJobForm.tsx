@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm, type CompensationFormData } from '../../shared/useCompensationForm'
-import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
+import { AddCompensationFormBody } from '../../shared/AddCompensationFormBody'
+import { useManagementCompensationDictionary } from '../useManagementCompensationDictionary'
 import styles from './CompensationEditJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -80,6 +81,7 @@ interface RootProps extends LoaderProps {
 function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
+  const formDictionary = useManagementCompensationDictionary('edit')
 
   // Job form handles the non-effective-dated fields: 2% shareholder + WA WC.
   // Title is suppressed here because the compensation form owns title
@@ -138,7 +140,7 @@ function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProp
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={submitResult.handleSubmit}>
-          <ManagementCompensationFormBody
+          <AddCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
             title={t('editCompensationTitle')}
@@ -147,6 +149,7 @@ function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProp
             onCancel={() => {
               onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED)
             }}
+            dictionary={formDictionary}
           />
         </Form>
       </BaseLayout>

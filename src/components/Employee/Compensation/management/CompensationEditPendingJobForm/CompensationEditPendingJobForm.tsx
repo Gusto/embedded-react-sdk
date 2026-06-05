@@ -2,7 +2,8 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
-import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
+import { AddCompensationFormBody } from '../../shared/AddCompensationFormBody'
+import { useManagementCompensationDictionary } from '../useManagementCompensationDictionary'
 import styles from './CompensationEditPendingJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -59,6 +60,7 @@ function Root({
 }: RootProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
+  const formDictionary = useManagementCompensationDictionary('edit')
 
   // For a primary new job (hire date in the future, no current comp), the hire
   // date field is shown instead of the effective date field. This keeps
@@ -140,7 +142,7 @@ function Root({
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={submitResult.handleSubmit}>
-          <ManagementCompensationFormBody
+          <AddCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
             title={t('editCompensationTitle')}
@@ -149,6 +151,7 @@ function Root({
             onCancel={() => {
               onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED)
             }}
+            dictionary={formDictionary}
           />
         </Form>
       </BaseLayout>

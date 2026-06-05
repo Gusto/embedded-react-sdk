@@ -32,11 +32,19 @@ export interface AddCompensationFormBodyProps {
 }
 
 /**
- * Renders the shared field layout used by both `EditCompensation` (onboarding) and
- * `CompensationAddAnotherJobForm` (management). Field visibility is driven entirely by the hook
- * configuration — `JobFields.HireDate` is only defined when `withHireDateField: true`,
- * and `CompFields.EffectiveDate` is only defined when `withEffectiveDateField: true` —
- * so this component renders the correct subset for each use case with no extra props.
+ * Renders the shared field layout used by the add/onboarding flows
+ * (`EditCompensation`, `CompensationAddAnotherJobForm`) and the management edit
+ * flows (`CompensationEditJobForm`, `CompensationEditPendingJobForm`). Field
+ * visibility is driven entirely by the hook configuration — `JobFields.HireDate`
+ * is only defined when `withHireDateField: true`, and `CompFields.EffectiveDate`
+ * is only defined when `withEffectiveDateField: true` — so this component renders
+ * the correct subset for each use case with no extra props.
+ *
+ * The job title is owned by the job form for add/onboarding flows
+ * (`JobFields.Title`); edit flows suppress it there (`withTitleField: false`) and
+ * own it on the compensation form instead, because title is effective-dated
+ * alongside rate/unit/FLSA. The body renders whichever is active, so a single
+ * title field always appears.
  *
  * Copy resolves from the onboarding `Employee.Compensation` namespace by default; management
  * consumers inject a `dictionary` mapped from `Employee.Management.Compensation` to keep
@@ -71,11 +79,17 @@ export function AddCompensationFormBody({
         />
       )}
 
-      {JobFields.Title && (
+      {JobFields.Title ? (
         <JobFields.Title
           label={t('jobTitle')}
           validationMessages={{ REQUIRED: t('validations.title') }}
           formHookResult={jobForm}
+        />
+      ) : (
+        <CompFields.Title
+          label={t('jobTitle')}
+          validationMessages={{ REQUIRED: t('validations.title') }}
+          formHookResult={compensationForm}
         />
       )}
 
