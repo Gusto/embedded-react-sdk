@@ -5,8 +5,10 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025
 import { useEmployeeDetailsForm } from '../shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from '../shared/useEmployeeDetailsForm'
 import { useCurrentHomeAddressForm } from '../shared/useHomeAddressForm'
+import { EmployeeDetailsFormBody } from '../shared/EmployeeDetailsFormBody'
 import styles from './EmployeeProfile.module.scss'
 import type { ProfileProps } from './Profile'
+import { useOnboardingProfileFormDictionary } from './useFormDictionary'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -40,6 +42,7 @@ export function EmployeeProfile({
   const { t: tHome } = useTranslation('Employee.HomeAddress')
   const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
+  const employeeDetailsDictionary = useOnboardingProfileFormDictionary()
 
   const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
 
@@ -81,7 +84,6 @@ export function EmployeeProfile({
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  const EmpFields = employeeDetails.form.Fields
   const HomeFields = homeAddress.form.Fields
 
   const submitResult = composeSubmitHandler([employeeDetails, homeAddress], async () => {
@@ -131,39 +133,10 @@ export function EmployeeProfile({
               <Components.Text>{t('description')}</Components.Text>
             </div>
 
-            <SDKFormProvider formHookResult={employeeDetails}>
-              <Grid
-                gap={{ base: 20, small: 8 }}
-                gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}
-              >
-                <EmpFields.FirstName
-                  label={t('firstName')}
-                  validationMessages={{
-                    REQUIRED: t('validations.firstName'),
-                    INVALID_NAME: t('validations.firstName'),
-                  }}
-                />
-                <EmpFields.MiddleInitial label={t('middleInitial')} />
-              </Grid>
-              <EmpFields.LastName
-                label={t('lastName')}
-                validationMessages={{
-                  REQUIRED: t('validations.lastName'),
-                  INVALID_NAME: t('validations.lastName'),
-                }}
-              />
-              <EmpFields.Ssn
-                label={t('ssnLabel')}
-                validationMessages={{
-                  INVALID_SSN: t('validations.ssn', { ns: 'common' }),
-                  REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
-                }}
-              />
-              <EmpFields.DateOfBirth
-                label={t('dobLabel')}
-                validationMessages={{ REQUIRED: t('validations.dob', { ns: 'common' }) }}
-              />
-            </SDKFormProvider>
+            <EmployeeDetailsFormBody
+              formHookResult={employeeDetails}
+              dictionary={employeeDetailsDictionary}
+            />
 
             <SDKFormProvider formHookResult={homeAddress}>
               <div>

@@ -1,0 +1,14 @@
+{
+  "firstName": "Legal first name",
+  "middleInitial": "Middle initial",
+  "lastName": "Legal last name",
+  "email": "Personal email",
+  "emailDescription": "Use an email that's not associated with your company.",
+  "ssnLabel": "Social Security Number (9 digit)",
+  "dobLabel": "Date of birth",
+  "validations": {
+    "firstName": "Please enter valid first name",
+    "lastName": "Please enter valid last name",
+    "email": "Valid email is required"
+  }
+}

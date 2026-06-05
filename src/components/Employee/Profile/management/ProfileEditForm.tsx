@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeeDetailsForm } from '../shared/useEmployeeDetailsForm'
+import { EmployeeDetailsFormBody } from '../shared/EmployeeDetailsFormBody'
+import { useManagementProfileFormDictionary } from './useFormDictionary'
 import styles from './Profile.module.scss'
 import {
   BaseBoundaries,
@@ -11,13 +13,11 @@ import {
 } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { Grid } from '@/components/Common/Grid/Grid'
-import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profile'> {
+export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
   employeeId: string
   onEvent: BaseComponentInterface['onEvent']
 }
@@ -27,17 +27,21 @@ export function ProfileEditForm({
   ...props
 }: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
   return (
-    <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
+    <BaseBoundaries
+      componentName="Employee.Management.Profile"
+      FallbackComponent={FallbackComponent}
+    >
       <ProfileEditFormRoot {...props} />
     </BaseBoundaries>
   )
 }
 
 function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: ProfileEditFormProps) {
-  useI18n('Employee.Profile')
-  useComponentDictionary('Employee.Profile', dictionary)
-  const { t } = useTranslation('Employee.Profile')
+  useI18n('Employee.Management.Profile')
+  useComponentDictionary('Employee.Management.Profile', dictionary)
+  const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
+  const formDictionary = useManagementProfileFormDictionary()
 
   const employeeDetails = useEmployeeDetailsForm({
     employeeId,
@@ -52,8 +56,6 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   if (employeeDetails.isLoading) {
     return <BaseLayout isLoading error={employeeDetails.errorHandling.errors} />
   }
-
-  const Fields = employeeDetails.form.Fields
 
   const handleSubmit = async () => {
     setShowSuccess(false)
@@ -73,7 +75,7 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   const alert = showSuccess ? (
     <Components.Alert
       status="success"
-      label={t('successAlert')}
+      label={t('form.successAlert')}
       onDismiss={() => {
         setShowSuccess(false)
       }}
@@ -83,60 +85,23 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   return (
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={employeeDetails.errorHandling.errors}>
-        <SDKFormProvider formHookResult={employeeDetails}>
-          <Form onSubmit={handleSubmit}>
-            {alert}
-            <Components.Heading as="h1">{t('title')}</Components.Heading>
-            <Grid
-              gap={{ base: 20, small: 8 }}
-              gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}
-            >
-              <Fields.FirstName
-                label={t('firstName')}
-                validationMessages={{
-                  REQUIRED: t('validations.firstName'),
-                  INVALID_NAME: t('validations.firstName'),
-                }}
-              />
-              <Fields.MiddleInitial label={t('middleInitial')} />
-            </Grid>
-            <Fields.LastName
-              label={t('lastName')}
-              validationMessages={{
-                REQUIRED: t('validations.lastName'),
-                INVALID_NAME: t('validations.lastName'),
-              }}
-            />
-            <Fields.Email
-              label={t('email')}
-              description={t('emailDescription')}
-              validationMessages={{
-                REQUIRED: t('validations.email'),
-                INVALID_EMAIL: t('validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('validations.email'),
-              }}
-            />
-            <Fields.Ssn
-              label={t('ssnLabel')}
-              validationMessages={{
-                INVALID_SSN: t('validations.ssn', { ns: 'common' }),
-                REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
-              }}
-            />
-            <Fields.DateOfBirth
-              label={t('dobLabel')}
-              validationMessages={{ REQUIRED: t('validations.dob', { ns: 'common' }) }}
-            />
-            <ActionsLayout>
-              <Components.Button variant="secondary" onClick={handleCancel}>
-                {t('cancelCta')}
-              </Components.Button>
-              <Components.Button type="submit" isLoading={employeeDetails.status.isPending}>
-                {t('saveCta')}
-              </Components.Button>
-            </ActionsLayout>
-          </Form>
-        </SDKFormProvider>
+        <Form onSubmit={handleSubmit}>
+          {alert}
+          <Components.Heading as="h1">{t('form.title')}</Components.Heading>
+          <EmployeeDetailsFormBody
+            formHookResult={employeeDetails}
+            withEmail
+            dictionary={formDictionary}
+          />
+          <ActionsLayout>
+            <Components.Button variant="secondary" onClick={handleCancel}>
+              {t('form.cancelCta')}
+            </Components.Button>
+            <Components.Button type="submit" isLoading={employeeDetails.status.isPending}>
+              {t('form.saveCta')}
+            </Components.Button>
+          </ActionsLayout>
+        </Form>
       </BaseLayout>
     </section>
   )
