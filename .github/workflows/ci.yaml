@@ -1,6 +1,7 @@
 name: CI
 on:
   push:
+  merge_group:
   workflow_dispatch:
 
 # Limit the permissions of the GITHUB_TOKEN
