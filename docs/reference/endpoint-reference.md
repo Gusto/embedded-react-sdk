@@ -365,7 +365,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **EmployeeManagement.Documents** | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
-|  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
 | **EmployeeManagement.DashboardFlow** | DELETE | `/v1/compensations/:compensationId` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/jobs` |

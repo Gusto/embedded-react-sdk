@@ -1,6 +1,5 @@
 import { type Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { SignatureForm } from '../../shared/SignatureForm/SignatureForm'
-import { useOnboardingSignatureFormDictionary } from './useSignatureFormDictionary'
 import { EmploymentEligibility } from './EmploymentEligibility'
 import { I9SignatureForm } from './I9SignatureForm/I9SignatureForm'
 import { DocumentList } from './DocumentList/DocumentList'
@@ -31,14 +30,12 @@ export function DocumentListContextual() {
 
 export function SignatureFormContextual() {
   const { employeeId, formId, onEvent } = useFlow<DocumentSignerContextInterface>()
-  const dictionary = useOnboardingSignatureFormDictionary()
 
   return (
     <SignatureForm
       employeeId={ensureRequired(employeeId)}
       formId={ensureRequired(formId)}
       onEvent={onEvent}
-      dictionary={dictionary}
     />
   )
 }

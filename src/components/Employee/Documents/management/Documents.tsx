@@ -27,7 +27,6 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
         ...ctx,
         component: DocumentsCardContextual,
         employeeId,
-        successAlert: null,
       })),
     [employeeId],
   )

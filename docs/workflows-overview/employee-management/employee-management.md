@@ -937,7 +937,7 @@ function MyStateTaxesPanel({ employeeId }) {
 
 ### EmployeeManagement.Documents
 
-A self-contained block for viewing and signing an employee's forms (documents) — the same "Documents" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card listing each form with its year, status, and signing status, plus a per-row "View" action. Clicking "View" swaps the card for the document viewer, which renders the form PDF — and, for forms that require a signature, the signing form. Signing a form returns to the card view with a dismissible "Document successfully signed." alert; clicking Back returns to the card view without changes.
+A self-contained block for viewing an employee's forms (documents) — the same "Documents" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card listing each form with its year, status, and signing status, plus a per-row "View" action. Clicking "View" swaps the card for a read-only document viewer that renders the form PDF; clicking Back returns to the card view. This is an admin-facing surface, so the viewer is read-only even for forms that still require a signature — unsigned forms are shown as-is and are not signable here. Signing is performed by the employee through the onboarding document-signing flow.
 
 ```jsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -963,18 +963,16 @@ function MyComponent() {
 
 #### Events
 
-| Event type                                        | Description                                                                                                                        | Data                                             |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED | Fired when a form row's "View" CTA is clicked on the card; the block swaps to the document viewer                                  | { employeeId: string, formId: string }           |
-| EMPLOYEE_SIGN_FORM                                | Fired after a form that requires signing is successfully signed; the block returns to the card view and surfaces the success alert | Response from the Sign an employee form endpoint |
-| EMPLOYEE_MANAGEMENT_DOCUMENTS_ALERT_DISMISSED     | Fired when the user dismisses the "Document successfully signed." success alert above the card                                     | null                                             |
-| CANCEL                                            | Fired when the user clicks Back in the document viewer; the block returns to the card view                                         | None                                             |
+| Event type                                        | Description                                                                                       | Data                                   |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED | Fired when a form row's "View" CTA is clicked on the card; the block swaps to the document viewer | { employeeId: string, formId: string } |
+| CANCEL                                            | Fired when the user clicks Back in the document viewer; the block returns to the card view        | None                                   |
 
 #### Composing from EmployeeManagement.DocumentsCard and EmployeeManagement.DocumentManager directly
 
-`EmployeeManagement.Documents` above is the recommended entry point for the documents experience — it bundles the card, the document viewer/signer, the swap between them, and the success-alert wiring as a single drop-in. The card and the document viewer are also exported individually for cases where that orchestration is the wrong fit — for example, when the viewer needs to render in a modal or drawer, when the card needs to appear read-only with no view affordance, or when navigation to the viewer is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself. There is no dedicated edit form for this feature: the read-only card pairs with `EmployeeManagement.DocumentManager`, which renders the selected form's PDF and, for forms that require a signature, the signing form.
+`EmployeeManagement.Documents` above is the recommended entry point for the documents experience — it bundles the card, the read-only document viewer, and the swap between them as a single drop-in. The card and the document viewer are also exported individually for cases where that orchestration is the wrong fit — for example, when the viewer needs to render in a modal or drawer, when the card needs to appear read-only with no view affordance, or when navigation to the viewer is driven by a router. Using them directly means owning the swap and any cross-component state yourself. There is no dedicated edit form for this feature: the read-only card pairs with `EmployeeManagement.DocumentManager`, which renders the selected form's PDF read-only.
 
-`EmployeeManagement.DocumentsCard` renders the read-only documents card, self-fetches its rows, and emits a single event when a row's "View" CTA is clicked. `EmployeeManagement.DocumentManager` renders the selected form: for a form that requires signing it shows the signing form and emits one event on a successful sign and another on Back; for a form that does not require signing it shows the PDF with a Back action that emits the same cancel event. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. The per-piece events tables below list every event each piece emits.
+`EmployeeManagement.DocumentsCard` renders the read-only documents card, self-fetches its rows, and emits a single event when a row's "View" CTA is clicked. `EmployeeManagement.DocumentManager` renders the selected form's PDF read-only (including unsigned forms, shown as-is) with a Back action that emits a cancel event. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. The per-piece events tables below list every event each piece emits.
 
 ```jsx
 import { useState } from 'react'
@@ -989,10 +987,7 @@ function MyDocumentsPanel({ employeeId }) {
         employeeId={employeeId}
         formId={viewingFormId}
         onEvent={eventType => {
-          if (
-            eventType === componentEvents.EMPLOYEE_SIGN_FORM ||
-            eventType === componentEvents.CANCEL
-          ) {
+          if (eventType === componentEvents.CANCEL) {
             setViewingFormId(null)
           }
         }}
@@ -1035,16 +1030,15 @@ function MyDocumentsPanel({ employeeId }) {
 | Name                | Type                | Description                                                                                                                       |
 | ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | employeeId Required | string              | The associated employee identifier.                                                                                               |
-| formId Required     | string              | The identifier of the form to view or sign.                                                                                       |
+| formId Required     | string              | The identifier of the form to view.                                                                                               |
 | onEvent Required    | function            | See events table for available events.                                                                                            |
 | dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.DocumentManager` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseComponent` wrapper.                                            |
 
-The read-only viewer's text resolves from `Employee.DocumentManager`. When the selected form requires a signature, the signing form's text resolves from `Employee.Management.Documents` under the `signatureForm.*` keys, so override that namespace to retext the signing screen.
+The viewer renders the form read-only; its text resolves from `Employee.DocumentManager`.
 
 **Events**
 
-| Event type         | Description                                                          | Data                                             |
-| ------------------ | -------------------------------------------------------------------- | ------------------------------------------------ |
-| EMPLOYEE_SIGN_FORM | Fired after a form that requires signing is successfully signed      | Response from the Sign an employee form endpoint |
-| CANCEL             | Fired when the user clicks Back in the viewer (signing or read-only) | None                                             |
+| Event type | Description                                             | Data |
+| ---------- | ------------------------------------------------------- | ---- |
+| CANCEL     | Fired when the user clicks Back in the read-only viewer | None |

@@ -35,13 +35,6 @@ describe('dashboardStateMachine — documentManager', () => {
     expect(service.context.formId).toBe('form-1')
   })
 
-  it('returns to index with a documentSigned alert when the form is signed (SDK-946)', () => {
-    const service = createService('documentManager')
-    send(service, componentEvents.EMPLOYEE_SIGN_FORM, { uuid: 'form-1' })
-    expect(service.machine.current).toBe('index')
-    expect(service.context.successAlert).toBe('documentSigned')
-  })
-
   it('returns to index without an alert on CANCEL', () => {
     const service = createService('documentManager')
     send(service, componentEvents.CANCEL)

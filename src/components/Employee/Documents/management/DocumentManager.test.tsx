@@ -97,25 +97,21 @@ describe('DocumentManager', () => {
     })
   })
 
-  describe('signing mode (requiresSigning = true)', () => {
+  describe('forms that require signing are still read-only (admin-facing)', () => {
     beforeEach(() => {
       server.use(handleGetEmployeeForm(() => HttpResponse.json(signingRequiredForm)))
     })
 
-    it('renders signature fields', async () => {
+    it('renders the form read-only with a Back button and no signing UI', async () => {
       renderWithProviders(<DocumentManager {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
       })
-    })
 
-    it('renders Sign form button', async () => {
-      renderWithProviders(<DocumentManager {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Sign form' })).toBeInTheDocument()
-      })
+      expect(screen.getByText('Form W-4')).toBeInTheDocument()
+      expect(screen.queryByLabelText('Signature')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Sign form' })).not.toBeInTheDocument()
     })
   })
 })

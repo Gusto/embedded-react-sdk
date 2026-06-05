@@ -25,7 +25,7 @@ describe('Employee.Documents (management)', () => {
     expect(screen.getByRole('heading', { name: 'Forms' })).toBeInTheDocument()
   })
 
-  it('transitions from the card to the document viewer on View and emits the scoped event', async () => {
+  it('transitions from the card to a read-only document viewer on View and emits the scoped event', async () => {
     const user = userEvent.setup()
     renderWithProviders(<Documents employeeId="employee-123" onEvent={onEvent} />)
 
@@ -37,49 +37,25 @@ describe('Employee.Documents (management)', () => {
       { employeeId: 'employee-123', formId: 'i9-form-123' },
     )
 
-    expect(
-      await screen.findByRole('heading', { name: /Signature required for Form I-9/i }),
-    ).toBeInTheDocument()
+    // Admin-facing surface: even a signable form opens read-only, never the
+    // signing experience.
+    expect(await screen.findByRole('button', { name: 'Back' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Sign form' })).toBeNull()
+    expect(screen.queryByLabelText('Signature')).toBeNull()
   })
 
-  it('returns to the card without an alert when Back is clicked', async () => {
+  it('returns to the card when Back is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<Documents employeeId="employee-123" onEvent={onEvent} />)
 
     await screen.findByText('Form I-9')
     await user.click(screen.getByRole('button', { name: 'View' }))
 
-    await screen.findByRole('heading', { name: /Signature required for Form I-9/i })
+    await screen.findByRole('button', { name: 'Back' })
     await user.click(screen.getByRole('button', { name: 'Back' }))
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Forms' })).toBeInTheDocument()
     })
-    expect(screen.queryByText('Document successfully signed.')).toBeNull()
-  })
-
-  it('returns to the card with a success alert after the form is signed', async () => {
-    const user = userEvent.setup()
-    renderWithProviders(<Documents employeeId="employee-123" onEvent={onEvent} />)
-
-    await screen.findByText('Form I-9')
-    await user.click(screen.getByRole('button', { name: 'View' }))
-
-    await screen.findByRole('heading', { name: /Signature required for Form I-9/i })
-
-    await user.type(screen.getByLabelText('Signature'), 'Jane Employee')
-    await user.click(
-      screen.getByRole('checkbox', {
-        name: /I am the employee and I agree to sign electronically/i,
-      }),
-    )
-    await user.click(screen.getByRole('button', { name: 'Sign form' }))
-
-    await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_SIGN_FORM, expect.anything())
-    })
-
-    expect(await screen.findByText('Document successfully signed.')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Forms' })).toBeInTheDocument()
   })
 })

@@ -85,7 +85,6 @@
     "deductionDeleted": "Deduction successfully deleted.",
     "jobAdded": "Job successfully added.",
     "profileUpdated": "Profile updated",
-    "documentSigned": "Document successfully signed.",
     "federalTaxesUpdated": "Federal tax settings successfully updated.",
     "stateTaxesUpdated": "Successfully updated state tax settings."
   },

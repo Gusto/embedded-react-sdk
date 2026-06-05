@@ -7,27 +7,17 @@ import {
 } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
-import { useComponentDictionary, useI18n } from '@/i18n'
+import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { ResourceDictionary } from '@/types/Helpers'
-
-export type SignatureFormDictionary = ResourceDictionary<'Employee.SignatureForm'>
 
 interface SignatureFormProps extends CommonComponentInterface {
   employeeId: string
   formId: string
-  /**
-   * Translation overrides for the form's strings. Each consuming flow passes
-   * the dictionary it resolved from its own namespace (onboarding's
-   * `Employee.DocumentSigner`, management's `Employee.Management.Documents`) so
-   * partner overrides on that namespace flow into the shared form text.
-   */
-  dictionary?: SignatureFormDictionary
 }
 
 export function SignatureForm(props: SignatureFormProps & BaseComponentInterface) {
@@ -38,10 +28,9 @@ export function SignatureForm(props: SignatureFormProps & BaseComponentInterface
   )
 }
 
-function Root({ employeeId, formId, className, dictionary }: SignatureFormProps) {
-  useI18n('Employee.SignatureForm')
-  useComponentDictionary('Employee.SignatureForm', dictionary)
-  const { t } = useTranslation('Employee.SignatureForm')
+function Root({ employeeId, formId, className }: SignatureFormProps) {
+  useI18n('Employee.DocumentSigner')
+  const { t } = useTranslation('Employee.DocumentSigner')
   const { onEvent } = useBase()
   const Components = useComponentContext()
 

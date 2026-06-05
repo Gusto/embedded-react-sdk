@@ -1935,10 +1935,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
         }
       ],
       "variables": [
