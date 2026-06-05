@@ -2577,7 +2577,6 @@
     },
     "Employee.DashboardFlow": {
       "blocks": [
-        "Employee.Compensation",
         "Employee.HomeAddress",
         "Employee.WorkAddress",
         "EmployeeManagement.Compensation",
@@ -2646,8 +2645,7 @@
         "EmployeeManagement.PaystubsCard",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
-        "EmployeeManagement.WorkAddress",
-        "EmployeeOnboarding.Compensation"
+        "EmployeeManagement.WorkAddress"
       ]
     },
     "EmployeeManagement.EmployeeListFlow": {

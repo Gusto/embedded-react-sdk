@@ -64,7 +64,7 @@ describe('CompensationCard (standalone)', () => {
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       expect.objectContaining({
         employeeId: 'employee-uuid',
-        job: expect.objectContaining({ uuid: 'job-uuid' }),
+        jobId: 'job-uuid',
       }),
     )
   })

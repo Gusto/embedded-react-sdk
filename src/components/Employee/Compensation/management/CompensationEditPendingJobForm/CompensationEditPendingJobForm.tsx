@@ -28,9 +28,9 @@ export interface CompensationEditPendingJobFormProps extends CommonComponentInte
    * whether to show a Hire date field (primary) or Effective date field (secondary/change).
    */
   isPrimaryJob: boolean
-  onCancel?: () => void
-  /** Called with `EMPLOYEE_COMPENSATION_UPDATED` then `EMPLOYEE_COMPENSATION_DONE` on a
-   *  successful save. Use `EMPLOYEE_COMPENSATION_DONE` to trigger navigation. */
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` (with the saved
+   *  `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -54,7 +54,6 @@ function Root({
   compensationId,
   isNewJob,
   isPrimaryJob,
-  onCancel,
   className,
   onEvent,
 }: RootProps) {
@@ -114,8 +113,6 @@ function Root({
     const jobResult = await jobForm.actions.onSubmit()
     if (!jobResult) return
 
-    onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
-
     // When the hire date moves forward, the API auto-syncs the compensation's
     // effective_date to the new hire_date as part of the job PUT, which bumps
     // the compensation's version. Read it from the job response so the
@@ -130,8 +127,10 @@ function Root({
     })
     if (!compensationResult) return
 
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, compensationResult.data)
+    onEvent(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
+      compensationResult.data,
+    )
   })
 
   const errorHandling = composeErrorHandler([submitResult])
@@ -147,7 +146,9 @@ function Root({
             title={t('editCompensationTitle')}
             submitCtaLabel={t('saveCta')}
             isPending={isPending}
-            onCancel={onCancel}
+            onCancel={() => {
+              onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED)
+            }}
           />
         </Form>
       </BaseLayout>

@@ -238,25 +238,26 @@ function MyComponent() {
 
 The block forwards every event emitted by its card and form surfaces to the partner via `onEvent`; its internal state machine also reacts to them to swap between the card and the edit/add forms.
 
-| Event type                                                  | Description                                                                                                         | Data                                           |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED        | Fired when an "Edit" CTA is clicked for a job on the card; the block opens the edit form for that job               | { employeeId: string, job: Job }               |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED         | Fired when the "Add job" CTA is clicked from the card's empty state; the block opens the add-first-job form         | { employeeId: string }                         |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED | Fired when the "Add another job" CTA is clicked on the card; the block opens the add-another-job form               | { employeeId: string }                         |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED           | Fired after a non-primary job is deleted via the card's confirm dialog; the block stays on the card                 | { employeeId: string, jobId: string }          |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED      | Fired after a scheduled future-dated change is cancelled from the card; the block stays on the card                 | { employeeId: string, compensationId: string } |
-| EMPLOYEE_JOB_CREATED                                        | Fired after a new job is created during an add flow                                                                 | Created `Job` entity                           |
-| EMPLOYEE_JOB_UPDATED                                        | Fired after a job is updated during an edit flow                                                                    | Updated `Job` entity                           |
-| EMPLOYEE_COMPENSATION_UPDATED                               | Fired after a compensation is saved; for add flows the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity                  |
-| EMPLOYEE_COMPENSATION_DONE                                  | Fired after an edit-compensation save completes; the block returns to the card view                                 | Updated `Compensation` entity                  |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED            | Fired when the user dismisses the "Job added" success alert above the card                                          | null                                           |
-| CANCEL                                                      | Fired when the user clicks Cancel on an edit or add form; the block returns to the card view                        | None                                           |
+| Event type                                                      | Description                                                                                                            | Data                                           |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED            | Fired when an "Edit" CTA is clicked for a job on the card; the block opens the edit form for that job                  | { employeeId: string, jobId: string }          |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED             | Fired when the "Add job" CTA is clicked from the card's empty state; the block opens the add-first-job form            | { employeeId: string }                         |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED     | Fired when the "Add another job" CTA is clicked on the card; the block opens the add-another-job form                  | { employeeId: string }                         |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED               | Fired after a non-primary job is deleted via the card's confirm dialog; the block stays on the card                    | { employeeId: string, jobId: string }          |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED          | Fired after a scheduled future-dated change is cancelled from the card; the block stays on the card                    | { employeeId: string, compensationId: string } |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED            | Fired after an edit-compensation save completes; the block returns to the card view                                    | Updated `Compensation` entity                  |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED            | Fired when the user cancels the edit form; the block returns to the card view                                          | (none)                                         |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED         | Fired after the first job + compensation are saved; the block returns to the card and surfaces the "Job added" alert   | Updated `Compensation` entity                  |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED         | Fired when the user cancels the add-job form; the block returns to the card view                                       | (none)                                         |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED | Fired after a secondary job + compensation are saved; the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity                  |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED | Fired when the user cancels the add-another-job form; the block returns to the card view                               | (none)                                         |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED                | Fired when the user dismisses the "Job added" success alert above the card                                             | null                                           |
 
 #### Composing from EmployeeManagement.CompensationCard and the compensation form surfaces directly
 
 `EmployeeManagement.Compensation` above is the recommended entry point for the compensation experience — it bundles the card, the edit/add-job/add-another-job forms, the swaps between them, and the success-alert wiring as a single drop-in. The card and form surfaces are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
 
-Unlike the other Employee Management blocks, compensation does not have a single edit form: `EmployeeManagement.CompensationCard` emits a distinct request event for each action, and there are three form surfaces to route them to. `EmployeeManagement.CompensationEditForm` edits a single job's compensation and takes a required `job` prop (the `Job` from the card's `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED` payload); it internally branches between editing the current compensation and an already-scheduled pending change. `EmployeeManagement.CompensationAddJobForm` adds the employee's first job and compensation (routed from `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED`). `EmployeeManagement.CompensationAddAnotherJobForm` adds a secondary job (routed from `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED`). Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. The edit form completes via `EMPLOYEE_COMPENSATION_DONE`; the add forms complete via `EMPLOYEE_COMPENSATION_UPDATED`; all three accept an `onCancel` callback to return to the card. The per-piece events tables below list every event each piece emits.
+Unlike the other Employee Management blocks, compensation does not have a single edit form: `EmployeeManagement.CompensationCard` emits a distinct request event for each action, and there are three form surfaces to route them to. `EmployeeManagement.CompensationEditForm` edits a single job's compensation and takes a required `jobId` prop (the `jobId` from the card's `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED` payload); it fetches the job itself (a cached query) and internally branches between editing the current compensation and an already-scheduled pending change. `EmployeeManagement.CompensationAddJobForm` adds the employee's first job and compensation (routed from `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED`). `EmployeeManagement.CompensationAddAnotherJobForm` adds a secondary job (routed from `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED`). Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. Each form emits its own scoped events: a `..._SUBMITTED` event on a successful save and a `..._CANCELLED` event when the user clicks Cancel — both are your cue to return to the card. The per-piece events tables below list every event each piece emits.
 
 ```jsx
 import { useState } from 'react'
@@ -264,21 +265,23 @@ import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyCompensationPanel({ employeeId }) {
   const [view, setView] = useState('card')
-  const [editingJob, setEditingJob] = useState(null)
+  const [editingJobId, setEditingJobId] = useState(null)
 
   const returnToCard = () => {
-    setEditingJob(null)
+    setEditingJobId(null)
     setView('card')
   }
 
-  if (view === 'edit' && editingJob) {
+  if (view === 'edit' && editingJobId) {
     return (
       <EmployeeManagement.CompensationEditForm
         employeeId={employeeId}
-        job={editingJob}
-        onCancel={returnToCard}
+        jobId={editingJobId}
         onEvent={eventType => {
-          if (eventType === componentEvents.EMPLOYEE_COMPENSATION_DONE) {
+          if (
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED
+          ) {
             returnToCard()
           }
         }}
@@ -290,9 +293,11 @@ function MyCompensationPanel({ employeeId }) {
     return (
       <EmployeeManagement.CompensationAddJobForm
         employeeId={employeeId}
-        onCancel={returnToCard}
         onEvent={eventType => {
-          if (eventType === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
+          if (
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED
+          ) {
             returnToCard()
           }
         }}
@@ -304,9 +309,13 @@ function MyCompensationPanel({ employeeId }) {
     return (
       <EmployeeManagement.CompensationAddAnotherJobForm
         employeeId={employeeId}
-        onCancel={returnToCard}
         onEvent={eventType => {
-          if (eventType === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
+          if (
+            eventType ===
+              componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED ||
+            eventType ===
+              componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED
+          ) {
             returnToCard()
           }
         }}
@@ -319,7 +328,7 @@ function MyCompensationPanel({ employeeId }) {
       employeeId={employeeId}
       onEvent={(eventType, payload) => {
         if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED) {
-          setEditingJob(payload.job)
+          setEditingJobId(payload.jobId)
           setView('edit')
         } else if (
           eventType === componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED
@@ -349,7 +358,7 @@ function MyCompensationPanel({ employeeId }) {
 
 | Event type                                                  | Description                                                            | Data                                           |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
-| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED        | Fired when an "Edit" CTA is clicked for a job                          | { employeeId: string, job: Job }               |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED        | Fired when an "Edit" CTA is clicked for a job                          | { employeeId: string, jobId: string }          |
 | EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED         | Fired when the "Add job" CTA is clicked from the empty state           | { employeeId: string }                         |
 | EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED | Fired when the "Add another job" CTA is clicked                        | { employeeId: string }                         |
 | EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED           | Fired after a non-primary job is deleted via the card's confirm dialog | { employeeId: string, jobId: string }          |
@@ -359,21 +368,19 @@ function MyCompensationPanel({ employeeId }) {
 
 **Props**
 
-| Name                | Type     | Description                                                                                                                                                                                                                                                                      |
-| ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string   | The associated employee identifier.                                                                                                                                                                                                                                              |
-| job Required        | Job      | The job whose compensation is being edited (e.g. the `job` from the card's `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled pending change. |
-| onEvent Required    | function | See events table for available events.                                                                                                                                                                                                                                           |
-| onCancel            | function | Called when the user clicks Cancel; use it to return to the card view.                                                                                                                                                                                                           |
-| dictionary          | object   | Optional translations for component text. Keys are namespaced under `Employee.Management.Compensation` — see the source JSON for the set.                                                                                                                                        |
+| Name                | Type     | Description                                                                                                                                                                                                                                                                                                                 |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.                                                                                                                                                                                                                                                                                         |
+| jobId Required      | string   | The id of the job whose compensation is being edited (e.g. the `jobId` from the card's `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED` payload). The form fetches the job (a cached query) and inspects its compensations to decide whether to edit the current compensation or an already-scheduled pending change. |
+| onEvent Required    | function | See events table for available events.                                                                                                                                                                                                                                                                                      |
+| dictionary          | object   | Optional translations for component text. Keys are namespaced under `Employee.Management.Compensation` — see the source JSON for the set.                                                                                                                                                                                   |
 
 **Events**
 
-| Event type                    | Description                                                  | Data                          |
-| ----------------------------- | ------------------------------------------------------------ | ----------------------------- |
-| EMPLOYEE_JOB_UPDATED          | Fired after the job is updated, before the compensation save | Updated `Job` entity          |
-| EMPLOYEE_COMPENSATION_UPDATED | Fired after the compensation is saved                        | Updated `Compensation` entity |
-| EMPLOYEE_COMPENSATION_DONE    | Fired after the edit completes; use it to return to the card | Updated `Compensation` entity |
+| Event type                                           | Description                                                                | Data                          |
+| ---------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------- |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED | Fired after the compensation change is saved; use it to return to the card | Updated `Compensation` entity |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card            | (none)                        |
 
 ##### EmployeeManagement.CompensationAddJobForm
 
@@ -383,15 +390,14 @@ function MyCompensationPanel({ employeeId }) {
 | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | employeeId Required | string   | The associated employee identifier.                                                                                                       |
 | onEvent Required    | function | See events table for available events.                                                                                                    |
-| onCancel            | function | Called when the user clicks Cancel; use it to return to the card view.                                                                    |
 | dictionary          | object   | Optional translations for component text. Keys are namespaced under `Employee.Management.Compensation` — see the source JSON for the set. |
 
 **Events**
 
-| Event type                    | Description                                                         | Data                          |
-| ----------------------------- | ------------------------------------------------------------------- | ----------------------------- |
-| EMPLOYEE_JOB_CREATED          | Fired after the new job is created                                  | Created `Job` entity          |
-| EMPLOYEE_COMPENSATION_UPDATED | Fired after the compensation is saved; use it to return to the card | Updated `Compensation` entity |
+| Event type                                              | Description                                                                  | Data                          |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------- |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED | Fired after the job and compensation are saved; use it to return to the card | Updated `Compensation` entity |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card              | (none)                        |
 
 ##### EmployeeManagement.CompensationAddAnotherJobForm
 
@@ -401,16 +407,15 @@ function MyCompensationPanel({ employeeId }) {
 | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | employeeId Required | string   | The associated employee identifier.                                                                                                       |
 | onEvent Required    | function | See events table for available events.                                                                                                    |
-| onCancel            | function | Called when the user clicks Cancel; use it to return to the card view.                                                                    |
 | className           | string   | Optional class applied to the form's root section element.                                                                                |
 | dictionary          | object   | Optional translations for component text. Keys are namespaced under `Employee.Management.Compensation` — see the source JSON for the set. |
 
 **Events**
 
-| Event type                    | Description                                                         | Data                          |
-| ----------------------------- | ------------------------------------------------------------------- | ----------------------------- |
-| EMPLOYEE_JOB_CREATED          | Fired after the new secondary job is created                        | Created `Job` entity          |
-| EMPLOYEE_COMPENSATION_UPDATED | Fired after the compensation is saved; use it to return to the card | Updated `Compensation` entity |
+| Event type                                                      | Description                                                                            | Data                          |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------- |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED | Fired after the secondary job and compensation are saved; use it to return to the card | Updated `Compensation` entity |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card                        | (none)                        |
 
 ### EmployeeManagement.Deductions
 

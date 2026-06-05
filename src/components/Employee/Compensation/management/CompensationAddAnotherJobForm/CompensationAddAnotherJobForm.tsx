@@ -16,7 +16,9 @@ import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
-  onCancel?: () => void
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED` (with
+   *  the saved `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -34,7 +36,6 @@ export function CompensationAddAnotherJobForm({
 
 function Root({
   employeeId,
-  onCancel,
   className,
   onEvent,
 }: Omit<CompensationAddAnotherJobFormProps, 'dictionary'>) {
@@ -82,8 +83,6 @@ function Root({
     const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: primaryHireDate })
     if (!jobResult) return
 
-    onEvent(componentEvents.EMPLOYEE_JOB_CREATED, jobResult.data)
-
     const stubCompensation = jobResult.data.compensations?.find(
       c => c.uuid === jobResult.data.currentCompensationUuid,
     )
@@ -98,7 +97,10 @@ function Root({
       return
     }
 
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
+    onEvent(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
+      compensationResult.data,
+    )
   })
 
   const errorHandling = composeErrorHandler([submitResult])
@@ -114,7 +116,11 @@ function Root({
             title={t('addAnotherJobTitle')}
             submitCtaLabel={t('saveNewJobCta')}
             isPending={isPending}
-            onCancel={onCancel}
+            onCancel={() => {
+              onEvent(
+                componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+              )
+            }}
             dictionary={formDictionary}
           />
         </Form>

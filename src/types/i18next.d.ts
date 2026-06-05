@@ -1447,12 +1447,6 @@ export interface EmployeeDashboard{
 "federalTaxesUpdated":string;
 "stateTaxesUpdated":string;
 };
-"compensationFlow":{
-"addJobTitle":string;
-"editTitle":string;
-"addAnotherJobTitle":string;
-"saveCta":string;
-};
 };
 export interface EmployeeDeductions{
 "pageTitle":string;

@@ -16,8 +16,9 @@ import { componentEvents, type EventType } from '@/shared/constants'
 export interface CompensationEditJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
   jobId: string
-  onCancel?: () => void
-  /** Called with `EMPLOYEE_COMPENSATION_UPDATED` then `EMPLOYEE_COMPENSATION_DONE` on a successful save. Use `EMPLOYEE_COMPENSATION_DONE` to trigger navigation. */
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` (with the saved
+   *  `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -76,7 +77,7 @@ interface RootProps extends LoaderProps {
   defaultValues?: Partial<CompensationFormData>
 }
 
-function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }: RootProps) {
+function Root({ employeeId, jobId, defaultValues, className, onEvent }: RootProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
 
@@ -121,13 +122,13 @@ function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }
     const jobResult = await jobForm.actions.onSubmit()
     if (!jobResult) return
 
-    onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
-
     const compensationResult = await compensationForm.actions.onSubmit()
     if (!compensationResult) return
 
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, compensationResult.data)
+    onEvent(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
+      compensationResult.data,
+    )
   })
 
   const errorHandling = composeErrorHandler([submitResult])
@@ -143,7 +144,9 @@ function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }
             title={t('editCompensationTitle')}
             submitCtaLabel={t('saveCta')}
             isPending={isPending}
-            onCancel={onCancel}
+            onCancel={() => {
+              onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED)
+            }}
           />
         </Form>
       </BaseLayout>

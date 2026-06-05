@@ -164,12 +164,8 @@ describe('management/CompensationEditJobForm', () => {
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
         expect.objectContaining({ uuid: 'new-compensation-uuid' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_DONE,
-        expect.anything(),
       )
     })
   })
@@ -229,11 +225,7 @@ describe('management/CompensationEditJobForm', () => {
 
     expect(createCompensationResolver).not.toHaveBeenCalled()
     expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_JOB_UPDATED,
-      expect.anything(),
-    )
-    expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
       expect.anything(),
     )
   })

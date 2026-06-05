@@ -146,7 +146,7 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
   const handleEdit = (job: Job) => {
     onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED, {
       employeeId,
-      job,
+      jobId: job.uuid,
     })
   }
   const handleAddJob = () => {

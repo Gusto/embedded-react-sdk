@@ -24,11 +24,5 @@
     "profileUpdated": "Profile updated",
     "federalTaxesUpdated": "Federal tax settings successfully updated.",
     "stateTaxesUpdated": "Successfully updated state tax settings."
-  },
-  "compensationFlow": {
-    "addJobTitle": "Add a job",
-    "editTitle": "Edit compensation",
-    "addAnotherJobTitle": "Add another job",
-    "saveCta": "Save job"
   }
 }

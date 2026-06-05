@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { CompensationCard } from './CompensationCard'
 import { CompensationEditForm } from './CompensationEditForm'
 import { CompensationAddJobForm } from './CompensationAddJobForm'
@@ -16,7 +15,7 @@ export interface CompensationContextInterface extends FlowContextInterface {
   employeeId?: string
   /** Set when transitioning to `editCompensation` via the card EDIT event;
    *  consumed by `CompensationEditFormContextual` to target the right job. */
-  currentJob?: Job | null
+  currentJobId?: string | null
   successAlert?: CompensationSuccessAlertCode | null
 }
 
@@ -41,41 +40,22 @@ export function CompensationCardContextual() {
 }
 
 export function CompensationEditFormContextual() {
-  const { employeeId, currentJob, onEvent } = useFlow<CompensationContextInterface>()
+  const { employeeId, currentJobId, onEvent } = useFlow<CompensationContextInterface>()
   return (
     <CompensationEditForm
       employeeId={ensureRequired(employeeId)}
-      job={ensureRequired(currentJob ?? undefined)}
+      jobId={ensureRequired(currentJobId ?? undefined)}
       onEvent={onEvent}
-      onCancel={() => {
-        onEvent(componentEvents.CANCEL, null)
-      }}
     />
   )
 }
 
 export function CompensationAddJobFormContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
-  return (
-    <CompensationAddJobForm
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-      onCancel={() => {
-        onEvent(componentEvents.CANCEL)
-      }}
-    />
-  )
+  return <CompensationAddJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function CompensationAddAnotherJobFormContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
-  return (
-    <CompensationAddAnotherJobForm
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-      onCancel={() => {
-        onEvent(componentEvents.CANCEL)
-      }}
-    />
-  )
+  return <CompensationAddAnotherJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }

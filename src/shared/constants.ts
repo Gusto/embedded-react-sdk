@@ -148,6 +148,18 @@ export const employeeEvents = {
     'employee/management/compensation/card/jobDeleted',
   EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED:
     'employee/management/compensation/card/changeCancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED:
+    'employee/management/compensation/editForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED:
+    'employee/management/compensation/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED:
+    'employee/management/compensation/addJobForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED:
+    'employee/management/compensation/addJobForm/cancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED:
+    'employee/management/compensation/addAnotherJobForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED:
+    'employee/management/compensation/addAnotherJobForm/cancelled',
   EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED:
     'employee/management/compensation/alertDismissed',
 } as const

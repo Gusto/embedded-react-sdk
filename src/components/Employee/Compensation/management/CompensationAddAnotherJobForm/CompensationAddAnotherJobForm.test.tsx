@@ -134,11 +134,7 @@ describe('management/CompensationAddAnotherJobForm', () => {
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_JOB_CREATED,
-        expect.objectContaining({ uuid: 'secondary-job-uuid' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
         expect.anything(),
       )
     })
@@ -182,31 +178,25 @@ describe('management/CompensationAddAnotherJobForm', () => {
     expect(updateCompensationResolver).not.toHaveBeenCalled()
     expect(createCompensationResolver).not.toHaveBeenCalled()
     expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_JOB_CREATED,
-      expect.anything(),
-    )
-    expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
       expect.anything(),
     )
   })
 
-  it('invokes onCancel when the Cancel button is clicked', async () => {
+  it('fires the scoped cancelled event when the Cancel button is clicked', async () => {
     const user = userEvent.setup()
-    const onCancel = vi.fn()
+    const onEvent = vi.fn()
 
     renderWithProviders(
-      <CompensationAddAnotherJobForm
-        employeeId="employee-uuid"
-        onCancel={onCancel}
-        onEvent={() => {}}
-      />,
+      <CompensationAddAnotherJobForm employeeId="employee-uuid" onEvent={onEvent} />,
     )
 
     await screen.findByRole('heading', { name: 'Add another job' })
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    expect(onCancel).toHaveBeenCalledTimes(1)
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+    )
   })
 })

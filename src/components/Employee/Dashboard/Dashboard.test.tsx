@@ -471,7 +471,7 @@ describe('Dashboard', () => {
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       expect.objectContaining({
         employeeId: 'employee-123',
-        job: expect.objectContaining({ uuid: PRIMARY_JOB_UUID, primary: true }),
+        jobId: PRIMARY_JOB_UUID,
       }),
     )
   })
@@ -630,7 +630,7 @@ describe('Dashboard', () => {
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       expect.objectContaining({
         employeeId: 'employee-123',
-        job: expect.objectContaining({ uuid: SECONDARY_JOB_UUID, primary: false }),
+        jobId: SECONDARY_JOB_UUID,
       }),
     )
   })

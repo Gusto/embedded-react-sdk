@@ -1,6 +1,5 @@
 import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { CompensationContextInterface } from './CompensationComponents'
 import {
   CompensationCardContextual,
@@ -14,7 +13,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 type EventPayloads = {
   [componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED]: {
     employeeId: string
-    job: Job
+    jobId: string
   }
 }
 
@@ -23,7 +22,7 @@ const returnToCard = reduce(
     ...ctx,
     component: CompensationCardContextual as ComponentType,
     successAlert: null,
-    currentJob: null,
+    currentJobId: null,
   }),
 )
 
@@ -33,7 +32,7 @@ const returnToCardWithAlert = (alert: CompensationContextInterface['successAlert
       ...ctx,
       component: CompensationCardContextual as ComponentType,
       successAlert: alert,
-      currentJob: null,
+      currentJobId: null,
     }),
   )
 
@@ -52,7 +51,7 @@ export const compensationStateMachine = {
         ): CompensationContextInterface => ({
           ...ctx,
           component: CompensationEditFormContextual as ComponentType,
-          currentJob: ev.payload.job,
+          currentJobId: ev.payload.jobId,
           successAlert: null,
         }),
       ),
@@ -64,7 +63,7 @@ export const compensationStateMachine = {
         (ctx: CompensationContextInterface): CompensationContextInterface => ({
           ...ctx,
           component: CompensationAddJobFormContextual as ComponentType,
-          currentJob: null,
+          currentJobId: null,
           successAlert: null,
         }),
       ),
@@ -76,7 +75,7 @@ export const compensationStateMachine = {
         (ctx: CompensationContextInterface): CompensationContextInterface => ({
           ...ctx,
           component: CompensationAddAnotherJobFormContextual as ComponentType,
-          currentJob: null,
+          currentJobId: null,
           successAlert: null,
         }),
       ),
@@ -88,23 +87,39 @@ export const compensationStateMachine = {
     ),
   ),
   editCompensation: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'card', returnToCard),
-    transition(componentEvents.CANCEL, 'card', returnToCard),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
+      'card',
+      returnToCard,
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED,
+      'card',
+      returnToCard,
+    ),
   ),
   addJob: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED,
       'card',
       returnToCardWithAlert('jobAdded'),
     ),
-    transition(componentEvents.CANCEL, 'card', returnToCard),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED,
+      'card',
+      returnToCard,
+    ),
   ),
   addAnotherJob: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
       'card',
       returnToCardWithAlert('jobAdded'),
     ),
-    transition(componentEvents.CANCEL, 'card', returnToCard),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+      'card',
+      returnToCard,
+    ),
   ),
 }

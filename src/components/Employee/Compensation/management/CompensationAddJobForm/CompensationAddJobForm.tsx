@@ -4,17 +4,13 @@ import { useManagementCompensationDictionary } from '../useManagementCompensatio
 import { BaseBoundaries, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { type EventType } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
-  onCancel?: () => void
-  /**
-   * Receives `EMPLOYEE_JOB_CREATED` / `EMPLOYEE_JOB_UPDATED` (with the saved
-   * `Job`), then `EMPLOYEE_COMPENSATION_UPDATED` (with the saved `Compensation`)
-   * on a successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED` for "save
-   * complete" branching.
-   */
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED` (with the saved
+   *  `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -23,7 +19,9 @@ export interface CompensationAddJobFormProps extends CommonComponentInterface<'E
  * Wraps the onboarding `EditCompensation` and supplies management-isolated
  * title/CTA copy plus a dictionary resolved from `Employee.Management.Compensation`,
  * passed through `EditCompensation`'s `dictionary` prop so the rendered fields
- * show management copy and stay isolated from the onboarding surface.
+ * show management copy and stay isolated from the onboarding surface. Translates
+ * the onboarding flow's save/cancel events into the management block's scoped
+ * events so the partner-visible surface is the management block's, not onboarding's.
  */
 export function CompensationAddJobForm({ dictionary, ...props }: CompensationAddJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
@@ -34,7 +32,7 @@ export function CompensationAddJobForm({ dictionary, ...props }: CompensationAdd
   )
 }
 
-function Root({ employeeId, onCancel, onEvent }: Omit<CompensationAddJobFormProps, 'dictionary'>) {
+function Root({ employeeId, onEvent }: Omit<CompensationAddJobFormProps, 'dictionary'>) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
   const editCompensationDictionary = useManagementCompensationDictionary()
@@ -45,8 +43,17 @@ function Root({ employeeId, onCancel, onEvent }: Omit<CompensationAddJobFormProp
       title={t('addJobTitle')}
       submitCtaLabel={t('saveNewJobCta')}
       dictionary={editCompensationDictionary}
-      onEvent={onEvent}
-      onCancel={onCancel}
+      onEvent={(type, data) => {
+        // The onboarding EditCompensation fires its own job/compensation events;
+        // the management block exposes a single scoped "submitted" event keyed off
+        // the compensation save (the terminal step of the create chain).
+        if (type === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
+          onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED, data)
+        }
+      }}
+      onCancel={() => {
+        onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED)
+      }}
     />
   )
 }
