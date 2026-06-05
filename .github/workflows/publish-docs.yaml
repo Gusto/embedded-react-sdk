@@ -69,8 +69,13 @@ jobs:
       # embedded-sdk-docs/main. Its Buildkite pipeline then builds and
       # publishes the result to gh-pages.
       #
-      # .buildkite/ on the docs repo is owned by that repo and excluded
-      # from the wipe so it survives across syncs.
+      # Safety model: this workflow only touches paths it explicitly
+      # manages (docs/, docs-site/, .nvmrc). Everything else in the
+      # docs repo (.buildkite/, README.md, CODEOWNERS, CNAME, .github/,
+      # …) is left untouched, ever. A defense-in-depth check at the
+      # end fails the push if any staged change escapes the allowlist
+      # — so if someone later widens the cp/rm logic by accident, the
+      # push fails closed instead of silently wiping unrelated files.
       #
       # `concurrency: publish-docs` above prevents overlapping pushes,
       # so a non-force push is safe.
@@ -86,13 +91,13 @@ jobs:
           git config user.name "gusto-embedded-docs[bot]"
           git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
 
-          # Wipe currently-tracked files, but preserve .buildkite/ (the
-          # docs repo owns its own CI config). `git add -A` afterwards
-          # picks up additions and deletions relative to the previous sync.
-          git ls-files -z ':!.buildkite/' | xargs -0 -r rm -f
-          find . -type d -empty -not -path './.git*' -not -path './.buildkite*' -delete
+          # Remove only the paths this workflow owns. Anything else in
+          # the docs repo (.buildkite/, README.md, etc.) stays put.
+          # --ignore-unmatch so first-run (no prior docs/ on the repo)
+          # doesn't fail.
+          git rm -rf --quiet --ignore-unmatch docs docs-site .nvmrc
 
-          # Copy markdown source + Docusaurus config + Node pin.
+          # Copy fresh source in.
           cp -R ../docs .
           cp -R ../docs-site .
           cp ../.nvmrc .
@@ -100,9 +105,22 @@ jobs:
           # Strip anything that shouldn't ship with source.
           rm -rf docs-site/node_modules docs-site/build
 
+          # Stage only the paths we manage. NOT `git add -A` — that
+          # could pick up unrelated tree changes if anything went sideways.
+          git add docs docs-site .nvmrc
+
+          # Defense in depth: refuse to push if any staged change
+          # escapes the managed allowlist. No-op when the workflow is
+          # correct; catches future drift.
+          unexpected=$(git diff --cached --name-only | grep -vE '^(docs/|docs-site/|\.nvmrc$)' || true)
+          if [[ -n "$unexpected" ]]; then
+            echo "ERROR: refusing to push — staged changes outside managed paths:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
           # Always commit (even with no file changes) so every sync run
           # leaves a release-marker in the docs repo's history, matching
           # 1:1 with the NPM releases that triggered it.
-          git add -A
           git commit -q --allow-empty -m "docs: sync source for SDK $SDK_VERSION"
           git push origin main
