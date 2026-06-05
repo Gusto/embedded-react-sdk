@@ -17,14 +17,14 @@ export interface ProfileCardProps {
 /**
  * Standalone "Basic details" card. Owns its own data fetch via
  * `useEmployeeProfileSummary` and emits
- * `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED` when the Edit button is
+ * `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED` when the Edit button is
  * clicked. The card has no alert API — alert rendering is the
  * orchestrator's responsibility (block's `CardContextual` for standalone
  * consumption, dashboard chrome for dashboard consumption).
  */
 export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
-  useI18n('Employee.Profile.Management')
-  const { t } = useTranslation('Employee.Profile.Management')
+  useI18n('Employee.Management.Profile')
+  const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
 
   const profile = useEmployeeProfileSummary({ employeeId })
@@ -52,7 +52,7 @@ export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
     : []
 
   const handleEdit = () => {
-    onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED, { employeeId })
+    onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED, { employeeId })
   }
 
   return (

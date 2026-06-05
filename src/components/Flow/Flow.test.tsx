@@ -13,7 +13,7 @@ import type { MachineTransition } from '@/types/Helpers'
 const FirstScreen: ComponentType = () => <div data-testid="first-screen">First</div>
 const SecondScreen: ComponentType = () => <div data-testid="second-screen">Second</div>
 
-const NEXT_EVENT = componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED
+const NEXT_EVENT = componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED
 const BACK_EVENT = componentEvents.CANCEL
 
 const buildMachine = (overrides: Partial<FlowContextInterface> = {}) =>

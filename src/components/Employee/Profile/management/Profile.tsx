@@ -13,13 +13,13 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
-export interface ProfileProps extends CommonComponentInterface<'Employee.Profile.Management'> {
+export interface ProfileProps extends CommonComponentInterface<'Employee.Management.Profile'> {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
 function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
-  useI18n('Employee.Profile.Management')
+  useI18n('Employee.Management.Profile')
 
   const machine = useMemo(
     () =>
@@ -39,11 +39,11 @@ export function Profile({
   dictionary,
   FallbackComponent,
   ...props
-}: ProfileProps & BaseComponentInterface<'Employee.Profile.Management'>) {
-  useComponentDictionary('Employee.Profile.Management', dictionary)
+}: ProfileProps & BaseComponentInterface<'Employee.Management.Profile'>) {
+  useComponentDictionary('Employee.Management.Profile', dictionary)
   return (
     <BaseBoundaries
-      componentName="Employee.Profile.Management"
+      componentName="Employee.Management.Profile"
       FallbackComponent={FallbackComponent}
     >
       <ProfileFlow {...props} />

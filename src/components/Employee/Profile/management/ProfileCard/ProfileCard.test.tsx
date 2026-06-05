@@ -24,7 +24,7 @@ describe('ProfileCard', () => {
     expect(screen.getByText('Basic details')).toBeInTheDocument()
   })
 
-  it('fires EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED with { employeeId } when Edit is clicked', async () => {
+  it('fires EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED with { employeeId } when Edit is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<ProfileCard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -35,7 +35,7 @@ describe('ProfileCard', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })

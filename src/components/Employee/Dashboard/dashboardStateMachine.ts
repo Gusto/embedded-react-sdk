@@ -57,7 +57,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       'profile',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -68,7 +68,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       'homeAddress',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -269,7 +269,7 @@ export const dashboardStateMachine = {
   ),
   homeAddress: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED,
       'index',
       returnToIndex,
     ),
@@ -306,9 +306,9 @@ export const dashboardStateMachine = {
     ),
   ),
   profile: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'index', returnToIndex),
+    transition(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED, 'index', returnToIndex),
     transition(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED,
       'index',
       returnToIndexWithAlert('profileUpdated'),
     ),
