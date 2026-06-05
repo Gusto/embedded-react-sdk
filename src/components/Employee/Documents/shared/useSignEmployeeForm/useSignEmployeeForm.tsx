@@ -200,7 +200,15 @@ export function useSignEmployeeForm({
     setError: setSubmitError,
   } = useBaseSubmit('SignEmployeeForm')
 
-  const queries = [formQuery, pdfQuery]
+  // The signed PDF is a preview convenience: `pdfUrl` is optional and both the
+  // viewer and the download link already degrade gracefully when it's absent.
+  // A failed — or not-yet-ready — PDF fetch must NOT surface as a page-level
+  // signing error. In particular the global post-mutation invalidation forces a
+  // `getPdf` refetch the instant a sign succeeds, which races backend generation
+  // of the signed PDF; surfacing that transient failure as "there was a problem
+  // with your submission" is misleading when the signature actually went through
+  // (SDK-947). Only the form query feeds the error surface.
+  const queries = [formQuery]
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
