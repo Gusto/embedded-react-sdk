@@ -1899,7 +1899,7 @@ describe('Dashboard', () => {
     await waitFor(() => expect(screen.getByText('Form I-9')).toBeInTheDocument())
   })
 
-  it('emits EMPLOYEE_VIEW_FORM_TO_SIGN with employeeId and formId when clicking View on a form', async () => {
+  it('emits EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED with employeeId and formId when clicking View on a form', async () => {
     server.use(handleGetEmployeeForms(() => HttpResponse.json([i9Form])))
     const user = userEvent.setup()
 
@@ -1913,9 +1913,12 @@ describe('Dashboard', () => {
 
     await user.click(screen.getByRole('button', { name: 'View' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, {
-      employeeId: 'employee-123',
-      formId: 'i9-form-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED,
+      {
+        employeeId: 'employee-123',
+        formId: 'i9-form-123',
+      },
+    )
   })
 })

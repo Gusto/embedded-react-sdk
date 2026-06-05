@@ -831,10 +831,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
@@ -1926,8 +1922,12 @@
         "employeeId"
       ]
     },
-    "EmployeeManagement.DocumentManager": {
+    "EmployeeManagement.Documents": {
       "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms"
+        },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId"
@@ -1935,10 +1935,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
         }
       ],
       "variables": [
@@ -1955,10 +1951,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
         },
         {
           "method": "GET",
@@ -2593,7 +2585,7 @@
         "Employee.HomeAddress",
         "Employee.WorkAddress",
         "EmployeeManagement.Deductions",
-        "EmployeeManagement.DocumentManager",
+        "EmployeeManagement.Documents",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.PaymentMethod",
         "EmployeeManagement.PaystubsCard",
@@ -2649,7 +2641,7 @@
     "EmployeeManagement.DashboardFlow": {
       "blocks": [
         "EmployeeManagement.Deductions",
-        "EmployeeManagement.DocumentManager",
+        "EmployeeManagement.Documents",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
         "EmployeeManagement.PaymentMethod",

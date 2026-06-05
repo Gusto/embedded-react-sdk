@@ -1,2 +1,6 @@
 export { DocumentManager } from './DocumentManager'
 export type { DocumentManagerProps } from './DocumentManager'
+export { DocumentsCard } from './DocumentsCard'
+export type { DocumentsCardProps } from './DocumentsCard'
+export { Documents } from './Documents'
+export type { DocumentsProps } from './Documents'
