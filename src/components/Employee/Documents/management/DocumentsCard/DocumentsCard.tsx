@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { useDocumentsList } from '../../shared/useDocumentsList'
-import { DataView, useDataView, EmptyData } from '@/components/Common'
+import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -82,14 +82,14 @@ export function DocumentsCard({ employeeId, onEvent }: DocumentsCardProps) {
     ),
   })
 
-  if (documentsList.isLoading) {
-    return <BaseLayout isLoading error={documentsList.errorHandling.errors} />
-  }
-
   return (
     <BaseLayout error={documentsList.errorHandling.errors}>
       <Components.Box withPadding={false} header={<Components.BoxHeader title={t('title')} />}>
-        <DataView label={t('listLabel')} isWithinBox {...formsDataView} />
+        {documentsList.isLoading ? (
+          <Loading />
+        ) : (
+          <DataView label={t('listLabel')} isWithinBox {...formsDataView} />
+        )}
       </Components.Box>
     </BaseLayout>
   )
