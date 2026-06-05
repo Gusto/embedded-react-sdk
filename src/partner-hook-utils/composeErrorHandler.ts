@@ -16,7 +16,9 @@ type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
  * @public
  */
 export type SubmitStateForErrorHandling = {
+  /** The current submit error, or `null` when cleared. */
   submitError: SDKError | null
+  /** Sets or clears the submit error. */
   setSubmitError: (error: SDKError | null) => void
 }
 
