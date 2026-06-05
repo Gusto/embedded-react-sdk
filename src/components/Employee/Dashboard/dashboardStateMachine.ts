@@ -1,6 +1,5 @@
 import { transition, reduce, state } from 'robot3'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,
@@ -27,7 +26,10 @@ type EventPayloads = {
     formId: string
   }
   [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
-  [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
+  [componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED]: {
+    employeeId: string
+    jobId: string
+  }
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
@@ -36,7 +38,7 @@ const returnToIndex = reduce(
     ...ctx,
     component: DashboardViewContextual,
     header: null,
-    currentJob: null,
+    currentJobId: null,
     successAlert: null,
   }),
 )
@@ -47,7 +49,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
       ...ctx,
       component: DashboardViewContextual,
       header: null,
-      currentJob: null,
+      currentJobId: null,
       successAlert: alert,
     }),
   )
@@ -150,40 +152,43 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_JOB_ADD,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED,
       'addJob',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: AddJobContextual,
-          currentJob: null,
+          currentJobId: null,
           successAlert: null,
         }),
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       'editCompensation',
       reduce(
         (
           ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED
+          >,
         ): DashboardContextInterface => ({
           ...ctx,
           component: EditCompensationContextual,
-          currentJob: ev.payload.job,
+          currentJobId: ev.payload.jobId,
           successAlert: null,
         }),
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_JOB_ADD_ANOTHER,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
       'addAnotherJob',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: AddAnotherJobContextual,
-          currentJob: null,
+          currentJobId: null,
           successAlert: null,
         }),
       ),
@@ -357,22 +362,38 @@ export const dashboardStateMachine = {
   ),
   addJob: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED,
       'index',
       returnToIndexWithAlert('jobAdded'),
     ),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
   editCompensation: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
+      'index',
+      returnToIndex,
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
   addAnotherJob: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
       'index',
       returnToIndexWithAlert('jobAdded'),
     ),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
 }

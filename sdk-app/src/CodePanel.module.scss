@@ -80,19 +80,32 @@
 .code {
   flex: 1;
   margin: 0;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.25rem 0 0;
   font-size: 0.8125rem;
   line-height: 1.5;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   background: transparent;
 }
 
+.line {
+  display: flex;
+  align-items: flex-start;
+}
+
 .lineNumber {
-  display: inline-block;
+  flex-shrink: 0;
   min-width: 1.75rem;
   margin-right: 0.75rem;
   text-align: right;
   color: var(--color-text-muted);
   user-select: none;
+}
+
+.lineContent {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

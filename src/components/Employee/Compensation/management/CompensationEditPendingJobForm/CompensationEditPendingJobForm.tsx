@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
 import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
-import styles from './EditPendingCompensation.module.scss'
+import styles from './CompensationEditPendingJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
@@ -12,7 +12,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
-export interface EditPendingCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface CompensationEditPendingJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
   jobId: string
   /** The UUID of the pending (future-dated) compensation to update. Always required — this
@@ -28,22 +28,25 @@ export interface EditPendingCompensationProps extends CommonComponentInterface<'
    * whether to show a Hire date field (primary) or Effective date field (secondary/change).
    */
   isPrimaryJob: boolean
-  onCancel?: () => void
-  /** Called with `EMPLOYEE_COMPENSATION_UPDATED` then `EMPLOYEE_COMPENSATION_DONE` on a
-   *  successful save. Use `EMPLOYEE_COMPENSATION_DONE` to trigger navigation. */
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` (with the saved
+   *  `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
-export function EditPendingCompensation({ dictionary, ...props }: EditPendingCompensationProps) {
-  useComponentDictionary('Employee.Compensation', dictionary)
+export function CompensationEditPendingJobForm({
+  dictionary,
+  ...props
+}: CompensationEditPendingJobFormProps) {
+  useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Compensation.Management">
+    <BaseBoundaries componentName="Employee.Management.Compensation">
       <Root {...props} />
     </BaseBoundaries>
   )
 }
 
-type RootProps = Omit<EditPendingCompensationProps, 'dictionary'>
+type RootProps = Omit<CompensationEditPendingJobFormProps, 'dictionary'>
 
 function Root({
   employeeId,
@@ -51,12 +54,11 @@ function Root({
   compensationId,
   isNewJob,
   isPrimaryJob,
-  onCancel,
   className,
   onEvent,
 }: RootProps) {
-  useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
+  useI18n('Employee.Management.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
 
   // For a primary new job (hire date in the future, no current comp), the hire
   // date field is shown instead of the effective date field. This keeps
@@ -111,8 +113,6 @@ function Root({
     const jobResult = await jobForm.actions.onSubmit()
     if (!jobResult) return
 
-    onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
-
     // When the hire date moves forward, the API auto-syncs the compensation's
     // effective_date to the new hire_date as part of the job PUT, which bumps
     // the compensation's version. Read it from the job response so the
@@ -127,8 +127,10 @@ function Root({
     })
     if (!compensationResult) return
 
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, compensationResult.data)
+    onEvent(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
+      compensationResult.data,
+    )
   })
 
   const errorHandling = composeErrorHandler([submitResult])
@@ -141,10 +143,12 @@ function Root({
           <ManagementCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
-            title={t('management.editCompensationTitle')}
-            submitCtaLabel={t('management.saveCta')}
+            title={t('editCompensationTitle')}
+            submitCtaLabel={t('saveCta')}
             isPending={isPending}
-            onCancel={onCancel}
+            onCancel={() => {
+              onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED)
+            }}
           />
         </Form>
       </BaseLayout>

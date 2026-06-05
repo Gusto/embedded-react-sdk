@@ -138,6 +138,30 @@ export const employeeEvents = {
     'employee/management/federalTaxes/alertDismissed',
   EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED:
     'employee/management/documents/card/viewRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED:
+    'employee/management/compensation/card/editRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED:
+    'employee/management/compensation/card/addRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED:
+    'employee/management/compensation/card/addAnotherRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED:
+    'employee/management/compensation/card/jobDeleted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED:
+    'employee/management/compensation/card/changeCancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED:
+    'employee/management/compensation/editForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED:
+    'employee/management/compensation/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED:
+    'employee/management/compensation/addJobForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED:
+    'employee/management/compensation/addJobForm/cancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED:
+    'employee/management/compensation/addAnotherJobForm/submitted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED:
+    'employee/management/compensation/addAnotherJobForm/cancelled',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED:
+    'employee/management/compensation/alertDismissed',
 } as const
 
 /**

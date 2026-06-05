@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { EditCompensation } from './EditCompensation'
+import { CompensationEditJobForm } from './CompensationEditJobForm'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs, handleUpdateEmployeeJob } from '@/test/mocks/apis/employees'
@@ -21,7 +21,7 @@ async function fillEffectiveDate(user: ReturnType<typeof userEvent.setup>, date:
   await user.type(within(dateInput).getByRole('spinbutton', { name: /^year/i }), year!)
 }
 
-describe('management/EditCompensation', () => {
+describe('management/CompensationEditJobForm', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getMinimumWages)
@@ -35,7 +35,7 @@ describe('management/EditCompensation', () => {
     )
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -58,7 +58,7 @@ describe('management/EditCompensation', () => {
     )
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -76,7 +76,7 @@ describe('management/EditCompensation', () => {
     )
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -139,7 +139,7 @@ describe('management/EditCompensation', () => {
     const onEvent = vi.fn()
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={onEvent} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={onEvent} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -164,12 +164,8 @@ describe('management/EditCompensation', () => {
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
         expect.objectContaining({ uuid: 'new-compensation-uuid' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_DONE,
-        expect.anything(),
       )
     })
   })
@@ -209,7 +205,7 @@ describe('management/EditCompensation', () => {
     const onEvent = vi.fn()
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={onEvent} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={onEvent} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -229,11 +225,7 @@ describe('management/EditCompensation', () => {
 
     expect(createCompensationResolver).not.toHaveBeenCalled()
     expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_JOB_UPDATED,
-      expect.anything(),
-    )
-    expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
       expect.anything(),
     )
   })
@@ -302,7 +294,7 @@ describe('management/EditCompensation', () => {
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -372,7 +364,7 @@ describe('management/EditCompensation', () => {
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
@@ -406,7 +398,7 @@ describe('management/EditCompensation', () => {
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditCompensation employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
+      <CompensationEditJobForm employeeId="employee-uuid" jobId="job-uuid" onEvent={() => {}} />,
     )
 
     await screen.findByRole('heading', { name: 'Edit compensation' })

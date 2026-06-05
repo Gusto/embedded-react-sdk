@@ -1,7 +1,6 @@
-import { Suspense, useState, useCallback } from 'react'
+import { Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'
@@ -32,21 +31,6 @@ function DashboardRoot({
   const Components = useComponentContext()
   const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
   const selectedTab = controlledTab ?? internalTab
-
-  const handleEditCompensation = useCallback(
-    (job: Job) => {
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_CREATE, { employeeId, job })
-    },
-    [onEvent, employeeId],
-  )
-
-  const handleAddJob = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_JOB_ADD, { employeeId })
-  }, [onEvent, employeeId])
-
-  const handleAddAnotherJob = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, { employeeId })
-  }, [onEvent, employeeId])
 
   const tabs = [
     {
@@ -98,13 +82,7 @@ function DashboardRoot({
 
           {selectedTab === 'jobAndPay' && (
             <Suspense fallback={<BaseLayout isLoading />}>
-              <JobAndPayView
-                employeeId={employeeId}
-                onEvent={onEvent}
-                onEditCompensation={handleEditCompensation}
-                onAddJob={handleAddJob}
-                onAddAnotherJob={handleAddAnotherJob}
-              />
+              <JobAndPayView employeeId={employeeId} onEvent={onEvent} />
             </Suspense>
           )}
 

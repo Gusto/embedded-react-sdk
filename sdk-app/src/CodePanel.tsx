@@ -66,14 +66,19 @@ export function CodePanel({ onClose }: CodePanelProps) {
           <Highlight code={snippet} language="tsx" theme={prismTheme}>
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre className={`${styles.code} ${className}`} style={style}>
-                {tokens.map((line, i) => (
-                  <div key={i} {...getLineProps({ line })}>
-                    <span className={styles.lineNumber}>{i + 1}</span>
-                    {line.map((token, key) => (
-                      <span key={key} {...getTokenProps({ token })} />
-                    ))}
-                  </div>
-                ))}
+                {tokens.map((line, i) => {
+                  const lineProps = getLineProps({ line })
+                  return (
+                    <div key={i} {...lineProps} className={`${styles.line} ${lineProps.className}`}>
+                      <span className={styles.lineNumber}>{i + 1}</span>
+                      <span className={styles.lineContent}>
+                        {line.map((token, key) => (
+                          <span key={key} {...getTokenProps({ token })} />
+                        ))}
+                      </span>
+                    </div>
+                  )
+                })}
               </pre>
             )}
           </Highlight>

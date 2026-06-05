@@ -5,12 +5,12 @@ import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 /**
  * Renders a single `PendingChangeDetail` produced by `getPendingCompensationChanges`
  * into the user-facing bullet string. Resolves FLSA enum values to their human
- * labels via the Compensation namespace and formats pay/min-wage rates with the
- * shared `useFormatPayRate` helper so the copy matches the form.
+ * labels and formats pay/min-wage rates with the shared `useFormatCompensationRate`
+ * helper so the copy matches the form. All copy resolves from the
+ * `Employee.Management.Compensation` namespace.
  */
 export function usePendingChangeDetailRenderer(employeeFirstName: string | null | undefined) {
-  const { t: tDashboard } = useTranslation('Employee.Dashboard')
-  const { t: tCompensation } = useTranslation('Employee.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
   const formatCompensationRate = useFormatCompensationRate()
   const name = employeeFirstName ?? ''
 
@@ -18,18 +18,18 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
     const interpolation = { interpolation: { escapeValue: false } }
     switch (detail.kind) {
       case 'titleChange':
-        return tDashboard('jobAndPay.compensation.pendingChange.details.titleChange', {
+        return t('card.pendingChange.details.titleChange', {
           title: detail.title,
           ...interpolation,
         })
       case 'payChange':
-        return tDashboard('jobAndPay.compensation.pendingChange.details.payChange', {
+        return t('card.pendingChange.details.payChange', {
           formattedRate: formatCompensationRate(detail.rate, detail.paymentUnit),
           ...interpolation,
         })
       case 'flsaChange':
-        return tDashboard('jobAndPay.compensation.pendingChange.details.flsaChange', {
-          flsaLabel: tCompensation(`flsaStatusLabels.${detail.flsaStatus}`),
+        return t('card.pendingChange.details.flsaChange', {
+          flsaLabel: t(`flsaStatusLabels.${detail.flsaStatus}`),
           ...interpolation,
         })
       case 'newJob': {
@@ -38,7 +38,7 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
           ? formatCompensationRate(detail.rate!, detail.paymentUnit!)
           : null
         if (detail.title && hasRate) {
-          return tDashboard('jobAndPay.compensation.pendingChange.details.newJob', {
+          return t('card.pendingChange.details.newJob', {
             name,
             title: detail.title,
             formattedRate,
@@ -46,40 +46,40 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
           })
         }
         if (hasRate) {
-          return tDashboard('jobAndPay.compensation.pendingChange.details.newJobNoTitle', {
+          return t('card.pendingChange.details.newJobNoTitle', {
             name,
             formattedRate,
             ...interpolation,
           })
         }
         if (detail.title) {
-          return tDashboard('jobAndPay.compensation.pendingChange.details.newJobNoRate', {
+          return t('card.pendingChange.details.newJobNoRate', {
             name,
             title: detail.title,
             ...interpolation,
           })
         }
-        return tDashboard('jobAndPay.compensation.pendingChange.details.newJobMinimal', {
+        return t('card.pendingChange.details.newJobMinimal', {
           name,
           ...interpolation,
         })
       }
       case 'minWageEnabled':
         return detail.wage
-          ? tDashboard('jobAndPay.compensation.pendingChange.details.minWageEnabled', {
+          ? t('card.pendingChange.details.minWageEnabled', {
               formattedWage: formatCompensationRate(Number(detail.wage), 'Hour'),
               ...interpolation,
             })
-          : tDashboard('jobAndPay.compensation.pendingChange.details.minWageEnabledNoRate')
+          : t('card.pendingChange.details.minWageEnabledNoRate')
       case 'minWageDisabled':
-        return tDashboard('jobAndPay.compensation.pendingChange.details.minWageDisabled')
+        return t('card.pendingChange.details.minWageDisabled')
       case 'minWageChanged':
         return detail.wage
-          ? tDashboard('jobAndPay.compensation.pendingChange.details.minWageChanged', {
+          ? t('card.pendingChange.details.minWageChanged', {
               formattedWage: formatCompensationRate(Number(detail.wage), 'Hour'),
               ...interpolation,
             })
-          : tDashboard('jobAndPay.compensation.pendingChange.details.minWageChangedNoRate')
+          : t('card.pendingChange.details.minWageChangedNoRate')
     }
   }
 }

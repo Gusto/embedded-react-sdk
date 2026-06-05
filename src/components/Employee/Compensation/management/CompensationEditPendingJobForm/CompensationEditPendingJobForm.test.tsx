@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { EditPendingCompensation } from './EditPendingCompensation'
+import { CompensationEditPendingJobForm } from './CompensationEditPendingJobForm'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import {
@@ -49,7 +49,7 @@ function makeUpdateCompensationResponse(overrides: Record<string, unknown> = {})
   })
 }
 
-describe('management/EditPendingCompensation', () => {
+describe('management/CompensationEditPendingJobForm', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getMinimumWages)
@@ -62,7 +62,7 @@ describe('management/EditPendingCompensation', () => {
 
   it('prefills form values from the pending compensation', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -83,7 +83,7 @@ describe('management/EditPendingCompensation', () => {
 
   it('prefills the effective date from the pending compensation', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -102,7 +102,7 @@ describe('management/EditPendingCompensation', () => {
 
   it('renders exactly one Job title input (steady-state edit; title is owned by the comp form)', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -139,7 +139,7 @@ describe('management/EditPendingCompensation', () => {
     const onEvent = vi.fn()
 
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -172,12 +172,8 @@ describe('management/EditPendingCompensation', () => {
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
         expect.objectContaining({ uuid: 'compensation-future-uuid' }),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_DONE,
-        expect.anything(),
       )
     })
   })
@@ -197,7 +193,7 @@ describe('management/EditPendingCompensation', () => {
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -234,7 +230,7 @@ describe('management/EditPendingCompensation', () => {
     const onEvent = vi.fn()
 
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -253,7 +249,7 @@ describe('management/EditPendingCompensation', () => {
 
     expect(updateCompensationResolver).not.toHaveBeenCalled()
     expect(onEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED,
       expect.anything(),
     )
   })
@@ -279,7 +275,7 @@ describe('management/EditPendingCompensation', () => {
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
@@ -306,7 +302,7 @@ describe('management/EditPendingCompensation', () => {
   })
 })
 
-describe('management/EditPendingCompensation — primary new job (isNewJob + isPrimaryJob)', () => {
+describe('management/CompensationEditPendingJobForm — primary new job (isNewJob + isPrimaryJob)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getMinimumWages)
@@ -319,7 +315,7 @@ describe('management/EditPendingCompensation — primary new job (isNewJob + isP
 
   it('shows Hire date field and hides Effective date field', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-uuid"
@@ -337,7 +333,7 @@ describe('management/EditPendingCompensation — primary new job (isNewJob + isP
 
   it('prefills the Hire date field from the job hire_date', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-uuid"
@@ -376,7 +372,7 @@ describe('management/EditPendingCompensation — primary new job (isNewJob + isP
     const user = userEvent.setup()
 
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-uuid"
@@ -399,7 +395,7 @@ describe('management/EditPendingCompensation — primary new job (isNewJob + isP
   })
 })
 
-describe('management/EditPendingCompensation — secondary new job (isNewJob, not primary)', () => {
+describe('management/CompensationEditPendingJobForm — secondary new job (isNewJob, not primary)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getMinimumWages)
@@ -412,7 +408,7 @@ describe('management/EditPendingCompensation — secondary new job (isNewJob, no
 
   it('shows Effective date and hides Hire date', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="secondary-job-uuid"
         compensationId="secondary-compensation-uuid"
@@ -430,7 +426,7 @@ describe('management/EditPendingCompensation — secondary new job (isNewJob, no
 
   it('prefills the Job title from the loaded compensation and the wage from the pending compensation', async () => {
     renderWithProviders(
-      <EditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId="employee-uuid"
         jobId="secondary-job-uuid"
         compensationId="secondary-compensation-uuid"
