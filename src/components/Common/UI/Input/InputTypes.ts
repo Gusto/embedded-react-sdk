@@ -1,5 +1,14 @@
 import type { InputHTMLAttributes, ReactNode, Ref } from 'react'
 
+/**
+ * Base text-input primitive used internally by `TextInput` and `NumberInput`.
+ *
+ * @remarks
+ * Higher-level field components like TextInput and NumberInput reuse the
+ * `adornmentStart` and `adornmentEnd` slots from this interface.
+ *
+ * @public
+ */
 export interface InputProps extends Pick<
   InputHTMLAttributes<HTMLInputElement>,
   | 'className'
@@ -35,13 +44,15 @@ export interface InputProps extends Pick<
 
   /**
    * Whether the input is disabled
+   * @defaultValue `false`
    */
   isDisabled?: boolean
 }
 
 /**
- * Default prop values for Input component.
- * These are used by the component adapter to automatically provide defaults.
+ * Default prop values for the Input primitive, applied through the component adapter.
+ *
+ * @internal
  */
 export const InputDefaults = {
   isDisabled: false,

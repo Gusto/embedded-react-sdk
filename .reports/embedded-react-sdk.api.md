@@ -145,9 +145,7 @@ export { AfterSuccessContext }
 
 export { AfterSuccessHook }
 
-// Warning: (ae-missing-release-tag) "AlertProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface AlertProps {
     action?: ReactNode;
     children?: ReactNode;
@@ -216,9 +214,7 @@ export interface ApiProviderProps {
 // @public (undocumented)
 function AssignSignatory(props: AssignSignatoryProps): JSX;
 
-// Warning: (ae-missing-release-tag) "BadgeProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'className' | 'id' | 'aria-label'> {
     children: ReactNode;
     dismissAriaLabel?: string;
@@ -311,9 +307,7 @@ export interface BankFormSubmitOptions {
     employeeId?: string;
 }
 
-// Warning: (ae-missing-release-tag) "BannerProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
     children: ReactNode;
     status?: 'warning' | 'error';
@@ -360,39 +354,24 @@ export { BeforeRequestContext }
 
 export { BeforeRequestHook }
 
-// Warning: (ae-missing-release-tag) "BoxHeaderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BoxHeaderProps {
-    // (undocumented)
     action?: ReactNode;
-    // (undocumented)
     description?: ReactNode;
-    // (undocumented)
     headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    // (undocumented)
     title: ReactNode;
 }
 
-// Warning: (ae-missing-release-tag) "BoxProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BoxProps {
-    // (undocumented)
     children: ReactNode;
-    // (undocumented)
     className?: string;
-    // (undocumented)
     footer?: ReactNode;
-    // (undocumented)
     header?: ReactNode;
-    // (undocumented)
     withPadding?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "BreadcrumbsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BreadcrumbsProps {
     'aria-label'?: string;
     // Warning: (ae-forgotten-export) The symbol "Breadcrumb" needs to be exported by the entry point index.d.ts
@@ -403,16 +382,12 @@ export interface BreadcrumbsProps {
     onClick?: (id: string) => void;
 }
 
-// Warning: (ae-missing-release-tag) "ButtonIconProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ButtonIconProps = ButtonProps & {
     'aria-label': string;
 };
 
-// Warning: (ae-missing-release-tag) "ButtonProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'name' | 'id' | 'className' | 'type' | 'onClick' | 'onKeyDown' | 'onKeyUp' | 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'form' | 'title' | 'tabIndex'> {
     buttonRef?: Ref<HTMLButtonElement>;
     children?: ReactNode;
@@ -424,9 +399,7 @@ export interface ButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement
     variant?: 'primary' | 'secondary' | 'tertiary' | 'error';
 }
 
-// Warning: (ae-missing-release-tag) "CalendarPreviewProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type CalendarPreviewProps = {
     highlightDates?: Array<{
         date: Date;
@@ -440,9 +413,7 @@ export type CalendarPreviewProps = {
     };
 };
 
-// Warning: (ae-missing-release-tag) "CardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface CardProps {
     action?: ReactNode;
     children: ReactNode;
@@ -455,9 +426,7 @@ export interface CardProps {
 // @public (undocumented)
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "CheckboxGroupOption" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface CheckboxGroupOption {
     description?: React.ReactNode;
     isDisabled?: boolean;
@@ -466,9 +435,8 @@ export interface CheckboxGroupOption {
 }
 
 // Warning: (ae-forgotten-export) The symbol "SharedFieldLayoutProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "CheckboxGroupProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
     inputRef?: Ref<HTMLInputElement>;
     isDisabled?: boolean;
@@ -492,9 +460,8 @@ export interface CheckboxHookFieldProps<TErrorCode extends string = never> exten
 }
 
 // Warning: (ae-forgotten-export) The symbol "SharedHorizontalFieldLayoutProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "CheckboxProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className'> {
     inputRef?: Ref<HTMLInputElement>;
     isDisabled?: boolean;
@@ -607,17 +574,13 @@ export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressR
 // @internal (undocumented)
 export function collectErrors(queries: QueryWithError[], submitError: SDKError | null): SDKError[];
 
-// Warning: (ae-missing-release-tag) "ComboBoxOption" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ComboBoxOption {
     label: string;
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "ComboBoxProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
     allowsCustomValue?: boolean;
     inputRef?: Ref<HTMLInputElement>;
@@ -1023,9 +986,12 @@ export const componentEvents: {
     readonly EMPLOYEE_FEDERAL_TAXES_EDIT: "employee/federalTaxes/edit";
     readonly EMPLOYEE_FEDERAL_TAXES_UPDATED: "employee/federalTaxes/updated";
     readonly EMPLOYEE_FEDERAL_TAXES_DONE: "employee/federalTaxes/done";
-    readonly EMPLOYEE_STATE_TAXES_EDIT: "employee/stateTaxes/edit";
     readonly EMPLOYEE_STATE_TAXES_UPDATED: "employee/stateTaxes/updated";
     readonly EMPLOYEE_STATE_TAXES_DONE: "employee/stateTaxes/done";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "employee/management/stateTaxes/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "employee/management/stateTaxes/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED: "employee/management/stateTaxes/updated";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: "employee/management/stateTaxes/alertDismissed";
     readonly EMPLOYEE_TAXES_DONE: "employee/taxes/done";
     readonly EMPLOYEE_SPLIT_PAYCHECK: "employee/bankAccount/split";
     readonly EMPLOYEE_JOB_CREATED: "employee/job/created";
@@ -1071,97 +1037,56 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED: "employee/management/deductions/editForm/updated";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED: "employee/management/deductions/editForm/cancelled";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: "employee/management/deductions/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED: "employee/management/federalTaxes/card/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED: "employee/management/federalTaxes/editForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED: "employee/management/federalTaxes/editForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED: "employee/management/federalTaxes/alertDismissed";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
     readonly BREADCRUMB_NAVIGATE: "breadcrumb/navigate";
 };
 
-// Warning: (ae-missing-release-tag) "ComponentsContextType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ComponentsContextType {
-    // (undocumented)
     Alert: (props: AlertProps) => JSX.Element | null;
-    // (undocumented)
     Badge: (props: BadgeProps) => JSX.Element | null;
-    // (undocumented)
     Banner: (props: BannerProps) => JSX.Element | null;
-    // (undocumented)
     Box: (props: BoxProps) => JSX.Element | null;
-    // (undocumented)
     BoxHeader: (props: BoxHeaderProps) => JSX.Element | null;
-    // (undocumented)
     Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null;
-    // (undocumented)
     Button: (props: ButtonProps) => JSX.Element | null;
-    // (undocumented)
     ButtonIcon: (props: ButtonIconProps) => JSX.Element | null;
-    // (undocumented)
     CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null;
-    // (undocumented)
     Card: (props: CardProps) => JSX.Element | null;
-    // (undocumented)
     Checkbox: (props: CheckboxProps) => JSX.Element | null;
-    // (undocumented)
     CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null;
-    // (undocumented)
     ComboBox: (props: ComboBoxProps) => JSX.Element | null;
-    // (undocumented)
     DatePicker: (props: DatePickerProps) => JSX.Element | null;
-    // Warning: (ae-forgotten-export) The symbol "DateRangePickerProps" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     DateRangePicker: (props: DateRangePickerProps) => JSX.Element | null;
-    // (undocumented)
     DescriptionList: (props: DescriptionListProps) => JSX.Element | null;
-    // (undocumented)
     Dialog: (props: DialogProps) => JSX.Element | null;
-    // (undocumented)
     FileInput: (props: FileInputProps) => JSX.Element | null;
-    // (undocumented)
     Heading: (props: HeadingProps) => JSX.Element | null;
-    // (undocumented)
     Link: (props: LinkProps) => JSX.Element | null;
-    // (undocumented)
     LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null;
-    // (undocumented)
     Menu: (props: MenuProps) => JSX.Element | null;
-    // (undocumented)
     Modal: (props: ModalProps) => JSX.Element | null;
-    // Warning: (ae-forgotten-export) The symbol "MultiSelectComboBoxProps" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     MultiSelectComboBox: (props: MultiSelectComboBoxProps) => JSX.Element | null;
-    // (undocumented)
     NumberInput: (props: NumberInputProps) => JSX.Element | null;
-    // (undocumented)
     OrderedList: (props: OrderedListProps) => JSX.Element | null;
-    // (undocumented)
     PaginationControl?: (props: PaginationControlProps) => JSX.Element | null;
-    // (undocumented)
     PayrollLoading?: (props: PayrollLoadingProps) => JSX.Element | null;
-    // (undocumented)
     ProgressBar: (props: ProgressBarProps) => JSX.Element | null;
-    // (undocumented)
     Radio: (props: RadioProps) => JSX.Element | null;
-    // (undocumented)
     RadioGroup: (props: RadioGroupProps) => JSX.Element | null;
-    // (undocumented)
     Select: (props: SelectProps) => JSX.Element | null;
-    // (undocumented)
     Switch: (props: SwitchProps) => JSX.Element | null;
-    // (undocumented)
     Table: (props: TableProps) => JSX.Element | null;
-    // (undocumented)
     Tabs: (props: TabsProps) => JSX.Element | null;
-    // (undocumented)
     Text: (props: TextProps) => JSX.Element | null;
-    // (undocumented)
     TextArea: (props: TextAreaProps) => JSX.Element | null;
-    // (undocumented)
     TextInput: (props: TextInputProps) => JSX.Element | null;
-    // (undocumented)
     UnorderedList: (props: UnorderedListProps) => JSX.Element | null;
 }
 
@@ -1593,9 +1518,7 @@ export interface DatePickerHookFieldProps<TErrorCode extends string = never> ext
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "DatePickerProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DatePickerProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name'> {
     inputRef?: Ref<HTMLInputElement>;
     isDateDisabled?: (date: Date) => boolean;
@@ -1609,6 +1532,24 @@ export interface DatePickerProps extends SharedFieldLayoutProps, Pick<InputHTMLA
     placeholder?: string;
     portalContainer?: HTMLElement;
     value?: Date | null;
+}
+
+// @public
+export interface DateRange {
+    end: Date;
+    start: Date;
+}
+
+// @public
+export interface DateRangePickerProps {
+    endDateLabel: string;
+    label: string;
+    maxValue?: Date;
+    minValue?: Date;
+    onChange: (range: DateRange | null) => void;
+    shouldVisuallyHideLabel?: boolean;
+    startDateLabel: string;
+    value: DateRange | null;
 }
 
 // Warning: (ae-missing-release-tag) "DateStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1799,25 +1740,16 @@ export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProp
 // @public (undocumented)
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "DescriptionListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DescriptionListProps {
-    // (undocumented)
     className?: string;
     // Warning: (ae-forgotten-export) The symbol "DescriptionListItem" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     items: DescriptionListItem[];
-    // (undocumented)
     layout?: 'stacked' | 'horizontal';
-    // (undocumented)
     showSeparators?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "DialogProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DialogProps {
     children?: ReactNode;
     closeActionLabel: string;
@@ -2055,9 +1987,17 @@ declare namespace EmployeeManagement {
         WorkAddressCardProps,
         WorkAddressEditFormProps,
         FederalTaxes_2 as FederalTaxes,
+        FederalTaxesCard,
+        FederalTaxesEditForm,
         FederalTaxesProps_2 as FederalTaxesProps,
+        FederalTaxesCardProps,
+        FederalTaxesEditFormProps,
         StateTaxes_2 as StateTaxes,
+        StateTaxesCard,
+        StateTaxesEditForm,
         StateTaxesProps_2 as StateTaxesProps,
+        StateTaxesCardProps,
+        StateTaxesEditFormProps,
         Profile_2 as Profile,
         ProfileCard,
         ProfileEditForm,
@@ -2213,12 +2153,44 @@ function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX;
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_2(input: FederalTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function FederalTaxesCard(input: FederalTaxesCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface FederalTaxesCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "FederalTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function FederalTaxesEditForm(input: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+    // (undocumented)
+    defaultValues?: Partial<FederalTaxesFormData>;
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // Warning: (ae-missing-release-tag) "FederalTaxesErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2299,13 +2271,11 @@ export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.FederalTaxes'> {
-    // (undocumented)
-    defaultValues?: Partial<FederalTaxesFormData>;
+interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
-    onEvent: BaseComponentInterface['onEvent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2349,9 +2319,7 @@ export type FieldsMetadata = {
     [key: string]: FieldMetadata | FieldMetadataWithOptions;
 };
 
-// Warning: (ae-missing-release-tag) "FileInputProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisuallyHideLabel'> {
     'aria-describedby'?: string;
     accept?: string[];
@@ -2511,9 +2479,7 @@ export interface GustoProviderProps {
     theme?: GustoSDKTheme;
 }
 
-// Warning: (ae-missing-release-tag) "HeadingProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, 'className' | 'id'> {
     as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
     children?: ReactNode;
@@ -2868,9 +2834,7 @@ function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX;
 // @public (undocumented)
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
-// Warning: (ae-missing-release-tag) "LinkProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type LinkProps = Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 /**
 * URL that the link points to
@@ -2923,9 +2887,7 @@ export type LinkProps = Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
     children?: ReactNode;
 };
 
-// Warning: (ae-missing-release-tag) "LoadingSpinnerProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
     size?: 'lg' | 'sm';
     style?: 'inline' | 'block';
@@ -2960,9 +2922,8 @@ function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseCompone
 export const MAX_PREPARERS = 4;
 
 // Warning: (ae-forgotten-export) The symbol "DataAttributes" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "MenuItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export interface MenuItem extends DataAttributes {
     href?: string;
     icon?: ReactNode;
@@ -2971,9 +2932,7 @@ export interface MenuItem extends DataAttributes {
     onClick: () => void;
 }
 
-// Warning: (ae-missing-release-tag) "MenuProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface MenuProps extends DataAttributes {
     'aria-label': string;
     isOpen?: boolean;
@@ -3001,9 +2960,7 @@ export type MixedErrorSource = QueryWithRefetch | {
     errorHandling: HookErrorHandling;
 };
 
-// Warning: (ae-missing-release-tag) "ModalProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ModalProps {
     children?: ReactNode;
     containerRef?: React.RefObject<HTMLDivElement | null>;
@@ -3011,6 +2968,25 @@ export interface ModalProps {
     isOpen?: boolean;
     onClose?: () => void;
     shouldCloseOnBackdropClick?: boolean;
+}
+
+// @public
+export interface MultiSelectComboBoxOption {
+    label: string;
+    value: string;
+}
+
+// @public
+export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
+    inputRef?: Ref<HTMLInputElement>;
+    isDisabled?: boolean;
+    isInvalid?: boolean;
+    isLoading?: boolean;
+    label: string;
+    onBlur?: () => void;
+    onChange?: (values: string[]) => void;
+    options: MultiSelectComboBoxOption[];
+    value?: string[];
 }
 
 // Warning: (ae-missing-release-tag) "NameFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3051,9 +3027,7 @@ export interface NumberInputHookFieldProps<TErrorCode extends string = never> ex
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "NumberInputProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'min' | 'max' | 'name' | 'id' | 'placeholder' | 'className'> {
     adornmentEnd?: InputProps['adornmentEnd'];
     // Warning: (ae-forgotten-export) The symbol "InputProps" needs to be exported by the entry point index.d.ts
@@ -3328,9 +3302,8 @@ function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterf
 function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "BaseListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "OrderedListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type OrderedListProps = BaseListProps;
 
 // Warning: (ae-missing-release-tag) "OrderNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3343,9 +3316,7 @@ export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<Child
 // @public (undocumented)
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "PaginationControlProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PaginationControlProps = {
     handleFirstPage: () => void;
     handlePreviousPage: () => void;
@@ -3359,8 +3330,6 @@ export type PaginationControlProps = {
     isFetching?: boolean;
 };
 
-// Warning: (ae-missing-release-tag) "PaginationItemsPerPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50;
 
@@ -3697,9 +3666,7 @@ function PayrollLanding(props: PayrollLandingProps): JSX;
 // @public
 function PayrollList(props: PayrollListBlockProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PayrollLoadingProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface PayrollLoadingProps {
     // (undocumented)
     description?: ReactNode;
@@ -3994,9 +3961,7 @@ interface ProfileProps_2 extends CommonComponentInterface<'Employee.Management.P
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "ProgressBarProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ProgressBarProps {
     className?: string;
     cta?: React.ComponentType | null;
@@ -4019,9 +3984,7 @@ export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEn
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "RadioGroupOption" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface RadioGroupOption {
     description?: React.ReactNode;
     isDisabled?: boolean;
@@ -4029,9 +3992,7 @@ export interface RadioGroupOption {
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "RadioGroupProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface RadioGroupProps extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
     defaultValue?: string;
     inputRef?: Ref<HTMLInputElement>;
@@ -4042,9 +4003,7 @@ export interface RadioGroupProps extends SharedFieldLayoutProps, Pick<FieldsetHT
     value?: string | null;
 }
 
-// Warning: (ae-missing-release-tag) "RadioProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface RadioProps extends SharedHorizontalFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className' | 'onBlur'> {
     inputRef?: Ref<HTMLInputElement>;
     isDisabled?: boolean;
@@ -4167,17 +4126,13 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "SelectOption" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SelectOption {
     label: string;
     value: string;
 }
 
-// Warning: (ae-missing-release-tag) "SelectProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SelectProps extends SharedFieldLayoutProps, Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name' | 'className'> {
     inputRef?: Ref<HTMLButtonElement>;
     isDisabled?: boolean;
@@ -4524,12 +4479,40 @@ function StateTaxes(input: StateTaxesProps): JSX;
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_2(input: StateTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function StateTaxesCard(input: StateTaxesCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface StateTaxesCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "StateTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function StateTaxesEditForm(input: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Management.StateTaxes'>, 'children'> & {
+    employeeId: string;
+    onEvent: BaseComponentInterface['onEvent'];
+};
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4546,10 +4529,12 @@ function StateTaxesList(props: StateTaxesListProps): JSX;
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-type StateTaxesProps_2 = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+    // (undocumented)
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
-};
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4654,9 +4639,7 @@ export interface SwitchHookFieldProps<TErrorCode extends string = never> extends
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "SwitchProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SwitchProps extends SharedHorizontalFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id'>, Pick<AriaAttributes, 'aria-controls'> {
     className?: string;
     inputRef?: Ref<HTMLInputElement>;
@@ -4668,17 +4651,13 @@ export interface SwitchProps extends SharedHorizontalFieldLayoutProps, Pick<Inpu
     value?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "TableData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TableData {
     content: ReactNode;
     key: string;
 }
 
-// Warning: (ae-missing-release-tag) "TableProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TableProps extends Pick<TableHTMLAttributes<HTMLTableElement>, 'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'> {
     emptyState?: ReactNode;
     footer?: TableData[];
@@ -4688,16 +4667,12 @@ export interface TableProps extends Pick<TableHTMLAttributes<HTMLTableElement>, 
     rows: TableRow[];
 }
 
-// Warning: (ae-missing-release-tag) "TableRow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TableRow {
     data: TableData[];
     key: string;
 }
 
-// Warning: (ae-missing-release-tag) "TabsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface TabsProps {
     'aria-label'?: string;
@@ -4764,15 +4739,14 @@ interface TerminationSummaryProps extends BaseComponentInterface<'Employee.Termi
     payrollUuid?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TextAreaProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export interface TextAreaProps extends SharedFieldLayoutProps, Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'name' | 'id' | 'placeholder' | 'className' | 'rows' | 'cols'>, Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'aria-describedby'> {
+// @public
+export interface TextAreaProps extends SharedFieldLayoutProps, Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'name' | 'id' | 'placeholder' | 'className' | 'cols'>, Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'aria-describedby'> {
     inputRef?: Ref<HTMLTextAreaElement>;
     isDisabled?: boolean;
     isInvalid?: boolean;
     onBlur?: () => void;
     onChange?: (value: string) => void;
+    rows?: number;
     value?: string;
 }
 
@@ -4791,9 +4765,7 @@ export interface TextInputHookFieldProps<TErrorCode extends string = never, TOpt
     validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>;
 }
 
-// Warning: (ae-missing-release-tag) "TextInputProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TextInputProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'placeholder' | 'className' | 'type' | 'min' | 'max' | 'maxLength'>, Pick<InputHTMLAttributes<HTMLInputElement>, 'aria-describedby' | 'aria-labelledby'> {
     adornmentEnd?: InputProps['adornmentEnd'];
     adornmentStart?: InputProps['adornmentStart'];
@@ -4805,9 +4777,7 @@ export interface TextInputProps extends SharedFieldLayoutProps, Pick<InputHTMLAt
     value?: string;
 }
 
-// Warning: (ae-missing-release-tag) "TextProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'className' | 'id'> {
     as?: 'p' | 'span' | 'div' | 'pre';
     children?: ReactNode;
@@ -4989,9 +4959,7 @@ export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldPr
 // @public (undocumented)
 export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMethodFormRequiredValidation, PaymentMethodType>>;
 
-// Warning: (ae-missing-release-tag) "UnorderedListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UnorderedListProps = BaseListProps;
 
 // Warning: (ae-missing-release-tag) "useBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

@@ -1,6 +1,12 @@
 import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
+/**
+ * Props your `DatePicker` implementation must accept from the component adapter.
+ * Renders a form field wrapping an `<input type="date" />` with a calendar picker popover, optional min/max bounds, and per-date disabling.
+ *
+ * @public
+ */
 export interface DatePickerProps
   extends
     SharedFieldLayoutProps,

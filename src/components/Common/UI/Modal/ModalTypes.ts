@@ -1,8 +1,16 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Props your `Modal` implementation must accept from the component adapter.
+ * Renders a modal overlay with body and footer content.
+ *
+ * @public
+ */
 export interface ModalProps {
   /**
    * Controls whether the modal is open or closed
+   *
+   * @defaultValue `false`
    */
   isOpen?: boolean
   /**
@@ -11,6 +19,8 @@ export interface ModalProps {
   onClose?: () => void
   /**
    * Whether clicking the backdrop should close the modal
+   *
+   * @defaultValue `false`
    */
   shouldCloseOnBackdropClick?: boolean
   /**
@@ -28,7 +38,9 @@ export interface ModalProps {
 }
 
 /**
- * Default prop values for Modal component.
+ * Default prop values for the {@link Modal} component.
+ *
+ * @internal
  */
 export const ModalDefaults = {
   isOpen: false,

@@ -6,6 +6,17 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Modal dialog with a title, body, primary action, and close action.
+ *
+ * @remarks
+ * Renders through the ComponentsContext adapter, so partners can override the
+ * underlying `Modal` and `Button` primitives with their own design system.
+ *
+ * @param rawProps - Dialog configuration including labels, open state, and action callbacks.
+ * @returns The rendered dialog element.
+ * @internal
+ */
 export function Dialog(rawProps: DialogProps) {
   const resolvedProps = applyMissingDefaults(rawProps, DialogDefaults)
   const {

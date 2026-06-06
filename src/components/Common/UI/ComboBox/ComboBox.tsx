@@ -20,6 +20,13 @@ import { useTheme } from '@/contexts/ThemeProvider'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 
+/**
+ * Combines a text input with a selectable dropdown list, supporting type-ahead filtering and optional free-form entry.
+ *
+ * @param props - The {@link ComboBoxProps} controlling the field's label, options, and selected value.
+ * @returns The rendered combo box field.
+ * @internal
+ */
 export const ComboBox = ({
   allowsCustomValue,
   className,

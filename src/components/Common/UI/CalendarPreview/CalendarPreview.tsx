@@ -16,6 +16,13 @@ import styles from './CalendarPreview.module.scss'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { Flex } from '@/components/Common/Flex'
 
+/**
+ * Renders a read-only calendar showing a date range with optional highlighted dates and an accompanying legend.
+ *
+ * @param props - The {@link CalendarPreviewProps} controlling the displayed range and highlighted dates.
+ * @returns The rendered calendar preview element.
+ * @internal
+ */
 export const CalendarPreview = ({ dateRange, highlightDates }: CalendarPreviewProps) => {
   const highlightMap = useMemo(() => {
     if (!highlightDates) return new Map()

@@ -13,6 +13,13 @@ import { TableDefaults } from './TableTypes'
 import styles from './Table.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
+/**
+ * Data table with headers, rows, optional footer, and empty state.
+ *
+ * @param rawProps - Table configuration; see {@link TableProps}.
+ * @returns The rendered table.
+ * @public
+ */
 export function Table(rawProps: TableProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
   const { className, headers, rows, footer, emptyState, isWithinBox, hasCheckboxColumn, ...props } =

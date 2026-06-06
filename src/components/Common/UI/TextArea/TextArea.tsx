@@ -9,6 +9,13 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 
+/**
+ * Multi-line text input with label, description, and error messaging.
+ *
+ * @param rawProps - TextArea configuration; see {@link TextAreaProps}.
+ * @returns The rendered textarea field.
+ * @public
+ */
 export function TextArea(rawProps: TextAreaProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TextAreaDefaults)
   const {

@@ -6,6 +6,13 @@ import { LoadingSpinnerDefaults } from './LoadingSpinnerTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import SpinnerIcon from '@/assets/icons/spinner_large.svg?react'
 
+/**
+ * Indeterminate loading indicator with a built-in `role="status"` and accessible label.
+ *
+ * @param rawProps - See {@link LoadingSpinnerProps}.
+ * @returns The rendered spinner element.
+ * @internal
+ */
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = rawProps => {
   const resolvedProps = applyMissingDefaults(rawProps, LoadingSpinnerDefaults)
   const { className, size, style, ...otherProps } = resolvedProps

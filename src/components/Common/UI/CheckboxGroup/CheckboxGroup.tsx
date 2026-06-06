@@ -83,6 +83,13 @@ function ReactAriaCheckboxWrapper(props: Omit<ReactAriaCheckboxProps, 'groupStat
   return groupState ? <ReactAriaCheckbox groupState={groupState} {...props} /> : null
 }
 
+/**
+ * Renders a group of related checkboxes that share a single label, description, and error state.
+ *
+ * @param rawProps - The {@link CheckboxGroupProps} controlling the group's label, options, and selected values.
+ * @returns The rendered checkbox group as a fieldset.
+ * @internal
+ */
 export function CheckboxGroup(rawProps: CheckboxGroupProps) {
   const resolvedProps = applyMissingDefaults(rawProps, CheckboxGroupDefaults)
   const {

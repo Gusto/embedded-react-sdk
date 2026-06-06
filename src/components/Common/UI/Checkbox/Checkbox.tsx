@@ -8,6 +8,13 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 
+/**
+ * Renders a labeled checkbox input with optional description and error message.
+ *
+ * @param rawProps - The {@link CheckboxProps} controlling the checked state, label, and validation messaging.
+ * @returns The rendered checkbox element.
+ * @internal
+ */
 export const Checkbox = (rawProps: CheckboxProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, CheckboxDefaults)
   const {

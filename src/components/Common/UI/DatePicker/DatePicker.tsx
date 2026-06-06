@@ -53,6 +53,13 @@ function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   return date
 }
 
+/**
+ * Renders a date input with an attached calendar popover for selecting a single date.
+ *
+ * @param props - The {@link DatePickerProps} controlling the field's label, value, and date constraints.
+ * @returns The rendered date picker field.
+ * @internal
+ */
 export const DatePicker = ({
   className,
   description,

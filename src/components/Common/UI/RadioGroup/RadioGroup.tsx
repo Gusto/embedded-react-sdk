@@ -79,6 +79,13 @@ function ReactAriaRadioWrapper(props: Omit<ReactAriaRadioProps, 'groupState'>) {
   return groupState ? <ReactAriaRadio groupState={groupState} {...props} /> : null
 }
 
+/**
+ * Renders a group of mutually exclusive radio options that share a single label, description, and error state.
+ *
+ * @param rawProps - The {@link RadioGroupProps} controlling the group's label, options, and selected value.
+ * @returns The rendered radio group as a fieldset.
+ * @internal
+ */
 export function RadioGroup(rawProps: RadioGroupProps) {
   const resolvedProps = applyMissingDefaults(rawProps, RadioGroupDefaults)
   const {

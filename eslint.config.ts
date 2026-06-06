@@ -189,8 +189,12 @@ export default [
     files: [
       'src/components/Base/**/*.{ts,tsx}',
       'src/components/Common/Fields/**/*.{ts,tsx}',
+      'src/components/Common/UI/**/*.{ts,tsx}',
+      'src/components/Common/PaginationControl/**',
+      'src/components/Common/PayrollLoading/**',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
+      'src/contexts/ComponentAdapter/**/*.{ts,tsx}',
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
       'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
       'src/contexts/ObservabilityProvider/**/*.{ts,tsx}',

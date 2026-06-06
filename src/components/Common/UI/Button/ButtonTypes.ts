@@ -1,5 +1,11 @@
 import type { Ref, ButtonHTMLAttributes, ReactNode, FocusEvent } from 'react'
 
+/**
+ * Props your `Button` implementation must accept from the component adapter.
+ * Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error variants, a loading state, and an optional leading icon.
+ *
+ * @public
+ */
 export interface ButtonProps extends Pick<
   ButtonHTMLAttributes<HTMLButtonElement>,
   | 'name'
@@ -22,14 +28,20 @@ export interface ButtonProps extends Pick<
   buttonRef?: Ref<HTMLButtonElement>
   /**
    * Visual style variant of the button
+   *
+   * @defaultValue `'primary'`
    */
   variant?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /**
    * Shows a loading spinner and disables the button
+   *
+   * @defaultValue `false`
    */
   isLoading?: boolean
   /**
    * Disables the button and prevents interaction
+   *
+   * @defaultValue `false`
    */
   isDisabled?: boolean
   /**
@@ -50,6 +62,12 @@ export interface ButtonProps extends Pick<
   onFocus?: (e: FocusEvent) => void
 }
 
+/**
+ * Props your `ButtonIcon` implementation must accept from the component adapter.
+ * Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
+ *
+ * @public
+ */
 export type ButtonIconProps = ButtonProps & {
   /**
    * Required aria-label for icon buttons to ensure accessibility
@@ -60,6 +78,8 @@ export type ButtonIconProps = ButtonProps & {
 /**
  * Default prop values for Button component.
  * These are used by the component adapter to automatically provide defaults.
+ *
+ * @internal
  */
 export const ButtonDefaults = {
   variant: 'primary',
@@ -69,6 +89,8 @@ export const ButtonDefaults = {
 
 /**
  * Default prop values for ButtonIcon component.
+ *
+ * @internal
  */
 export const ButtonIconDefaults = {
   variant: 'tertiary',

@@ -3,11 +3,13 @@ import { useMemo } from 'react'
 import type { ComponentsContextType } from './useComponentContext'
 import { ComponentsContext } from './useComponentContext'
 
+/** @internal */
 interface ComponentsProviderProps {
   children: React.ReactNode
   value: ComponentsContextType | undefined
 }
 
+/** @internal */
 export const ComponentsProvider = ({ children, value }: ComponentsProviderProps) => {
   const contextValue = useMemo(() => {
     return value

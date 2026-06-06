@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 
 /**
- * Individual tab configuration
+ * Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
+ *
+ * @public
  */
 export interface TabProps {
   /**
@@ -23,14 +25,10 @@ export interface TabProps {
 }
 
 /**
- * Props for the Tabs component - provides accessible tab navigation (controlled only)
+ * Props your `Tabs` implementation must accept from the component adapter.
+ * Renders tabbed navigation with associated content panels.
  *
- * Responsively adapts to container size:
- * - Below 640px (small breakpoint): renders as a dropdown select for mobile devices
- * - At or above 640px: renders as horizontal tabs for desktop views
- *
- * This adaptive behavior ensures WCAG 2.2 compliance by avoiding horizontal scrolling
- * without positional meaning, while maintaining a familiar tab interface on larger screens.
+ * @public
  */
 export interface TabsProps {
   /**

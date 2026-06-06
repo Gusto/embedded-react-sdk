@@ -1,6 +1,12 @@
 import type { AriaAttributes, InputHTMLAttributes, Ref } from 'react'
 import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
+/**
+ * Props your `Switch` implementation must accept from the component adapter.
+ * Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean on/off toggle.
+ *
+ * @public
+ */
 export interface SwitchProps
   extends
     SharedHorizontalFieldLayoutProps,
@@ -24,10 +30,14 @@ export interface SwitchProps
   inputRef?: Ref<HTMLInputElement>
   /**
    * Indicates that the field has an error
+   *
+   * @defaultValue `false`
    */
   isInvalid?: boolean
   /**
    * Disables the switch and prevents interaction
+   *
+   * @defaultValue `false`
    */
   isDisabled?: boolean
   /**
@@ -41,7 +51,9 @@ export interface SwitchProps
 }
 
 /**
- * Default prop values for Switch component.
+ * Default prop values for the Switch component.
+ *
+ * @internal
  */
 export const SwitchDefaults = {
   isInvalid: false,

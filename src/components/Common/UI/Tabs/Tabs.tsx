@@ -12,6 +12,18 @@ import styles from './Tabs.module.scss'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Accessible controlled tab navigation that responsively adapts to container width.
+ *
+ * @remarks
+ * At or above the small breakpoint (640px) the component renders horizontal tabs.
+ * Below that breakpoint it falls back to a dropdown select to avoid horizontal
+ * scrolling without positional meaning.
+ *
+ * @param props - Tabs configuration; see {@link TabsProps}.
+ * @returns The rendered tabs with the selected panel.
+ * @public
+ */
 export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaProps }: TabsProps) {
   const { t } = useTranslation('common')
   const { Select } = useComponentContext()

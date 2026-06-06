@@ -18,6 +18,8 @@
 - [ComboBoxProps](#comboboxprops)
   - [ComboBoxOption](#comboboxoption)
 - [DatePickerProps](#datepickerprops)
+- [DateRangePickerProps](#daterangepickerprops)
+  - [DateRange](#daterange)
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
 - [DialogProps](#dialogprops)
@@ -28,6 +30,8 @@
 - [MenuProps](#menuprops)
   - [MenuItem](#menuitem)
 - [ModalProps](#modalprops)
+- [MultiSelectComboBoxProps](#multiselectcomboboxprops)
+  - [MultiSelectComboBoxOption](#multiselectcomboboxoption)
 - [NumberInputProps](#numberinputprops)
 - [OrderedListProps](#orderedlistprops)
 - [PaginationControlProps](#paginationcontrolprops)
@@ -99,22 +103,22 @@
 
 ## BoxHeaderProps
 
-| Prop             | Type                                           | Required | Description |
-| ---------------- | ---------------------------------------------- | -------- | ----------- |
-| **title**        | `React.ReactNode`                              | Yes      | -           |
-| **description**  | `React.ReactNode`                              | No       | -           |
-| **action**       | `React.ReactNode`                              | No       | -           |
-| **headingLevel** | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | No       | -           |
+| Prop             | Type                                           | Required | Description                                                                 |
+| ---------------- | ---------------------------------------------- | -------- | --------------------------------------------------------------------------- |
+| **title**        | `React.ReactNode`                              | Yes      | Title content rendered as the heading.                                      |
+| **description**  | `React.ReactNode`                              | No       | Optional supporting description rendered below the title.                   |
+| **action**       | `React.ReactNode`                              | No       | Optional action content (e.g. a Button) rendered inline opposite the title. |
+| **headingLevel** | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | No       | Semantic heading level for the title. Defaults to `h3`.                     |
 
 ## BoxProps
 
-| Prop            | Type              | Required | Description |
-| --------------- | ----------------- | -------- | ----------- |
-| **children**    | `React.ReactNode` | Yes      | -           |
-| **header**      | `React.ReactNode` | No       | -           |
-| **footer**      | `React.ReactNode` | No       | -           |
-| **withPadding** | `boolean`         | No       | -           |
-| **className**   | `string`          | No       | -           |
+| Prop            | Type              | Required | Description                                                                                                                                    |
+| --------------- | ----------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **children**    | `React.ReactNode` | Yes      | Content rendered inside the box body.                                                                                                          |
+| **header**      | `React.ReactNode` | No       | Optional content rendered above the body in the box header section.                                                                            |
+| **footer**      | `React.ReactNode` | No       | Optional content rendered below the body in the box footer section.                                                                            |
+| **withPadding** | `boolean`         | No       | Whether the body should apply the default inner padding. Defaults to true; set to false for content that needs to be flush with the box edges. |
+| **className**   | `string`          | No       | CSS className to be applied to the root element.                                                                                               |
 
 ## BreadcrumbsProps
 
@@ -129,11 +133,11 @@
 
 ### Breadcrumb
 
-| Prop            | Type              | Required | Description                                                                                         |
-| --------------- | ----------------- | -------- | --------------------------------------------------------------------------------------------------- |
-| **id**          | `string`          | Yes      | -                                                                                                   |
-| **label**       | `React.ReactNode` | Yes      | -                                                                                                   |
-| **isClickable** | `boolean`         | No       | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+| Prop            | Type              | Required | Description                                                                                             |
+| --------------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| **id**          | `string`          | Yes      | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| **label**       | `React.ReactNode` | Yes      | Display content rendered for the breadcrumb.                                                            |
+| **isClickable** | `boolean`         | No       | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true.     |
 
 ## ButtonIconProps
 
@@ -302,21 +306,41 @@
 | **id**                      | `string`                        | No       | -                                                                                             |
 | **name**                    | `string`                        | No       | -                                                                                             |
 
+## DateRangePickerProps
+
+| Prop                        | Type                                               | Required | Description                                                                              |
+| --------------------------- | -------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| **label**                   | `string`                                           | Yes      | Label text for the date range field.                                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                          | No       | Hides the label visually while keeping it accessible to screen readers.                  |
+| **value**                   | `null \| [DateRange](#daterange)`                  | Yes      | Currently selected date range, or null when nothing is selected.                         |
+| **onChange**                | `(range: [DateRange](#daterange) \| null) => void` | Yes      | Callback fired when the selected range changes. Receives null when the range is cleared. |
+| **startDateLabel**          | `string`                                           | Yes      | Accessible label for the start-date input.                                               |
+| **endDateLabel**            | `string`                                           | Yes      | Accessible label for the end-date input.                                                 |
+| **minValue**                | `Date`                                             | No       | Earliest selectable date. Dates before this are disabled.                                |
+| **maxValue**                | `Date`                                             | No       | Latest selectable date. Dates after this are disabled.                                   |
+
+### DateRange
+
+| Prop      | Type   | Required | Description                         |
+| --------- | ------ | -------- | ----------------------------------- |
+| **start** | `Date` | Yes      | First date in the range, inclusive. |
+| **end**   | `Date` | Yes      | Last date in the range, inclusive.  |
+
 ## DescriptionListProps
 
-| Prop               | Type                                          | Required | Description |
-| ------------------ | --------------------------------------------- | -------- | ----------- |
-| **items**          | [DescriptionListItem](#descriptionlistitem)[] | Yes      | -           |
-| **layout**         | `"stacked" \| "horizontal"`                   | No       | -           |
-| **showSeparators** | `boolean`                                     | No       | -           |
-| **className**      | `string`                                      | No       | -           |
+| Prop               | Type                                          | Required | Description                                                                |
+| ------------------ | --------------------------------------------- | -------- | -------------------------------------------------------------------------- |
+| **items**          | [DescriptionListItem](#descriptionlistitem)[] | Yes      | Term/description pairs to render in order.                                 |
+| **layout**         | `"stacked" \| "horizontal"`                   | No       | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
+| **showSeparators** | `boolean`                                     | No       | Whether to render dividers between rows. Defaults to `true`.               |
+| **className**      | `string`                                      | No       | Additional class name applied to the root `<dl>`.                          |
 
 ### DescriptionListItem
 
-| Prop            | Type                                   | Required | Description |
-| --------------- | -------------------------------------- | -------- | ----------- |
-| **term**        | `React.ReactNode \| React.ReactNode[]` | Yes      | -           |
-| **description** | `React.ReactNode \| React.ReactNode[]` | Yes      | -           |
+| Prop            | Type                                   | Required | Description                                                                                           |
+| --------------- | -------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| **term**        | `React.ReactNode \| React.ReactNode[]` | Yes      | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
+| **description** | `React.ReactNode \| React.ReactNode[]` | Yes      | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
 
 ## DialogProps
 
@@ -422,6 +446,35 @@
 | **children**                   | `React.ReactNode` | No       | Main content to be rendered in the modal body            |
 | **footer**                     | `React.ReactNode` | No       | Footer content to be rendered at the bottom of the modal |
 | **containerRef**               | `RefObject`       | No       | Optional ref to the backdrop container                   |
+
+## MultiSelectComboBoxProps
+
+| Prop                        | Type                                                      | Required | Description                                                                     |
+| --------------------------- | --------------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                           | No       | React ref for the combo box input element                                       |
+| **isDisabled**              | `boolean`                                                 | No       | Disables the combo box and prevents interaction                                 |
+| **isInvalid**               | `boolean`                                                 | No       | Indicates that the field has an error                                           |
+| **isLoading**               | `boolean`                                                 | No       | Shows a loading message in the description slot while options are being fetched |
+| **label**                   | `string`                                                  | Yes      | Label text for the combo box field                                              |
+| **options**                 | [MultiSelectComboBoxOption](#multiselectcomboboxoption)[] | Yes      | Array of options to display in the dropdown                                     |
+| **value**                   | `string[]`                                                | No       | Currently selected values                                                       |
+| **onChange**                | `(values: string[]) => void`                              | No       | Callback when the set of selected values changes                                |
+| **onBlur**                  | `() => void`                                              | No       | Handler for blur events                                                         |
+| **description**             | `React.ReactNode`                                         | No       | Optional description text for the field                                         |
+| **errorMessage**            | `string`                                                  | No       | Error message to display when the field is invalid                              |
+| **isRequired**              | `boolean`                                                 | No       | Indicates if the field is required                                              |
+| **shouldVisuallyHideLabel** | `boolean`                                                 | No       | Hides the label visually while keeping it accessible to screen readers          |
+| **className**               | `string`                                                  | No       | -                                                                               |
+| **id**                      | `string`                                                  | No       | -                                                                               |
+| **name**                    | `string`                                                  | No       | -                                                                               |
+| **placeholder**             | `string`                                                  | No       | -                                                                               |
+
+### MultiSelectComboBoxOption
+
+| Prop      | Type     | Required | Description                                         |
+| --------- | -------- | -------- | --------------------------------------------------- |
+| **label** | `string` | Yes      | Display text for the option                         |
+| **value** | `string` | Yes      | Value of the option that will be passed to onChange |
 
 ## NumberInputProps
 
@@ -648,6 +701,7 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 | **isInvalid**               | `boolean`                          | No       | Indicates that the field has an error                                  |
 | **isDisabled**              | `boolean`                          | No       | Disables the textarea and prevents interaction                         |
 | **onBlur**                  | `() => void`                       | No       | Handler for blur events                                                |
+| **rows**                    | `number`                           | No       | Number of visible text rows                                            |
 | **description**             | `React.ReactNode`                  | No       | Optional description text for the field                                |
 | **errorMessage**            | `string`                           | No       | Error message to display when the field is invalid                     |
 | **isRequired**              | `boolean`                          | No       | Indicates if the field is required                                     |
@@ -657,7 +711,6 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 | **id**                      | `string`                           | No       | -                                                                      |
 | **name**                    | `string`                           | No       | -                                                                      |
 | **placeholder**             | `string`                           | No       | -                                                                      |
-| **rows**                    | `number`                           | No       | -                                                                      |
 | **cols**                    | `number`                           | No       | -                                                                      |
 | **aria-describedby**        | `string`                           | No       | Identifies the element (or elements) that describes the object.        |
 

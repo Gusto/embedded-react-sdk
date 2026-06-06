@@ -8,6 +8,13 @@ import { SwitchDefaults } from './SwitchTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
+/**
+ * Toggle switch control with label, description, and error messaging.
+ *
+ * @param rawProps - Switch configuration; see {@link SwitchProps}.
+ * @returns The rendered switch input.
+ * @public
+ */
 export function Switch(rawProps: SwitchProps) {
   const resolvedProps = applyMissingDefaults(rawProps, SwitchDefaults)
   const {

@@ -4,6 +4,13 @@ import { Flex } from '../../Flex'
 import type { ProgressBarProps } from './ProgressBarTypes'
 import styles from './ProgressBar.module.scss'
 
+/**
+ * Renders a horizontal progress indicator showing the current step within a multi-step sequence.
+ *
+ * @param props - The {@link ProgressBarProps} controlling the step count, label, and optional CTA.
+ * @returns The rendered progress bar with an accessible progress element.
+ * @internal
+ */
 export function ProgressBar({
   className,
   totalSteps,
