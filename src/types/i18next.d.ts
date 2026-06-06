@@ -2399,6 +2399,24 @@ export interface EmployeeManagementProfile{
 "alerts":{
 "profileUpdated":string;
 };
+"form":{
+"title":string;
+"firstName":string;
+"middleInitial":string;
+"lastName":string;
+"email":string;
+"emailDescription":string;
+"ssnLabel":string;
+"dobLabel":string;
+"cancelCta":string;
+"saveCta":string;
+"successAlert":string;
+"validations":{
+"email":string;
+"firstName":string;
+"lastName":string;
+};
+};
 };
 export interface EmployeeManagementStateTaxes{
 "card":{
