@@ -20,7 +20,7 @@ html {
   --ifm-font-size-base: 15px;
   --ifm-code-font-size: 95%;
 
-  --ifm-navbar-background-color: #1b1b1d;
+  --ifm-navbar-background-color: #fff;
   --ifm-navbar-link-color: #ffffff;
   --ifm-navbar-link-hover-color: #f45d48;
   --ifm-navbar-height: 3.75rem;
@@ -78,7 +78,6 @@ html {
 /* ── Navbar ── */
 
 .navbar {
-  box-shadow: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -116,8 +115,6 @@ html {
   border-bottom-color: rgba(255, 255, 255, 0.06);
 }
 
-/* ── Search bar (always dark since navbar is always dark) ── */
-
 .navbar .DocSearch-Button,
 .navbar .aa-DetachedSearchButton,
 .navbar .search-bar-container input,
@@ -130,6 +127,10 @@ nav .search-bar-container input {
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease;
+}
+
+.navbar__search-input {
+  border-radius: 2px;
 }
 
 .navbar .DocSearch-Button:hover,
@@ -190,9 +191,9 @@ nav .search-bar-container input:focus {
 
 .menu__list-item-collapsible .menu__link--sublist {
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
+
+  font-size: 0.875rem;
+
   color: var(--gusto-sidebar-category-color);
   margin-top: 1.25rem;
   border-left: none;
@@ -218,7 +219,6 @@ nav .search-bar-container input:focus {
   font-weight: 600;
   margin-top: 2.5rem;
   padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--ifm-toc-border-color);
 }
 
 .markdown h3 {

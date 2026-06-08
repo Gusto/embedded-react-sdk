@@ -150,17 +150,9 @@ function HeroSection() {
     <section className={styles.hero}>
       <div className={styles.heroInner}>
         <h1 className={styles.heroBrand}>
-          <img
-            src={logoForLightMode}
-            alt="Gusto Embedded"
-            className={clsx(styles.heroLogo, styles.heroLogoForLight)}
-          />
-          <img
-            src={logoForDarkMode}
-            alt="Gusto Embedded"
-            className={clsx(styles.heroLogo, styles.heroLogoForDark)}
-          />
-          <span className={styles.heroSdkLabel}>SDK</span>
+          <span className={styles.heroSdkLabel}>
+            A big sentence about what this cool thing does.
+          </span>
         </h1>
         <p className={styles.heroTagline}>
           A React component library for building embedded payroll experiences on top of the Gusto
