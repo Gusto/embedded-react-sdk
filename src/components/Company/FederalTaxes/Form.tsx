@@ -35,7 +35,7 @@ export function Form() {
   )
 
   return (
-    <Flex flexDirection="column" gap={28}>
+    <Flex flexDirection="column" gap={20}>
       <TextInputField
         name="federalEin"
         label={t('federalEinLabel')}
