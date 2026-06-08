@@ -3,6 +3,7 @@ import type * as Preset from '@docusaurus/preset-classic'
 import { type TypeDocOptions } from 'typedoc'
 import { type PluginOptions } from 'docusaurus-plugin-typedoc'
 import { themes as prismThemes } from 'prism-react-renderer'
+import { baseOptions } from './typedoc.config'
 
 const config: Config = {
   title: 'Gusto Embedded',
@@ -31,17 +32,13 @@ const config: Config = {
     [
       'docusaurus-plugin-typedoc',
       {
-        entryPoints: ['../src/index.ts'],
-        tsconfig: 'tsconfig.typedoc.json',
-        out: '../docs/api',
+        ...baseOptions,
         sidebar: {
           autoConfiguration: true,
           pretty: true,
           typescript: true,
           deprecatedItemClassName: 'typedoc-sidebar-item-deprecated',
         },
-        readme: 'none',
-        disableSources: true,
       } satisfies TypeDocOptions & PluginOptions,
     ],
   ],
