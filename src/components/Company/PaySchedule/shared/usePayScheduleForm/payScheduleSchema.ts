@@ -33,8 +33,14 @@ const fieldValidators = {
 
 export type PayScheduleField = keyof typeof fieldValidators
 
-export type PayScheduleFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface PayScheduleFormData {
+  customName: string
+  frequency: PayScheduleFrequency
+  customTwicePerMonth: string
+  anchorPayDate: string | null
+  anchorEndOfPayPeriod: string | null
+  day1: number
+  day2: number
 }
 export type PayScheduleFormOutputs = PayScheduleFormData
 

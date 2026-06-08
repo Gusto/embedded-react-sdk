@@ -23,8 +23,8 @@ const fieldValidators = {
 
 export type PaymentMethodFormField = keyof typeof fieldValidators
 
-export type PaymentMethodFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface PaymentMethodFormData {
+  type: PaymentMethodType
 }
 export type PaymentMethodFormOutputs = PaymentMethodFormData
 

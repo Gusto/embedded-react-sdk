@@ -31,8 +31,14 @@ const fieldValidators = {
 
 export type HomeAddressField = keyof typeof fieldValidators
 
-export type HomeAddressFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface HomeAddressFormData {
+  street1: string
+  street2: string
+  city: string
+  state: string
+  zip: string
+  courtesyWithholding: boolean
+  effectiveDate: string
 }
 export type HomeAddressFormOutputs = HomeAddressFormData
 

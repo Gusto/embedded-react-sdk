@@ -623,6 +623,9 @@ export const FLSA_STATUS = {
 } as const
 
 /** @internal */
+export type FlsaStatus = (typeof FLSA_STATUS)[keyof typeof FLSA_STATUS]
+
+/** @internal */
 export const compensationTypeLabels = {
   REIMBURSEMENT_NAME: 'reimbursement',
   REGULAR_HOURS_NAME: 'regular hours',
@@ -724,6 +727,9 @@ export const PAY_PERIODS = {
   YEAR: 'Year',
   PAYCHECK: 'Paycheck',
 } as const
+
+/** @internal */
+export type PayPeriod = (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS]
 
 /** @internal */
 export const BREAKPOINTS = {

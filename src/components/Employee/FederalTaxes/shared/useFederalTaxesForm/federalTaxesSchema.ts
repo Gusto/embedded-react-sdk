@@ -44,8 +44,13 @@ const fieldValidators = {
 
 export type FederalTaxesField = keyof typeof fieldValidators
 
-export type FederalTaxesFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface FederalTaxesFormData {
+  filingStatus: string
+  twoJobs: boolean
+  dependentsAmount: number
+  otherIncome: number
+  deductions: number
+  extraWithholding: number
 }
 export type FederalTaxesFormOutputs = FederalTaxesFormData
 

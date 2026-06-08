@@ -85,8 +85,15 @@ const fieldValidators = {
 
 export type ChildSupportGarnishmentFormField = keyof typeof fieldValidators
 
-export type ChildSupportGarnishmentFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface ChildSupportGarnishmentFormData {
+  state: string
+  fipsCode: string
+  caseNumber: string
+  orderNumber: string
+  remittanceNumber: string
+  payPeriodMaximum: number
+  amount: number
+  paymentPeriod: PaymentPeriod
 }
 
 export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData

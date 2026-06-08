@@ -32,8 +32,11 @@ const fieldValidators = {
 
 export type BankFormField = keyof typeof fieldValidators
 
-export type BankFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface BankFormData {
+  name: string
+  routingNumber: string
+  accountNumber: string
+  accountType: AccountType
 }
 export type BankFormOutputs = BankFormData
 

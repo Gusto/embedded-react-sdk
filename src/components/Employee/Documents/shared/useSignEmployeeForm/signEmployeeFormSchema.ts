@@ -136,10 +136,13 @@ const agreeValidator = z.boolean().refine(val => val, {
   message: SignEmployeeFormErrorCodes.REQUIRED,
 })
 
+const USED_PREPARER_VALUES = ['yes', 'no'] as const
+export type UsedPreparer = (typeof USED_PREPARER_VALUES)[number]
+
 const fieldValidators = {
   signature: z.string(),
   confirmSignature: agreeValidator,
-  usedPreparer: z.enum(['yes', 'no']),
+  usedPreparer: z.enum(USED_PREPARER_VALUES),
 
   // Preparer 1
   [PREPARER_1.firstName]: z.string(),
@@ -188,8 +191,46 @@ const fieldValidators = {
 
 export type SignEmployeeFormField = keyof typeof fieldValidators
 
-export type SignEmployeeFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface SignEmployeeFormData {
+  signature: string
+  confirmSignature: boolean
+  usedPreparer: UsedPreparer
+  preparerFirstName: string
+  preparerLastName: string
+  preparerStreet1: string
+  preparerStreet2: string
+  preparerCity: string
+  preparerState: string
+  preparerZip: string
+  preparerSignature: string
+  preparerAgree: boolean
+  preparer2FirstName: string
+  preparer2LastName: string
+  preparer2Street1: string
+  preparer2Street2: string
+  preparer2City: string
+  preparer2State: string
+  preparer2Zip: string
+  preparer2Signature: string
+  preparer2Agree: boolean
+  preparer3FirstName: string
+  preparer3LastName: string
+  preparer3Street1: string
+  preparer3Street2: string
+  preparer3City: string
+  preparer3State: string
+  preparer3Zip: string
+  preparer3Signature: string
+  preparer3Agree: boolean
+  preparer4FirstName: string
+  preparer4LastName: string
+  preparer4Street1: string
+  preparer4Street2: string
+  preparer4City: string
+  preparer4State: string
+  preparer4Zip: string
+  preparer4Signature: string
+  preparer4Agree: boolean
 }
 export type SignEmployeeFormOutputs = SignEmployeeFormData
 

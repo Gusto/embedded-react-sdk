@@ -48,8 +48,14 @@ const fieldValidators = {
 
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
 
-export type EmployeeDetailsFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface EmployeeDetailsFormData {
+  firstName: string
+  middleInitial: string
+  lastName: string
+  email: string
+  dateOfBirth: string
+  ssn: string
+  selfOnboarding: boolean
 }
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 

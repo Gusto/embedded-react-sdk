@@ -23,8 +23,9 @@ const fieldValidators = {
 
 export type WorkAddressField = keyof typeof fieldValidators
 
-export type WorkAddressFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface WorkAddressFormData {
+  locationUuid: string
+  effectiveDate: string
 }
 export type WorkAddressFormOutputs = WorkAddressFormData
 

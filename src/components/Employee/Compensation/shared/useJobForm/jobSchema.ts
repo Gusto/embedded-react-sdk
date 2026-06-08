@@ -21,8 +21,12 @@ const fieldValidators = {
   stateWcClassCode: z.string(),
 }
 
-export type JobFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface JobFormData {
+  title: string
+  hireDate: string | null
+  twoPercentShareholder: boolean
+  stateWcCovered: boolean
+  stateWcClassCode: string
 }
 export type JobFormOutputs = JobFormData
 

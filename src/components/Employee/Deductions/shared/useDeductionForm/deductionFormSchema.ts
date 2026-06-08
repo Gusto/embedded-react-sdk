@@ -49,8 +49,14 @@ const fieldValidators = {
 
 export type DeductionFormField = keyof typeof fieldValidators
 
-export type DeductionFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface DeductionFormData {
+  description: string
+  recurring: boolean
+  deductAsPercentage: boolean
+  amount: number
+  totalAmount: number
+  annualMaximum: number
+  garnishmentType: GarnishmentType
 }
 
 export type DeductionFormOutputs = DeductionFormData

@@ -25,8 +25,9 @@ const fieldValidators = {
 
 export type SignCompanyFormField = keyof typeof fieldValidators
 
-export type SignCompanyFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface SignCompanyFormData {
+  signature: string
+  confirmSignature: boolean
 }
 export type SignCompanyFormOutputs = SignCompanyFormData
 

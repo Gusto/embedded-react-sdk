@@ -5,7 +5,13 @@ import {
   type OptionalFieldsToRequire,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
+import {
+  FLSA_OVERTIME_SALARY_LIMIT,
+  FLSA_STATUS,
+  type FlsaStatus,
+  PAY_PERIODS,
+  type PayPeriod,
+} from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -72,8 +78,14 @@ const fieldValidators = {
   minimumWageId: z.string(),
 }
 
-export type CompensationFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+export interface CompensationFormData {
+  title: string
+  flsaStatus: FlsaStatus | undefined
+  paymentUnit: PayPeriod
+  rate: number
+  effectiveDate: string | null
+  adjustForMinimumWage: boolean
+  minimumWageId: string
 }
 
 const requiredFieldsConfig = {
