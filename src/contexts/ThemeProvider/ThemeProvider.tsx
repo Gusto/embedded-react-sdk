@@ -4,7 +4,9 @@ import { ThemeContext } from './useTheme'
 import { mergePartnerTheme, type GustoSDKTheme } from './theme'
 import '@/styles/sdk.scss'
 
+/** @internal */
 export interface ThemeProviderProps {
+  /** Partial set of theme tokens that override the SDK defaults. */
   theme?: Partial<GustoSDKTheme>
   /**
    * Element to use as the portal container for all SDK overlays (Select, ComboBox,
@@ -14,9 +16,11 @@ export interface ThemeProviderProps {
    * when your app's scroll or clipping context interferes with overlay positioning.
    */
   portalContainer?: HTMLElement
+  /** Subtree rendered inside the SDK's themed root element. */
   children?: React.ReactNode
 }
 
+/** @internal */
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   theme: partnerThemeOverrides = {},
   portalContainer,

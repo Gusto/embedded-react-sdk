@@ -2579,8 +2579,6 @@ export interface GustoProviderProps {
     theme?: Partial<GustoSDKTheme>;
 }
 
-// Warning: (ae-missing-release-tag) "GustoSDKTheme" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface GustoSDKTheme extends GustoSDKThemeColors {
     badgeRadius: string;
@@ -2628,8 +2626,6 @@ export interface GustoSDKTheme extends GustoSDKThemeColors {
     transitionDuration: string;
 }
 
-// Warning: (ae-missing-release-tag) "GustoSDKThemeColors" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface GustoSDKThemeColors {
     colorBody: string;

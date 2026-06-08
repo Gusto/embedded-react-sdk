@@ -200,6 +200,7 @@ export default [
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
       'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
       'src/contexts/ObservabilityProvider/**/*.{ts,tsx}',
+      'src/contexts/ThemeProvider/**/*.{ts,tsx}',
     ],
     ignores: LIBRARY_IGNORE_PATHS,
     rules: {

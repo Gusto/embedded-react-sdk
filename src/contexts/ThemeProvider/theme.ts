@@ -44,6 +44,7 @@ const baseColors = {
   },
 }
 
+/** @internal */
 export const transitionDuration = 200
 
 const defaultThemeColors: GustoSDKThemeColors = {
@@ -74,6 +75,7 @@ const defaultThemeColors: GustoSDKThemeColors = {
   colorButtonIcon: baseColors.neutral[400],
 }
 
+/** @internal */
 export const createTheme = (colors: Partial<GustoSDKThemeColors> = {}): GustoSDKTheme => {
   const mergedColors = { ...defaultThemeColors, ...colors }
 
@@ -126,6 +128,7 @@ export const createTheme = (colors: Partial<GustoSDKThemeColors> = {}): GustoSDK
   }
 }
 
+/** @internal */
 export const mergePartnerTheme = (partnerTheme: Partial<GustoSDKTheme>): GustoSDKTheme => {
   const colors = Object.entries(defaultThemeColors).reduce(
     (acc, [key, value]) => {
