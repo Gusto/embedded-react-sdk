@@ -171,7 +171,7 @@
     "@internationalized/number": "^3.6.7",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
-    "dompurify": "^3.4.7",
+    "dompurify": "^3.4.8",
     "i18next": "^26.3.1",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
