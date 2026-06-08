@@ -1,0 +1,17 @@
+{
+  "title": "Split employee paycheck",
+  "splitDescription": "<p>You can split your paycheck into different accounts by percentage or flat dollar amounts.</p><p>When splitting by amount, you can reorder the priority of the bank accounts by clicking and dragging the list icon to the left of the bank account field. We’ll pay the amounts in the order specified until your salary has been fully distributed to the last “remainder” account.</p>",
+  "splitByLabel": "Split by",
+  "percentageLabel": "Percentage",
+  "amountLabel": "Fixed amount",
+  "splitAmountLabel": "{{name}} ({{account_number}})",
+  "draggableListLabel": "Reorderable list of bank accounts",
+  "remainderLabel": "Remainder",
+  "cancelCta": "Cancel",
+  "saveCta": "Save",
+  "validations": {
+    "percentageErrorWithTotal": "Splits must total 100%. Currently {{total}}%.",
+    "amountError": "Please enter valid amount",
+    "percentageAmountError": "Percentage should be a whole number between 0 and 100"
+  }
+}

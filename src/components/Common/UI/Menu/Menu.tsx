@@ -4,6 +4,13 @@ import { type MenuProps, MenuDefaults } from './MenuTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useTheme } from '@/contexts/ThemeProvider'
 
+/**
+ * Popover menu anchored to a trigger element, with a configurable list of actions.
+ *
+ * @param rawProps - See {@link MenuProps}.
+ * @returns The rendered menu popover, or `null` content when closed.
+ * @internal
+ */
 export function Menu(rawProps: MenuProps) {
   const resolvedProps = applyMissingDefaults(rawProps, MenuDefaults)
   const {

@@ -4,6 +4,13 @@ import { type BreadcrumbsProps, BreadcrumbsDefaults } from './BreadcrumbsTypes'
 import styles from './Breadcrumbs.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
+/**
+ * Renders a navigational breadcrumb trail for multi-step flows, marking the current step and collapsing to a back link on small containers.
+ *
+ * @param rawProps - The {@link BreadcrumbsProps} controlling the list of breadcrumbs, current step, and click behavior.
+ * @returns The rendered breadcrumb navigation.
+ * @internal
+ */
 export function Breadcrumbs(rawProps: BreadcrumbsProps) {
   const resolvedProps = applyMissingDefaults(rawProps, BreadcrumbsDefaults)
   const {

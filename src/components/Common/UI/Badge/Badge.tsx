@@ -6,6 +6,13 @@ import { BadgeDefaults } from './BadgeTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import CloseIcon from '@/assets/icons/close.svg?react'
 
+/**
+ * Renders a compact status indicator with optional dismiss control, used to label rows, tags, or summary chips.
+ *
+ * @param rawProps - The {@link BadgeProps} controlling the badge content, status variant, and dismiss behavior.
+ * @returns The rendered badge.
+ * @internal
+ */
 export const Badge: React.FC<BadgeProps> = rawProps => {
   const resolvedProps = applyMissingDefaults(rawProps, BadgeDefaults)
   const {

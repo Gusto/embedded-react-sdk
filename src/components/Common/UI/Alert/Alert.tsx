@@ -10,6 +10,16 @@ import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 import CloseIcon from '@/assets/icons/close.svg?react'
 
+/**
+ * Renders an inline alert that conveys status information about the surrounding content, with an optional action button and dismiss control.
+ *
+ * @remarks
+ * Scrolls itself into view and receives focus on mount so the user notices it. Pass `disableScrollIntoView` when rendering inside a modal or other container that should retain focus.
+ *
+ * @param rawProps - The {@link AlertProps} controlling the alert label, status, icon, and dismiss behavior.
+ * @returns The rendered alert.
+ * @internal
+ */
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
   const { label, children, action, status, icon, className, onDismiss, disableScrollIntoView } =

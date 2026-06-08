@@ -7,6 +7,13 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import InfoIcon from '@/assets/icons/icon-info-outline.svg?react'
 import ErrorIcon from '@/assets/icons/icon-error-outline.svg?react'
 
+/**
+ * Renders a prominent banner with a titled header and supporting content, used to surface warnings or errors that affect the current screen.
+ *
+ * @param rawProps - The {@link BannerProps} controlling the banner title, status variant, and content.
+ * @returns The rendered banner.
+ * @internal
+ */
 export const Banner: React.FC<BannerProps> = rawProps => {
   const resolvedProps = applyMissingDefaults(rawProps, BannerDefaults)
   const { className, title, children, status, ...otherProps } = resolvedProps

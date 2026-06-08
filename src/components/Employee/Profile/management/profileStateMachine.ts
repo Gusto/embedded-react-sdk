@@ -25,7 +25,7 @@ const returnToCardWithAlert = (alert: ProfileContextInterface['successAlert']) =
 export const profileStateMachine = {
   card: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       'editProfile',
       reduce(
         (ctx: ProfileContextInterface): ProfileContextInterface => ({
@@ -35,14 +35,14 @@ export const profileStateMachine = {
         }),
       ),
     ),
-    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED, 'card', returnToCard),
+    transition(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED, 'card', returnToCard),
   ),
   editProfile: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED,
       'card',
       returnToCardWithAlert('profileUpdated'),
     ),
-    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'card', returnToCard),
+    transition(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED, 'card', returnToCard),
   ),
 }

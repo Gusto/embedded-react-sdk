@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Props your `Card` implementation must accept from the component adapter.
+ * Renders a content container with an optional overflow menu and a leading action slot.
+ *
+ * @public
+ */
 export interface CardProps {
   /**
    * Content to be displayed inside the card

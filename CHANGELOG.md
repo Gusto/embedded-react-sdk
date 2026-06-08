@@ -1,5 +1,49 @@
 # Changelog
 
+## [0.47.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.3...v0.47.0) (2026-06-08)
+
+### Breaking Changes
+
+- Compensation wage-label i18n keys were consolidated under a single source of truth. If you override compensation labels, update your translation overrides in the `Employee.Compensation` namespace ([#1984](https://github.com/Gusto/embedded-react-sdk/issues/1984)):
+
+  ```diff
+  - "Employee.Compensation.amount": "Compensation amount"
+  - "Employee.Compensation.paymentUnitLabel": "Wage frequency"
+  - "Employee.Compensation.management.wageLabel": "Wage"
+  - "Employee.Compensation.management.wageFrequencyLabel": "Wage frequency"
+  + "Employee.Compensation.wageLabel": "Wage"
+  + "Employee.Compensation.wageFrequencyLabel": "Wage frequency"
+  ```
+
+  The Add and Management compensation forms now share these top-level `wageLabel` / `wageFrequencyLabel` keys (both display "Wage" instead of the former "Compensation amount").
+
+### Features & Enhancements
+
+- Extract every `DashboardFlow` card into a standalone, independently-consumable management block — `Profile`, `HomeAddress`, `WorkAddress`, `Compensation`, `Deductions`, `Documents`, `Paystubs`, `PaymentMethod`, and `Federal`/`State` taxes — so each can be embedded on its own ([#1976](https://github.com/Gusto/embedded-react-sdk/issues/1976), [#1992](https://github.com/Gusto/embedded-react-sdk/issues/1992), [#2007](https://github.com/Gusto/embedded-react-sdk/issues/2007), [#2036](https://github.com/Gusto/embedded-react-sdk/issues/2036), [#2008](https://github.com/Gusto/embedded-react-sdk/issues/2008), [#2030](https://github.com/Gusto/embedded-react-sdk/issues/2030), [#2011](https://github.com/Gusto/embedded-react-sdk/issues/2011), [#2006](https://github.com/Gusto/embedded-react-sdk/issues/2006), [#2022](https://github.com/Gusto/embedded-react-sdk/issues/2022), [#2021](https://github.com/Gusto/embedded-react-sdk/issues/2021))
+- Add `OnboardingExecutionFlow` and skip the redundant employee list in `EmployeeListFlow` ([#1990](https://github.com/Gusto/embedded-react-sdk/issues/1990))
+- Surface FLSA-aware alerts in compensation forms — commission-only federal-minimum-pay and minimum-wage warnings, plus an owner reasonable-salary reminder — via new `useCompensationForm` `status` flags (`showCommissionFederalMinimumPayAlert`, `showCommissionMinimumWageAlert`, `showOwnerSalaryAlert`). Wage and wage-frequency inputs are hidden for commission-only statuses ([#1984](https://github.com/Gusto/embedded-react-sdk/issues/1984))
+- `PayrollList`: disable Run Payroll on regular rows while transition payrolls are pending ([#1989](https://github.com/Gusto/embedded-react-sdk/issues/1989))
+
+### Fixes
+
+- Surface home address submit errors inside the edit/create modal instead of at the page level ([#1993](https://github.com/Gusto/embedded-react-sdk/issues/1993))
+- Pin the Current home address card to the active row ([#1985](https://github.com/Gusto/embedded-react-sdk/issues/1985))
+- Show deduction cap fields consistently across the create and edit forms ([#1997](https://github.com/Gusto/embedded-react-sdk/issues/1997))
+- Stop showing "0% per paycheck" for fixed-cap garnishments ([#1998](https://github.com/Gusto/embedded-react-sdk/issues/1998))
+- Return to the dashboard after signing a document ([#1999](https://github.com/Gusto/embedded-react-sdk/issues/1999))
+- Stop a failed PDF preview fetch from surfacing as a signing error ([#2032](https://github.com/Gusto/embedded-react-sdk/issues/2032))
+- Align the onboarding compensation form layout and alert conditions with the management forms ([#2046](https://github.com/Gusto/embedded-react-sdk/issues/2046))
+- Add clarifying copy to the remove-secondary-jobs warning ([#2005](https://github.com/Gusto/embedded-react-sdk/issues/2005))
+- Remove the gap between tabs and table in the management employee list ([#2051](https://github.com/Gusto/embedded-react-sdk/issues/2051))
+
+### Chores & Maintenance
+
+- Upgrade to the `@gusto/embedded-api-v-2025-11-15` API package ([#1814](https://github.com/Gusto/embedded-react-sdk/issues/1814))
+- Standardize management card loading with per-card Suspense boundaries and normalize `useCompensationManagement` return shape ([#2054](https://github.com/Gusto/embedded-react-sdk/issues/2054), [#2048](https://github.com/Gusto/embedded-react-sdk/issues/2048))
+- Share PaymentMethod bank/split form bodies via an injected dictionary and give Profile/HomeAddress their own management i18n namespaces ([#2045](https://github.com/Gusto/embedded-react-sdk/issues/2045), [#2053](https://github.com/Gusto/embedded-react-sdk/issues/2053), [#2044](https://github.com/Gusto/embedded-react-sdk/issues/2044))
+- Expand TSDoc coverage across models, internal hooks, and PaymentMethod docs ([#2043](https://github.com/Gusto/embedded-react-sdk/issues/2043))
+- Bump dependencies (`react-hook-form`, `i18next`, `dompurify`, `vite`, `react-router-dom`, `typescript-eslint`, `@storybook/*`, `fuse.js`, `axe-core`, and others)
+
 ## [0.46.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.2...v0.46.3) (2026-06-01)
 
 ### Features & Enhancements

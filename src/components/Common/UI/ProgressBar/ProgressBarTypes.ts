@@ -1,3 +1,9 @@
+/**
+ * Props your `ProgressBar` implementation must accept from the component adapter.
+ * Renders a step-based progress indicator for multi-step flows.
+ *
+ * @public
+ */
 export interface ProgressBarProps {
   /**
    * Total number of steps in the progress sequence

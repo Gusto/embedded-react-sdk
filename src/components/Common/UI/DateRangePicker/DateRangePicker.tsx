@@ -32,6 +32,13 @@ function calendarDateToJsDate(dateValue: DateValue): Date {
   return new Date(dateValue.year, dateValue.month - 1, dateValue.day)
 }
 
+/**
+ * Renders paired date inputs and a calendar popover for selecting a start/end date range.
+ *
+ * @param props - The {@link DateRangePickerProps} controlling the field's labels, selected range, and bounds.
+ * @returns The rendered date range picker field.
+ * @internal
+ */
 export const DateRangePicker = ({
   label,
   value,

@@ -1,8 +1,16 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Props your `Alert` implementation must accept from the component adapter.
+ * Renders a status message with an optional dismiss action; used for errors, warnings, success confirmations, and informational messages.
+ *
+ * @public
+ */
 export interface AlertProps {
   /**
    * The visual status that the alert should convey
+   *
+   * @defaultValue `'info'`
    */
   status?: 'info' | 'success' | 'warning' | 'error'
   /**
@@ -41,6 +49,8 @@ export interface AlertProps {
 
 /**
  * Default prop values for Alert component.
+ *
+ * @internal
  */
 export const AlertDefaults = {
   status: 'info',

@@ -18,6 +18,7 @@ const DefaultPayrollLoading = ({ title, description }: PayrollLoadingProps) => {
   )
 }
 
+/** @internal */
 export const PayrollLoading = (props: PayrollLoadingProps) => {
   const Components = useComponentContext()
 

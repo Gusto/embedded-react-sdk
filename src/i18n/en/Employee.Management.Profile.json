@@ -1,0 +1,31 @@
+{
+  "title": "Basic details",
+  "editCta": "Edit",
+  "legalName": "Legal name",
+  "startDate": "Start date",
+  "socialSecurityNumber": "Social security number",
+  "dateOfBirth": "Date of birth",
+  "personalEmail": "Personal email",
+  "listEmptyPlaceholder": "No value",
+  "alerts": {
+    "profileUpdated": "Profile updated"
+  },
+  "form": {
+    "title": "Basics",
+    "firstName": "Legal first name",
+    "middleInitial": "Middle initial",
+    "lastName": "Legal last name",
+    "email": "Personal email",
+    "emailDescription": "Use an email that's not associated with your company.",
+    "ssnLabel": "Social Security Number (9 digit)",
+    "dobLabel": "Date of birth",
+    "cancelCta": "Cancel",
+    "saveCta": "Save",
+    "successAlert": "Successfully updated profile",
+    "validations": {
+      "email": "Valid email is required",
+      "firstName": "Please enter valid first name",
+      "lastName": "Please enter valid last name"
+    }
+  }
+}

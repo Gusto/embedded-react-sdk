@@ -1,6 +1,11 @@
 import type { FieldsetHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
+/**
+ * Option entry rendered as a single checkbox within a {@link CheckboxGroupProps | CheckboxGroup}.
+ *
+ * @public
+ */
 export interface CheckboxGroupOption {
   /**
    * Label text or content for the checkbox option
@@ -20,14 +25,24 @@ export interface CheckboxGroupOption {
   description?: React.ReactNode
 }
 
+/**
+ * Props your `CheckboxGroup` implementation must accept from the component adapter.
+ * Renders a form field wrapping multiple `<input type="checkbox" />` elements with a label, optional description, and error message.
+ *
+ * @public
+ */
 export interface CheckboxGroupProps
   extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
   /**
    * Indicates if the checkbox group is in an invalid state
+   *
+   * @defaultValue `false`
    */
   isInvalid?: boolean
   /**
    * Disables all checkbox options in the group
+   *
+   * @defaultValue `false`
    */
   isDisabled?: boolean
   /**
@@ -49,7 +64,9 @@ export interface CheckboxGroupProps
 }
 
 /**
- * Default prop values for CheckboxGroup component.
+ * Default prop values for the CheckboxGroup component.
+ *
+ * @internal
  */
 export const CheckboxGroupDefaults = {
   isRequired: false,

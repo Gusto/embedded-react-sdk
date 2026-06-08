@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useEmployeeProfileSummary } from '../../shared/useEmployeeProfileSummary'
 import { Loading } from '@/components/Common'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -17,14 +17,22 @@ export interface ProfileCardProps {
 /**
  * Standalone "Basic details" card. Owns its own data fetch via
  * `useEmployeeProfileSummary` and emits
- * `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED` when the Edit button is
+ * `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED` when the Edit button is
  * clicked. The card has no alert API — alert rendering is the
  * orchestrator's responsibility (block's `CardContextual` for standalone
  * consumption, dashboard chrome for dashboard consumption).
  */
-export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
-  useI18n('Employee.Profile.Management')
-  const { t } = useTranslation('Employee.Profile.Management')
+export function ProfileCard(props: ProfileCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Profile">
+      <ProfileCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function ProfileCardContent({ employeeId, onEvent }: ProfileCardProps) {
+  useI18n('Employee.Management.Profile')
+  const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
 
   const profile = useEmployeeProfileSummary({ employeeId })
@@ -52,7 +60,7 @@ export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
     : []
 
   const handleEdit = () => {
-    onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED, { employeeId })
+    onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED, { employeeId })
   }
 
   return (

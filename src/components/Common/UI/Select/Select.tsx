@@ -18,6 +18,13 @@ import CaretDown from '@/assets/icons/caret-down.svg?react'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 
+/**
+ * Renders a dropdown select with label, description, and error message support.
+ *
+ * @param props - The {@link SelectProps} controlling the select's label, options, and selected value.
+ * @returns The rendered select field with its associated popover listbox.
+ * @internal
+ */
 export const Select = ({
   description,
   errorMessage,

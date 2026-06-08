@@ -46,7 +46,7 @@ describe('HomeAddress (management block)', () => {
     )
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })
@@ -76,7 +76,7 @@ describe('HomeAddress (management block)', () => {
 
     expect(screen.queryByRole('heading', { name: 'Manage home address' })).toBeNull()
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED,
       undefined,
     )
   })

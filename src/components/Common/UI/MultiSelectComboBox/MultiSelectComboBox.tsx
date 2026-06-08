@@ -22,6 +22,13 @@ import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 
+/**
+ * Combo box that lets the user pick multiple options, rendering each selection as a dismissable chip below the input.
+ *
+ * @param props - See {@link MultiSelectComboBoxProps}.
+ * @returns The rendered multi-select combo box field.
+ * @internal
+ */
 export function MultiSelectComboBox({
   className,
   description,

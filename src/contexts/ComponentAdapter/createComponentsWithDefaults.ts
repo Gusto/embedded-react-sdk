@@ -40,6 +40,7 @@ import { BoxHeaderDefaults } from '@/components/Common/UI/BoxHeader/BoxHeaderTyp
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { DescriptionListDefaults } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
+/** @internal */
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TProps) => {
@@ -51,7 +52,7 @@ function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: s
   }
 }
 
-// Component creators with defaults
+/** @internal */
 export const componentCreators = {
   Alert: composeWithDefaults<AlertProps>(AlertDefaults, 'Alert'),
   Badge: composeWithDefaults<BadgeProps>(BadgeDefaults, 'Badge'),
@@ -83,6 +84,8 @@ export const componentCreators = {
 /**
  * Creates components with automatic default prop handling.
  * Supports both partial (GustoProvider) and full (GustoProviderCustomUIAdapter) component sets.
+ *
+ * @internal
  */
 export function createComponents(
   providedComponents: Partial<ComponentsContextType> = {},

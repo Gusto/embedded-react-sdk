@@ -217,16 +217,18 @@ export function ManagementEmployeeListView({
           </Components.Button>
         </Flex>
 
-        <Components.Tabs
-          tabs={tabs}
-          selectedId={selectedTab}
-          onSelectionChange={id => {
-            onTabChange(id as EmployeeTab)
-          }}
-          aria-label={t('tabsLabel')}
-        />
+        <Flex flexDirection="column" gap={0}>
+          <Components.Tabs
+            tabs={tabs}
+            selectedId={selectedTab}
+            onSelectionChange={id => {
+              onTabChange(id as EmployeeTab)
+            }}
+            aria-label={t('tabsLabel')}
+          />
 
-        <DataView label={t('employeeListLabel')} {...dataViewProps} />
+          <DataView label={t('employeeListLabel')} {...dataViewProps} />
+        </Flex>
       </Flex>
 
       <Components.Dialog

@@ -2,7 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import { useCompensationManagement } from '../../shared/useCompensationManagement'
+import {
+  useCompensationManagement,
+  type UseCompensationManagementReady,
+} from '../../shared/useCompensationManagement'
 import type { PendingCompensationChange } from '../../shared/getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from '../../shared/usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from '../../shared/PendingChangesReviewModal'
@@ -11,7 +14,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
@@ -41,22 +44,52 @@ export interface CompensationCardProps {
  * (the `Compensation` block or the dashboard) routes those to the edit/add
  * surfaces and renders any success alerts.
  */
-export function CompensationCard({ employeeId, onEvent }: CompensationCardProps) {
+export function CompensationCard(props: CompensationCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Compensation">
+      <CompensationCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function CompensationCardContent({ employeeId, onEvent }: CompensationCardProps) {
   useI18n('Employee.Management.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
+  const Components = useComponentContext()
+
+  const compensation = useCompensationManagement({ employeeId })
+
+  if (compensation.isLoading) {
+    return (
+      <BaseLayout error={compensation.errorHandling.errors}>
+        <Components.Box header={<Components.BoxHeader title={t('card.title')} />}>
+          <Loading />
+        </Components.Box>
+      </BaseLayout>
+    )
+  }
+
+  return (
+    <CompensationCardReady employeeId={employeeId} onEvent={onEvent} compensation={compensation} />
+  )
+}
+
+interface CompensationCardReadyProps extends CompensationCardProps {
+  compensation: UseCompensationManagementReady
+}
+
+function CompensationCardReady({ employeeId, onEvent, compensation }: CompensationCardReadyProps) {
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
   const formatCompensationRate = useFormatCompensationRate()
 
-  const compensation = useCompensationManagement({ employeeId })
   const { jobs, primaryFlsaStatus, pendingChanges, hasMultipleJobs, employeeFirstName } =
     compensation.data
-  const cancellingCompensationUuid = compensation.status.cancellingCompensationUuid
-  const { cancelPendingChange } = compensation.actions
-  const isCompensationCardLoading = compensation.status.isCompensationLoading
+  const { cancellingCompensationUuid } = compensation.status
 
   const handleCancelChange = useCallback(
     async (pendingChange: PendingCompensationChange) => {
-      const result = await cancelPendingChange(pendingChange)
+      const result = await compensation.actions.cancelPendingChange(pendingChange)
       if (result) {
         onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED, {
           employeeId,
@@ -64,7 +97,7 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
         })
       }
     },
-    [cancelPendingChange, onEvent, employeeId],
+    [compensation, onEvent, employeeId],
   )
 
   const [pendingDeleteJob, setPendingDeleteJob] = useState<{
@@ -264,7 +297,7 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
           <Components.BoxHeader
             title={t('card.title')}
             action={
-              isCompensationCardLoading ? null : hasMultipleJobs ? null : singleJob ? (
+              hasMultipleJobs ? null : singleJob ? (
                 singleJobHasPendingUpdate ? null : (
                   <Components.Button
                     variant="secondary"
@@ -288,7 +321,7 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
           />
         }
         footer={
-          !isCompensationCardLoading && canAddAnotherJob ? (
+          canAddAnotherJob ? (
             <Components.Button
               variant="secondary"
               onClick={handleAddAnotherJob}
@@ -299,120 +332,116 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
           ) : undefined
         }
       >
-        {isCompensationCardLoading ? (
-          <Loading />
-        ) : (
-          <Flex flexDirection="column" gap={16}>
-            {hasPendingUpdates && (
-              <div
-                className={[styles.alertWrapper, hasMultipleJobs && styles.alertWrapperPadded]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                <Flex flexDirection="column" gap={16}>
-                  {showInlineAlert && nextChange && (
-                    <Components.Alert
-                      status="warning"
-                      disableScrollIntoView
-                      label={
-                        hasMultipleJobs
-                          ? t('card.pendingChange.alertLabelWithJob', {
-                              jobTitle: nextChange.jobTitle,
-                              date: formatDateLongWithYear(nextChange.effectiveDate),
-                            })
-                          : t('card.pendingChange.alertLabel', {
-                              date: formatDateLongWithYear(nextChange.effectiveDate),
-                            })
-                      }
-                    >
-                      <Flex flexDirection="column" gap={12}>
-                        <Components.UnorderedList
-                          items={nextChange.details.map(detail => renderDetail(detail))}
-                        />
-                        <div>
-                          <Components.Button
-                            variant="secondary"
-                            isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
-                            onClick={() => {
-                              void handleCancelChange(nextChange)
-                            }}
-                          >
-                            {t('card.pendingChange.cancelCta')}
-                          </Components.Button>
-                        </div>
-                      </Flex>
-                    </Components.Alert>
-                  )}
-                  {showSummaryAlert && (
-                    <Components.Alert
-                      status="warning"
-                      disableScrollIntoView
-                      label={t('card.pendingChange.summaryLabel', {
-                        name: employeeFirstName ?? '',
-                      })}
-                      action={
+        <Flex flexDirection="column" gap={16}>
+          {hasPendingUpdates && (
+            <div
+              className={[styles.alertWrapper, hasMultipleJobs && styles.alertWrapperPadded]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <Flex flexDirection="column" gap={16}>
+                {showInlineAlert && nextChange && (
+                  <Components.Alert
+                    status="warning"
+                    disableScrollIntoView
+                    label={
+                      hasMultipleJobs
+                        ? t('card.pendingChange.alertLabelWithJob', {
+                            jobTitle: nextChange.jobTitle,
+                            date: formatDateLongWithYear(nextChange.effectiveDate),
+                          })
+                        : t('card.pendingChange.alertLabel', {
+                            date: formatDateLongWithYear(nextChange.effectiveDate),
+                          })
+                    }
+                  >
+                    <Flex flexDirection="column" gap={12}>
+                      <Components.UnorderedList
+                        items={nextChange.details.map(detail => renderDetail(detail))}
+                      />
+                      <div>
                         <Components.Button
                           variant="secondary"
+                          isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
                           onClick={() => {
-                            setIsReviewOpen(true)
+                            void handleCancelChange(nextChange)
                           }}
                         >
-                          {t('card.pendingChange.reviewCta')}
+                          {t('card.pendingChange.cancelCta')}
                         </Components.Button>
-                      }
-                    />
-                  )}
-                </Flex>
-              </div>
-            )}
-            {hasMultipleJobs ? (
-              <DataView label={t('card.tableLabel')} isWithinBox {...jobsDataView} />
-            ) : singleJob ? (
-              <Components.DescriptionList
-                items={[
-                  {
-                    term: t('card.jobTitle'),
-                    description: singleJob.title || emptyPlaceholder,
-                  },
-                  {
-                    term: t('card.type'),
-                    description: singleJobPaymentTypeLabel || emptyPlaceholder,
-                  },
-                  {
-                    term: t('card.wage'),
-                    description:
-                      singleJobNumericRate !== null && singleJob.paymentUnit
-                        ? formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)
-                        : emptyPlaceholder,
-                  },
-                  {
-                    term: t('card.effectiveDate'),
-                    description: singleJobCurrentComp?.effectiveDate
-                      ? formatDateLongWithYear(singleJobCurrentComp.effectiveDate)
+                      </div>
+                    </Flex>
+                  </Components.Alert>
+                )}
+                {showSummaryAlert && (
+                  <Components.Alert
+                    status="warning"
+                    disableScrollIntoView
+                    label={t('card.pendingChange.summaryLabel', {
+                      name: employeeFirstName ?? '',
+                    })}
+                    action={
+                      <Components.Button
+                        variant="secondary"
+                        onClick={() => {
+                          setIsReviewOpen(true)
+                        }}
+                      >
+                        {t('card.pendingChange.reviewCta')}
+                      </Components.Button>
+                    }
+                  />
+                )}
+              </Flex>
+            </div>
+          )}
+          {hasMultipleJobs ? (
+            <DataView label={t('card.tableLabel')} isWithinBox {...jobsDataView} />
+          ) : singleJob ? (
+            <Components.DescriptionList
+              items={[
+                {
+                  term: t('card.jobTitle'),
+                  description: singleJob.title || emptyPlaceholder,
+                },
+                {
+                  term: t('card.type'),
+                  description: singleJobPaymentTypeLabel || emptyPlaceholder,
+                },
+                {
+                  term: t('card.wage'),
+                  description:
+                    singleJobNumericRate !== null && singleJob.paymentUnit
+                      ? formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)
                       : emptyPlaceholder,
-                  },
-                  ...(singleJobIsPendingNew
-                    ? [
-                        {
-                          term: t('card.columns.status'),
-                          description: (
-                            <Components.Badge status="warning">
-                              {t('card.pendingStatus')}
-                            </Components.Badge>
-                          ),
-                        },
-                      ]
-                    : []),
-                ]}
-              />
-            ) : (
-              <EmptyData
-                title={t('card.emptyState.title')}
-                description={t('card.emptyState.description')}
-              />
-            )}
-          </Flex>
-        )}
+                },
+                {
+                  term: t('card.effectiveDate'),
+                  description: singleJobCurrentComp?.effectiveDate
+                    ? formatDateLongWithYear(singleJobCurrentComp.effectiveDate)
+                    : emptyPlaceholder,
+                },
+                ...(singleJobIsPendingNew
+                  ? [
+                      {
+                        term: t('card.columns.status'),
+                        description: (
+                          <Components.Badge status="warning">
+                            {t('card.pendingStatus')}
+                          </Components.Badge>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          ) : (
+            <EmptyData
+              title={t('card.emptyState.title')}
+              description={t('card.emptyState.description')}
+            />
+          )}
+        </Flex>
       </Components.Box>
 
       <PendingChangesReviewModal

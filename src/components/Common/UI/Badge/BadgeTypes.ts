@@ -1,5 +1,11 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
+/**
+ * Props your `Badge` implementation must accept from the component adapter.
+ * Renders a small inline label for status, counts, or tags; optionally dismissible.
+ *
+ * @public
+ */
 export interface BadgeProps extends Pick<
   HTMLAttributes<HTMLSpanElement>,
   'className' | 'id' | 'aria-label'
@@ -10,6 +16,8 @@ export interface BadgeProps extends Pick<
   children: ReactNode
   /**
    * Visual style variant of the badge
+   *
+   * @defaultValue `'info'`
    */
   status?: 'success' | 'warning' | 'error' | 'info'
   /**
@@ -28,6 +36,8 @@ export interface BadgeProps extends Pick<
 
 /**
  * Default prop values for Badge component.
+ *
+ * @internal
  */
 export const BadgeDefaults = {
   status: 'info',

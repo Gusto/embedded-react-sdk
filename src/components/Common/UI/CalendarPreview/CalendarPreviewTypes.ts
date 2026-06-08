@@ -1,3 +1,9 @@
+/**
+ * Props your `CalendarPreview` implementation must accept from the component adapter.
+ * Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
+ *
+ * @public
+ */
 export type CalendarPreviewProps = {
   /**
    * Array of dates to highlight with custom colors and labels

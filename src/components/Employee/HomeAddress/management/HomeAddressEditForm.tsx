@@ -14,14 +14,14 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
 import { componentEvents } from '@/shared/constants'
 
-export interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+export interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
   employeeId: string
   onEvent: BaseComponentInterface['onEvent']
 }
 
 function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddressEditFormProps) {
-  useI18n('Employee.HomeAddress.Management')
-  useComponentDictionary('Employee.HomeAddress.Management', dictionary)
+  useI18n('Employee.Management.HomeAddress')
+  useComponentDictionary('Employee.Management.HomeAddress', dictionary)
 
   const management = useHomeAddressManagement({ employeeId, onEvent })
 
@@ -35,9 +35,9 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
 
   const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
     if (result.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED, result.data)
+      onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED, result.data)
     } else {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED, result.data)
+      onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED, result.data)
     }
   }
 
@@ -53,7 +53,7 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
         onSaved={handleSaved}
         onConfirmDelete={management.actions.confirmDeleteHomeAddress}
         onBack={() => {
-          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED)
+          onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED)
         }}
         isDeletePending={management.status.isDeletePending}
       />
@@ -67,7 +67,7 @@ export function HomeAddressEditForm({
 }: HomeAddressEditFormProps & BaseComponentInterface) {
   return (
     <BaseBoundaries
-      componentName="Employee.HomeAddress.Management"
+      componentName="Employee.Management.HomeAddress"
       FallbackComponent={FallbackComponent}
     >
       <HomeAddressEditFormRoot {...props} />

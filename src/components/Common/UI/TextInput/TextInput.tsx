@@ -6,6 +6,13 @@ import { TextInputDefaults } from './TextInputTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 
+/**
+ * Renders a single-line text input with a label, optional description, error message, and adornments.
+ *
+ * @param rawProps - The {@link TextInputProps} controlling the input's value, label, validation state, and surrounding layout.
+ * @returns The rendered text input wrapped in its field layout.
+ * @internal
+ */
 export function TextInput(rawProps: TextInputProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TextInputDefaults)
   const {
