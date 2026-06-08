@@ -7,6 +7,7 @@ interface InlineSpinnerProps {
   size?: 'small' | 'medium' | 'large'
 }
 
+/** @internal */
 export const InlineSpinner = ({ ariaLabel, size = 'small' }: InlineSpinnerProps) => {
   const { t } = useTranslation('common')
   const defaultAriaLabel = t('status.loading')

@@ -7,6 +7,11 @@ interface FieldErrorMessageProps extends HTMLAttributes<HTMLParagraphElement> {
   withErrorIcon?: boolean
 }
 
+/**
+ * Renders a field's validation error message via the component adapter's `Text` primitive.
+ *
+ * @internal
+ */
 export function FieldErrorMessage({
   children,
   id,

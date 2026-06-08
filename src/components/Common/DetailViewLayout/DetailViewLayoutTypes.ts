@@ -38,4 +38,5 @@ type BaseDetailViewLayoutProps = {
   className?: string
 }
 
+/** @internal */
 export type DetailViewLayoutProps = BaseDetailViewLayoutProps & BackNavigation & TabbedContent

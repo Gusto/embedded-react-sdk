@@ -6,6 +6,11 @@ import styles from './FieldLayout.module.scss'
 import type { FieldLayoutProps } from './FieldLayoutTypes'
 import { getDataProps } from '@/helpers/getDataProps'
 
+/**
+ * Wraps a form control with its label, description, and error message in a consistent vertical layout.
+ *
+ * @internal
+ */
 export const FieldLayout: React.FC<FieldLayoutProps> = ({
   label,
   description,

@@ -4,6 +4,13 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { useMenu } from '@/hooks/useMenu'
 
+/**
+ * Hamburger icon button that opens a menu of actions when activated.
+ *
+ * @param props - See {@link HamburgerMenuProps}.
+ * @returns A button-and-menu pair rendered through the components context.
+ * @internal
+ */
 export function HamburgerMenu({
   items,
   triggerLabel,

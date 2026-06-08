@@ -434,8 +434,6 @@ export interface CheckboxGroupOption {
     value: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedFieldLayoutProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
     inputRef?: Ref<HTMLInputElement>;
@@ -459,8 +457,6 @@ export interface CheckboxHookFieldProps<TErrorCode extends string = never> exten
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedHorizontalFieldLayoutProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className'> {
     inputRef?: Ref<HTMLInputElement>;
@@ -657,6 +653,72 @@ namespace Compensation_2 {
     EditCompensation: EditCompensation;
 }
 
+// Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function Compensation_3(input: CompensationProps_2 & BaseComponentInterface<'Employee.Management.Compensation'>): JSX;
+
+// Warning: (ae-missing-release-tag) "CompensationAddAnotherJobForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "CompensationAddAnotherJobFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+    // (undocumented)
+    employeeId: string;
+    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "EventType" needs to be exported by the entry point index.d.ts
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "CompensationAddJobForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function CompensationAddJobForm(input: CompensationAddJobFormProps): JSX;
+
+// Warning: (ae-missing-release-tag) "CompensationAddJobFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+    // (undocumented)
+    employeeId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "CompensationCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function CompensationCard(props: CompensationCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "CompensationCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface CompensationCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "CompensationEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function CompensationEditForm(input: CompensationEditFormProps): JSX;
+
+// Warning: (ae-missing-release-tag) "CompensationEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+    // (undocumented)
+    employeeId: string;
+    jobId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -743,6 +805,16 @@ export type CompensationFormOutputs = CompensationFormData;
 //
 // @public (undocumented)
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_2>;
+
+// Warning: (ae-missing-release-tag) "CompensationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface CompensationProps_2 extends CommonComponentInterface<'Employee.Management.Compensation'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1041,6 +1113,19 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED: "employee/management/federalTaxes/editForm/submitted";
     readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED: "employee/management/federalTaxes/editForm/cancelled";
     readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED: "employee/management/federalTaxes/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED: "employee/management/documents/card/viewRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED: "employee/management/compensation/card/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED: "employee/management/compensation/card/addRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED: "employee/management/compensation/card/addAnotherRequested";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED: "employee/management/compensation/card/jobDeleted";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED: "employee/management/compensation/card/changeCancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED: "employee/management/compensation/editForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED: "employee/management/compensation/editForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED: "employee/management/compensation/addJobForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED: "employee/management/compensation/addJobForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED: "employee/management/compensation/addAnotherJobForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED: "employee/management/compensation/addAnotherJobForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED: "employee/management/compensation/alertDismissed";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -1683,7 +1768,7 @@ function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employe
 // Warning: (ae-missing-release-tag) "DeductionsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function DeductionsCard(input: DeductionsCardProps): JSX;
+function DeductionsCard(props: DeductionsCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "DeductionsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1691,9 +1776,6 @@ function DeductionsCard(input: DeductionsCardProps): JSX;
 interface DeductionsCardProps {
     // (undocumented)
     employeeId: string;
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "EventType" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -1703,7 +1785,6 @@ interface DeductionsCardProps {
 // @public
 function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DeductionsEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1801,11 +1882,41 @@ interface DismissalFlowProps {
 // @public (undocumented)
 function DocumentList(props: DocumentListProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentManagerProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentManager" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 function DocumentManager(props: DocumentManagerProps & BaseComponentInterface): JSX;
+
+// Warning: (ae-missing-release-tag) "DocumentManagerProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DocumentManagerProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    formId: string;
+}
+
+// Warning: (ae-missing-release-tag) "Documents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function Documents(input: DocumentsProps & BaseComponentInterface<'Employee.Management.Documents'>): JSX;
+
+// Warning: (ae-missing-release-tag) "DocumentsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useDocumentsList"
+//
+// @public
+function DocumentsCard(props: DocumentsCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "DocumentsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DocumentsCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-forgotten-export) The symbol "DocumentSignerProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentSigner" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1818,6 +1929,16 @@ function DocumentSigner(props: DocumentSignerProps): JSX;
 //
 // @public (undocumented)
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
+
+// Warning: (ae-missing-release-tag) "DocumentsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1972,7 +2093,12 @@ declare namespace EmployeeManagement {
         EmployeeListFlow,
         EmployeeListFlowProps,
         EmployeeDocuments,
+        Documents,
+        DocumentsCard,
         DocumentManager,
+        DocumentsProps,
+        DocumentsCardProps,
+        DocumentManagerProps,
         DashboardFlow,
         HomeAddress,
         HomeAddressCard,
@@ -2020,6 +2146,16 @@ declare namespace EmployeeManagement {
         DeductionsProps_2 as DeductionsProps,
         DeductionsCardProps,
         DeductionsEditFormProps,
+        Compensation_3 as Compensation,
+        CompensationCard,
+        CompensationEditForm,
+        CompensationAddJobForm,
+        CompensationAddAnotherJobForm,
+        CompensationProps_2 as CompensationProps,
+        CompensationCardProps,
+        CompensationEditFormProps,
+        CompensationAddJobFormProps,
+        CompensationAddAnotherJobFormProps,
         TerminateEmployee,
         TerminationSummary,
         TerminationFlow
@@ -2163,7 +2299,7 @@ function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface
 // Warning: (ae-missing-release-tag) "FederalTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function FederalTaxesCard(input: FederalTaxesCardProps): JSX;
+function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2562,7 +2698,7 @@ function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.
 // Warning: (ae-missing-release-tag) "HomeAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function HomeAddressCard(input: HomeAddressCardProps): JSX;
+function HomeAddressCard(props: HomeAddressCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "HomeAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3367,6 +3503,7 @@ function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface): 
 function PaymentMethod_3(input: PaymentMethodProps_3 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethodBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "BankFormBody"
 //
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
@@ -3385,7 +3522,7 @@ interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaymentMethodList"
 //
 // @public
-function PaymentMethodCard(input: PaymentMethodCardProps): JSX;
+function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethodCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3484,6 +3621,7 @@ interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.Manage
 }
 
 // Warning: (ae-missing-release-tag) "PaymentMethodSplitForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SplitPaymentsFormBody"
 //
 // @public
 function PaymentMethodSplitForm(input: PaymentMethodSplitFormProps): JSX;
@@ -3668,9 +3806,7 @@ function PayrollList(props: PayrollListBlockProps): JSX;
 
 // @public
 export interface PayrollLoadingProps {
-    // (undocumented)
     description?: ReactNode;
-    // (undocumented)
     title: ReactNode;
 }
 
@@ -3759,7 +3895,7 @@ export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRE
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaystubsList"
 //
 // @public
-function PaystubsCard(input: PaystubsCardProps): JSX;
+function PaystubsCard(props: PaystubsCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PaystubsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3924,7 +4060,7 @@ function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Mana
 // Warning: (ae-missing-release-tag) "ProfileCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function ProfileCard(input: ProfileCardProps): JSX;
+function ProfileCard(props: ProfileCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ProfileCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3944,7 +4080,7 @@ function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterfa
 // Warning: (ae-missing-release-tag) "ProfileEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profile'> {
+interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
@@ -4174,6 +4310,18 @@ export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 //
 // @public (undocumented)
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
+
+// @public
+export interface SharedFieldLayoutProps extends DataAttributes {
+    description?: ReactNode;
+    errorMessage?: string;
+    isRequired?: boolean;
+    label: ReactNode;
+    shouldVisuallyHideLabel?: boolean;
+}
+
+// @public
+export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
 
 // Warning: (ae-missing-release-tag) "SignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4489,7 +4637,7 @@ function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'F
 // Warning: (ae-missing-release-tag) "StateTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function StateTaxesCard(input: StateTaxesCardProps): JSX;
+function StateTaxesCard(props: StateTaxesCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5793,7 +5941,7 @@ function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.
 // Warning: (ae-missing-release-tag) "WorkAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function WorkAddressCard(input: WorkAddressCardProps): JSX;
+function WorkAddressCard(props: WorkAddressCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "WorkAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5929,7 +6077,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:268:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

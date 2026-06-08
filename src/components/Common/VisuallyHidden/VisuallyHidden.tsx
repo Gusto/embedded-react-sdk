@@ -3,6 +3,7 @@ import type React from 'react'
 import classnames from 'classnames'
 import styles from './VisuallyHidden.module.scss'
 
+/** @internal */
 export interface VisuallyHiddenProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The element to render the visually hidden content as.
@@ -15,6 +16,7 @@ export interface VisuallyHiddenProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
 }
 
+/** @internal */
 export function VisuallyHidden({
   as: Component = 'div',
   children,

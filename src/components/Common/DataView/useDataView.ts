@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+/** @internal */
 export type SelectionMode = 'multiple' | 'single'
 
 type DataViewColumn<T> =
@@ -66,9 +67,11 @@ type MultipleSelectionProps<T> = {
   getIsItemSelected: (item: T) => boolean
 }
 
+/** @internal */
 export type useDataViewProp<T> = BaseDataViewProps<T> &
   (NoSelectionProps | SingleSelectionProps<T> | MultipleSelectionProps<T>)
 
+/** @internal */
 export type useDataViewPropReturn<T> = {
   pagination?: PaginationControlProps
   data: T[]
@@ -84,6 +87,7 @@ export type useDataViewPropReturn<T> = {
   selectionMode?: SelectionMode
 }
 
+/** @internal */
 export const useDataView = <T>({
   columns,
   data,

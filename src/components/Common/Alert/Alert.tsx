@@ -5,6 +5,7 @@ import SuccessIcon from '@/assets/icons/success_check.svg?react'
 import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 
+/** @internal */
 export interface AlertProps {
   variant?: 'info' | 'success' | 'warning' | 'error'
   label: string
@@ -12,6 +13,7 @@ export interface AlertProps {
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement> & { title?: string }>
 }
 
+/** @internal */
 export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)

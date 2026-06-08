@@ -5,6 +5,7 @@ import styles from './DetailViewLayout.module.scss'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function DetailViewLayout({
   title,
   subtitle,

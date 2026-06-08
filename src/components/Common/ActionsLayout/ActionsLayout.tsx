@@ -6,6 +6,7 @@ interface ActionsLayoutProps {
   justifyContent?: GridProps['justifyContent']
 }
 
+/** @internal */
 export const ActionsLayout = ({ children, justifyContent = 'end' }: ActionsLayoutProps) => {
   const childrenArray = Children.toArray(children).filter(Boolean)
   return (

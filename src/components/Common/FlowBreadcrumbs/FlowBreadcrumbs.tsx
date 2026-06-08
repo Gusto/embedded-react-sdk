@@ -9,6 +9,26 @@ import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
+/**
+ * Renders the breadcrumb trail for a multi-step flow.
+ *
+ * @remarks
+ * Translates each breadcrumb's label via i18next using the optional `namespace`
+ * and `variables`, formats `startDate`/`endDate` variables through the locale's
+ * short-with-year date formatter, and emits a `breadcrumb/navigate` event when
+ * a clickable breadcrumb is selected. A breadcrumb is clickable when
+ * `isNavigable` is true, or when `isNavigable` is omitted and `onNavigate` is
+ * defined. Switches to a condensed mobile layout when the container only
+ * contains the base breakpoint.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `breadcrumb/navigate` | Emitted when a clickable breadcrumb is selected | `{ key: string; onNavigate: (ctx: unknown) => unknown }` |
+ *
+ * @param props - See {@link FlowBreadcrumbsProps}.
+ * @returns The breadcrumb trail rendered through the component adapter.
+ * @internal
+ */
 export function FlowBreadcrumbs({
   breadcrumbs,
   currentBreadcrumbId,
