@@ -177,9 +177,7 @@ export function useEmployeeStateTaxesForm({
       Fields: fieldsArray,
       fieldsMetadata,
       hookFormInternals,
-      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema) as () =>
-        | Record<string, unknown>
-        | undefined,
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }
