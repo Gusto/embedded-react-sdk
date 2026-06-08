@@ -13,6 +13,7 @@ type EmptyDataProps = {
    */
   icon?: React.ReactNode
 }
+/** @internal */
 export function EmptyData({ title, description, children, icon }: EmptyDataProps) {
   const { t } = useTranslation()
   const { Text } = useComponentContext()

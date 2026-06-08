@@ -188,6 +188,7 @@ export default [
   {
     files: [
       'src/components/Base/**/*.{ts,tsx}',
+      'src/components/Common/**/*.{ts,tsx}',
       'src/components/Common/Fields/**/*.{ts,tsx}',
       'src/components/Common/UI/**/*.{ts,tsx}',
       'src/components/Common/PaginationControl/**',

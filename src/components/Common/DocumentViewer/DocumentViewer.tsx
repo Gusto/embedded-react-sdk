@@ -11,6 +11,7 @@ interface DocumentViewerProps {
   headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
+/** @internal */
 export function DocumentViewer({
   url,
   title,

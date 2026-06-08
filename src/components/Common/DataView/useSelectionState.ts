@@ -4,6 +4,7 @@ type SelectionState = {
   allSelected: boolean
 }
 
+/** @internal */
 export function useSelectionState<T>(
   data: T[],
   getIsItemSelected?: (item: T) => boolean,

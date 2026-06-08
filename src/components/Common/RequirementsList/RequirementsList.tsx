@@ -12,6 +12,7 @@ interface RequirementsListProps {
     completed: boolean
   }[]
 }
+/** @internal */
 export const RequirementsList = ({ requirements }: RequirementsListProps) => {
   const Components = useComponentContext()
   const id = useId()

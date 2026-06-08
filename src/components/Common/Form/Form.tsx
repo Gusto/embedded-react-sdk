@@ -1,8 +1,10 @@
 import classNames from 'classnames'
 import styles from './Form.module.scss'
 
+/** @internal */
 export type FormProps = React.FormHTMLAttributes<HTMLFormElement>
 
+/** @internal */
 export const Form = ({ children, className, onSubmit, ...props }: FormProps) => {
   return (
     <form

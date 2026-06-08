@@ -4,10 +4,12 @@ import type { ReactNode } from 'react'
 import styles from './Loading.module.scss'
 import { FadeIn } from '@/components/Common/FadeIn/FadeIn'
 
+/** @internal */
 export interface LoadingProps {
   children?: ReactNode
 }
 
+/** @internal */
 export const Loading = ({ children }: LoadingProps) => {
   const { t } = useTranslation('common')
   return (

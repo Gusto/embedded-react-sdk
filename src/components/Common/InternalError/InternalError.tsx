@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import styles from './InternalError.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
   const { t } = useTranslation('common')
   const Components = useComponentContext()

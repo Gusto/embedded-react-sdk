@@ -3,10 +3,15 @@ import { EmptyData } from '../EmptyData/EmptyData'
 import styles from './DocumentList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface FormData {
+  /** Unique identifier for the form. */
   uuid: string
+  /** Display title shown in the list row. */
   title?: string
+  /** Secondary description shown beneath the title. */
   description?: string
+  /** Whether the form still requires a signature. */
   requires_signing?: boolean
 }
 
@@ -29,6 +34,7 @@ interface DocumentListProps {
   errorLabel: string
 }
 
+/** @internal */
 function DocumentList({
   forms,
   canSign = true,
