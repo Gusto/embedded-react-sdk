@@ -26,6 +26,7 @@ type BreadcrumbNavigateEvent<TContext> = {
  * @internal
  */
 export const createBreadcrumbNavigateTransition = <TContext>() => {
+  /* eslint-enable @typescript-eslint/no-unnecessary-type-parameters */
   return (targetState: string, canNavigate?: (ctx: TContext) => boolean) =>
     transition(
       componentEvents.BREADCRUMB_NAVIGATE,

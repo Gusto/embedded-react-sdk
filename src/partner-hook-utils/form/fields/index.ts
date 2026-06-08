@@ -6,6 +6,8 @@ export { DatePickerHookField, type DatePickerHookFieldProps } from './DatePicker
 export { RadioGroupHookField, type RadioGroupHookFieldProps } from './RadioGroupHookField'
 export { SwitchHookField, type SwitchHookFieldProps } from './SwitchHookField'
 
+export type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
+export type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 export type { SelectProps, SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 export type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'

@@ -28,6 +28,8 @@ export {
   type DatePickerHookFieldProps,
   RadioGroupHookField,
   type RadioGroupHookFieldProps,
+  type SharedFieldLayoutProps,
+  type SharedHorizontalFieldLayoutProps,
   type TextInputProps,
   type SelectProps,
   type SelectOption,

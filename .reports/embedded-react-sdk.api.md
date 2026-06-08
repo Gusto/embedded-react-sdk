@@ -434,8 +434,6 @@ export interface CheckboxGroupOption {
     value: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedFieldLayoutProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
     inputRef?: Ref<HTMLInputElement>;
@@ -459,8 +457,6 @@ export interface CheckboxHookFieldProps<TErrorCode extends string = never> exten
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedHorizontalFieldLayoutProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className'> {
     inputRef?: Ref<HTMLInputElement>;
@@ -4314,6 +4310,18 @@ export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 //
 // @public (undocumented)
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
+
+// @public
+export interface SharedFieldLayoutProps extends DataAttributes {
+    description?: ReactNode;
+    errorMessage?: string;
+    isRequired?: boolean;
+    label: ReactNode;
+    shouldVisuallyHideLabel?: boolean;
+}
+
+// @public
+export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
 
 // Warning: (ae-missing-release-tag) "SignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
