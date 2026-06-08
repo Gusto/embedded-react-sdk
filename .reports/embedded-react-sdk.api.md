@@ -172,17 +172,11 @@ export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<Pa
 // @public (undocumented)
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
-// Warning: (ae-missing-release-tag) "APIConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface APIConfig {
-    // (undocumented)
     baseUrl: string;
-    // (undocumented)
     headers?: HeadersInit;
-    // (undocumented)
     hooks?: SDKHooks;
-    // (undocumented)
     observability?: ObservabilityHook;
 }
 
@@ -2548,68 +2542,40 @@ export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTax
 // @public (undocumented)
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
 
-// Warning: (ae-missing-release-tag) "GustoApiProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
-    // (undocumented)
     children?: default_2.ReactNode;
-    // (undocumented)
     components?: Partial<ComponentsContextType>;
-    // (undocumented)
     queryClient?: QueryClient;
 }
 
-// Warning: (ae-missing-release-tag) "GustoApiProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public @deprecated (undocumented)
+// @public @deprecated
 export const GustoApiProvider: default_2.FC<GustoApiProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const GustoProvider: default_2.FC<GustoApiProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProviderCustomUIAdapter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const GustoProviderCustomUIAdapter: default_2.FC<GustoProviderCustomUIAdapterProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProviderCustomUIAdapterProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
-    // (undocumented)
     children?: default_2.ReactNode;
 }
 
-// Warning: (ae-missing-release-tag) "GustoProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoProviderProps {
-    // (undocumented)
     components: ComponentsContextType;
-    // (undocumented)
     config: APIConfig;
-    // (undocumented)
     currency?: string;
     // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     dictionary?: ResourceDictionary;
-    // (undocumented)
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
-    // (undocumented)
     locale?: string;
-    // (undocumented)
     portalContainer?: HTMLElement;
-    // (undocumented)
     queryClient?: QueryClient;
-    // (undocumented)
     theme?: Partial<GustoSDKTheme>;
 }
 

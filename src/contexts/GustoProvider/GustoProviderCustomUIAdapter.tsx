@@ -21,32 +21,72 @@ import type { SDKHooks } from '@/types/hooks'
 import type { ObservabilityHook } from '@/types/observability'
 import { normalizeToSDKError } from '@/types/sdkError'
 
+/**
+ * API client configuration passed to {@link GustoProvider} (and {@link GustoProviderCustomUIAdapter}).
+ *
+ * @public
+ */
 export interface APIConfig {
+  /** URL of your backend proxy that forwards SDK requests to the Gusto Embedded API. SDK components never call Gusto directly. */
   baseUrl: string
+  /** Extra headers applied to every API request. Combined with any headers your proxy adds. */
   headers?: HeadersInit
+  /** Request interceptor hooks. Use these to inspect, modify, or react to requests and responses. See {@link SDKHooks}. */
   hooks?: SDKHooks
+  /** Observability hook for surfacing errors and metrics from the SDK to your monitoring stack. See {@link ObservabilityHook}. */
   observability?: ObservabilityHook
 }
 
+/**
+ * Shared configuration props accepted by {@link GustoProvider} and {@link GustoProviderCustomUIAdapter}.
+ *
+ * @public
+ */
 export interface GustoProviderProps {
+  /** API client configuration, including the proxy `baseUrl`, request hooks, and observability. See {@link APIConfig}. */
   config: APIConfig
+  /** Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. */
   dictionary?: ResourceDictionary
+  /** Active i18next language. Defaults to `'en'`. */
   lng?: string
+  /** BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. */
   locale?: string
+  /** ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. */
   currency?: string
+  /** Theme overrides applied to SDK components. See {@link GustoSDKTheme}. */
   theme?: Partial<GustoSDKTheme>
+  /** Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. */
   portalContainer?: HTMLElement
+  /** Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. */
   queryClient?: QueryClient
+  /** Complete map of UI components the SDK renders. Required because this adapter ships no defaults. */
   components: ComponentsContextType
+  /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
 }
 
+/**
+ * Props for {@link GustoProviderCustomUIAdapter}.
+ *
+ * @public
+ */
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
+  /** The application tree that should have access to the SDK. */
   children?: React.ReactNode
 }
 
 /**
- * A provider that accepts UI component adapters through the components prop
+ * Top-level provider that requires a complete component map and ships no UI defaults.
+ *
+ * @remarks
+ * Use this adapter when you want full control over every UI primitive the SDK renders, or when
+ * you want to avoid the React Aria dependency for tree-shaking. Unlike {@link GustoProvider}, the
+ * `components` prop on {@link GustoProviderProps} is required and must supply every component the
+ * SDK renders.
+ *
+ * @param props - See {@link GustoProviderCustomUIAdapterProps}.
+ * @returns The configured provider tree wrapping `children`.
+ * @public
  */
 const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> = props => {
   const {
