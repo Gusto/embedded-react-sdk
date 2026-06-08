@@ -142,6 +142,8 @@ dist
 docs-site/build/
 docs-site/.docusaurus/
 
+docs/api/
+
 # Serverless directories
 
 .serverless/

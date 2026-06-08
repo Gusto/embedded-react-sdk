@@ -1,5 +1,7 @@
 import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
+import { type TypeDocOptions } from 'typedoc'
+import { type PluginOptions } from 'docusaurus-plugin-typedoc'
 import { themes as prismThemes } from 'prism-react-renderer'
 
 const config: Config = {
@@ -24,6 +26,25 @@ const config: Config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  plugins: [
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        entryPoints: ['../src/index.ts'],
+        tsconfig: 'tsconfig.typedoc.json',
+        out: '../docs/api',
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true,
+          typescript: true,
+          deprecatedItemClassName: 'typedoc-sidebar-item-deprecated',
+        },
+        readme: 'none',
+        disableSources: true,
+      } satisfies TypeDocOptions & PluginOptions,
+    ],
+  ],
 
   themes: [
     [

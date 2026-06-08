@@ -1,4 +1,5 @@
 import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
+import typedocSidebar from '../docs/api/typedoc-sidebar'
 
 const sidebars: SidebarsConfig = {
   docs: [
@@ -96,6 +97,12 @@ const sidebars: SidebarsConfig = {
         'reference/jobs-and-compensations',
         'reference/proxy-examples',
       ],
+    },
+    {
+      type: 'category',
+      label: 'API Reference',
+      link: { type: 'doc', id: 'api/index' },
+      items: typedocSidebar.items,
     },
   ],
 }
