@@ -11,15 +11,6 @@ import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 import { componentEvents } from '@/shared/constants'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium', 'large'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium', 'large'],
-  }
-})
-
 describe('Compensation (management block)', () => {
   const onEvent = vi.fn()
 

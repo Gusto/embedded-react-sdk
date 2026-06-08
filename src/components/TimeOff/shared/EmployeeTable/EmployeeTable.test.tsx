@@ -6,7 +6,6 @@ import type { EmployeeTableItem, EmployeeTableProps } from './EmployeeTableTypes
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -52,10 +51,6 @@ const defaultProps: EmployeeTableProps<TestEmployee> = {
   onSearchClear: vi.fn(),
 }
 
-beforeEach(() => {
-  mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-})
-
 function renderEmployeeTable(overrides: Partial<EmployeeTableProps<TestEmployee>> = {}) {
   return render(
     <ThemeProvider>
@@ -69,7 +64,6 @@ function renderEmployeeTable(overrides: Partial<EmployeeTableProps<TestEmployee>
 describe('EmployeeTable', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
   })
 
   test('renders Name and Job title columns', () => {

@@ -12,6 +12,7 @@ import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const mockEmployee: Employee = {
   uuid: 'emp-1',
@@ -227,6 +228,7 @@ const defaultProps = {
 describe('PayrollEditEmployeePresentation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
   })
 
   it('renders the component with employee data', async () => {

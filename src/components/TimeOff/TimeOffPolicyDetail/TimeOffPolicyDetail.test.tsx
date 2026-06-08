@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { TimeOffPolicyDetail } from './TimeOffPolicyDetail'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const mockRemoveEmployees = vi.fn()
 const mockUpdateBalance = vi.fn()
@@ -81,6 +82,7 @@ describe('TimeOffPolicyDetail', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
     mockRemoveEmployees.mockResolvedValue({ timeOffPolicy: mockPolicyData })
     mockUpdateBalance.mockResolvedValue({ timeOffPolicy: mockPolicyData })
     mockPolicyData = { ...basePolicyData }

@@ -15,15 +15,6 @@ import {
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 const paymentConfigsMock = http.get(
   `${API_BASE_URL}/v1/companies/:company_uuid/payment_configs`,
   () => {

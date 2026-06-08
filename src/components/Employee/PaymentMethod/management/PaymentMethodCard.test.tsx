@@ -77,15 +77,6 @@ const mockCheckPaymentMethod = () => {
   )
 }
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium', 'large'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium', 'large'],
-  }
-})
-
 describe('PaymentMethodCard (standalone)', () => {
   const onEvent = vi.fn()
 

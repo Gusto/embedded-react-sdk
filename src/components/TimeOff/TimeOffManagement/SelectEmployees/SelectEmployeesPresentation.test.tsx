@@ -6,7 +6,6 @@ import type { SelectEmployeesPresentationProps } from './SelectEmployeesPresenta
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -48,7 +47,6 @@ function renderPresentation(overrides: Partial<SelectEmployeesPresentationProps>
 describe('SelectEmployeesPresentation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
   })
 
   test('renders heading', () => {

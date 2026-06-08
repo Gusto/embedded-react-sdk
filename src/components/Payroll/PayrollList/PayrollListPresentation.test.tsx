@@ -9,6 +9,7 @@ import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -103,6 +104,10 @@ const defaultProps = {
 }
 
 describe('PayrollListPresentation', () => {
+  beforeEach(() => {
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
+  })
+
   describe('rendering', () => {
     it('renders pay period information', async () => {
       renderWithProviders(<PayrollListPresentation {...defaultProps} />)

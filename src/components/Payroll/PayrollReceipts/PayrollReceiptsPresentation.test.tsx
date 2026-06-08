@@ -4,6 +4,7 @@ import { screen, waitFor } from '@testing-library/react'
 import type { PayrollReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const sampleReceiptData: PayrollReceipt = {
   payrollUuid: '781006e4-08f0-4bcb-b42a-5ec640f0e313',
@@ -60,6 +61,10 @@ const sampleReceiptData: PayrollReceipt = {
 
 describe('PayrollReceiptsPresentation', () => {
   describe('mobile layout (default test breakpoint)', () => {
+    beforeEach(() => {
+      mockUseContainerBreakpoints.mockReturnValue(['base'])
+    })
+
     it('renders employee breakdown footer with column labels', async () => {
       renderWithProviders(
         <Suspense fallback={<div>Loading...</div>}>
