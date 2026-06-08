@@ -34,7 +34,7 @@ export interface GustoProviderProps {
   lng?: string
   locale?: string
   currency?: string
-  theme?: GustoSDKTheme
+  theme?: Partial<GustoSDKTheme>
   portalContainer?: HTMLElement
   queryClient?: QueryClient
   components: ComponentsContextType

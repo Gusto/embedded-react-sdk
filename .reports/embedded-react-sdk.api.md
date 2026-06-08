@@ -2609,10 +2609,88 @@ export interface GustoProviderProps {
     portalContainer?: HTMLElement;
     // (undocumented)
     queryClient?: QueryClient;
-    // Warning: (ae-forgotten-export) The symbol "GustoSDKTheme" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    theme?: GustoSDKTheme;
+    theme?: Partial<GustoSDKTheme>;
+}
+
+// Warning: (ae-missing-release-tag) "GustoSDKTheme" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface GustoSDKTheme extends GustoSDKThemeColors {
+    badgeRadius: string;
+    bannerRadius: string;
+    boxRadius: string;
+    buttonRadius: string;
+    cardRadius: string;
+    focusRingColor: string;
+    focusRingWidth: string;
+    fontFamily: string;
+    fontLineHeightExtraSmall: string;
+    fontLineHeightLarge: string;
+    fontLineHeightRegular: string;
+    fontLineHeightSmall: string;
+    fontSizeExtraSmall: string;
+    fontSizeHeading1: string;
+    fontSizeHeading2: string;
+    fontSizeHeading3: string;
+    fontSizeHeading4: string;
+    fontSizeHeading5: string;
+    fontSizeHeading6: string;
+    fontSizeLarge: string;
+    fontSizeRegular: string;
+    fontSizeRoot: string;
+    fontSizeSmall: string;
+    fontWeightBold: string;
+    fontWeightMedium: string;
+    fontWeightRegular: string;
+    fontWeightSemibold: string;
+    inputAdornmentColor: string;
+    inputBackgroundColor: string;
+    inputBorderColor: string;
+    inputBorderWidth: string;
+    inputContentColor: string;
+    inputDescriptionColor: string;
+    inputDisabledBackgroundColor: string;
+    inputErrorColor: string;
+    inputLabelColor: string;
+    inputLabelFontSize: string;
+    inputLabelFontWeight: string;
+    inputPlaceholderColor: string;
+    inputRadius: string;
+    shadowResting: string;
+    shadowTopmost: string;
+    transitionDuration: string;
+}
+
+// Warning: (ae-missing-release-tag) "GustoSDKThemeColors" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface GustoSDKThemeColors {
+    colorBody: string;
+    colorBodyAccent: string;
+    colorBodyContent: string;
+    colorBodySubContent: string;
+    colorBorderPrimary: string;
+    colorBorderSecondary: string;
+    colorButtonIcon: string;
+    colorError: string;
+    colorErrorAccent: string;
+    colorErrorContent: string;
+    colorInfo: string;
+    colorInfoAccent: string;
+    colorInfoContent: string;
+    colorPrimary: string;
+    colorPrimaryAccent: string;
+    colorPrimaryContent: string;
+    colorSecondary: string;
+    colorSecondaryAccent: string;
+    colorSecondaryContent: string;
+    colorSuccess: string;
+    colorSuccessAccent: string;
+    colorSuccessContent: string;
+    colorWarning: string;
+    colorWarningAccent: string;
+    colorWarningContent: string;
 }
 
 // @public
