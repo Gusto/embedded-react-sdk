@@ -1,5 +1,6 @@
 ---
 title: Employee Management
+description: Components for viewing and editing an employee after onboarding — the Employee Dashboard plus standalone blocks for profile, compensation, deductions, and more.
 order: 0
 ---
 

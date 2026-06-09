@@ -1,5 +1,6 @@
 ---
 title: Off-Cycle Payroll (Bonus & Correction)
+description: Workflow for running payrolls outside the regular pay schedule — bonus or correction — then transitioning into the standard payroll processing execution.
 order: 5
 ---
 

@@ -1,3 +1,8 @@
+---
+title: Observability Hook Examples
+description: Worked examples integrating the SDK observability hook with console logging, Sentry, Datadog, New Relic, and other error and metric monitoring services.
+---
+
 # Observability Hook Examples
 
 Practical examples for integrating the observability hook with common monitoring services.

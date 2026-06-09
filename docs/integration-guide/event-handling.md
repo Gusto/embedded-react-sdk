@@ -1,5 +1,6 @@
 ---
 title: Event Handling
+description: Subscribe to SDK component events via onEvent callbacks for telemetry, navigation, and side effects — typed event constants and event payload shapes.
 order: 1
 ---
 

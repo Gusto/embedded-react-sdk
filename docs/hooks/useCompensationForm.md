@@ -1,5 +1,6 @@
 ---
 title: useCompensationForm
+description: Headless hook for creating or updating a compensation row — FLSA status, pay rate, payment unit, effective date, minimum-wage adjustment — inside SDKFormProvider.
 order: 3
 ---
 

@@ -147,7 +147,7 @@ function HeroSection() {
   const logoForDarkMode = useBaseUrl('/img/gusto-logo.svg')
 
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} aria-label="Introduction">
       <div className={styles.heroInner}>
         <h1 className={styles.heroBrand}>
           <img
@@ -184,8 +184,11 @@ function HeroSection() {
 
 function FeaturesSection() {
   return (
-    <section className={styles.features} aria-label="Key features">
+    <section className={styles.features} aria-labelledby="features-heading">
       <div className={styles.featuresInner}>
+        <h2 id="features-heading" className={styles.srOnly}>
+          Key features
+        </h2>
         <div className={styles.featuresGrid}>
           {features.map(({ title, description, Icon }) => (
             <div key={title} className={styles.featureCard}>
@@ -202,7 +205,7 @@ function FeaturesSection() {
 
 function QuickLinksSection() {
   return (
-    <section className={styles.quickLinks}>
+    <section className={styles.quickLinks} aria-label="Explore the SDK">
       <div className={styles.quickLinksInner}>
         <h2 className={styles.quickLinksTitle}>Explore the SDK</h2>
         <div className={styles.quickLinksGrid}>
@@ -233,9 +236,11 @@ export default function Home(): ReactNode {
 
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
-      <HeroSection />
-      <FeaturesSection />
-      <QuickLinksSection />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <QuickLinksSection />
+      </main>
     </Layout>
   )
 }

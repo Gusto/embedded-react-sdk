@@ -1,5 +1,6 @@
 ---
 title: Event Types
+description: Reference table of every event constant emitted by SDK components — company, employee, contractor, payroll, and signatory events with their string values.
 order: 8
 ---
 

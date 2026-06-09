@@ -1,5 +1,6 @@
 ---
 title: Theme Variables
+description: Inventory of every SDK theme variable — color tokens, typography, sizing, and shadow values you can override via the GustoProvider theme prop.
 order: 1
 ---
 
