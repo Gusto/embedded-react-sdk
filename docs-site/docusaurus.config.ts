@@ -50,6 +50,8 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           breadcrumbs: true,
           exclude: ['test-fests/**'],
+          editUrl: ({ docPath }) =>
+            `https://github.com/Gusto/embedded-react-sdk/edit/main/docs/${docPath}`,
         },
         blog: false,
         theme: {
