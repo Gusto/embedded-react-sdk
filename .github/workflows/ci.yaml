@@ -181,6 +181,15 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Validate docs front matter
+        run: npm run docs:lint
+
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
