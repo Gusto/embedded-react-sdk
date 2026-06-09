@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.47.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.47.0...v0.47.1) (2026-06-09)
+
+### Features & Enhancements
+
+- add create-design-prototype skill ([#2062](https://github.com/Gusto/embedded-react-sdk/issues/2062)) ([6618bfe](https://github.com/Gusto/embedded-react-sdk/commit/6618bfe44a1422706ad251c1674f09c0b546f368))
+- re-export onboarding status constants from public entry ([#2080](https://github.com/Gusto/embedded-react-sdk/issues/2080)) ([64edd32](https://github.com/Gusto/embedded-react-sdk/commit/64edd323f2703a58bf58e61404cf2051c4c6caa6))
+
+### Fixes
+
+- tighten federal taxes form field spacing ([#2063](https://github.com/Gusto/embedded-react-sdk/issues/2063)) ([8644bee](https://github.com/Gusto/embedded-react-sdk/commit/8644bee5d7be93f472201f1066147b6490c1bf3c))
+
+### Chores & Maintenance
+
+- **deps-dev:** bump @microsoft/api-extractor from 7.58.7 to 7.58.8 ([#2070](https://github.com/Gusto/embedded-react-sdk/issues/2070)) ([e8153e5](https://github.com/Gusto/embedded-react-sdk/commit/e8153e53fb8597be925e35ccf90f9332b4c71fa8))
+- **deps-dev:** bump @storybook/addon-docs from 10.4.1 to 10.4.2 ([#2071](https://github.com/Gusto/embedded-react-sdk/issues/2071)) ([1321422](https://github.com/Gusto/embedded-react-sdk/commit/132142240b23631601bc5da9edb6157fafa903fe))
+- **deps-dev:** bump @typescript-eslint/rule-tester from 8.60.1 to 8.61.0 ([#2074](https://github.com/Gusto/embedded-react-sdk/issues/2074)) ([5ea4631](https://github.com/Gusto/embedded-react-sdk/commit/5ea463124eca514a514a44845d4583c1896daa06))
+- **deps-dev:** bump @typescript-eslint/utils from 8.60.1 to 8.61.0 ([#2072](https://github.com/Gusto/embedded-react-sdk/issues/2072)) ([69080d8](https://github.com/Gusto/embedded-react-sdk/commit/69080d883513c5485883635ac39df957d3ce2d43))
+- **deps-dev:** bump shell-quote from 1.8.3 to 1.8.4 in the npm_and_yarn group across 1 directory ([#2075](https://github.com/Gusto/embedded-react-sdk/issues/2075)) ([d8b3a5b](https://github.com/Gusto/embedded-react-sdk/commit/d8b3a5bc12ba829664f58a6e2aaad209ac27e042))
+- **deps-dev:** bump typescript-eslint from 8.60.1 to 8.61.0 ([#2073](https://github.com/Gusto/embedded-react-sdk/issues/2073)) ([0f58397](https://github.com/Gusto/embedded-react-sdk/commit/0f58397965ecbceb74cc4785d2ea415ce0c42f73))
+- move EmployeeDocuments export from EmployeeManagement to EmployeeOnboarding ([#2065](https://github.com/Gusto/embedded-react-sdk/issues/2065)) ([d07bd90](https://github.com/Gusto/embedded-react-sdk/commit/d07bd90b8d5e120d540d7e22a30d3717011b2ad0))
+- **SDK-1010:** backfill phase 5 ([#2061](https://github.com/Gusto/embedded-react-sdk/issues/2061)) ([2a02b30](https://github.com/Gusto/embedded-react-sdk/commit/2a02b30597c37f846576a617330f7e84f7273909))
+- **SDK-1011:** backfill phase 6 ([#2064](https://github.com/Gusto/embedded-react-sdk/issues/2064)) ([7d8a165](https://github.com/Gusto/embedded-react-sdk/commit/7d8a165f5656380f8fe9d0a088b704859b02939c))
+
 ## [0.47.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.3...v0.47.0) (2026-06-08)
 
 ### Breaking Changes
