@@ -665,7 +665,6 @@ interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'E
     // (undocumented)
     employeeId: string;
     // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "EventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1245,11 +1244,25 @@ declare namespace ContractorOnboarding {
     }
 }
 
+// @public
+export const ContractorOnboardingStatus: {
+    readonly ADMIN_ONBOARDING_INCOMPLETE: "admin_onboarding_incomplete";
+    readonly ADMIN_ONBOARDING_REVIEW: "admin_onboarding_review";
+    readonly SELF_ONBOARDING_NOT_INVITED: "self_onboarding_not_invited";
+    readonly SELF_ONBOARDING_INVITED: "self_onboarding_invited";
+    readonly SELF_ONBOARDING_STARTED: "self_onboarding_started";
+    readonly SELF_ONBOARDING_REVIEW: "self_onboarding_review";
+    readonly ONBOARDING_COMPLETED: "onboarding_completed";
+};
+
 // Warning: (ae-forgotten-export) The symbol "ContractorProfileProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ContractorProfile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
+
+// @public
+export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
 
 // Warning: (ae-forgotten-export) The symbol "ContractorSubmitProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ContractorSubmit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2181,6 +2194,21 @@ declare namespace EmployeeOnboarding {
     }
 }
 
+// @public
+export const EmployeeOnboardingStatus: {
+    readonly ADMIN_ONBOARDING_INCOMPLETE: "admin_onboarding_incomplete";
+    readonly SELF_ONBOARDING_PENDING_INVITE: "self_onboarding_pending_invite";
+    readonly SELF_ONBOARDING_INVITED: "self_onboarding_invited";
+    readonly SELF_ONBOARDING_INVITED_STARTED: "self_onboarding_invited_started";
+    readonly SELF_ONBOARDING_INVITED_OVERDUE: "self_onboarding_invited_overdue";
+    readonly SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: "self_onboarding_completed_by_employee";
+    readonly SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: "self_onboarding_awaiting_admin_review";
+    readonly ONBOARDING_COMPLETED: "onboarding_completed";
+};
+
+// @public
+export const EmployeeSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_invited_started" | "self_onboarding_invited_overdue">;
+
 // Warning: (ae-missing-release-tag) "EmployeeStateTaxesErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2268,6 +2296,9 @@ interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.Em
     // (undocumented)
     employeeId: string;
 }
+
+// @public
+export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 
 // Warning: (ae-missing-release-tag) "ExtraWithholdingFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3425,8 +3456,6 @@ interface OnboardingExecutionFlowProps {
     defaultValues?: OnboardingDefaultValues;
     // (undocumented)
     initialEmployeeId?: string;
-    // Warning: (ae-forgotten-export) The symbol "EmployeeOnboardingStatus" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     initialOnboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus];
     // (undocumented)
