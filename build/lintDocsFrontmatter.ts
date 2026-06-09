@@ -1,15 +1,14 @@
 import { readFileSync, readdirSync, statSync } from 'fs'
 import { join, dirname, relative } from 'path'
 import { fileURLToPath } from 'url'
+import { parse as parseYaml } from 'yaml'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
 const DOCS_DIR = join(ROOT, 'docs')
-
 const REQUIRED_FIELDS = ['title', 'description'] as const
-type RequiredField = (typeof REQUIRED_FIELDS)[number]
 
 interface Violation {
   file: string
@@ -30,41 +29,36 @@ function collectMarkdownFiles(dir: string): string[] {
 }
 
 function extractFrontmatter(source: string): string | null {
-  if (!source.startsWith('---\n') && !source.startsWith('---\r\n')) return null
-  const closing = source.indexOf('\n---', 4)
-  if (closing === -1) return null
-  return source.slice(source.indexOf('\n') + 1, closing)
+  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  return match ? match[1]! : null
 }
 
-function hasNonEmptyField(frontmatter: string, field: RequiredField): boolean {
-  const pattern = new RegExp(`^${field}:[ \\t]*(.+?)[ \\t]*$`, 'm')
-  const match = frontmatter.match(pattern)
-  if (!match) return false
-  const value = match[1]!.replace(/^['"]|['"]$/g, '').trim()
-  return value.length > 0
-}
+function lintFile(file: string): string[] {
+  const source = readFileSync(file, 'utf8')
+  const frontmatter = extractFrontmatter(source)
+  if (frontmatter === null) return ['missing YAML front matter block']
 
-function lint(files: string[]): Violation[] {
-  const violations: Violation[] = []
-  for (const file of files) {
-    const source = readFileSync(file, 'utf8')
-    const frontmatter = extractFrontmatter(source)
-    const rel = relative(ROOT, file)
-    if (frontmatter === null) {
-      violations.push({ file: rel, reason: 'missing YAML front matter block' })
-      continue
-    }
-    for (const field of REQUIRED_FIELDS) {
-      if (!hasNonEmptyField(frontmatter, field)) {
-        violations.push({ file: rel, reason: `missing or empty \`${field}:\`` })
-      }
-    }
+  let data: Record<string, unknown>
+  try {
+    const parsed: unknown = parseYaml(frontmatter)
+    data = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {}
+  } catch (err) {
+    return [`invalid YAML front matter: ${err instanceof Error ? err.message : String(err)}`]
   }
-  return violations
+
+  const reasons: string[] = []
+  for (const field of REQUIRED_FIELDS) {
+    const value = data[field]
+    const isNonEmpty = typeof value === 'string' ? value.trim().length > 0 : value != null
+    if (!isNonEmpty) reasons.push(`missing or empty \`${field}:\``)
+  }
+  return reasons
 }
 
 const files = collectMarkdownFiles(DOCS_DIR)
-const violations = lint(files)
+const violations: Violation[] = files.flatMap(file =>
+  lintFile(file).map(reason => ({ file: relative(ROOT, file), reason })),
+)
 
 if (violations.length > 0) {
   console.error(
@@ -74,7 +68,7 @@ if (violations.length > 0) {
     console.error(`  ${v.file}: ${v.reason}`)
   }
   console.error(
-    `\nEvery docs/**/*.md must have non-empty \`title:\` and \`description:\` in its YAML front matter.`,
+    `\nEvery docs/**/*.md must have non-empty ${REQUIRED_FIELDS.map(f => `\`${f}:\``).join(' + ')} in its YAML front matter.`,
   )
   process.exit(1)
 }
