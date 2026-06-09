@@ -34,7 +34,7 @@ export type WorkAddressField = keyof WorkAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<WorkAddressFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

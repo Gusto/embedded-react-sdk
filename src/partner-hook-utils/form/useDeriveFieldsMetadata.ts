@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useWatch } from 'react-hook-form'
-import type { z } from 'zod'
 import type { FieldMetadata } from '../types'
 import type { FieldsMetadataConfig } from './buildFormSchema'
 
@@ -18,8 +17,8 @@ import type { FieldsMetadataConfig } from './buildFormSchema'
  * When no predicates exist (`predicateDeps` is empty), the hook skips
  * subscribing entirely and returns static metadata derived once per render.
  *
- * @typeParam T - Map of field name to Zod validator, mirroring the schema config.
- * @typeParam TFormData - Shape of the form values managed by react-hook-form.
+ * @typeParam TFormData - The form data interface the metadata config was built for.
+ * @typeParam TRhfData - Shape of the form values managed by react-hook-form.
  * @param metadataConfig - Metadata config produced alongside the form schema,
  *   carrying both the resolver function and the predicate dependency list.
  * @param control - react-hook-form `control` returned by `useForm`.
@@ -27,19 +26,16 @@ import type { FieldsMetadataConfig } from './buildFormSchema'
  *   a watched dependency changes.
  * @internal
  */
-export function useDeriveFieldsMetadata<
-  T extends Record<string, z.ZodType>,
-  TFormData extends FieldValues = FieldValues,
->(
-  metadataConfig: FieldsMetadataConfig<T>,
-  control: Control<TFormData>,
-): Record<keyof T, FieldMetadata> {
+export function useDeriveFieldsMetadata<TFormData, TRhfData extends FieldValues = FieldValues>(
+  metadataConfig: FieldsMetadataConfig<TFormData>,
+  control: Control<TRhfData>,
+): Record<keyof TFormData & string, FieldMetadata> {
   const { predicateDeps } = metadataConfig
   const hasDeps = predicateDeps.length > 0
 
   const watchedValues = useWatch({
     control,
-    name: hasDeps ? (predicateDeps as FieldPath<TFormData>[]) : ([] as never[]),
+    name: hasDeps ? (predicateDeps as FieldPath<TRhfData>[]) : ([] as never[]),
     disabled: !hasDeps,
   })
 

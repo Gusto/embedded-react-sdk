@@ -41,7 +41,7 @@ const requiredFieldsConfig = {
   // that gate by passing `optionalFieldsToRequire` only for WA employees, or
   // by simply never sending stateWcCovered=true outside WA.
   stateWcClassCode: data => String(data.stateWcCovered) === 'true',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<JobFormData>
 
 export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>
 

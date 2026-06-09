@@ -74,7 +74,7 @@ export type DeductionFormField = keyof DeductionFormData
 const requiredFieldsConfig = {
   totalAmount: 'never',
   annualMaximum: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<DeductionFormData>
 
 export type DeductionFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig

@@ -28,15 +28,13 @@ type RequiredFieldRule<TData = Record<string, unknown>> =
   | ((data: TData, mode: FormMode) => boolean)
 
 /**
- * Mapping from each field name in a schema to its {@link RequiredFieldRule}.
+ * Mapping from each field name in a form data type to its {@link RequiredFieldRule}.
  *
- * @typeParam TSchema - The map of field names to their Zod validators.
+ * @typeParam TFormData - The form data interface that constrains which field names and predicate signatures are valid.
  * @internal
  */
-export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Partial<{
-  [K in keyof TSchema & string]: RequiredFieldRule<{
-    [F in keyof TSchema]: z.infer<TSchema[F]>
-  }>
+export type RequiredFieldConfig<TFormData> = Partial<{
+  [K in keyof TFormData & string]: RequiredFieldRule<TFormData>
 }>
 
 type OptionalOnCreate<TConfig> = {
@@ -66,7 +64,7 @@ export type OptionalFieldsToRequire<TConfig> = {
 
 interface BuildFormSchemaOptions<
   T extends Record<string, z.ZodType>,
-  TConfig extends RequiredFieldConfig<T>,
+  TConfig extends RequiredFieldConfig<FormDataFromValidators<T>>,
 > {
   requiredFieldsConfig?: TConfig
   requiredErrorCode?: string
@@ -85,11 +83,13 @@ interface BuildFormSchemaOptions<
  * Companion config returned alongside a built schema, used to derive per-field
  * metadata and to identify which form values predicate-based rules depend on.
  *
- * @typeParam T - The map of field names to their Zod validators.
+ * @typeParam TFormData - The form data interface whose keys appear in the metadata map.
  * @internal
  */
-export interface FieldsMetadataConfig<T extends Record<string, z.ZodType>> {
-  getFieldsMetadata: (data?: Record<string, unknown>) => Record<keyof T, FieldMetadata>
+export interface FieldsMetadataConfig<TFormData> {
+  getFieldsMetadata: (
+    data?: Record<string, unknown>,
+  ) => Record<keyof TFormData & string, FieldMetadata>
   /** Form field names that predicate-based requiredness rules read at runtime. */
   predicateDeps: string[]
 }
@@ -114,12 +114,12 @@ export type ValidatorsFor<TFormData> = {
  * Tuple returned by {@link buildFormSchema}: the composed Zod schema followed
  * by its {@link FieldsMetadataConfig}.
  *
- * @typeParam T - The map of field names to their Zod validators.
+ * @typeParam TFormData - The form data interface the schema validates into.
  * @internal
  */
-export type BuildFormSchemaResult<T extends Record<string, z.ZodType>> = [
-  schema: z.ZodType<FormDataFromValidators<T>, FormDataFromValidators<T>>,
-  metadataConfig: FieldsMetadataConfig<T>,
+export type BuildFormSchemaResult<TFormData> = [
+  schema: z.ZodType<TFormData, TFormData>,
+  metadataConfig: FieldsMetadataConfig<TFormData>,
 ]
 
 /**
@@ -147,8 +147,11 @@ export type BuildFormSchemaResult<T extends Record<string, z.ZodType>> = [
  */
 export function buildFormSchema<
   T extends Record<string, z.ZodType>,
-  TConfig extends RequiredFieldConfig<T>,
->(fieldValidators: T, options: BuildFormSchemaOptions<T, TConfig>): BuildFormSchemaResult<T> {
+  TConfig extends RequiredFieldConfig<FormDataFromValidators<T>>,
+>(
+  fieldValidators: T,
+  options: BuildFormSchemaOptions<T, TConfig>,
+): BuildFormSchemaResult<FormDataFromValidators<T>> {
   const {
     mode,
     requiredFieldsConfig = {} as Record<string, RequiredFieldRule>,

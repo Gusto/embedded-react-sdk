@@ -49,7 +49,7 @@ export type HomeAddressField = keyof HomeAddressFormData
 
 const requiredFieldsConfig = {
   street2: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<HomeAddressFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

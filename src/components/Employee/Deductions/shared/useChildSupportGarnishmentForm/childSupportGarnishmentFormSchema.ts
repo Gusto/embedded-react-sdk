@@ -154,14 +154,14 @@ export function createChildSupportGarnishmentFormSchema({
             'remittance_number',
           )
         },
-      } satisfies RequiredFieldConfig<typeof fieldValidators>)
+      } satisfies RequiredFieldConfig<ChildSupportGarnishmentFormData>)
     : (() => {
         const requiredAttrKeys = getRequiredAttrKeys(selectedAgency)
         return {
           caseNumber: requiredAttrKeys.has('case_number') ? 'always' : 'never',
           orderNumber: requiredAttrKeys.has('order_number') ? 'always' : 'never',
           remittanceNumber: requiredAttrKeys.has('remittance_number') ? 'always' : 'never',
-        } satisfies RequiredFieldConfig<typeof fieldValidators>
+        } satisfies RequiredFieldConfig<ChildSupportGarnishmentFormData>
       })()
 
   return buildFormSchema(fieldValidators, {

@@ -244,7 +244,7 @@ const requiredFieldsConfig = {
   [PREPARER_2.street2]: 'never',
   [PREPARER_3.street2]: 'never',
   [PREPARER_4.street2]: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<SignEmployeeFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

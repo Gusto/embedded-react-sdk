@@ -69,7 +69,7 @@ const requiredFieldsConfig = {
   otherIncome: 'never',
   deductions: 'never',
   extraWithholding: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<FederalTaxesFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

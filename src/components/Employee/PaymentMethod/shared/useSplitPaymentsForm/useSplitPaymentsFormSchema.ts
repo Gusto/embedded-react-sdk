@@ -52,7 +52,7 @@ const fieldValidators = {
 
 export type SplitPaymentsFormField = keyof SplitPaymentsFormData
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<SplitPaymentsFormData>
 
 export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig

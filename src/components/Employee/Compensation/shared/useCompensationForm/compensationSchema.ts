@@ -103,7 +103,7 @@ const requiredFieldsConfig = {
   rate: 'create',
   effectiveDate: 'create',
   minimumWageId: data => data.adjustForMinimumWage,
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<CompensationFormData>
 
 function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   const { flsaStatus, paymentUnit, rate } = data

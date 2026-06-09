@@ -40,7 +40,7 @@ const fieldValidators = {
   accountType: z.enum(ACCOUNT_TYPES),
 } satisfies ValidatorsFor<BankFormData>
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<BankFormData>
 
 export type BankFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>
 

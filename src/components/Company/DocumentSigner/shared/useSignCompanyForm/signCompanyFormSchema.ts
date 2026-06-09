@@ -36,7 +36,7 @@ export type SignCompanyFormField = keyof SignCompanyFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<SignCompanyFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

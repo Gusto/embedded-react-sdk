@@ -71,7 +71,7 @@ const requiredFieldsConfig = {
   email: 'never',
   dateOfBirth: 'never',
   ssn: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<EmployeeDetailsFormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

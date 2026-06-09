@@ -63,7 +63,7 @@ const requiredFieldsConfig = {
   customTwicePerMonth: 'never',
   day1: needsDay1,
   day2: needsDay2,
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<PayScheduleFormData>
 
 /**
  * coerceNaN(0) maps empty inputs to 0, which `isEmpty` does not catch

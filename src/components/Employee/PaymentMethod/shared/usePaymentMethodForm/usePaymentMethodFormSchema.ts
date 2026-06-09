@@ -29,7 +29,7 @@ const fieldValidators = {
 
 export type PaymentMethodFormField = keyof PaymentMethodFormData
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<PaymentMethodFormData>
 
 export type PaymentMethodFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig

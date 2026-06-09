@@ -87,7 +87,7 @@ export interface EmployeeStateTaxesQuestionMeta {
 }
 
 export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<
-  Record<string, z.ZodType>
+  Record<string, unknown>
 > {
   /** Group → questions, in API response order, post admin-filtering. */
   groups: Array<{
