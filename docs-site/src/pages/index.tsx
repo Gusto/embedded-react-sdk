@@ -281,7 +281,7 @@ function HeroPreview() {
 
 function HeroSection() {
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} aria-label="Introduction">
       <div className={styles.heroEffects} aria-hidden="true">
         <div className={styles.heroSpot1} />
         <div className={styles.heroSpot2} />
@@ -317,10 +317,10 @@ function HeroSection() {
 
 function FeaturesSection() {
   return (
-    <section className={styles.features} aria-label="Key features">
+    <section className={styles.features} aria-labelledby="features-heading">
       <div className={styles.featuresInner}>
         <header className={styles.featuresHeader}>
-          <h2 className={styles.featuresHeading}>
+          <h2 id="features-heading" className={styles.featuresHeading}>
             Build it <span className={styles.heroAccent}>your way</span>.
           </h2>
           <p className={styles.featuresIntro}>Everything you need to ship.</p>
@@ -354,8 +354,10 @@ export default function Home(): ReactNode {
 
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
-      <HeroSection />
-      <FeaturesSection />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+      </main>
     </Layout>
   )
 }

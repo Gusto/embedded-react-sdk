@@ -134,7 +134,7 @@ Fields inside an `SDKFormProvider` don't need the `formHookResult` prop — the 
 
 Both approaches produce identical validation, API payloads, and behavior. The difference is purely in how fields discover their form state.
 
-|                       | `formHookResult` prop                                               | `SDKFormProvider`                               |
+| Aspect                | `formHookResult` prop                                               | `SDKFormProvider`                               |
 | --------------------- | ------------------------------------------------------------------- | ----------------------------------------------- |
 | **Best for**          | Interleaving fields from multiple hooks; maximum layout flexibility | Grouping fields from a single hook together     |
 | **Boilerplate**       | Each field receives the prop                                        | One wrapper, fields are clean                   |
