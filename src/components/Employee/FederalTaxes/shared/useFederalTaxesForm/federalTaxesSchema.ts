@@ -55,7 +55,7 @@ const fieldValidators = {
   extraWithholding: z.preprocess(coerceNaN(0), z.number()),
 } satisfies ValidatorsFor<FederalTaxesFormData>
 
-export type FederalTaxesField = keyof typeof fieldValidators
+export type FederalTaxesField = keyof FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

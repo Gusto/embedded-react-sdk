@@ -99,7 +99,7 @@ const fieldValidators = {
   paymentPeriod: z.enum(PaymentPeriod),
 } satisfies ValidatorsFor<ChildSupportGarnishmentFormData>
 
-export type ChildSupportGarnishmentFormField = keyof typeof fieldValidators
+export type ChildSupportGarnishmentFormField = keyof ChildSupportGarnishmentFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 //

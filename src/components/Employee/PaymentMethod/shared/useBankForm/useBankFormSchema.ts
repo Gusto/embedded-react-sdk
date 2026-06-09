@@ -27,6 +27,7 @@ export interface BankFormData {
   accountType: AccountType
 }
 export type BankFormOutputs = BankFormData
+export type BankFormField = keyof BankFormData
 
 const fieldValidators = {
   name: z.string(),
@@ -38,8 +39,6 @@ const fieldValidators = {
     .regex(ACCOUNT_NUMBER_REGEX, { message: BankFormErrorCodes.INVALID_ACCOUNT_NUMBER }),
   accountType: z.enum(ACCOUNT_TYPES),
 } satisfies ValidatorsFor<BankFormData>
-
-export type BankFormField = keyof typeof fieldValidators
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

@@ -30,7 +30,7 @@ const fieldValidators = {
   effectiveDate: z.iso.date({ error: () => WorkAddressErrorCodes.REQUIRED }),
 } satisfies ValidatorsFor<WorkAddressFormData>
 
-export type WorkAddressField = keyof typeof fieldValidators
+export type WorkAddressField = keyof WorkAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

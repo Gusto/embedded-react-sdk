@@ -229,13 +229,19 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // @public (undocumented)
 function BankAccount(props: BankAccountProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_8" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "BankFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type BankFormData = {
-    [K in keyof typeof fieldValidators_8]: z.infer<(typeof fieldValidators_8)[K]>;
-};
+export interface BankFormData {
+    // (undocumented)
+    accountNumber: string;
+    // (undocumented)
+    accountType: AccountType;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    routingNumber: string;
+}
 
 // Warning: (ae-missing-release-tag) "BankFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -254,7 +260,7 @@ export const BankFormErrorCodes: {
 // Warning: (ae-missing-release-tag) "BankFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type BankFormField = keyof typeof fieldValidators_8;
+export type BankFormField = keyof BankFormData;
 
 // Warning: (ae-missing-release-tag) "BankFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -329,7 +335,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
         Fields: TFields;
         fieldsMetadata: TFieldsMetadata;
         hookFormInternals: HookFormInternals<TFormData>;
-        getFormSubmissionValues: () => Record<string, unknown> | undefined;
+        getFormSubmissionValues: () => TFormData | undefined;
     };
     isLoading: false;
     status: {
@@ -477,13 +483,27 @@ export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInput
 // @public (undocumented)
 export type ChildSupportGarnishmentAmountValidation = ChildSupportGarnishmentRequiredValidation | ChildSupportGarnishmentPercentValidation;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ChildSupportGarnishmentFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type ChildSupportGarnishmentFormData = {
-    [K in keyof typeof fieldValidators_2]: z.infer<(typeof fieldValidators_2)[K]>;
-};
+export interface ChildSupportGarnishmentFormData {
+    // (undocumented)
+    amount: number;
+    // (undocumented)
+    caseNumber: string;
+    // (undocumented)
+    fipsCode: string;
+    // (undocumented)
+    orderNumber: string;
+    // (undocumented)
+    paymentPeriod: PaymentPeriod;
+    // (undocumented)
+    payPeriodMaximum: number;
+    // (undocumented)
+    remittanceNumber: string;
+    // (undocumented)
+    state: string;
+}
 
 // Warning: (ae-missing-release-tag) "ChildSupportGarnishmentFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -753,13 +773,29 @@ export const CompensationErrorCodes: {
 // @public (undocumented)
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "CompensationFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type CompensationFormData = {
-    [K in keyof typeof fieldValidators_3]: z.infer<(typeof fieldValidators_3)[K]>;
-};
+export interface CompensationFormData {
+    // (undocumented)
+    adjustForMinimumWage: boolean;
+    // (undocumented)
+    effectiveDate: string | null;
+    // Warning: (ae-incompatible-release-tags) The symbol "flsaStatus" is marked as @public, but its signature references "FlsaStatus" which is marked as @internal
+    //
+    // (undocumented)
+    flsaStatus: FlsaStatus | undefined;
+    // (undocumented)
+    minimumWageId: string;
+    // Warning: (ae-incompatible-release-tags) The symbol "paymentUnit" is marked as @public, but its signature references "PayPeriod" which is marked as @internal
+    //
+    // (undocumented)
+    paymentUnit: PayPeriod;
+    // (undocumented)
+    rate: number;
+    // (undocumented)
+    title: string;
+}
 
 // Warning: (ae-missing-release-tag) "CompensationFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1679,13 +1715,25 @@ export type DeductionFormAmountValidation = DeductionFormRequiredValidation | De
 // @public (undocumented)
 export type DeductionFormCapValidation = DeductionFormNegativeAmountValidation;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DeductionFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DeductionFormData = {
-    [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>;
-};
+export interface DeductionFormData {
+    // (undocumented)
+    amount: number;
+    // (undocumented)
+    annualMaximum: number;
+    // (undocumented)
+    deductAsPercentage: boolean;
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    garnishmentType: GarnishmentType;
+    // (undocumented)
+    recurring: boolean;
+    // (undocumented)
+    totalAmount: number;
+}
 
 // Warning: (ae-missing-release-tag) "DeductionFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2011,11 +2059,10 @@ export const EmployeeDetailsErrorCodes: {
     readonly EMAIL_REQUIRED_FOR_SELF_ONBOARDING: "EMAIL_REQUIRED_FOR_SELF_ONBOARDING";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_5" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "EmployeeDetailsField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators_5, 'selfOnboarding'>;
+export type EmployeeDetailsField = Exclude<keyof EmployeeDetailsFormData, 'selfOnboarding'>;
 
 // Warning: (ae-missing-release-tag) "EmployeeDetailsFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2025,9 +2072,22 @@ export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form'][
 // Warning: (ae-missing-release-tag) "EmployeeDetailsFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type EmployeeDetailsFormData = {
-    [K in keyof typeof fieldValidators_5]: z.infer<(typeof fieldValidators_5)[K]>;
-};
+export interface EmployeeDetailsFormData {
+    // (undocumented)
+    dateOfBirth: string;
+    // (undocumented)
+    email: string;
+    // (undocumented)
+    firstName: string;
+    // (undocumented)
+    lastName: string;
+    // (undocumented)
+    middleInitial: string;
+    // (undocumented)
+    selfOnboarding: boolean;
+    // (undocumented)
+    ssn: string;
+}
 
 // Warning: (ae-missing-release-tag) "EmployeeDetailsFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2340,11 +2400,10 @@ export const FederalTaxesErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_11" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "FederalTaxesField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type FederalTaxesField = keyof typeof fieldValidators_11;
+export type FederalTaxesField = keyof FederalTaxesFormData;
 
 // Warning: (ae-missing-release-tag) "FederalTaxesFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2384,9 +2443,20 @@ export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['field
 // Warning: (ae-missing-release-tag) "FederalTaxesFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type FederalTaxesFormData = {
-    [K in keyof typeof fieldValidators_11]: z.infer<(typeof fieldValidators_11)[K]>;
-};
+export interface FederalTaxesFormData {
+    // (undocumented)
+    deductions: number;
+    // (undocumented)
+    dependentsAmount: number;
+    // (undocumented)
+    extraWithholding: number;
+    // (undocumented)
+    filingStatus: string;
+    // (undocumented)
+    otherIncome: number;
+    // (undocumented)
+    twoJobs: boolean;
+}
 
 // Warning: (ae-missing-release-tag) "FederalTaxesFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2492,6 +2562,12 @@ export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSuppor
 //
 // @public (undocumented)
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
+
+// Warning: (ae-forgotten-export) The symbol "FLSA_STATUS" needs to be exported by the entry point index.d.ts
+// Warning: (ae-internal-missing-underscore) The name "FlsaStatus" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export type FlsaStatus = (typeof FLSA_STATUS)[keyof typeof FLSA_STATUS];
 
 // Warning: (ae-missing-release-tag) "FlsaStatusFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2743,11 +2819,10 @@ export const HomeAddressErrorCodes: {
     readonly INVALID_ZIP: "INVALID_ZIP";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_7" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "HomeAddressField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type HomeAddressField = keyof typeof fieldValidators_7;
+export type HomeAddressField = keyof HomeAddressFormData;
 
 // Warning: (ae-missing-release-tag) "HomeAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2757,9 +2832,22 @@ export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsM
 // Warning: (ae-missing-release-tag) "HomeAddressFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type HomeAddressFormData = {
-    [K in keyof typeof fieldValidators_7]: z.infer<(typeof fieldValidators_7)[K]>;
-};
+export interface HomeAddressFormData {
+    // (undocumented)
+    city: string;
+    // (undocumented)
+    courtesyWithholding: boolean;
+    // (undocumented)
+    effectiveDate: string;
+    // (undocumented)
+    state: string;
+    // (undocumented)
+    street1: string;
+    // (undocumented)
+    street2: string;
+    // (undocumented)
+    zip: string;
+}
 
 // Warning: (ae-missing-release-tag) "HomeAddressFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2896,13 +2984,21 @@ export const JobErrorCodes: {
 // @public (undocumented)
 export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_4" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "JobFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type JobFormData = {
-    [K in keyof typeof fieldValidators_4]: z.infer<(typeof fieldValidators_4)[K]>;
-};
+export interface JobFormData {
+    // (undocumented)
+    hireDate: string | null;
+    // (undocumented)
+    stateWcClassCode: string;
+    // (undocumented)
+    stateWcCovered: boolean;
+    // (undocumented)
+    title: string;
+    // (undocumented)
+    twoPercentShareholder: boolean;
+}
 
 // Warning: (ae-missing-release-tag) "JobFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3534,13 +3630,13 @@ interface PaymentMethodCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_9" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethodFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type PaymentMethodFormData = {
-    [K in keyof typeof fieldValidators_9]: z.infer<(typeof fieldValidators_9)[K]>;
-};
+export interface PaymentMethodFormData {
+    // (undocumented)
+    type: PaymentMethodType;
+}
 
 // Warning: (ae-missing-release-tag) "PaymentMethodFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3557,7 +3653,7 @@ export const PaymentMethodFormErrorCodes: {
 // Warning: (ae-missing-release-tag) "PaymentMethodFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type PaymentMethodFormField = keyof typeof fieldValidators_9;
+export type PaymentMethodFormField = keyof PaymentMethodFormData;
 
 // Warning: (ae-missing-release-tag) "PaymentMethodFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3668,6 +3764,12 @@ const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 //
 // @public (undocumented)
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
+
+// Warning: (ae-forgotten-export) The symbol "PAY_PERIODS" needs to be exported by the entry point index.d.ts
+// Warning: (ae-internal-missing-underscore) The name "PayPeriod" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export type PayPeriod = (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS];
 
 // Warning: (ae-missing-release-tag) "PayPeriodMaximumFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3846,11 +3948,10 @@ export const PayScheduleErrorCodes: {
     readonly DAY_RANGE: "DAY_RANGE";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_13" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayScheduleField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type PayScheduleField = keyof typeof fieldValidators_13;
+export type PayScheduleField = keyof PayScheduleFormData;
 
 // Warning: (ae-missing-release-tag) "PayScheduleFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3860,9 +3961,22 @@ export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsM
 // Warning: (ae-missing-release-tag) "PayScheduleFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type PayScheduleFormData = {
-    [K in keyof typeof fieldValidators_13]: z.infer<(typeof fieldValidators_13)[K]>;
-};
+export interface PayScheduleFormData {
+    // (undocumented)
+    anchorEndOfPayPeriod: string | null;
+    // (undocumented)
+    anchorPayDate: string | null;
+    // (undocumented)
+    customName: string;
+    // (undocumented)
+    customTwicePerMonth: string;
+    // (undocumented)
+    day1: number;
+    // (undocumented)
+    day2: number;
+    // (undocumented)
+    frequency: PayScheduleFrequency;
+}
 
 // Warning: (ae-missing-release-tag) "PayScheduleFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4334,13 +4448,15 @@ export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCom
 // @public (undocumented)
 function SignatureForm(props: SignatureFormProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_14" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SignCompanyFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SignCompanyFormData = {
-    [K in keyof typeof fieldValidators_14]: z.infer<(typeof fieldValidators_14)[K]>;
-};
+export interface SignCompanyFormData {
+    // (undocumented)
+    confirmSignature: boolean;
+    // (undocumented)
+    signature: string;
+}
 
 // Warning: (ae-missing-release-tag) "SignCompanyFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4357,7 +4473,7 @@ export const SignCompanyFormErrorCodes: {
 // Warning: (ae-missing-release-tag) "SignCompanyFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SignCompanyFormField = keyof typeof fieldValidators_14;
+export type SignCompanyFormField = keyof SignCompanyFormData;
 
 // Warning: (ae-missing-release-tag) "SignCompanyFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4399,13 +4515,89 @@ export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes
 // @public (undocumented)
 export type SignEmployeeFormConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_12" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SignEmployeeFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SignEmployeeFormData = {
-    [K in keyof typeof fieldValidators_12]: z.infer<(typeof fieldValidators_12)[K]>;
-};
+export interface SignEmployeeFormData {
+    // (undocumented)
+    confirmSignature: boolean;
+    // (undocumented)
+    preparer2Agree: boolean;
+    // (undocumented)
+    preparer2City: string;
+    // (undocumented)
+    preparer2FirstName: string;
+    // (undocumented)
+    preparer2LastName: string;
+    // (undocumented)
+    preparer2Signature: string;
+    // (undocumented)
+    preparer2State: string;
+    // (undocumented)
+    preparer2Street1: string;
+    // (undocumented)
+    preparer2Street2: string;
+    // (undocumented)
+    preparer2Zip: string;
+    // (undocumented)
+    preparer3Agree: boolean;
+    // (undocumented)
+    preparer3City: string;
+    // (undocumented)
+    preparer3FirstName: string;
+    // (undocumented)
+    preparer3LastName: string;
+    // (undocumented)
+    preparer3Signature: string;
+    // (undocumented)
+    preparer3State: string;
+    // (undocumented)
+    preparer3Street1: string;
+    // (undocumented)
+    preparer3Street2: string;
+    // (undocumented)
+    preparer3Zip: string;
+    // (undocumented)
+    preparer4Agree: boolean;
+    // (undocumented)
+    preparer4City: string;
+    // (undocumented)
+    preparer4FirstName: string;
+    // (undocumented)
+    preparer4LastName: string;
+    // (undocumented)
+    preparer4Signature: string;
+    // (undocumented)
+    preparer4State: string;
+    // (undocumented)
+    preparer4Street1: string;
+    // (undocumented)
+    preparer4Street2: string;
+    // (undocumented)
+    preparer4Zip: string;
+    // (undocumented)
+    preparerAgree: boolean;
+    // (undocumented)
+    preparerCity: string;
+    // (undocumented)
+    preparerFirstName: string;
+    // (undocumented)
+    preparerLastName: string;
+    // (undocumented)
+    preparerSignature: string;
+    // (undocumented)
+    preparerState: string;
+    // (undocumented)
+    preparerStreet1: string;
+    // (undocumented)
+    preparerStreet2: string;
+    // (undocumented)
+    preparerZip: string;
+    // (undocumented)
+    signature: string;
+    // (undocumented)
+    usedPreparer: UsedPreparer;
+}
 
 // Warning: (ae-missing-release-tag) "SignEmployeeFormErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4422,7 +4614,7 @@ export const SignEmployeeFormErrorCodes: {
 // Warning: (ae-missing-release-tag) "SignEmployeeFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SignEmployeeFormField = keyof typeof fieldValidators_12;
+export type SignEmployeeFormField = keyof SignEmployeeFormData;
 
 // Warning: (ae-missing-release-tag) "SignEmployeeFormFieldComponents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4556,11 +4748,10 @@ export const SplitPaymentsFormErrorCodes: {
     readonly PERCENTAGE_TOTAL_MISMATCH: "PERCENTAGE_TOTAL_MISMATCH";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_10" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SplitPaymentsFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type SplitPaymentsFormField = keyof typeof fieldValidators_10;
+export type SplitPaymentsFormField = keyof SplitPaymentsFormData;
 
 // Warning: (ae-missing-release-tag) "SplitPaymentsFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5331,6 +5522,12 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 // @internal
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
+// Warning: (ae-forgotten-export) The symbol "USED_PREPARER_VALUES" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "UsedPreparer" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type UsedPreparer = (typeof USED_PREPARER_VALUES)[number];
+
 // Warning: (ae-missing-release-tag) "UsedPreparerFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -5980,11 +6177,10 @@ export const WorkAddressErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_6" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "WorkAddressField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type WorkAddressField = keyof typeof fieldValidators_6;
+export type WorkAddressField = keyof WorkAddressFormData;
 
 // Warning: (ae-missing-release-tag) "WorkAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5994,9 +6190,12 @@ export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsM
 // Warning: (ae-missing-release-tag) "WorkAddressFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type WorkAddressFormData = {
-    [K in keyof typeof fieldValidators_6]: z.infer<(typeof fieldValidators_6)[K]>;
-};
+export interface WorkAddressFormData {
+    // (undocumented)
+    effectiveDate: string;
+    // (undocumented)
+    locationUuid: string;
+}
 
 // Warning: (ae-missing-release-tag) "WorkAddressFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

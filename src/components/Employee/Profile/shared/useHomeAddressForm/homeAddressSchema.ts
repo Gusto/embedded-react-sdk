@@ -43,7 +43,7 @@ const fieldValidators = {
   effectiveDate: z.iso.date({ error: () => HomeAddressErrorCodes.REQUIRED }),
 } satisfies ValidatorsFor<HomeAddressFormData>
 
-export type HomeAddressField = keyof typeof fieldValidators
+export type HomeAddressField = keyof HomeAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

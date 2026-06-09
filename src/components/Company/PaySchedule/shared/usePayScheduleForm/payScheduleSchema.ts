@@ -43,7 +43,7 @@ const fieldValidators = {
   day2: z.preprocess(coerceNaN(0), z.number()),
 } satisfies ValidatorsFor<PayScheduleFormData>
 
-export type PayScheduleField = keyof typeof fieldValidators
+export type PayScheduleField = keyof PayScheduleFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

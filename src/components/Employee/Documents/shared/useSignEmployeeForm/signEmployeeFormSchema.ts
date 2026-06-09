@@ -235,7 +235,7 @@ const fieldValidators = {
   [PREPARER_4.agree]: agreeValidator,
 } satisfies ValidatorsFor<SignEmployeeFormData>
 
-export type SignEmployeeFormField = keyof typeof fieldValidators
+export type SignEmployeeFormField = keyof SignEmployeeFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

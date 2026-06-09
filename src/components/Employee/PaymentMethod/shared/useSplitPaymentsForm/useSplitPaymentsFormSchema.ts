@@ -50,7 +50,7 @@ const fieldValidators = {
   priority: z.record(z.string(), z.number()),
 } satisfies ValidatorsFor<SplitPaymentsFormData>
 
-export type SplitPaymentsFormField = keyof typeof fieldValidators
+export type SplitPaymentsFormField = keyof SplitPaymentsFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

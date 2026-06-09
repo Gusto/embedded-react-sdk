@@ -74,7 +74,7 @@ export function createJobSchema(options: JobSchemaOptions = {}) {
     withTitleField = true,
   } = options
 
-  const excludeFields: Array<keyof typeof fieldValidators> = []
+  const excludeFields: Array<keyof JobFormData> = []
   if (!withHireDateField) excludeFields.push('hireDate')
   if (!withTitleField) excludeFields.push('title')
 

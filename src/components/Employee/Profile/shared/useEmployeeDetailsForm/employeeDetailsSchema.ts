@@ -60,7 +60,7 @@ const fieldValidators = {
   selfOnboarding: z.boolean(),
 } satisfies ValidatorsFor<EmployeeDetailsFormData>
 
-export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
+export type EmployeeDetailsField = Exclude<keyof EmployeeDetailsFormData, 'selfOnboarding'>
 
 // ── Required fields config ─────────────────────────────────────────────
 

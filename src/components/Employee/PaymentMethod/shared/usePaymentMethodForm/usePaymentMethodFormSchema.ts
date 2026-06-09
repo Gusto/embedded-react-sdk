@@ -27,7 +27,7 @@ const fieldValidators = {
   type: z.enum(PAYMENT_METHOD_TYPES),
 } satisfies ValidatorsFor<PaymentMethodFormData>
 
-export type PaymentMethodFormField = keyof typeof fieldValidators
+export type PaymentMethodFormField = keyof PaymentMethodFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

@@ -32,7 +32,7 @@ const fieldValidators = {
   }),
 } satisfies ValidatorsFor<SignCompanyFormData>
 
-export type SignCompanyFormField = keyof typeof fieldValidators
+export type SignCompanyFormField = keyof SignCompanyFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

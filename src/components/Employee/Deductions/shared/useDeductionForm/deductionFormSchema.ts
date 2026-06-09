@@ -62,7 +62,7 @@ const fieldValidators = {
   garnishmentType: z.enum(GarnishmentType),
 } satisfies ValidatorsFor<DeductionFormData>
 
-export type DeductionFormField = keyof typeof fieldValidators
+export type DeductionFormField = keyof DeductionFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 //
