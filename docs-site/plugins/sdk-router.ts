@@ -1,14 +1,18 @@
 import {
+  Comment,
+  CommentTag,
+  Converter,
   DeclarationReflection,
   PageKind,
   type PageDefinition,
   ProjectReflection,
   type Reflection,
   ReflectionKind,
+  type SignatureReflection,
   Slugger,
 } from 'typedoc'
 import type { Application } from 'typedoc'
-import { MemberRouter } from 'typedoc-plugin-markdown'
+import { MarkdownTheme, MarkdownThemeContext, MemberRouter } from 'typedoc-plugin-markdown'
 
 /**
  * TypeDoc plugin: custom router for @gusto/embedded-react-sdk
@@ -55,6 +59,81 @@ export function domainFromSources(reflection: Reflection): string | null {
 
 export function load(app: Application): void {
   app.renderer.defineRouter('sdk-router', SDKRouter)
+  app.renderer.defineTheme('sdk-theme', SDKTheme)
+
+  // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,
+  // so priority 0 (default) runs before GroupPlugin's -100.
+  app.converter.on(
+    Converter.EVENT_RESOLVE_END,
+    context => {
+      for (const reflection of Object.values(context.project.reflections)) {
+        if (
+          reflection instanceof DeclarationReflection &&
+          reflection.kind === ReflectionKind.Function &&
+          /^[A-Z]/.test(reflection.name)
+        ) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(
+            new CommentTag('@group', [{ kind: 'text', text: 'Components' }]),
+          )
+        }
+      }
+    },
+    0,
+  )
+}
+
+function isComponent(reflection: DeclarationReflection): boolean {
+  return (
+    reflection.comment?.blockTags.some(
+      tag =>
+        tag.tag === '@group' && Comment.combineDisplayParts(tag.content).trim() === 'Components',
+    ) ?? false
+  )
+}
+
+class SDKTheme extends MarkdownTheme {
+  override getRenderContext(
+    page: ConstructorParameters<typeof MarkdownThemeContext>[1],
+  ): SDKThemeContext {
+    return new SDKThemeContext(this, page, this.application.options)
+  }
+}
+
+class SDKThemeContext extends MarkdownThemeContext {
+  constructor(...args: ConstructorParameters<typeof MarkdownThemeContext>) {
+    super(...args)
+
+    const origMemberTitle = this.partials.memberTitle.bind(this)
+    const origSignatureTitle = this.partials.signatureTitle.bind(this)
+    const origSignatureReturns = this.partials.signatureReturns.bind(this)
+
+    this.partials = {
+      ...this.partials,
+      memberTitle: (model: DeclarationReflection) => {
+        const title = origMemberTitle(model)
+        return isComponent(model) ? title.replace(/\(\)$/, '') : title
+      },
+      signatureTitle: (
+        model: SignatureReflection,
+        options?: Parameters<typeof origSignatureTitle>[1],
+      ) => {
+        if (model.parent instanceof DeclarationReflection && isComponent(model.parent)) {
+          return ''
+        }
+        return origSignatureTitle(model, options)
+      },
+      signatureReturns: (
+        model: SignatureReflection,
+        options: Parameters<typeof origSignatureReturns>[1],
+      ) => {
+        if (model.parent instanceof DeclarationReflection && isComponent(model.parent)) {
+          return ''
+        }
+        return origSignatureReturns(model, options)
+      },
+    }
+  }
 }
 
 export class SDKRouter extends MemberRouter {
@@ -178,6 +257,9 @@ export class SDKRouter extends MemberRouter {
   private static clearSources(reflection: ProjectReflection | DeclarationReflection): void {
     if (reflection instanceof DeclarationReflection) {
       reflection.sources = undefined
+      for (const sig of reflection.signatures ?? []) {
+        sig.sources = undefined
+      }
     }
     for (const child of reflection.children ?? []) {
       SDKRouter.clearSources(child)

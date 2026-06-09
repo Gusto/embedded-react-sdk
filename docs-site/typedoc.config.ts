@@ -8,6 +8,8 @@ export const baseOptions = {
   entryPoints: ['../src/index.ts'],
   out: '../docs/api',
 
+  groupOrder: ['Namespaces', 'Components', 'Functions', 'Variables', 'Interfaces', '*'],
+
   indexFormat: 'table',
   propertyMembersFormat: 'table',
   parametersFormat: 'table',
@@ -33,6 +35,7 @@ export const baseOptions = {
   strikeDeprecatedPageTitles: false,
 
   router: 'sdk-router',
+  theme: 'sdk-theme',
   readme: 'none',
   useHTMLAnchors: true,
   validation: { invalidLink: true },
