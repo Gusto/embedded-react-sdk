@@ -1,5 +1,4 @@
 import Link from '@docusaurus/Link'
-import useBaseUrl from '@docusaurus/useBaseUrl'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import clsx from 'clsx'
@@ -142,33 +141,90 @@ const features: Feature[] = [
   },
 ]
 
-function HeroSection() {
-  const logoForLightMode = useBaseUrl('/img/gusto-logo-dark.svg')
-  const logoForDarkMode = useBaseUrl('/img/gusto-logo.svg')
+function HeroPreview() {
+  return (
+    <div className={styles.heroPreview} aria-hidden="true">
+      <div className={styles.previewCardBack}>
+        <div className={styles.previewBackLabel}>Pay run · Mar 14</div>
+        <div className={styles.previewBackRow}>
+          <span>Gross pay</span>
+          <span>$4,250.00</span>
+        </div>
+        <div className={styles.previewBackRow}>
+          <span>Federal tax</span>
+          <span>−$680.00</span>
+        </div>
+        <div className={clsx(styles.previewBackRow, styles.previewBackRowTotal)}>
+          <span>Net pay</span>
+          <span>$3,420.00</span>
+        </div>
+      </div>
+      <div className={styles.previewCardFront}>
+        <div className={styles.previewHeader}>
+          <span className={styles.previewTitle}>Add an employee</span>
+          <div className={styles.previewSteps}>
+            <span className={clsx(styles.previewStep, styles.previewStepDone)} />
+            <span className={clsx(styles.previewStep, styles.previewStepActive)} />
+            <span className={styles.previewStep} />
+            <span className={styles.previewStep} />
+          </div>
+        </div>
+        <div className={styles.previewFields}>
+          <div className={styles.previewField}>
+            <label>First name</label>
+            <div className={styles.previewInput}>Maya</div>
+          </div>
+          <div className={styles.previewField}>
+            <label>Last name</label>
+            <div className={styles.previewInput}>Chen</div>
+          </div>
+          <div className={styles.previewField}>
+            <label>Date of birth</label>
+            <div className={styles.previewInput}>1991-04-22</div>
+          </div>
+        </div>
+        <div className={styles.previewFooter}>
+          <span className={styles.previewBack}>Back</span>
+          <span className={styles.previewContinue}>Continue</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
+function HeroSection() {
   return (
     <section className={styles.hero}>
+      <div className={styles.heroEffects} aria-hidden="true">
+        <div className={styles.heroSpot1} />
+        <div className={styles.heroSpot2} />
+        <div className={styles.heroSpot3} />
+        <div className={styles.heroGridOverlay} />
+      </div>
       <div className={styles.heroInner}>
-        <h1 className={styles.heroBrand}>
-          <span className={styles.heroSdkLabel}>
-            A big sentence about what this cool thing does.
-          </span>
-        </h1>
-        <p className={styles.heroTagline}>
-          A React component library for building embedded payroll experiences on top of the Gusto
-          Embedded API.
-        </p>
-        <div className={styles.heroActions}>
-          <Link className={styles.heroPrimary} to="/docs/getting-started">
-            Get Started
-          </Link>
-          <Link className={styles.heroSecondary} to="/docs/what-is-the-gep-react-sdk">
-            Learn More
-          </Link>
+        <div className={styles.heroText}>
+          <h1 className={styles.heroBrand}>
+            <span className={styles.heroSdkLabel}>
+              Bring <span className={styles.heroAccent}>payroll</span> to your product.
+            </span>
+          </h1>
+          <p className={styles.heroTagline}>
+            A React component library for building embedded payroll experiences on top of the Gusto
+            Embedded API.
+          </p>
+          <div className={styles.heroActions}>
+            <Link className={styles.heroPrimary} to="/docs/getting-started">
+              Get Started
+            </Link>
+            <Link className={styles.heroSecondary} to="/docs/what-is-the-gep-react-sdk">
+              Learn More
+            </Link>
+          </div>
+          <div className={styles.heroInstall}>
+            <code>npm install @gusto/embedded-react-sdk</code>
+          </div>
         </div>
-        <div className={styles.heroInstall}>
-          <code>npm install @gusto/embedded-react-sdk</code>
-        </div>
+        <HeroPreview />
       </div>
     </section>
   )
