@@ -1,3 +1,4 @@
+import { startTransition } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine, type SendFunction } from 'robot3'
 import type { OnEventType } from '../Base/useBase'
@@ -41,12 +42,14 @@ export const Flow = <M extends Machine<object, FlowContextInterface>>({
   function handleEvent(type: EventType, data: unknown): void {
     const event = { type, payload: data }
     const sendFn = send as SendFunction<string>
-    //When dealing with nested state machine, correct machine needs to recieve an event
-    if (service.child) {
-      ;(service.child.send as SendFunction<string>)(event)
-    } else {
-      sendFn(event)
-    }
+    startTransition(() => {
+      // When dealing with a nested state machine, the active child receives the event.
+      if (service.child) {
+        ;(service.child.send as SendFunction<string>)(event)
+      } else {
+        sendFn(event)
+      }
+    })
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)
   }

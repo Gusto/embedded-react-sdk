@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMachine, reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
+import { BaseBoundaries } from '../Base'
 import { Flow } from './Flow'
 import type { FlowContextInterface } from './useFlow'
 import { useFlow } from './useFlow'
@@ -293,5 +294,82 @@ describe('Flow', () => {
     renderWithProviders(<Flow machine={machine} onEvent={onEvent} />)
 
     expect(screen.getByTestId('default-values')).toHaveTextContent('{"firstName":"Ada"}')
+  })
+
+  it('keeps flow transitions non-urgent when the next screen suspends', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+    let resolveSuspense = () => undefined
+    let suspenseResolved = false
+    const suspensePromise = new Promise<void>(resolve => {
+      resolveSuspense = () => {
+        suspenseResolved = true
+        resolve()
+      }
+    })
+    const ChildThatEmits = () => {
+      const { onEvent: emit } = useFlow()
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            emit(NEXT_EVENT, undefined)
+          }}
+        >
+          load suspending step
+        </button>
+      )
+    }
+    const SuspendedScreen = () => {
+      if (!suspenseResolved) {
+        throw suspensePromise
+      }
+
+      return <div data-testid="suspended-screen">Loaded</div>
+    }
+    const machine = createMachine(
+      'first',
+      {
+        first: state<MachineTransition>(
+          transition(
+            NEXT_EVENT,
+            'second',
+            reduce(
+              (ctx: FlowContextInterface): FlowContextInterface => ({
+                ...ctx,
+                component: SuspendedScreen,
+              }),
+            ),
+          ),
+        ),
+        second: state<MachineTransition>(),
+      },
+      (ctx: FlowContextInterface): FlowContextInterface => ({
+        ...ctx,
+        component: ChildThatEmits,
+      }),
+    )
+
+    renderWithProviders(
+      <BaseBoundaries FallbackComponent={() => <div data-testid="render-error">Error</div>}>
+        <Flow machine={machine} onEvent={onEvent} />
+      </BaseBoundaries>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'load suspending step' }))
+
+    expect(onEvent).toHaveBeenCalledWith(NEXT_EVENT, undefined)
+    expect(screen.getByRole('button', { name: 'load suspending step' })).toBeInTheDocument()
+    expect(screen.queryByTestId('render-error')).toBeNull()
+
+    await act(async () => {
+      resolveSuspense()
+      await suspensePromise
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('suspended-screen')).toBeInTheDocument()
+    })
+    expect(screen.queryByTestId('render-error')).toBeNull()
   })
 })
