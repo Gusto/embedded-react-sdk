@@ -72,14 +72,14 @@ export class SDKRouter extends MemberRouter {
     const hooksByDomain = new Map<string, DeclarationReflection[]>()
 
     for (const child of project.children ?? []) {
-      if (child.kind === ReflectionKind.Function) {
-        const domain = domainFromSources(child)
-        if (domain) {
-          const bucket = hooksByDomain.get(domain) ?? []
-          bucket.push(child)
-          hooksByDomain.set(domain, bucket)
-          this.handledHooks.add(child)
-        }
+      // Namespaces have their own routing; route everything else by source domain.
+      if (child.kind === ReflectionKind.Namespace) continue
+      const domain = domainFromSources(child)
+      if (domain) {
+        const bucket = hooksByDomain.get(domain) ?? []
+        bucket.push(child)
+        hooksByDomain.set(domain, bucket)
+        this.handledHooks.add(child)
       }
     }
 

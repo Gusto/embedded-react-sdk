@@ -234,8 +234,8 @@ describe('buildPages — namespace flows/blocks splitting', () => {
 // buildPages — domain hooks are consolidated onto a single page per domain
 // ---------------------------------------------------------------------------
 
-describe('buildPages — domain hook routing', () => {
-  it('multiple Employee hooks share one Employee/hooks.md page', () => {
+describe('buildPages — domain hooks page routing', () => {
+  it('multiple Employee exports share one Employee/hooks.md page', () => {
     const project = makeProject()
     const hook1 = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     hook1.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -251,7 +251,32 @@ describe('buildPages — domain hook routing', () => {
     expect(pages.filter(p => p.url === 'Employee/hooks.md')).toHaveLength(1)
   })
 
-  it('each hook gets an anchor on the domain hooks page', () => {
+  it('non-function domain exports (types, interfaces, enums) also go to the domain page', () => {
+    const project = makeProject()
+    const iface = makeChild(project, 'UseBankFormProps', ReflectionKind.Interface)
+    iface.sources = sourceRef(
+      '/workspace/src/components/Employee/PaymentMethod/shared/useBankForm.ts',
+    )
+    const alias = makeChild(project, 'BankFormFields', ReflectionKind.TypeAlias)
+    alias.sources = sourceRef(
+      '/workspace/src/components/Employee/PaymentMethod/shared/useBankForm.ts',
+    )
+    const enumChild = makeChild(project, 'BankFormErrorCodes', ReflectionKind.Enum)
+    enumChild.sources = sourceRef(
+      '/workspace/src/components/Employee/PaymentMethod/shared/useBankForm.ts',
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(router.hasOwnDocument(iface)).toBe(false)
+    expect(router.hasOwnDocument(alias)).toBe(false)
+    expect(router.hasOwnDocument(enumChild)).toBe(false)
+    expect(router.getAnchor(iface)).toBeDefined()
+    expect(pages.map(p => p.url)).toContain('Employee/hooks.md')
+  })
+
+  it('each domain export gets an anchor on the domain page', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -263,7 +288,7 @@ describe('buildPages — domain hook routing', () => {
     expect(router.getAnchor(hook)).toBeDefined()
   })
 
-  it('hooks from different domains go to separate hooks pages', () => {
+  it('exports from different domains go to separate pages', () => {
     const project = makeProject()
     const empHook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     empHook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
