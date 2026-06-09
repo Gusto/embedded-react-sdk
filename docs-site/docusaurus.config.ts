@@ -1,6 +1,19 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
 import { themes as prismThemes } from 'prism-react-renderer'
+
+// Versioning is owned by Gusto/embedded-sdk-docs, not this repo. When this
+// config builds there, `versions.json` exists and lists the cut minors; when it
+// builds locally on embedded-react-sdk it doesn't, and Docusaurus falls back to
+// a single-version site. The same config file works in both places — no fork.
+const versionsPath = resolve(__dirname, 'versions.json')
+const versions: string[] = existsSync(versionsPath)
+  ? (JSON.parse(readFileSync(versionsPath, 'utf8')) as string[])
+  : []
+const lastVersion = versions[0]
+const hasVersions = lastVersion !== undefined
 
 const config: Config = {
   title: 'Gusto Embedded',
@@ -54,6 +67,12 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           breadcrumbs: true,
           exclude: ['test-fests/**'],
+          ...(hasVersions && {
+            lastVersion,
+            versions: {
+              current: { label: 'Next (unreleased)', path: 'next' },
+            },
+          }),
         },
         blog: false,
         theme: {
@@ -95,6 +114,15 @@ const config: Config = {
           position: 'left',
           label: 'Docs',
         },
+        ...(hasVersions
+          ? [
+              {
+                type: 'docsVersionDropdown' as const,
+                position: 'right' as const,
+                dropdownActiveClassDisabled: true,
+              },
+            ]
+          : []),
         {
           href: 'https://github.com/Gusto/embedded-react-sdk',
           label: 'GitHub',
