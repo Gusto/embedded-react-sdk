@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import type { ReactElement } from 'react'
 import { AllTheProviders } from './test-utils'
 
+/** @internal */
 const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
   render(ui, { wrapper: AllTheProviders, ...options })
 

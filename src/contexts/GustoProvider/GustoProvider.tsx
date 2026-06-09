@@ -11,12 +11,40 @@ import {
   type GustoProviderProps,
 } from './GustoProviderCustomUIAdapter'
 
+/**
+ * Props for {@link GustoProvider}.
+ *
+ * @remarks
+ * Extends {@link GustoProviderProps} but makes `components` optional and partial: any components
+ * you do not supply fall back to the SDK's built-in React Aria implementations.
+ *
+ * @public
+ */
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
+  /** Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. */
   queryClient?: QueryClient
+  /** Partial component overrides. Any component you do not supply uses the SDK's default React Aria implementation. */
   components?: Partial<ComponentsContextType>
+  /** The application tree that should have access to the SDK. */
   children?: React.ReactNode
 }
 
+/**
+ * Top-level provider that configures the SDK at the application level.
+ *
+ * @remarks
+ * Wrap your application's component tree with `GustoProvider` so that any SDK component below it
+ * has access to the API client, theme, locale, translations, and UI components. Components you
+ * provide via the `components` prop override the SDK's React Aria defaults; any component you do
+ * not supply uses the default.
+ *
+ * For full UI control without the bundled React Aria defaults, use {@link GustoProviderCustomUIAdapter}
+ * instead and supply a complete component map.
+ *
+ * @param props - See {@link GustoApiProps}.
+ * @returns The configured provider tree wrapping `children`.
+ * @public
+ */
 const GustoProvider: React.FC<GustoApiProps> = props => {
   const { children, components = {}, locale, queryClient, ...remainingProps } = props
 
@@ -35,5 +63,10 @@ const GustoProvider: React.FC<GustoApiProps> = props => {
 
 export { GustoProvider }
 
-/** @deprecated Import from `GustoProvider` instead */
+/**
+ * Alias for {@link GustoProvider}.
+ *
+ * @deprecated Use {@link GustoProvider} instead.
+ * @public
+ */
 export const GustoApiProvider = GustoProvider

@@ -1717,6 +1717,21 @@
         "employeeId"
       ]
     },
+    "EmployeeOnboarding.EmployeeDocuments": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_documents_config"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
     "EmployeeOnboarding.Profile": {
       "endpoints": [
         {
@@ -1898,21 +1913,6 @@
       ],
       "variables": [
         "companyId",
-        "employeeId"
-      ]
-    },
-    "EmployeeManagement.EmployeeDocuments": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_documents_config"
-        }
-      ],
-      "variables": [
         "employeeId"
       ]
     },
@@ -2666,10 +2666,10 @@
     },
     "EmployeeOnboarding.OnboardingExecutionFlow": {
       "blocks": [
-        "Employee.EmployeeDocuments",
         "Employee.PaymentMethod",
         "EmployeeOnboarding.Compensation",
         "EmployeeOnboarding.Deductions",
+        "EmployeeOnboarding.EmployeeDocuments",
         "EmployeeOnboarding.FederalTaxes",
         "EmployeeOnboarding.OnboardingSummary",
         "EmployeeOnboarding.Profile",

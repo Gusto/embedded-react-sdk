@@ -1,6 +1,13 @@
 export * from '@/components'
 export * from '@/contexts'
-export { componentEvents, type FlsaStatus, type PayPeriod } from '@/shared/constants'
+export {
+  componentEvents,
+  EmployeeOnboardingStatus,
+  EmployeeSelfOnboardingStatuses,
+  ContractorOnboardingStatus,
+  ContractorSelfOnboardingStatuses,
+} from '@/shared/constants'
+export type { EventType, FlsaStatus, PayPeriod } from '@/shared/constants'
 export type {
   BeforeCreateRequestHook,
   BeforeRequestHook,
