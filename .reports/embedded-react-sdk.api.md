@@ -172,17 +172,11 @@ export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<Pa
 // @public (undocumented)
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
-// Warning: (ae-missing-release-tag) "APIConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface APIConfig {
-    // (undocumented)
     baseUrl: string;
-    // (undocumented)
     headers?: HeadersInit;
-    // (undocumented)
     hooks?: SDKHooks;
-    // (undocumented)
     observability?: ObservabilityHook;
 }
 
@@ -2548,71 +2542,117 @@ export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTax
 // @public (undocumented)
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
 
-// Warning: (ae-missing-release-tag) "GustoApiProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
-    // (undocumented)
     children?: default_2.ReactNode;
-    // (undocumented)
     components?: Partial<ComponentsContextType>;
-    // (undocumented)
     queryClient?: QueryClient;
 }
 
-// Warning: (ae-missing-release-tag) "GustoApiProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public @deprecated (undocumented)
+// @public @deprecated
 export const GustoApiProvider: default_2.FC<GustoApiProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const GustoProvider: default_2.FC<GustoApiProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProviderCustomUIAdapter" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const GustoProviderCustomUIAdapter: default_2.FC<GustoProviderCustomUIAdapterProps>;
 
-// Warning: (ae-missing-release-tag) "GustoProviderCustomUIAdapterProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
-    // (undocumented)
     children?: default_2.ReactNode;
 }
 
-// Warning: (ae-missing-release-tag) "GustoProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface GustoProviderProps {
-    // (undocumented)
     components: ComponentsContextType;
-    // (undocumented)
     config: APIConfig;
-    // (undocumented)
     currency?: string;
     // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     dictionary?: ResourceDictionary;
-    // (undocumented)
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
-    // (undocumented)
     locale?: string;
-    // (undocumented)
     portalContainer?: HTMLElement;
-    // (undocumented)
     queryClient?: QueryClient;
-    // Warning: (ae-forgotten-export) The symbol "GustoSDKTheme" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    theme?: GustoSDKTheme;
+    theme?: Partial<GustoSDKTheme>;
+}
+
+// @public
+export interface GustoSDKTheme extends GustoSDKThemeColors {
+    badgeRadius: string;
+    bannerRadius: string;
+    boxRadius: string;
+    buttonRadius: string;
+    cardRadius: string;
+    focusRingColor: string;
+    focusRingWidth: string;
+    fontFamily: string;
+    fontLineHeightExtraSmall: string;
+    fontLineHeightLarge: string;
+    fontLineHeightRegular: string;
+    fontLineHeightSmall: string;
+    fontSizeExtraSmall: string;
+    fontSizeHeading1: string;
+    fontSizeHeading2: string;
+    fontSizeHeading3: string;
+    fontSizeHeading4: string;
+    fontSizeHeading5: string;
+    fontSizeHeading6: string;
+    fontSizeLarge: string;
+    fontSizeRegular: string;
+    fontSizeRoot: string;
+    fontSizeSmall: string;
+    fontWeightBold: string;
+    fontWeightMedium: string;
+    fontWeightRegular: string;
+    fontWeightSemibold: string;
+    inputAdornmentColor: string;
+    inputBackgroundColor: string;
+    inputBorderColor: string;
+    inputBorderWidth: string;
+    inputContentColor: string;
+    inputDescriptionColor: string;
+    inputDisabledBackgroundColor: string;
+    inputErrorColor: string;
+    inputLabelColor: string;
+    inputLabelFontSize: string;
+    inputLabelFontWeight: string;
+    inputPlaceholderColor: string;
+    inputRadius: string;
+    shadowResting: string;
+    shadowTopmost: string;
+    transitionDuration: string;
+}
+
+// @public
+export interface GustoSDKThemeColors {
+    colorBody: string;
+    colorBodyAccent: string;
+    colorBodyContent: string;
+    colorBodySubContent: string;
+    colorBorderPrimary: string;
+    colorBorderSecondary: string;
+    colorButtonIcon: string;
+    colorError: string;
+    colorErrorAccent: string;
+    colorErrorContent: string;
+    colorInfo: string;
+    colorInfoAccent: string;
+    colorInfoContent: string;
+    colorPrimary: string;
+    colorPrimaryAccent: string;
+    colorPrimaryContent: string;
+    colorSecondary: string;
+    colorSecondaryAccent: string;
+    colorSecondaryContent: string;
+    colorSuccess: string;
+    colorSuccessAccent: string;
+    colorSuccessContent: string;
+    colorWarning: string;
+    colorWarningAccent: string;
+    colorWarningContent: string;
 }
 
 // @public

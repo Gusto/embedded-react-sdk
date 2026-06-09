@@ -1,4 +1,7 @@
+import type { GustoSDKTheme, GustoSDKThemeColors } from './types'
 import { getRootFontSize, toRem } from '@/helpers/rem'
+
+export type { GustoSDKTheme, GustoSDKThemeColors }
 
 // Colors are for internal use in our theme currently
 // We don't export them for partner use or overrides
@@ -41,9 +44,10 @@ const baseColors = {
   },
 }
 
+/** @internal */
 export const transitionDuration = 200
 
-const defaultThemeColors = {
+const defaultThemeColors: GustoSDKThemeColors = {
   colorBody: baseColors.neutral[25],
   colorBodyAccent: baseColors.neutral[100],
   colorBodyContent: baseColors.neutral[1000],
@@ -71,35 +75,30 @@ const defaultThemeColors = {
   colorButtonIcon: baseColors.neutral[400],
 }
 
-export type GustoSDKThemeColors = Partial<typeof defaultThemeColors>
+/** @internal */
+export const createTheme = (colors: Partial<GustoSDKThemeColors> = {}): GustoSDKTheme => {
+  const mergedColors = { ...defaultThemeColors, ...colors }
 
-export const createTheme = (colors: GustoSDKThemeColors = {}) => {
   return {
-    // Colors
-    ...defaultThemeColors,
-    ...colors,
-    // Input Colors
-    inputBackgroundColor: colors.colorBody,
+    ...mergedColors,
+    inputBackgroundColor: mergedColors.colorBody,
     inputBorderColor: baseColors.neutral[300],
-    inputContentColor: colors.colorBodyContent,
+    inputContentColor: mergedColors.colorBodyContent,
     inputBorderWidth: '1px',
-    inputPlaceholderColor: colors.colorBodySubContent,
-    inputAdornmentColor: colors.colorBodySubContent,
-    inputDisabledBackgroundColor: colors.colorBodyAccent,
-    // Field Colors
-    inputLabelColor: colors.colorBodyContent,
+    inputPlaceholderColor: mergedColors.colorBodySubContent,
+    inputAdornmentColor: mergedColors.colorBodySubContent,
+    inputDisabledBackgroundColor: mergedColors.colorBodyAccent,
+    inputLabelColor: mergedColors.colorBodyContent,
     inputLabelFontSize: toRem(16),
     inputLabelFontWeight: '500',
-    inputDescriptionColor: colors.colorBodySubContent,
-    inputErrorColor: colors.colorErrorAccent,
-    // Radius
+    inputDescriptionColor: mergedColors.colorBodySubContent,
+    inputErrorColor: mergedColors.colorErrorAccent,
     inputRadius: toRem(8),
     buttonRadius: toRem(8),
     cardRadius: toRem(8),
     badgeRadius: toRem(6),
     bannerRadius: toRem(8),
     boxRadius: toRem(8),
-    // Font
     fontSizeRoot: getRootFontSize(),
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontLineHeightLarge: toRem(28),
@@ -120,34 +119,28 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     fontWeightMedium: '500',
     fontWeightSemibold: '600',
     fontWeightBold: '700',
-    // Transitions
     transitionDuration: `${transitionDuration}ms`,
-    // Shadows
     shadowResting: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
     shadowTopmost:
       '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
-    // Focus
-    focusRingColor: colors.colorPrimary,
+    focusRingColor: mergedColors.colorPrimary,
     focusRingWidth: '2px',
   }
 }
 
-export type GustoSDKTheme = Partial<ReturnType<typeof createTheme>>
-
-export const mergePartnerTheme = (partnerTheme: GustoSDKTheme): GustoSDKTheme => {
+/** @internal */
+export const mergePartnerTheme = (partnerTheme: Partial<GustoSDKTheme>): GustoSDKTheme => {
   const colors = Object.entries(defaultThemeColors).reduce(
-    (acc: GustoSDKThemeColors, [key, value]) => {
-      acc[key as keyof typeof defaultThemeColors] =
-        partnerTheme[key as keyof typeof defaultThemeColors] || value
+    (acc, [key, value]) => {
+      acc[key as keyof GustoSDKThemeColors] =
+        partnerTheme[key as keyof GustoSDKThemeColors] || value
       return acc
     },
-    {},
+    { ...defaultThemeColors },
   )
 
-  const theme = createTheme(colors)
-
   return {
-    ...theme,
+    ...createTheme(colors),
     ...partnerTheme,
   }
 }
