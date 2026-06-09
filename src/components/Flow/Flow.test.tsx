@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMachine, reduce, state, transition } from 'robot3'
-import type { ComponentType } from 'react'
+import { lazy, type ComponentType } from 'react'
 import { BaseBoundaries } from '../Base'
 import { Flow } from './Flow'
 import type { FlowContextInterface } from './useFlow'
@@ -299,14 +299,12 @@ describe('Flow', () => {
   it('keeps flow transitions non-urgent when the next screen suspends', async () => {
     const user = userEvent.setup()
     const onEvent = vi.fn()
-    let resolveSuspense = () => undefined
-    let suspenseResolved = false
-    const suspensePromise = new Promise<void>(resolve => {
-      resolveSuspense = () => {
-        suspenseResolved = true
-        resolve()
-      }
+    let resolveLazyScreen: (module: { default: ComponentType }) => void = () => undefined
+    const lazyScreenPromise = new Promise<{ default: ComponentType }>(resolve => {
+      resolveLazyScreen = resolve
     })
+    const LoadedScreen = () => <div data-testid="suspended-screen">Loaded</div>
+    const SuspendedScreen = lazy(() => lazyScreenPromise)
     const ChildThatEmits = () => {
       const { onEvent: emit } = useFlow()
       return (
@@ -319,13 +317,6 @@ describe('Flow', () => {
           load suspending step
         </button>
       )
-    }
-    const SuspendedScreen = () => {
-      if (!suspenseResolved) {
-        throw suspensePromise
-      }
-
-      return <div data-testid="suspended-screen">Loaded</div>
     }
     const machine = createMachine(
       'first',
@@ -363,8 +354,8 @@ describe('Flow', () => {
     expect(screen.queryByTestId('render-error')).toBeNull()
 
     await act(async () => {
-      resolveSuspense()
-      await suspensePromise
+      resolveLazyScreen({ default: LoadedScreen })
+      await lazyScreenPromise
     })
 
     await waitFor(() => {
