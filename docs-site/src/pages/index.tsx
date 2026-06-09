@@ -2,7 +2,7 @@ import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import clsx from 'clsx'
-import type { ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import styles from './index.module.css'
 
 function WorkflowIcon({ className }: { className?: string }) {
@@ -22,26 +22,6 @@ function WorkflowIcon({ className }: { className?: string }) {
       <path d="M10 7H18" stroke="currentColor" strokeWidth="1.75" />
       <path d="M6 11V14C6 15.1 6.9 16 8 16H10" stroke="currentColor" strokeWidth="1.75" />
       <path d="M22 11V14C22 15.1 21.1 16 20 16H18" stroke="currentColor" strokeWidth="1.75" />
-    </svg>
-  )
-}
-
-function PaletteIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect x="3" y="3" width="22" height="22" rx="3" stroke="currentColor" strokeWidth="1.75" />
-      <rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="7" y="16" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="16" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="16" y="16" width="5" height="5" rx="1" fill="currentColor" />
     </svg>
   )
 }
@@ -108,14 +88,96 @@ function GearIcon({ className }: { className?: string }) {
   )
 }
 
-interface Feature {
+function CopyIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  )
+}
+
+const INSTALL_COMMAND = 'npm install @gusto/embedded-react-sdk'
+
+function InstallSnippet() {
+  const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(INSTALL_COMMAND)
+      setCopied(true)
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard API unavailable; leave state untouched
+    }
+  }, [])
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    },
+    [],
+  )
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      className={styles.heroInstall}
+      aria-label={copied ? 'Copied install command' : 'Copy install command'}
+    >
+      <code>{INSTALL_COMMAND}</code>
+      <span className={clsx(styles.heroInstallIcon, copied && styles.heroInstallIconCopied)}>
+        {copied ? <CheckIcon /> : <CopyIcon />}
+      </span>
+    </button>
+  )
+}
+
+interface BigFeature {
   title: string
   description: string
   to: string
   Icon: (props: { className?: string }) => ReactNode
 }
 
-const features: Feature[] = [
+interface SmallFeature {
+  title: string
+  description: string
+  to: string
+}
+
+const bigFeatures: BigFeature[] = [
   {
     title: 'Pre-built Workflows',
     description:
@@ -124,25 +186,45 @@ const features: Feature[] = [
     Icon: WorkflowIcon,
   },
   {
-    title: 'Full UI Control',
-    description:
-      'Use theming, component adapters, and composition to match your design system. Native React components, not iframes.',
-    to: '/docs/component-adapter',
-    Icon: PaletteIcon,
-  },
-  {
-    title: 'Event-driven',
+    title: 'Event Handling',
     description:
       'Every component emits typed events for user actions and API responses. Drive navigation, analytics, and side effects.',
     to: '/docs/integration-guide/event-handling',
     Icon: SignalIcon,
   },
   {
-    title: 'Built-in Business Logic',
+    title: 'Hooks',
     description:
-      'API calls, form validation, error handling, and state transitions are managed internally with React Query, react-hook-form, and Zod.',
+      'Headless React hooks that manage API calls, validation, and state — wire them into your own UI when you need full control.',
     to: '/docs/hooks',
     Icon: GearIcon,
+  },
+]
+
+const smallFeatures: SmallFeature[] = [
+  {
+    title: 'Component Adapter',
+    description:
+      "Swap the SDK's default components for your own so every rendered control matches your design system.",
+    to: '/docs/component-adapter',
+  },
+  {
+    title: 'Theming',
+    description:
+      'Re-skin every SDK component at once via theme tokens — colors, border radii, focus rings, fonts.',
+    to: '/docs/theming',
+  },
+  {
+    title: 'Translations',
+    description:
+      'Override any SDK string — field labels, descriptions, validation messages — by passing a partial dictionary.',
+    to: '/docs/integration-guide/translation',
+  },
+  {
+    title: 'Bring your own data',
+    description:
+      "Pre-fill SDK forms with values you already have so users don't re-type information you collected elsewhere.",
+    to: '/docs/integration-guide/providing-your-own-data',
   },
 ]
 
@@ -225,9 +307,7 @@ function HeroSection() {
               Learn More
             </Link>
           </div>
-          <div className={styles.heroInstall}>
-            <code>npm install @gusto/embedded-react-sdk</code>
-          </div>
+          <InstallSnippet />
         </div>
         <HeroPreview />
       </div>
@@ -241,14 +321,13 @@ function FeaturesSection() {
       <div className={styles.featuresInner}>
         <header className={styles.featuresHeader}>
           <h2 className={styles.featuresHeading}>
-            Built for <span className={styles.heroAccent}>partners</span>.
+            Build it <span className={styles.heroAccent}>your way</span>.
           </h2>
-          <p className={styles.featuresIntro}>Production-grade pieces, ready to drop in.</p>
+          <p className={styles.featuresIntro}>Everything you need to ship.</p>
         </header>
-        <div className={styles.featuresGrid}>
-          {features.map(({ title, description, to, Icon }, index) => (
+        <div className={styles.featuresBigGrid}>
+          {bigFeatures.map(({ title, description, to, Icon }) => (
             <Link key={title} to={to} className={styles.featureCard}>
-              <span className={styles.featureStepNumber}>{String(index + 1).padStart(2, '0')}</span>
               <div className={styles.featureIconBadge}>
                 <Icon className={styles.featureIcon} />
               </div>
@@ -257,33 +336,13 @@ function FeaturesSection() {
             </Link>
           ))}
         </div>
-      </div>
-    </section>
-  )
-}
-
-function QuickLinksSection() {
-  return (
-    <section className={styles.quickLinks}>
-      <div className={styles.quickLinksInner}>
-        <h2 className={styles.quickLinksTitle}>Explore the SDK</h2>
-        <div className={styles.quickLinksGrid}>
-          <Link to="/docs/workflows-overview" className={styles.quickLinkCard}>
-            <h3>Workflows</h3>
-            <p>Pre-built flows for onboarding, payroll, contractors, and more.</p>
-          </Link>
-          <Link to="/docs/integration-guide" className={styles.quickLinkCard}>
-            <h3>Integration Guide</h3>
-            <p>Events, composition, theming, authentication, and error handling.</p>
-          </Link>
-          <Link to="/docs/component-adapter" className={styles.quickLinkCard}>
-            <h3>Component Adapter</h3>
-            <p>Bring your own UI components and design system.</p>
-          </Link>
-          <Link to="https://github.com/Gusto/embedded-react-sdk" className={styles.quickLinkCard}>
-            <h3>GitHub</h3>
-            <p>Source code, issues, and contributions.</p>
-          </Link>
+        <div className={styles.featuresSmallGrid}>
+          {smallFeatures.map(({ title, description, to }) => (
+            <Link key={title} to={to} className={styles.featureCardSmall}>
+              <h3 className={styles.featureSmallTitle}>{title}</h3>
+              <p className={styles.featureSmallDescription}>{description}</p>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
@@ -297,7 +356,6 @@ export default function Home(): ReactNode {
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <HeroSection />
       <FeaturesSection />
-      <QuickLinksSection />
     </Layout>
   )
 }

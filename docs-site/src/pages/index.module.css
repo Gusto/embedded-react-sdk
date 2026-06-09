@@ -38,7 +38,7 @@
   height: 70%;
   top: -10%;
   right: -8%;
-  background: radial-gradient(circle, rgba(244, 93, 72, 0.22) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(241, 94, 73, 0.22) 0%, transparent 70%);
   opacity: 0.9;
 }
 
@@ -110,11 +110,11 @@
 }
 
 .heroAccent {
-  color: #f45d48;
+  color: #f15e49;
 }
 
 [data-theme='dark'] .heroAccent {
-  color: #ff7a68;
+  color: #f15e49;
 }
 
 .heroText .heroBrand,
@@ -245,7 +245,7 @@
 
 .previewStepDone,
 .previewStepActive {
-  background: #f45d48;
+  background: #f15e49;
 }
 
 [data-theme='dark'] .previewStepDone,
@@ -429,7 +429,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 2rem;
-  background-color: #f45d48;
+  background-color: #f15e49;
   color: #ffffff;
   border-radius: 8px;
   font-weight: 600;
@@ -441,10 +441,9 @@
 }
 
 .heroPrimary:hover {
-  background-color: #d91f0c;
+  background-color: #f67660;
   color: #ffffff;
   text-decoration: none;
-  transform: translateY(-1px);
 }
 
 .heroSecondary {
@@ -468,11 +467,10 @@
 }
 
 .heroSecondary:hover {
-  border-color: #f45d48;
-  background-color: rgba(255, 255, 255, 0.85);
-  color: #f45d48;
+  border-color: rgba(27, 27, 29, 0.2);
+  background-color: rgba(27, 27, 29, 0.06);
+  color: #1b1b1d;
   text-decoration: none;
-  transform: translateY(-1px);
 }
 
 [data-theme='dark'] .heroSecondary {
@@ -496,26 +494,87 @@
 }
 
 .heroInstall {
-  display: inline-block;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 2.5rem 0.5rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(27, 27, 29, 0.12);
+  border-radius: 6px;
+  font: inherit;
+  color: #1b1b1d;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.heroInstall:hover {
+  border-color: rgba(27, 27, 29, 0.22);
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme='dark'] .heroInstall {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .heroInstall:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .heroInstall code {
   display: inline-block;
-  padding: 0.5rem 1.25rem;
-  background-color: #1b1b1d;
-  border: 1px solid #1b1b1d;
-  border-radius: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
   font-size: 0.9rem;
-  color: #e0e0e3;
+  color: inherit;
   user-select: all;
 }
 
 [data-theme='dark'] .heroInstall code {
-  background-color: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: none;
+}
+
+.heroInstallIcon {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: rgba(27, 27, 29, 0.55);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+  pointer-events: none;
+}
+
+[data-theme='dark'] .heroInstallIcon {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.heroInstall:hover .heroInstallIcon,
+.heroInstallIcon.heroInstallIconCopied {
+  opacity: 1;
+}
+
+.heroInstallIconCopied {
+  color: #22c55e;
+}
+
+[data-theme='dark'] .heroInstallIconCopied {
+  color: #4ade80;
 }
 
 /* ── Features ── */
@@ -556,19 +615,34 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.featuresGrid {
+.featuresBigGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.featuresSmallGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
 @media (max-width: 996px) {
-  .featuresGrid {
+  .featuresBigGrid {
     grid-template-columns: 1fr;
+  }
+
+  .featuresSmallGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
+  .featuresSmallGrid {
+    grid-template-columns: 1fr;
+  }
+
   .heroActions {
     flex-direction: column;
     align-items: center;
@@ -577,45 +651,19 @@
 
 .featureCard {
   display: block;
-  position: relative;
-  overflow: hidden;
   padding: 2rem;
   background-color: #ffffff;
   border: 1px solid #ebedf0;
   border-radius: 16px;
   text-decoration: none;
   color: inherit;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .featureCard:hover {
+  border-color: #d0d3d8;
   text-decoration: none;
   color: inherit;
-}
-
-.featureCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, #ff8266, #e15a43);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.featureCard:hover {
-  border-color: rgba(244, 93, 72, 0.4);
-  box-shadow: 0 16px 44px rgba(244, 93, 72, 0.18);
-  transform: translateY(-2px);
-}
-
-.featureCard:hover::before {
-  opacity: 1;
 }
 
 [data-theme='dark'] .featureCard {
@@ -624,22 +672,7 @@
 }
 
 [data-theme='dark'] .featureCard:hover {
-  border-color: rgba(255, 130, 102, 0.45);
-  box-shadow: 0 16px 44px rgba(255, 130, 102, 0.22);
-}
-
-.featureStepNumber {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: #525860;
-  margin-bottom: 1.25rem;
-}
-
-[data-theme='dark'] .featureStepNumber {
-  color: rgba(255, 255, 255, 0.45);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .featureIconBadge {
@@ -665,7 +698,7 @@
 
 .featureTitle {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.01em;
   margin-bottom: 0.5rem;
   color: #1b1b1d;
@@ -686,96 +719,52 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-/* ── Quick links ── */
-
-.quickLinks {
-  padding: 4rem 2rem 5rem;
-}
-
-.quickLinksInner {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.quickLinksTitle {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #1b1b1d;
-}
-
-[data-theme='dark'] .quickLinksTitle {
-  color: #ffffff;
-}
-
-.quickLinksGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-}
-
-@media (max-width: 996px) {
-  .quickLinksGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .quickLinksGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.quickLinkCard {
-  display: block;
+.featureCardSmall {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 1.25rem 1.5rem;
   background-color: #ffffff;
-  border: 1px solid #dfe1e5;
-  border-radius: 10px;
+  border: 1px solid #ebedf0;
+  border-radius: 12px;
   text-decoration: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.1s ease;
+  color: inherit;
+  transition: border-color 0.15s ease;
 }
 
-.quickLinkCard:hover {
-  border-color: #f45d48;
-  box-shadow: 0 4px 14px rgba(244, 93, 72, 0.12);
+.featureCardSmall:hover {
+  border-color: #d0d3d8;
   text-decoration: none;
-  transform: translateY(-2px);
+  color: inherit;
 }
 
-[data-theme='dark'] .quickLinkCard {
-  background-color: #1b1b1d;
-  border-color: #3a3a3d;
+[data-theme='dark'] .featureCardSmall {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme='dark'] .quickLinkCard:hover {
-  border-color: #ff7a68;
-  box-shadow: 0 3px 12px rgba(255, 122, 104, 0.1);
+[data-theme='dark'] .featureCardSmall:hover {
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
-.quickLinkCard h3 {
-  font-size: 1rem;
+.featureSmallTitle {
+  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 0.35rem;
+  margin: 0;
   color: #1b1b1d;
 }
 
-[data-theme='dark'] .quickLinkCard h3 {
+[data-theme='dark'] .featureSmallTitle {
   color: #ffffff;
 }
 
-.quickLinkCard p {
-  font-size: 0.85rem;
-  color: #525860;
-  margin: 0;
+.featureSmallDescription {
+  font-size: 0.95rem;
   line-height: 1.5;
+  margin: 0;
+  color: #525860;
 }
 
-[data-theme='dark'] .quickLinkCard p {
-  color: #9a9da3;
+[data-theme='dark'] .featureSmallDescription {
+  color: rgba(255, 255, 255, 0.6);
 }
