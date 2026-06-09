@@ -3,7 +3,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { JobsListPresentation } from './JobsListPresentation'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { mockUseContainerBreakpoints } from '@/test/setup'
 
@@ -18,7 +18,7 @@ const primaryJob = {
     {
       uuid: 'comp-1',
       title: 'Primary Job',
-      flsaStatus: FlsaStatus.NONEXEMPT,
+      flsaStatus: FLSA_STATUS.NONEXEMPT,
     },
   ],
 } as unknown as Job
@@ -34,14 +34,14 @@ const additionalJob = {
     {
       uuid: 'comp-2',
       title: 'Additional Job',
-      flsaStatus: FlsaStatus.NONEXEMPT,
+      flsaStatus: FLSA_STATUS.NONEXEMPT,
     },
   ],
 } as unknown as Job
 
 const defaultProps = {
   jobs: [primaryJob],
-  primaryFlsaStatus: FlsaStatus.NONEXEMPT as string | undefined,
+  primaryFlsaStatus: FLSA_STATUS.NONEXEMPT as string | undefined,
   isPending: false,
   onAdd: vi.fn(),
   onEdit: vi.fn(),
@@ -79,7 +79,7 @@ describe('JobsListPresentation', () => {
 
   it('does not show "Add another job" when primary FLSA is not Nonexempt', () => {
     renderWithProviders(
-      <JobsListPresentation {...defaultProps} primaryFlsaStatus={FlsaStatus.EXEMPT} />,
+      <JobsListPresentation {...defaultProps} primaryFlsaStatus={FLSA_STATUS.EXEMPT} />,
     )
 
     expect(screen.queryByRole('button', { name: /Add another job/i })).not.toBeInTheDocument()

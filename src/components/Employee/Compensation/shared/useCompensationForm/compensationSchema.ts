@@ -39,12 +39,12 @@ const fieldValidators = {
   // enforced via `requiredFieldsConfig` on submit in `create` mode.
   flsaStatus: z
     .enum([
-      FlsaStatus.EXEMPT,
-      FlsaStatus.SALARIED_NONEXEMPT,
-      FlsaStatus.NONEXEMPT,
-      FlsaStatus.OWNER,
-      FlsaStatus.COMMISSION_ONLY_EXEMPT,
-      FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      FLSA_STATUS.EXEMPT,
+      FLSA_STATUS.SALARIED_NONEXEMPT,
+      FLSA_STATUS.NONEXEMPT,
+      FLSA_STATUS.OWNER,
+      FLSA_STATUS.COMMISSION_ONLY_EXEMPT,
+      FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT,
     ])
     .optional(),
   paymentUnit: z.enum([
@@ -89,16 +89,16 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   const { flsaStatus, paymentUnit, rate } = data
 
   if (
-    flsaStatus === FlsaStatus.EXEMPT ||
-    flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
-    flsaStatus === FlsaStatus.NONEXEMPT
+    flsaStatus === FLSA_STATUS.EXEMPT ||
+    flsaStatus === FLSA_STATUS.SALARIED_NONEXEMPT ||
+    flsaStatus === FLSA_STATUS.NONEXEMPT
   ) {
     // Surface the EXEMPT salary-threshold issue *before* the generic minimum,
     // so a partner setting rate=0 with EXEMPT sees the more actionable
     // "must meet salary threshold" message rather than the generic
     // "amount must be at least $1.00".
     if (
-      flsaStatus === FlsaStatus.EXEMPT &&
+      flsaStatus === FLSA_STATUS.EXEMPT &&
       yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
     ) {
       ctx.addIssue({
@@ -113,7 +113,7 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
         message: CompensationErrorCodes.RATE_MINIMUM,
       })
     }
-  } else if (flsaStatus === FlsaStatus.OWNER) {
+  } else if (flsaStatus === FLSA_STATUS.OWNER) {
     if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -129,8 +129,8 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
       })
     }
   } else if (
-    flsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT ||
-    flsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT
+    flsaStatus === FLSA_STATUS.COMMISSION_ONLY_EXEMPT ||
+    flsaStatus === FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT
   ) {
     if (paymentUnit !== PAY_PERIODS.YEAR) {
       ctx.addIssue({

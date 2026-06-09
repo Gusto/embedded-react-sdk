@@ -25,7 +25,7 @@ import {
   buildJob,
 } from '@/test/factories/jobsAndCompensations'
 import { API_BASE_URL } from '@/test/constants'
-import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
+import { FLSA_STATUS, PAY_PERIODS } from '@/shared/constants'
 
 assertType<CompensationOptionalFieldsToRequire>({ update: ['title'] })
 assertType<CompensationOptionalFieldsToRequire>({})
@@ -51,7 +51,7 @@ function tomorrowISO(): string {
 
 const VALID_FORM_DATA: CompensationFormData = {
   title: '',
-  flsaStatus: FlsaStatus.NONEXEMPT,
+  flsaStatus: FLSA_STATUS.NONEXEMPT,
   paymentUnit: PAY_PERIODS.HOUR,
   rate: 20,
   effectiveDate: '2024-12-24',
@@ -144,7 +144,7 @@ describe('createCompensationSchema', () => {
     const [schema] = createCompensationSchema({ mode: 'create' })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
-      flsaStatus: FlsaStatus.OWNER,
+      flsaStatus: FLSA_STATUS.OWNER,
       paymentUnit: PAY_PERIODS.YEAR,
       rate: 100,
     })
@@ -158,7 +158,7 @@ describe('createCompensationSchema', () => {
     const [schema] = createCompensationSchema({ mode: 'create' })
     const badPaymentUnit = schema.safeParse({
       ...VALID_FORM_DATA,
-      flsaStatus: FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      flsaStatus: FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT,
       paymentUnit: PAY_PERIODS.HOUR,
       rate: 0,
     })
@@ -166,7 +166,7 @@ describe('createCompensationSchema', () => {
 
     const badRate = schema.safeParse({
       ...VALID_FORM_DATA,
-      flsaStatus: FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      flsaStatus: FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT,
       paymentUnit: PAY_PERIODS.YEAR,
       rate: 100,
     })
@@ -180,7 +180,7 @@ describe('createCompensationSchema', () => {
     const [schema] = createCompensationSchema({ mode: 'create' })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
-      flsaStatus: FlsaStatus.NONEXEMPT,
+      flsaStatus: FLSA_STATUS.NONEXEMPT,
       rate: 0,
     })
     expect(result.success).toBe(false)
@@ -193,7 +193,7 @@ describe('createCompensationSchema', () => {
     const [schema] = createCompensationSchema({ mode: 'create' })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
-      flsaStatus: FlsaStatus.EXEMPT,
+      flsaStatus: FLSA_STATUS.EXEMPT,
       paymentUnit: PAY_PERIODS.YEAR,
       rate: 100,
     })
@@ -463,7 +463,7 @@ describe('useCompensationForm', () => {
           useCompensationForm({
             employeeId: 'employee-uuid',
             defaultValues: {
-              flsaStatus: FlsaStatus.NONEXEMPT,
+              flsaStatus: FLSA_STATUS.NONEXEMPT,
               rate: 30,
               effectiveDate: '2099-01-01',
             },
@@ -511,7 +511,7 @@ describe('useCompensationForm', () => {
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
 
       await waitFor(() => {
@@ -546,7 +546,7 @@ describe('useCompensationForm', () => {
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
 
       await waitFor(() => {
@@ -581,14 +581,14 @@ describe('useCompensationForm', () => {
       const priorEffectiveDate = formMethods.getValues('effectiveDate')
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
       await waitFor(() => {
         expect(formMethods.getValues('effectiveDate')).toBe(todayISO())
       })
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.NONEXEMPT)
       })
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
@@ -622,7 +622,7 @@ describe('useCompensationForm', () => {
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
 
       await waitFor(() => {
@@ -659,7 +659,7 @@ describe('useCompensationForm', () => {
       const { formMethods } = result.current.form.hookFormInternals
       const priorEffectiveDate = formMethods.getValues('effectiveDate')
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
       await new Promise(r => setTimeout(r, 20))
       expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
@@ -762,7 +762,7 @@ describe('useCompensationForm', () => {
       const { formMethods } = result.current.form.hookFormInternals
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.OWNER)
       })
       await waitFor(() => {
         expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.PAYCHECK)
@@ -791,7 +791,7 @@ describe('useCompensationForm', () => {
       const { formMethods } = result.current.form.hookFormInternals
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT)
       })
       await waitFor(() => {
         expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.YEAR)
@@ -829,7 +829,7 @@ describe('useCompensationForm', () => {
       expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.COMMISSION_ONLY_EXEMPT)
       })
       await waitFor(() => {
         assertReady(result.current)
@@ -842,7 +842,7 @@ describe('useCompensationForm', () => {
       })
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT)
       })
       await waitFor(() => {
         assertReady(result.current)
@@ -853,7 +853,7 @@ describe('useCompensationForm', () => {
       })
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.OWNER)
       })
       await waitFor(() => {
         assertReady(result.current)
@@ -863,7 +863,7 @@ describe('useCompensationForm', () => {
       })
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
       await waitFor(() => {
         assertReady(result.current)
@@ -907,11 +907,11 @@ describe('useCompensationForm', () => {
           HttpResponse.json([
             buildJob({
               uuid: 'job-uuid',
-              flsaStatus: FlsaStatus.NONEXEMPT,
+              flsaStatus: FLSA_STATUS.NONEXEMPT,
               compensations: [
                 buildCompensation({
                   uuid: 'compensation-uuid',
-                  flsa_status: FlsaStatus.NONEXEMPT,
+                  flsa_status: FLSA_STATUS.NONEXEMPT,
                   adjust_for_minimum_wage: true,
                   minimum_wages: [{ uuid: minWageUuid }],
                 }),
@@ -947,7 +947,7 @@ describe('useCompensationForm', () => {
       expect(formMethods.getValues('minimumWageId')).toBe(minWageUuid)
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
 
       await waitFor(() => {
@@ -995,7 +995,7 @@ describe('useCompensationForm', () => {
       )
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT)
       })
 
       await waitFor(() => {
@@ -1033,7 +1033,7 @@ describe('useCompensationForm', () => {
       // Trip the Owner branch so paymentUnit's auto-force effect runs and settles,
       // then override paymentUnit manually so trigger() produces PAYMENT_UNIT_OWNER.
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.OWNER)
       })
       await waitFor(() => {
         expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.PAYCHECK)
@@ -1049,7 +1049,7 @@ describe('useCompensationForm', () => {
       )
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT)
       })
 
       await waitFor(() => {
@@ -1095,7 +1095,7 @@ describe('useCompensationForm', () => {
       )
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.NONEXEMPT)
       })
 
       await waitFor(() => {
@@ -1137,11 +1137,11 @@ describe('useCompensationForm', () => {
           HttpResponse.json([
             buildJob({
               uuid: 'job-uuid',
-              flsaStatus: FlsaStatus.NONEXEMPT,
+              flsaStatus: FLSA_STATUS.NONEXEMPT,
               compensations: [
                 buildCompensation({
                   uuid: 'compensation-uuid',
-                  flsa_status: FlsaStatus.NONEXEMPT,
+                  flsa_status: FLSA_STATUS.NONEXEMPT,
                   adjust_for_minimum_wage: true,
                   minimum_wages: [{ uuid: minWageUuid }],
                 }),
@@ -1184,7 +1184,7 @@ describe('useCompensationForm', () => {
       )
 
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
       })
 
       await waitFor(() => {
@@ -1257,7 +1257,7 @@ describe('useCompensationForm', () => {
             jobId: 'new-secondary-job-uuid',
             // Even if a partner attempts to seed Exempt, the hook must override
             // it because secondaries must match the primary's FLSA.
-            defaultValues: { flsaStatus: FlsaStatus.EXEMPT },
+            defaultValues: { flsaStatus: FLSA_STATUS.EXEMPT },
           }),
         { wrapper: GustoTestProvider },
       )
@@ -1268,7 +1268,7 @@ describe('useCompensationForm', () => {
       assertReady(result.current)
       expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
       expect(result.current.form.hookFormInternals.formMethods.getValues('flsaStatus')).toBe(
-        FlsaStatus.NONEXEMPT,
+        FLSA_STATUS.NONEXEMPT,
       )
     })
 
@@ -1314,14 +1314,14 @@ describe('useCompensationForm', () => {
             buildJob({
               uuid: 'stub-primary-job-uuid',
               primary: true,
-              flsaStatus: FlsaStatus.NONEXEMPT,
+              flsaStatus: FLSA_STATUS.NONEXEMPT,
               rate: '0.00',
               currentCompensationUuid: 'stub-primary-comp-uuid',
               compensations: [
                 buildCompensation({
                   uuid: 'stub-primary-comp-uuid',
                   job_uuid: 'stub-primary-job-uuid',
-                  flsa_status: FlsaStatus.NONEXEMPT,
+                  flsa_status: FLSA_STATUS.NONEXEMPT,
                   rate: '0.00',
                 }),
               ],
@@ -1519,7 +1519,7 @@ describe('useCompensationForm', () => {
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('flsaStatus', FLSA_STATUS.EXEMPT)
         formMethods.setValue('rate', 80000)
         formMethods.setValue('paymentUnit', PAY_PERIODS.YEAR)
       })

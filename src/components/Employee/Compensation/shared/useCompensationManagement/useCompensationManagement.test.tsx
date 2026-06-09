@@ -10,7 +10,7 @@ import { server } from '@/test/mocks/server'
 import { handleGetEmployee, handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 
 type ReadyResult = Extract<UseCompensationManagementResult, { isLoading: false }>
 
@@ -116,7 +116,7 @@ describe('useCompensationManagement', () => {
 
     assertReady(result.current)
     expect(result.current.data.primaryJob).toMatchObject({ uuid: 'job-1', primary: true })
-    expect(result.current.data.primaryFlsaStatus).toBe(FlsaStatus.NONEXEMPT)
+    expect(result.current.data.primaryFlsaStatus).toBe(FLSA_STATUS.NONEXEMPT)
     expect(result.current.data.hasMultipleJobs).toBe(false)
     expect(result.current.data.employeeFirstName).toBe('Isom')
   })

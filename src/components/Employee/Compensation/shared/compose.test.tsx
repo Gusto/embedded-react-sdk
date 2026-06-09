@@ -13,7 +13,7 @@ import {
 } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
+import { FLSA_STATUS, PAY_PERIODS } from '@/shared/constants'
 
 describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
   beforeEach(() => {
@@ -89,7 +89,7 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
           defaultValues: {
             rate: 25,
             paymentUnit: PAY_PERIODS.HOUR,
-            flsaStatus: FlsaStatus.NONEXEMPT,
+            flsaStatus: FLSA_STATUS.NONEXEMPT,
           },
           // Onboarding does not surface an effectiveDate field — the server
           // initializes it on the auto-created stub. Mirror the actual
@@ -182,7 +182,7 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
           defaultValues: {
             rate: 0,
             paymentUnit: PAY_PERIODS.HOUR,
-            flsaStatus: FlsaStatus.NONEXEMPT,
+            flsaStatus: FLSA_STATUS.NONEXEMPT,
           },
           withEffectiveDateField: false,
           shouldFocusError: false,
@@ -235,7 +235,7 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
           defaultValues: {
             rate: 25,
             paymentUnit: PAY_PERIODS.HOUR,
-            flsaStatus: FlsaStatus.NONEXEMPT,
+            flsaStatus: FLSA_STATUS.NONEXEMPT,
           },
           withEffectiveDateField: false,
           shouldFocusError: false,

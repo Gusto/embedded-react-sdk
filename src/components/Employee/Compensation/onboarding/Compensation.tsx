@@ -15,7 +15,7 @@ import { JobsList } from './JobsList'
 import { EditCompensation } from './EditCompensation'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
 import {
   BaseComponent,
@@ -48,7 +48,7 @@ function deriveInitialFlowConfig(employeeJobs: Job[]): InitialFlowConfig {
   const onlyJob = employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null
   const onlyJobCompensation = findCurrentCompensation(onlyJob)
 
-  if (onlyJob && onlyJobCompensation?.flsaStatus !== FlsaStatus.NONEXEMPT) {
+  if (onlyJob && onlyJobCompensation?.flsaStatus !== FLSA_STATUS.NONEXEMPT) {
     return { initialState: 'initialEditJob', currentJobId: onlyJob.uuid }
   }
 

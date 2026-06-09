@@ -7,7 +7,7 @@ import { EditCompensation } from './EditCompensation'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
-import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
+import { componentEvents, FLSA_STATUS, type EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type EventPayloads = {
@@ -44,7 +44,7 @@ export function InitialEditCompensationContextual() {
     onEvent(event, data)
     if (event === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
       const compensation = data as Compensation
-      if (compensation.flsaStatus !== FlsaStatus.NONEXEMPT) {
+      if (compensation.flsaStatus !== FLSA_STATUS.NONEXEMPT) {
         onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
       } else {
         onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)

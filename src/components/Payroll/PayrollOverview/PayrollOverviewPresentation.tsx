@@ -32,7 +32,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
 import {
   compensationTypeLabels,
-  FlsaStatus,
+  FLSA_STATUS,
   PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
   PAYMENT_METHODS,
 } from '@/shared/constants'
@@ -372,9 +372,9 @@ export const PayrollOverviewPresentation = ({
                     )?.flsaStatus
 
                     switch (flsaStatus) {
-                      case FlsaStatus.EXEMPT:
+                      case FLSA_STATUS.EXEMPT:
                         return t('compensationTypeLabels.exempt')
-                      case FlsaStatus.NONEXEMPT:
+                      case FLSA_STATUS.NONEXEMPT:
                         return t('compensationTypeLabels.nonexempt')
                       default:
                         return flsaStatus ?? ''

@@ -23,7 +23,7 @@ import type { PayrollType } from './PayrollList/types'
 import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
@@ -622,7 +622,7 @@ export const getAdditionalEarningsCompensations = ({
 }): FixedCompensations[] => {
   const allFixedCompensations = [...existingFixedCompensations]
 
-  if (flsaStatus !== FlsaStatus.OWNER && primaryJobUuid && fixedCompensationTypes.length > 0) {
+  if (flsaStatus !== FLSA_STATUS.OWNER && primaryJobUuid && fixedCompensationTypes.length > 0) {
     const compensationTypeNames = fixedCompensationTypes
       .map(type => type.name)
       .filter(Boolean) as string[]

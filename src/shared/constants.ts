@@ -613,7 +613,7 @@ export const ContractorSelfOnboardingStatuses = new Set([
  *
  * @internal
  */
-export const FlsaStatus = {
+export const FLSA_STATUS = {
   EXEMPT: 'Exempt',
   SALARIED_NONEXEMPT: 'Salaried Nonexempt',
   NONEXEMPT: 'Nonexempt',

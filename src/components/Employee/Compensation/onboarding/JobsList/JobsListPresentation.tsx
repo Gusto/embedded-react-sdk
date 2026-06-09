@@ -6,7 +6,7 @@ import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 
 export interface JobsListPresentationProps {
   jobs: Job[]
@@ -31,7 +31,7 @@ export function JobsListPresentation({
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
 
-  const showAddAnotherJob = primaryFlsaStatus === FlsaStatus.NONEXEMPT
+  const showAddAnotherJob = primaryFlsaStatus === FLSA_STATUS.NONEXEMPT
 
   const dataViewProps = useDataView({
     data: jobs,

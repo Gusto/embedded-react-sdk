@@ -42,7 +42,7 @@ import type {
   HookLoadingResult,
   HookSubmitResult,
 } from '@/partner-hook-utils/types'
-import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
+import { FLSA_STATUS, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addDays, formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -223,12 +223,12 @@ function earliestEffectiveDate(comps: Compensation[]): string | null {
 }
 
 const flsaStatusEntries: FlsaStatusType[] = [
-  FlsaStatus.EXEMPT,
-  FlsaStatus.SALARIED_NONEXEMPT,
-  FlsaStatus.NONEXEMPT,
-  FlsaStatus.OWNER,
-  FlsaStatus.COMMISSION_ONLY_EXEMPT,
-  FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+  FLSA_STATUS.EXEMPT,
+  FLSA_STATUS.SALARIED_NONEXEMPT,
+  FLSA_STATUS.NONEXEMPT,
+  FLSA_STATUS.OWNER,
+  FLSA_STATUS.COMMISSION_ONLY_EXEMPT,
+  FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT,
 ]
 
 const flsaOptions = flsaStatusEntries.map(status => ({ value: status, label: status }))
@@ -355,7 +355,7 @@ export function useCompensationForm({
   // comp for the primary). The distinction matters: for the primary's future
   // comp, FLSA should be editable; for a secondary, it must match the primary.
   const isAddingSecondaryJob =
-    isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT && currentJob?.primary !== true
+    isCreateMode && primaryFlsaStatus === FLSA_STATUS.NONEXEMPT && currentJob?.primary !== true
 
   // Derive the effective-date floor internally so consumers don't need to wire
   // it up. Rules by mode and job type:
@@ -447,11 +447,11 @@ export function useCompensationForm({
   // re-establish the error if it still applies.
   useEffect(() => {
     clearErrors(['paymentUnit', 'rate'])
-    if (watchedFlsaStatus === FlsaStatus.OWNER) {
+    if (watchedFlsaStatus === FLSA_STATUS.OWNER) {
       setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
     } else if (
-      watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
-      watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+      watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT ||
+      watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', PAY_PERIODS.YEAR)
       setValue('rate', 0)
@@ -477,9 +477,9 @@ export function useCompensationForm({
   // effective date in create mode). Drives the warning and, in update mode
   // only, the effectiveDate-lock side effect below.
   const willDeleteSecondaryJobs =
-    effectiveBaseFlsaStatus === FlsaStatus.NONEXEMPT &&
+    effectiveBaseFlsaStatus === FLSA_STATUS.NONEXEMPT &&
     watchedFlsaStatus !== undefined &&
-    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
+    watchedFlsaStatus !== FLSA_STATUS.NONEXEMPT &&
     otherJobsCount > 0
 
   // Carve-out UX — update mode only: while willDeleteSecondaryJobs is active
@@ -521,9 +521,9 @@ export function useCompensationForm({
   const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
   const isCommissionOnly =
-    watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
-    watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-  const isOwner = watchedFlsaStatus === FlsaStatus.OWNER
+    watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT ||
+    watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_EXEMPT
+  const isOwner = watchedFlsaStatus === FLSA_STATUS.OWNER
 
   // Hide `Fields.FlsaStatus` when the user has no meaningful choice:
   // - update mode editing a secondary whose comp is already Nonexempt
@@ -532,10 +532,10 @@ export function useCompensationForm({
   // The first job's create flow and primary-job edits keep the field exposed.
   const isFlsaSelectionEnabled =
     !isAddingSecondaryJob &&
-    (watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary === true || isCreateMode)
+    (watchedFlsaStatus !== FLSA_STATUS.NONEXEMPT || currentJob?.primary === true || isCreateMode)
 
   const isAdjustMinimumWageEnabled =
-    watchedFlsaStatus === FlsaStatus.NONEXEMPT &&
+    watchedFlsaStatus === FLSA_STATUS.NONEXEMPT &&
     minimumWages.length > 0 &&
     state !== undefined &&
     !TIP_CREDITS_UNSUPPORTED_STATES.includes(state)
@@ -730,9 +730,10 @@ export function useCompensationForm({
       isPending,
       mode,
       willDeleteSecondaryJobs,
-      showCommissionFederalMinimumPayAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT,
-      showCommissionMinimumWageAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
-      showOwnerSalaryAlert: watchedFlsaStatus === FlsaStatus.OWNER,
+      showCommissionFederalMinimumPayAlert:
+        watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_EXEMPT,
+      showCommissionMinimumWageAlert: watchedFlsaStatus === FLSA_STATUS.COMMISSION_ONLY_NONEXEMPT,
+      showOwnerSalaryAlert: watchedFlsaStatus === FLSA_STATUS.OWNER,
     },
     actions: { onSubmit },
     errorHandling,

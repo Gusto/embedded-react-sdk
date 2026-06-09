@@ -2,7 +2,7 @@ import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/compo
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { describe, expect, it } from 'vitest'
 import { getPendingCompensationChanges } from './getPendingCompensationChanges'
-import { FlsaStatus } from '@/shared/constants'
+import { FLSA_STATUS } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
 
 const TODAY = new Date('2026-05-19T12:00:00')
@@ -12,7 +12,7 @@ const buildComp = (overrides: Partial<Compensation> = {}): Compensation => ({
   version: 'v1',
   rate: '30.00',
   paymentUnit: 'Hour',
-  flsaStatus: FlsaStatus.NONEXEMPT,
+  flsaStatus: FLSA_STATUS.NONEXEMPT,
   effectiveDate: '2024-01-01',
   title: 'Cashier',
   adjustForMinimumWage: false,
@@ -154,11 +154,11 @@ describe('getPendingCompensationChanges', () => {
     })
   })
 
-  it('emits flsaChange carrying the new FlsaStatus enum value', () => {
-    const current = buildComp({ flsaStatus: FlsaStatus.NONEXEMPT })
+  it('emits flsaChange carrying the new FLSA_STATUS enum value', () => {
+    const current = buildComp({ flsaStatus: FLSA_STATUS.NONEXEMPT })
     const future = buildComp({
       uuid: 'comp-future',
-      flsaStatus: FlsaStatus.EXEMPT,
+      flsaStatus: FLSA_STATUS.EXEMPT,
       effectiveDate: '2026-06-01',
     })
     const job = buildJob({}, [current, future])
@@ -166,7 +166,7 @@ describe('getPendingCompensationChanges', () => {
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
     expect(result[0]).toMatchObject({
-      details: expect.arrayContaining([{ kind: 'flsaChange', flsaStatus: FlsaStatus.EXEMPT }]),
+      details: expect.arrayContaining([{ kind: 'flsaChange', flsaStatus: FLSA_STATUS.EXEMPT }]),
     })
   })
 

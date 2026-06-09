@@ -18,7 +18,7 @@ import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
-import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
+import { componentEvents, FLSA_STATUS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -130,10 +130,10 @@ function CompensationCardReady({ employeeId, onEvent, compensation }: Compensati
       c =>
         c.effectiveDate !== undefined &&
         c.effectiveDate > localTodayISO &&
-        c.flsaStatus !== FlsaStatus.NONEXEMPT,
+        c.flsaStatus !== FLSA_STATUS.NONEXEMPT,
     ) ?? false
   const canAddAnotherJob =
-    jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
+    jobs.length >= 1 && primaryFlsaStatus === FLSA_STATUS.NONEXEMPT && !hasFutureNonNonexemptComp
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
   const singleJobCurrentComp = singleJob?.compensations?.find(
     c => c.uuid === singleJob.currentCompensationUuid,
