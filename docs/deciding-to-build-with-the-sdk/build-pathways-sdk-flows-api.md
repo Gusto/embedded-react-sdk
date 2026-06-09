@@ -1,5 +1,6 @@
 ---
 title: Build Pathways - SDK, Flows, & API
+description: Compare the three Gusto Embedded Payroll build pathways — custom API, Flows via iframe, and the React SDK — with tradeoffs around coverage, speed, and customizability.
 order: 0
 ---
 

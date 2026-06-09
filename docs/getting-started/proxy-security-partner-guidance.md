@@ -1,5 +1,6 @@
 ---
 title: 'Proxy Security: Partner Guidance'
+description: Secure the SDK proxy with per-request authentication, endpoint allowlisting, resource ownership checks, and audit logging using the SDK endpoint inventory.
 ---
 
 # Proxy Security: Partner Guidance

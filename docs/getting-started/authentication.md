@@ -1,5 +1,6 @@
 ---
 title: Authentication
+description: Authenticate SDK requests to the Gusto Embedded API via a backend proxy, OAuth2 token handling, and static or dynamic headers on the GustoProvider config.
 order: 0
 ---
 

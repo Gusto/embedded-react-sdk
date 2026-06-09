@@ -1,5 +1,6 @@
 ---
 title: Customizing HTTP Requests with Request Interceptors
+description: Intercept SDK requests and responses via beforeCreateRequest, beforeRequest, afterSuccess, and afterError hooks to add auth, headers, logging, or retries.
 ---
 
 Request interceptors let you customize HTTP requests and responses in the Gusto Embedded React SDK.

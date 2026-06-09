@@ -1,5 +1,6 @@
 ---
 title: Versioning
+description: SDK versioning strategy, pre-1.0 SemVer behavior, what counts as a breaking change, advance-notice expectations, upgrade guides, and where to find releases.
 order: 0
 ---
 

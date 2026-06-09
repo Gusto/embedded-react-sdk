@@ -1,5 +1,6 @@
 ---
 title: Time Off Policy Management
+description: Workflow for creating and managing sick, vacation, and holiday policies — configure accruals, set limits, and assign employees from a unified policy list.
 order: 6
 ---
 

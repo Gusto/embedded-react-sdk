@@ -1,5 +1,6 @@
 ---
 title: Company Onboarding
+description: Workflow for onboarding a company to Gusto Embedded Payroll — industry, signatory, locations, federal taxes, bank account, and document signing subcomponents.
 order: 1
 ---
 

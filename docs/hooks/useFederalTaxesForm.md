@@ -1,5 +1,6 @@
 ---
 title: useFederalTaxesForm
+description: Headless hook for updating an employee's federal W-4 — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding — inside SDKFormProvider.
 order: 6
 ---
 

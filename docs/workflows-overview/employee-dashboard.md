@@ -1,5 +1,6 @@
 ---
 title: Employee Dashboard
+description: Tabbed employee dashboard surface — basic details, job and pay, taxes, and documents — for viewing and managing an employee's payroll information after onboarding.
 order: 5
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Hooks
+description: Headless form hooks that handle data fetching, validation, submission, and error handling — you supply the layout and labels around pre-bound Field components.
 order: 1
 ---
 

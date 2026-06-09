@@ -1,5 +1,6 @@
 ---
 title: How the Component Adapter Works
+description: Architecture of the Component Adapter — how prop mappings flow through GustoProvider or GustoProviderCustomUIAdapter to swap UI components inside the SDK.
 order: 2
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Setting Up Your Component Adapter
+description: Step-by-step guide to building custom component implementations, wiring them into a provider, and supplying them to the SDK as a full or partial override.
 order: 3
 ---
 

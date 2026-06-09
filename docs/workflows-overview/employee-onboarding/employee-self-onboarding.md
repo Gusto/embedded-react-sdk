@@ -1,5 +1,6 @@
 ---
 title: Employee Self-Onboarding
+description: Employee-driven onboarding flow that hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information.
 order: 0
 ---
 

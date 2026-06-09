@@ -1,5 +1,6 @@
 ---
 title: Dismissal Payroll
+description: Guided workflow for running a terminated employee's final payroll — surfaces unprocessed termination pay periods and transitions into the standard payroll flow.
 order: 6
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: useEmployeeDetailsForm
+description: Headless hook for creating or updating an employee profile — name, email, SSN, date of birth, and self-onboarding preference — inside SDKFormProvider.
 order: 2
 ---
 
