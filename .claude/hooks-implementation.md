@@ -19,7 +19,7 @@ src/components/{Domain}/{Feature}/shared/use{Name}Form/
 
 ## 1. Schema (`{domain}Schema.ts`)
 
-Every hook schema follows a 4-part structure: **error codes → field validators → required fields config → schema factory**. This is the canonical pattern — all hooks must follow it.
+Every hook schema follows a 5-part structure: **error codes → form data types → field validators → required fields config → schema factory**. This is the canonical pattern — all hooks must follow it.
 
 ### Part 1: Error Codes
 
@@ -31,14 +31,30 @@ export const ErrorCodes = {
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]
 ```
 
-### Part 2: Field Validators
+### Part 2: Form Data Types
 
-Define all field validators once in a `fieldValidators` object. Derive types from it — never redeclare field names or types separately. Validators define the shape and basic type constraints but do NOT include `.optional()` — `buildFormSchema` handles that.
+Declare `{Domain}FormData` as an explicit interface and `{Domain}FormOutputs` as an alias for it, **before** `fieldValidators`. This is the source of truth for field names and output types — `fieldValidators` is constrained to match it via `satisfies ValidatorsFor<{Domain}FormData>`.
+
+```typescript
+export interface {Domain}FormData {
+  jobTitle: string
+  rate: number
+  startDate: string | null
+  stateWcCovered: boolean
+  adjustForMinimumWage: boolean
+}
+export type {Domain}FormOutputs = {Domain}FormData
+```
+
+### Part 3: Field Validators
+
+Define all field validators in a `fieldValidators` object, using `satisfies ValidatorsFor<{Domain}FormData>` to ensure the validators align with the declared form data interface. Validators define the shape and basic type constraints but do NOT include `.optional()` — `buildFormSchema` handles that.
 
 Fields that need runtime coercion (e.g. number inputs that produce NaN, radio groups that deliver `'true'`/`'false'` strings) use `z.preprocess` directly in the validator:
 
 ```typescript
 import { coerceNaN, coerceStringBoolean, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
+import { type ValidatorsFor } from '@/partner-hook-utils/form/buildFormSchema'
 
 const fieldValidators = {
   jobTitle: z.string(),
@@ -46,15 +62,10 @@ const fieldValidators = {
   startDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
   adjustForMinimumWage: z.boolean(),
-}
-
-export type {Domain}FormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
-}
-export type {Domain}FormOutputs = {Domain}FormData
+} satisfies ValidatorsFor<{Domain}FormData>
 ```
 
-### Part 3: Required Fields Config
+### Part 4: Required Fields Config
 
 `requiredFieldsConfig` declares the requiredness rule for each field. Fields **not listed** default to `'always'` required. Available rules:
 
@@ -77,7 +88,7 @@ const requiredFieldsConfig = {
   minimumWageId: data => data.adjustForMinimumWage,
   stateWcClassCode: data => String(data.stateWcCovered) === 'true',
   // adjustForMinimumWage, stateWcCovered, twoPercentShareholder — omitted → 'always'
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<{Domain}FormData>
 ```
 
 **Boolean fields and requiredness**: Boolean fields (`z.boolean()`) are inherently always present — they are either `true` or `false`, so the concept of "required vs optional" does not apply. Do **not** add boolean fields to `requiredFieldsConfig`, `excludeFields`, or gate them with a `with*Field` prop. Omit them from `requiredFieldsConfig` (they default to `'always'`, which is correct for booleans since they always have a value). Always include them in the schema, always render their field component, and always submit their value.
@@ -405,7 +416,7 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 ### What stays internal (export from inner barrels but NOT from `src/index.ts` unless needed)
 
-Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+Schema factories (`create{Domain}Schema`), infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 

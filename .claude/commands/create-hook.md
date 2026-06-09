@@ -63,7 +63,7 @@ Always read:
 
 #### `{camelDomain}Schema.ts`
 
-Follow the 4-part structure: **error codes → field validators → required fields config → schema factory**. Use the section comment style from the reference hooks.
+Follow the 5-part structure: **error codes → form data types → field validators → required fields config → schema factory**. Use the section comment style from the reference hooks.
 
 ```typescript
 import { z } from 'zod'
@@ -71,6 +71,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -81,6 +82,14 @@ export const {Domain}ErrorCodes = {
 } as const
 
 export type {Domain}ErrorCode = (typeof {Domain}ErrorCodes)[keyof typeof {Domain}ErrorCodes]
+
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface {Domain}FormData {
+  // Explicit field names and output types. fieldValidators is constrained to
+  // match this interface via `satisfies ValidatorsFor<{Domain}FormData>`.
+}
+export type {Domain}FormOutputs = {Domain}FormData
 
 // ── Field validators ───────────────────────────────────────────────────
 
@@ -95,14 +104,7 @@ const fieldValidators = {
   // Use z.preprocess for fields that need runtime coercion (NaN → 0, 'true'/'false' → boolean,
   // various date inputs → ISO date). Import preprocessors from
   // '@/partner-hook-utils/form/preprocessors'.
-}
-
-export type {Domain}Field = keyof typeof fieldValidators
-
-export type {Domain}FormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
-}
-export type {Domain}FormOutputs = {Domain}FormData
+} satisfies ValidatorsFor<{Domain}FormData>
 
 // ── Required fields config ─────────────────────────────────────────────
 
@@ -113,7 +115,7 @@ const requiredFieldsConfig = {
   //
   // Boolean fields (z.boolean()) are inherently always present — do NOT
   // list them here, do NOT add them to optionalFieldsToRequire.
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+} satisfies RequiredFieldConfig<{Domain}FormData>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
@@ -128,7 +130,7 @@ interface {Domain}SchemaOptions {
   // hireDate?: string | null     // → cross-field bound used inside superRefine
 }
 
-export function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
+function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
   const { mode = 'create', optionalFieldsToRequire } = options
 
   return buildFormSchema(fieldValidators, {
@@ -136,7 +138,7 @@ export function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
     requiredErrorCode: {Domain}ErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
-    // excludeFields: withFooField ? [] : ['foo'],
+    // excludeFields: withFooField ? [] : ['foo' as keyof {Domain}FormData],
     // fieldsWithRedactedValues: hasRedactedFoo ? ['foo'] : [],
     // superRefine: (data, ctx) => { /* cross-field rules */ },
   })
@@ -361,7 +363,7 @@ export type {Domain}FieldsMetadata = Use{Domain}FormReady['form']['fieldsMetadat
 
 #### `index.ts`
 
-Re-export the hook, the schema factory + error codes, and every field-prop type. Rename `RequiredValidation` to `{Domain}RequiredValidation` so it doesn't collide when partners import multiple hooks.
+Re-export the hook, error codes, and every field-prop type. Rename `RequiredValidation` to `{Domain}RequiredValidation` so it doesn't collide when partners import multiple hooks. The schema factory (`create{Domain}Schema`) is internal — do not re-export it.
 
 ```typescript
 export { use{Domain}Form } from './use{Domain}Form'
@@ -376,12 +378,10 @@ export type {
   {Domain}FormFields,
 } from './use{Domain}Form'
 export {
-  create{Domain}Schema,
   {Domain}ErrorCodes,
   type {Domain}ErrorCode,
   type {Domain}FormData,
   type {Domain}FormOutputs,
-  type {Domain}Field,
 } from './{camelDomain}Schema'
 export type {
   RequiredValidation as {Domain}RequiredValidation,
@@ -406,7 +406,6 @@ Add the new hook to barrels in this order:
    export {
      use{Domain}Form,
      {Domain}ErrorCodes,
-     create{Domain}Schema,
    } from '@/components/{Domain}/{Feature}/shared/use{Name}Form'
    export type {
      {Domain}SubmitOptions,
@@ -421,7 +420,7 @@ Add the new hook to barrels in this order:
    } from '@/components/{Domain}/{Feature}/shared/use{Name}Form'
    ```
 
-   Public surface checklist: hook function, error-codes constant, schema factory, ready/result/fields-metadata types, optional-fields-to-require type, every per-field props type, validation-type aliases, and submit-options/callbacks types if defined. Keep `buildFormSchema`, `useDeriveFieldsMetadata`, `withOptions`, `composeErrorHandler`, and other SDK-internal utilities **off** the public barrel — see `.claude/hooks-implementation.md → Exports Checklist`.
+   Public surface checklist: hook function, error-codes constant, ready/result/fields-metadata types, optional-fields-to-require type, every per-field props type, validation-type aliases, and submit-options/callbacks types if defined. Keep `create{Domain}Schema`, `buildFormSchema`, `useDeriveFieldsMetadata`, `withOptions`, `composeErrorHandler`, and other SDK-internal utilities **off** the public barrel — see `.claude/hooks-implementation.md → Exports Checklist`.
 
 ### Step 5: Verify
 
