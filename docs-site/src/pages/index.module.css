@@ -3,8 +3,16 @@
 .hero {
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
   padding: 6rem 4rem;
   text-align: center;
+}
+
+.heroInner {
+  width: 100%;
 }
 
 .heroEffects {
