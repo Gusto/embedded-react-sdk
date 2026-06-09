@@ -319,6 +319,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **EmployeeOnboarding.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+| **EmployeeOnboarding.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **EmployeeOnboarding.Profile** | POST | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyId/locations` |
 |  | GET | `/v1/employees/:employeeId` |
@@ -359,8 +361,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **EmployeeManagement.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
 |  | DELETE | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
-| **EmployeeManagement.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
-|  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **EmployeeManagement.Documents** | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
@@ -484,7 +484,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **EmployeeManagement.DashboardFlow** | EmployeeManagement.Compensation, EmployeeManagement.Deductions, EmployeeManagement.Documents, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeManagement.TerminationFlow** | EmployeeManagement.TerminateEmployee, EmployeeManagement.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
-| **EmployeeOnboarding.OnboardingExecutionFlow** | Employee.EmployeeDocuments, Employee.PaymentMethod, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
+| **EmployeeOnboarding.OnboardingExecutionFlow** | Employee.PaymentMethod, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.EmployeeDocuments, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
 | **EmployeeOnboarding.OnboardingFlow** | EmployeeOnboarding.EmployeeList, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeOnboarding.SelfOnboardingFlow** | Employee.PaymentMethod, EmployeeOnboarding.DocumentSigner, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.Landing, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
 | **InformationRequests.InformationRequestsFlow** | InformationRequests.InformationRequestForm, InformationRequests.InformationRequestList |
