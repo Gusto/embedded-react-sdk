@@ -8,6 +8,7 @@ export const baseOptions = {
   entryPoints: ['../src/index.ts'],
   out: '../docs/api',
 
+  indexFormat: 'table',
   propertyMembersFormat: 'table',
   parametersFormat: 'table',
   enumMembersFormat: 'table',
@@ -16,10 +17,20 @@ export const baseOptions = {
   typeAliasPropertiesFormat: 'table',
   typeDeclarationFormat: 'table',
 
+  tableColumnSettings: {
+    hideDefaults: false,
+    hideInherited: true,
+    hideSources: true,
+    hideModifiers: true,
+    hideValues: true,
+    hideOverrides: true,
+  },
+
   excludeNotDocumented: true,
   excludeInternal: true,
   excludePrivate: true,
   excludeProtected: true,
+  strikeDeprecatedPageTitles: false,
 
   router: 'sdk-router',
   readme: 'none',

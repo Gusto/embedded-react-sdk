@@ -83,6 +83,10 @@ export class SDKRouter extends MemberRouter {
       }
     }
 
+    // Sources were only needed for routing; clear them before rendering so
+    // typedoc-plugin-markdown doesn't emit "Defined in: <path>" on every member.
+    SDKRouter.clearSources(project)
+
     const pages = super.buildPages(project)
 
     for (const [domain, hooks] of hooksByDomain) {
@@ -169,6 +173,15 @@ export class SDKRouter extends MemberRouter {
     }
 
     return super.getIdealBaseName(reflection)
+  }
+
+  private static clearSources(reflection: ProjectReflection | DeclarationReflection): void {
+    if (reflection instanceof DeclarationReflection) {
+      reflection.sources = undefined
+    }
+    for (const child of reflection.children ?? []) {
+      SDKRouter.clearSources(child)
+    }
   }
 
   /**
