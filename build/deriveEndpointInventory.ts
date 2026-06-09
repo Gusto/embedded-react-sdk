@@ -628,6 +628,7 @@ function generateMarkdown(inventory: Inventory): string {
   const lines: string[] = [
     '---',
     "title: 'Endpoint Reference'",
+    'description: Auto-generated list of every Gusto Embedded API endpoint each SDK block calls, with HTTP methods, paths, and URL parameters for proxy allowlisting.',
     '---',
     '',
     '<!-- AUTO-GENERATED FILE. Do not edit manually. Run "npm run endpoints:derive" to regenerate. -->',
