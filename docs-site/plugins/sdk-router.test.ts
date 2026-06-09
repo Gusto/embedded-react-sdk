@@ -157,6 +157,80 @@ describe('buildPages — namespace routing', () => {
 })
 
 // ---------------------------------------------------------------------------
+// buildPages — namespace flows/blocks splitting
+// ---------------------------------------------------------------------------
+
+describe('buildPages — namespace flows/blocks splitting', () => {
+  it('namespace with Flow children produces flows.md and blocks.md instead of index', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
+    expect(urls).toContain('Employee/EmployeeManagement/blocks.md')
+    expect(urls).not.toContain('Employee/EmployeeManagement/README.md')
+  })
+
+  it('Flow members are anchors on flows.md, not separate pages', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    expect(router.hasOwnDocument(flow)).toBe(false)
+    expect(router.getAnchor(flow)).toBeDefined()
+  })
+
+  it('non-Flow members are anchors on blocks.md, not separate pages', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
+    const block = makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    expect(router.hasOwnDocument(block)).toBe(false)
+    expect(router.getAnchor(block)).toBeDefined()
+  })
+
+  it('namespace with only Flow children produces flows.md but no blocks.md', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
+    makeChild(ns, 'PaymentFlow', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
+    expect(urls).not.toContain('Employee/EmployeeManagement/blocks.md')
+  })
+
+  it('namespace with no Flow children still gets a single index page', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'SomeInterface', ReflectionKind.Interface)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).not.toContain('Employee/EmployeeManagement/flows.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — domain hooks are consolidated onto a single page per domain
 // ---------------------------------------------------------------------------
 

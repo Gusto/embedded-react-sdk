@@ -16,7 +16,11 @@ export const baseOptions = {
   typeAliasPropertiesFormat: 'table',
   typeDeclarationFormat: 'table',
 
+  excludeNotDocumented: true,
   excludeInternal: true,
+  excludePrivate: true,
+  excludeProtected: true,
+
   router: 'sdk-router',
   readme: 'none',
   useHTMLAnchors: true,

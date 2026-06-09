@@ -16,10 +16,11 @@ import { MemberRouter } from 'typedoc-plugin-markdown'
  * Register via  "router": "sdk-router"  in the TypeDoc config.
  *
  * URL structure:
- *   Employee/EmployeeManagement/index.md   ← namespace page; all members are anchors
- *   Employee/EmployeeOnboarding/index.md
+ *   Employee/EmployeeManagement/flows.md   ← namespace members whose name ends with 'Flow'
+ *   Employee/EmployeeManagement/blocks.md  ← remaining namespace members
  *   Employee/hooks.md                      ← all Employee hooks consolidated on one page
  *   Company/hooks.md                       ← all Company hooks consolidated on one page
+ *   Employee/index.md                      ← namespace with no Flow children (single page)
  *   Payroll/index.md                       ← domain-less namespace (no parent domain prefix)
  *   index.md#reflectionname               ← all unmapped top-level exports (anchors on the
  *                                           project index page, which renders them inline)
@@ -87,19 +88,7 @@ export class SDKRouter extends MemberRouter {
     for (const [domain, hooks] of hooksByDomain) {
       const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
-
-      const url = this.getFileName(`${domain}/hooks`)
-      this.fullUrls.set(hooksNs, url)
-      const slugger = new Slugger(this.sluggerConfiguration)
-      this.sluggers.set(hooksNs, slugger)
-
-      pages.push({ kind: PageKind.Reflection, model: hooksNs, url })
-
-      for (const hook of hooks) {
-        const slug = slugger.slug(hook.name)
-        this.anchors.set(hook, slug)
-        this.fullUrls.set(hook, `${url}#${slug}`)
-      }
+      this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
     }
 
     return pages
@@ -108,7 +97,8 @@ export class SDKRouter extends MemberRouter {
   /**
    * Override page building for namespaces and unmapped project-level members.
    *
-   * - Namespace: one page, all children become anchors.
+   * - Namespace with Flow children: split into flows.md and blocks.md pages.
+   * - Namespace without Flow children: one page, all children as anchors.
    * - Domain hook (in handledHooks): skip — already registered in buildPages.
    * - Other project-level reflection: anchor onto the project's index page.
    */
@@ -119,13 +109,42 @@ export class SDKRouter extends MemberRouter {
     }
 
     if (reflection.kind === ReflectionKind.Namespace) {
+      const children = (reflection as DeclarationReflection).children ?? []
+      const flows = children.filter(c => c.name.endsWith('Flow'))
+
+      if (flows.length > 0) {
+        // Split namespace into flows and blocks pages.
+        // The namespace's canonical URL points to flows.md for cross-references.
+        const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
+        const blocks = children.filter(c => !c.name.endsWith('Flow'))
+
+        const flowsNs = new DeclarationReflection(
+          'flows',
+          ReflectionKind.Namespace,
+          reflection.parent,
+        )
+        flowsNs.children = flows
+        const flowsUrl = this.buildSyntheticPage(`${nsBasePath}/flows`, flowsNs, flows, outPages)
+        this.fullUrls.set(reflection, flowsUrl)
+
+        if (blocks.length > 0) {
+          const blocksNs = new DeclarationReflection(
+            'blocks',
+            ReflectionKind.Namespace,
+            reflection.parent,
+          )
+          blocksNs.children = blocks
+          this.buildSyntheticPage(`${nsBasePath}/blocks`, blocksNs, blocks, outPages)
+        }
+        return
+      }
+
+      // Default: single index page with all children as anchors.
       const url = this.getFileName(this.getIdealBaseName(reflection))
       this.fullUrls.set(reflection, url)
       this.sluggers.set(reflection, new Slugger(this.sluggerConfiguration))
       outPages.push({ kind: PageKind.Reflection, model: reflection, url })
-
-      // Anchor every direct child; buildAnchors recurses into their children.
-      for (const child of (reflection as DeclarationReflection).children ?? []) {
+      for (const child of children) {
         this.buildAnchors(child, reflection)
       }
       return
@@ -150,5 +169,28 @@ export class SDKRouter extends MemberRouter {
     }
 
     return super.getIdealBaseName(reflection)
+  }
+
+  /**
+   * Register a synthetic namespace page and make every member an anchor on it.
+   * Returns the page's URL.
+   */
+  private buildSyntheticPage(
+    basePath: string,
+    ns: DeclarationReflection,
+    members: DeclarationReflection[],
+    outPages: PageDefinition[],
+  ): string {
+    const url = this.getFileName(basePath)
+    this.fullUrls.set(ns, url)
+    const slugger = new Slugger(this.sluggerConfiguration)
+    this.sluggers.set(ns, slugger)
+    outPages.push({ kind: PageKind.Reflection, model: ns, url })
+    for (const member of members) {
+      const slug = slugger.slug(member.name)
+      this.anchors.set(member, slug)
+      this.fullUrls.set(member, `${url}#${slug}`)
+    }
+    return url
   }
 }
