@@ -1,13 +1,18 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
   Application,
+  Comment,
+  CommentTag,
   DeclarationReflection,
+  ParameterReflection,
   ProjectReflection,
+  ReferenceType,
   ReflectionKind,
+  SignatureReflection,
   SourceReference,
   FileRegistry,
 } from 'typedoc'
-import { domainFromSources, SDKRouter } from './sdk-router'
+import { componentPropsInterfaces, domainFromSources, SDKRouter } from './sdk-router'
 
 let app: Application
 
@@ -327,5 +332,129 @@ describe('buildPages — non-domain top-level anchoring', () => {
     router.buildPages(project)
 
     expect(router.hasOwnDocument(fn)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// componentPropsInterfaces
+// ---------------------------------------------------------------------------
+
+/**
+ * Mark a function reflection as a Component (the same way our converter event
+ * does at runtime) so that isComponent() returns true for it.
+ */
+function markAsComponent(fn: DeclarationReflection): void {
+  if (!fn.comment) fn.comment = new Comment()
+  fn.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Components' }]))
+}
+
+/**
+ * Attach a call signature to `fn` with a single parameter whose type is a
+ * resolved reference to `propsInterface`.
+ *
+ * ReferenceType.createResolvedReference stores the reflection's ID and resolves
+ * it via project.getReflectionById, so the interface must be registered first.
+ */
+function attachPropsSignature(
+  fn: DeclarationReflection,
+  propsInterface: DeclarationReflection,
+  project: ProjectReflection,
+): void {
+  project.registerReflection(propsInterface, undefined, undefined)
+  const sig = new SignatureReflection('__call', ReflectionKind.CallSignature, fn)
+  const param = new ParameterReflection('props', ReflectionKind.Parameter, sig)
+  param.type = ReferenceType.createResolvedReference(propsInterface.name, propsInterface, project)
+  sig.parameters = [param]
+  fn.signatures = [sig]
+}
+
+describe('componentPropsInterfaces', () => {
+  it('returns the Props interface used by a Component in the namespace', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const component = makeChild(ns, 'DocumentsCard', ReflectionKind.Function)
+    markAsComponent(component)
+    const propsIface = makeChild(ns, 'DocumentsCardProps', ReflectionKind.Interface)
+    attachPropsSignature(component, propsIface, project)
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.has(propsIface)).toBe(true)
+    expect(result.size).toBe(1)
+  })
+
+  it('does not include standalone interfaces that are not used as component props', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const component = makeChild(ns, 'DocumentsCard', ReflectionKind.Function)
+    markAsComponent(component)
+    const propsIface = makeChild(ns, 'DocumentsCardProps', ReflectionKind.Interface)
+    attachPropsSignature(component, propsIface, project)
+    const standaloneIface = makeChild(ns, 'AlertProps', ReflectionKind.Interface)
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.has(propsIface)).toBe(true)
+    expect(result.has(standaloneIface)).toBe(false)
+  })
+
+  it('does not include Props interfaces from a different namespace', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const otherNs = makeChild(project, 'CompanyOnboarding', ReflectionKind.Namespace)
+    const component = makeChild(ns, 'DocumentsCard', ReflectionKind.Function)
+    markAsComponent(component)
+    // Props interface lives in a different namespace
+    const foreignIface = makeChild(otherNs, 'DocumentsCardProps', ReflectionKind.Interface)
+    attachPropsSignature(component, foreignIface, project)
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.size).toBe(0)
+  })
+
+  it('returns empty set for a namespace with no Components', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'SomeInterface', ReflectionKind.Interface)
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.size).toBe(0)
+  })
+
+  it('returns empty set for a namespace with Components that have no parameters', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const component = makeChild(ns, 'EmptyComponent', ReflectionKind.Function)
+    markAsComponent(component)
+    const sig = new SignatureReflection('__call', ReflectionKind.CallSignature, component)
+    sig.parameters = []
+    component.signatures = [sig]
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.size).toBe(0)
+  })
+
+  it('collects Props interfaces from multiple Components in the same namespace', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const compA = makeChild(ns, 'DocumentsCard', ReflectionKind.Function)
+    markAsComponent(compA)
+    const propsA = makeChild(ns, 'DocumentsCardProps', ReflectionKind.Interface)
+    attachPropsSignature(compA, propsA, project)
+
+    const compB = makeChild(ns, 'CompensationCard', ReflectionKind.Function)
+    markAsComponent(compB)
+    const propsB = makeChild(ns, 'CompensationCardProps', ReflectionKind.Interface)
+    attachPropsSignature(compB, propsB, project)
+
+    const result = componentPropsInterfaces(ns)
+
+    expect(result.has(propsA)).toBe(true)
+    expect(result.has(propsB)).toBe(true)
+    expect(result.size).toBe(2)
   })
 })

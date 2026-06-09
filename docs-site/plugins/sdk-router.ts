@@ -5,7 +5,9 @@ import {
   DeclarationReflection,
   PageKind,
   type PageDefinition,
+  ParameterReflection,
   ProjectReflection,
+  ReferenceType,
   type Reflection,
   ReflectionKind,
   type SignatureReflection,
@@ -61,6 +63,59 @@ export function load(app: Application): void {
   app.renderer.defineRouter('sdk-router', SDKRouter)
   app.renderer.defineTheme('sdk-theme', SDKTheme)
 
+  // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
+  // Props interfaces without a JSDoc comment are not removed by excludeNotDocumented
+  // before we can inline them. We attach a minimal auto-generated comment so
+  // TypeDoc treats them as documented — the comment is rendered inline inside
+  // the component's Parameters section by the parametersTable theme override.
+  app.converter.on(
+    Converter.EVENT_RESOLVE_BEGIN,
+    context => {
+      for (const reflection of Object.values(context.project.reflections)) {
+        if (!(reflection instanceof DeclarationReflection)) continue
+        if (reflection.kind !== ReflectionKind.Function) continue
+        if (!/^[A-Z]/.test(reflection.name)) continue
+
+        // Only protect props interfaces for components that are themselves documented
+        // (have a JSDoc comment on the function or a signature). If the component gets
+        // excluded by excludeNotDocumented, its props interface should also be excluded —
+        // otherwise it'd appear as an orphaned entry in the ## Interfaces section.
+        const isComponentDocumented =
+          reflection.comment || reflection.signatures?.some(sig => !!sig.comment)
+        if (!isComponentDocumented) continue
+
+        for (const sig of reflection.signatures ?? []) {
+          for (const param of sig.parameters ?? []) {
+            if (!(param.type instanceof ReferenceType)) continue
+            const propsRef = param.type.reflection
+            if (
+              !(propsRef instanceof DeclarationReflection) ||
+              propsRef.kind !== ReflectionKind.Interface ||
+              propsRef.parent !== reflection.parent
+            ) {
+              continue
+            }
+            // Auto-generate a summary so excludeNotDocumented keeps this interface.
+            if (!propsRef.comment) {
+              propsRef.comment = new Comment([
+                { kind: 'text', text: 'Props for ' },
+                { kind: 'inline-tag', tag: '@link', text: reflection.name, target: reflection },
+              ])
+            }
+            // Protect undocumented properties too — excludeNotDocumentedKinds includes
+            // Property by default, so properties without JSDoc would be removed otherwise.
+            for (const child of propsRef.children ?? []) {
+              if (!child.comment) {
+                child.comment = new Comment()
+              }
+            }
+          }
+        }
+      }
+    },
+    100,
+  )
+
   // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,
   // so priority 0 (default) runs before GroupPlugin's -100.
   app.converter.on(
@@ -81,6 +136,58 @@ export function load(app: Application): void {
     },
     0,
   )
+
+  // Must run after GroupPlugin (priority -100) so that groups already exist.
+  // Remove component-props interfaces from their namespace's groups — they are
+  // rendered inline inside their component's Parameters section instead.
+  app.converter.on(
+    Converter.EVENT_RESOLVE_END,
+    context => {
+      for (const reflection of Object.values(context.project.reflections)) {
+        if (!(reflection instanceof DeclarationReflection)) continue
+        if (reflection.kind !== ReflectionKind.Namespace) continue
+        if (!reflection.groups?.length) continue
+
+        const propsSet = componentPropsInterfaces(reflection)
+        if (propsSet.size === 0) continue
+
+        for (const group of reflection.groups) {
+          group.children = group.children.filter(c => !propsSet.has(c as DeclarationReflection))
+        }
+        reflection.groups = reflection.groups.filter(g => g.children.length > 0)
+      }
+    },
+    -200,
+  )
+}
+
+/**
+ * Return the set of interfaces in `ns` that are used as the props type for
+ * an exported Component in the same namespace. These are inlined into their
+ * component's Parameters section rather than rendered as standalone entries.
+ *
+ * Only interfaces whose type is referenced directly by a Component signature
+ * parameter qualify — this intentionally excludes standalone public interfaces
+ * like `AlertProps` that live in the namespace but aren't component props.
+ */
+export function componentPropsInterfaces(ns: DeclarationReflection): Set<DeclarationReflection> {
+  const result = new Set<DeclarationReflection>()
+  for (const child of ns.children ?? []) {
+    if (!isComponent(child)) continue
+    for (const sig of child.signatures ?? []) {
+      for (const param of sig.parameters ?? []) {
+        if (
+          param.type instanceof ReferenceType &&
+          param.type.reflection instanceof DeclarationReflection &&
+          param.type.reflection.kind === ReflectionKind.Interface &&
+          param.type.reflection.parent === ns
+        ) {
+          result.add(param.type.reflection)
+        }
+      }
+    }
+  }
+  return result
 }
 
 function isComponent(reflection: DeclarationReflection): boolean {
@@ -105,14 +212,38 @@ class SDKThemeContext extends MarkdownThemeContext {
     super(...args)
 
     const origMemberTitle = this.partials.memberTitle.bind(this)
+    const origSignature = this.partials.signature.bind(this)
     const origSignatureTitle = this.partials.signatureTitle.bind(this)
     const origSignatureReturns = this.partials.signatureReturns.bind(this)
+    const origParametersTable = this.partials.parametersTable.bind(this)
 
     this.partials = {
       ...this.partials,
       memberTitle: (model: DeclarationReflection) => {
         const title = origMemberTitle(model)
         return isComponent(model) ? title.replace(/\(\)$/, '') : title
+      },
+      signature: (model: SignatureReflection, options: Parameters<typeof origSignature>[1]) => {
+        const result = origSignature(model, options)
+        // For a component whose single parameter is an interface sibling in the
+        // same namespace, replace the generated "Parameters" heading with the
+        // Props type name (e.g. "#### FederalTaxesCardProps").
+        if (!(model.parent instanceof DeclarationReflection) || !isComponent(model.parent)) {
+          return result
+        }
+        if (model.parameters?.length !== 1) return result
+        const param = model.parameters[0]!
+        if (!(param.type instanceof ReferenceType)) return result
+        const propsRef = param.type.reflection
+        if (
+          !(propsRef instanceof DeclarationReflection) ||
+          propsRef.kind !== ReflectionKind.Interface ||
+          propsRef.parent !== model.parent.parent
+        ) {
+          return result
+        }
+        const hashes = '#'.repeat(options.headingLevel)
+        return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
       },
       signatureTitle: (
         model: SignatureReflection,
@@ -131,6 +262,61 @@ class SDKThemeContext extends MarkdownThemeContext {
           return ''
         }
         return origSignatureReturns(model, options)
+      },
+      parametersTable: (params: ParameterReflection[]) => {
+        // For a Component whose single parameter is an interface sibling in the
+        // same namespace, inline the interface's properties directly instead of
+        // showing a bare type reference. This renders: anchor + interface comment
+        // (if any) + properties table — keeping the Props type co-located with
+        // the component that uses it.
+        if (params.length !== 1) return origParametersTable(params)
+
+        const param = params[0]!
+        const component = param.parent?.parent
+        if (
+          !(component instanceof DeclarationReflection) ||
+          !isComponent(component) ||
+          !(param.type instanceof ReferenceType)
+        ) {
+          return origParametersTable(params)
+        }
+
+        const propsRef = param.type.reflection
+        if (
+          !(propsRef instanceof DeclarationReflection) ||
+          propsRef.kind !== ReflectionKind.Interface ||
+          propsRef.parent !== component.parent
+        ) {
+          return origParametersTable(params)
+        }
+
+        const parts: string[] = []
+
+        // Emit the anchor so that cross-references to this Props type still resolve.
+        if (this.router.hasUrl(propsRef) && this.options.getValue('useHTMLAnchors')) {
+          parts.push(`<a id="${this.router.getAnchor(propsRef)}"></a>`)
+        }
+
+        // Include any summary/remarks on the Props interface itself.
+        if (propsRef.comment) {
+          const commentMd = this.partials.comment(propsRef.comment, {
+            showSummary: true,
+            showTags: true,
+          })
+          if (commentMd.trim()) parts.push(commentMd)
+        }
+
+        const properties = (propsRef.children ?? []).filter(c => c.isDeclaration())
+        if (properties.length > 0) {
+          parts.push(
+            this.partials.propertiesTable(properties, {
+              isEventProps: false,
+              kind: ReflectionKind.Interface,
+            }),
+          )
+        }
+
+        return parts.join('\n\n')
       },
     }
   }
