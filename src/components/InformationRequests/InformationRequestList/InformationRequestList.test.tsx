@@ -12,15 +12,6 @@ import {
   getEmptyInformationRequests,
 } from '@/test/mocks/apis/information_requests'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 describe('InformationRequestList', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()

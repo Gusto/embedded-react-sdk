@@ -7,14 +7,6 @@ import { companyEvents } from '@/shared/constants'
 import { getCompanyLocations, getEmptyCompanyLocations } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
 
 describe('LocationsList', () => {
   const onEvent = vi.fn()

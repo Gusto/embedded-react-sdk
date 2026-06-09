@@ -8,6 +8,7 @@ import { useSelectionState } from '@/components/Common/DataView/useSelectionStat
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export type DataCardsProps<T> = {
   label: string
   columns: useDataViewPropReturn<T>['columns']
@@ -23,6 +24,7 @@ export type DataCardsProps<T> = {
   isWithinBox?: TableProps['isWithinBox']
 }
 
+/** @internal */
 export const DataCards = <T,>({
   label,
   data,

@@ -30,6 +30,7 @@ type NumberFieldProps = { isCurrency?: boolean; isPercent?: boolean }
 
 type TextInputProps = { type?: string; isPercent?: boolean }
 
+/** @internal */
 export function QuestionInput({
   questionType,
   ...props
@@ -63,6 +64,7 @@ export function QuestionInput({
   }
 }
 
+/** @internal */
 export function SelectInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
@@ -90,6 +92,7 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
   )
 }
 
+/** @internal */
 export function TextInput({
   question,
   requirement,
@@ -120,6 +123,7 @@ export function TextInput({
   )
 }
 
+/** @internal */
 export function NumberInput({
   question,
   requirement,
@@ -158,6 +162,7 @@ export function NumberInput({
   )
 }
 
+/** @internal */
 export function RadioInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
@@ -194,6 +199,7 @@ export function RadioInput({ question, requirement, isDisabled = false }: EmpQ |
   )
 }
 //TODO: This type is untested as of yet
+/** @internal */
 export function DateField({
   question,
   requirement,
@@ -218,6 +224,7 @@ export function DateField({
   )
 }
 
+/** @internal */
 export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) {
   const { locale } = useLocale()
 

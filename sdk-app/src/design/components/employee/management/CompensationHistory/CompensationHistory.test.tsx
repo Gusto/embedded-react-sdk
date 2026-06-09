@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
 import { CompensationHistory } from './CompensationHistory'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 function buildCompensation(overrides: {
   uuid?: string
@@ -61,13 +60,6 @@ const multiJob: Job[] = [
 ]
 
 describe('components/employee/management/CompensationHistory', () => {
-  beforeEach(() => {
-    // Force the DataView's container-breakpoints hook to report a desktop
-    // width so DataTable (not DataCards) renders — lets the tests use
-    // table-role queries.
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-  })
-
   it('renders the job title as heading and omits the job filter for a single job', () => {
     renderWithProviders(<CompensationHistory jobs={singleJob} />)
 

@@ -1,34 +1,55 @@
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/types/Helpers'
 
+/**
+ * A single step in a flow's breadcrumb trail.
+ *
+ * @remarks
+ * Labels are resolved through i18next. When `namespace` is set, the label is
+ * looked up in that namespace; otherwise the global namespace is used. The
+ * label string itself is also used as the i18n key, with the raw value as a
+ * fallback when no translation is registered. Date-typed `variables` (the
+ * `startDate` and `endDate` keys) are auto-formatted with the active locale's
+ * short-with-year date format before interpolation.
+ *
+ * @public
+ */
 export interface FlowBreadcrumb {
   /**
-   * Unique key for the breadcrumb step
+   * Unique identifier for the breadcrumb step. Matched against the current
+   * breadcrumb to mark the active entry and passed to `onNavigate` when the
+   * breadcrumb is selected.
    */
   id: string
   /**
-   * Translation key for the breadcrumb label
+   * i18next translation key for the breadcrumb label. Falls back to the raw
+   * string when no translation is registered.
    */
   label: string
   /**
-   * Optional translation namespace
+   * Optional i18next namespace to resolve `label` against. Defaults to the
+   * global namespace when omitted.
    */
   namespace?: string
   /**
-   * Optional variables for the breadcrumb label
+   * Optional interpolation variables for the translated label. `startDate` and
+   * `endDate` values typed as strings are auto-formatted with the active
+   * locale's short-with-year date format before interpolation.
    */
   variables?: Record<string, unknown>
   /**
-   * Event handler for breadcrumb navigation
+   * Callback invoked when the breadcrumb is selected. Receives the current
+   * flow context and returns the next context.
    */
   onNavigate?: (context: unknown) => unknown
   /**
-   * When false, the breadcrumb is rendered as non-clickable even if onNavigate is defined.
-   * Defaults to true when onNavigate is present, false otherwise.
+   * Overrides the default clickability of the breadcrumb. When omitted, the
+   * breadcrumb is clickable iff `onNavigate` is defined.
    */
   isNavigable?: boolean
 }
 
+/** @internal */
 export interface BreadcrumbNode {
   /**
    * Parent node key (null for root nodes)
@@ -40,11 +61,16 @@ export interface BreadcrumbNode {
   item: FlowBreadcrumb
 }
 
+/** @internal */
 export type BreadcrumbNodes = Record<string, BreadcrumbNode>
+/** @internal */
 export type BreadcrumbTrail = Record<string, FlowBreadcrumb[]>
 
+/** @internal */
 export interface FlowBreadcrumbsProps {
+  /** Breadcrumb steps to render, in order. */
   breadcrumbs: FlowBreadcrumb[]
+  /** Identifier of the active breadcrumb step. */
   currentBreadcrumbId?: string
 
   /**

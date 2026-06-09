@@ -28,6 +28,7 @@ interface DateRangeFilterProps {
   minStartDate?: Date
 }
 
+/** @internal */
 export const DateRangeFilter = ({
   startDate,
   endDate,

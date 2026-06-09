@@ -5,6 +5,7 @@ import {
   type CustomPropertyValue,
 } from '@/helpers/responsive'
 
+/** @internal */
 export interface FlexProps {
   children: React.ReactNode
   flexDirection?: Responsive<'row' | 'column'>
@@ -22,6 +23,7 @@ export interface FlexProps {
   gap?: Responsive<CustomPropertyValue>
 }
 
+/** @internal */
 export function Flex({
   children,
   flexDirection = 'row',
@@ -47,11 +49,13 @@ export function Flex({
   )
 }
 
+/** @internal */
 export interface FlexItemProps {
   flexGrow?: number | 'initial'
   children: React.ReactNode
 }
 
+/** @internal */
 export function FlexItem({ flexGrow = 'initial', children }: FlexItemProps) {
   return <div style={{ flexGrow: flexGrow }}>{children}</div>
 }

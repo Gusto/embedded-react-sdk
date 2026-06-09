@@ -1,4 +1,2 @@
-/**
- * Define item type for react-dnd with a unique identifier to avoid conflicts
- */
+/** @internal */
 export const ITEM_TYPE = 'reorderable-item'

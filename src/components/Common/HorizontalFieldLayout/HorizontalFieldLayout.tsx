@@ -6,6 +6,13 @@ import styles from './HorizontalFieldLayout.module.scss'
 import type { HorizontalFieldLayoutProps } from './HorizontalFieldLayoutTypes'
 import { getDataProps } from '@/helpers/getDataProps'
 
+/**
+ * Layout that positions a form control's children alongside its label, description, and error message.
+ *
+ * @param props - See {@link HorizontalFieldLayoutProps}.
+ * @returns The control's children laid out horizontally with associated label and helper text.
+ * @internal
+ */
 export const HorizontalFieldLayout: React.FC<HorizontalFieldLayoutProps> = ({
   label,
   description,

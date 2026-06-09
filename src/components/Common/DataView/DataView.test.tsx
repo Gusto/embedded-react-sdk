@@ -43,11 +43,6 @@ const mockPagination: PaginationControlProps = {
 
 const resizeObserver = mockResizeObserver()
 
-beforeEach(() => {
-  // Configure the mock to return desktop breakpoints by default for these tests
-  mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-})
-
 // Create a function to render DataView components with necessary providers
 const renderDataView = <T,>(props: DataViewProps<T>) => {
   return render(

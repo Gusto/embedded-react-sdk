@@ -32,9 +32,7 @@ interface ReorderableItemProps {
   className?: string
 }
 
-/**
- * Component for an individual reorderable item
- */
+/** @internal */
 export const ReorderableItem = memo(function ReorderableItem({
   item,
   index,

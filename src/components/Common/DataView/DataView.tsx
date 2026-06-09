@@ -8,6 +8,7 @@ import { DataCards } from './DataCards/DataCards'
 import type { useContainerBreakpointsProps } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
+/** @internal */
 export type DataViewProps<T> = {
   columns: useDataViewPropReturn<T>['columns']
   data: T[]
@@ -27,6 +28,7 @@ export type DataViewProps<T> = {
   selectionMode?: SelectionMode
 }
 
+/** @internal */
 export const DataView = <T,>({
   pagination,
   isFetching,

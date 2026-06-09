@@ -2,6 +2,7 @@ import type { FC, ReactNode } from 'react'
 import { useState, useEffect } from 'react'
 import styles from './FadeIn.module.scss'
 
+/** @internal */
 export const FadeIn: FC<{ children: ReactNode }> = ({ children }) => {
   const [visible, setVisible] = useState(false)
 

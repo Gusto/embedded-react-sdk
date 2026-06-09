@@ -12,6 +12,7 @@ function withJustify(content: React.ReactNode, justify?: 'start' | 'end') {
   return <div className={styles.cellEnd}>{content}</div>
 }
 
+/** @internal */
 export type DataTableProps<T> = {
   label: string
   columns: useDataViewPropReturn<T>['columns']
@@ -43,6 +44,7 @@ function getCellContent<T>(
   return ''
 }
 
+/** @internal */
 export const DataTable = <T,>({
   label,
   data,

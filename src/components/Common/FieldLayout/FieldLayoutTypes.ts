@@ -1,6 +1,15 @@
 import type { ReactNode } from 'react'
 import type { DataAttributes } from '@/types/Helpers'
 
+/**
+ * Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
+ *
+ * @remarks
+ * Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
+ * so each control exposes a consistent surface for labeling, helper text, and validation messaging.
+ *
+ * @public
+ */
 export interface SharedFieldLayoutProps extends DataAttributes {
   /**
    * Optional description text for the field
@@ -24,6 +33,9 @@ export interface SharedFieldLayoutProps extends DataAttributes {
   shouldVisuallyHideLabel?: boolean
 }
 
+/**
+ * @internal
+ */
 export interface InternalFieldLayoutProps {
   /**
    * Content to be rendered inside the field layout
@@ -51,4 +63,7 @@ export interface InternalFieldLayoutProps {
   withErrorIcon?: boolean
 }
 
+/**
+ * @internal
+ */
 export interface FieldLayoutProps extends SharedFieldLayoutProps, InternalFieldLayoutProps {}

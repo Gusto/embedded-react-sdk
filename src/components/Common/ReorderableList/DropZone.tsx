@@ -15,6 +15,7 @@ interface DropZoneProps {
   className?: string
 }
 
+/** @internal */
 export const DropZone = memo(function DropZone({
   position,
   isActive,

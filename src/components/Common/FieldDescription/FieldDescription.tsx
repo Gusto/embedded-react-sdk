@@ -7,6 +7,11 @@ interface FieldDescriptionProps {
   id?: string
 }
 
+/**
+ * Renders a field's helper description text beneath its label.
+ *
+ * @internal
+ */
 export const FieldDescription: React.FC<FieldDescriptionProps> = ({
   children,
   className,

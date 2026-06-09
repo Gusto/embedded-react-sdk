@@ -7,6 +7,7 @@ import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 import styles from './Fieldset.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
 
+/** @internal */
 export interface FieldsetProps extends Omit<
   SharedFieldLayoutProps,
   'label' | 'shouldVisuallyHideLabel'
@@ -20,6 +21,7 @@ export interface FieldsetProps extends Omit<
   className?: string
 }
 
+/** @internal */
 export const Fieldset: React.FC<FieldsetProps> = ({
   children,
   description,

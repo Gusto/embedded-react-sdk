@@ -5,6 +5,7 @@ import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job
 import { JobsListPresentation } from './JobsListPresentation'
 import { FlsaStatus } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const primaryJob = {
   uuid: 'job-1',
@@ -51,6 +52,7 @@ const defaultProps = {
 describe('JobsListPresentation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
   })
 
   it('renders the heading and continue button', async () => {

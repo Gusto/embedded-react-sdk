@@ -10,6 +10,7 @@ import {
 type Flow = 'row' | 'column' | 'row dense' | 'column dense'
 type Alignment = 'start' | 'end' | 'center' | 'stretch'
 
+/** @internal */
 export interface GridProps {
   children: ReactNode
   gap?: Responsive<CustomPropertyValue>
@@ -25,6 +26,7 @@ export interface GridProps {
   className?: string
 }
 
+/** @internal */
 export function Grid({
   children,
   gap = 24,

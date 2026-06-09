@@ -89,6 +89,7 @@ const DEFAULT_ANIMATION_CONFIG: ReorderableListAnimationConfig = {
   disabled: false,
 }
 
+/** @internal */
 export function ReorderableList({
   items,
   label,

@@ -10,6 +10,7 @@ interface OnboardingStatusBadgeProps<T extends OnboardingStatuses> {
   onboardingEntity: 'contractor' | 'employee'
   onboardingStatus?: T | null
 }
+/** @internal */
 export const OnboardingStatusBadge = <T extends OnboardingStatuses>({
   onboarded,
   onboardingEntity,
@@ -30,6 +31,7 @@ interface ContractorOnboardingStatusBadgeProps {
   onboarded?: boolean
   onboardingStatus?: ContractorOnboardingStatus1 | null
 }
+/** @internal */
 export const ContractorOnboardingStatusBadge = (props: ContractorOnboardingStatusBadgeProps) => (
   <OnboardingStatusBadge {...props} onboardingEntity="contractor" />
 )
@@ -38,6 +40,7 @@ interface EmployeeOnboardingStatusBadgeProps {
   onboarded?: boolean
   onboardingStatus?: OnboardingStatus | null
 }
+/** @internal */
 export const EmployeeOnboardingStatusBadge = (props: EmployeeOnboardingStatusBadgeProps) => (
   <OnboardingStatusBadge {...props} onboardingEntity="employee" />
 )

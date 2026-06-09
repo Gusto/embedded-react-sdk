@@ -3,15 +3,23 @@ import classNames from 'classnames'
 import { VisuallyHidden } from '../VisuallyHidden'
 import styles from './FieldCaption.module.scss'
 
+/** @internal */
 export interface FieldCaptionProps {
+  /** Caption content rendered inside the label or legend element. */
   children: React.ReactNode
+  /** HTML element to render as — `label` for individual inputs, `legend` for fieldsets. */
   as?: 'label' | 'legend'
+  /** Associates a `label` with an input by id. Ignored when `as` is `legend`. */
   htmlFor?: string
+  /** When false, appends a localized optional indicator after the caption. */
   isRequired?: boolean
+  /** Visually hides the caption while keeping it available to assistive technology. */
   isVisuallyHidden?: boolean
+  /** Additional class names appended to the root element. */
   className?: string
 }
 
+/** @internal */
 export const FieldCaption: React.FC<FieldCaptionProps> = ({
   children,
   as = 'label',

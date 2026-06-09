@@ -1,5 +1,6 @@
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 //TODO: Style appropriately once design is available
+/** @internal */
 export function Toast({ message, onClose }: { message: string | null; onClose: () => void }) {
   const Components = useComponentContext()
   if (!message) return
