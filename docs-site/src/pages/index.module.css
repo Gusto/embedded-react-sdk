@@ -102,11 +102,11 @@
 }
 
 .heroAccent {
-  background: linear-gradient(135deg, #ffb199 0%, #ff8266 50%, #e15a43 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: #f45d48;
+}
+
+[data-theme='dark'] .heroAccent {
+  color: #ff7a68;
 }
 
 .heroText .heroBrand,
@@ -513,12 +513,7 @@
 /* ── Features ── */
 
 .features {
-  padding: 4rem 2rem;
-  background-color: #ffffff;
-}
-
-[data-theme='dark'] .features {
-  background-color: transparent;
+  padding: 6rem 2rem;
 }
 
 .featuresInner {
@@ -526,23 +521,46 @@
   margin: 0 auto;
 }
 
+.featuresHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.featuresHeading {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1b1b1d;
+  margin: 0 0 0.5rem;
+}
+
+[data-theme='dark'] .featuresHeading {
+  color: #ffffff;
+}
+
+.featuresIntro {
+  font-size: 1.1rem;
+  color: #525860;
+  margin: 0;
+}
+
+[data-theme='dark'] .featuresIntro {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
 @media (max-width: 996px) {
   .featuresGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 600px) {
-  .featuresGrid {
-    grid-template-columns: 1fr;
-  }
-
   .heroActions {
     flex-direction: column;
     align-items: center;
@@ -550,43 +568,97 @@
 }
 
 .featureCard {
-  padding: 1.5rem;
-  background-color: #faf9f8;
-  border: 1px solid #dfe1e5;
-  border-radius: 12px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+  background-color: #ffffff;
+  border: 1px solid #ebedf0;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
 .featureCard:hover {
-  border-color: #f45d48;
-  box-shadow: 0 4px 16px rgba(244, 93, 72, 0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #ff8266, #e15a43);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.featureCard:hover {
+  border-color: rgba(244, 93, 72, 0.4);
+  box-shadow: 0 16px 44px rgba(244, 93, 72, 0.18);
+  transform: translateY(-2px);
+}
+
+.featureCard:hover::before {
+  opacity: 1;
 }
 
 [data-theme='dark'] .featureCard {
-  border-color: #333;
-  background-color: #000;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .featureCard:hover {
-  border-color: #ff7a68;
-  box-shadow: 0 4px 16px rgba(255, 122, 104, 0.08);
+  border-color: rgba(255, 130, 102, 0.45);
+  box-shadow: 0 16px 44px rgba(255, 130, 102, 0.22);
+}
+
+.featureStepNumber {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #525860;
+  margin-bottom: 1.25rem;
+}
+
+[data-theme='dark'] .featureStepNumber {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.featureIconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #ff8266, #e15a43);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(225, 90, 67, 0.32);
+  margin-bottom: 1.25rem;
 }
 
 .featureIcon {
   display: block;
-  margin-bottom: 0.75rem;
-  color: #f45d48;
+  color: #ffffff;
 }
 
 [data-theme='dark'] .featureIcon {
-  color: #ff7a68;
+  color: #ffffff;
 }
 
 .featureTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin-bottom: 0.5rem;
   color: #1b1b1d;
 }
@@ -596,14 +668,14 @@
 }
 
 .featureDescription {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1.6;
   color: #525860;
   margin: 0;
 }
 
 [data-theme='dark'] .featureDescription {
-  color: #9a9da3;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* ── Quick links ── */

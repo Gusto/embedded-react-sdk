@@ -111,6 +111,7 @@ function GearIcon({ className }: { className?: string }) {
 interface Feature {
   title: string
   description: string
+  to: string
   Icon: (props: { className?: string }) => ReactNode
 }
 
@@ -119,24 +120,28 @@ const features: Feature[] = [
     title: 'Pre-built Workflows',
     description:
       'Complete multi-step flows for employee onboarding, payroll, contractor management, and more — ready to drop into your app.',
+    to: '/docs/workflows-overview',
     Icon: WorkflowIcon,
   },
   {
     title: 'Full UI Control',
     description:
       'Use theming, component adapters, and composition to match your design system. Native React components, not iframes.',
+    to: '/docs/component-adapter',
     Icon: PaletteIcon,
   },
   {
     title: 'Event-driven',
     description:
       'Every component emits typed events for user actions and API responses. Drive navigation, analytics, and side effects.',
+    to: '/docs/integration-guide/event-handling',
     Icon: SignalIcon,
   },
   {
     title: 'Built-in Business Logic',
     description:
       'API calls, form validation, error handling, and state transitions are managed internally with React Query, react-hook-form, and Zod.',
+    to: '/docs/hooks',
     Icon: GearIcon,
   },
 ]
@@ -234,13 +239,22 @@ function FeaturesSection() {
   return (
     <section className={styles.features} aria-label="Key features">
       <div className={styles.featuresInner}>
+        <header className={styles.featuresHeader}>
+          <h2 className={styles.featuresHeading}>
+            Built for <span className={styles.heroAccent}>partners</span>.
+          </h2>
+          <p className={styles.featuresIntro}>Production-grade pieces, ready to drop in.</p>
+        </header>
         <div className={styles.featuresGrid}>
-          {features.map(({ title, description, Icon }) => (
-            <div key={title} className={styles.featureCard}>
-              <Icon className={styles.featureIcon} />
+          {features.map(({ title, description, to, Icon }, index) => (
+            <Link key={title} to={to} className={styles.featureCard}>
+              <span className={styles.featureStepNumber}>{String(index + 1).padStart(2, '0')}</span>
+              <div className={styles.featureIconBadge}>
+                <Icon className={styles.featureIcon} />
+              </div>
               <h3 className={styles.featureTitle}>{title}</h3>
               <p className={styles.featureDescription}>{description}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
