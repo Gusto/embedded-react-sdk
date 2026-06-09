@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type OptionalFieldsToRequire,
   type RequiredFieldConfig,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { PAYMENT_METHODS } from '@/shared/constants'
 
@@ -17,16 +18,16 @@ export const PAYMENT_METHOD_TYPES = [PAYMENT_METHODS.directDeposit, PAYMENT_METH
 
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number]
 
-const fieldValidators = {
-  type: z.enum(PAYMENT_METHOD_TYPES),
-}
-
-export type PaymentMethodFormField = keyof typeof fieldValidators
-
 export interface PaymentMethodFormData {
   type: PaymentMethodType
 }
 export type PaymentMethodFormOutputs = PaymentMethodFormData
+
+const fieldValidators = {
+  type: z.enum(PAYMENT_METHOD_TYPES),
+} satisfies ValidatorsFor<PaymentMethodFormData>
+
+export type PaymentMethodFormField = keyof typeof fieldValidators
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

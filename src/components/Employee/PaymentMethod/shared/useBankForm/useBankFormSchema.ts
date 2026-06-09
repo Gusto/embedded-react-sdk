@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type OptionalFieldsToRequire,
   type RequiredFieldConfig,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 export const BankFormErrorCodes = {
@@ -19,6 +20,14 @@ const ACCOUNT_NUMBER_REGEX = /^[0-9]{1,17}$/
 export const ACCOUNT_TYPES = ['Checking', 'Savings'] as const
 export type AccountType = (typeof ACCOUNT_TYPES)[number]
 
+export interface BankFormData {
+  name: string
+  routingNumber: string
+  accountNumber: string
+  accountType: AccountType
+}
+export type BankFormOutputs = BankFormData
+
 const fieldValidators = {
   name: z.string(),
   routingNumber: z
@@ -28,17 +37,9 @@ const fieldValidators = {
     .string()
     .regex(ACCOUNT_NUMBER_REGEX, { message: BankFormErrorCodes.INVALID_ACCOUNT_NUMBER }),
   accountType: z.enum(ACCOUNT_TYPES),
-}
+} satisfies ValidatorsFor<BankFormData>
 
 export type BankFormField = keyof typeof fieldValidators
-
-export interface BankFormData {
-  name: string
-  routingNumber: string
-  accountNumber: string
-  accountType: AccountType
-}
-export type BankFormOutputs = BankFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

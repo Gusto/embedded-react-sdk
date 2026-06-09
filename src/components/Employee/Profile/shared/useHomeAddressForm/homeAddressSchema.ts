@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -14,6 +15,19 @@ export const HomeAddressErrorCodes = {
 
 export type HomeAddressErrorCode =
   (typeof HomeAddressErrorCodes)[keyof typeof HomeAddressErrorCodes]
+
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface HomeAddressFormData {
+  street1: string
+  street2: string
+  city: string
+  state: string
+  zip: string
+  courtesyWithholding: boolean
+  effectiveDate: string
+}
+export type HomeAddressFormOutputs = HomeAddressFormData
 
 // ── Field validators ───────────────────────────────────────────────────
 
@@ -27,20 +41,9 @@ const fieldValidators = {
   zip: z.string().regex(ZIP_REGEX, { message: HomeAddressErrorCodes.INVALID_ZIP }),
   courtesyWithholding: z.boolean(),
   effectiveDate: z.iso.date({ error: () => HomeAddressErrorCodes.REQUIRED }),
-}
+} satisfies ValidatorsFor<HomeAddressFormData>
 
 export type HomeAddressField = keyof typeof fieldValidators
-
-export interface HomeAddressFormData {
-  street1: string
-  street2: string
-  city: string
-  state: string
-  zip: string
-  courtesyWithholding: boolean
-  effectiveDate: string
-}
-export type HomeAddressFormOutputs = HomeAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

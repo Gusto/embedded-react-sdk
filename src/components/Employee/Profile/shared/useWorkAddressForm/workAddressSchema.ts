@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -14,20 +15,22 @@ export const WorkAddressErrorCodes = {
 export type WorkAddressErrorCode =
   (typeof WorkAddressErrorCodes)[keyof typeof WorkAddressErrorCodes]
 
-// ── Field validators ───────────────────────────────────────────────────
-
-const fieldValidators = {
-  locationUuid: z.string().min(1, { message: WorkAddressErrorCodes.REQUIRED }),
-  effectiveDate: z.iso.date({ error: () => WorkAddressErrorCodes.REQUIRED }),
-}
-
-export type WorkAddressField = keyof typeof fieldValidators
+// ── Form data types ────────────────────────────────────────────────────
 
 export interface WorkAddressFormData {
   locationUuid: string
   effectiveDate: string
 }
 export type WorkAddressFormOutputs = WorkAddressFormData
+
+// ── Field validators ───────────────────────────────────────────────────
+
+const fieldValidators = {
+  locationUuid: z.string().min(1, { message: WorkAddressErrorCodes.REQUIRED }),
+  effectiveDate: z.iso.date({ error: () => WorkAddressErrorCodes.REQUIRED }),
+} satisfies ValidatorsFor<WorkAddressFormData>
+
+export type WorkAddressField = keyof typeof fieldValidators
 
 // ── Required fields config ─────────────────────────────────────────────
 

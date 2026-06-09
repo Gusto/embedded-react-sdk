@@ -4,6 +4,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceStringBoolean } from '@/partner-hook-utils/form/preprocessors'
 
@@ -27,6 +28,18 @@ export const FILING_STATUS_VALUES = [
 
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number]
 
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface FederalTaxesFormData {
+  filingStatus: string
+  twoJobs: boolean
+  dependentsAmount: number
+  otherIncome: number
+  deductions: number
+  extraWithholding: number
+}
+export type FederalTaxesFormOutputs = FederalTaxesFormData
+
 // ── Field validators ───────────────────────────────────────────────────
 
 // `filingStatus` is typed as `string` (not `z.enum`) so the initial empty form state is valid
@@ -40,19 +53,9 @@ const fieldValidators = {
   otherIncome: z.preprocess(coerceNaN(0), z.number()),
   deductions: z.preprocess(coerceNaN(0), z.number()),
   extraWithholding: z.preprocess(coerceNaN(0), z.number()),
-}
+} satisfies ValidatorsFor<FederalTaxesFormData>
 
 export type FederalTaxesField = keyof typeof fieldValidators
-
-export interface FederalTaxesFormData {
-  filingStatus: string
-  twoJobs: boolean
-  dependentsAmount: number
-  otherIncome: number
-  deductions: number
-  extraWithholding: number
-}
-export type FederalTaxesFormOutputs = FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

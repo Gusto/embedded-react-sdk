@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 
@@ -18,6 +19,19 @@ export const EmployeeDetailsErrorCodes = {
 
 export type EmployeeDetailsErrorCode =
   (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes]
+
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface EmployeeDetailsFormData {
+  firstName: string
+  middleInitial: string
+  lastName: string
+  email: string
+  dateOfBirth: string
+  ssn: string
+  selfOnboarding: boolean
+}
+export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
 // ── Field validators ───────────────────────────────────────────────────
 
@@ -44,20 +58,9 @@ const fieldValidators = {
       message: EmployeeDetailsErrorCodes.INVALID_SSN,
     }),
   selfOnboarding: z.boolean(),
-}
+} satisfies ValidatorsFor<EmployeeDetailsFormData>
 
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
-
-export interface EmployeeDetailsFormData {
-  firstName: string
-  middleInitial: string
-  lastName: string
-  email: string
-  dateOfBirth: string
-  ssn: string
-  selfOnboarding: boolean
-}
-export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

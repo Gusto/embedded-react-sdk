@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceToISODate, coerceStringBoolean } from '@/partner-hook-utils/form/preprocessors'
 
@@ -12,15 +13,6 @@ export const JobErrorCodes = {
 
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes]
 
-const fieldValidators = {
-  title: z.string(),
-  hireDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
-  twoPercentShareholder: z.boolean(),
-  // Radio group delivers 'true'/'false' strings; coerceStringBoolean converts to boolean.
-  stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
-  stateWcClassCode: z.string(),
-}
-
 export interface JobFormData {
   title: string
   hireDate: string | null
@@ -29,6 +21,15 @@ export interface JobFormData {
   stateWcClassCode: string
 }
 export type JobFormOutputs = JobFormData
+
+const fieldValidators = {
+  title: z.string(),
+  hireDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  twoPercentShareholder: z.boolean(),
+  // Radio group delivers 'true'/'false' strings; coerceStringBoolean converts to boolean.
+  stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
+  stateWcClassCode: z.string(),
+} satisfies ValidatorsFor<JobFormData>
 
 const requiredFieldsConfig = {
   title: 'create',

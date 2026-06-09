@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type OptionalFieldsToRequire,
   type RequiredFieldConfig,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { SPLIT_BY } from '@/shared/constants'
 
@@ -27,6 +28,13 @@ export type SplitPaymentsFormErrorCode =
 export const SPLIT_BY_VALUES = [SPLIT_BY.percentage, SPLIT_BY.amount] as const
 export type SplitByValue = (typeof SPLIT_BY_VALUES)[number]
 
+export type SplitPaymentsFormData = {
+  splitBy: SplitByValue
+  splitAmount: Record<string, number | null>
+  priority: Record<string, number>
+}
+export type SplitPaymentsFormOutputs = SplitPaymentsFormData
+
 // Cleared NumberInput emits `NaN`. Normalize NaN to `null` at the schema
 // boundary so it (a) doesn't trip Zod's built-in "expected number, received
 // NaN" message, and (b) flows through the same REQUIRED branch in
@@ -40,16 +48,9 @@ const fieldValidators = {
   splitBy: z.enum(SPLIT_BY_VALUES),
   splitAmount: z.record(z.string(), splitAmountValueSchema),
   priority: z.record(z.string(), z.number()),
-}
+} satisfies ValidatorsFor<SplitPaymentsFormData>
 
 export type SplitPaymentsFormField = keyof typeof fieldValidators
-
-export type SplitPaymentsFormData = {
-  splitBy: SplitByValue
-  splitAmount: Record<string, number | null>
-  priority: Record<string, number>
-}
-export type SplitPaymentsFormOutputs = SplitPaymentsFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 

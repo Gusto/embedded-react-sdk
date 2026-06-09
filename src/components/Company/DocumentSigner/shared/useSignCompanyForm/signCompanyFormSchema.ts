@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 
 // ── Error codes ────────────────────────────────────────────────────────
@@ -14,6 +15,14 @@ export const SignCompanyFormErrorCodes = {
 export type SignCompanyFormErrorCode =
   (typeof SignCompanyFormErrorCodes)[keyof typeof SignCompanyFormErrorCodes]
 
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface SignCompanyFormData {
+  signature: string
+  confirmSignature: boolean
+}
+export type SignCompanyFormOutputs = SignCompanyFormData
+
 // ── Field validators ───────────────────────────────────────────────────
 
 const fieldValidators = {
@@ -21,15 +30,9 @@ const fieldValidators = {
   confirmSignature: z.boolean().refine(val => val, {
     message: SignCompanyFormErrorCodes.REQUIRED,
   }),
-}
+} satisfies ValidatorsFor<SignCompanyFormData>
 
 export type SignCompanyFormField = keyof typeof fieldValidators
-
-export interface SignCompanyFormData {
-  signature: string
-  confirmSignature: boolean
-}
-export type SignCompanyFormOutputs = SignCompanyFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 

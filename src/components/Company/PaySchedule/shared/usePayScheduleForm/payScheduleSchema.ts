@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
 
@@ -21,18 +22,6 @@ export type PayScheduleErrorCode =
 const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', 'Monthly'] as const
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 
-const fieldValidators = {
-  customName: z.string(),
-  frequency: z.enum(FREQUENCY_VALUES),
-  customTwicePerMonth: z.string(),
-  anchorPayDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
-  anchorEndOfPayPeriod: z.preprocess(coerceToISODate, z.iso.date().nullable()),
-  day1: z.preprocess(coerceNaN(0), z.number()),
-  day2: z.preprocess(coerceNaN(0), z.number()),
-}
-
-export type PayScheduleField = keyof typeof fieldValidators
-
 export interface PayScheduleFormData {
   customName: string
   frequency: PayScheduleFrequency
@@ -43,6 +32,18 @@ export interface PayScheduleFormData {
   day2: number
 }
 export type PayScheduleFormOutputs = PayScheduleFormData
+
+const fieldValidators = {
+  customName: z.string(),
+  frequency: z.enum(FREQUENCY_VALUES),
+  customTwicePerMonth: z.string(),
+  anchorPayDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  anchorEndOfPayPeriod: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  day1: z.preprocess(coerceNaN(0), z.number()),
+  day2: z.preprocess(coerceNaN(0), z.number()),
+} satisfies ValidatorsFor<PayScheduleFormData>
+
+export type PayScheduleField = keyof typeof fieldValidators
 
 // ── Required fields config ─────────────────────────────────────────────
 

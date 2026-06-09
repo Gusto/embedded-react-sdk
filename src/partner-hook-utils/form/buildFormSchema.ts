@@ -99,6 +99,18 @@ type FormDataFromValidators<T extends Record<string, z.ZodType>> = {
 }
 
 /**
+ * Maps a form data interface to the shape of Zod validators that must produce it.
+ * Use with `satisfies` to type-check a `fieldValidators` object from the interface
+ * rather than inferring the interface from the validators.
+ *
+ * @typeParam TFormData - The form data interface that validators must produce.
+ * @internal
+ */
+export type ValidatorsFor<TFormData> = {
+  [K in keyof TFormData]: z.ZodType<TFormData[K]>
+}
+
+/**
  * Tuple returned by {@link buildFormSchema}: the composed Zod schema followed
  * by its {@link FieldsMetadataConfig}.
  *

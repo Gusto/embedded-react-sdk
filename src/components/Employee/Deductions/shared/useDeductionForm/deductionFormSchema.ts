@@ -4,6 +4,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceStringBoolean } from '@/partner-hook-utils/form/preprocessors'
 
@@ -16,6 +17,20 @@ export const DeductionFormErrorCodes = {
 
 export type DeductionFormErrorCode =
   (typeof DeductionFormErrorCodes)[keyof typeof DeductionFormErrorCodes]
+
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface DeductionFormData {
+  description: string
+  recurring: boolean
+  deductAsPercentage: boolean
+  amount: number
+  totalAmount: number
+  annualMaximum: number
+  garnishmentType: GarnishmentType
+}
+
+export type DeductionFormOutputs = DeductionFormData
 
 // ── Field validators ───────────────────────────────────────────────────
 
@@ -45,21 +60,9 @@ const fieldValidators = {
   ),
   // Only used when `courtOrdered: true` — see `excludeFields` below.
   garnishmentType: z.enum(GarnishmentType),
-}
+} satisfies ValidatorsFor<DeductionFormData>
 
 export type DeductionFormField = keyof typeof fieldValidators
-
-export interface DeductionFormData {
-  description: string
-  recurring: boolean
-  deductAsPercentage: boolean
-  amount: number
-  totalAmount: number
-  annualMaximum: number
-  garnishmentType: GarnishmentType
-}
-
-export type DeductionFormOutputs = DeductionFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 //

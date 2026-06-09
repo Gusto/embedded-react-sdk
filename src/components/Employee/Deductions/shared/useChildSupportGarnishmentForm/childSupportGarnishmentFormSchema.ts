@@ -4,6 +4,7 @@ import type { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/component
 import {
   buildFormSchema,
   type RequiredFieldConfig,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN } from '@/partner-hook-utils/form/preprocessors'
 
@@ -52,6 +53,21 @@ export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequ
   return keys
 }
 
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface ChildSupportGarnishmentFormData {
+  state: string
+  fipsCode: string
+  caseNumber: string
+  orderNumber: string
+  remittanceNumber: string
+  payPeriodMaximum: number
+  amount: number
+  paymentPeriod: PaymentPeriod
+}
+
+export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
+
 // ── Field validators ───────────────────────────────────────────────────
 
 const PERCENT_MIN = 0
@@ -81,22 +97,9 @@ const fieldValidators = {
       }),
   ),
   paymentPeriod: z.enum(PaymentPeriod),
-}
+} satisfies ValidatorsFor<ChildSupportGarnishmentFormData>
 
 export type ChildSupportGarnishmentFormField = keyof typeof fieldValidators
-
-export interface ChildSupportGarnishmentFormData {
-  state: string
-  fipsCode: string
-  caseNumber: string
-  orderNumber: string
-  remittanceNumber: string
-  payPeriodMaximum: number
-  amount: number
-  paymentPeriod: PaymentPeriod
-}
-
-export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 //

@@ -3,6 +3,7 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
+  type ValidatorsFor,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
 import {
@@ -29,6 +30,21 @@ export const CompensationErrorCodes = {
 
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
+
+// ── Form data types ────────────────────────────────────────────────────
+
+export interface CompensationFormData {
+  title: string
+  flsaStatus: FlsaStatus | undefined
+  paymentUnit: PayPeriod
+  rate: number
+  effectiveDate: string | null
+  adjustForMinimumWage: boolean
+  minimumWageId: string
+}
+export type CompensationFormOutputs = CompensationFormData
+
+// ── Field validators ───────────────────────────────────────────────────
 
 const fieldValidators = {
   /**
@@ -76,17 +92,9 @@ const fieldValidators = {
   effectiveDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   adjustForMinimumWage: z.boolean(),
   minimumWageId: z.string(),
-}
+} satisfies ValidatorsFor<CompensationFormData>
 
-export interface CompensationFormData {
-  title: string
-  flsaStatus: FlsaStatus | undefined
-  paymentUnit: PayPeriod
-  rate: number
-  effectiveDate: string | null
-  adjustForMinimumWage: boolean
-  minimumWageId: string
-}
+// ── Required fields config ─────────────────────────────────────────────
 
 const requiredFieldsConfig = {
   title: 'never',
@@ -164,7 +172,6 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
-export type CompensationFormOutputs = CompensationFormData
 
 export interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
