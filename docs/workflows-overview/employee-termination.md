@@ -1,5 +1,6 @@
 ---
 title: Employee Termination
+description: Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
 order: 4
 ---
 

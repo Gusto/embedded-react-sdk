@@ -1,5 +1,6 @@
 ---
 title: Routing
+description: Integrate SDK workflow components with a router using React Router as the example — worked walkthrough of an Employee Self Onboarding flow split across routes.
 order: 6
 ---
 

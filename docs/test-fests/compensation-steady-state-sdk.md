@@ -1,3 +1,8 @@
+---
+title: 'Test Fest: Compensation — Steady State SDK'
+description: Internal test-fest plan validating the Dashboard Compensation card lifecycle — view, edit, schedule future changes, multi-job table, and FLSA reclassification.
+---
+
 # Test Fest: Compensation — Steady State SDK
 
 **Driven by:** Steve Jensen

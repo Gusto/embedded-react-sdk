@@ -1,5 +1,6 @@
 ---
 title: Error Handling in the React SDK
+description: How the SDK surfaces errors — unified SDKError type, error boundaries, form submission processing, observability hooks, and composeErrorHandler for headless hooks.
 order: 7
 ---
 

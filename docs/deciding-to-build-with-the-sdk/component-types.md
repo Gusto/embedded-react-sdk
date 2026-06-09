@@ -1,5 +1,6 @@
 ---
 title: Component Types
+description: How the SDK organizes UI into Workflow components (end-to-end, off-the-shelf flows) and Building Block components (granular pieces with more customization).
 order: 1
 ---
 

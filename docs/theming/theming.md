@@ -1,5 +1,6 @@
 ---
 title: Theming
+description: Customize SDK visuals by overriding theme variables for colors, typography, and shadows — the recommended approach before reaching for component adapters.
 ---
 
 ## Theming

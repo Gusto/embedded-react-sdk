@@ -1,5 +1,6 @@
 ---
 title: useSignCompanyForm
+description: Headless hook for signing a company form — renders the form PDF and collects a typed signature with confirmation checkbox inside SDKFormProvider.
 order: 5
 ---
 

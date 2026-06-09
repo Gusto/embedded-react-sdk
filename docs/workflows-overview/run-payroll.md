@@ -1,5 +1,6 @@
 ---
 title: Payroll Processing
+description: End-to-end workflow for running payroll — select a payroll, configure employee compensation, review details, confirm wire transfers, and submit for processing.
 order: 3
 ---
 

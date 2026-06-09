@@ -1,5 +1,6 @@
 ---
 title: Composition
+description: Compose SDK workflows by rendering an entire flow as a single component or breaking it into individual workflow pieces with custom ordering and surrounding content.
 order: 3
 ---
 

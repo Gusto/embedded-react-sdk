@@ -1,5 +1,6 @@
 ---
 title: useJobForm
+description: Headless hook for creating or updating an employee job — title, hire date, S-Corp 2% shareholder flag, and Washington workers' comp fields — inside SDKFormProvider.
 order: 4
 ---
 
