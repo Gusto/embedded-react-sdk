@@ -1,7 +1,7 @@
 import { type TypeDocOptions } from 'typedoc'
 
 export const baseOptions = {
-  plugin: ['./plugins/typedoc-directory-router.mjs'],
+  plugin: ['./plugins/sdk-router.mjs'],
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],
@@ -10,6 +10,7 @@ export const baseOptions = {
   excludeInternal: true,
   router: 'sdk-router',
   readme: 'none',
+  useHTMLAnchors: true,
   validation: { invalidLink: true },
 } satisfies TypeDocOptions
 

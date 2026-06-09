@@ -36,7 +36,7 @@ const config: Config = {
         sidebar: {
           autoConfiguration: true,
           pretty: true,
-          typescript: true,
+          typescript: false,
           deprecatedItemClassName: 'typedoc-sidebar-item-deprecated',
         },
       } satisfies TypeDocOptions & PluginOptions,

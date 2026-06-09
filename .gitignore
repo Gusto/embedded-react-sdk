@@ -142,6 +142,8 @@ dist
 docs-site/build/
 docs-site/.docusaurus/
 
+# Typedoc generated files (run by docusaurus)
+
 docs/api/
 
 # Serverless directories

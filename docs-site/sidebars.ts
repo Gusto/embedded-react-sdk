@@ -1,5 +1,5 @@
 import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
-import typedocSidebar from '../docs/api/typedoc-sidebar'
+import typedocSidebar from '../docs/api/typedoc-sidebar.cjs'
 
 const sidebars: SidebarsConfig = {
   docs: [
@@ -102,7 +102,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'API Reference',
       link: { type: 'doc', id: 'api/index' },
-      items: typedocSidebar.items,
+      items: typedocSidebar,
     },
   ],
 }
