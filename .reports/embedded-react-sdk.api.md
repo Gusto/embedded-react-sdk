@@ -1319,260 +1319,17 @@ export type CountyEntry = {
 // @public (undocumented)
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createBankFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createBankFormSchema(options?: BankFormSchemaOptions): BuildFormSchemaResult<    {
-name: z.ZodString;
-routingNumber: z.ZodString;
-accountNumber: z.ZodString;
-accountType: z.ZodEnum<{
-Checking: "Checking";
-Savings: "Savings";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "ChildSupportGarnishmentFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createChildSupportGarnishmentFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createChildSupportGarnishmentFormSchema(input?: ChildSupportGarnishmentFormSchemaOptions): BuildFormSchemaResult<    {
-state: z.ZodString;
-fipsCode: z.ZodString;
-caseNumber: z.ZodString;
-orderNumber: z.ZodString;
-remittanceNumber: z.ZodString;
-payPeriodMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-paymentPeriod: z.ZodEnum<{
-readonly EveryWeek: "Every week";
-readonly EveryOtherWeek: "Every other week";
-readonly TwicePerMonth: "Twice per month";
-readonly Monthly: "Monthly";
-}>;
-}>;
-
-// Warning: (ae-missing-release-tag) "createCompensationSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createCompensationSchema(options?: CompensationSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-flsaStatus: z.ZodOptional<z.ZodEnum<{
-Exempt: "Exempt";
-"Salaried Nonexempt": "Salaried Nonexempt";
-Nonexempt: "Nonexempt";
-Owner: "Owner";
-"Commission Only Exempt": "Commission Only Exempt";
-"Commission Only Nonexempt": "Commission Only Nonexempt";
-}>>;
-paymentUnit: z.ZodEnum<{
-Hour: "Hour";
-Week: "Week";
-Month: "Month";
-Year: "Year";
-Paycheck: "Paycheck";
-}>;
-rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-adjustForMinimumWage: z.ZodBoolean;
-minimumWageId: z.ZodString;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createDeductionFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createDeductionFormSchema(options: DeductionFormSchemaOptions): BuildFormSchemaResult<    {
-description: z.ZodString;
-recurring: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-deductAsPercentage: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-totalAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-annualMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-garnishmentType: z.ZodEnum<{
-readonly ChildSupport: "child_support";
-readonly FederalTaxLien: "federal_tax_lien";
-readonly StateTaxLien: "state_tax_lien";
-readonly StudentLoan: "student_loan";
-readonly CreditorGarnishment: "creditor_garnishment";
-readonly FederalLoan: "federal_loan";
-readonly OtherGarnishment: "other_garnishment";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createEmployeeDetailsSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createEmployeeDetailsSchema(options?: EmployeeDetailsSchemaOptions): BuildFormSchemaResult<    {
-firstName: z.ZodString;
-middleInitial: z.ZodString;
-lastName: z.ZodString;
-email: z.ZodEmail;
-dateOfBirth: z.ZodISODate;
-ssn: z.ZodString;
-selfOnboarding: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeStateTaxesSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createEmployeeStateTaxesSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
-export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
-
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createFederalTaxesSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createFederalTaxesSchema(options?: FederalTaxesSchemaOptions): BuildFormSchemaResult<    {
-filingStatus: z.ZodString;
-twoJobs: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-dependentsAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-otherIncome: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-deductions: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-extraWithholding: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "HomeAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createHomeAddressSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createHomeAddressSchema(options?: HomeAddressSchemaOptions): BuildFormSchemaResult<    {
-street1: z.ZodString;
-street2: z.ZodString;
-city: z.ZodString;
-state: z.ZodString;
-zip: z.ZodString;
-courtesyWithholding: z.ZodBoolean;
-effectiveDate: z.ZodISODate;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "JobSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createJobSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createJobSchema(options?: JobSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-twoPercentShareholder: z.ZodBoolean;
-stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-stateWcClassCode: z.ZodString;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "CreatePaymentProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "CreatePayment" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function CreatePayment(props: CreatePaymentProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createPaymentMethodFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createPaymentMethodFormSchema(options?: PaymentMethodFormSchemaOptions): BuildFormSchemaResult<    {
-type: z.ZodEnum<{
-Check: "Check";
-"Direct Deposit": "Direct Deposit";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "PayScheduleSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createPayScheduleSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createPayScheduleSchema(options?: PayScheduleSchemaOptions): BuildFormSchemaResult<    {
-customName: z.ZodString;
-frequency: z.ZodEnum<{
-"Every week": "Every week";
-"Every other week": "Every other week";
-"Twice per month": "Twice per month";
-Monthly: "Monthly";
-}>;
-customTwicePerMonth: z.ZodString;
-anchorPayDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-anchorEndOfPayPeriod: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-day1: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "CreateSignatoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "CreateSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "SignCompanyFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createSignCompanyFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createSignCompanyFormSchema(options?: SignCompanyFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SignEmployeeFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createSignEmployeeFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createSignEmployeeFormSchema(options?: SignEmployeeFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-usedPreparer: z.ZodEnum<{
-yes: "yes";
-no: "no";
-}>;
-preparerFirstName: z.ZodString;
-preparerLastName: z.ZodString;
-preparerStreet1: z.ZodString;
-preparerStreet2: z.ZodString;
-preparerCity: z.ZodString;
-preparerState: z.ZodString;
-preparerZip: z.ZodString;
-preparerSignature: z.ZodString;
-preparerAgree: z.ZodBoolean;
-preparer2FirstName: z.ZodString;
-preparer2LastName: z.ZodString;
-preparer2Street1: z.ZodString;
-preparer2Street2: z.ZodString;
-preparer2City: z.ZodString;
-preparer2State: z.ZodString;
-preparer2Zip: z.ZodString;
-preparer2Signature: z.ZodString;
-preparer2Agree: z.ZodBoolean;
-preparer3FirstName: z.ZodString;
-preparer3LastName: z.ZodString;
-preparer3Street1: z.ZodString;
-preparer3Street2: z.ZodString;
-preparer3City: z.ZodString;
-preparer3State: z.ZodString;
-preparer3Zip: z.ZodString;
-preparer3Signature: z.ZodString;
-preparer3Agree: z.ZodBoolean;
-preparer4FirstName: z.ZodString;
-preparer4LastName: z.ZodString;
-preparer4Street1: z.ZodString;
-preparer4Street2: z.ZodString;
-preparer4City: z.ZodString;
-preparer4State: z.ZodString;
-preparer4Zip: z.ZodString;
-preparer4Signature: z.ZodString;
-preparer4Agree: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createSplitPaymentsFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createSplitPaymentsFormSchema(options?: SplitPaymentsFormSchemaOptions): BuildFormSchemaResult<    {
-splitBy: z.ZodEnum<{
-Percentage: "Percentage";
-Amount: "Amount";
-}>;
-splitAmount: z.ZodRecord<z.ZodString, z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodNullable<z.ZodNumber>>>;
-priority: z.ZodRecord<z.ZodString, z.ZodNumber>;
-}>;
 
 // Warning: (ae-missing-release-tag) "createStateFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1586,15 +1343,6 @@ export interface CreateStateFieldsOptions {
     // (undocumented)
     isAdmin: boolean;
 }
-
-// Warning: (ae-forgotten-export) The symbol "WorkAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "createWorkAddressSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export function createWorkAddressSchema(options?: WorkAddressSchemaOptions): BuildFormSchemaResult<    {
-locationUuid: z.ZodString;
-effectiveDate: z.ZodISODate;
-}>;
 
 // Warning: (ae-forgotten-export) The symbol "BaseStateTaxFieldProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "CurrencyStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2159,7 +1907,6 @@ declare namespace EmployeeManagement {
         ManagementEmployeeList as EmployeeList,
         EmployeeListFlow,
         EmployeeListFlowProps,
-        EmployeeDocuments,
         Documents,
         DocumentsCard,
         DocumentManager,
@@ -2241,6 +1988,7 @@ declare namespace EmployeeOnboarding {
         Landing,
         DocumentSigner_2 as DocumentSigner,
         EmploymentEligibility,
+        EmployeeDocuments,
         Profile,
         Compensation_2 as Compensation,
         FederalTaxes_3 as FederalTaxes,
@@ -2308,7 +2056,7 @@ export type EmployeeStateTaxesFormOutputs = EmployeeStateTaxesFormData;
 // Warning: (ae-missing-release-tag) "EmployeeStateTaxesMetadataConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<Record<string, z.ZodType>> {
+export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<Record<string, unknown>> {
     groups: Array<{
         state: string;
         isWorkState: boolean;
@@ -5589,7 +5337,7 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 // Warning: (ae-internal-missing-underscore) The name "useDeriveFieldsMetadata" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
+export function useDeriveFieldsMetadata<TFormData, TRhfData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<TFormData>, control: Control<TRhfData>): Record<keyof TFormData, FieldMetadata>;
 
 // Warning: (ae-forgotten-export) The symbol "USED_PREPARER_VALUES" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "UsedPreparer" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
