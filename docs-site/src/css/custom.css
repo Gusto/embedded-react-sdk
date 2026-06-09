@@ -188,6 +188,51 @@ html {
   mask-repeat: no-repeat;
 }
 
+.menu__link.navbarGithub > svg {
+  display: none;
+}
+
+.menu__link.navbarGithub::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 0.4em;
+  background-color: currentColor;
+  opacity: 0.6;
+  vertical-align: -1px;
+  -webkit-mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+@media (max-width: 996px) {
+  .navbar__link.navbarGithub {
+    display: none;
+  }
+
+  .navbar__search-input:not(:focus) {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background-position: center;
+    color: transparent;
+    cursor: pointer;
+  }
+
+  .navbar__search-input:not(:focus)::placeholder {
+    color: transparent;
+  }
+
+  .navbar:has(.navbar__search-input:focus) .navbar__logo,
+  .navbar:has(.navbar__search-input:focus) .navbar__title {
+    display: none;
+  }
+}
+
 .navbar__link,
 .navbar__link svg {
   color: var(--ifm-navbar-link-color);
@@ -202,6 +247,7 @@ html {
   display: block;
   height: 22px;
   width: auto;
+  transform: translateY(1.5px);
 }
 
 .navbar__search-input {
@@ -290,6 +336,22 @@ html {
 
 [data-theme='dark'] .navbar__search kbd {
   color: rgba(255, 255, 255, 0.78);
+}
+
+@media (max-width: 1200px) {
+  .navbar__search div:has(> kbd) {
+    display: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .navbar__search div:has(> kbd) {
+    display: none;
+  }
+
+  .navbar__search-input {
+    padding-right: 1rem;
+  }
 }
 
 /* ── Sidebar ── */
