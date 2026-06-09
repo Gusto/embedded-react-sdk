@@ -20,7 +20,7 @@ type FormMode = 'create' | 'update'
  * @typeParam TData - The shape of the form data passed to predicate rules.
  * @internal
  */
-type RequiredFieldRule<TData = Record<string, unknown>> =
+type RequiredFieldRule<TData> =
   | 'create'
   | 'update'
   | 'always'
@@ -34,16 +34,16 @@ type RequiredFieldRule<TData = Record<string, unknown>> =
  * @internal
  */
 export type RequiredFieldConfig<TFormData> = Partial<{
-  [K in keyof TFormData & string]: RequiredFieldRule<TFormData>
+  [K in keyof TFormData]: RequiredFieldRule<TFormData>
 }>
 
 type OptionalOnCreate<TConfig> = {
-  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never
-}[keyof TConfig & string]
+  [K in keyof TConfig]: TConfig[K] extends 'update' | 'never' ? K : never
+}[keyof TConfig]
 
 type OptionalOnUpdate<TConfig> = {
-  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never
-}[keyof TConfig & string]
+  [K in keyof TConfig]: TConfig[K] extends 'create' | 'never' ? K : never
+}[keyof TConfig]
 
 /**
  * Per-mode list of optional fields a caller can promote to required.
@@ -62,21 +62,18 @@ export type OptionalFieldsToRequire<TConfig> = {
 
 // ── buildFormSchema ──────────────────────────────────────────────────
 
-interface BuildFormSchemaOptions<
-  T extends Record<string, z.ZodType>,
-  TConfig extends RequiredFieldConfig<FormDataFromValidators<T>>,
-> {
+interface BuildFormSchemaOptions<TFormData, TConfig extends RequiredFieldConfig<TFormData>> {
   requiredFieldsConfig?: TConfig
   requiredErrorCode?: string
   mode: FormMode
   optionalFieldsToRequire?: OptionalFieldsToRequire<TConfig>
-  excludeFields?: Array<keyof T & string>
+  excludeFields?: Array<keyof TFormData>
   /** Fields with existing server-side values that are redacted in the API response
    *  (e.g. SSN, EIN). These fields remain in the schema for format validation and
    *  appear in metadata (with `hasRedactedValue: true`) but are exempt from required
    *  validation — an empty submission is valid because a value already exists. */
-  fieldsWithRedactedValues?: Array<keyof T & string>
-  superRefine?: (data: { [K in keyof T]: z.infer<T[K]> }, ctx: z.RefinementCtx) => void
+  fieldsWithRedactedValues?: Array<keyof TFormData>
+  superRefine?: (data: TFormData, ctx: z.RefinementCtx) => void
 }
 
 /**
@@ -87,15 +84,9 @@ interface BuildFormSchemaOptions<
  * @internal
  */
 export interface FieldsMetadataConfig<TFormData> {
-  getFieldsMetadata: (
-    data?: Record<string, unknown>,
-  ) => Record<keyof TFormData & string, FieldMetadata>
+  getFieldsMetadata: (data?: Partial<TFormData>) => Record<keyof TFormData, FieldMetadata>
   /** Form field names that predicate-based requiredness rules read at runtime. */
   predicateDeps: string[]
-}
-
-type FormDataFromValidators<T extends Record<string, z.ZodType>> = {
-  [K in keyof T]: z.infer<T[K]>
 }
 
 /**
@@ -138,23 +129,20 @@ export type BuildFormSchemaResult<TFormData> = [
  * exempt from required-field validation because a server-side value already
  * exists.
  *
- * @typeParam T - The map of field names to their Zod validators.
+ * @typeParam TFormData - The form data interface the schema validates into.
  * @typeParam TConfig - The shape of the requiredness configuration.
  * @param fieldValidators - Map from field name to the validator that runs when a value is present.
  * @param options - Mode, required-field config, redaction list, and optional `superRefine`.
  * @returns A {@link BuildFormSchemaResult} tuple: the schema and its metadata config.
  * @internal
  */
-export function buildFormSchema<
-  T extends Record<string, z.ZodType>,
-  TConfig extends RequiredFieldConfig<FormDataFromValidators<T>>,
->(
-  fieldValidators: T,
-  options: BuildFormSchemaOptions<T, TConfig>,
-): BuildFormSchemaResult<FormDataFromValidators<T>> {
+export function buildFormSchema<TFormData, TConfig extends RequiredFieldConfig<TFormData>>(
+  fieldValidators: ValidatorsFor<TFormData>,
+  options: BuildFormSchemaOptions<TFormData, TConfig>,
+): BuildFormSchemaResult<TFormData> {
   const {
     mode,
-    requiredFieldsConfig = {} as Record<string, RequiredFieldRule>,
+    requiredFieldsConfig = {} as Record<string, RequiredFieldRule<TFormData>>,
     requiredErrorCode = 'REQUIRED',
     excludeFields = [],
   } = options
@@ -170,9 +158,9 @@ export function buildFormSchema<
     predicate: (data: Record<string, unknown>, mode: FormMode) => boolean
   }> = []
   const includedFieldNames: string[] = []
-  const config = requiredFieldsConfig as Record<string, RequiredFieldRule>
+  const config = requiredFieldsConfig as Record<string, RequiredFieldRule<TFormData>>
 
-  for (const [name, validator] of Object.entries(fieldValidators)) {
+  for (const [name, validator] of Object.entries(fieldValidators as Record<string, z.ZodType>)) {
     if (excluded.has(name)) continue
     includedFieldNames.push(name)
 
@@ -186,7 +174,9 @@ export function buildFormSchema<
       if (typeof effectiveRule === 'function') {
         dynamicRequired.push({
           name,
-          predicate: isPartnerRequired ? () => true : effectiveRule,
+          predicate: isPartnerRequired
+            ? () => true
+            : (effectiveRule as (data: Record<string, unknown>, mode: FormMode) => boolean),
         })
       } else {
         const isRequired = effectiveRule === 'always' || effectiveRule === mode || isPartnerRequired
@@ -213,14 +203,14 @@ export function buildFormSchema<
           }
         }
 
-        options.superRefine?.(data as { [K in keyof T]: z.infer<T[K]> }, ctx)
+        options.superRefine?.(data as TFormData, ctx)
       },
     )
   }
 
   const predicateDeps = detectPredicateDeps(dynamicRequired, mode)
 
-  function getFieldsMetadata(data?: Record<string, unknown>) {
+  function getFieldsMetadata(data?: Partial<TFormData>) {
     const metadata: Record<string, FieldMetadata> = {}
 
     for (const name of includedFieldNames) {
@@ -229,7 +219,10 @@ export function buildFormSchema<
       if (partnerRequired.has(name)) {
         metadata[name] = { name, isRequired: true }
       } else if (typeof effectiveRule === 'function') {
-        metadata[name] = { name, isRequired: data ? effectiveRule(data, mode) : false }
+        metadata[name] = {
+          name,
+          isRequired: data ? effectiveRule(data as TFormData, mode) : false,
+        }
       } else {
         metadata[name] = {
           name,
@@ -242,16 +235,13 @@ export function buildFormSchema<
       }
     }
 
-    return metadata as Record<keyof T, FieldMetadata>
+    return metadata as Record<keyof TFormData, FieldMetadata>
   }
 
   // makeOptional wraps fields with z.preprocess, which causes z.input to infer
   // `unknown`. Cast the schema to carry the original field types so zodResolver
   // infers correct form data types — consumers don't need per-hook casts.
-  return [
-    schema as z.ZodType<FormDataFromValidators<T>, FormDataFromValidators<T>>,
-    { getFieldsMetadata, predicateDeps },
-  ]
+  return [schema as z.ZodType<TFormData, TFormData>, { getFieldsMetadata, predicateDeps }]
 }
 
 // ── Internal helpers ─────────────────────────────────────────────────

@@ -29,7 +29,7 @@ import type { FieldsMetadataConfig } from './buildFormSchema'
 export function useDeriveFieldsMetadata<TFormData, TRhfData extends FieldValues = FieldValues>(
   metadataConfig: FieldsMetadataConfig<TFormData>,
   control: Control<TRhfData>,
-): Record<keyof TFormData & string, FieldMetadata> {
+): Record<keyof TFormData, FieldMetadata> {
   const { predicateDeps } = metadataConfig
   const hasDeps = predicateDeps.length > 0
 
@@ -48,6 +48,6 @@ export function useDeriveFieldsMetadata<TFormData, TRhfData extends FieldValues 
     for (let i = 0; i < predicateDeps.length; i++) {
       data[predicateDeps[i]!] = (watchedValues as unknown[])[i]
     }
-    return metadataConfig.getFieldsMetadata(data)
+    return metadataConfig.getFieldsMetadata(data as Partial<TFormData>)
   }, [metadataConfig, hasDeps, predicateDeps, watchedValues])
 }
