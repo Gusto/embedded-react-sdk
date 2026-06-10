@@ -461,10 +461,7 @@ aside.theme-doc-sidebar-container {
 }
 
 .menu__list .menu__list .menu__list-item > .menu__link:hover:not(.menu__link--active),
-.menu__list
-  .menu__list
-  .menu__list-item-collapsible
-  > .menu__link:hover:not(.menu__link--active) {
+.menu__list .menu__list .menu__list-item-collapsible > .menu__link:hover:not(.menu__link--active) {
   color: #000000;
 }
 
@@ -653,6 +650,19 @@ code {
 }
 
 /* ── Breadcrumbs ── */
+
+nav.theme-doc-breadcrumbs {
+  padding-left: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.theme-doc-breadcrumbs .breadcrumbs__item:nth-child(2) .breadcrumbs__link {
+  padding-left: 0;
+}
+
+.theme-doc-breadcrumbs .breadcrumbs__item:first-child {
+  display: none;
+}
 
 .breadcrumbs__link {
   font-size: 0.8rem;
