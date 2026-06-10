@@ -1,9 +1,6 @@
 import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
-import { type TypeDocOptions } from 'typedoc'
-import { type PluginOptions } from 'docusaurus-plugin-typedoc'
 import { themes as prismThemes } from 'prism-react-renderer'
-import { baseOptions } from './typedoc.config'
 
 const config: Config = {
   title: 'Gusto Embedded',
@@ -28,20 +25,7 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        ...baseOptions,
-        sidebar: {
-          autoConfiguration: false,
-          pretty: false,
-          typescript: false,
-          deprecatedItemClassName: '',
-        },
-      } satisfies TypeDocOptions & PluginOptions,
-    ],
-  ],
+  plugins: [],
 
   themes: [
     [
