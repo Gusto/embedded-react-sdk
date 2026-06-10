@@ -399,7 +399,8 @@ html {
 }
 
 .menu__link:hover,
-.menu__list-item-collapsible:hover {
+.menu__list-item-collapsible:hover,
+.menu__list-item-collapsible--active {
   background: transparent;
 }
 
