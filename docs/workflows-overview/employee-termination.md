@@ -3,8 +3,6 @@ title: Employee Termination
 order: 4
 ---
 
-## Overview
-
 The Employee Termination workflow provides a complete experience for terminating employees. It guides users through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process.
 
 > **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.

@@ -1,5 +1,7 @@
 ---
 title: What is the GEP React SDK?
+slug: /
+displayed_sidebar: docs
 order: 0
 ---
 

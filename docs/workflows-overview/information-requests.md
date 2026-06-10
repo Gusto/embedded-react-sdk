@@ -3,8 +3,6 @@ title: Information Requests
 order: 8
 ---
 
-## Overview
-
 The Information Requests workflow surfaces outstanding information requests that Gusto has issued for a company (for example, a request for a missing tax document or identity verification artifact) and lets the user respond to them. Information requests can also block payroll processing, in which case they are surfaced inline within `Payroll.PayrollBlockerList`; this flow provides a dedicated, standalone surface for managing them.
 
 ### Implementation
