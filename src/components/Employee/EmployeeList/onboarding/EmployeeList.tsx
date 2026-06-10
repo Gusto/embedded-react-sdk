@@ -10,7 +10,12 @@ interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeLis
   showSkipButton?: boolean
 }
 
-function EmployeeListRoot({ companyId, onEvent, dictionary, showSkipButton = true }: EmployeeListProps) {
+function EmployeeListRoot({
+  companyId,
+  onEvent,
+  dictionary,
+  showSkipButton = true,
+}: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
 
