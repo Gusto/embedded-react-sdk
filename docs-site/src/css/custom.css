@@ -39,7 +39,8 @@ html {
   --ifm-toc-border-color: #ebedf0;
   --ifm-table-stripe-background: #f9f9fa;
   --ifm-table-border-color: #e0e0e0;
-  --ifm-hr-border-color: #ebedf0;
+  --ifm-hr-border-color: #d4d7dc;
+  --ifm-hr-background-color: #d4d7dc;
 
   --gusto-sidebar-category-color: #525860;
   --gusto-table-header-bg: #eef0f2;
@@ -79,6 +80,7 @@ html {
   --ifm-table-stripe-background: #2a2a2d;
   --ifm-table-border-color: #3a3a3d;
   --ifm-hr-border-color: #3a3a3d;
+  --ifm-hr-background-color: rgba(255, 255, 255, 0.12);
 
   --gusto-sidebar-category-color: #9a9da3;
   --gusto-table-header-bg: #2a2a2d;
@@ -380,18 +382,14 @@ html {
 
 aside.theme-doc-sidebar-container {
   border-right: none;
-  position: sticky;
-  top: var(--ifm-navbar-height);
-  height: calc(100vh - var(--ifm-navbar-height));
-  align-self: flex-start;
 }
 
 .theme-doc-sidebar-container > div > div {
-  padding-top: 0;
+  padding-top: calc(var(--ifm-navbar-height) + 3rem);
 }
 
 .theme-doc-sidebar-container .menu {
-  padding-top: 3rem;
+  padding-top: 0;
 }
 
 .theme-doc-toc-desktop {
@@ -552,6 +550,10 @@ aside.theme-doc-sidebar-container {
   padding: 0 1.5rem;
 }
 
+.markdown hr {
+  margin: 4.5rem 0;
+}
+
 .markdown h1:first-child {
   font-size: 2rem;
   font-weight: 700;
@@ -661,6 +663,10 @@ nav.theme-doc-breadcrumbs {
 }
 
 .theme-doc-breadcrumbs .breadcrumbs__item:first-child {
+  display: none;
+}
+
+nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
   display: none;
 }
 
