@@ -6,7 +6,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Getting Started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
-      collapsible: false,
+      collapsed: false,
       items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
     },
     {
@@ -22,7 +22,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Workflows',
       link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
-      collapsible: false,
+      collapsed: false,
       items: [
         {
           type: 'category',
