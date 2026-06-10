@@ -3,8 +3,6 @@ title: Authentication
 order: 0
 ---
 
-## Authentication
-
 To get started, you'll need to create a way to properly create and retrieve access tokens on behalf of your authenticated user from your application.
 
 Since there are a vast number of ways this might work for a partner, what we can suggest to get up and running is to implement a proxy server that handles translating requests from the SDK to the Gusto Embedded API.

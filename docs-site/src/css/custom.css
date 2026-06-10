@@ -386,11 +386,23 @@ aside.theme-doc-sidebar-container {
   align-self: flex-start;
 }
 
+.theme-doc-sidebar-container > div > div {
+  padding-top: 0;
+}
+
+.theme-doc-sidebar-container .menu {
+  padding-top: 3rem;
+}
+
 .theme-doc-toc-desktop {
   position: sticky;
-  top: calc(var(--ifm-navbar-height) + 1rem);
+  top: calc(var(--ifm-navbar-height) + 3rem);
   max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
   overflow-y: auto;
+}
+
+.docs-doc-page main[class*='docMainContainer_'] {
+  padding-top: 2rem;
 }
 
 .col.docItemCol_VOVn .table-of-contents,
@@ -448,9 +460,47 @@ aside.theme-doc-sidebar-container {
   color: var(--ifm-menu-color);
 }
 
+.menu__list .menu__list .menu__list-item > .menu__link:hover:not(.menu__link--active),
+.menu__list
+  .menu__list
+  .menu__list-item-collapsible
+  > .menu__link:hover:not(.menu__link--active) {
+  color: #000000;
+}
+
+[data-theme='dark']
+  .menu__list
+  .menu__list
+  .menu__list-item
+  > .menu__link:hover:not(.menu__link--active),
+[data-theme='dark']
+  .menu__list
+  .menu__list
+  .menu__list-item-collapsible
+  > .menu__link:hover:not(.menu__link--active) {
+  color: #ffffff;
+}
+
 .menu > .menu__list > .menu__list-item > .menu__list-item-collapsible > .menu__link {
   font-weight: 600;
   font-size: 0.875rem;
+}
+
+.menu
+  > .menu__list
+  > .menu__list-item
+  > .menu__list-item-collapsible
+  > .menu__link:not(.menu__link--active) {
+  color: #000000;
+}
+
+[data-theme='dark']
+  .menu
+  > .menu__list
+  > .menu__list-item
+  > .menu__list-item-collapsible
+  > .menu__link:not(.menu__link--active) {
+  color: #ffffff;
 }
 
 .menu > .menu__list > .menu__list-item + .menu__list-item {
@@ -585,6 +635,10 @@ code {
 
 /* ── Table of contents (right sidebar) ── */
 
+.table-of-contents__link:not(.table-of-contents__link--active) {
+  color: var(--gusto-sidebar-category-color);
+}
+
 .table-of-contents__link--active {
   color: var(--ifm-color-primary);
   font-weight: 500;
@@ -618,6 +672,7 @@ code {
 
 .footer {
   background-color: transparent;
+  margin-top: 3rem;
 }
 
 .footer__links {

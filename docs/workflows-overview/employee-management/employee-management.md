@@ -3,8 +3,6 @@ title: Employee Management
 order: 0
 ---
 
-## Overview
-
 The Employee Management namespace provides components for viewing and editing an employee's information after onboarding is complete. The headline entry point is the Employee Dashboard — a tabbed read/edit surface that covers basic details, job & pay, taxes, and documents — but every section of that dashboard is also exported individually so it can be composed into a custom layout, rendered in isolation, or replaced with a custom UI built on top of the same data hooks.
 
 ### Implementation
