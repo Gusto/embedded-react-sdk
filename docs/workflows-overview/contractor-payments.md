@@ -3,8 +3,6 @@ title: Contractor Payments
 order: 3
 ---
 
-## Overview
-
 The Contractor Payments workflow provides components for creating, managing, and viewing contractor payment groups. These components can be used individually or composed into a complete payment workflow through the `Contractor.PaymentFlow` component.
 
 ### Implementation

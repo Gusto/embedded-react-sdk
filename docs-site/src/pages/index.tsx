@@ -303,7 +303,7 @@ function HeroSection() {
             <Link className={styles.heroPrimary} to="/docs/getting-started">
               Get Started
             </Link>
-            <Link className={styles.heroSecondary} to="/docs/what-is-the-gep-react-sdk">
+            <Link className={styles.heroSecondary} to="/docs/">
               Learn More
             </Link>
           </div>

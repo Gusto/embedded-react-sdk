@@ -64,14 +64,13 @@ const config: Config = {
     },
     navbar: {
       logo: {
-        alt: 'Gusto Ember',
+        alt: 'Gusto Embedded',
         src: 'img/gdev-logo-light.svg',
         srcDark: 'img/gdev-logo-dark.svg',
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'docs',
+          to: '/docs/',
           position: 'left',
           label: 'Docs',
         },
@@ -110,7 +109,7 @@ const config: Config = {
         {
           title: 'Get Started',
           items: [
-            { label: 'What is the SDK?', to: '/docs/what-is-the-gep-react-sdk' },
+            { label: 'What is the SDK?', to: '/docs/' },
             { label: 'Getting Started', to: '/docs/getting-started' },
             { label: 'Authentication', to: '/docs/getting-started/authentication' },
           ],

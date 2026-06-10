@@ -3,8 +3,6 @@ title: Payroll Processing
 order: 3
 ---
 
-## Overview
-
 The Run Payroll workflow provides a complete experience for running payroll for a company. It guides users through selecting a payroll, configuring employee compensation, reviewing payroll details, and submitting the payroll for processing.
 
 ### Implementation
