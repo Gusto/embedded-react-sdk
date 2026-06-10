@@ -46,12 +46,18 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
           onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
         }}
         onCancelSelfOnboarding={async (employeeId: string) => {
-          const result = await employeeList.actions.onCancelSelfOnboarding(employeeId)
-          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, result)
+          const onboardingStatus = await employeeList.actions.onCancelSelfOnboarding(employeeId)
+          if (!onboardingStatus) return
+          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, onboardingStatus)
         }}
         onReview={async (employeeId: string) => {
-          const result = await employeeList.actions.onReview(employeeId)
-          onEvent(componentEvents.EMPLOYEE_UPDATE, result)
+          const onboardingStatus = await employeeList.actions.onReview(employeeId)
+          if (!onboardingStatus) return
+          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, onboardingStatus)
+          onEvent(componentEvents.EMPLOYEE_UPDATE, {
+            employeeId,
+            onboardingStatus: onboardingStatus.onboardingStatus,
+          })
         }}
         onAddEmployee={handleAddEmployee}
         onSkip={handleSkip}

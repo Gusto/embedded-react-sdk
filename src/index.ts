@@ -455,6 +455,17 @@ export type {
   PreparerCheckboxFieldProps,
 } from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 
+// Domain data hooks - Employee
+export { useEmployeeList } from '@/components/Employee/EmployeeList/shared'
+export type {
+  UseEmployeeListProps,
+  UseEmployeeListResult,
+  UseEmployeeListReady,
+  EmployeeType,
+  EmployeeAction,
+  EmployeeWithActions,
+} from '@/components/Employee/EmployeeList/shared'
+
 // Domain hooks - Company
 export {
   usePayScheduleForm,

@@ -2,8 +2,8 @@ export {
   useEmployeeList,
   type EmployeeAction,
   type EmployeeWithActions,
-  type EmployeeActionCallbacks,
   type EmployeeType,
   type UseEmployeeListProps,
   type UseEmployeeListResult,
+  type UseEmployeeListReady,
 } from './useEmployeeList'
