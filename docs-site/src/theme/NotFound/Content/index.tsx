@@ -20,7 +20,7 @@ export default function NotFoundContent(): ReactNode {
           <Link to={homeUrl} className={styles.homeLink}>
             Go to Home
           </Link>
-          <Link to="/docs/what-is-the-gep-react-sdk" className={styles.docsLink}>
+          <Link to="/docs/" className={styles.docsLink}>
             Browse Docs
           </Link>
         </div>
