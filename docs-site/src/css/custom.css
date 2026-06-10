@@ -58,10 +58,10 @@ html {
   --ifm-color-primary-lighter: #ffa89b;
   --ifm-color-primary-lightest: #ffd6cf;
 
-  --ifm-background-color: #1b1b1d;
-  --ifm-background-surface-color: #242427;
+  --ifm-background-color: #000000;
+  --ifm-background-surface-color: #000000;
 
-  --ifm-navbar-background-color: #18181a;
+  --ifm-navbar-background-color: #000000;
   --ifm-navbar-link-color: #ffffff;
   --ifm-navbar-search-input-background-color: rgba(255, 255, 255, 0.08);
   --ifm-navbar-search-input-color: #ffffff;
@@ -88,10 +88,28 @@ html {
   --docusaurus-highlighted-code-line-bg: rgba(241, 94, 73, 0.15);
 }
 
+[data-theme='dark'] html,
+[data-theme='dark'] body,
+[data-theme='dark'] #__docusaurus,
+[data-theme='dark'] .main-wrapper {
+  background-color: #000000;
+}
+
+.main-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 /* ── Navbar ── */
 
 .navbar {
   border-bottom: 1px solid #ebedf0;
+}
+
+.navbar__inner {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 [data-theme='dark'] .navbar {
@@ -360,8 +378,24 @@ html {
 
 /* ── Sidebar ── */
 
-.theme-doc-sidebar-container {
-  border-right: 1px solid var(--ifm-toc-border-color);
+aside.theme-doc-sidebar-container {
+  border-right: none;
+  position: sticky;
+  top: var(--ifm-navbar-height);
+  height: calc(100vh - var(--ifm-navbar-height));
+  align-self: flex-start;
+}
+
+.theme-doc-toc-desktop {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+  overflow-y: auto;
+}
+
+.col.docItemCol_VOVn .table-of-contents,
+.theme-doc-toc-desktop .table-of-contents {
+  border-left: none;
 }
 
 .menu__link {
@@ -466,6 +500,10 @@ html {
 }
 
 /* ── Content ── */
+
+.theme-doc-markdown {
+  padding: 0 1.5rem;
+}
 
 .markdown h1:first-child {
   font-size: 2rem;
@@ -703,22 +741,15 @@ code {
   --ifm-alert-border-color: rgba(250, 56, 56, 0.3);
 }
 
-/* ── Scrollbar (dark mode) ── */
+/* ── Sidebar scrollbars ── */
 
-[data-theme='dark'] ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.theme-doc-sidebar-container .menu,
+.theme-doc-toc-desktop {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(27, 27, 29, 0.25) transparent;
 }
 
-[data-theme='dark'] ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-[data-theme='dark'] ::-webkit-scrollbar-thumb {
-  background: #4a4a4d;
-  border-radius: 4px;
-}
-
-[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
-  background: #5a5a5d;
+[data-theme='dark'] .theme-doc-sidebar-container .menu,
+[data-theme='dark'] .theme-doc-toc-desktop {
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
