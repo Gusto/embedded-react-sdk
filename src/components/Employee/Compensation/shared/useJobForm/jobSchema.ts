@@ -6,10 +6,21 @@ import {
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceToISODate, coerceStringBoolean } from '@/partner-hook-utils/form/preprocessors'
 
+/**
+ * Validation error codes emitted by the `useJobForm` schema. Map these to localized
+ * error text via the `validationMessages` prop on each field.
+ *
+ * @public
+ */
 export const JobErrorCodes = {
   REQUIRED: 'REQUIRED',
 } as const
 
+/**
+ * Union of validation error code values emitted by `useJobForm` fields.
+ *
+ * @public
+ */
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes]
 
 const fieldValidators = {
@@ -21,9 +32,24 @@ const fieldValidators = {
   stateWcClassCode: z.string(),
 }
 
+/**
+ * Shape of the form values managed by `useJobForm` — title, hire date, S-Corp 2%
+ * shareholder flag, and the two Washington state workers' compensation fields.
+ * Use as the `defaultValues` shape passed into `useJobForm`.
+ *
+ * @public
+ */
 export type JobFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+
+/**
+ * Shape of the validated submission payload produced by the `useJobForm` schema
+ * after preprocessing (e.g. hireDate ISO coercion, stateWcCovered string-to-boolean).
+ * Identical in shape to {@link JobFormData}.
+ *
+ * @public
+ */
 export type JobFormOutputs = JobFormData
 
 const requiredFieldsConfig = {
@@ -38,6 +64,28 @@ const requiredFieldsConfig = {
   stateWcClassCode: data => String(data.stateWcCovered) === 'true',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
+/**
+ * Override which fields are required on each `useJobForm` mode. Pass via the
+ * `optionalFieldsToRequire` prop on `useJobForm` to promote otherwise-optional
+ * fields to required for a given mode.
+ *
+ * @remarks
+ * `title` and `hireDate` default to required on create and optional on update;
+ * `twoPercentShareholder` and `stateWcCovered` default to optional in both modes.
+ * `stateWcClassCode` is automatically required whenever `stateWcCovered` is `true`
+ * regardless of this setting.
+ *
+ * @public
+ *
+ * @example
+ * ```ts
+ * const job = useJobForm({
+ *   employeeId,
+ *   jobId,
+ *   optionalFieldsToRequire: { update: ['title', 'hireDate'] },
+ * })
+ * ```
+ */
 export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>
 
 interface JobSchemaOptions {
@@ -61,6 +109,18 @@ interface JobSchemaOptions {
   withTitleField?: boolean
 }
 
+/**
+ * Builds the Zod schema and field metadata used by `useJobForm`. Resolves which
+ * fields are required for the given mode, applies any `optionalFieldsToRequire`
+ * overrides, and drops `hireDate` / `title` from the validated shape when their
+ * corresponding `withHireDateField` / `withTitleField` flags are `false`.
+ *
+ * @param options - Schema configuration including `mode`, `optionalFieldsToRequire`,
+ *   `withHireDateField`, and `withTitleField`.
+ * @returns A tuple of the Zod schema and the derived field metadata config for
+ *   driving `useJobForm`'s `fieldsMetadata`.
+ * @public
+ */
 export function createJobSchema(options: JobSchemaOptions = {}) {
   const {
     mode = 'create',

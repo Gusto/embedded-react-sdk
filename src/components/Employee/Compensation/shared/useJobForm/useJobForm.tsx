@@ -40,6 +40,15 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { WA_RISK_CLASS_CODES, type WARiskClassCode } from '@/models/WA_RISK_CODES'
 
+/**
+ * Submit-time overrides for `useJobForm.actions.onSubmit`. Use these when one or
+ * more values aren't known at hook construction — typically because they're
+ * produced earlier in the same submit chain (e.g. the employee's ID after a
+ * preceding `useEmployeeDetailsForm` submit) or derived from external context
+ * (e.g. an onboarding `startDate`).
+ *
+ * @public
+ */
 export interface JobSubmitOptions {
   /** Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. */
   employeeId?: string
@@ -53,13 +62,23 @@ export interface JobSubmitOptions {
   hireDate?: string
 }
 
+/**
+ * Configuration options for {@link useJobForm}.
+ *
+ * @public
+ */
 export interface UseJobFormProps {
+  /** UUID of the employee whose job is being created or updated. Optional when the ID is created later in the same submit chain — pass it via {@link JobSubmitOptions.employeeId} instead. */
   employeeId?: string
   /** Present → update mode (PUT /v1/jobs/:id with `version`). Omitted → create mode (POST /v1/employees/:id/jobs). */
   jobId?: string
+  /** Promote otherwise-optional fields to required for a given mode. See {@link JobOptionalFieldsToRequire}. */
   optionalFieldsToRequire?: JobOptionalFieldsToRequire
+  /** Pre-fill form values. Server data takes precedence on update mode. */
   defaultValues?: Partial<JobFormData>
+  /** Passed through to react-hook-form's `mode`; defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when coordinating multiple forms through `composeSubmitHandler`. */
   shouldFocusError?: boolean
   /**
    * When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes
@@ -83,25 +102,48 @@ export interface UseJobFormProps {
   withTitleField?: boolean
 }
 
+/**
+ * Field components exposed by `useJobForm.form.Fields`. Each entry is either the
+ * field component to render or `undefined` when the field doesn't apply to the
+ * current company / employee context (e.g. `TwoPercentShareholder` is only
+ * present for S-Corp companies). Check truthiness before rendering.
+ *
+ * @public
+ */
 export interface JobFormFields {
+  /** Text input for the job title. `undefined` when `withTitleField: false`. */
   Title: typeof JobTitleField | undefined
+  /** Date picker for the hire date. `undefined` when `withHireDateField: false`. */
   HireDate: typeof HireDateField | undefined
+  /** Checkbox for the S-Corp 2% shareholder flag. `undefined` when the company is not taxable as an S-Corp. */
   TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
+  /** Radio group for Washington state workers' comp coverage. `undefined` when the employee's active work address is not in WA. */
   StateWcCovered: typeof StateWcCoveredField | undefined
+  /** Select for the Washington state workers' comp risk class code. `undefined` when WA WC doesn't apply or when `stateWcCovered` is `false`. */
   StateWcClassCode: typeof StateWcClassCodeField | undefined
 }
 
+/**
+ * The ready (non-loading) branch of the `useJobForm` return value. Carries the
+ * loaded job and supporting entities, the bound field components, submission
+ * action, and `errorHandling` aggregated across the hook's underlying queries.
+ *
+ * @public
+ */
 export interface UseJobFormReady extends BaseFormHookReady<
   FieldsMetadata,
   JobFormData,
   JobFormFields
 > {
+  /** Loaded entities backing the form, plus derived booleans for conditional field rendering. */
   data: {
     /** The job row loaded for update; `null` in create mode. */
     currentJob: Job | null
     /** All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. */
     jobs: Job[] | undefined
+    /** The employee whose job is being edited. */
     employee: Employee | null
+    /** The employee's active work address, used to determine state-specific fields. */
     currentWorkAddress: EmployeeWorkAddress | null
     /** True when the company is taxable as an S-Corp; partners use this to decide whether to render `TwoPercentShareholder`. */
     showTwoPercentShareholder: boolean
@@ -113,7 +155,9 @@ export interface UseJobFormReady extends BaseFormHookReady<
      */
     showStateWc: boolean
   }
+  /** Submission status. `isPending` covers both the primary create/update and any post-PUT corrective work on secondary compensations. `mode` reports the current verb. */
   status: { isPending: boolean; mode: 'create' | 'update' }
+  /** Action callbacks; `onSubmit` validates and PUTs/POSTs the job, returning the saved entity. */
   actions: {
     onSubmit: (options?: JobSubmitOptions) => Promise<HookSubmitResult<Job> | undefined>
   }
@@ -124,6 +168,71 @@ function findJob(jobs: Job[] | undefined, jobId: string | undefined): Job | null
   return jobs.find(j => j.uuid === jobId) ?? null
 }
 
+/**
+ * Headless form hook for creating or updating an employee's job — title, hire date,
+ * S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
+ * Companion hook to `useCompensationForm`; jobs and their compensations are separate
+ * entities in the Gusto API and this hook focuses exclusively on the job side.
+ *
+ * @remarks
+ * Auto-routes between create and update based on `jobId`: present →
+ * `PUT /v1/jobs/:jobId` (with `version`); absent → `POST /v1/employees/:employeeId/jobs`.
+ * Creating a job auto-creates a stub compensation; on the onboarding stub-fill chain,
+ * capture `currentCompensationUuid` and the comp's `version` from the submit result
+ * and thread them into `useCompensationForm.actions.onSubmit` as `jobId`,
+ * `compensationId`, and `compensationVersion` to update the stub.
+ *
+ * @param input - Configuration options for the form. See {@link UseJobFormProps}.
+ * @returns A {@link HookLoadingResult} while underlying queries load, or a
+ *   {@link UseJobFormReady} once data is ready with bound `Fields`, `actions.onSubmit`,
+ *   and `errorHandling`.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useJobForm, SDKFormProvider, type UseJobFormReady } from '@gusto/embedded-react-sdk'
+ *
+ * function JobPage({ employeeId, jobId }: { employeeId: string; jobId?: string }) {
+ *   const job = useJobForm({ employeeId, jobId })
+ *   if (job.isLoading) return <div>Loading...</div>
+ *   return <JobFormReady job={job} />
+ * }
+ *
+ * function JobFormReady({ job }: { job: UseJobFormReady }) {
+ *   const { Fields } = job.form
+ *   return (
+ *     <SDKFormProvider formHookResult={job}>
+ *       <form
+ *         onSubmit={async e => {
+ *           e.preventDefault()
+ *           await job.actions.onSubmit()
+ *         }}
+ *       >
+ *         {Fields.Title && (
+ *           <Fields.Title label="Job title" validationMessages={{ REQUIRED: 'Job title is required' }} />
+ *         )}
+ *         {Fields.HireDate && (
+ *           <Fields.HireDate label="Hire date" validationMessages={{ REQUIRED: 'Hire date is required' }} />
+ *         )}
+ *         {Fields.TwoPercentShareholder && (
+ *           <Fields.TwoPercentShareholder label="Employee is a 2% shareholder" />
+ *         )}
+ *         {Fields.StateWcCovered && <Fields.StateWcCovered label="Workers' compensation coverage" />}
+ *         {Fields.StateWcClassCode && (
+ *           <Fields.StateWcClassCode
+ *             label="Risk class code"
+ *             validationMessages={{ REQUIRED: 'Please select a risk class code' }}
+ *           />
+ *         )}
+ *         <button type="submit" disabled={job.status.isPending}>
+ *           {job.status.mode === 'create' ? 'Add job' : 'Save job'}
+ *         </button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useJobForm({
   employeeId,
   jobId,
@@ -448,5 +557,21 @@ export function useJobForm({
   }
 }
 
+/**
+ * Discriminated union returned by {@link useJobForm}: either a loading state or
+ * a fully-loaded {@link UseJobFormReady}. Narrow on `isLoading` to access form
+ * data and actions.
+ *
+ * @public
+ */
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady
+
+/**
+ * Per-field metadata exposed by `useJobForm.form.fieldsMetadata` — `isRequired`,
+ * `isDisabled`, validation rules, and options for choice fields. Drives the
+ * bound `Fields.*` components but also available directly for custom field
+ * renderings.
+ *
+ * @public
+ */
 export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata']
