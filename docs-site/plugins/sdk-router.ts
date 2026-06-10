@@ -146,24 +146,39 @@ export function load(app: Application): void {
 
   // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,
   // so priority 0 (default) runs before GroupPlugin's -100.
+  //
+  // Auto-stamps @group tags so GroupPlugin places each member in the right section:
+  //   Components in a namespace  → Flow Components (*Flow) or Block Components (other)
+  //   Components at project level → Components
+  //   Hooks ending with Form      → Form Hooks  (Data Hooks / Utility Hooks come from JSDoc)
+  //   Other hooks                 → Hooks (fallback)
+  // Skips reflections that already carry an explicit @group tag from their JSDoc.
   app.converter.on(
     Converter.EVENT_RESOLVE_END,
     context => {
       for (const reflection of Object.values(context.project.reflections)) {
         if (!(reflection instanceof DeclarationReflection)) continue
         if (reflection.kind !== ReflectionKind.Function) continue
+        if (reflection.comment?.blockTags.some(t => t.tag === '@group')) continue
 
+        let group: string
         if (/^[A-Z]/.test(reflection.name)) {
-          if (!reflection.comment) reflection.comment = new Comment()
-          reflection.comment.blockTags.push(
-            new CommentTag('@group', [{ kind: 'text', text: 'Components' }]),
-          )
+          const inNamespace =
+            reflection.parent instanceof DeclarationReflection &&
+            reflection.parent.kind === ReflectionKind.Namespace
+          group = inNamespace
+            ? /Flow$/.test(reflection.name)
+              ? 'Flow Components'
+              : 'Block Components'
+            : 'Components'
         } else if (/^use[A-Z]/.test(reflection.name)) {
-          if (!reflection.comment) reflection.comment = new Comment()
-          reflection.comment.blockTags.push(
-            new CommentTag('@group', [{ kind: 'text', text: 'Hooks' }]),
-          )
+          group = /Form$/.test(reflection.name) ? 'Form Hooks' : 'Hooks'
+        } else {
+          continue
         }
+
+        if (!reflection.comment) reflection.comment = new Comment()
+        reflection.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: group }]))
       }
     },
     0,
@@ -247,7 +262,7 @@ function isComponent(reflection: DeclarationReflection): boolean {
   return (
     reflection.comment?.blockTags.some(
       tag =>
-        tag.tag === '@group' && Comment.combineDisplayParts(tag.content).trim() === 'Components',
+        tag.tag === '@group' && /Components$/.test(Comment.combineDisplayParts(tag.content).trim()),
     ) ?? false
   )
 }
@@ -304,7 +319,9 @@ class SDKThemeContext extends MarkdownThemeContext {
       ...this.partials,
       memberTitle: (model: DeclarationReflection) => {
         const title = origMemberTitle(model)
-        return isComponent(model) ? title.replace(/\(\)$/, '') : title
+        // Strip trailing () for components. Deprecated titles are wrapped in ~~...~~
+        // so the () sits before the closing ~~ rather than at the very end.
+        return isComponent(model) ? title.replace(/\(\)(~~)?$/, (_, tilde = '') => tilde) : title
       },
       signature: (model: SignatureReflection, options: Parameters<typeof origSignature>[1]) => {
         const result = origSignature(model, options)
@@ -418,8 +435,13 @@ class SDKThemeContext extends MarkdownThemeContext {
 
 // Group order mirrors typedoc.config.ts so synthetic pages stay consistent.
 const SYNTHETIC_GROUP_ORDER = [
-  'Hooks',
+  'Flow Components',
+  'Block Components',
   'Components',
+  'Form Hooks',
+  'Data Hooks',
+  'Utility Hooks',
+  'Hooks',
   'Functions',
   'Variables',
   'Interfaces',

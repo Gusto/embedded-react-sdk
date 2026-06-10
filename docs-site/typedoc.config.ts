@@ -8,7 +8,24 @@ export const baseOptions = {
   entryPoints: ['../src/index.ts'],
   out: '../docs/api',
 
-  groupOrder: ['Namespaces', 'Components', 'Hooks', 'Functions', 'Variables', 'Interfaces', '*'],
+  groupOrder: [
+    'Domains',
+    'Namespaces',
+
+    'Flow Components',
+    'Block Components',
+    'Components',
+
+    'Form Hooks',
+    'Data Hooks',
+    'Utility Hooks',
+    'Hooks',
+
+    'Functions',
+    'Variables',
+    'Interfaces',
+    '*',
+  ],
 
   indexFormat: 'table',
   propertyMembersFormat: 'table',
