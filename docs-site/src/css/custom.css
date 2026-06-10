@@ -443,7 +443,8 @@ html {
   border-left: 1px solid var(--ifm-toc-border-color);
 }
 
-.theme-doc-sidebar-item-category:not(:has(> .menu__list-item-collapsible > .menu__link--sublist)) > .menu__list {
+.theme-doc-sidebar-item-category:not(:has(> .menu__list-item-collapsible > .menu__link--sublist))
+  > .menu__list {
   padding-left: 0;
   margin-left: 0;
   border-left: none;
