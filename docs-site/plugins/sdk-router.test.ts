@@ -7,12 +7,18 @@ import {
   ParameterReflection,
   ProjectReflection,
   ReferenceType,
+  ReflectionGroup,
   ReflectionKind,
   SignatureReflection,
   SourceReference,
   FileRegistry,
 } from 'typedoc'
-import { componentPropsInterfaces, domainFromSources, SDKRouter } from './sdk-router'
+import {
+  componentPropsInterfaces,
+  domainFromSources,
+  isHookSourceFile,
+  SDKRouter,
+} from './sdk-router'
 
 let app: Application
 
@@ -73,6 +79,41 @@ describe('domainFromSources', () => {
     const r = new DeclarationReflection('foo', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/utils/helpers.ts')
     expect(domainFromSources(r)).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isHookSourceFile
+// ---------------------------------------------------------------------------
+
+describe('isHookSourceFile', () => {
+  it('returns true for a file named useCamelCase.ts', () => {
+    const r = new DeclarationReflection('UseBankFormProps', ReflectionKind.Interface)
+    r.sources = sourceRef('/workspace/src/components/Employee/PaymentMethod/shared/useBankForm.ts')
+    expect(isHookSourceFile(r)).toBe(true)
+  })
+
+  it('returns true for a deeply nested hook file', () => {
+    const r = new DeclarationReflection('HomeAddressFields', ReflectionKind.TypeAlias)
+    r.sources = sourceRef('/workspace/src/components/Employee/HomeAddress/useHomeAddressForm.ts')
+    expect(isHookSourceFile(r)).toBe(true)
+  })
+
+  it('returns false for a non-hook file name', () => {
+    const r = new DeclarationReflection('SomeUtil', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/components/Employee/utils/helpers.ts')
+    expect(isHookSourceFile(r)).toBe(false)
+  })
+
+  it('returns false for a file starting with use but no uppercase letter', () => {
+    const r = new DeclarationReflection('useless', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/components/Employee/useless.ts')
+    expect(isHookSourceFile(r)).toBe(false)
+  })
+
+  it('returns false when sources are absent', () => {
+    const r = new DeclarationReflection('UseBankFormProps', ReflectionKind.Interface)
+    expect(isHookSourceFile(r)).toBe(false)
   })
 })
 
@@ -307,6 +348,46 @@ describe('buildPages — domain hooks page routing', () => {
     expect(urls).toContain('Employee/hooks.md')
     expect(urls).toContain('Company/hooks.md')
   })
+
+  it('domain export from a non-hook file is NOT routed to hooks.md', () => {
+    const project = makeProject()
+    const helper = makeChild(project, 'formatDate', ReflectionKind.Function)
+    helper.sources = sourceRef('/workspace/src/components/Employee/utils/helpers.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).not.toContain('Employee/hooks.md')
+    // Falls through to project index anchor instead
+    expect(router.hasOwnDocument(helper)).toBe(false)
+  })
+
+  it('hook function without a domain source does not create a hooks page', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useCustomHook', ReflectionKind.Function)
+    // No sources — domainFromSources returns null
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).not.toContain('Employee/hooks.md')
+    expect(router.hasOwnDocument(hook)).toBe(false)
+  })
+
+  it('handled hooks are removed from project groups so they do not also render on the project index', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
+    hook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
+
+    // Simulate GroupPlugin having placed the hook into a project group
+    const group = new ReflectionGroup('Hooks', hook)
+    project.groups = [group]
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    expect(project.groups?.flatMap(g => g.children)).not.toContain(hook)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -456,6 +537,33 @@ describe('componentPropsInterfaces', () => {
     expect(result.has(propsA)).toBe(true)
     expect(result.has(propsB)).toBe(true)
     expect(result.size).toBe(2)
+  })
+
+  it('works at the project level — returns Props interface for a top-level Component', () => {
+    const project = makeProject()
+    const component = makeChild(project, 'ApiProvider', ReflectionKind.Function)
+    markAsComponent(component)
+    const propsIface = makeChild(project, 'ApiProviderProps', ReflectionKind.Interface)
+    attachPropsSignature(component, propsIface, project)
+
+    const result = componentPropsInterfaces(project)
+
+    expect(result.has(propsIface)).toBe(true)
+    expect(result.size).toBe(1)
+  })
+
+  it('does not include project-level Props whose parent is a namespace, not the project', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const component = makeChild(project, 'ApiProvider', ReflectionKind.Function)
+    markAsComponent(component)
+    // Props interface lives in a namespace, not the project
+    const nsIface = makeChild(ns, 'ApiProviderProps', ReflectionKind.Interface)
+    attachPropsSignature(component, nsIface, project)
+
+    const result = componentPropsInterfaces(project)
+
+    expect(result.size).toBe(0)
   })
 })
 

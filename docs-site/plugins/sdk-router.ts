@@ -72,6 +72,19 @@ export function domainFromSources(reflection: Reflection): string | null {
   return m?.[1] ?? null
 }
 
+/**
+ * Return true if the reflection's source file is a hook file —
+ * i.e. the file name (last path segment) matches useCamelCase.ts.
+ * Used to co-locate companion types/interfaces/enums onto the domain hooks page.
+ */
+export function isHookSourceFile(reflection: Reflection): boolean {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return false
+  const fp = source.fullFileName ?? source.fileName ?? ''
+  const fileName = fp.split(/[/\\]/).pop() ?? ''
+  return /^use[A-Z]/.test(fileName)
+}
+
 export function load(app: Application): void {
   app.renderer.defineRouter('sdk-router', SDKRouter)
   app.renderer.defineTheme('sdk-theme', SDKTheme)
@@ -135,14 +148,18 @@ export function load(app: Application): void {
     Converter.EVENT_RESOLVE_END,
     context => {
       for (const reflection of Object.values(context.project.reflections)) {
-        if (
-          reflection instanceof DeclarationReflection &&
-          reflection.kind === ReflectionKind.Function &&
-          /^[A-Z]/.test(reflection.name)
-        ) {
+        if (!(reflection instanceof DeclarationReflection)) continue
+        if (reflection.kind !== ReflectionKind.Function) continue
+
+        if (/^[A-Z]/.test(reflection.name)) {
           if (!reflection.comment) reflection.comment = new Comment()
           reflection.comment.blockTags.push(
             new CommentTag('@group', [{ kind: 'text', text: 'Components' }]),
+          )
+        } else if (/^use[A-Z]/.test(reflection.name)) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(
+            new CommentTag('@group', [{ kind: 'text', text: 'Hooks' }]),
           )
         }
       }
@@ -151,8 +168,9 @@ export function load(app: Application): void {
   )
 
   // Must run after GroupPlugin (priority -100) so that groups already exist.
-  // Remove component-props interfaces from their namespace's groups — they are
+  // Remove component-props interfaces from their parent's groups — they are
   // rendered inline inside their component's Parameters section instead.
+  // Applies at both namespace level and project level.
   app.converter.on(
     Converter.EVENT_RESOLVE_END,
     context => {
@@ -169,23 +187,43 @@ export function load(app: Application): void {
         }
         reflection.groups = reflection.groups.filter(g => g.children.length > 0)
       }
+
+      // Also remove component-props from the project's own groups so they don't
+      // render as standalone Interfaces on the project index page.
+      const projectPropsSet = componentPropsInterfaces(context.project)
+      if (projectPropsSet.size > 0) {
+        for (const group of context.project.groups ?? []) {
+          group.children = group.children.filter(
+            c => !projectPropsSet.has(c as DeclarationReflection),
+          )
+        }
+        if (context.project.groups) {
+          context.project.groups = context.project.groups.filter(g => g.children.length > 0)
+        }
+      }
     },
     -200,
   )
 }
 
 /**
- * Return the set of interfaces in `ns` that are used as the props type for
- * an exported Component in the same namespace. These are inlined into their
+ * Return the set of interfaces in `parent` that are used as the props type for
+ * an exported Component in the same parent. These are inlined into their
  * component's Parameters section rather than rendered as standalone entries.
  *
  * Only interfaces whose type is referenced directly by a Component signature
  * parameter qualify — this intentionally excludes standalone public interfaces
- * like `AlertProps` that live in the namespace but aren't component props.
+ * like `AlertProps` that live in the parent but aren't component props.
+ *
+ * Accepts both namespace-level and project-level parents so the same filtering
+ * can be applied wherever Components are exported.
  */
-export function componentPropsInterfaces(ns: DeclarationReflection): Set<DeclarationReflection> {
+export function componentPropsInterfaces(
+  parent: DeclarationReflection | ProjectReflection,
+): Set<DeclarationReflection> {
   const result = new Set<DeclarationReflection>()
-  for (const child of ns.children ?? []) {
+  for (const child of parent.children ?? []) {
+    if (!(child instanceof DeclarationReflection)) continue
     if (!isComponent(child)) continue
     for (const sig of child.signatures ?? []) {
       for (const param of sig.parameters ?? []) {
@@ -193,7 +231,7 @@ export function componentPropsInterfaces(ns: DeclarationReflection): Set<Declara
           param.type instanceof ReferenceType &&
           param.type.reflection instanceof DeclarationReflection &&
           param.type.reflection.kind === ReflectionKind.Interface &&
-          param.type.reflection.parent === ns
+          param.type.reflection.parent === parent
         ) {
           result.add(param.type.reflection)
         }
@@ -391,8 +429,14 @@ export class SDKRouter extends MemberRouter {
     const hooksByDomain = new Map<string, DeclarationReflection[]>()
 
     for (const child of project.children ?? []) {
-      // Namespaces have their own routing; route everything else by source domain.
       if (child.kind === ReflectionKind.Namespace) continue
+
+      // Route to the domain hooks page only for hooks (use[A-Z] functions) and
+      // companion exports from hook files (useCamelCase.ts). Other domain exports
+      // fall through to the project index as anchors.
+      const isHookFn = child.kind === ReflectionKind.Function && /^use[A-Z]/.test(child.name)
+      if (!isHookFn && !isHookSourceFile(child)) continue
+
       const domain = domainFromSources(child)
       if (domain) {
         const bucket = hooksByDomain.get(domain) ?? []
@@ -400,6 +444,19 @@ export class SDKRouter extends MemberRouter {
         hooksByDomain.set(domain, bucket)
         this.handledHooks.add(child)
       }
+    }
+
+    // Remove reflections routed to synthetic domain pages from the project's
+    // groups so they don't also render inline on the project index page.
+    // GroupPlugin populates these groups before buildPages runs, so we strip
+    // the handled members here rather than in a converter event.
+    for (const group of project.groups ?? []) {
+      group.children = group.children.filter(
+        c => !this.handledHooks.has(c as DeclarationReflection),
+      )
+    }
+    if (project.groups) {
+      project.groups = project.groups.filter(g => g.children.length > 0)
     }
 
     // Sources were only needed for routing; clear them before rendering so
