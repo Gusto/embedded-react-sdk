@@ -33,6 +33,7 @@ function MyApp() {
 | onEvent Required        |         |         | See events table for each subcomponent to see available events.                                                                                                      |
 | isSelfOnboardingEnabled | boolean | true    | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. |
 | withEmployeeI9          | boolean | false   | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements.                                    |
+| showSkipButton          | boolean | true    | When false, hides the empty-state "I'll do this later" button on the employee list step.                                                                             |
 
 ## Using Employee Subcomponents
 
@@ -71,10 +72,11 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type   | Description                                  |
-| ------------------ | ------ | -------------------------------------------- |
-| companyId Required | string | The associated company identifier.           |
-| onEvent Required   |        | See events table below for available events. |
+| Name               | Type    | Default | Description                                                                         |
+| ------------------ | ------- | ------- | ----------------------------------------------------------------------------------- |
+| companyId Required | string  |         | The associated company identifier.                                                  |
+| onEvent Required   |         |         | See events table below for available events.                                        |
+| showSkipButton     | boolean | true    | When false, hides the empty-state "I'll do this later" button on the employee list. |
 
 #### Events
 

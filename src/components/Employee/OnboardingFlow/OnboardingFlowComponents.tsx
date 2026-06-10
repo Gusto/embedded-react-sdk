@@ -15,8 +15,14 @@ export {
 } from '../OnboardingExecutionFlow/OnboardingExecutionFlowComponents'
 
 export const EmployeeListContextual = () => {
-  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <EmployeeList companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, showSkipButton } = useFlow<OnboardingContextInterface>()
+  return (
+    <EmployeeList
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      showSkipButton={showSkipButton}
+    />
+  )
 }
 
 export function OnboardingExecutionFlowContextual() {

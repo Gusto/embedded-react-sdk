@@ -7,9 +7,10 @@ import { componentEvents } from '@/shared/constants'
 
 interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
   companyId: string
+  showSkipButton?: boolean
 }
 
-function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps) {
+function EmployeeListRoot({ companyId, onEvent, dictionary, showSkipButton = true }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
 
@@ -55,6 +56,7 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
         }}
         onAddEmployee={handleAddEmployee}
         onSkip={handleSkip}
+        showSkipButton={showSkipButton}
       />
     </BaseLayout>
   )

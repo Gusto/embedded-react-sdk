@@ -15,6 +15,7 @@ export interface OnboardingFlowProps extends BaseComponentInterface {
   defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>
   isSelfOnboardingEnabled?: boolean
   withEmployeeI9?: boolean
+  showSkipButton?: boolean
 }
 
 export const OnboardingFlow = ({
@@ -23,6 +24,7 @@ export const OnboardingFlow = ({
   defaultValues,
   isSelfOnboardingEnabled = true,
   withEmployeeI9 = false,
+  showSkipButton = true,
 }: OnboardingFlowProps) => {
   const manageEmployees = useMemo(
     () =>
@@ -37,9 +39,10 @@ export const OnboardingFlow = ({
           defaultValues,
           isSelfOnboardingEnabled,
           withEmployeeI9,
+          showSkipButton,
         }),
       ),
-    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9],
+    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9, showSkipButton],
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />
 }

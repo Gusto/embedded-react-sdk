@@ -1,6 +1,7 @@
-import { beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse } from 'msw'
 import { OnboardingFlow } from './OnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
@@ -10,6 +11,7 @@ import {
   createEmployee,
   getCompanyEmployees,
   getEmployee,
+  handleGetCompanyEmployees,
   getEmployeeGarnishments,
   getEmployeeJobs,
   getEmployeeOnboardingStatus,
@@ -50,6 +52,28 @@ import {
 } from '@/test/mocks/apis/employee_home_addresses'
 
 describe('EmployeeOnboardingFlow', () => {
+  it('hides the employee list skip button when showSkipButton is false', async () => {
+    server.use(
+      handleGetCompanyEmployees(() =>
+        HttpResponse.json([], {
+          headers: {
+            'x-total-pages': '1',
+            'x-total-count': '0',
+          },
+        }),
+      ),
+    )
+
+    render(
+      <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+        <OnboardingFlow companyId="123" onEvent={() => {}} showSkipButton={false} />
+      </GustoProvider>,
+    )
+
+    expect(await screen.findByRole('button', { name: /add an employee/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /do this later/i })).toBeNull()
+  })
+
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
