@@ -9,6 +9,7 @@ import {
   ProjectReflection,
   ReferenceType,
   type Reflection,
+  ReflectionGroup,
   ReflectionKind,
   type SignatureReflection,
   Slugger,
@@ -73,16 +74,17 @@ export function domainFromSources(reflection: Reflection): string | null {
 }
 
 /**
- * Return true if the reflection's source file is a hook file —
- * i.e. the file name (last path segment) matches useCamelCase.ts.
- * Used to co-locate companion types/interfaces/enums onto the domain hooks page.
+ * Return true if the reflection's source file is, or lives inside, a hook
+ * directory/file — i.e. any path segment (after stripping its extension)
+ * matches useCamelCase. This co-locates companion types from files like
+ * `useEmployeeStateTaxesForm/fields.tsx` onto the same domain hooks page as
+ * the hook itself.
  */
 export function isHookSourceFile(reflection: Reflection): boolean {
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return false
   const fp = source.fullFileName ?? source.fileName ?? ''
-  const fileName = fp.split(/[/\\]/).pop() ?? ''
-  return /^use[A-Z]/.test(fileName)
+  return fp.split(/[/\\]/).some(seg => /^use[A-Z]/.test(seg.replace(/\.[^.]+$/, '')))
 }
 
 export function load(app: Application): void {
@@ -414,6 +416,66 @@ class SDKThemeContext extends MarkdownThemeContext {
   }
 }
 
+// Group order mirrors typedoc.config.ts so synthetic pages stay consistent.
+const SYNTHETIC_GROUP_ORDER = [
+  'Hooks',
+  'Components',
+  'Functions',
+  'Variables',
+  'Interfaces',
+  'Type Aliases',
+  'Enumerations',
+]
+
+function kindGroupName(kind: ReflectionKind): string {
+  switch (kind) {
+    case ReflectionKind.Function:
+      return 'Functions'
+    case ReflectionKind.Interface:
+      return 'Interfaces'
+    case ReflectionKind.TypeAlias:
+      return 'Type Aliases'
+    case ReflectionKind.Enum:
+      return 'Enumerations'
+    case ReflectionKind.Variable:
+      return 'Variables'
+    case ReflectionKind.Class:
+      return 'Classes'
+    default:
+      return 'Other'
+  }
+}
+
+/**
+ * Build ReflectionGroups for a synthetic namespace. GroupPlugin only runs
+ * during conversion, so synthetic namespaces created in buildPages need their
+ * groups constructed manually. Reads @group tags already stamped by the
+ * converter event, then falls back to kind-based names.
+ */
+function groupSyntheticMembers(
+  members: DeclarationReflection[],
+  owner: DeclarationReflection,
+): ReflectionGroup[] {
+  const byTitle = new Map<string, DeclarationReflection[]>()
+  for (const member of members) {
+    const tag = member.comment?.blockTags.find(t => t.tag === '@group')
+    const title = tag?.content[0]?.text?.trim() ?? kindGroupName(member.kind)
+    const bucket = byTitle.get(title) ?? []
+    bucket.push(member)
+    byTitle.set(title, bucket)
+  }
+
+  const ordered = [
+    ...SYNTHETIC_GROUP_ORDER.filter(t => byTitle.has(t)),
+    ...Array.from(byTitle.keys()).filter(t => !SYNTHETIC_GROUP_ORDER.includes(t)),
+  ]
+  return ordered.map(title => {
+    const group = new ReflectionGroup(title, owner)
+    group.children = byTitle.get(title)!
+    return group
+  })
+}
+
 export class SDKRouter extends MemberRouter {
   // Populated at the start of buildPages; hooks here are anchors on a synthetic
   // domain hooks page and must be skipped when buildChildPages encounters them.
@@ -468,6 +530,7 @@ export class SDKRouter extends MemberRouter {
     for (const [domain, hooks] of hooksByDomain) {
       const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
+      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
     }
 

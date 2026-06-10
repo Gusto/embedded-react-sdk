@@ -99,6 +99,22 @@ describe('isHookSourceFile', () => {
     expect(isHookSourceFile(r)).toBe(true)
   })
 
+  it('returns true for a companion file inside a hook directory', () => {
+    const r = new DeclarationReflection('SelectStateTaxFieldProps', ReflectionKind.Interface)
+    r.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
+    )
+    expect(isHookSourceFile(r)).toBe(true)
+  })
+
+  it('returns true for any file nested under a hook directory', () => {
+    const r = new DeclarationReflection('EmployeeStateTaxesErrorCodes', ReflectionKind.Enum)
+    r.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fieldProps.ts',
+    )
+    expect(isHookSourceFile(r)).toBe(true)
+  })
+
   it('returns false for a non-hook file name', () => {
     const r = new DeclarationReflection('SomeUtil', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/components/Employee/utils/helpers.ts')
