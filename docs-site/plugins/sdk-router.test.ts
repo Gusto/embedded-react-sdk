@@ -86,7 +86,7 @@ describe('getIdealBaseName — namespaces', () => {
     ['EmployeeManagement', 'Employee/EmployeeManagement/README'],
     ['CompanyOnboarding', 'Company/CompanyOnboarding/README'],
     ['ContractorOnboarding', 'Contractor/ContractorOnboarding/README'],
-    ['Employee', 'Employee/README'],
+    ['Employee', 'Employee/Employee/README'],
     ['Company', 'Company/README'],
     ['Contractor', 'Contractor/README'],
   ])('%s → %s', (name, expected) => {
@@ -456,5 +456,106 @@ describe('componentPropsInterfaces', () => {
     expect(result.has(propsA)).toBe(true)
     expect(result.has(propsB)).toBe(true)
     expect(result.size).toBe(2)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildPages — domain hub page
+// ---------------------------------------------------------------------------
+
+describe('buildPages — domain hub page', () => {
+  it('generates a hub page at {Domain}/index.md for each configured domain', () => {
+    const project = makeProject()
+    makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('Employee/index.md')
+  })
+
+  it('hub page is generated even when none of the domain namespaces are present', () => {
+    const project = makeProject()
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('Employee/index.md')
+  })
+
+  it('hub model has @domainHub tag', () => {
+    const project = makeProject()
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const model = hubPage?.model as DeclarationReflection
+    expect(model.comment?.blockTags.some(t => t.tag === '@domainHub')).toBe(true)
+  })
+
+  it('hub model children are the namespace reflections that exist in the project', () => {
+    const project = makeProject()
+    const mgmt = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const model = hubPage?.model as DeclarationReflection
+    expect(model.children).toContain(mgmt)
+    expect(model.children).toContain(deprecated)
+  })
+
+  it('hub model children respect DOMAIN_HUBS order and exclude absent namespaces', () => {
+    const project = makeProject()
+    // Only EmployeeManagement exists; EmployeeOnboarding and Employee do not
+    const mgmt = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const model = hubPage?.model as DeclarationReflection
+    expect(model.children).toEqual([mgmt])
+  })
+
+  it('hub page is a single page, not duplicated', () => {
+    const project = makeProject()
+    makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(project, 'Employee', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.filter(p => p.url === 'Employee/index.md')).toHaveLength(1)
+  })
+
+  it('hub page coexists with separate namespace pages', () => {
+    const project = makeProject()
+    makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(project, 'Employee', ReflectionKind.Namespace)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/index.md')
+    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).toContain('Employee/Employee/README.md')
+  })
+
+  it('domain hub does not suppress the domain hooks page', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
+    hook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/index.md')
+    expect(urls).toContain('Employee/hooks.md')
   })
 })

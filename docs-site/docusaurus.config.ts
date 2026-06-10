@@ -33,6 +33,12 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       {
         ...baseOptions,
+        sidebar: {
+          autoConfiguration: false,
+          pretty: false,
+          typescript: false,
+          deprecatedItemClassName: '',
+        },
       } satisfies TypeDocOptions & PluginOptions,
     ],
   ],

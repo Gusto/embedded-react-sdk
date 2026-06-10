@@ -45,4 +45,10 @@ export default {
   ...baseOptions,
   // When running typedoc directly, we need to specify the plugins that docusaurus adds automatically
   plugin: ['typedoc-plugin-markdown', 'typedoc-docusaurus-theme', ...baseOptions.plugin],
+  sidebar: {
+    autoConfiguration: false,
+    pretty: false,
+    typescript: false,
+    deprecatedItemClassName: '',
+  },
 }

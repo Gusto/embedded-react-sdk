@@ -14,7 +14,12 @@ import {
   Slugger,
 } from 'typedoc'
 import type { Application } from 'typedoc'
-import { MarkdownTheme, MarkdownThemeContext, MemberRouter } from 'typedoc-plugin-markdown'
+import {
+  MarkdownPageEvent,
+  MarkdownTheme,
+  MarkdownThemeContext,
+  MemberRouter,
+} from 'typedoc-plugin-markdown'
 
 /**
  * TypeDoc plugin: custom router for @gusto/embedded-react-sdk
@@ -22,29 +27,37 @@ import { MarkdownTheme, MarkdownThemeContext, MemberRouter } from 'typedoc-plugi
  * Register via  "router": "sdk-router"  in the TypeDoc config.
  *
  * URL structure:
- *   Employee/EmployeeManagement/flows.md   ← namespace members whose name ends with 'Flow'
- *   Employee/EmployeeManagement/blocks.md  ← remaining namespace members
- *   Employee/hooks.md                      ← all Employee hooks consolidated on one page
- *   Company/hooks.md                       ← all Company hooks consolidated on one page
- *   Employee/index.md                      ← namespace with no Flow children (single page)
- *   Payroll/index.md                       ← domain-less namespace (no parent domain prefix)
- *   index.md#reflectionname               ← all unmapped top-level exports (anchors on the
- *                                           project index page, which renders them inline)
+ *   Employee/index.md                         ← generated domain hub (namespaces + hooks overview)
+ *   Employee/EmployeeManagement/flows.md      ← namespace members whose name ends with 'Flow'
+ *   Employee/EmployeeManagement/blocks.md     ← remaining namespace members
+ *   Employee/Employee/index.md               ← deprecated Employee namespace (single page)
+ *   Employee/hooks.md                         ← all Employee hooks consolidated on one page
+ *   Company/hooks.md                          ← all Company hooks consolidated on one page
+ *   Payroll/index.md                          ← domain-less namespace (no parent domain prefix)
+ *   index.md#reflectionname                  ← all unmapped top-level exports (anchors on the
+ *                                              project index page, which renders them inline)
  */
 
 // Maps each namespace to its output directory prefix.
-// Journey namespaces nest under their domain; deprecated namespaces sit at the
-// domain root so removing them later only deletes a single file, not a directory.
+// Journey namespaces nest under their domain; deprecated namespaces nest one level deeper
+// so the domain root is free for the generated domain hub page.
 const NAMESPACE_PATHS: Record<string, string> = {
   // Journey namespaces
   EmployeeOnboarding: 'Employee/EmployeeOnboarding',
   EmployeeManagement: 'Employee/EmployeeManagement',
   CompanyOnboarding: 'Company/CompanyOnboarding',
   ContractorOnboarding: 'Contractor/ContractorOnboarding',
-  // Deprecated — live at the domain root index
-  Employee: 'Employee',
+  // Deprecated — nested under domain so the domain root belongs to the hub page
+  Employee: 'Employee/Employee',
   Company: 'Company',
   Contractor: 'Contractor',
+}
+
+// Maps each domain to the ordered list of namespaces shown on its generated hub page.
+// Deprecated namespaces should come last. When a domain graduates to a hand-authored
+// index page, remove it from this map and write Employee/index.md manually instead.
+const DOMAIN_HUBS: Record<string, string[]> = {
+  Employee: ['EmployeeOnboarding', 'EmployeeManagement', 'Employee'],
 }
 
 /**
@@ -199,6 +212,36 @@ function isComponent(reflection: DeclarationReflection): boolean {
   )
 }
 
+function isDomainHub(model: DeclarationReflection): boolean {
+  return model.comment?.blockTags.some(tag => tag.tag === '@domainHub') ?? false
+}
+
+function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
+  const parts: string[] = [`# ${model.name}`, '']
+
+  const namespaces = (model.children ?? []).filter(c => c.kind === ReflectionKind.Namespace)
+
+  if (namespaces.length > 0) {
+    parts.push('## Namespaces', '')
+    parts.push('| Namespace | Description |')
+    parts.push('| --------- | ----------- |')
+
+    for (const ns of namespaces) {
+      const url = context.urlTo(ns)
+      const label = ns.isDeprecated() ? `~~${ns.name}~~` : ns.name
+      const description = ns.comment
+        ? (context.helpers.getDescriptionForComment(ns.comment) ?? '')
+        : ''
+      parts.push(`| [${label}](${url}) | ${description} |`)
+    }
+    parts.push('')
+  }
+
+  parts.push('## Hooks', '', `See [${model.name} Hooks](./hooks).`)
+
+  return parts.join('\n')
+}
+
 class SDKTheme extends MarkdownTheme {
   override getRenderContext(
     page: ConstructorParameters<typeof MarkdownThemeContext>[1],
@@ -319,6 +362,17 @@ class SDKThemeContext extends MarkdownThemeContext {
         return parts.join('\n\n')
       },
     }
+
+    const origReflectionTemplate = this.templates.reflection.bind(this)
+    this.templates = {
+      ...this.templates,
+      reflection: (page: MarkdownPageEvent<DeclarationReflection>) => {
+        if (isDomainHub(page.model)) {
+          return renderDomainHub(this, page.model)
+        }
+        return origReflectionTemplate(page)
+      },
+    }
   }
 }
 
@@ -358,6 +412,20 @@ export class SDKRouter extends MemberRouter {
       const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
+    }
+
+    for (const [domain, nsNames] of Object.entries(DOMAIN_HUBS)) {
+      const nsReflections = nsNames
+        .map(name =>
+          project.children?.find(c => c.name === name && c.kind === ReflectionKind.Namespace),
+        )
+        .filter((r): r is DeclarationReflection => r !== undefined)
+
+      const hubNs = new DeclarationReflection(domain, ReflectionKind.Namespace, project)
+      hubNs.comment = new Comment()
+      hubNs.comment.blockTags.push(new CommentTag('@domainHub', []))
+      hubNs.children = nsReflections
+      this.buildSyntheticPage(`${domain}/index`, hubNs, [], pages)
     }
 
     return pages
