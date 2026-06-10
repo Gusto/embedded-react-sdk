@@ -47,6 +47,14 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addDays, formatDateToStringDate } from '@/helpers/dateFormatting'
 
+/**
+ * Submit-time overrides for {@link UseCompensationFormReady.actions.onSubmit | useCompensationForm.actions.onSubmit}.
+ * Lets the partner thread IDs that weren't known at hook construction — typically
+ * for the onboarding stub-fill chain where the parent job is created first and
+ * the auto-created compensation stub is PUT immediately after.
+ *
+ * @public
+ */
 export interface CompensationSubmitOptions {
   /** Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). */
   jobId?: string
@@ -69,15 +77,25 @@ export interface CompensationSubmitOptions {
   effectiveDate?: string
 }
 
+/**
+ * Configuration options for {@link useCompensationForm}.
+ *
+ * @public
+ */
 export interface UseCompensationFormProps {
+  /** UUID of the employee whose compensation is being created or updated. Drives data fetching for derived helpers (jobs list, work address, minimum wages). Optional for composed flows where the ID is not yet known. */
   employeeId?: string
   /** The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation. */
   jobId?: string
   /** Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). */
   compensationId?: string
+  /** Promote otherwise-optional fields to required for a given mode. See {@link CompensationOptionalFieldsToRequire}. */
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
+  /** Pre-fill form values. Server data takes precedence on update mode. */
   defaultValues?: Partial<CompensationFormData>
+  /** Passed through to react-hook-form's `mode`; defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when coordinating multiple forms through `composeSubmitHandler`. */
   shouldFocusError?: boolean
   /**
    * When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and
@@ -94,36 +112,65 @@ export interface UseCompensationFormProps {
   withEffectiveDateField?: boolean
 }
 
+/**
+ * Bound field components exposed on `useCompensationForm.form.Fields`. Each
+ * field is `undefined` when the hook decides it should not be rendered in the
+ * current configuration; partners render `{Fields.Foo && <Fields.Foo … />}`
+ * rather than gating on separate booleans.
+ *
+ * @public
+ */
 export interface CompensationFormFields {
+  /** Text input for the compensation title. */
   Title: typeof TitleField
+  /** Select dropdown for the employee's FLSA classification. `undefined` when the user has no meaningful choice — e.g. a secondary job whose status must match the primary's. */
   FlsaStatus: typeof FlsaStatusField | undefined
+  /** Currency input for the compensation rate. `undefined` when the FLSA status is commission-only (the hook forces `rate=0` internally in that state). */
   Rate: typeof RateField | undefined
+  /** Select dropdown for the pay period unit. `undefined` when the FLSA status is commission-only (the hook forces `paymentUnit=Year` internally in that state). */
   PaymentUnit: typeof PaymentUnitField | undefined
+  /** Checkbox enabling minimum-wage adjustment. `undefined` when the FLSA status is not `Nonexempt`, when no minimum wages are available for the work location, or when the work state does not support tip credits. */
   AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined
+  /** Select dropdown for the minimum wage to adjust to. `undefined` until `Fields.AdjustForMinimumWage` is checked. */
   MinimumWageId: typeof MinimumWageIdField | undefined
+  /** Date picker for the compensation's effective date. `undefined` when `withEffectiveDateField: false` was passed. */
   EffectiveDate: typeof EffectiveDateField | undefined
 }
 
+/**
+ * The ready (non-loading) branch of the `useCompensationForm` return value.
+ * Carries the loaded compensation and parent job, derived bounds for the
+ * effective-date picker, reactive UX flags for inline warnings, the bound
+ * field components, the submission action, and `errorHandling` aggregated
+ * across the hook's underlying queries.
+ *
+ * @public
+ */
 export interface UseCompensationFormReady extends BaseFormHookReady<
   FieldsMetadata,
   CompensationFormData,
   CompensationFormFields
 > {
+  /** Loaded entities backing the form, plus derived bounds for the effective-date picker. */
   data: {
     /** The compensation row loaded for update; `null` in create mode. */
     compensation: Compensation | null
     /** The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. */
     currentJob: Job | null
+    /** Minimum wages available at the employee's active work location. Populates `Fields.MinimumWageId`. */
     minimumWages: MinimumWage[]
-    /** Lower bound for `effectiveDate` (typically the parent job's hire date). */
+    /** Lower bound for `effectiveDate` (typically the parent job's hire date). Pass as `min` to a custom date picker. */
     minimumEffectiveDate: string | null
-    /** Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. */
+    /** Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. Pass as `max` to a custom date picker so a new entry can't be pushed past a pending one. */
     maximumEffectiveDate: string | null
-    /** True when at least one future-dated compensation already exists for this job. */
+    /** True when at least one future-dated compensation already exists for this job. Use to render an explanatory note. */
     hasPendingFutureCompensation: boolean
   }
+  /** Submission status and reactive UX flags driven by the current form values. */
   status: {
+    /** True while a create or update mutation is in flight. */
     isPending: boolean
+    /** Reports the current verb routing — `'create'` (POST) or `'update'` (PUT). */
     mode: 'create' | 'update'
     /**
      * True when submitting the form right now would delete the employee's
@@ -169,7 +216,9 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
      */
     showOwnerSalaryAlert: boolean
   }
+  /** Action callbacks; `onSubmit` validates the form and POSTs or PUTs the compensation, returning the saved entity along with the executed mode. */
   actions: {
+    /** Validates the form and routes to create (POST) or update (PUT) based on `compensationId` and the supplied {@link CompensationSubmitOptions}. Resolves to a {@link HookSubmitResult} containing the executed mode and the saved compensation, or `undefined` when validation fails. */
     onSubmit: (
       options?: CompensationSubmitOptions,
     ) => Promise<HookSubmitResult<Compensation> | undefined>
@@ -247,6 +296,104 @@ function todayISO(): string {
   return new Date().toISOString().split('T')[0]!
 }
 
+/**
+ * Headless form hook for creating or updating a compensation row on a job —
+ * FLSA classification, pay rate, payment unit, effective date, and the
+ * optional minimum-wage adjustment. Pairs with `useJobForm`; jobs and their
+ * compensations are separate entities in the Gusto API and this hook focuses
+ * exclusively on the compensation side.
+ *
+ * @remarks
+ * Auto-routes between create and update based on `compensationId`: present →
+ * `PUT /v1/compensations/:compensationId` (with `version`); absent →
+ * `POST /v1/jobs/:jobId/compensations`. Submit-time overrides on
+ * {@link CompensationSubmitOptions} let the partner thread IDs that weren't
+ * known at hook construction — used for the onboarding stub-fill chain where
+ * `useJobForm.actions.onSubmit()` creates the job and the auto-created
+ * compensation stub is PUT immediately after.
+ *
+ * The hook exposes reactive UX flags on `status.*` — `willDeleteSecondaryJobs`,
+ * `showCommissionFederalMinimumPayAlert`, `showCommissionMinimumWageAlert`,
+ * `showOwnerSalaryAlert` — and derived bounds on `data.*` —
+ * `minimumEffectiveDate`, `maximumEffectiveDate`, `hasPendingFutureCompensation`
+ * — for driving inline warnings and date-picker constraints.
+ *
+ * @param input - Configuration options for the form. See {@link UseCompensationFormProps}.
+ * @returns A {@link HookLoadingResult} while underlying queries load, or a
+ *   {@link UseCompensationFormReady} once data is ready with bound `Fields`,
+ *   `actions.onSubmit`, and `errorHandling`.
+ * @public
+ * @see {@link useJobForm} for the companion job hook — see also the
+ *   "Working with Jobs and Compensations" guide for end-to-end patterns.
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useCompensationForm,
+ *   SDKFormProvider,
+ *   type UseCompensationFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function CompensationEditPage({
+ *   employeeId,
+ *   jobId,
+ *   compensationId,
+ * }: {
+ *   employeeId: string
+ *   jobId: string
+ *   compensationId: string
+ * }) {
+ *   const compensation = useCompensationForm({ employeeId, jobId, compensationId })
+ *   if (compensation.isLoading) return <div>Loading...</div>
+ *   return <CompensationFormReady compensation={compensation} />
+ * }
+ *
+ * function CompensationFormReady({
+ *   compensation,
+ * }: {
+ *   compensation: UseCompensationFormReady
+ * }) {
+ *   const { Fields } = compensation.form
+ *   const { willDeleteSecondaryJobs, showOwnerSalaryAlert } = compensation.status
+ *   return (
+ *     <SDKFormProvider formHookResult={compensation}>
+ *       <form
+ *         onSubmit={async e => {
+ *           e.preventDefault()
+ *           await compensation.actions.onSubmit()
+ *         }}
+ *       >
+ *         {willDeleteSecondaryJobs && (
+ *           <p role="alert">Saving will delete this employee's secondary jobs.</p>
+ *         )}
+ *         {Fields.FlsaStatus && (
+ *           <Fields.FlsaStatus
+ *             label="Employee type"
+ *             validationMessages={{ REQUIRED: 'Employee classification is required' }}
+ *           />
+ *         )}
+ *         {showOwnerSalaryAlert && (
+ *           <p>S-corp owners must pay themselves a reasonable salary before taking distributions.</p>
+ *         )}
+ *         {Fields.Rate && (
+ *           <Fields.Rate
+ *             label="Compensation amount"
+ *             validationMessages={{
+ *               REQUIRED: 'Amount is required',
+ *               RATE_MINIMUM: 'Amount must be at least $1.00',
+ *               RATE_EXEMPT_THRESHOLD: 'Exempt employees must meet the salary threshold',
+ *             }}
+ *           />
+ *         )}
+ *         {Fields.PaymentUnit && <Fields.PaymentUnit label="Per" />}
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *         <button type="submit" disabled={compensation.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useCompensationForm({
   employeeId,
   jobId,
@@ -756,5 +903,21 @@ export function useCompensationForm({
   }
 }
 
+/**
+ * Discriminated union returned by {@link useCompensationForm} — either the
+ * loading branch ({@link HookLoadingResult}) or the ready branch
+ * ({@link UseCompensationFormReady}). Discriminated on `isLoading`.
+ *
+ * @public
+ */
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady
+
+/**
+ * Per-field metadata exposed by `useCompensationForm.form.fieldsMetadata` —
+ * `isRequired`, `isDisabled`, validation rules, options for choice fields, and
+ * `minDate`/`maxDate` bounds for the effective-date picker. Drives the bound
+ * `Fields.*` components but also available directly for custom field renderings.
+ *
+ * @public
+ */
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata']

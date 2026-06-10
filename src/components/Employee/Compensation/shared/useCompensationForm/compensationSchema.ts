@@ -8,8 +8,12 @@ import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocess
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
-// ── Error codes ────────────────────────────────────────────────────────
-
+/**
+ * Validation error codes emitted by the `useCompensationForm` schema. Map these
+ * to localized error text via the `validationMessages` prop on each field.
+ *
+ * @public
+ */
 export const CompensationErrorCodes = {
   REQUIRED: 'REQUIRED',
   RATE_MINIMUM: 'RATE_MINIMUM',
@@ -21,6 +25,11 @@ export const CompensationErrorCodes = {
   EFFECTIVE_DATE_BEFORE_MIN: 'EFFECTIVE_DATE_BEFORE_MIN',
 } as const
 
+/**
+ * Union of validation error code values emitted by `useCompensationForm` fields.
+ *
+ * @public
+ */
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
@@ -72,6 +81,13 @@ const fieldValidators = {
   minimumWageId: z.string(),
 }
 
+/**
+ * Shape of the compensation form values: title, FLSA status, rate, payment unit,
+ * effective date, and the minimum-wage adjustment toggle and selection. Use as
+ * the `defaultValues` shape passed into `useCompensationForm`.
+ *
+ * @public
+ */
 export type CompensationFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
@@ -149,13 +165,34 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   }
 }
 
+/**
+ * Override map for fields that are optional in a given mode but should be
+ * required on submit. `title` is optional in both modes; `flsaStatus`,
+ * `paymentUnit`, `rate`, and `effectiveDate` are optional on update.
+ *
+ * @public
+ */
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
+
+/**
+ * Shape of the values produced by `useCompensationForm.form.getFormSubmissionValues()`
+ * after schema validation. Identical to {@link CompensationFormData}.
+ *
+ * @public
+ */
 export type CompensationFormOutputs = CompensationFormData
 
+/**
+ * Options accepted by {@link createCompensationSchema}.
+ *
+ * @public
+ */
 export interface CompensationSchemaOptions {
+  /** `'create'` validates create-mode requireds (`POST /v1/jobs/:jobId/compensations`). `'update'` relaxes them for `PUT /v1/compensations/:id`. Defaults to `'create'`. */
   mode?: 'create' | 'update'
+  /** Promote fields that are optional in the chosen `mode` to required on submit. */
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   /**
    * Lower bound for `effectiveDate` (typically the parent job's `hireDate`).
@@ -188,6 +225,15 @@ export interface CompensationSchemaOptions {
   withEffectiveDateField?: boolean
 }
 
+/**
+ * Builds the Zod schema and field-metadata config that back `useCompensationForm`.
+ *
+ * @param options - Schema configuration: `mode`, `optionalFieldsToRequire`,
+ *   `hireDate`, `minEffectiveDate`, and `withEffectiveDateField`.
+ * @returns A tuple of the Zod schema and the derived field metadata config for
+ *   driving `useCompensationForm`'s `fieldsMetadata`.
+ * @public
+ */
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
   const {
     mode = 'create',

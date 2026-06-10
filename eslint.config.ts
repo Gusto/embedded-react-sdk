@@ -193,6 +193,7 @@ export default [
       'src/components/Common/UI/**/*.{ts,tsx}',
       'src/components/Common/PaginationControl/**',
       'src/components/Common/PayrollLoading/**',
+      'src/components/Employee/Compensation/shared/useCompensationForm/**/*.{ts,tsx}',
       'src/components/Employee/Compensation/shared/useJobForm/**/*.{ts,tsx}',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
