@@ -6,19 +6,19 @@ order: 1
 
 This FAQ addresses common questions and potential issues when working with the Component Adapter system in the Gusto Embedded React SDK.
 
-### General Questions
+## General Questions
 
-#### Can I use a different UI framework for my custom components?
+### Can I use a different UI framework for my custom components?
 
 Yes, you can use any React UI framework or library for your custom components, as long as they correctly implement the required props and behaviors. For example, you could use Material UI, Chakra UI, or any other React-compatible UI library.
 
 The only requirement is that your component adapter implements the `ComponentsContextType` interface.
 
-#### How do I know which components I can customize?
+### How do I know which components I can customize?
 
 You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)) or the [Component Inventory](./component-inventory.md). These are all the components in the SDK's UI directory.
 
-#### Do I need to implement all components in the adapter?
+### Do I need to implement all components in the adapter?
 
 No, you only need to implement the components you want to customize. The SDK will use its default components for any components not provided in your adapter.
 
@@ -36,9 +36,9 @@ const myAdapter = {
 }
 ```
 
-### Implementing Components
+## Implementing Components
 
-#### How do I implement components with complex behavior like ComboBox or DatePicker?
+### How do I implement components with complex behavior like ComboBox or DatePicker?
 
 For complex components, you have a few options:
 
@@ -58,7 +58,7 @@ To understand the expected behavior of complex components, you can also refer to
 - [ComboBox on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/ComboBox/ComboBox.tsx)
 - [DatePicker on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/DatePicker/DatePicker.tsx)
 
-#### My custom component isn't working correctly. What should I check?
+### My custom component isn't working correctly. What should I check?
 
 1. **Ensure you've implemented all required props**: Each component has a specific set of props that it expects to receive and use. Make sure your component handles all of these props correctly.
 
@@ -70,7 +70,7 @@ To understand the expected behavior of complex components, you can also refer to
 
 5. **Debug with React DevTools**: Use React DevTools to inspect the props being passed to your components and compare with what you're expecting.
 
-#### How can I ensure my custom components maintain accessibility features?
+### How can I ensure my custom components maintain accessibility features?
 
 **Important**: When using the Component Adapter with your own custom components, you are responsible for ensuring accessibility compliance. The SDK's default components are built with accessibility in mind, but this accessibility is not automatically transferred to your custom implementations.
 
@@ -86,9 +86,9 @@ The prop interfaces include properties like `aria-describedby`, `isInvalid`, and
 
 Study the default components to understand how they handle accessibility concerns. Check your own design system's accessibility guidelines and components, which likely have built-in accessibility features you can leverage.
 
-### Troubleshooting
+## Troubleshooting
 
-#### I'm getting errors about missing components. What's wrong?
+### I'm getting errors about missing components. What's wrong?
 
 If you're seeing errors about missing components and you're using `GustoProviderCustomUIAdapter`, you must implement all components that your integration needs. With the custom provider, you're responsible for providing every component used by the SDK in your adapter.
 
@@ -96,7 +96,7 @@ We recommend using `GustoProvider` instead if you only want to customize a few c
 
 You can check which components are being used by examining the SDK's source code or by adding console logs to your adapter implementation.
 
-#### My form values aren't being captured correctly. What might be wrong?
+### My form values aren't being captured correctly. What might be wrong?
 
 This often happens when the `onChange` handler in your custom form components isn't being called with the correct parameters. The SDK expects specific value formats from each component's onChange handler:
 
@@ -108,7 +108,7 @@ This often happens when the `onChange` handler in your custom form components is
 
 Make sure your components are calling these handlers with the expected data types.
 
-#### How can I test my component adapter?
+### How can I test my component adapter?
 
 You can create unit tests for your custom components using testing libraries like Vitest and React Testing Library. Test that your components:
 
@@ -119,7 +119,7 @@ You can create unit tests for your custom components using testing libraries lik
 
 For examples of how the SDK tests its components, you can look at the test files located alongside each component in the UI directory. For instance, check out [Button.test.tsx](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Button/Button.test.tsx), [TextInput.test.tsx](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/TextInput/TextInput.test.tsx), and other test files in the [UI component directories](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI).
 
-#### Can I contribute my component adapter back to the project?
+### Can I contribute my component adapter back to the project?
 
 If you've created a component adapter for a popular UI library (like Material UI, Chakra UI, etc.), we'd love to hear about it! While the Gusto Embedded React SDK doesn't directly maintain adapters for third-party libraries, we can help guide other users to community solutions.
 

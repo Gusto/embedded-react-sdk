@@ -6,7 +6,7 @@ order: 0
 
 In the case an employer elects to allow the employee to self-onboard, they can be provided with the self-onboarding workflow. This workflow places the responsibility of submitting some required information on the employee.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -23,7 +23,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name                | Type    | Default | Description                                                                                                                                       |
 | ------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

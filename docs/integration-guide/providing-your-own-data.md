@@ -6,7 +6,7 @@ order: 4
 
 Where possible, the Gusto Embedded React SDK allows for providing your own data to SDK forms. You can do this by setting form default values with data from your application.
 
-### Providing your own application data using default values
+## Providing your own application data using default values
 
 If an SDK component contains a form and has a `defaultValues` property, the `defaultValues` can be set with values from your own data if needed. `defaultValues` is an object with keys corresponding to each of the form fields.
 

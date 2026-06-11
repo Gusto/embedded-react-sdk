@@ -6,7 +6,7 @@ order: 3
 
 The Gusto Embedded React SDK allows for flexible approaches when crafting experiences. You can use workflow components as needed to render complex user flows with a single component. You can also leverage the individual workflow steps in isolation, recompose them together in your desired order, and update them with your own content.
 
-### Building with workflow components
+## Building with workflow components
 
 Workflows are individual components that encapsulate complex, often multi step user interactions. Check out the `Workflows Overview` section to see the full list of available components.
 
@@ -30,7 +30,7 @@ function MyApp({ companyId }) {
 
 The benefits of this approach are simplicity and ease of development. Many times, however, we need more customization than is possible when using workflow components directly. For those scenarios, the React SDK offers methods of composition where you can leverage pieces of the flow individually and put them together as needed.
 
-### Using individual workflow pieces
+## Using individual workflow pieces
 
 Continuing with the previous example, say we wanted to render employee compensation UI (which is a step in the employee onboarding flow) in isolation. We could import that directly as follows:
 

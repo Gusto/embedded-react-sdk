@@ -6,7 +6,7 @@ order: 2
 
 The Contractor Onboarding workflow provides components for managing contractor-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
@@ -21,7 +21,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type   | Description                                                                                           |
 | ------------------ | ------ | ----------------------------------------------------------------------------------------------------- |

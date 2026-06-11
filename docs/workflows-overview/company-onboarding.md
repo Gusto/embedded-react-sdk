@@ -6,7 +6,7 @@ order: 1
 
 The Company Onboarding workflow provides components for managing company-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
-### Implementation
+## Implementation
 
 ```jsx title="App.tsx"
 import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
@@ -21,7 +21,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type   | Description                                                     |
 | ------------------ | ------ | --------------------------------------------------------------- |

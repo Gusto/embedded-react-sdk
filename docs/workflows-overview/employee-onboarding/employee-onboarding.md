@@ -6,7 +6,7 @@ order: 0
 
 The Employee Onboarding workflow provides a complete experience for onboarding an employee to a company. It is used to collect all required information for an employee to be added to payroll.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -22,7 +22,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name                    | Type    | Default | Description                                                                                                                                                          |
 | ----------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

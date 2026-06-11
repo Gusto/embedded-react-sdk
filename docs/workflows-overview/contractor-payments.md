@@ -6,7 +6,7 @@ order: 3
 
 The Contractor Payments workflow provides components for creating, managing, and viewing contractor payment groups. These components can be used individually or composed into a complete payment workflow through the `Contractor.PaymentFlow` component.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { Contractor } from '@gusto/embedded-react-sdk'
@@ -18,7 +18,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type   | Description                                                     |
 | ------------------ | ------ | --------------------------------------------------------------- |

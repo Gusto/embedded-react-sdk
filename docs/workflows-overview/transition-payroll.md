@@ -11,7 +11,7 @@ The SDK provides a flow component and an integrated alert for transition payroll
 - **`Payroll.TransitionFlow`**: A full creation-to-execution flow for running a specific transition payroll. After creation, the flow transitions into the standard [Payroll Processing](./run-payroll.md) execution experience — the same steps used by regular and other off-cycle payrolls.
 - **Transition Payroll Alert**: An alert automatically rendered within `Payroll.PayrollLanding` when there are unprocessed transition pay periods. It surfaces upcoming transition periods and allows users to run or skip them. This is not a standalone export — it is built into the landing page.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -29,7 +29,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name                     | Type     | Description                                                      |
 | ------------------------ | -------- | ---------------------------------------------------------------- |
@@ -39,7 +39,7 @@ function MyApp() {
 | payScheduleUuid Required | string   | The UUID of the pay schedule this transition is associated with. |
 | onEvent Required         | function | See events table for each subcomponent to see available events.  |
 
-#### Events
+### Events
 
 Events emitted during the creation phase:
 

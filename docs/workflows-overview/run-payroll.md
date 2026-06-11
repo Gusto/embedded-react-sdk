@@ -6,7 +6,7 @@ order: 3
 
 The Run Payroll workflow provides a complete experience for running payroll for a company. It guides users through selecting a payroll, configuring employee compensation, reviewing payroll details, and submitting the payroll for processing.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -16,7 +16,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name                        | Type                                     | Description                                                                                                                             |
 | --------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -27,7 +27,7 @@ function MyApp() {
 | dictionary                  | object                                   | Optional translations for component text.                                                                                               |
 | ConfirmWireDetailsComponent | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details confirmation UI. See [ConfirmWireDetailsProps](#confirmwiredetailsprops). |
 
-#### ConfirmWireDetailsProps
+### ConfirmWireDetailsProps
 
 | Prop      | Type                                   | Required | Description                                                                                                          |
 | --------- | -------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ function MyApp() {
 | wireInId  | string                                 | No       | Specific wire-in request identifier. If not provided, your component should handle the first active wire-in request. |
 | onEvent   | (type: string, data?: unknown) => void | No       | Optional callback to emit events back to the parent flow.                                                            |
 
-#### Events
+### Events
 
 | Event type                     | Description                                               | Data                                                                                                                                                                                     |
 | ------------------------------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

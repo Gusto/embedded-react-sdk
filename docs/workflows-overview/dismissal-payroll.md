@@ -10,7 +10,7 @@ This workflow is typically launched from the [Employee Termination](./employee-t
 
 > **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -26,7 +26,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name                | Type     | Description                                                                                                               |
 | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ function MyApp() {
 | onEvent Required    | function | See events table for available events.                                                                                    |
 | payrollId           | string   | Optional payroll identifier. When provided, the flow skips pay period selection and starts directly at payroll execution. |
 
-#### Events
+### Events
 
 Events emitted during the pay period selection phase:
 
