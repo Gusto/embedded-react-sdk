@@ -6,11 +6,11 @@ order: 1
 
 # Hooks
 
-Hooks give you full control over form rendering while the SDK manages data fetching, validation, submission, and error handling. Each hook returns pre-bound field components, metadata, and actions — you supply the layout and labels.
+Hooks let you own the layout while the SDK manages data fetching, validation, submission, and error handling. **Form hooks** return pre-bound field components, metadata, and actions for rendering a form — you supply the layout and labels. **Data hooks** return fetched, decorated data plus the actions valid for it — you supply the presentation. Both share the same loading/error/`HookErrorHandling` conventions.
 
 > Hooks are an experimental feature. APIs may change between minor versions during 0.x.x releases.
 
-## Available Hooks
+## Available Form Hooks
 
 | Hook                             | Description                                                                                        | Reference                                                             |
 | -------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
@@ -28,6 +28,14 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `useSplitPaymentsForm`           | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)       | [useSplitPaymentsForm](./useSplitPaymentsForm.md)                     |
 | `useDeductionForm`               | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)      | [useDeductionForm](./useDeductionForm.md)                             |
 | `useChildSupportGarnishmentForm` | Create or update a child-support garnishment (agency-keyed required attributes, county selection)  | [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md) |
+
+## Available Data Hooks
+
+Data hooks fetch and decorate server data and expose the actions valid for it, leaving presentation to you. They follow the same `isLoading` discriminated union and `errorHandling` contract as the rest of the SDK hooks, returning domain `data`, `status`, and `actions`.
+
+| Hook              | Description                                                                                      | Reference                               |
+| ----------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------- |
+| `useEmployeeList` | Paginated list of a company's employees, each decorated with its allowed actions and primary job | [useEmployeeList](./useEmployeeList.md) |
 
 ---
 

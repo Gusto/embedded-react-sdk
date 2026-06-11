@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useEmployeesList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
 import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { EmployeeOnboardingStatus as EmployeeOnboardingStatusEntity } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingStatus'
 import { keepPreviousData } from '@tanstack/react-query'
@@ -10,7 +11,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
-import type { HookLoadingResult, HookSubmitResult, BaseHookReady } from '@/partner-hook-utils/types'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export type EmployeeAction =
   | 'edit'
@@ -25,12 +26,6 @@ export interface EmployeeWithActions extends Employee {
   primaryJob?: Job
 }
 
-export interface EmployeeActionCallbacks {
-  onDelete?: (employeeId: string) => void
-  onReview?: (employeeId: string) => void
-  onCancelSelfOnboarding?: (employeeId: string) => void
-}
-
 export type EmployeeType = 'active' | 'onboarding' | 'terminated'
 
 export interface UseEmployeeListProps {
@@ -38,24 +33,17 @@ export interface UseEmployeeListProps {
   employeeType?: EmployeeType
 }
 
-interface UseEmployeeListReady extends BaseHookReady<
+export interface UseEmployeeListReady extends BaseHookReady<
   { employees: EmployeeWithActions[] },
   { isFetching: boolean; isPending: boolean }
 > {
   pagination: PaginationControlProps
   actions: {
-    onDelete: (
-      employeeId: string,
-      callbacks?: EmployeeActionCallbacks,
-    ) => Promise<HookSubmitResult<void> | undefined>
-    onReview: (
-      employeeId: string,
-      callbacks?: EmployeeActionCallbacks,
-    ) => Promise<HookSubmitResult<string> | undefined>
+    onDelete: (employeeId: string) => Promise<void>
+    onReview: (employeeId: string) => Promise<EmployeeOnboardingStatusEntity | undefined>
     onCancelSelfOnboarding: (
       employeeId: string,
-      callbacks?: EmployeeActionCallbacks,
-    ) => Promise<HookSubmitResult<string> | undefined>
+    ) => Promise<EmployeeOnboardingStatusEntity | undefined>
   }
 }
 
@@ -177,32 +165,18 @@ export function useEmployeeList({
         itemsPerPage: 5 as const,
       }
 
-  const onDelete = async (
-    employeeId: string,
-    callbacks?: EmployeeActionCallbacks,
-  ): Promise<HookSubmitResult<void> | undefined> => {
-    let submitResult: HookSubmitResult<void> | undefined
-
+  const onDelete = async (employeeId: string): Promise<void> => {
     await baseSubmitHandler(employeeId, async id => {
       await deleteEmployeeMutation.mutateAsync({
         request: { employeeId: id },
       })
-      callbacks?.onDelete?.(id)
-
-      submitResult = {
-        mode: 'update',
-        data: undefined,
-      }
     })
-
-    return submitResult
   }
 
   const onReview = async (
     employeeId: string,
-    callbacks?: EmployeeActionCallbacks,
-  ): Promise<HookSubmitResult<string> | undefined> => {
-    let submitResult: HookSubmitResult<string> | undefined
+  ): Promise<EmployeeOnboardingStatusEntity | undefined> => {
+    let onboardingStatus: EmployeeOnboardingStatusEntity | undefined
 
     await baseSubmitHandler(employeeId, async id => {
       const result = await updateOnboardingStatusMutation.mutateAsync({
@@ -213,22 +187,17 @@ export function useEmployeeList({
           },
         },
       })
-      callbacks?.onReview?.(id)
 
-      submitResult = {
-        mode: 'update',
-        data: result.employeeOnboardingStatus?.onboardingStatus ?? '',
-      }
+      onboardingStatus = result.employeeOnboardingStatus
     })
 
-    return submitResult
+    return onboardingStatus
   }
 
   const onCancelSelfOnboarding = async (
     employeeId: string,
-    callbacks?: EmployeeActionCallbacks,
-  ): Promise<HookSubmitResult<string> | undefined> => {
-    let submitResult: HookSubmitResult<string> | undefined
+  ): Promise<EmployeeOnboardingStatusEntity | undefined> => {
+    let onboardingStatus: EmployeeOnboardingStatusEntity | undefined
 
     await baseSubmitHandler(employeeId, async id => {
       const result = await updateOnboardingStatusMutation.mutateAsync({
@@ -239,15 +208,11 @@ export function useEmployeeList({
           },
         },
       })
-      callbacks?.onCancelSelfOnboarding?.(id)
 
-      submitResult = {
-        mode: 'update',
-        data: result.employeeOnboardingStatus?.onboardingStatus ?? '',
-      }
+      onboardingStatus = result.employeeOnboardingStatus
     })
 
-    return submitResult
+    return onboardingStatus
   }
 
   const isLoading = !data && isFetching

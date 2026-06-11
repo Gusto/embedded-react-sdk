@@ -4,8 +4,6 @@ description: TypeScript interfaces that define the Component Adapter contract, i
 order: 4
 ---
 
-## Component Adapter Types
-
 The Component Adapter system uses TypeScript interfaces to ensure type safety and consistent behavior. This document provides links to the type definitions you'll need when implementing custom components.
 
 ### Core Types

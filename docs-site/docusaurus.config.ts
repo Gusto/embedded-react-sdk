@@ -77,18 +77,17 @@ const config: Config = {
     ],
     colorMode: {
       defaultMode: 'light',
-      respectPrefersColorScheme: false,
+      respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'SDK',
       logo: {
-        alt: 'Gusto Embedded SDK',
-        src: 'img/gusto-logo.svg',
+        alt: 'Gusto Embedded',
+        src: 'img/gdev-logo-light.svg',
+        srcDark: 'img/gdev-logo-dark.svg',
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'docs',
+          to: '/docs/',
           position: 'left',
           label: 'Docs',
         },
@@ -96,39 +95,52 @@ const config: Config = {
           href: 'https://github.com/Gusto/embedded-react-sdk',
           label: 'GitHub',
           position: 'right',
+          className: 'navbarGithub',
         },
       ],
     },
     footer: {
-      style: 'dark',
+      logo: {
+        alt: 'Gusto Embedded',
+        src: 'img/gdev-logo-light.svg',
+        srcDark: 'img/gdev-logo-dark.svg',
+      },
       links: [
         {
-          title: 'Get Started',
+          title: 'Build',
           items: [
-            { label: 'What is the SDK?', to: '/docs/what-is-the-gep-react-sdk' },
-            { label: 'Getting Started', to: '/docs/getting-started' },
-            { label: 'Workflows Overview', to: '/docs/workflows-overview' },
+            { label: 'Workflows', to: '/docs/workflows-overview' },
+            { label: 'Event Handling', to: '/docs/integration-guide/event-handling' },
+            { label: 'Hooks', to: '/docs/hooks' },
           ],
         },
         {
-          title: 'Guides',
+          title: 'Customize',
           items: [
-            { label: 'Theming', to: '/docs/theming' },
             { label: 'Component Adapter', to: '/docs/component-adapter' },
-            { label: 'Integration Guide', to: '/docs/integration-guide' },
-            { label: 'Hooks (Experimental)', to: '/docs/hooks' },
+            { label: 'Theming', to: '/docs/theming' },
+            { label: 'Translations', to: '/docs/integration-guide/translation' },
+            { label: 'Bring your own data', to: '/docs/integration-guide/providing-your-own-data' },
+          ],
+        },
+        {
+          title: 'Get Started',
+          items: [
+            { label: 'What is the SDK?', to: '/docs/' },
+            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Authentication', to: '/docs/getting-started/authentication' },
           ],
         },
         {
           title: 'Resources',
           items: [
             {
-              label: 'GitHub',
-              href: 'https://github.com/Gusto/embedded-react-sdk',
+              label: 'Developer Portal',
+              href: 'https://docs.gusto.com/embedded-payroll/docs/introduction',
             },
             {
-              label: 'Gusto Developer Portal',
-              href: 'https://docs.gusto.com/embedded-payroll/docs/introduction',
+              label: 'GitHub',
+              href: 'https://github.com/Gusto/embedded-react-sdk',
             },
           ],
         },

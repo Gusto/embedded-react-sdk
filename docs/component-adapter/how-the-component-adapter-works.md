@@ -4,8 +4,6 @@ description: Architecture of the Component Adapter — how prop mappings flow th
 order: 2
 ---
 
-## How the Component Adapter Works
-
 1. You create mappings that connect the SDK props to your UI components
 2. You provide these mappings to either:
    - `GustoProvider` (recommended): Includes default React Aria components and allows overriding specific ones

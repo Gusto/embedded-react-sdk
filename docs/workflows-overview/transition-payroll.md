@@ -4,8 +4,6 @@ description: Workflow for running payrolls that cover gaps between old and new p
 order: 7
 ---
 
-## Overview
-
 The Transition Payroll workflow handles payrolls that cover gaps between old and new pay schedules. When a company changes its pay schedule, there may be workdays that fall between the end of the old schedule and the start of the new one. Transition payrolls ensure employees are paid for those days.
 
 The SDK provides a flow component and an integrated alert for transition payrolls:

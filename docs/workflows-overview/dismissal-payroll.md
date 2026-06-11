@@ -4,8 +4,6 @@ description: Guided workflow for running a terminated employee's final payroll â
 order: 6
 ---
 
-## Overview
-
 The Dismissal Payroll workflow provides a guided experience for running a terminated employee's final payroll. It presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period, and then transitions into the standard [Payroll Processing](./run-payroll.md) flow for configuration, review, and submission. Like all off-cycle payroll types, the dismissal flow shares the same execution steps as regular payrolls â€” the only difference is how the payroll is created.
 
 This workflow is typically launched from the [Employee Termination](./employee-termination.md) flow when the user selects the "Dismissal payroll" option for the employee's final paycheck.

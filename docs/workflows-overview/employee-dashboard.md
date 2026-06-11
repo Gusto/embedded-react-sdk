@@ -4,8 +4,6 @@ description: Tabbed employee dashboard surface — basic details, job and pay, t
 order: 5
 ---
 
-## Overview
-
 The Employee Dashboard provides a comprehensive view of employee information organized into four tabs: Basic details, Job and pay, Taxes, and Documents. This component serves as a central hub for viewing and managing employee data.
 
 ### Implementation

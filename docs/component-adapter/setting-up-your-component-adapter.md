@@ -4,8 +4,6 @@ description: Step-by-step guide to building custom component implementations, wi
 order: 3
 ---
 
-## Setting Up Your Component Adapter
-
 This guide will walk you through the process of creating and implementing your own Component Adapter for the Gusto Embedded React SDK.
 
 ### 1. Create Your Custom Component Implementations

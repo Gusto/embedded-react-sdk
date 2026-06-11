@@ -4,8 +4,6 @@ description: Workflow for onboarding a contractor — profile, address, payment,
 order: 2
 ---
 
-## Overview
-
 The Contractor Onboarding workflow provides components for managing contractor-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
 ### Implementation

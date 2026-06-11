@@ -4,8 +4,6 @@ description: Workflow for onboarding a company to Gusto Embedded Payroll — ind
 order: 1
 ---
 
-## Overview
-
 The Company Onboarding workflow provides components for managing company-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
 ### Implementation

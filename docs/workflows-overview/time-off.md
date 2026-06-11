@@ -4,8 +4,6 @@ description: Workflow for creating and managing sick, vacation, and holiday poli
 order: 6
 ---
 
-## Overview
-
 The Time Off Policy Management workflow provides a complete experience for creating and managing time off policies for a company. It supports three policy types: **Sick**, **Vacation**, and **Holiday**. The flow guides users through selecting a policy type, configuring accrual rules, setting policy limits, and assigning employees.
 
 Sick and vacation policies share a common creation flow — configure details, set accrual settings, then add employees. Holiday policies follow a separate path — select observed federal holidays, then assign employees. All policy types can be viewed, edited, and managed from the unified policy list.
