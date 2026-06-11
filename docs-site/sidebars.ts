@@ -2,7 +2,13 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
 
 const sidebars: SidebarsConfig = {
   docs: [
-    'what-is-the-gep-react-sdk',
+    {
+      type: 'category',
+      label: 'Getting Started',
+      link: { type: 'doc', id: 'getting-started/getting-started' },
+      collapsible: false,
+      items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
+    },
     {
       type: 'category',
       label: 'Deciding to build with the SDK',
@@ -14,31 +20,84 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Getting Started',
-      link: { type: 'doc', id: 'getting-started/getting-started' },
-      items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
-    },
-    {
-      type: 'category',
-      label: 'Workflows Overview',
+      label: 'Workflows',
       link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
+      collapsible: false,
       items: [
-        'workflows-overview/company-onboarding',
         {
           type: 'category',
-          label: 'Employee Onboarding',
-          link: { type: 'doc', id: 'workflows-overview/employee-onboarding/employee-onboarding' },
-          items: ['workflows-overview/employee-onboarding/employee-self-onboarding'],
+          label: 'Companies',
+          items: [
+            {
+              type: 'doc',
+              id: 'workflows-overview/company-onboarding',
+              label: 'Company onboarding',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/information-requests',
+              label: 'Information requests',
+            },
+          ],
         },
-        'workflows-overview/employee-dashboard',
-        'workflows-overview/employee-termination',
-        'workflows-overview/run-payroll',
-        'workflows-overview/off-cycle-payroll',
-        'workflows-overview/dismissal-payroll',
-        'workflows-overview/transition-payroll',
-        'workflows-overview/contractor-onboarding',
-        'workflows-overview/contractor-payments',
-        'workflows-overview/information-requests',
+        {
+          type: 'category',
+          label: 'Employees',
+          items: [
+            {
+              type: 'doc',
+              id: 'workflows-overview/employee-onboarding/employee-onboarding',
+              label: 'Employee onboarding',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/employee-onboarding/employee-self-onboarding',
+              label: 'Employee self-onboarding',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Contractors',
+          items: [
+            {
+              type: 'doc',
+              id: 'workflows-overview/contractor-onboarding',
+              label: 'Conractor onboarding',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/contractor-payments',
+              label: 'Contractor payments',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Payroll',
+          items: [
+            {
+              type: 'doc',
+              id: 'workflows-overview/run-payroll',
+              label: 'Payroll processing',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/off-cycle-payroll',
+              label: 'Off-cycle payroll',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/dismissal-payroll',
+              label: 'Dismissal payroll',
+            },
+            {
+              type: 'doc',
+              id: 'workflows-overview/transition-payroll',
+              label: 'Transition payroll',
+            },
+          ],
+        },
       ],
     },
     {

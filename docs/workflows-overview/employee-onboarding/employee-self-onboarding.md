@@ -3,8 +3,6 @@ title: Employee Self-Onboarding
 order: 0
 ---
 
-## Overview
-
 In the case an employer elects to allow the employee to self-onboard, they can be provided with the self-onboarding workflow. This workflow places the responsibility of submitting some required information on the employee.
 
 ### Implementation
