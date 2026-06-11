@@ -74,6 +74,24 @@ export function domainFromSources(reflection: Reflection): string | null {
 }
 
 /**
+ * Return the hook name derived from the reflection's source path — the first
+ * path segment (after stripping its extension) that matches useCamelCase.
+ * Returns null when no such segment exists.
+ *
+ * Examples:
+ *   useCompensationForm/compensationSchema.ts → "useCompensationForm"
+ *   useEmployeeStateTaxesForm/fields.tsx      → "useEmployeeStateTaxesForm"
+ *   useJobForm.ts (flat file)                 → "useJobForm"
+ */
+export function hookDirFromSources(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  const fp = source.fullFileName ?? source.fileName ?? ''
+  const seg = fp.split(/[/\\]/).find(s => /^use[A-Z]/.test(s.replace(/\.[^.]+$/, '')))
+  return seg ? seg.replace(/\.[^.]+$/, '') : null
+}
+
+/**
  * Return true if the reflection's source file is, or lives inside, a hook
  * directory/file — i.e. any path segment (after stripping its extension)
  * matches useCamelCase. This co-locates companion types from files like
@@ -81,10 +99,7 @@ export function domainFromSources(reflection: Reflection): string | null {
  * the hook itself.
  */
 export function isHookSourceFile(reflection: Reflection): boolean {
-  const source = (reflection as DeclarationReflection).sources?.[0]
-  if (!source) return false
-  const fp = source.fullFileName ?? source.fileName ?? ''
-  return fp.split(/[/\\]/).some(seg => /^use[A-Z]/.test(seg.replace(/\.[^.]+$/, '')))
+  return hookDirFromSources(reflection) !== null
 }
 
 export function load(app: Application): void {
@@ -486,20 +501,39 @@ function kindGroupName(kind: ReflectionKind): string {
 /**
  * Build ReflectionGroups for a synthetic namespace. GroupPlugin only runs
  * during conversion, so synthetic namespaces created in buildPages need their
- * groups constructed manually. Reads @group tags already stamped by the
- * converter event, then falls back to kind-based names.
+ * groups constructed manually.
+ *
+ * For the domain hooks page, pass `hookGroupMap` (built before sources are
+ * cleared) so each member is grouped under its hook directory name rather than
+ * a kind-based section. Priority: hookGroupMap entry → @group tag → kind name.
+ *
+ * Within each hook-named group the primary hook function (member whose name
+ * matches the group title) is sorted to the top.
  */
 function groupSyntheticMembers(
   members: DeclarationReflection[],
   owner: DeclarationReflection,
+  hookGroupMap?: Map<DeclarationReflection, string>,
 ): ReflectionGroup[] {
   const byTitle = new Map<string, DeclarationReflection[]>()
   for (const member of members) {
+    const hookGroup = hookGroupMap?.get(member)
     const tag = member.comment?.blockTags.find(t => t.tag === '@group')
-    const title = tag?.content[0]?.text?.trim() ?? kindGroupName(member.kind)
+    const title = hookGroup ?? tag?.content[0]?.text?.trim() ?? kindGroupName(member.kind)
     const bucket = byTitle.get(title) ?? []
     bucket.push(member)
     byTitle.set(title, bucket)
+  }
+
+  // Within each hook-named group, sort the primary hook function to the top.
+  for (const [title, groupMembers] of byTitle) {
+    if (/^use[A-Z]/.test(title)) {
+      groupMembers.sort((a, b) => {
+        if (a.name === title) return -1
+        if (b.name === title) return 1
+        return 0
+      })
+    }
   }
 
   const ordered = [
@@ -526,6 +560,10 @@ export class SDKRouter extends MemberRouter {
    */
   override buildPages(project: ProjectReflection): PageDefinition[] {
     const hooksByDomain = new Map<string, DeclarationReflection[]>()
+    // Capture hook directory affiliation here, before SDKRouter.clearSources
+    // wipes reflection.sources. groupSyntheticMembers uses this map to group
+    // each hooks-page member under its hook's name rather than a kind section.
+    const hookGroupMap = new Map<DeclarationReflection, string>()
 
     for (const child of project.children ?? []) {
       if (child.kind === ReflectionKind.Namespace) continue
@@ -542,6 +580,9 @@ export class SDKRouter extends MemberRouter {
         bucket.push(child)
         hooksByDomain.set(domain, bucket)
         this.handledHooks.add(child)
+
+        const hookDir = hookDirFromSources(child)
+        if (hookDir) hookGroupMap.set(child, hookDir)
       }
     }
 
@@ -567,7 +608,7 @@ export class SDKRouter extends MemberRouter {
     for (const [domain, hooks] of hooksByDomain) {
       const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
-      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs)
+      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
     }
 
