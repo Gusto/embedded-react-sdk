@@ -6,7 +6,7 @@ import { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierro
 import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
 import { GustoEmbeddedError } from '@gusto/embedded-api-v-2025-11-15/models/errors/gustoembeddederror'
 import { useBaseSubmit } from './useBaseSubmit'
-import { ReadOnlyProvider } from '@/contexts/ReadOnlyProvider/useReadOnly'
+import { ReadOnlyProvider } from '@/contexts/ReadOnlyProvider/ReadOnlyProvider'
 
 const createMockHttpMeta = () => ({
   response: new Response('', { status: 404 }),

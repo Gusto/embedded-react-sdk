@@ -11,7 +11,7 @@ import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingInd
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
-import { ReadOnlyProvider } from '../ReadOnlyProvider/useReadOnly'
+import { ReadOnlyProvider } from '../ReadOnlyProvider/ReadOnlyProvider'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
