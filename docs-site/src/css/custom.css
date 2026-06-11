@@ -450,6 +450,10 @@ aside.theme-doc-sidebar-container {
   margin-top: 1.75rem;
 }
 
+.markdown :is(p, li, td, blockquote) a:not(.hash-link) {
+  text-decoration: underline;
+}
+
 .markdown > p {
   line-height: 1.7;
 }

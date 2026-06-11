@@ -6,7 +6,7 @@ order: 5
 
 The Employee Dashboard provides a comprehensive view of employee information organized into four tabs: Basic details, Job and pay, Taxes, and Documents. This component serves as a central hub for viewing and managing employee data.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -18,7 +18,7 @@ function MyApp() {
 
 > Legacy import via `Employee.DashboardFlow` continues to work.
 
-#### Props
+### Props
 
 | Name                | Type                | Description                                                     |
 | ------------------- | ------------------- | --------------------------------------------------------------- |
@@ -27,7 +27,7 @@ function MyApp() {
 | dictionary          | object              | Optional translations for component text.                       |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component.                       |
 
-#### Events
+### Events
 
 | Event type                                                   | Description                                                     | Data                                                     |
 | ------------------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------- |

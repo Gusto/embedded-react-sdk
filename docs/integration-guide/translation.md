@@ -6,11 +6,11 @@ order: 5
 
 The Gusto Embedded React SDK supports translation of all strings present in the UI. Translations can be used for internationalization. They can also be used to customize text according to the needs of your application.
 
-### i18Next
+## i18Next
 
 We use [i18next](https://www.i18next.com/) to implement translations. If you are also leveraging i18next, we create our own independent instance to avoid conflicting with the one already present in your application.
 
-### Supplying your own translations
+## Supplying your own translations
 
 You can use the `dictionary` prop on the `GustoProvider` to set translations. The top level key represents the language being used (“en” by default). Each string in the UI has a key and corresponding default text. Let’s go through an example updating the `Employee.PaymentMethod` component.
 
@@ -52,7 +52,7 @@ Which results in the following:
 
 We could provide custom text in a similar manner for any copy on the page.
 
-### Viewing available translations
+## Viewing available translations
 
 Documenting available translations is still a work in progress. Every entry in the dictionary, however, is typed. This means that if you can begin typing and get available options in your IDE:
 

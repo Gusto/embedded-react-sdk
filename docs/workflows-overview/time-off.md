@@ -8,7 +8,7 @@ The Time Off Policy Management workflow provides a complete experience for creat
 
 Sick and vacation policies share a common creation flow — configure details, set accrual settings, then add employees. Holiday policies follow a separate path — select observed federal holidays, then assign employees. All policy types can be viewed, edited, and managed from the unified policy list.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { TimeOff } from '@gusto/embedded-react-sdk'
@@ -18,14 +18,14 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type     | Description                                                     |
 | ------------------ | -------- | --------------------------------------------------------------- |
 | companyId Required | string   | The associated company identifier.                              |
 | onEvent Required   | function | See events table for each subcomponent to see available events. |
 
-#### Events
+### Events
 
 The flow emits the following events as users navigate through the workflow:
 

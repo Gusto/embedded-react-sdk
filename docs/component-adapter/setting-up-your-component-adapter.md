@@ -6,7 +6,7 @@ order: 3
 
 This guide will walk you through the process of creating and implementing your own Component Adapter for the Gusto Embedded React SDK.
 
-### 1. Create Your Custom Component Implementations
+## 1. Create Your Custom Component Implementations
 
 Each component must implement the required props interface defined by the SDK. For example, if you're creating a custom TextInput, it must accept all the props defined in the `TextInputProps` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/TextInput/TextInputTypes.ts)).
 
@@ -64,7 +64,7 @@ For a complete reference of all component types and their props, see the [Compon
 
 To learn more about how each component should be implemented, you can reference the default implementations in the SDK ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)).
 
-### 2. Create Your Component Adapter Object
+## 2. Create Your Component Adapter Object
 
 Create an object that implements the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)) with your custom components:
 
@@ -99,11 +99,11 @@ const myCustomComponents: ComponentsContextType = {
 }
 ```
 
-### 3. Choose Your Provider
+## 3. Choose Your Provider
 
 The SDK offers two ways to provide your custom components, each suited for different needs:
 
-#### Option A: Using GustoProvider (Recommended)
+### Option A: Using GustoProvider (Recommended)
 
 The `GustoProvider` is the recommended approach for most applications. Using the `GustoProvider`, you are able to supply only the components you want to override and then the rest fall back to default React Aria components:
 
@@ -134,7 +134,7 @@ Benefits of using `GustoProvider`:
 - Simpler integration path
 - Best choice for most applications
 
-#### Option B: Using GustoProviderCustomUIAdapter
+### Option B: Using GustoProviderCustomUIAdapter
 
 If you need complete control over the UI implementation or want to optimize bundle size through tree-shaking, use the `GustoProviderCustomUIAdapter`:
 
@@ -168,7 +168,7 @@ Choose this option when you:
 - Don't want React Aria as a dependency
 - Have a complete design system you want to use
 
-### 4. Testing Your Implementation
+## 4. Testing Your Implementation
 
 After implementing your Component Adapter, it's a good practice to:
 
@@ -177,7 +177,7 @@ After implementing your Component Adapter, it's a good practice to:
 3. Check accessibility features
 4. Test across different browsers and devices
 
-### Complete Example
+## Complete Example
 
 Here's an example showing how to customize a few common components using Material UI with `GustoProvider`. For a full list of customizable components and their props, see the [Component Inventory](./component-inventory.md).
 
