@@ -27,6 +27,7 @@ import { Employee as Employee_2 } from '@gusto/embedded-api-v-2025-11-15/models/
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
 import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax';
+import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus';
 import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod';
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
 import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
@@ -2002,6 +2003,11 @@ declare namespace Employee {
     }
 }
 
+// Warning: (ae-missing-release-tag) "EmployeeAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type EmployeeAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire';
+
 // Warning: (ae-missing-release-tag) "EmployeeDetailsErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2099,7 +2105,6 @@ declare namespace EmployeeManagement {
         ManagementEmployeeList as EmployeeList,
         EmployeeListFlow,
         EmployeeListFlowProps,
-        EmployeeDocuments,
         Documents,
         DocumentsCard,
         DocumentManager,
@@ -2181,6 +2186,7 @@ declare namespace EmployeeOnboarding {
         Landing,
         DocumentSigner_2 as DocumentSigner,
         EmploymentEligibility,
+        EmployeeDocuments,
         Profile,
         Compensation_2 as Compensation,
         FederalTaxes_3 as FederalTaxes,
@@ -2282,6 +2288,21 @@ export interface EmployeeStateTaxesQuestionMeta {
 export interface EmployeeStateTaxesSchemaOptions {
     // (undocumented)
     isAdmin?: boolean;
+}
+
+// Warning: (ae-missing-release-tag) "EmployeeType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type EmployeeType = 'active' | 'onboarding' | 'terminated';
+
+// Warning: (ae-missing-release-tag) "EmployeeWithActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface EmployeeWithActions extends Employee_2 {
+    // (undocumented)
+    allowedActions: EmployeeAction[];
+    // (undocumented)
+    primaryJob?: Job;
 }
 
 // Warning: (ae-missing-release-tag) "EmploymentEligibility" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5446,6 +5467,45 @@ export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMet
 //
 // @public (undocumented)
 export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady;
+
+// Warning: (ae-missing-release-tag) "useEmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function useEmployeeList(input: UseEmployeeListProps): UseEmployeeListResult;
+
+// Warning: (ae-missing-release-tag) "UseEmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface UseEmployeeListProps {
+    // (undocumented)
+    companyId: string;
+    // (undocumented)
+    employeeType?: EmployeeType;
+}
+
+// Warning: (ae-missing-release-tag) "UseEmployeeListReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface UseEmployeeListReady extends BaseHookReady<{
+    employees: EmployeeWithActions[];
+}, {
+    isFetching: boolean;
+    isPending: boolean;
+}> {
+    // (undocumented)
+    actions: {
+        onDelete: (employeeId: string) => Promise<void>;
+        onReview: (employeeId: string) => Promise<EmployeeOnboardingStatus_2 | undefined>;
+        onCancelSelfOnboarding: (employeeId: string) => Promise<EmployeeOnboardingStatus_2 | undefined>;
+    };
+    // (undocumented)
+    pagination: PaginationControlProps;
+}
+
+// Warning: (ae-missing-release-tag) "UseEmployeeListResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady;
 
 // Warning: (ae-missing-release-tag) "useEmployeeStateTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

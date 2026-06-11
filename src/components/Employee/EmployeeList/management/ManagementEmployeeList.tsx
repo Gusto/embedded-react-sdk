@@ -79,11 +79,8 @@ function ManagementEmployeeListRoot({
         onEdit={handleEdit}
         onDismiss={handleDismiss}
         onDelete={async (employeeId: string) => {
-          await employeeList.actions.onDelete(employeeId, {
-            onDelete: (id: string) => {
-              onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: id })
-            },
-          })
+          await employeeList.actions.onDelete(employeeId)
+          onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
         }}
         onAddEmployee={handleAddEmployee}
       />
