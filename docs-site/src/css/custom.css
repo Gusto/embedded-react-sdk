@@ -541,7 +541,6 @@ pre code,
   word-break: break-word;
 }
 
-
 [data-theme='dark'] code {
   background-color: rgba(255, 255, 255, 0.13);
 }

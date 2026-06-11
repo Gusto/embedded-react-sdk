@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import clsx from 'clsx'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import CopyButton from '@theme/CodeBlock/Buttons/CopyButton'
-import styles from '@theme/CodeBlock/Buttons/styles.module.css'
+import styles from './styles.module.css'
 
 export default function CodeBlockButtons({ className }: { className?: string }): ReactNode {
   return (
