@@ -136,19 +136,7 @@ interface JobSchemaOptions {
   withTitleField?: boolean
 }
 
-/**
- * Builds the Zod schema and field-metadata config used internally by {@link useJobForm}.
- *
- * @remarks
- * Exposed for advanced cases where the schema is needed outside the hook (for
- * example, to validate a payload before composing with another form). Most
- * usages do not need to call this directly — {@link useJobForm} constructs the
- * schema on every render based on its props.
- *
- * @param options - Schema configuration. `mode` selects required-field rules for create vs update; `optionalFieldsToRequire` promotes optional fields to required; `withHireDateField` / `withTitleField` toggle whether those fields are part of the validated shape.
- * @returns A tuple of `[schema, metadataConfig]` produced by `buildFormSchema`.
- * @public
- */
+/** @internal */
 export function createJobSchema(options: JobSchemaOptions = {}) {
   const {
     mode = 'create',

@@ -227,9 +227,9 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
     showCommissionMinimumWageAlert: boolean
     /**
      * True when the current `flsaStatus` is `OWNER` (Owner's draw). Render
-     * an informational alert reminding partners that the IRS requires
-     * S-corp owners to pay themselves a reasonable salary for similar
-     * work before taking distributions.
+     * an informational alert noting that the IRS requires S-corp owners to
+     * pay themselves a reasonable salary for similar work before taking
+     * distributions.
      */
     showOwnerSalaryAlert: boolean
   }
@@ -346,6 +346,32 @@ function todayISO(): string {
  * @param input - {@link UseCompensationFormProps} — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders.
  * @returns A {@link HookLoadingResult} while data is loading, or a {@link UseCompensationFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
+ *   const comp = useCompensationForm({ employeeId, jobId })
+ *   if (comp.isLoading) return null
+ *
+ *   const { Fields } = comp.form
+ *   return (
+ *     <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
+ *       <SDKFormProvider formHookResult={comp}>
+ *         {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
+ *         <Fields.Rate label="Compensation amount" />
+ *         <Fields.PaymentUnit label="Payment unit" />
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *       </SDKFormProvider>
+ *       {comp.status.willDeleteSecondaryJobs && (
+ *         <p>Saving will remove this employee's secondary jobs.</p>
+ *       )}
+ *       <button type="submit" disabled={comp.status.isPending}>Save</button>
+ *     </form>
+ *   )
+ * }
+ * ```
  */
 export function useCompensationForm({
   employeeId,

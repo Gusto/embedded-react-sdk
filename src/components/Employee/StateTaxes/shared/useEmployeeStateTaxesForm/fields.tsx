@@ -164,11 +164,12 @@ function buildEntry(
 }
 
 /**
- * Memoization helper: state-tax data refetches will return new array
- * references even when the underlying questions are unchanged. Use this
- * inside a `useMemo` whose dependency is the raw `employeeStateTaxes` to
- * avoid rebuilding bound Field components on every render.
+ * Memoizes the bound field components for a state-taxes form, avoiding unnecessary rebuilds when the data refetches but the underlying questions haven't changed.
  *
+ * @param employeeStateTaxes - Array of state-tax groups returned by the employee state-taxes API.
+ * @param isAdmin - When `true`, admin-only questions are included; when `false`, they are filtered out.
+ * @returns An array of {@link StateTaxFieldsGroup} — one entry per state, each with a `questions` array of bound field components.
+ * @public
  * @group Utility Hooks
  */
 export function useStateFields(

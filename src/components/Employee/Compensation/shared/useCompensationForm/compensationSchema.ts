@@ -247,11 +247,7 @@ export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
  */
 export type CompensationFormOutputs = CompensationFormData
 
-/**
- * Options accepted by {@link createCompensationSchema}.
- *
- * @public
- */
+/** @internal */
 export interface CompensationSchemaOptions {
   /** Selects required-field rules: `'create'` (POST) or `'update'` (PUT). Defaults to `'create'`. */
   mode?: 'create' | 'update'
@@ -288,19 +284,7 @@ export interface CompensationSchemaOptions {
   withEffectiveDateField?: boolean
 }
 
-/**
- * Builds the Zod schema and field-metadata config used internally by {@link useCompensationForm}.
- *
- * @remarks
- * Exposed for advanced cases where the schema is needed outside the hook (for
- * example, to validate a payload before composing with another form). Most
- * usages do not need to call this directly — {@link useCompensationForm}
- * constructs the schema on every render based on its props.
- *
- * @param options - Schema configuration. See {@link CompensationSchemaOptions}.
- * @returns A tuple of `[schema, metadataConfig]` produced by `buildFormSchema`.
- * @public
- */
+/** @internal */
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
   const {
     mode = 'create',

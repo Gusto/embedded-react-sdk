@@ -90,10 +90,10 @@ export interface UseJobFormProps {
   shouldFocusError?: boolean
   /**
    * When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes
-   * `hireDate` from schema validation. Partners supply the value via
-   * `JobSubmitOptions.hireDate` at submit time, or rely on the loaded job's
-   * existing value on update. Use this when the date is driven by external
-   * context rather than user input (e.g. the employee's `startDate`).
+   * `hireDate` from schema validation. Supply the value via
+   * {@link JobSubmitOptions.hireDate} at submit time, or rely on the loaded
+   * job's existing value on update. Use this when the date is driven by
+   * external context rather than user input (e.g. the employee's `startDate`).
    * Defaults to `true`.
    */
   withHireDateField?: boolean
@@ -203,15 +203,36 @@ function findJob(jobs: Job[] | undefined, jobId: string | undefined): Job | null
  * `version` from `compensations[]`) from the create response and thread them
  * into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
  *
- * When the primary job's `hireDate` changes, the API overwrites every
- * secondary compensation's `effective_date` to the new hire date. The hook
- * captures the original secondary effective dates before the PUT and restores
- * them to `max(originalEffectiveDate, newHireDate)` afterwards — `isPending`
- * stays `true` through that correction block.
+ * When the primary job's `hireDate` changes, secondary compensation effective
+ * dates are corrected after the PUT; `isPending` stays `true` through that.
  *
  * @param input - {@link UseJobFormProps} — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders.
  * @returns A {@link HookLoadingResult} while data is loading, or a {@link UseJobFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function JobForm({ employeeId }: { employeeId: string }) {
+ *   const job = useJobForm({ employeeId })
+ *   if (job.isLoading) return null
+ *
+ *   const { Fields } = job.form
+ *   return (
+ *     <form onSubmit={e => { e.preventDefault(); job.actions.onSubmit() }}>
+ *       <SDKFormProvider formHookResult={job}>
+ *         {Fields.Title && <Fields.Title label="Job title" />}
+ *         {Fields.HireDate && <Fields.HireDate label="Hire date" />}
+ *         {Fields.TwoPercentShareholder && (
+ *           <Fields.TwoPercentShareholder label="2% S-Corp shareholder" />
+ *         )}
+ *       </SDKFormProvider>
+ *       <button type="submit" disabled={job.status.isPending}>Save</button>
+ *     </form>
+ *   )
+ * }
+ * ```
  */
 export function useJobForm({
   employeeId,

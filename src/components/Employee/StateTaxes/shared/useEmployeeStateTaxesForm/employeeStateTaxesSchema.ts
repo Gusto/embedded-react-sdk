@@ -13,10 +13,15 @@ import type { FieldsMetadataConfig } from '@/partner-hook-utils/form/buildFormSc
 // ── Error codes ────────────────────────────────────────────────────────
 
 /**
- * The state-taxes form only surfaces a single error code: `REQUIRED`. Field
- * values are stored as `z.unknown()` in the schema; the bundled UI components
- * emit type-correct values and the submit serializer handles edge cases, so
- * any "invalid" input is treated as empty and lands on `REQUIRED`.
+ * Validation error codes produced by the {@link useEmployeeStateTaxesForm} schema.
+ *
+ * @remarks
+ * Use these constants as the keys in a field's `validationMessages` prop to
+ * map an error code to a user-facing message. The state-taxes form surfaces
+ * only a single error code: every required field that is empty emits
+ * `REQUIRED`.
+ *
+ * @public
  */
 export const EmployeeStateTaxesErrorCodes = {
   REQUIRED: 'REQUIRED',
@@ -102,16 +107,7 @@ export type EmployeeStateTaxesSchemaResult = [
   metadataConfig: EmployeeStateTaxesMetadataConfig,
 ]
 
-/**
- * Builds a Zod schema and metadata config for a dynamic state-taxes form.
- *
- * Schema shape: `{ states: { [state]: { [camelKey]: value } } }` where the
- * inner record's keys mirror each API question's `key` after camelCasing.
- *
- * Required fields are tracked via `superRefine` (mirrors `buildFormSchema`'s
- * approach for static-shape forms). Admin-only questions are excluded from
- * both schema and metadata when `isAdmin=false`.
- */
+/** @internal */
 export function createEmployeeStateTaxesSchema(
   employeeStateTaxes: EmployeeStateTaxesList[],
   options: EmployeeStateTaxesSchemaOptions = {},
