@@ -6,10 +6,34 @@ import {
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceToISODate, coerceStringBoolean } from '@/partner-hook-utils/form/preprocessors'
 
+/**
+ * Validation error codes produced by the {@link useJobForm} schema.
+ *
+ * @remarks
+ * Use these constants as the keys in a field's `validationMessages` prop to
+ * map an error code to a user-facing message.
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { JobErrorCodes } from '@gusto/embedded-react-sdk'
+ *
+ * <Fields.Title
+ *   label="Job title"
+ *   validationMessages={{ [JobErrorCodes.REQUIRED]: 'Job title is required' }}
+ * />
+ * ```
+ */
 export const JobErrorCodes = {
   REQUIRED: 'REQUIRED',
 } as const
 
+/**
+ * Union of every error code produced by the {@link useJobForm} schema.
+ *
+ * @public
+ */
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes]
 
 const fieldValidators = {
@@ -21,9 +45,31 @@ const fieldValidators = {
   stateWcClassCode: z.string(),
 }
 
+/**
+ * Shape of the form values managed by {@link useJobForm}.
+ *
+ * @remarks
+ * Accepted as `defaultValues` on `useJobForm` and returned by
+ * `form.getFormSubmissionValues()` once the form has validated. `hireDate` is
+ * an ISO date string (`YYYY-MM-DD`) or `null`; `stateWcCovered` is a boolean
+ * even though the radio group surfaces `'true'` / `'false'` strings during
+ * input (the schema preprocessor coerces them).
+ *
+ * @public
+ */
 export type JobFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+
+/**
+ * Validated submission shape produced by the {@link useJobForm} schema.
+ *
+ * @remarks
+ * Identical to {@link JobFormData} — exposed as a separate alias so the input
+ * vs. output sides of the schema remain distinguishable in advanced usages.
+ *
+ * @public
+ */
 export type JobFormOutputs = JobFormData
 
 const requiredFieldsConfig = {
@@ -38,6 +84,35 @@ const requiredFieldsConfig = {
   stateWcClassCode: data => String(data.stateWcCovered) === 'true',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
+/**
+ * Override which fields are required on a given submission mode of {@link useJobForm}.
+ *
+ * @remarks
+ * Each mode key lists the fields that are optional by default for that mode
+ * but should be promoted to required. `stateWcClassCode` is automatically
+ * required when `stateWcCovered` is `true` and is not configurable here.
+ *
+ * | Field | Required on create | Required on update | Configurable? |
+ * | ----- | ------------------ | ------------------ | ------------- |
+ * | `title` | Yes | No | Yes (on update) |
+ * | `hireDate` | Yes | No | Yes (on update) |
+ * | `twoPercentShareholder` | No | No | Yes (either mode) |
+ * | `stateWcCovered` | No | No | Yes (either mode) |
+ * | `stateWcClassCode` | When WC is covered | When WC is covered | No (auto) |
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * const job = useJobForm({
+ *   employeeId,
+ *   jobId,
+ *   optionalFieldsToRequire: {
+ *     update: ['title', 'hireDate'],
+ *   },
+ * })
+ * ```
+ */
 export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>
 
 interface JobSchemaOptions {
@@ -61,6 +136,19 @@ interface JobSchemaOptions {
   withTitleField?: boolean
 }
 
+/**
+ * Builds the Zod schema and field-metadata config used internally by {@link useJobForm}.
+ *
+ * @remarks
+ * Exposed for advanced cases where the schema is needed outside the hook (for
+ * example, to validate a payload before composing with another form). Most
+ * usages do not need to call this directly — {@link useJobForm} constructs the
+ * schema on every render based on its props.
+ *
+ * @param options - Schema configuration. `mode` selects required-field rules for create vs update; `optionalFieldsToRequire` promotes optional fields to required; `withHireDateField` / `withTitleField` toggle whether those fields are part of the validated shape.
+ * @returns A tuple of `[schema, metadataConfig]` produced by `buildFormSchema`.
+ * @public
+ */
 export function createJobSchema(options: JobSchemaOptions = {}) {
   const {
     mode = 'create',
