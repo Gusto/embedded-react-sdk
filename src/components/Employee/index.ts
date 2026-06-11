@@ -37,6 +37,3 @@ export type { PayrollOption } from './Terminations/types'
 
 export { WorkAddress } from './WorkAddress/management/WorkAddress'
 export type { WorkAddressProps } from './WorkAddress/management/WorkAddress'
-
-// TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
-export { Taxes } from './Taxes'

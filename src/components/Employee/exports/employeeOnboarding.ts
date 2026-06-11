@@ -18,4 +18,3 @@ export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/onboarding
 export { StateTaxes, type StateTaxesProps } from '../StateTaxes/onboarding'
 export { Deductions } from '../Deductions'
 export { PaymentMethod, type PaymentMethodProps } from '../PaymentMethod/onboarding'
-export { Taxes } from '../Taxes'

@@ -90,7 +90,6 @@ All of the events emitted by sdk components are listed in the following table:
 | EMPLOYEE_SPLIT_PAYMENT                | employee/paymentMethod/split                  |
 | EMPLOYEE_STATE_TAXES_UPDATED          | employee/stateTaxes/updated                   |
 | EMPLOYEE_SUMMARY_VIEW                 | employee/summary                              |
-| EMPLOYEE_TAXES_DONE                   | employee/taxes/done                           |
 | EMPLOYEE_UPDATE                       | employee/update                               |
 | EMPLOYEE_UPDATED                      | employee/updated                              |
 | EMPLOYEE_VIEW_FORM_TO_SIGN            | employee/forms/view                           |

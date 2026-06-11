@@ -84,7 +84,6 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeOnboarding.Profile': ['companyId'],
   'EmployeeOnboarding.SelfOnboardingFlow': ['companyId', 'employeeId'],
   'EmployeeOnboarding.StateTaxes': ['employeeId'],
-  'EmployeeOnboarding.Taxes': ['employeeId'],
   'InformationRequests.InformationRequestForm': ['companyId', 'requestId'],
   'InformationRequests.InformationRequestList': ['companyId'],
   'InformationRequests.InformationRequestsFlow': ['companyId'],

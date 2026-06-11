@@ -949,29 +949,6 @@
         "workAddressUuid"
       ]
     },
-    "Employee.Taxes": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        }
-      ],
-      "variables": [
-        "employeeUuid"
-      ]
-    },
     "InformationRequests.InformationRequestsFlow": {
       "endpoints": [
         {
@@ -1871,29 +1848,6 @@
       "variables": [
         "employeeId",
         "garnishmentId"
-      ]
-    },
-    "EmployeeOnboarding.Taxes": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        }
-      ],
-      "variables": [
-        "employeeUuid"
       ]
     },
     "EmployeeManagement.EmployeeList": {
