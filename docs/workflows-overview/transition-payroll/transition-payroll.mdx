@@ -1,0 +1,36 @@
+---
+title: Transition payroll
+description: Workflow for running payrolls that cover gaps between old and new pay schedules, plus the alert surfaced inside the payroll landing for unprocessed transition periods.
+order: 4
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Transition Payroll workflow handles payrolls that cover gaps between old and new pay schedules. When a company changes its pay schedule, there may be workdays that fall between the end of the old schedule and the start of the new one — transition payrolls ensure employees are paid for those days. The SDK provides a flow component for running a specific transition payroll and an integrated alert (rendered inside `Payroll.PayrollLanding`) that surfaces unprocessed transition periods.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that creates the transition payroll and hands off to the standard execution flow.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Transition creation',
+      description: 'Creation form for a transition payroll — pay period, check date, deductions, and tax withholding.',
+      to: './sub-components#transition-creation',
+    },
+  ]}
+/>

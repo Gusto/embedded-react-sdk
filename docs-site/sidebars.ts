@@ -6,95 +6,249 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Getting Started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
-      collapsed: false,
+      collapsed: true,
       items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
     },
+    // {
+    //   type: 'category',
+    //   label: 'Deciding to build with the SDK',
+    //   link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
+    //   items: [
+    //     'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
+    //     'deciding-to-build-with-the-sdk/component-types',
+    //   ],
+    // },
     {
       type: 'category',
-      label: 'Deciding to build with the SDK',
-      link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
-      items: [
-        'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
-        'deciding-to-build-with-the-sdk/component-types',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Workflows',
+      label: 'Surfaces',
       link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
-      collapsed: false,
+      collapsible: false,
       items: [
         {
           type: 'category',
           label: 'Companies',
+          link: { type: 'doc', id: 'workflows-overview/companies' },
           items: [
             {
-              type: 'doc',
-              id: 'workflows-overview/company-onboarding',
-              label: 'Company onboarding',
+              type: 'category',
+              label: 'Onboard a company',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/company-onboarding/company-onboarding',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/company-onboarding/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/company-onboarding/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/information-requests',
+              type: 'category',
               label: 'Information requests',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/information-requests/information-requests',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/information-requests/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/information-requests/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
           ],
         },
         {
           type: 'category',
           label: 'Employees',
+          link: { type: 'doc', id: 'workflows-overview/employees' },
           items: [
             {
-              type: 'doc',
-              id: 'workflows-overview/employee-onboarding/employee-onboarding',
-              label: 'Employee onboarding',
+              type: 'category',
+              label: 'Onboard an employee',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/employee-onboarding/employee-onboarding',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/employee-onboarding/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/employee-onboarding/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/employee-onboarding/employee-self-onboarding',
+              type: 'category',
               label: 'Employee self-onboarding',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/employee-self-onboarding/employee-self-onboarding',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/employee-self-onboarding/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/employee-self-onboarding/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
           ],
         },
         {
           type: 'category',
           label: 'Contractors',
+          link: { type: 'doc', id: 'workflows-overview/contractors' },
           items: [
             {
-              type: 'doc',
-              id: 'workflows-overview/contractor-onboarding',
-              label: 'Conractor onboarding',
+              type: 'category',
+              label: 'Contractor onboarding',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/contractor-onboarding/contractor-onboarding',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/contractor-onboarding/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/contractor-onboarding/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/contractor-payments',
+              type: 'category',
               label: 'Contractor payments',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/contractor-payments/contractor-payments',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/contractor-payments/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/contractor-payments/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
           ],
         },
         {
           type: 'category',
           label: 'Payroll',
+          link: { type: 'doc', id: 'workflows-overview/payroll' },
           items: [
             {
-              type: 'doc',
-              id: 'workflows-overview/run-payroll',
+              type: 'category',
               label: 'Payroll processing',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/run-payroll/run-payroll',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/run-payroll/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/run-payroll/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/off-cycle-payroll',
+              type: 'category',
               label: 'Off-cycle payroll',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/off-cycle-payroll/off-cycle-payroll',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/off-cycle-payroll/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/off-cycle-payroll/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/dismissal-payroll',
+              type: 'category',
               label: 'Dismissal payroll',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/dismissal-payroll/dismissal-payroll',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/dismissal-payroll/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/dismissal-payroll/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'workflows-overview/transition-payroll',
+              type: 'category',
               label: 'Transition payroll',
+              link: {
+                type: 'doc',
+                id: 'workflows-overview/transition-payroll/transition-payroll',
+              },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/transition-payroll/workflow',
+                  label: 'Workflow',
+                },
+                {
+                  type: 'doc',
+                  id: 'workflows-overview/transition-payroll/sub-components',
+                  label: 'Sub-components',
+                },
+              ],
             },
           ],
         },

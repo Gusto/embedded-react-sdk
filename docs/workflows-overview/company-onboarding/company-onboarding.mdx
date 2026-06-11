@@ -1,0 +1,111 @@
+---
+title: Onboard a company
+description: Onboard a company to Gusto Embedded Payroll — industry, signatory, locations, federal and state taxes, pay schedule, bank account, and document signing.
+order: 1
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+Company Onboarding walks a company through everything required before they can run payroll: industry, signatory assignment, locations, federal and state taxes, pay schedule, bank account, and document signing. The same building blocks can be composed end-to-end as a full workflow or rendered individually as standalone sub-components.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire company onboarding experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Assign a signatory',
+      description: 'Choose between creating a new signatory or inviting someone to become the signatory.',
+      to: './sub-components#assign-a-signatory',
+    },
+    {
+      title: 'Create a signatory',
+      description: 'Standalone form for creating a new signatory with full personal details.',
+      to: './sub-components#create-a-signatory',
+    },
+    {
+      title: 'Invite a signatory',
+      description: 'Standalone form for inviting someone to become the company signatory.',
+      to: './sub-components#invite-a-signatory',
+    },
+    {
+      title: 'Industry',
+      description: "Select and save the company's industry classification (NAICS code).",
+      to: './sub-components#industry',
+    },
+    {
+      title: 'Documents',
+      description: 'Read and sign required company documents, with signatory management.',
+      to: './sub-components#documents',
+    },
+    {
+      title: 'Documents list',
+      description: 'Standalone list of company documents to be signed.',
+      to: './sub-components#documents-list',
+    },
+    {
+      title: 'Sign a document',
+      description: 'Standalone form for signing an individual company document.',
+      to: './sub-components#sign-a-document',
+    },
+    {
+      title: 'Federal taxes',
+      description: 'Add company federal tax info — EIN, tax payer type, filing form, legal name.',
+      to: './sub-components#federal-taxes',
+    },
+    {
+      title: 'Pay schedule',
+      description: 'Create, edit, and preview a company pay schedule.',
+      to: './sub-components#pay-schedule',
+    },
+    {
+      title: 'Locations',
+      description: 'Manage company addresses, including mailing and filing.',
+      to: './sub-components#locations',
+    },
+    {
+      title: 'Location form',
+      description: 'Standalone form for creating or editing a single company location.',
+      to: './sub-components#location-form',
+    },
+    {
+      title: 'Bank account',
+      description: "Manage the company's bank account, including micro-deposit verification.",
+      to: './sub-components#bank-account',
+    },
+    {
+      title: 'State taxes',
+      description: 'Manage state tax setup across applicable states.',
+      to: './sub-components#state-taxes',
+    },
+    {
+      title: 'State taxes form',
+      description: 'Standalone form for editing state tax requirements for a specific state.',
+      to: './sub-components#state-taxes-form',
+    },
+    {
+      title: 'State taxes list',
+      description: 'Standalone list of state tax requirements for the company.',
+      to: './sub-components#state-taxes-list',
+    },
+    {
+      title: 'Onboarding overview',
+      description: 'Summary of completed steps and remaining requirements for the company.',
+      to: './sub-components#onboarding-overview',
+    },
+  ]}
+/>

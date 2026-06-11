@@ -1,59 +1,18 @@
 ---
-title: Employee Onboarding
-description: Complete workflow for onboarding an employee to payroll — profile, compensation, taxes, payment method, and document signing, with optional I-9 step.
-order: 0
+title: Sub-components
+description: Standalone sub-components for admin-driven employee onboarding — render in isolation or compose into a custom workflow.
+order: 2
 ---
 
-The Employee Onboarding workflow provides a complete experience for onboarding an employee to a company. It is used to collect all required information for an employee to be added to payroll.
-
-### Implementation
-
-```jsx
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <EmployeeOnboarding.OnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      withEmployeeI9
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
-#### Props
-
-| Name                    | Type    | Default | Description                                                                                                                                                          |
-| ----------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId              | string  |         | The associated employee identifier.                                                                                                                                  |
-| companyId Required      | string  |         | The associated company identifier.                                                                                                                                   |
-| defaultValues           | object  |         | Default values for individual flow step components                                                                                                                   |
-| onEvent Required        |         |         | See events table for each subcomponent to see available events.                                                                                                      |
-| isSelfOnboardingEnabled | boolean | true    | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. |
-| withEmployeeI9          | boolean | false   | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements.                                    |
-
-## Using Employee Subcomponents
+# Employee Onboarding sub-components
 
 Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-### Available Subcomponents
+---
 
-- [EmployeeOnboarding.EmployeeList](#employeelist)
-- [EmployeeOnboarding.Profile](#employeeprofile)
-- [EmployeeOnboarding.Compensation](#employeecompensation)
-- [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes--employeemanagementfederaltaxes)
-- [EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes](#employeeonboardingstatetaxes--employeemanagementstatetaxes)
-- [EmployeeOnboarding.PaymentMethod](#employeepaymentmethod)
-- [EmployeeOnboarding.Deductions](#employeedeductions)
-- [EmployeeOnboarding.EmployeeDocuments](#employeeemployeedocuments)
-- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingsummary)
+## Employees list
 
-> Legacy imports via `Employee.*` (e.g. `Employee.EmployeeList`) continue to work.
-
-### Employee.List
-
-Displays a list of employees containing their full name, and their current onboarding status. An onboarding status. This list also contains actions that allow for the editing or removal of an employee.
+Displays a list of employees containing their full name and their current onboarding status. The list also includes actions for editing or removing an employee.
 
 ```jsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -84,7 +43,9 @@ function MyApp() {
 | EMPLOYEE_ONBOARDING_STATUS_UPDATED | Fired after the "Review" or "Cancel self-onboarding" action updates the employee's onboarding status | The updated `EmployeeOnboardingStatus` record       |
 | EMPLOYEE_DELETED                   | Fired after selecting delete from the employee actions menu and the delete operation completes       | `{ employeeId: string }`                            |
 
-### Employee.Profile
+---
+
+## Profile
 
 Used to collect basic information about the employee:
 
@@ -136,7 +97,9 @@ function MyComponent() {
 | EMPLOYEE_PROFILE_DONE         | Fired after form submission and all api calls have finished and we are ready to advance to the next step | Called with an object aggregated with the responses above. This either includes all of the responses for creating new entities (if it is creating a new employee) or all the responses for updating entities (if it is updating an existing employee) |
 | CANCEL                        | Fired when user clicks cancel button                                                                     | None                                                                                                                                                                                                                                                  |
 
-### Employee.Compensation
+---
+
+## Compensation
 
 Collects details related to the role of the employee and their compensation:
 
@@ -180,7 +143,9 @@ function MyComponent() {
 | EMPLOYEE_COMPENSATION_UPDATED | Fired after updating compensation details                                                      | Response from the Update a compensation endpoint |
 | EMPLOYEE_COMPENSATION_DONE    | Fired when compensation setup is complete and we are ready to advance to the next step         | None                                             |
 
-### EmployeeOnboarding.FederalTaxes / EmployeeManagement.FederalTaxes
+---
+
+## Federal taxes
 
 Provides required form inputs for employee federal tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs and emitted events; pick the variant that matches your screen instead of toggling a prop.
 
@@ -228,7 +193,9 @@ function ManagementEditScreen() {
 | EMPLOYEE_FEDERAL_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step             | None                                                                                                                                                                                                      |
 | CANCEL                         | Management only        | Fired when the user clicks the Cancel button                                                       | None                                                                                                                                                                                                      |
 
-### EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes
+---
+
+## State taxes
 
 Provides required form inputs for employee state tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs, emitted events, and visible questions; pick the variant that matches your screen instead of toggling a prop.
 
@@ -277,7 +244,9 @@ function ManagementEditScreen() {
 | EMPLOYEE_STATE_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step | None                                                   |
 | CANCEL                       | Management only        | Fired when the user clicks the Cancel button                                           | None                                                   |
 
-### Employee.PaymentMethod
+---
+
+## Payment method
 
 Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts.
 
@@ -308,7 +277,9 @@ function MyComponent() {
 | EMPLOYEE_PAYMENT_METHOD_UPDATED | Fired when the employee updates the payment method by selecting the continue CTA or if they opt to split paychecks and save the split paycheck form | Response from the Update payment method endpoint |
 | EMPLOYEE_PAYMENT_METHOD_DONE    | Fired when the continue CTA is selected on the payment details step, all API calls are finished, and we are ready to advance to the next step       | None                                             |
 
-### Employee.Deductions
+---
+
+## Deductions
 
 Used for configuring additional withholdings from employee pay. Deductions can be set by percentage or fixed amount, and can be either recurring or one-time.
 
@@ -339,7 +310,9 @@ function MyComponent() {
 | EMPLOYEE_DEDUCTION_DELETED | Fired after deleting a deduction                                                       | Response from the Update a garnishment endpoint with active:false |
 | EMPLOYEE_DEDUCTION_DONE    | Fired when deductions setup is complete and user is ready to navigate to the next step | None                                                              |
 
-### Employee.EmployeeDocuments
+---
+
+## Documents
 
 Used during admin onboarding to configure which documents are included in the employee's self-onboarding experience. When the employee has been invited to self-onboard, this step allows the admin to enable or disable the I-9 (Employment Eligibility Verification) form. When the employee is not self-onboarding, this step displays a read-only summary of the documents that will be part of the onboarding process.
 
@@ -372,7 +345,9 @@ function MyComponent() {
 | EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED | Fired after the admin toggles the I-9 inclusion checkbox and the configuration is successfully updated | Response from the [Update an employee's onboarding documents config](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-onboarding_documents_config) endpoint |
 | EMPLOYEE_DOCUMENTS_CONTINUE                  | Fired when the admin clicks continue and is ready to advance to the next step                          | None                                                                                                                                                                                      |
 
-### Employee.OnboardingSummary
+---
+
+## Onboarding summary
 
 Displays the current state of employee onboarding.
 

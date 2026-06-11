@@ -1,0 +1,46 @@
+---
+title: Off-cycle payroll
+description: Workflow for running payrolls outside the regular pay schedule — bonus or correction — then transitioning into the standard payroll execution.
+order: 2
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Off-Cycle Payroll workflow runs payrolls outside of a company's regular pay schedule. It supports two off-cycle reasons — **Bonus** (paying a bonus, gift, or commission) and **Correction** (running a correction payment) — and guides users through configuring pay period dates, selecting a reason, choosing employees, and setting deduction and tax withholding preferences. After creation, the flow transitions into the standard payroll execution experience.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that creates the off-cycle payroll and hands off to the standard execution flow.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Off-cycle creation',
+      description: 'Main creation form — reason, pay period dates, employee selection, deductions, and tax withholding.',
+      to: './sub-components#off-cycle-creation',
+    },
+    {
+      title: 'Reason selection',
+      description: 'Reason selection UI for choosing between a bonus and correction payment.',
+      to: './sub-components#reason-selection',
+    },
+    {
+      title: 'Deductions setting',
+      description: 'Choose whether to include or skip regular deductions for the off-cycle payroll.',
+      to: './sub-components#deductions-setting',
+    },
+  ]}
+/>

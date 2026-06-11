@@ -1,0 +1,61 @@
+---
+title: Contractor onboarding
+description: Workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+order: 1
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Contractor Onboarding workflow collects everything required to set a contractor up for payment: profile, address, payment method, new hire reporting, and final submission. The same building blocks can be composed end-to-end as a full workflow or rendered individually as standalone sub-components.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire contractor onboarding experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Contractors list',
+      description: 'List of contractors for a company with actions to add, edit, delete, and continue onboarding.',
+      to: './sub-components#contractors-list',
+    },
+    {
+      title: 'Profile',
+      description: 'Form for creating and editing a contractor profile — individual or business, with self-onboarding option.',
+      to: './sub-components#profile',
+    },
+    {
+      title: 'Address',
+      description: "Form for collecting and updating a contractor's mailing address.",
+      to: './sub-components#address',
+    },
+    {
+      title: 'Payment method',
+      description: "Configure the contractor's payment method — direct deposit or check.",
+      to: './sub-components#payment-method',
+    },
+    {
+      title: 'New hire report',
+      description: 'Handle new hire reporting requirements for the contractor.',
+      to: './sub-components#new-hire-report',
+    },
+    {
+      title: 'Submit contractor',
+      description: 'Finalize contractor onboarding — update status and optionally invite the contractor for self-onboarding.',
+      to: './sub-components#submit-contractor',
+    },
+  ]}
+/>

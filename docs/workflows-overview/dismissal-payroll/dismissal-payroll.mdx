@@ -1,0 +1,37 @@
+---
+title: Dismissal payroll
+description: Guided workflow for running a terminated employee's final payroll — surfaces unprocessed termination pay periods and transitions into the standard payroll flow.
+order: 3
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Dismissal Payroll workflow provides a guided experience for running a terminated employee's final payroll. It presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period, and then transitions into the standard payroll execution flow. Like all off-cycle payroll types, the dismissal flow shares the same execution steps as regular payrolls — the only difference is how the payroll is created.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that handles pay period selection and hands off to the standard payroll execution.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Sub-components',
+      description:
+        "Dismissal payroll is delivered as a single orchestrated flow. After creation, it reuses the standard payroll processing sub-components for configuration, overview, submission, and receipts.",
+      to: './sub-components',
+    },
+  ]}
+/>

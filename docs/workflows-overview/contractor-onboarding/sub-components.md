@@ -1,52 +1,18 @@
 ---
-title: Contractor Onboarding
-description: Workflow for onboarding a contractor — profile, address, payment, and document signing — composable as a full flow or individual subcomponents.
+title: Sub-components
+description: Standalone sub-components for contractor onboarding — render in isolation or compose into a custom workflow.
 order: 2
 ---
 
-The Contractor Onboarding workflow provides components for managing contractor-related onboarding tasks. These components can be used individually or composed into a complete workflow.
+# Contractor Onboarding sub-components
 
-### Implementation
-
-```jsx
-import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <ContractorOnboarding.OnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
-#### Props
-
-| Name               | Type   | Description                                                                                           |
-| ------------------ | ------ | ----------------------------------------------------------------------------------------------------- |
-| companyId Required | string | The associated company identifier.                                                                    |
-| defaultValues      | object | Default values containing `profile` and/or `address` sub-objects for individual flow step components. |
-| onEvent Required   |        | See events table for each subcomponent to see available events.                                       |
-
-Events from subcomponents bubble up through the `onEvent` handler.
-
-## Using Contractor Subcomponents
-
-Contractor onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
-
-### Available Subcomponents
-
-- [ContractorOnboarding.ContractorList](#contractorcontractorlist)
-- [ContractorOnboarding.ContractorProfile](#contractorcontractorprofile)
-- [ContractorOnboarding.Address](#contractoraddress)
-- [ContractorOnboarding.PaymentMethod](#contractorpaymentmethod)
-- [ContractorOnboarding.NewHireReport](#contractornewhirereport)
-- [ContractorOnboarding.ContractorSubmit](#contractorcontractorsubmit)
+Contractor onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
 > Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
 
-### Contractor.ContractorList
+---
+
+## Contractors list
 
 Displays a list of contractors for a company, allowing users to add new contractors, edit existing ones, delete contractors, and continue the onboarding process.
 
@@ -80,7 +46,9 @@ function MyComponent() {
 | CONTRACTOR_DELETED             | Fired when a contractor is deleted              | { contractorId: string } |
 | CONTRACTOR_ONBOARDING_CONTINUE | Fired when user chooses to continue onboarding  | None                     |
 
-### Contractor.ContractorProfile
+---
+
+## Profile
 
 A comprehensive form for creating and editing contractor profiles. Supports both individual and business contractor types, with different field sets for each. Includes options for wage type, self-onboarding invitations, and start date.
 
@@ -114,7 +82,9 @@ function MyComponent() {
 | CONTRACTOR_UPDATED      | Fired when an existing contractor is updated        | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid)         |
 | CONTRACTOR_PROFILE_DONE | Fired when the contractor profile step is complete  | { contractorId: string, selfOnboarding: boolean }                                                                                               |
 
-### Contractor.Address
+---
+
+## Address
 
 A form for collecting and updating a contractor's mailing address.
 
@@ -141,7 +111,9 @@ function MyComponent() {
 | CONTRACTOR_ADDRESS_UPDATED | Fired when the contractor address is updated | [Response from the create or update a contractor's address API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid-address) |
 | CONTRACTOR_ADDRESS_DONE    | Fired when the address step is complete      | None                                                                                                                                                                  |
 
-### Contractor.PaymentMethod
+---
+
+## Payment method
 
 Manages the contractor's payment method, including adding a bank account for direct deposit or selecting check as the payment method.
 
@@ -168,7 +140,9 @@ function MyComponent() {
 | CONTRACTOR_PAYMENT_METHOD_UPDATED | Fired when the payment method is updated                | [Response from the update a contractor's payment method API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_id-payment_method) |
 | CONTRACTOR_PAYMENT_METHOD_DONE    | Fired when the payment method step is complete          | None                                                                                                                                                                    |
 
-### Contractor.NewHireReport
+---
+
+## New hire report
 
 Handles new hire reporting requirements for the contractor. Behavior varies based on whether the contractor is going through admin onboarding or self-onboarding.
 
@@ -195,7 +169,9 @@ function MyComponent() {
 | CONTRACTOR_NEW_HIRE_REPORT_UPDATED | Fired when the new hire report is updated       | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid) |
 | CONTRACTOR_NEW_HIRE_REPORT_DONE    | Fired when the new hire report step is complete | None                                                                                                                                    |
 
-### Contractor.ContractorSubmit
+---
+
+## Submit contractor
 
 Finalizes the contractor onboarding process. Updates the onboarding status and, in the self-onboarding flow, can trigger an invitation to the contractor.
 

@@ -1,0 +1,41 @@
+---
+title: Information Requests
+description: Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+order: 8
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Information Requests surface lets a company view and respond to outstanding information requests Gusto has issued — for example, a request for a missing tax document or identity verification artifact. Information requests can also block payroll processing, in which case they surface inline within `Payroll.PayrollBlockerList`; this surface is the dedicated, standalone version.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the full list-and-respond experience for outstanding information requests.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Information requests list',
+      description: 'List of information requests for a company with status badges and a "Respond" CTA.',
+      to: './sub-components#information-requests-list',
+    },
+    {
+      title: 'Information request form',
+      description: 'Dynamic response form for a single information request, rendered from the required questions.',
+      to: './sub-components#information-request-form',
+    },
+  ]}
+/>

@@ -1,60 +1,16 @@
 ---
-title: Company Onboarding
-description: Workflow for onboarding a company to Gusto Embedded Payroll — industry, signatory, locations, federal taxes, bank account, and document signing subcomponents.
-order: 1
+title: Sub-components
+description: Standalone sub-components for company onboarding — render in isolation or compose into a custom workflow.
+order: 2
 ---
 
-The Company Onboarding workflow provides components for managing company-related onboarding tasks. These components can be used individually or composed into a complete workflow.
+# Company Onboarding sub-components
 
-### Implementation
+Company onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-```jsx title="App.tsx"
-import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+---
 
-function MyApp() {
-  return (
-    <CompanyOnboarding.OnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
-#### Props
-
-| Name               | Type   | Description                                                     |
-| ------------------ | ------ | --------------------------------------------------------------- |
-| companyId Required | string | The associated company identifier.                              |
-| defaultValues      | object | Default values for individual flow step components              |
-| onEvent Required   |        | See events table for each subcomponent to see available events. |
-
-## Using Company Subcomponents
-
-Company onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
-
-### Available Subcomponents
-
-- [CompanyOnboarding.AssignSignatory](#companyassignsignatory)
-- [CompanyOnboarding.CreateSignatory](#companycreatesignatory)
-- [CompanyOnboarding.InviteSignatory](#companyinvitesignatory)
-- [CompanyOnboarding.Industry](#companyindustry)
-- [CompanyOnboarding.DocumentSigner](#companydocumentsigner)
-- [CompanyOnboarding.DocumentList](#companydocumentlist)
-- [CompanyOnboarding.SignatureForm](#companysignatureform)
-- [CompanyOnboarding.FederalTaxes](#companyfederaltaxes)
-- [CompanyOnboarding.PaySchedule](#companypayschedule)
-- [CompanyOnboarding.Locations](#companylocations)
-- [CompanyOnboarding.LocationForm](#companylocationform)
-- [CompanyOnboarding.BankAccount](#companybankaccount)
-- [CompanyOnboarding.StateTaxes](#companystatetaxes)
-- [CompanyOnboarding.StateTaxesForm](#companystatetaxesform)
-- [CompanyOnboarding.StateTaxesList](#companystatetaxeslist)
-- [CompanyOnboarding.OnboardingOverview](#companyonboardingoverview)
-
-> Legacy imports via `Company.*` (e.g. `Company.OnboardingFlow`) continue to work.
-
-### Company.AssignSignatory
+## Assign a signatory
 
 A component allowing users to choose between creating a new signatory with full details or inviting someone else to become the signatory.
 
@@ -89,7 +45,9 @@ function MyComponent() {
 | COMPANY_SIGNATORY_UPDATED             | Fired when an existing signatory is updated (create mode) | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | COMPANY_SIGNATORY_INVITED             | Fired when a signatory invitation is sent (invite mode)   | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite)        |
 
-### Company.CreateSignatory
+---
+
+## Create a signatory
 
 A standalone form for creating a new signatory with full personal details including name, contact information, SSN, and home address. Use this component when you want to provide only the create signatory flow without the invite option.
 
@@ -120,7 +78,9 @@ function MyComponent() {
 | COMPANY_SIGNATORY_UPDATED     | Fired when an existing signatory is updated successfully | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | COMPANY_CREATE_SIGNATORY_DONE | Fired when the create signatory process is complete      | None                                                                                                                                                         |
 
-### Company.InviteSignatory
+---
+
+## Invite a signatory
 
 A standalone form for inviting someone else to become the company signatory. The invited person will receive an email to complete their signatory information. Use this component when you want to provide only the invite signatory flow without the create option.
 
@@ -149,7 +109,9 @@ function MyComponent() {
 | COMPANY_SIGNATORY_INVITED     | Fired when a signatory is successfully invited to the company | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite) |
 | COMPANY_INVITE_SIGNATORY_DONE | Fired when the invite signatory process is complete           | None                                                                                                                                                  |
 
-### Company.Industry
+---
+
+## Industry
 
 A component for selecting and saving the company's industry classification (NAICS code). The selector presents a searchable list of industry options for the company.
 
@@ -174,7 +136,9 @@ function MyComponent() {
 | ------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | COMPANY_INDUSTRY_SELECTED | Fired when an industry is selected and saved | `industry` field from the [Update industry selection API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-industry_selection) |
 
-### Company.DocumentSigner
+---
+
+## Documents
 
 Provides an interface for company representatives to read and sign required company documents. The component handles document listing, signatory management, and document signing workflow.
 
@@ -212,7 +176,9 @@ function MyComponent() {
 | COMPANY_SIGNATORY_UPDATED             | Fired when an existing signatory is updated successfully         | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | COMPANY_SIGNATORY_INVITED             | Fired when a signatory is successfully invited to the company    | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite)        |
 
-### Company.DocumentList
+---
+
+## Documents list
 
 A standalone component that displays the list of company documents to be signed and lets the user manage signatories. This is the lower-level building block used internally by `Company.DocumentSigner` for its list view. Use this component directly when you need full control over navigation between the document list and the signature form.
 
@@ -242,7 +208,9 @@ function MyComponent() {
 | COMPANY_FORM_EDIT_SIGNATORY | Fired when user requests to change the document signatory       | Current signatory entity                                                                                                     |
 | COMPANY_FORMS_DONE          | Fired when user completes the document signing process          | None                                                                                                                         |
 
-### Company.SignatureForm
+---
+
+## Sign a document
 
 A standalone form for signing an individual company document. This is the lower-level building block used internally by `Company.DocumentSigner` for its signing view. Use this component directly when you need full control over navigation between the document list and the signature form (e.g. you are routing the user yourself after they select a form from `Company.DocumentList`).
 
@@ -276,7 +244,9 @@ function MyComponent() {
 | COMPANY_SIGN_FORM_DONE | Fired when the form signing process is complete            | None                                                                                                                          |
 | COMPANY_SIGN_FORM_BACK | Fired when the user navigates back from the signature form | None                                                                                                                          |
 
-### Company.FederalTaxes
+---
+
+## Federal taxes
 
 A component for adding company federal tax information including EIN, tax payer type, filing form, and legal name.
 
@@ -305,7 +275,9 @@ function MyComponent() {
 | COMPANY_FEDERAL_TAXES_UPDATED | Fired when federal tax details are successfully updated | [Response from the update federal tax details API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-federal_tax_details) |
 | COMPANY_FEDERAL_TAXES_DONE    | Fired when the federal tax update process is complete   | None                                                                                                                                                          |
 
-### Company.PaySchedule
+---
+
+## Pay schedule
 
 A component for managing company pay schedules, including creating, editing, and viewing pay schedules with preview functionality.
 
@@ -332,7 +304,9 @@ function MyComponent() {
 | PAY_SCHEDULE_CREATED | Fired when a new pay schedule is successfully created       | [Response from the create pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-pay_schedules)                |
 | PAY_SCHEDULE_UPDATED | Fired when an existing pay schedule is successfully updated | [Response from the update pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 
-### Company.Locations
+---
+
+## Locations
 
 An orchestrated component for managing company addresses, including mailing and filing address. Internally uses a state machine to switch between a list view and a create/edit form. For more granular control, you can use `Company.LocationForm` directly.
 
@@ -362,7 +336,9 @@ function MyComponent() {
 | COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
 | COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |
 
-### Company.LocationForm
+---
+
+## Location form
 
 A standalone form component for creating a new company location or editing an existing one. This is the lower-level building block used internally by `Company.Locations` for its create/edit views. Use this component directly when you need full control over navigation between the list and form views.
 
@@ -398,7 +374,9 @@ function MyComponent() {
 | COMPANY_LOCATION_UPDATED | Fired when a location has been successfully edited | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
 | CANCEL                   | Fired when the user cancels editing                | None                                                                                                                                                |
 
-### Company.BankAccount
+---
+
+## Bank account
 
 A component for managing company bank account
 
@@ -428,7 +406,9 @@ function MyComponent() {
 | COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
 | COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
 
-### Company.StateTaxes
+---
+
+## State taxes
 
 An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `CompanyOnboarding.StateTaxesList` or `CompanyOnboarding.StateTaxesForm` directly.
 
@@ -455,7 +435,9 @@ function MyComponent() {
 | COMPANY_STATE_TAX_UPDATED | Fired when a state tax setup has been successfully submitted        | [Response from the create a company update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 | COMPANY_STATE_TAX_DONE    | Fired when user chooses to proceed to a next step                   | None                                                                                                                                                                           |
 
-### Company.StateTaxesForm
+---
+
+## State taxes form
 
 A standalone form component for editing state tax requirements for a specific state. This is the lower-level building block used internally by `Company.StateTaxes` for its edit view. Use this component directly when you need full control over navigation between the list and form views.
 
@@ -488,7 +470,9 @@ function MyComponent() {
 | COMPANY_STATE_TAX_UPDATED | Fired when a state tax setup has been successfully submitted | [Response from the create a company update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 | CANCEL                    | Fired when the user cancels editing                          | None                                                                                                                                                                           |
 
-### Company.StateTaxesList
+---
+
+## State taxes list
 
 A standalone component that displays the list of state tax requirements for a company. This is the lower-level building block used internally by `Company.StateTaxes` for its list view. Use this component directly when you need full control over navigation between the list and form views.
 
@@ -516,7 +500,9 @@ function MyComponent() {
 | COMPANY_STATE_TAX_EDIT | Fired when a user chooses to edit requirements for a specific state | `{ state: string }` |
 | COMPANY_STATE_TAX_DONE | Fired when user chooses to proceed to a next step                   | None                |
 
-### Company.OnboardingOverview
+---
+
+## Onboarding overview
 
 Displays the company's overall onboarding status. Shows completed steps and remaining requirements, providing a high-level summary of where the company is in the onboarding process. Used as the landing/summary screen of the onboarding flow.
 

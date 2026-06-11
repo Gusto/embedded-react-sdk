@@ -1,0 +1,71 @@
+---
+title: Employee self-onboarding
+description: Employee-driven onboarding flow that hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information.
+order: 2
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+When an admin opts an employee into self-onboarding, the employee completes their own onboarding steps — profile, tax, payment method, and document signing — rather than the admin entering everything on their behalf. The workflow can be composed end-to-end as a single component, or built from standalone sub-components when you need full control over the surrounding experience.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire employee-driven self-onboarding experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Welcome screen',
+      description: 'Guidance for the employee on what to expect from self-onboarding and what to have on hand.',
+      to: './sub-components#welcome-screen',
+    },
+    {
+      title: 'Profile',
+      description: "Collect the employee's basic info — name, email, SSN, date of birth, home address.",
+      to: './sub-components#profile',
+    },
+    {
+      title: 'Federal taxes',
+      description: "Form for the employee's federal tax (W-4) withholding configuration.",
+      to: './sub-components#federal-taxes',
+    },
+    {
+      title: 'State taxes',
+      description: "Form for the employee's state tax configuration across applicable states.",
+      to: './sub-components#state-taxes',
+    },
+    {
+      title: 'Payment method',
+      description: 'Configure employee bank accounts, including split-paycheck setup.',
+      to: './sub-components#payment-method',
+    },
+    {
+      title: 'Sign documents',
+      description: 'Read and sign required employment documents, with optional I-9 routing.',
+      to: './sub-components#sign-documents',
+    },
+    {
+      title: 'Employment eligibility',
+      description: "Collect the employee's I-9 employment eligibility details — citizenship status and supporting documents.",
+      to: './sub-components#employment-eligibility',
+    },
+    {
+      title: 'Onboarding summary',
+      description: "Summary of the employee's current onboarding state.",
+      to: './sub-components#onboarding-summary',
+    },
+  ]}
+/>

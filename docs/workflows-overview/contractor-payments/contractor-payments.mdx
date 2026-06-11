@@ -1,0 +1,56 @@
+---
+title: Contractor payments
+description: Workflow for creating, managing, and viewing contractor payment groups.
+order: 2
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Contractor Payments workflow lets a company create, manage, and view contractor payment groups. The full experience can be dropped in as a single component, or assembled from individual sub-components — payment list, payment creation, history, summary, and individual payment statements.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire contractor payments experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Payments list',
+      description: 'List of contractor payment groups, with the ability to create new payments and filter by date range.',
+      to: './sub-components#payments-list',
+    },
+    {
+      title: 'Create payment',
+      description: 'Form for creating a contractor payment group — payment date, individual contractor edits, preview, and submission blockers.',
+      to: './sub-components#create-payment',
+    },
+    {
+      title: 'Payment history',
+      description: 'Detailed view of a payment group and its individual contractor payments, with cancellation when permitted.',
+      to: './sub-components#payment-history',
+    },
+    {
+      title: 'Payment summary',
+      description: 'Confirmation screen after payment creation — totals, debit details, and wire transfer instructions when applicable.',
+      to: './sub-components#payment-summary',
+    },
+    {
+      title: 'Payment statement',
+      description: 'Individual contractor payment statement with detailed payment information and breakdown.',
+      to: './sub-components#payment-statement',
+    },
+  ]}
+/>

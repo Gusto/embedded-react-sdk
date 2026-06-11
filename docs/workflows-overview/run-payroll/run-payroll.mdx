@@ -1,0 +1,86 @@
+---
+title: Payroll processing
+description: End-to-end workflow for running payroll — select a payroll, configure employee compensation, review details, confirm wire transfers, and submit for processing.
+order: 1
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Payroll Processing workflow guides a company through running a regular payroll: selecting a payroll, configuring employee compensation, reviewing payroll details, confirming wire transfers, and submitting. The full experience can be dropped in as a single component, or assembled from individual sub-components for full control over the surrounding UI.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire payroll processing experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Landing',
+      description: 'Main landing page for payroll, with tabs for running payroll and viewing history.',
+      to: './sub-components#landing',
+    },
+    {
+      title: 'Payroll list',
+      description: 'List of available payrolls with status, blockers, and actions to run or skip.',
+      to: './sub-components#payroll-list',
+    },
+    {
+      title: 'History',
+      description: 'Historical payroll records with filtering, summary views, and cancellation when applicable.',
+      to: './sub-components#history',
+    },
+    {
+      title: 'Configuration',
+      description: 'Review and edit employee compensation before calculating the payroll.',
+      to: './sub-components#configuration',
+    },
+    {
+      title: 'Edit employee',
+      description: "Edit an individual employee's pay rate, hours, bonuses, and other compensation within a payroll.",
+      to: './sub-components#edit-employee',
+    },
+    {
+      title: 'Overview',
+      description: 'Final review and submission screen, with processing status and confirmation after submission.',
+      to: './sub-components#overview',
+    },
+    {
+      title: 'Execution flow',
+      description: 'Shared inner flow — configuration → overview → submission → receipt — reusable across all payroll types.',
+      to: './sub-components#execution-flow',
+    },
+    {
+      title: 'Receipts',
+      description: 'Detailed receipt for a completed payroll — payments, deductions, taxes, and totals.',
+      to: './sub-components#receipts',
+    },
+    {
+      title: 'Blockers',
+      description: 'List of blockers preventing payroll from being processed and information for resolving them.',
+      to: './sub-components#blockers',
+    },
+    {
+      title: 'Recovery cases',
+      description: 'Open recovery cases for a company with an in-modal resubmit workflow.',
+      to: './sub-components#recovery-cases',
+    },
+    {
+      title: 'Wire transfer confirmation',
+      description: 'Wire transfer confirmation workflow for payroll funding, including instructions and confirmation modal.',
+      to: './sub-components#wire-transfer-confirmation',
+    },
+  ]}
+/>

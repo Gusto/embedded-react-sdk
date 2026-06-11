@@ -1,16 +1,20 @@
 ---
-title: Dismissal Payroll
-description: Guided workflow for running a terminated employee's final payroll — surfaces unprocessed termination pay periods and transitions into the standard payroll flow.
-order: 6
+title: Workflow
+description: Drop-in Payroll.DismissalFlow component that runs a terminated employee's final payroll.
+order: 1
 ---
 
-The Dismissal Payroll workflow provides a guided experience for running a terminated employee's final payroll. It presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period, and then transitions into the standard [Payroll Processing](./run-payroll.md) flow for configuration, review, and submission. Like all off-cycle payroll types, the dismissal flow shares the same execution steps as regular payrolls — the only difference is how the payroll is created.
+# Dismissal Payroll workflow
 
-This workflow is typically launched from the [Employee Termination](./employee-termination.md) flow when the user selects the "Dismissal payroll" option for the employee's final paycheck.
+The Dismissal Payroll workflow renders the full final-paycheck experience for a terminated employee as a single component. It surfaces unprocessed termination pay periods, lets the user pick one, creates an off-cycle payroll for it, and then hands off to the standard payroll execution.
+
+This workflow is typically launched from the [Employee Termination](../employee-termination.md) flow when the user selects the "Dismissal payroll" option for the employee's final paycheck.
 
 > **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.
 
-### Implementation
+---
+
+## Implementation
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -43,38 +47,32 @@ Events emitted during the pay period selection phase:
 | ----------------------------- | -------------------------------------------------- | ----------------------- |
 | DISMISSAL_PAY_PERIOD_SELECTED | Fired when user selects a pay period and continues | { payrollUuid: string } |
 
-Once the payroll is created, all standard [run payroll events](./run-payroll.md) are emitted during execution (e.g. `RUN_PAYROLL_CALCULATED`, `RUN_PAYROLL_SUBMITTED`, `RUN_PAYROLL_PROCESSED`).
+Once the payroll is created, all standard [run payroll events](../run-payroll/workflow#events) are emitted during execution (e.g. `RUN_PAYROLL_CALCULATED`, `RUN_PAYROLL_SUBMITTED`, `RUN_PAYROLL_PROCESSED`).
 
-## Using Dismissal Subcomponents
+---
 
-The dismissal payroll workflow is delivered as a single orchestrated flow (`Payroll.DismissalFlow`). After the dismissal payroll is created, the flow transitions into the standard payroll execution experience and uses the [Run Payroll subcomponents](./run-payroll.md#available-subcomponents) for configuration, overview, submission, and receipts.
-
-### Available Subcomponents
-
-- `Payroll.DismissalFlow` (the entire dismissal flow — see [Implementation](#implementation) above)
-
-For the execution phase, the dismissal flow internally renders [`Payroll.PayrollExecutionFlow`](./run-payroll.md#payrollpayrollexecutionflow) with `isDismissalPayroll` enabled. If you want to build a custom dismissal-creation step in front of the standard execution UI, render `Payroll.PayrollExecutionFlow` directly with the payroll you created. See the [Run Payroll docs](./run-payroll.md) for individual execution subcomponents (`Payroll.PayrollConfiguration`, `Payroll.PayrollOverview`, `Payroll.PayrollReceipts`).
-
-## Workflow Steps
+## Workflow steps
 
 The flow adapts based on whether a `payrollId` is provided:
 
 **Without `payrollId` (default)**:
 
-1. **Pay Period Selection**: Displays unprocessed termination pay periods for the employee. The user selects which period to run the final payroll for.
+1. **Pay period selection**: Displays unprocessed termination pay periods for the employee. The user selects which period to run the final payroll for.
 2. **Execution**: The standard payroll execution flow takes over — configure employee compensation, review, submit, and view receipts.
 
 **With `payrollId`**:
 
 1. **Execution**: Skips pay period selection and goes directly to payroll execution for the specified payroll.
 
+---
+
 ## Integration with Employee Termination
 
-The dismissal payroll flow integrates with the [Employee Termination workflow](./employee-termination.md):
+The dismissal payroll flow integrates with the [Employee Termination workflow](../employee-termination.md):
 
-- When the user selects the "Dismissal payroll" option during termination, the `EMPLOYEE_TERMINATION_RUN_PAYROLL` event is emitted with `{ employeeId, companyId, payrollUuid, termination }`
-- Your application should handle this event by rendering `Payroll.DismissalFlow` with the appropriate `companyId` and `employeeId`
-- The dismissal flow fetches the employee's unprocessed termination pay periods and guides the user through the final payroll
+- When the user selects the "Dismissal payroll" option during termination, the `EMPLOYEE_TERMINATION_RUN_PAYROLL` event is emitted with `{ employeeId, companyId, payrollUuid, termination }`.
+- Your application should handle this event by rendering `Payroll.DismissalFlow` with the appropriate `companyId` and `employeeId`.
+- The dismissal flow fetches the employee's unprocessed termination pay periods and guides the user through the final payroll.
 
 ```jsx
 import { useState } from 'react'
@@ -110,13 +108,23 @@ function TerminationPage({ companyId, employeeId }) {
 }
 ```
 
-## Pay Period Selection
+---
+
+## Pay period selection
 
 The pay period selection step fetches unprocessed termination pay periods for the employee and presents them as options. Each option shows the pay period date range. When only one pay period is available, it is automatically pre-selected.
 
 Upon selection and submission, the component creates an off-cycle payroll with the `"Dismissed employee"` off-cycle reason using the selected pay period's start and end dates.
 
-## API Reference
+---
+
+## Skipping a dismissal payroll
+
+If someone accidentally selects dismissal payroll as the final paycheck option and doesn't want to run a dismissal payroll, they can use the [Skip a payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/post-companies-payroll-skip-company_uuid) to bypass the requirement.
+
+---
+
+## API reference
 
 The dismissal payroll uses these API endpoints:
 
@@ -125,7 +133,3 @@ The dismissal payroll uses these API endpoints:
 - **Calculate payroll**: `PUT /v1/companies/{company_id}/payrolls/{payroll_id}/calculate`
 - **Submit payroll**: `PUT /v1/companies/{company_id}/payrolls/{payroll_id}/submit`
 - **Cancel payroll**: `PUT /v1/companies/{company_id}/payrolls/{payroll_id}/cancel`
-
-### Skipping a Dismissal Payroll
-
-If someone accidentally selects dismissal payroll as the final paycheck option and doesn't want to run a dismissal payroll, they can use the [Skip a payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/post-companies-payroll-skip-company_uuid) to bypass the requirement.

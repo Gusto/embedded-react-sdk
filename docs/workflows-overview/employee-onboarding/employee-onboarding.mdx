@@ -1,0 +1,78 @@
+---
+title: Onboard and employee to payroll
+description: Admin-driven workflow for onboarding an employee to payroll — profile, compensation, taxes, payment method, and document signing, with optional I-9 step.
+order: 1
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The Employee Onboarding workflow provides a complete experience for an admin to onboard a new employee to a company. It collects every piece of information required for the employee to be added to payroll, and can be composed end-to-end as a full workflow or rendered piece by piece as standalone sub-components.
+
+## Workflow
+
+<LinkCardGrid
+  columns={1}
+  items={[
+    {
+      title: 'Workflow',
+      description:
+        'A single drop-in component that renders the entire admin-driven employee onboarding experience end to end.',
+      to: './workflow',
+    },
+  ]}
+/>
+
+## Sub-components
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Employees list',
+      description: 'List of employees with their onboarding status and actions to edit or remove.',
+      to: './sub-components#employees-list',
+    },
+    {
+      title: 'Profile',
+      description: 'Collect basic employee info — name, addresses, email, SSN, date of birth.',
+      to: './sub-components#profile',
+    },
+    {
+      title: 'Compensation',
+      description: 'Configure job title, employee type, compensation amount, and pay period.',
+      to: './sub-components#compensation',
+    },
+    {
+      title: 'Federal taxes',
+      description: "Form for the employee's federal tax (W-4) withholding configuration.",
+      to: './sub-components#federal-taxes',
+    },
+    {
+      title: 'State taxes',
+      description: "Form for the employee's state tax configuration across applicable states.",
+      to: './sub-components#state-taxes',
+    },
+    {
+      title: 'Payment method',
+      description: 'Configure employee bank accounts, including split-paycheck setup.',
+      to: './sub-components#payment-method',
+    },
+    {
+      title: 'Deductions',
+      description:
+        'Configure additional withholdings from employee pay — percentage or fixed amount, recurring or one-time.',
+      to: './sub-components#deductions',
+    },
+    {
+      title: 'Documents',
+      description:
+        'Configure which documents are included in the employee onboarding experience, including the I-9.',
+      to: './sub-components#documents',
+    },
+    {
+      title: 'Onboarding summary',
+      description: "Summary of the employee's current onboarding state.",
+      to: './sub-components#onboarding-summary',
+    },
+  ]}
+/>
