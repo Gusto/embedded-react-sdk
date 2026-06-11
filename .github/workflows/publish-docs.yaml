@@ -31,6 +31,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: publish-docs
+  cancel-in-progress: false
+
 jobs:
   sync:
     # workflow_dispatch always allowed (for manual testing). workflow_run
@@ -43,9 +47,6 @@ jobs:
     runs-on:
       group: gusto-ubuntu-default
     environment: publish-docs
-    concurrency:
-      group: publish-docs
-      cancel-in-progress: false
     permissions:
       contents: read
     steps:
