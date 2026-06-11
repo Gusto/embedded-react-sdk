@@ -7,28 +7,40 @@ import type { OnEventType } from '@/components/Base/useBase'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link CompensationEditForm}.
+ *
+ * @public
+ */
 export interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
-  /** The id of the job whose compensation is being edited. The form fetches the
-   *  job (a cached query, deduped against any sibling consumer) and inspects its
-   *  compensations to decide whether to edit the current comp or an already
-   *  scheduled future-dated (pending) change. */
+  /**
+   * The id of the job whose compensation is being edited (for example, the `jobId` from the
+   * {@link CompensationCard} `employee/management/compensation/card/editRequested` payload).
+   * The form inspects the job's compensations to decide whether to edit the current
+   * compensation or an already-scheduled future-dated change.
+   */
   jobId: string
-  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` (with the saved
-   *  `Compensation`) on a successful save, and
-   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED` when the user cancels. */
+  /** Callback invoked when the form emits an event. See the events table on {@link CompensationEditForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Edits the compensation for a single job. Self-fetching thin router: it loads
- * the job by id (React Query dedupes against the card's own list query, so no
- * extra request) and forwards to the pending-change editor when the job already
- * has a scheduled future-dated compensation (so the user adjusts the queued
- * change rather than stacking a second one), and to the current-compensation
- * editor otherwise. Both branches resolve copy from
- * `Employee.Management.Compensation`; the optional `dictionary` is forwarded to
- * whichever editor renders.
+ * Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change.
+ *
+ * @remarks
+ * Pair with {@link CompensationCard} to route its `employee/management/compensation/card/editRequested` event to this form. `EmployeeManagement.Compensation` bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
+ * | `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+ *
+ * @param props - See {@link CompensationEditFormProps}.
+ * @returns The rendered compensation edit form.
+ * @public
+ * @group Block Components
  */
 export function CompensationEditForm({
   employeeId,
