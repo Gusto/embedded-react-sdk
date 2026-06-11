@@ -12,22 +12,22 @@ const surfaces: Surface[] = [
   {
     title: 'Companies',
     description: 'Stand up a new company and request the information needed to run payroll.',
-    to: '/workflows-overview/companies',
+    to: '/docs/workflows-overview/companies',
   },
   {
     title: 'Employees',
     description: 'Onboard employees, manage their details, and handle terminations.',
-    to: '/workflows-overview/employees',
+    to: '/docs/workflows-overview/employees',
   },
   {
     title: 'Contractors',
     description: 'Onboard contractors and pay them on or off cycle.',
-    to: '/workflows-overview/contractors',
+    to: '/docs/workflows-overview/contractors',
   },
   {
     title: 'Payroll',
     description: 'Run regular, off-cycle, dismissal, and transition payrolls.',
-    to: '/workflows-overview/payroll',
+    to: '/docs/workflows-overview/payroll',
   },
 ]
 
