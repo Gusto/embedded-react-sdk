@@ -1,5 +1,6 @@
 ---
 title: Transition Payroll
+description: Workflow for running payrolls that cover gaps between old and new pay schedules, including an alert surfaced in PayrollLanding for unprocessed transition periods.
 order: 7
 ---
 

@@ -7,10 +7,12 @@ const config: Config = {
   tagline: 'Embedded Payroll React SDK Documentation',
   favicon: 'img/favicon.svg',
 
-  // docs-site/ in this repo is a local-dev preview of the current docs
-  // only. The public site (with version history) lives in
-  // Gusto/embedded-sdk-docs and owns its own production URL.
-  url: 'http://localhost',
+  // This repo is the source of truth for the docs. The publish-docs.yaml
+  // workflow builds this site on each NPM release and pushes the output to
+  // Gusto/embedded-sdk-docs, which serves it at sdk.gusto.com. The url
+  // below is what gets baked into the sitemap, canonical links, and OG
+  // tags, so it must match the production domain.
+  url: 'https://sdk.gusto.com',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
@@ -33,6 +35,7 @@ const config: Config = {
         indexBlog: false,
         docsRouteBasePath: '/docs',
         docsDir: '../docs',
+        ignoreFiles: [/test-fests\//],
         searchBarShortcut: false,
         searchBarShortcutHint: false,
       },
@@ -48,6 +51,7 @@ const config: Config = {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
           breadcrumbs: true,
+          exclude: ['test-fests/**'],
         },
         blog: false,
         theme: {
@@ -58,6 +62,21 @@ const config: Config = {
   ],
 
   themeConfig: {
+    image: 'img/og-default.png',
+    metadata: [
+      {
+        name: 'description',
+        content:
+          'Documentation for the Gusto Embedded React SDK — pre-built workflows and primitives for embedding payroll.',
+      },
+      {
+        name: 'keywords',
+        content: 'gusto, embedded payroll, react sdk, payroll api, hr api, embedded finance',
+      },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: 'Gusto Embedded SDK' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+    ],
     colorMode: {
       defaultMode: 'light',
       respectPrefersColorScheme: true,

@@ -1,5 +1,6 @@
 ---
 title: Component Adapter
+description: Replace the SDK's default UI primitives with your own design-system components while keeping all SDK business logic and behavior intact.
 order: 5
 ---
 

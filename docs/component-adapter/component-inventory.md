@@ -1,3 +1,8 @@
+---
+title: Component Inventory
+description: Complete catalog of customizable UI components in the Component Adapter, with prop interfaces for inputs, buttons, layout primitives, dialogs, and more.
+---
+
 # Component Inventory
 
 - [AlertProps](#alertprops)

@@ -1,5 +1,6 @@
 ---
 title: Contractor Onboarding
+description: Workflow for onboarding a contractor — profile, address, payment, and document signing — composable as a full flow or individual subcomponents.
 order: 2
 ---
 

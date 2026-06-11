@@ -1,5 +1,6 @@
 ---
 title: useEmployeeList
+description: Headless data hook returning a paginated list of a company's employees, each decorated with the actions allowed for its onboarding state — delete, review, or cancel self-onboarding.
 order: 10
 ---
 

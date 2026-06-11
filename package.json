@@ -49,6 +49,7 @@
     "docs:clear": "npm --prefix docs-site run clear",
     "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:install": "npm --prefix docs-site install",
+    "docs:lint": "npx tsx ./build/lintDocsFrontmatter.ts",
     "docs:serve": "npm --prefix docs-site run serve",
     "format": "prettier . --write --log-level warn",
     "format:check": "prettier . --check --log-level warn",
@@ -156,7 +157,8 @@
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-plugin-stylelint": "^6.1.0",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.7",
+    "yaml": "^2.9.0"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5",

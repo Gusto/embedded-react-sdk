@@ -1,5 +1,6 @@
 ---
 title: Getting Started
+description: Install the Gusto Embedded React SDK, configure GustoProvider, set up a backend proxy for authenticated API requests, and render your first SDK component.
 order: 2
 ---
 

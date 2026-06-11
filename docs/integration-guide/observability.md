@@ -1,5 +1,6 @@
 ---
 title: Observability and Error Tracking
+description: Configure the SDK observability hook on GustoProvider to capture errors and performance metrics and forward them to Sentry, Datadog, or custom monitoring.
 order: 8
 ---
 

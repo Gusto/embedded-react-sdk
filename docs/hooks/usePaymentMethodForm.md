@@ -1,5 +1,6 @@
 ---
 title: usePaymentMethodForm
+description: Headless hook for switching an employee's payment method between Direct Deposit and Check inside SDKFormProvider; always operates in update mode.
 order: 8
 ---
 

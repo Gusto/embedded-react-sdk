@@ -1,5 +1,6 @@
 ---
 title: Employee Onboarding
+description: Complete workflow for onboarding an employee to payroll — profile, compensation, taxes, payment method, and document signing, with optional I-9 step.
 order: 0
 ---
 

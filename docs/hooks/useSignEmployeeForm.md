@@ -1,5 +1,6 @@
 ---
 title: useSignEmployeeForm
+description: Headless hook for signing an employee form with typed signature, electronic consent, and I-9 preparer/translator certification — inside SDKFormProvider.
 order: 5
 ---
 

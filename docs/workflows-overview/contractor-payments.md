@@ -1,5 +1,6 @@
 ---
 title: Contractor Payments
+description: Workflow for creating, managing, and viewing contractor payment groups via Contractor.PaymentFlow, with subcomponents for list, create, history, and summary.
 order: 3
 ---
 

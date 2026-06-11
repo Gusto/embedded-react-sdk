@@ -1,5 +1,6 @@
 ---
 title: useSplitPaymentsForm
+description: Headless hook for splitting an employee's Direct Deposit across multiple bank accounts by percentage or fixed amount, with reordering, inside SDKFormProvider.
 order: 9
 ---
 

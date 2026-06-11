@@ -1,5 +1,6 @@
 ---
 title: usePayScheduleForm
+description: Headless hook for creating or updating a company pay schedule — frequency, pay dates, and a calculated pay period calendar preview — inside SDKFormProvider.
 order: 5
 ---
 

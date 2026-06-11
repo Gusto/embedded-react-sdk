@@ -1,5 +1,6 @@
 ---
 title: useChildSupportGarnishmentForm
+description: Headless hook for creating or updating a child-support garnishment with agency-keyed required attributes and per-state county selection inside SDKFormProvider.
 order: 8
 ---
 

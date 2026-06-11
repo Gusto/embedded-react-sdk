@@ -1,5 +1,6 @@
 ---
 title: Deciding to build with the SDK
+description: Considerations for choosing the React SDK over Flows or a custom API build — React stack fit, abstraction over endpoints, theming, coverage, and customization depth.
 order: 1
 ---
 
