@@ -646,12 +646,17 @@ namespace Compensation_2 {
     EditCompensation: EditCompensation;
 }
 
-// Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationProps"
 //
-// @public (undocumented)
+// @public
 function Compensation_3(input: CompensationProps_2 & BaseComponentInterface<'Employee.Management.Compensation'>): JSX;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobFormProps"
 //
 // @public
@@ -669,6 +674,7 @@ interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'E
 }
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobFormProps"
 //
 // @public
@@ -686,6 +692,7 @@ interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCardProps"
 //
 // @public
@@ -701,6 +708,7 @@ interface CompensationCardProps {
 }
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditFormProps"
 //
 // @public
@@ -774,13 +782,12 @@ export type CompensationFormOutputs = CompensationFormData;
 // @public
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_2>;
 
-// Warning: (ae-missing-release-tag) "CompensationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 //
-// @public (undocumented)
+// @public
 interface CompensationProps_2 extends CommonComponentInterface<'Employee.Management.Compensation'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1544,6 +1551,17 @@ export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PaySch
 // @public (undocumented)
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Documents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DashboardFlowProps"
 //
 // @public
@@ -2075,6 +2093,7 @@ declare namespace EmployeeManagement {
         DocumentsCardProps,
         DocumentManagerProps,
         DashboardFlow,
+        DashboardFlowProps,
         HomeAddress,
         HomeAddressCard,
         HomeAddressEditForm,

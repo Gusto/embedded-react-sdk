@@ -30,7 +30,7 @@ export interface CompensationEditFormProps extends CommonComponentInterface<'Emp
  * Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change.
  *
  * @remarks
- * Pair with {@link CompensationCard} to route its `employee/management/compensation/card/editRequested` event to this form. `EmployeeManagement.Compensation` bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+ * Pair with {@link CompensationCard} to route its `employee/management/compensation/card/editRequested` event to this form. {@link Compensation} bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |

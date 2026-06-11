@@ -22,7 +22,7 @@ export interface CompensationAddJobFormProps extends CommonComponentInterface<'E
  * Standalone form for adding an employee's first job and compensation from the management surface.
  *
  * @remarks
- * Routed from {@link CompensationCard}'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. `EmployeeManagement.Compensation` bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+ * Routed from {@link CompensationCard}'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. {@link Compensation} bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
