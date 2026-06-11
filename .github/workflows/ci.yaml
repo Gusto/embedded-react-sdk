@@ -194,6 +194,9 @@ jobs:
         working-directory: docs-site
         run: npm ci
 
+      - name: Generate TypeDoc markdown
+        run: cd docs-site && npm run typedoc
+
       - name: Build docs
         run: npm run docs:build
 
