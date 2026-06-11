@@ -25,8 +25,6 @@ name: Sync Docs Source
 # end-to-end before flipping the variable.
 
 on:
-  push:
-    branches: [marie/actually-fix-it]
   workflow_run:
     workflows: [Publish to NPM]
     types: [completed]
@@ -34,26 +32,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Runs on branch push to verify TypeDoc compiles before opening a PR.
-  test-typedoc:
-    if: github.event_name == 'push'
-    runs-on:
-      group: gusto-ubuntu-default
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Install SDK dependencies for TypeDoc
-        run: npm ci
-
-      - name: Generate TypeDoc markdown
-        run: cd docs-site && npm ci && npm run typedoc
-
   sync:
     # workflow_dispatch always allowed (for manual testing). workflow_run
     # only fires when DOCS_PUBLISH_ENABLED=true, so the next NPM release
