@@ -584,6 +584,110 @@ describe('componentPropsInterfaces', () => {
 })
 
 // ---------------------------------------------------------------------------
+// buildPages — @group tag on hook declaration controls grouping on domain page
+//
+// TypeDoc places @group block tags on SignatureReflections, not the parent
+// DeclarationReflection. The converter event in sdk-router copies any
+// signature-level @group to the declaration so groupSyntheticMembers can read
+// it. These tests verify that groupSyntheticMembers respects the declaration-
+// level @group tag (i.e. the state after the copy has happened).
+// ---------------------------------------------------------------------------
+
+describe('buildPages — @group tag controls hook grouping on domain hooks page', () => {
+  it('hook with explicit @group Utility Hooks is placed in that group', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useStateFields', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
+    )
+    // Simulate what the converter event produces: @group copied to the declaration
+    hook.comment = new Comment()
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Utility Hooks' }]))
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.title === 'Utility Hooks')
+    expect(group).toBeDefined()
+    expect(group!.children).toContain(hook)
+  })
+
+  it('explicit @group overrides name-based auto-grouping', () => {
+    const project = makeProject()
+    // Name ends with "Form" — without an explicit tag, groupSyntheticMembers
+    // would fall back to kindGroupName → 'Functions' (converter auto-stamp runs
+    // separately; this tests only the groupSyntheticMembers read path).
+    const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm.ts',
+    )
+    hook.comment = new Comment()
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data Hooks' }]))
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const dataGroup = hooksModel.groups?.find(g => g.title === 'Data Hooks')
+    expect(dataGroup).toBeDefined()
+    expect(dataGroup!.children).toContain(hook)
+  })
+
+  it('hooks with different explicit @group tags appear in their respective groups', () => {
+    const project = makeProject()
+
+    const formHook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
+    formHook.sources = sourceRef('/workspace/src/components/Employee/hooks/useAddressForm.ts')
+    formHook.comment = new Comment()
+    formHook.comment.blockTags.push(
+      new CommentTag('@group', [{ kind: 'text', text: 'Form Hooks' }]),
+    )
+
+    const utilHook = makeChild(project, 'useStateFields', ReflectionKind.Function)
+    utilHook.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
+    )
+    utilHook.comment = new Comment()
+    utilHook.comment.blockTags.push(
+      new CommentTag('@group', [{ kind: 'text', text: 'Utility Hooks' }]),
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const formGroup = hooksModel.groups?.find(g => g.title === 'Form Hooks')
+    const utilGroup = hooksModel.groups?.find(g => g.title === 'Utility Hooks')
+
+    expect(formGroup?.children).toContain(formHook)
+    expect(utilGroup?.children).toContain(utilHook)
+    expect(formGroup?.children).not.toContain(utilHook)
+    expect(utilGroup?.children).not.toContain(formHook)
+  })
+
+  it('hook without explicit @group falls back to kind-based grouping', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useStateData', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
+    )
+    // No @group tag — groupSyntheticMembers falls back to kindGroupName → 'Functions'
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.children.includes(hook))
+    expect(group?.title).toBe('Functions')
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — domain hub page
 // ---------------------------------------------------------------------------
 

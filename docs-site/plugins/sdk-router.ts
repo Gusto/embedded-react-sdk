@@ -153,6 +153,9 @@ export function load(app: Application): void {
   //   Hooks ending with Form      → Form Hooks  (Data Hooks / Utility Hooks come from JSDoc)
   //   Other hooks                 → Hooks (fallback)
   // Skips reflections that already carry an explicit @group tag from their JSDoc.
+  // NOTE: TypeDoc places @group block tags on SignatureReflections, not the parent
+  // DeclarationReflection. We copy any signature-level @group to the declaration so
+  // the skip check fires and groupSyntheticMembers can read the group from member.comment.
   app.converter.on(
     Converter.EVENT_RESOLVE_END,
     context => {
@@ -160,6 +163,18 @@ export function load(app: Application): void {
         if (!(reflection instanceof DeclarationReflection)) continue
         if (reflection.kind !== ReflectionKind.Function) continue
         if (reflection.comment?.blockTags.some(t => t.tag === '@group')) continue
+
+        // TypeDoc places @group block tags on the SignatureReflection, not the
+        // DeclarationReflection. Copy any explicit tag to the declaration so the
+        // check above fires on the next pass and groupSyntheticMembers can read it.
+        const sigGroupTag = reflection.signatures
+          ?.flatMap(sig => sig.comment?.blockTags ?? [])
+          .find(t => t.tag === '@group')
+        if (sigGroupTag) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(sigGroupTag)
+          continue
+        }
 
         let group: string
         if (/^[A-Z]/.test(reflection.name)) {

@@ -168,6 +168,8 @@ function buildEntry(
  * references even when the underlying questions are unchanged. Use this
  * inside a `useMemo` whose dependency is the raw `employeeStateTaxes` to
  * avoid rebuilding bound Field components on every render.
+ *
+ * @group Utility Hooks
  */
 export function useStateFields(
   employeeStateTaxes: EmployeeStateTaxesList[],
