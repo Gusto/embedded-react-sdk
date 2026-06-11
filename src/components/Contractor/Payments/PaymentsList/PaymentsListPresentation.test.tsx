@@ -19,13 +19,13 @@ describe('PaymentsListPresentation', () => {
     renderWithProviders(<PaymentsListPresentation {...defaultProps} />)
 
     await screen.findByRole('heading', { name: 'Contractor payments' })
-    expect(screen.getAllByRole('button', { name: 'Create payment' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('button', { name: 'New payment' }).length).toBeGreaterThan(0)
   })
 
   it('hides create payment actions in read-only mode', async () => {
     renderWithProviders(<PaymentsListPresentation {...defaultProps} />, { readOnly: true })
 
     await screen.findByRole('heading', { name: 'Contractor payments' })
-    expect(screen.queryByRole('button', { name: 'Create payment' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'New payment' })).not.toBeInTheDocument()
   })
 })

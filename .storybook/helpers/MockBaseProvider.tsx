@@ -11,6 +11,7 @@ const mockBaseContext = {
   baseSubmitHandler: async <T,>(formData: T, componentHandler: (payload: T) => Promise<void>) => {
     await componentHandler(formData)
   },
+  readOnly: false,
   LoadingIndicator: () => <LoadingSpinner />,
 }
 
