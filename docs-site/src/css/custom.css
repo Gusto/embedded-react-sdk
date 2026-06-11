@@ -485,19 +485,41 @@ aside.theme-doc-sidebar-container {
 
 .prism-code {
   font-size: 0.85rem;
-  border-radius: 8px;
+  background-color: #f7f7f8 !important;
 }
 
-div[class^='codeBlockContainer'] {
+[data-theme='dark'] .prism-code {
+  background-color: #0c0c0d !important;
+}
+
+div[class*='codeBlockContainer'] {
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: none;
+  background: transparent;
 }
 
-[data-theme='dark'] div[class^='codeBlockContainer'] {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  border: 1px solid #3a3a3d;
+[data-theme='dark'] div[class*='codeBlockContainer'] {
+  border-color: #3a3a3d;
+}
+
+div[class*='codeBlockContent'],
+div[class*='codeBlock_'],
+.prism-code {
+  border-radius: 0 !important;
+}
+
+div[class*='codeBlockTitle'] {
+  background: transparent;
+  border-bottom: 1px solid #e5e7eb;
+  color: rgba(27, 27, 29, 0.75);
+  font-weight: 500;
+}
+
+[data-theme='dark'] div[class*='codeBlockTitle'] {
+  border-bottom-color: #3a3a3d;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 code {
@@ -506,8 +528,27 @@ code {
   font-size: 0.875em;
 }
 
+pre code,
+.prism-code code {
+  border-radius: 0;
+  background: none;
+}
+
+.prism-code,
+.prism-code code,
+[class*='codeBlockLines'] {
+  white-space: pre-wrap !important;
+  word-break: break-word;
+}
+
+
 [data-theme='dark'] code {
   background-color: rgba(255, 255, 255, 0.13);
+}
+
+[data-theme='dark'] pre code,
+[data-theme='dark'] .prism-code code {
+  background-color: transparent;
 }
 
 /* ── Table of contents (right sidebar) ── */

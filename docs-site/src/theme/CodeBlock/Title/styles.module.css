@@ -1,0 +1,10 @@
+.titleWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}

@@ -1,0 +1,41 @@
+.codeBlockTitle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem var(--ifm-pre-padding);
+  font-size: var(--ifm-code-font-size);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.codeBlockContent {
+  position: relative;
+  direction: ltr;
+  border-radius: inherit;
+}
+
+.codeBlockTitle :global([class*='buttonGroup_']) {
+  position: static;
+}
+
+.codeBlockTitle :global([class*='buttonGroup_']) button {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  opacity: 0.6;
+  padding: 0.5rem 0.6rem;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.codeBlockTitle :global([class*='buttonGroup_']) button:hover {
+  background: rgba(27, 27, 29, 0.08);
+  opacity: 1;
+}
+
+[data-theme='dark'] .codeBlockTitle :global([class*='buttonGroup_']) button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
