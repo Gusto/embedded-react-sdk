@@ -8,7 +8,7 @@ The Employee Termination workflow provides a complete experience for terminating
 
 > **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -26,7 +26,7 @@ function MyApp() {
 
 > Legacy import via `Employee.TerminationFlow` continues to work.
 
-#### Props
+### Props
 
 | Name                | Type     | Description                                                     |
 | ------------------- | -------- | --------------------------------------------------------------- |
@@ -35,7 +35,7 @@ function MyApp() {
 | onEvent Required    | function | See events table for each subcomponent to see available events. |
 | dictionary          | object   | Optional translations for component text.                       |
 
-#### Events
+### Events
 
 | Event type                                 | Description                                                | Data                                                                                                         |
 | ------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
@@ -50,7 +50,7 @@ function MyApp() {
 | EMPLOYEE_TERMINATION_PAYROLL_CREATED       | Fired when an off-cycle payroll is created for termination | { employeeId: string, effectiveDate: string }                                                                |
 | EMPLOYEE_TERMINATION_PAYROLL_FAILED        | Fired when off-cycle payroll creation fails                | { employeeId: string }                                                                                       |
 
-#### Payroll Options
+### Payroll Options
 
 The workflow supports three payroll processing options for the employee's final paycheck:
 

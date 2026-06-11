@@ -38,7 +38,7 @@ export default App
 
 The SDK provides two ways to add headers to API requests:
 
-#### 1. Static Headers via Config (Simple)
+### 1. Static Headers via Config (Simple)
 
 For static headers like API keys or simple authentication tokens, you can pass them directly in the config:
 
@@ -64,7 +64,7 @@ function App() {
 
 This approach automatically applies the headers to all API requests without requiring custom hooks.
 
-#### 2. Dynamic Headers via Hooks (Advanced)
+### 2. Dynamic Headers via Hooks (Advanced)
 
 For dynamic headers that need to be computed at request time (like refreshing tokens), use the hooks approach described in the [Request Interceptors guide](../integration-guide/request-interceptors.md).
 

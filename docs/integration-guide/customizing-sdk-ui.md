@@ -12,7 +12,7 @@ There are two mechanisms that can be used to customize the SDK UI:
 
 Theming sets the visual baseline for all of the SDK UI, and it is recommended to use theming as a first pass to match your brand with the SDK. Component adapters are more complex to configure and should be used for advanced use cases if theming falls short.
 
-### Theming
+## Theming
 
 > See [theming](../theming/theming.md) for a complete usage guide.
 
@@ -43,7 +43,7 @@ function MyApp({ children }) {
 
 The above code would change the primary colors (applied to elements like buttons and links) to red and white. It would also change the font family universally to 'Courier New'.
 
-### Component Adapters
+## Component Adapters
 
 > See [component adapters](../component-adapter/component-adapter.md) for a complete usage guide.
 

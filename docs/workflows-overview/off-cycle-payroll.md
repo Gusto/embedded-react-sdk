@@ -8,7 +8,7 @@ The Off-Cycle Payroll workflow provides a complete experience for running payrol
 
 After creation, the flow transitions into the standard [Payroll Processing](./run-payroll.md) execution experience (configuration, overview, submission, and receipts). All off-cycle payroll types share the same execution steps as regular payrolls — the only difference is how the payroll is created.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -18,7 +18,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type                        | Description                                                                                                |
 | ------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -26,7 +26,7 @@ function MyApp() {
 | onEvent Required   | function                    | See events table for each subcomponent to see available events.                                            |
 | payrollType        | `'bonus'` \| `'correction'` | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 
-#### Events
+### Events
 
 Events emitted during the creation phase:
 

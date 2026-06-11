@@ -10,11 +10,11 @@ order: 2
    - `GustoProviderCustomUIAdapter`: For complete UI control without React Aria dependencies
 3. Your custom components are used by the SDK instead of the default components
 
-### Choosing a Provider
+## Choosing a Provider
 
 The SDK offers two providers for different use cases:
 
-#### GustoProvider (Recommended)
+### GustoProvider (Recommended)
 
 ```tsx
 import { GustoProvider, type ButtonProps, type TextInputProps } from '@gusto/embedded-react-sdk'
@@ -60,7 +60,7 @@ function App() {
 - Best choice for most applications
 - Simpler to implement when you only need to customize some components
 
-#### GustoProviderCustomUIAdapter
+### GustoProviderCustomUIAdapter
 
 ```tsx
 import { GustoProviderCustomUIAdapter } from '@gusto/embedded-react-sdk'
@@ -82,14 +82,14 @@ function App() {
 - Better for tree-shaking and bundle size optimization
 - Ideal when you need complete control over the UI implementation
 
-### Default Components
+## Default Components
 
 The SDK provides a set of default components implemented with React Aria for accessibility. These are used when no custom components are provided. You can view the default implementations here:
 
 - [Default Component Adapter](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)
 - [UI Components Directory](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)
 
-### Benefits
+## Benefits
 
 This architecture provides several key benefits:
 

@@ -6,11 +6,11 @@ order: 6
 
 Gusto Embedded React SDK is implemented to be flexible and seamlessly integrate with your application. Because of this, it does not have opinions on routing. Instead, React SDK aims to be easily integrated with whichever routing library you are using. This section will walk through an example of creating a workflow using [React Router](https://reactrouter.com/), but the same concepts should apply regardless of routing technology chosen.
 
-### Required knowledge
+## Required knowledge
 
 Before starting, you might consider familiarizing yourself with documentation around composition, workflows, and event handling.
 
-### Overview
+## Overview
 
 For this exercise we’ll be creating the Employee Self Onboarding flow in [React Router](https://reactrouter.com/).
 
@@ -34,7 +34,7 @@ import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 For self onboarding to work, we’ll need to have access to the company id, and the employee id. Not all steps require the company id, but each will require the employee id.
 
-### Creating the routes
+## Creating the routes
 
 Let’s create a simple router. This router will take the employee id and company id as parameters. We will then create a route corresponding to each step outlined above. Note: we’ll add the actual elements in the next step.
 
@@ -82,7 +82,7 @@ const createEmployeeSelfOnboardingRouter = ({
   );
 ```
 
-### Creating components with navigation
+## Creating components with navigation
 
 Each component in the React SDK has an onEvent property. `onEvent` is fired when the users perform various actions for the SDK components (read more in the Event Handling documentation). When a component is ready for navigation, an event will be fired. We can hook into the event and configure our navigation.
 
@@ -112,7 +112,7 @@ function EmployeeLandingWrapper({ companyId, employeeId }: { companyId: string; 
 
 Note that each flow component is meant to be independent and usable in isolation. When a user saves data in a given step, the component for that step will make an API call and actually save the user data. That means you can rearrange steps as desired. In this example we are navigating the user to the profile form after landing, but you could navigate to whichever step is desired according to the order you want the steps to be in.
 
-### Putting it all together
+## Putting it all together
 
 Once we have our wrapper components configured with the correct navigation, we can supply them to our router that we configured in the first step. Here’s the full example with navigation configured for each step:
 

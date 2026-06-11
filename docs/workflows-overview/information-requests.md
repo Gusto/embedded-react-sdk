@@ -6,7 +6,7 @@ order: 8
 
 The Information Requests workflow surfaces outstanding information requests that Gusto has issued for a company (for example, a request for a missing tax document or identity verification artifact) and lets the user respond to them. Information requests can also block payroll processing, in which case they are surfaced inline within `Payroll.PayrollBlockerList`; this flow provides a dedicated, standalone surface for managing them.
 
-### Implementation
+## Implementation
 
 ```jsx
 import { InformationRequests } from '@gusto/embedded-react-sdk'
@@ -21,7 +21,7 @@ function MyApp() {
 }
 ```
 
-#### Props
+### Props
 
 | Name               | Type     | Default | Description                                                                                                                                                                               |
 | ------------------ | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,7 +30,7 @@ function MyApp() {
 | withAlert          | boolean  | `true`  | When true, the submission success alert is rendered at the top of the flow. Set to false when embedding in a parent (e.g. `Payroll.PayrollBlockerList`) that renders the alert elsewhere. |
 | dictionary         | object   |         | Optional translations for component text.                                                                                                                                                 |
 
-#### Events
+### Events
 
 Events emitted by the flow (and by its subcomponents — they bubble up through `onEvent`):
 
