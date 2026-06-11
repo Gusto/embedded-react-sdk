@@ -33,6 +33,8 @@ const config: Config = {
         indexBlog: false,
         docsRouteBasePath: '/docs',
         docsDir: '../docs',
+        searchBarShortcut: false,
+        searchBarShortcutHint: false,
       },
     ],
   ],
