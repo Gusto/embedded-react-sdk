@@ -8,7 +8,7 @@ The Company Onboarding workflow provides components for managing company-related
 
 ### Implementation
 
-```jsx
+```jsx title="App.tsx"
 import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
@@ -60,7 +60,7 @@ A component allowing users to choose between creating a new signatory with full 
 
 For more granular control, you can use `Company.CreateSignatory` or `Company.InviteSignatory` directly.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -93,7 +93,7 @@ function MyComponent() {
 
 A standalone form for creating a new signatory with full personal details including name, contact information, SSN, and home address. Use this component when you want to provide only the create signatory flow without the invite option.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -124,7 +124,7 @@ function MyComponent() {
 
 A standalone form for inviting someone else to become the company signatory. The invited person will receive an email to complete their signatory information. Use this component when you want to provide only the invite signatory flow without the create option.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -153,7 +153,7 @@ function MyComponent() {
 
 A component for selecting and saving the company's industry classification (NAICS code). The selector presents a searchable list of industry options for the company.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -178,7 +178,7 @@ function MyComponent() {
 
 Provides an interface for company representatives to read and sign required company documents. The component handles document listing, signatory management, and document signing workflow.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -216,7 +216,7 @@ function MyComponent() {
 
 A standalone component that displays the list of company documents to be signed and lets the user manage signatories. This is the lower-level building block used internally by `Company.DocumentSigner` for its list view. Use this component directly when you need full control over navigation between the document list and the signature form.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -246,7 +246,7 @@ function MyComponent() {
 
 A standalone form for signing an individual company document. This is the lower-level building block used internally by `Company.DocumentSigner` for its signing view. Use this component directly when you need full control over navigation between the document list and the signature form (e.g. you are routing the user yourself after they select a form from `Company.DocumentList`).
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -280,7 +280,7 @@ function MyComponent() {
 
 A component for adding company federal tax information including EIN, tax payer type, filing form, and legal name.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -309,7 +309,7 @@ function MyComponent() {
 
 A component for managing company pay schedules, including creating, editing, and viewing pay schedules with preview functionality.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -336,7 +336,7 @@ function MyComponent() {
 
 An orchestrated component for managing company addresses, including mailing and filing address. Internally uses a state machine to switch between a list view and a create/edit form. For more granular control, you can use `Company.LocationForm` directly.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -368,7 +368,7 @@ A standalone form component for creating a new company location or editing an ex
 
 Pass a `locationId` to edit an existing location; omit it to create a new location.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -402,7 +402,7 @@ function MyComponent() {
 
 A component for managing company bank account
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -432,7 +432,7 @@ function MyComponent() {
 
 An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `CompanyOnboarding.StateTaxesList` or `CompanyOnboarding.StateTaxesForm` directly.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -459,7 +459,7 @@ function MyComponent() {
 
 A standalone form component for editing state tax requirements for a specific state. This is the lower-level building block used internally by `Company.StateTaxes` for its edit view. Use this component directly when you need full control over navigation between the list and form views.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -492,7 +492,7 @@ function MyComponent() {
 
 A standalone component that displays the list of state tax requirements for a company. This is the lower-level building block used internally by `Company.StateTaxes` for its list view. Use this component directly when you need full control over navigation between the list and form views.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
@@ -520,7 +520,7 @@ function MyComponent() {
 
 Displays the company's overall onboarding status. Shows completed steps and remaining requirements, providing a high-level summary of where the company is in the onboarding process. Used as the landing/summary screen of the onboarding flow.
 
-```jsx
+```jsx title="MyComponent.tsx"
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
