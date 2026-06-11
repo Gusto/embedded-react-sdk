@@ -181,10 +181,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.WorkAddress** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | DELETE | `/v1/work_addresses/:workAddressUuid` |
-| **Employee.Taxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
-|  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 
 ## InformationRequests components
 
@@ -350,10 +346,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/employees/:employeeId/garnishments` |
 |  | PUT | `/v1/garnishments/:garnishmentId` |
 |  | GET | `/v1/garnishments/child_support` |
-| **EmployeeOnboarding.Taxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
-|  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 
 ## EmployeeManagement components
 

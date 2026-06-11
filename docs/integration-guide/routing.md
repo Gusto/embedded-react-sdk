@@ -19,7 +19,8 @@ Employee Self Onboarding is comprised of the following steps:
 ```typescript
 EmployeeOnboarding.Landing
 EmployeeOnboarding.Profile
-EmployeeOnboarding.Taxes
+EmployeeOnboarding.FederalTaxes
+EmployeeOnboarding.StateTaxes
 EmployeeOnboarding.PaymentMethod
 EmployeeOnboarding.DocumentSigner
 EmployeeOnboarding.OnboardingSummary
@@ -174,21 +175,36 @@ function EmployeeProfileWrapper({
       companyId={companyId}
       onEvent={(eventType) => {
         if (eventType === componentEvents.EMPLOYEE_PROFILE_DONE) {
-          navigate('/taxes');
+          navigate('/federal_taxes');
         }
       }}
     />
   );
 }
 
-function EmployeeTaxesWrapper({ employeeId }: { employeeId: string }) {
+function EmployeeFederalTaxesWrapper({ employeeId }: { employeeId: string }) {
   const navigate = useNavigate();
 
   return (
-    <EmployeeOnboarding.Taxes
+    <EmployeeOnboarding.FederalTaxes
       employeeId={employeeId}
       onEvent={(eventType) => {
-        if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
+        if (eventType === componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE) {
+          navigate('/state_taxes');
+        }
+      }}
+    />
+  );
+}
+
+function EmployeeStateTaxesWrapper({ employeeId }: { employeeId: string }) {
+  const navigate = useNavigate();
+
+  return (
+    <EmployeeOnboarding.StateTaxes
+      employeeId={employeeId}
+      onEvent={(eventType) => {
+        if (eventType === componentEvents.EMPLOYEE_STATE_TAXES_DONE) {
           navigate('/payment_method');
         }
       }}
@@ -258,8 +274,12 @@ const createEmployeeSelfOnboardingRouter = ({
             element: <EmployeeProfileWrapper employeeId={employeeId} companyId={companyId} />,
           },
           {
-            path: '/taxes',
-            element: <EmployeeTaxesWrapper employeeId={employeeId} />,
+            path: '/federal_taxes',
+            element: <EmployeeFederalTaxesWrapper employeeId={employeeId} />,
+          },
+          {
+            path: '/state_taxes',
+            element: <EmployeeStateTaxesWrapper employeeId={employeeId} />,
           },
           {
             path: '/payment_method',

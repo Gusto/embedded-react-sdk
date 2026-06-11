@@ -1058,7 +1058,6 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "employee/management/stateTaxes/editCancelled";
     readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED: "employee/management/stateTaxes/updated";
     readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: "employee/management/stateTaxes/alertDismissed";
-    readonly EMPLOYEE_TAXES_DONE: "employee/taxes/done";
     readonly EMPLOYEE_SPLIT_PAYCHECK: "employee/bankAccount/split";
     readonly EMPLOYEE_JOB_CREATED: "employee/job/created";
     readonly EMPLOYEE_JOB_UPDATED: "employee/job/updated";
@@ -1998,8 +1997,7 @@ declare namespace Employee {
         TerminationFlowProps,
         PayrollOption,
         WorkAddress,
-        WorkAddressProps,
-        Taxes
+        WorkAddressProps
     }
 }
 
@@ -2195,8 +2193,7 @@ declare namespace EmployeeOnboarding {
         StateTaxesProps_3 as StateTaxesProps,
         Deductions,
         PaymentMethod_2 as PaymentMethod,
-        PaymentMethodProps_2 as PaymentMethodProps,
-        Taxes
+        PaymentMethodProps_2 as PaymentMethodProps
     }
 }
 
@@ -4921,12 +4918,6 @@ export interface TabsProps {
     // Warning: (ae-forgotten-export) The symbol "TabProps" needs to be exported by the entry point index.d.ts
     tabs: TabProps[];
 }
-
-// Warning: (ae-forgotten-export) The symbol "TaxesProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "Taxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public @deprecated (undocumented)
-function Taxes(props: TaxesProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "TerminateEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

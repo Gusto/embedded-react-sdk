@@ -69,7 +69,6 @@ export const employeeEvents = {
   EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: 'employee/management/stateTaxes/editCancelled',
   EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED: 'employee/management/stateTaxes/updated',
   EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: 'employee/management/stateTaxes/alertDismissed',
-  EMPLOYEE_TAXES_DONE: 'employee/taxes/done',
   EMPLOYEE_SPLIT_PAYCHECK: 'employee/bankAccount/split',
   EMPLOYEE_JOB_CREATED: 'employee/job/created',
   EMPLOYEE_JOB_UPDATED: 'employee/job/updated',
