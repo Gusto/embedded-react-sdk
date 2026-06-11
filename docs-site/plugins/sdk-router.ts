@@ -745,6 +745,8 @@ export class SDKRouter extends MemberRouter {
           reflection.parent,
         )
         flowsNs.children = flows
+        const flowsGroups = groupSyntheticMembers(flows, flowsNs)
+        if (flowsGroups.length > 1) flowsNs.groups = flowsGroups
         const flowsUrl = this.buildSyntheticPage(
           `${nsBasePath}/flows`,
           flowsNs,
@@ -760,6 +762,8 @@ export class SDKRouter extends MemberRouter {
             reflection.parent,
           )
           blocksNs.children = blocks
+          const blocksGroups = groupSyntheticMembers(blocks, blocksNs)
+          if (blocksGroups.length > 1) blocksNs.groups = blocksGroups
           this.buildSyntheticPage(
             `${nsBasePath}/blocks`,
             blocksNs,
