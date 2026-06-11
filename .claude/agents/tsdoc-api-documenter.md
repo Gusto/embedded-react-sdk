@@ -76,6 +76,20 @@ Do NOT add TSDoc to internal/non-exported symbols, test utilities, Storybook-onl
      - _Intentional but undocumented API_ — clearly meant for partners but lacks docs (e.g. new functionality still in progress) → may be `@beta` or `@alpha`; stop and check in rather than assigning automatically.
   - **Default**: `@internal`. It is easier to promote a symbol than to demote it after a release.
 
+#### Always `@internal` — known patterns in hook files
+
+These patterns recur across hook directories and should always be marked `@internal` without prose (just `/** @internal */`). Do not write `@remarks` or `@param` docs for them — they exist for internal use and the rule "no prose required" applies fully.
+
+| Pattern                                                        | Examples                                                                        | Why                                                                                                 |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `createXxxSchema` factory functions                            | `createCompensationSchema`, `createJobSchema`, `createEmployeeStateTaxesSchema` | Internal schema construction called by the hook on every render; partners never call these directly |
+| `XxxSchemaOptions` interfaces for those factories              | `CompensationSchemaOptions`                                                     | Only meaningful alongside the internal factory; mark `@internal` together with it                   |
+| `XxxMetadataConfig` types                                      | `EmployeeStateTaxesMetadataConfig`                                              | Internal plumbing between the schema factory and the field-metadata system                          |
+| Raw factory functions that have a `useXxx` memoization wrapper | `createStateFields` (vs. `useStateFields`)                                      | Partners use the hook; the raw factory is an implementation detail                                  |
+| Internal mapping/resolution utilities                          | `getQuestionVariant`                                                            | Not part of the rendering contract; the discriminated-union `type` on entries is the observable API |
+
+Note: `XxxFormOutputs` type aliases (e.g. `CompensationFormOutputs`, `JobFormOutputs`) remain `@public` — partners may type submit callbacks against them.
+
 ### Tag order
 
 ````
