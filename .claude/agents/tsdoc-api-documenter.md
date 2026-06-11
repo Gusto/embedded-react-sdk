@@ -123,11 +123,12 @@ For the Data column, describe what the event carries in plain text, or use `—`
 - **`@returns`** — what the value is, not its type. For loading-state hooks describe both branches: `A {@link HookLoadingResult} while loading, or a {@link UseXxxReady} once ready.`
 - **`@example`** — skip for React components already documented in `docs/` — the docs page is the canonical example.
 - Do NOT restate the type signature in prose.
-- Do NOT use `@/` aliases or internal module paths in examples.
+- Do NOT use `@/` aliases or internal module paths anywhere — in examples, `@param` descriptions, or `@remarks`. Paths like `src/components/Common/TaxInputs/TaxInputs.tsx` are meaningless to consumers and go stale.
 - Do NOT speculate about the partner's app or workflow. Describe what it does and how to use it.
-- Write neutrally or in second person — not "partners should…".
+- Write neutrally or in second person — not "partners should…" or "partners supply…". Watch for third-person drift when adapting from `docs/`: if the source says `"Supply the value via..."` don't transcribe it as `"Partners supply the value via..."`.
 - Keep examples minimal but realistic.
-- Do NOT leak internal implementation details into `@public`, `@beta`, or `@alpha` comments. Never mention internal components, hooks, utilities, or patterns by name. `@internal` comments may reference anything since their audience is SDK contributors.
+- Do NOT leak internal implementation details into `@public`, `@beta`, or `@alpha` comments. Never mention internal components, hooks, utilities, or patterns by name. This includes internal shorthand terms — if source code uses a term that isn't a public API name (e.g. "the carve-out", `buildFormSchema`), replace it with the public-facing property or behavior name (e.g. `willDeleteSecondaryJobs`). `@internal` comments may reference anything since their audience is SDK contributors.
+- `@remarks` for `@public`/`@beta` symbols must describe what the partner can observe or act on, not how the hook achieves it internally. Ask: can a consumer reading only the public API surface understand and use this? "Secondary compensation effective dates are corrected after the PUT; `isPending` stays true through that" is actionable. "The hook captures the original effective dates before the PUT and restores them to `max(originalEffectiveDate, newHireDate)` afterwards" is not — it describes implementation, not behavior.
 
 ## TypeScript Patterns That Affect Doc Quality
 
@@ -146,6 +147,7 @@ For the Data column, describe what the event carries in plain text, or use `—`
 2. Gather source material before writing anything:
    - Check `docs/` for existing partner-facing prose. `docs/hooks/` in particular has detailed descriptions of headless hooks. This is the SDK-971 migration: adapt API-specific content from `docs/` directly into TSDoc so TypeDoc can replace those hand-written pages. Guide/narrative content (workflow overviews, integration patterns) stays in `docs/`.
    - If `docs/` has nothing relevant **and** the symbol is a top-level concern — a flow component (e.g. `EmployeeOnboarding`, `PayrollFlow`), a major exported hook, or anything where `@remarks` and `@example` require product context beyond the implementation — check MCP servers (Jira, Confluence, Notion) for product documentation or design specs. Treat MCP content the same as `docs/` prose: adapt it, don't invent.
+   - Look specifically for **usage examples** in `docs/`. When migrating content from `docs/` to TSDoc (i.e., the `docs/` page will be deleted after this work), carry existing usage examples over into `@example` blocks — the `@example` note above about skipping for "React components already documented in `docs/`" does **not** apply in migration mode; the `docs/` example **is** the source material you're migrating.
    - If docs are missing and MCP yields nothing useful for a complex symbol, stop and check in rather than guessing.
 3. **Generate skeletons in batch per file — each `tsdoc-stub` invocation is expensive, never call it more than once per file.**
 
