@@ -36,6 +36,8 @@ const config: Config = {
         docsRouteBasePath: '/docs',
         docsDir: '../docs',
         ignoreFiles: [/test-fests\//],
+        searchBarShortcut: false,
+        searchBarShortcutHint: false,
       },
     ],
   ],
