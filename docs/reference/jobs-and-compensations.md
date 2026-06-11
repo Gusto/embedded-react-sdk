@@ -1,5 +1,6 @@
 ---
 title: 'Jobs & Compensations — Behavior Reference & Test Plan'
+description: Behavior reference for Job and Compensation resources — lifecycle differences between onboarding and management, primary/secondary jobs, and effective-dated pay.
 ---
 
 # Jobs & Compensations — Behavior Reference & Test Plan

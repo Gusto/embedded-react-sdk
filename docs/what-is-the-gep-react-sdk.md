@@ -1,5 +1,6 @@
 ---
 title: What is the GEP React SDK?
+description: Introduction to the Gusto Embedded Payroll React SDK — component libraries with built-in business logic that abstract payroll API complexity for React applications.
 slug: /
 displayed_sidebar: docs
 order: 0

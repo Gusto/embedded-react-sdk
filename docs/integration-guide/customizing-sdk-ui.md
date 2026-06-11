@@ -1,5 +1,6 @@
 ---
 title: Customizing the Gusto Embedded React SDK UI
+description: Two mechanisms for customizing SDK appearance — theming for color, typography, and shape variables, and Component Adapters for swapping in custom UI components.
 ---
 
 The Gusto Embedded React SDK UI is highly customizable. It is built to completely visually integrate with your application.

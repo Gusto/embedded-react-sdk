@@ -1,5 +1,6 @@
 ---
 title: Component Adapter FAQ
+description: Common questions about the Component Adapter — UI library compatibility, partial overrides, implementing complex components, and merging with default components.
 order: 1
 ---
 

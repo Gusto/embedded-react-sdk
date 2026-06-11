@@ -1,5 +1,6 @@
 ---
 title: Information Requests
+description: Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company, such as missing tax or identity documents.
 order: 8
 ---
 

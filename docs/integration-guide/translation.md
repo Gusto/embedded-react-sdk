@@ -1,5 +1,6 @@
 ---
 title: Translation
+description: Override SDK component copy and add new locales using the dictionary prop on GustoProvider, backed by an isolated i18next instance for internationalization.
 order: 5
 ---
 

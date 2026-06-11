@@ -1,5 +1,6 @@
 ---
 title: Working with Jobs and Compensations
+description: Patterns for composing useJobForm and useCompensationForm on the same screen — onboarding stub-fill and steady-state edits via composeSubmitHandler.
 order: 5
 ---
 

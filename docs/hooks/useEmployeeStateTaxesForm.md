@@ -1,3 +1,8 @@
+---
+title: useEmployeeStateTaxesForm
+description: Headless hook for updating an employee's state tax withholding answers with a dynamic, API-driven field set rendered per-state inside SDKFormProvider.
+---
+
 # useEmployeeStateTaxesForm
 
 Updates an employee's state tax withholding answers. The state-tax record(s) are created automatically with the employee, so this hook is always in update mode.

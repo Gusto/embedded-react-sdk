@@ -1,5 +1,6 @@
 ---
 title: Workflows Overview
+description: Index of every pre-built workflow in the SDK — onboarding, payroll, contractors, time off, and more — each rendering a multi-step experience as one component.
 order: 4
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Employee Onboarding
+description: Complete workflow for onboarding an employee to payroll — profile, compensation, taxes, payment method, and document signing, with optional I-9 step.
 order: 0
 ---
 
@@ -76,11 +77,12 @@ function MyApp() {
 
 #### Events
 
-| Event type       | Description                                                                                                  | Data                                                      |
-| ---------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
-| EMPLOYEE_CREATE  | Fired when user clicks "Add employee" button                                                                 | Undefined                                                 |
-| EMPLOYEE_UPDATE  | Fired when user selects "Edit" from employee actions menu                                                    | { employeeId: string }                                    |
-| EMPLOYEE_DELETED | Fired after selecting delete from the employee actions menu and the deleting an employee operation completes | Response data from Delete an onboarding employee endpoint |
+| Event type                         | Description                                                                                          | Data                                                |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| EMPLOYEE_CREATE                    | Fired when user clicks "Add employee" button                                                         | Undefined                                           |
+| EMPLOYEE_UPDATE                    | Fired when user selects "Edit" or "Review" from the employee actions menu                            | `{ employeeId: string, onboardingStatus?: string }` |
+| EMPLOYEE_ONBOARDING_STATUS_UPDATED | Fired after the "Review" or "Cancel self-onboarding" action updates the employee's onboarding status | The updated `EmployeeOnboardingStatus` record       |
+| EMPLOYEE_DELETED                   | Fired after selecting delete from the employee actions menu and the delete operation completes       | `{ employeeId: string }`                            |
 
 ### Employee.Profile
 

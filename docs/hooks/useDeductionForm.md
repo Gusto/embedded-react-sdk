@@ -1,5 +1,6 @@
 ---
 title: useDeductionForm
+description: Headless hook for creating or updating a post-tax custom deduction or court-ordered garnishment with description, frequency, amount, and caps inside SDKFormProvider.
 order: 7
 ---
 

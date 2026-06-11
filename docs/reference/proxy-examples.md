@@ -1,5 +1,6 @@
 ---
 title: 'Proxy Examples'
+description: Express.js example code for loading the SDK endpoint inventory, building role-based endpoint allowlists, and enforcing them in a session-authenticated proxy.
 ---
 
 # Proxy Examples

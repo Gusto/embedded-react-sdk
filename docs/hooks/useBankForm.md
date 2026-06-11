@@ -1,5 +1,6 @@
 ---
 title: useBankForm
+description: Headless React Hook Form hook for creating an employee bank account — nickname, routing number, account number, and account type — inside SDKFormProvider.
 order: 7
 ---
 
