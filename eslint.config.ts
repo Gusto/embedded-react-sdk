@@ -167,6 +167,7 @@ export default [
     rules: {
       'tsdoc/syntax': 'error',
       'tsdoc-coverage/sort-tags': 'error',
+      'tsdoc-coverage/valid-group': 'error',
     },
   },
   /** Library: well-documented code. */
