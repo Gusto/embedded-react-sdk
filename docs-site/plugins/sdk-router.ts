@@ -7,6 +7,7 @@ import {
   type PageDefinition,
   ParameterReflection,
   ProjectReflection,
+  ReferenceReflection,
   ReferenceType,
   type Reflection,
   ReflectionGroup,
@@ -102,6 +103,60 @@ export function isHookSourceFile(reflection: Reflection): boolean {
   return hookDirFromSources(reflection) !== null
 }
 
+/**
+ * Move DeclarationReflections from deprecated namespaces to non-deprecated ones
+ * when the non-deprecated namespace holds a ReferenceReflection pointing at the
+ * same canonical declaration.
+ *
+ * Background: TypeDoc places the canonical DeclarationReflection under whichever
+ * namespace it processes first. Since deprecated namespaces (e.g. Employee) are
+ * listed before non-deprecated ones (e.g. EmployeeManagement) in
+ * src/components/index.ts, symbols exported by both end up documented under the
+ * deprecated namespace — the non-deprecated namespace gets only a ReferenceReflection.
+ * This function inverts that so documentation lives in the preferred, non-deprecated
+ * home. The reference is discarded; the actual declaration is adopted.
+ *
+ * Call this before CommentPlugin's RESOLVE_BEGIN (priority 0) runs so that
+ * excludeNotDocumented hasn't yet had a chance to remove the ReferenceReflections
+ * that make the cross-namespace link visible.
+ */
+export function reparentDeprecatedMembers(project: ProjectReflection): void {
+  const namespaces = (project.children ?? []).filter(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection && c.kind === ReflectionKind.Namespace,
+  )
+
+  for (const ns of namespaces) {
+    if (ns.isDeprecated()) continue
+    if (!ns.children?.length) continue
+
+    // Snapshot before mutating — we remove children during this loop.
+    for (const child of [...ns.children]) {
+      if (!(child instanceof ReferenceReflection)) continue
+      const target = child.tryGetTargetReflectionDeep()
+      if (!(target instanceof DeclarationReflection)) continue
+      if (!(target.parent instanceof DeclarationReflection)) continue
+      if (!target.parent.isDeprecated()) continue
+
+      // Detach from the deprecated namespace (children + childrenIncludingDocuments).
+      const oldParent = target.parent
+      oldParent.removeChild(target)
+
+      // Adopt into the non-deprecated namespace.
+      target.parent = ns
+      ns.addChild(target)
+
+      // Fully remove the ReferenceReflection from TypeDoc's tracking structures
+      // (project.reflections, children, childrenIncludingDocuments, symbol maps).
+      // Using project.removeReflection rather than direct array mutation is critical:
+      // the link resolver runs at RESOLVE_END -300 and searches childrenIncludingDocuments
+      // by name — leaving the reference there would cause getTargetReflectionDeep() to
+      // be called on a stale reference, throwing "Reference was unresolved."
+      project.removeReflection(child)
+    }
+  }
+}
+
 export function load(app: Application): void {
   app.renderer.defineRouter('sdk-router', SDKRouter)
   app.renderer.defineTheme('sdk-theme', SDKTheme)
@@ -157,6 +212,18 @@ export function load(app: Application): void {
       }
     },
     100,
+  )
+
+  // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
+  // ReferenceReflections in non-deprecated namespaces haven't yet been removed by
+  // excludeNotDocumented. Priority 50 = after auto-comment injection (100) but
+  // before CommentPlugin (0).
+  app.converter.on(
+    Converter.EVENT_RESOLVE_BEGIN,
+    context => {
+      reparentDeprecatedMembers(context.project)
+    },
+    50,
   )
 
   // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,

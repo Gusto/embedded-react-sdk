@@ -6,6 +6,7 @@ import {
   DeclarationReflection,
   ParameterReflection,
   ProjectReflection,
+  ReferenceReflection,
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
@@ -18,6 +19,7 @@ import {
   domainFromSources,
   hookDirFromSources,
   isHookSourceFile,
+  reparentDeprecatedMembers,
   SDKRouter,
 } from './sdk-router'
 
@@ -31,6 +33,8 @@ beforeAll(async () => {
  * Create a child reflection with the parent set both in the constructor (so
  * child.parent is populated) and via addChild (so parent.childrenIncludingDocuments
  * is populated — that's what the router's parseChildPages iterates over).
+ * Also registers the child in the root project so that
+ * ReferenceReflection.tryGetTargetReflection() can resolve it by ID.
  */
 function makeChild(
   parent: DeclarationReflection | ProjectReflection,
@@ -39,6 +43,7 @@ function makeChild(
 ): DeclarationReflection {
   const child = new DeclarationReflection(name, kind, parent)
   parent.addChild(child)
+  child.project.registerReflection(child, undefined, undefined)
   return child
 }
 
@@ -628,6 +633,103 @@ describe('componentPropsInterfaces', () => {
     const result = componentPropsInterfaces(project)
 
     expect(result.size).toBe(0)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// reparentDeprecatedMembers
+// ---------------------------------------------------------------------------
+
+function markAsDeprecated(ns: DeclarationReflection): void {
+  if (!ns.comment) ns.comment = new Comment()
+  ns.comment.blockTags.push(new CommentTag('@deprecated', []))
+}
+
+function makeRef(
+  name: string,
+  target: DeclarationReflection,
+  parent: DeclarationReflection | ProjectReflection,
+): ReferenceReflection {
+  const ref = new ReferenceReflection(name, target, parent)
+  parent.addChild(ref)
+  return ref
+}
+
+describe('reparentDeprecatedMembers', () => {
+  it('moves the declaration to the non-deprecated namespace and removes the reference', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    const active = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const member = makeChild(deprecated, 'DashboardFlow', ReflectionKind.Function)
+    makeRef('DashboardFlow', member, active)
+
+    reparentDeprecatedMembers(project)
+
+    expect(active.children).toContain(member)
+    expect(member.parent).toBe(active)
+    // removeChild deletes the children property entirely when it empties
+    expect(deprecated.children?.includes(member) ?? false).toBe(false)
+    expect(active.children?.every(c => !(c instanceof ReferenceReflection))).toBe(true)
+  })
+
+  it('moves multiple members from the same deprecated namespace', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    const active = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const memberA = makeChild(deprecated, 'DashboardFlow', ReflectionKind.Function)
+    const memberB = makeChild(deprecated, 'HomeAddress', ReflectionKind.Function)
+    makeRef('DashboardFlow', memberA, active)
+    makeRef('HomeAddress', memberB, active)
+
+    reparentDeprecatedMembers(project)
+
+    expect(active.children).toContain(memberA)
+    expect(active.children).toContain(memberB)
+    // removeChild deletes the children property entirely when it empties
+    expect(deprecated.children == null || deprecated.children.length === 0).toBe(true)
+  })
+
+  it('leaves members that exist only in the deprecated namespace', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const onlyInDeprecated = makeChild(deprecated, 'OldComponent', ReflectionKind.Function)
+
+    reparentDeprecatedMembers(project)
+
+    expect(deprecated.children).toContain(onlyInDeprecated)
+  })
+
+  it('ignores references between two non-deprecated namespaces', () => {
+    const project = makeProject()
+    const nsA = makeChild(project, 'EmployeeOnboarding', ReflectionKind.Namespace)
+    const nsB = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const member = makeChild(nsA, 'SomeComponent', ReflectionKind.Function)
+    const ref = makeRef('SomeComponent', member, nsB)
+
+    reparentDeprecatedMembers(project)
+
+    expect(nsA.children).toContain(member)
+    expect(member.parent).toBe(nsA)
+    expect(nsB.children).toContain(ref)
+  })
+
+  it('does nothing when there are no deprecated namespaces', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const member = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+
+    reparentDeprecatedMembers(project)
+
+    expect(ns.children).toContain(member)
+    expect(member.parent).toBe(ns)
   })
 })
 
