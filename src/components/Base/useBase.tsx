@@ -26,6 +26,7 @@ interface BaseContextProps {
     formData: T,
     componentHandler: (payload: T) => Promise<void>,
   ) => Promise<void>
+  readOnly: boolean
   LoadingIndicator: LoadingIndicatorContextProps['LoadingIndicator']
   componentName?: string
 }
@@ -40,7 +41,7 @@ export const BaseContext = createContext<BaseContextProps | undefined>(undefined
 /**
  * Reads the {@link BaseContext} value provided by {@link BaseComponent}, throwing if used outside one.
  *
- * @returns The context value containing `error`, `setError`, `onEvent`, `baseSubmitHandler`, `LoadingIndicator`, and the optional `componentName`.
+ * @returns The context value containing `error`, `setError`, `onEvent`, `baseSubmitHandler`, `readOnly`, `LoadingIndicator`, and the optional `componentName`.
  * @throws Throws an `Error` when called outside of a {@link BaseComponent} (or other `BaseContext.Provider`) subtree.
  * @internal
  */

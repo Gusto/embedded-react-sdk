@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import type { ReactNode } from 'react'
+import { describe, expect, it, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { NotFoundErrorObject } from '@gusto/embedded-api-v-2025-11-15/models/errors/notfounderrorobject'
 import { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierror'
 import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
 import { GustoEmbeddedError } from '@gusto/embedded-api-v-2025-11-15/models/errors/gustoembeddederror'
 import { useBaseSubmit } from './useBaseSubmit'
+import { ReadOnlyProvider } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 const createMockHttpMeta = () => ({
   response: new Response('', { status: 404 }),
@@ -217,6 +219,25 @@ describe('useBaseSubmit', () => {
       expect(result.current.error?.fieldErrors).toHaveLength(2)
       expect(result.current.error?.fieldErrors[0]?.field).toBe('firstName')
       expect(result.current.error?.fieldErrors[1]?.field).toBe('email')
+    })
+
+    it('does not call the component handler in read-only mode', async () => {
+      const componentHandler = vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <ReadOnlyProvider readOnly={true}>{children}</ReadOnlyProvider>
+      )
+      const { result } = renderHook(() => useBaseSubmit(), { wrapper })
+
+      await act(async () => {
+        await result.current.baseSubmitHandler({}, componentHandler)
+      })
+
+      expect(componentHandler).not.toHaveBeenCalled()
+      expect(result.current.error).toMatchObject({
+        category: 'internal_error',
+        message: 'This SDK instance is in read-only mode and cannot perform write actions.',
+        fieldErrors: [],
+      })
     })
   })
 })

@@ -17,6 +17,7 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 const CANCELLABLE_OFF_CYCLE_REASONS = new Set<string>([
   OffCycleReasonType.Bonus,
@@ -95,6 +96,7 @@ export const PayrollListPresentation = ({
   hasUnprocessedTransitions = false,
 }: PayrollListPresentationProps) => {
   const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
@@ -108,8 +110,9 @@ export const PayrollListPresentation = ({
   }, [])
 
   const anyPayrollHasKebabActions = useMemo(
-    () => payrolls.some(payroll => hasKebabActions(payroll, blockers, todayAtMidnight)),
-    [payrolls, blockers, todayAtMidnight],
+    () =>
+      !readOnly && payrolls.some(payroll => hasKebabActions(payroll, blockers, todayAtMidnight)),
+    [payrolls, blockers, todayAtMidnight, readOnly],
   )
 
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
@@ -193,6 +196,10 @@ export const PayrollListPresentation = ({
     const { payrollUuid, calculatedAt, processed, payPeriod } = payroll
 
     if (processed) {
+      return null
+    }
+
+    if (readOnly) {
       return null
     }
 
@@ -388,25 +395,27 @@ export const PayrollListPresentation = ({
               !!payroll.offCycleReason &&
               CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
 
-            const menuItems = canSkipPayroll
-              ? [
-                  {
-                    label: t('skipPayrollCta'),
-                    onClick: () => {
-                      handleOpenSkipDialog(payrollUuid!, payPeriodString)
-                    },
-                  },
-                ]
-              : canDeletePayroll
+            const menuItems = readOnly
+              ? null
+              : canSkipPayroll
                 ? [
                     {
-                      label: t('deletePayrollCta'),
+                      label: t('skipPayrollCta'),
                       onClick: () => {
-                        handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                        handleOpenSkipDialog(payrollUuid!, payPeriodString)
                       },
                     },
                   ]
-                : null
+                : canDeletePayroll
+                  ? [
+                      {
+                        label: t('deletePayrollCta'),
+                        onClick: () => {
+                          handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                        },
+                      },
+                    ]
+                  : null
 
             const hasMenuActions = menuItems !== null
 
@@ -458,26 +467,28 @@ export const PayrollListPresentation = ({
         >
           {t('deletePayrollDialog.body')}
         </Dialog>
-        <Box className={styles.offCycleCta}>
-          <Flex
-            flexDirection={{ base: 'column', medium: 'row' }}
-            justifyContent="space-between"
-            alignItems={{ base: 'stretch', medium: 'center' }}
-            gap={16}
-          >
-            <Flex flexDirection="column" gap={4}>
-              <Text weight="bold">{t('offCycleCta.title')}</Text>
-              <Text variant="supporting" size="sm">
-                {t('offCycleCta.description')}
-              </Text>
+        {!readOnly && (
+          <Box className={styles.offCycleCta}>
+            <Flex
+              flexDirection={{ base: 'column', medium: 'row' }}
+              justifyContent="space-between"
+              alignItems={{ base: 'stretch', medium: 'center' }}
+              gap={16}
+            >
+              <Flex flexDirection="column" gap={4}>
+                <Text weight="bold">{t('offCycleCta.title')}</Text>
+                <Text variant="supporting" size="sm">
+                  {t('offCycleCta.description')}
+                </Text>
+              </Flex>
+              <div className={styles.offCycleCtaButton}>
+                <Button variant="secondary" onClick={onRunOffCyclePayroll}>
+                  {t('offCycleCta.button')}
+                </Button>
+              </div>
             </Flex>
-            <div className={styles.offCycleCtaButton}>
-              <Button variant="secondary" onClick={onRunOffCyclePayroll}>
-                {t('offCycleCta.button')}
-              </Button>
-            </div>
-          </Flex>
-        </Box>
+          </Box>
+        )}
       </Flex>
     </div>
   )

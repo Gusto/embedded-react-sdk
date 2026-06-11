@@ -12,6 +12,7 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
 import CancelIcon from '@/assets/icons/slash-circle.svg?react'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 interface PaymentHistoryPresentationProps {
   paymentGroup: ContractorPaymentGroup
@@ -29,6 +30,7 @@ export const PaymentHistoryPresentation = ({
   isCancelling,
 }: PaymentHistoryPresentationProps) => {
   const { Text, Heading } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Contractor.Payments.PaymentHistory')
   const { t } = useTranslation('Contractor.Payments.PaymentHistory')
   const currencyFormatter = useNumberFormatter('currency')
@@ -125,7 +127,7 @@ export const PaymentHistoryPresentation = ({
                     ),
                   },
                 ]
-                if (mayCancel) {
+                if (mayCancel && !readOnly) {
                   items.push({
                     label: t('actions.cancel'),
                     onClick: () => {

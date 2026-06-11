@@ -14,6 +14,7 @@ import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES } from '@/shared/constants'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
@@ -41,6 +42,7 @@ export const PreviewPresentation = ({
   paymentSpeed,
 }: PreviewPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment', {
     keyPrefix: 'previewPresentation',
@@ -96,19 +98,21 @@ export const PreviewPresentation = ({
             {t('reviewSubtitle', { debitDate: contractorPaymentGroup.debitDate })}
           </Text>
         </Flex>
-        <Flex justifyContent="flex-end" gap={16}>
-          <Button onClick={onBackToEdit} variant="secondary">
-            {t('editButton')}
-          </Button>
-          <Button
-            onClick={onSubmit}
-            variant="primary"
-            isLoading={isLoading}
-            isDisabled={isSubmitDisabled}
-          >
-            {t('submitButton')}
-          </Button>
-        </Flex>
+        {!readOnly && (
+          <Flex justifyContent="flex-end" gap={16}>
+            <Button onClick={onBackToEdit} variant="secondary">
+              {t('editButton')}
+            </Button>
+            <Button
+              onClick={onSubmit}
+              variant="primary"
+              isLoading={isLoading}
+              isDisabled={isSubmitDisabled}
+            >
+              {t('submitButton')}
+            </Button>
+          </Flex>
+        )}
       </Flex>
 
       <Alert

@@ -34,6 +34,18 @@ export default App
 
 The `baseUrl` property is configured with the address of your backend proxy which is detailed further in the following section.
 
+### Rendering in read-only mode
+
+Set `readOnly` on `GustoProvider` when users should inspect SDK data without making changes:
+
+```jsx
+<GustoProvider config={{ baseUrl: '/proxy-url/' }} readOnly>
+  ...
+</GustoProvider>
+```
+
+Read-only mode hides supported write actions, such as creating contractor payments or running payroll, and blocks SDK API requests that use mutating HTTP methods. Continue enforcing authorization in your backend proxy because users can still make requests outside the SDK UI.
+
 ## Configuring a backend proxy
 
 When building with the React SDK, a backend proxy is required. React SDK components do not make calls to the Gusto Embedded API directly. Instead, the `baseUrl` configuration defines the URL of your proxy server. This proxy layer gives you complete control over requests sent to Gusto, which is essential for:

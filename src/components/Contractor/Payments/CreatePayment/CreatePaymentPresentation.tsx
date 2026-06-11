@@ -12,6 +12,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
@@ -50,6 +51,7 @@ export const CreatePaymentPresentation = ({
   paymentSpeedDays,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
   const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
@@ -86,11 +88,13 @@ export const CreatePaymentPresentation = ({
             })}
           </Text>
         </Flex>
-        <FlexItem>
-          <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>
-            {t('continueCta')}
-          </Button>
-        </FlexItem>
+        {!readOnly && (
+          <FlexItem>
+            <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>
+              {t('continueCta')}
+            </Button>
+          </FlexItem>
+        )}
       </Flex>
 
       {payrollBlockers.length > 0 && (
@@ -115,6 +119,7 @@ export const CreatePaymentPresentation = ({
           onChange={onPaymentDateChange}
           label={t('dateLabel')}
           isRequired
+          isDisabled={readOnly}
         />
       </Flex>
 
@@ -188,19 +193,23 @@ export const CreatePaymentPresentation = ({
               : undefined
           }
           label={t('hoursAndPaymentsLabel')}
-          itemMenu={paymentData => (
-            <HamburgerMenu
-              items={[
-                {
-                  label: t('editContractor'),
-                  onClick: () => {
-                    onEditContractor(paymentData.contractorUuid!)
-                  },
-                },
-              ]}
-              triggerLabel={t('editContractor')}
-            />
-          )}
+          itemMenu={
+            readOnly
+              ? undefined
+              : paymentData => (
+                  <HamburgerMenu
+                    items={[
+                      {
+                        label: t('editContractor'),
+                        onClick: () => {
+                          onEditContractor(paymentData.contractorUuid!)
+                        },
+                      },
+                    ]}
+                    triggerLabel={t('editContractor')}
+                  />
+                )
+          }
           emptyState={() => (
             <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
           )}

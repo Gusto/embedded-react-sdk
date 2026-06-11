@@ -6,6 +6,11 @@ import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
+import { SDKInternalError } from '@/types/sdkError'
+
+const READ_ONLY_ALLOWED_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+const READ_ONLY_BLOCKED_MESSAGE =
+  'This SDK instance is in read-only mode and cannot perform write actions.'
 
 /**
  * Props for {@link ApiProvider}.
@@ -23,6 +28,8 @@ export interface ApiProviderProps {
   children: React.ReactNode
   /** Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). */
   queryClient?: QueryClient
+  /** When true, non-read API requests are blocked before they leave the SDK client. */
+  readOnly?: boolean
 }
 
 /**
@@ -49,6 +56,7 @@ export function ApiProvider({
   hooks,
   children,
   queryClient: queryClientFromProps,
+  readOnly = false,
 }: ApiProviderProps) {
   const gustoClient = useMemo(() => {
     const client = new GustoEmbeddedCore({
@@ -72,6 +80,18 @@ export function ApiProvider({
         },
       }
       sdkHooks.registerBeforeRequestHook(defaultHeaderHook)
+    }
+
+    if (readOnly) {
+      const readOnlyHook: BeforeRequestHook = {
+        beforeRequest: (_context, request) => {
+          if (!READ_ONLY_ALLOWED_METHODS.has(request.method.toUpperCase())) {
+            throw new SDKInternalError(READ_ONLY_BLOCKED_MESSAGE)
+          }
+          return request
+        },
+      }
+      sdkHooks.registerBeforeRequestHook(readOnlyHook)
     }
 
     if (hooks?.beforeCreateRequest) {
@@ -103,7 +123,7 @@ export function ApiProvider({
     }
 
     return client
-  }, [url, headers, hooks])
+  }, [url, headers, hooks, readOnly])
 
   const queryClient = useMemo(() => {
     return queryClientFromProps ?? createSdkQueryClient()

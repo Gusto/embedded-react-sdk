@@ -11,6 +11,7 @@ import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingInd
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { ObservabilityProvider } from '../ObservabilityProvider'
 import { sanitizeError } from '../ObservabilityProvider/sanitization'
+import { ReadOnlyProvider } from '../ReadOnlyProvider/useReadOnly'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -59,6 +60,8 @@ export interface GustoProviderProps {
   portalContainer?: HTMLElement
   /** Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. */
   queryClient?: QueryClient
+  /** When true, SDK components suppress write actions and SDK API requests using mutating HTTP methods are blocked. */
+  readOnly?: boolean
   /** Complete map of UI components the SDK renders. Required because this adapter ships no defaults. */
   components: ComponentsContextType
   /** Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. */
@@ -101,6 +104,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     components,
     LoaderComponent,
     queryClient,
+    readOnly = false,
   } = props
 
   if (dictionary) {
@@ -147,22 +151,25 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     <ComponentsProvider value={components}>
       <LoadingIndicatorProvider value={LoaderComponent}>
         <ObservabilityProvider observability={config.observability}>
-          <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
-            <ThemeProvider theme={theme} portalContainer={portalContainer}>
-              <LocaleProvider locale={locale} currency={currency}>
-                <I18nextProvider i18n={SDKI18next} key={lng}>
-                  <ApiProvider
-                    url={config.baseUrl}
-                    headers={config.headers}
-                    hooks={config.hooks}
-                    queryClient={queryClient}
-                  >
-                    {children}
-                  </ApiProvider>
-                </I18nextProvider>
-              </LocaleProvider>
-            </ThemeProvider>
-          </ErrorBoundary>
+          <ReadOnlyProvider readOnly={readOnly}>
+            <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
+              <ThemeProvider theme={theme} portalContainer={portalContainer}>
+                <LocaleProvider locale={locale} currency={currency}>
+                  <I18nextProvider i18n={SDKI18next} key={lng}>
+                    <ApiProvider
+                      url={config.baseUrl}
+                      headers={config.headers}
+                      hooks={config.hooks}
+                      queryClient={queryClient}
+                      readOnly={readOnly}
+                    >
+                      {children}
+                    </ApiProvider>
+                  </I18nextProvider>
+                </LocaleProvider>
+              </ThemeProvider>
+            </ErrorBoundary>
+          </ReadOnlyProvider>
         </ObservabilityProvider>
       </LoadingIndicatorProvider>
     </ComponentsProvider>

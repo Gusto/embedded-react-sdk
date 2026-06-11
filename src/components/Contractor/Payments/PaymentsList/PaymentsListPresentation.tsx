@@ -11,6 +11,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
 import type { EventType } from '@/shared/constants'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
@@ -38,6 +39,7 @@ export const PaymentsListPresentation = ({
   paginationProps,
 }: ContractorPaymentPaymentsListPresentationProps) => {
   const { Button, Heading, Select, ButtonIcon, Alert } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
@@ -76,11 +78,13 @@ export const PaymentsListPresentation = ({
     ),
     emptyState: () => (
       <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
-        <ActionsLayout justifyContent="center">
-          <Button variant="primary" onClick={onCreatePayment}>
-            {t('createPaymentCta')}
-          </Button>
-        </ActionsLayout>
+        {!readOnly && (
+          <ActionsLayout justifyContent="center">
+            <Button variant="primary" onClick={onCreatePayment}>
+              {t('createPaymentCta')}
+            </Button>
+          </ActionsLayout>
+        )}
       </EmptyData>
     ),
     pagination: paginationProps,
@@ -94,7 +98,7 @@ export const PaymentsListPresentation = ({
         </Heading>
       </Flex>
 
-      {hasUnresolvedWireInRequests && (
+      {hasUnresolvedWireInRequests && !readOnly && (
         <ConfirmWireDetails companyId={companyId} onEvent={onEvent} />
       )}
 
@@ -111,7 +115,7 @@ export const PaymentsListPresentation = ({
                 {typeof alert.content === 'string'
                   ? t(`alerts.${alert.content}` as never)
                   : (alert.content ?? null)}
-                {alert.onAction && alert.actionLabel && (
+                {alert.onAction && alert.actionLabel && !readOnly && (
                   <div>
                     <Button variant="secondary" onClick={alert.onAction}>
                       {t(`alerts.${alert.actionLabel}` as never)}
@@ -151,9 +155,11 @@ export const PaymentsListPresentation = ({
             label={t('startDate')}
             shouldVisuallyHideLabel
           />
-          <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>
-            {t('createPaymentCta')}
-          </Button>
+          {!readOnly && (
+            <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>
+              {t('createPaymentCta')}
+            </Button>
+          )}
         </div>
       </Flex>
 

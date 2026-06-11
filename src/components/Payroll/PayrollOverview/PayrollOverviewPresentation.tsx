@@ -29,6 +29,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 import { firstLastName } from '@/helpers/formattedStrings'
 import {
   compensationTypeLabels,
@@ -92,6 +93,7 @@ export const PayrollOverviewPresentation = ({
   paymentSpeed,
 }: PayrollOverviewProps) => {
   const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
+  const { readOnly } = useReadOnly()
   useI18n('Payroll.PayrollOverview')
   const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -575,7 +577,7 @@ export const PayrollOverviewPresentation = ({
       <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isLoading}>
         {t('payrollReceiptCta')}
       </Button>
-      {canCancel && (
+      {canCancel && !readOnly && (
         <Button
           onClick={() => {
             setIsCancelDialogOpen(true)
@@ -588,27 +590,29 @@ export const PayrollOverviewPresentation = ({
       )}
     </>
   ) : (
-    <>
-      <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
-        {t('editCta')}
-      </Button>
-      <Button
-        onClick={onSubmit}
-        isDisabled={
-          isLoading ||
-          (submissionBlockers.length > 0 &&
-            (submissionBlockers.some(
-              blocker =>
-                !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blocker.blockerType || ''),
-            ) ||
-              submissionBlockers.some(
-                blocker => !selectedUnblockOptions[blocker.blockerType || ''],
-              )))
-        }
-      >
-        {t('submitCta')}
-      </Button>
-    </>
+    !readOnly && (
+      <>
+        <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
+          {t('editCta')}
+        </Button>
+        <Button
+          onClick={onSubmit}
+          isDisabled={
+            isLoading ||
+            (submissionBlockers.length > 0 &&
+              (submissionBlockers.some(
+                blocker =>
+                  !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blocker.blockerType || ''),
+              ) ||
+                submissionBlockers.some(
+                  blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                )))
+          }
+        >
+          {t('submitCta')}
+        </Button>
+      </>
+    )
   )
 
   return (
@@ -799,7 +803,7 @@ export const PayrollOverviewPresentation = ({
               aria-label={t('dataViews.label')}
               tabs={tabs}
             />
-            {isCancelDialogOpen && (
+            {isCancelDialogOpen && !readOnly && (
               <Dialog
                 isOpen={isCancelDialogOpen}
                 onClose={() => {

@@ -399,6 +399,29 @@ describe('PayrollListPresentation', () => {
     })
   })
 
+  describe('read-only mode', () => {
+    it('hides payroll write actions', async () => {
+      renderWithProviders(<PayrollListPresentation {...defaultProps} />, { readOnly: true })
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      expect(screen.queryByRole('button', { name: 'Run Payroll' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: 'Run off-cycle payroll' }),
+      ).not.toBeInTheDocument()
+    })
+
+    it('hides review and submit for calculated payrolls', async () => {
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} payrolls={[mockCalculatedPayroll]} />,
+        { readOnly: true },
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      expect(screen.queryByRole('button', { name: 'Review and submit' })).not.toBeInTheDocument()
+    })
+  })
+
   describe('transition payroll blocker', () => {
     const offCyclePayroll: PresentationPayroll = {
       ...mockUnprocessedPayroll,

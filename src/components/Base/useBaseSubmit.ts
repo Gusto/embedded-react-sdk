@@ -5,9 +5,12 @@ import { SDKValidationError } from '@gusto/embedded-api-v-2025-11-15/models/erro
 import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 import { type SDKError, SDKInternalError, normalizeToSDKError } from '@/types/sdkError'
 
 type SubmitHandler<T> = (data: T) => Promise<void>
+const READ_ONLY_BLOCKED_MESSAGE =
+  'This SDK instance is in read-only mode and cannot perform write actions.'
 
 /**
  * Provides the standard SDK form-submit wrapper with normalized error state and observability instrumentation.
@@ -28,6 +31,7 @@ export const useBaseSubmit = (componentName?: string) => {
   const [error, setError] = useState<SDKError | null>(null)
   const throwError = useAsyncError()
   const { observability } = useObservability()
+  const { readOnly } = useReadOnly()
 
   const processError = useCallback(
     (caughtError: GustoEmbeddedError | SDKValidationError | SDKInternalError) => {
@@ -48,6 +52,10 @@ export const useBaseSubmit = (componentName?: string) => {
       let success = false
 
       try {
+        if (readOnly) {
+          processError(new SDKInternalError(READ_ONLY_BLOCKED_MESSAGE))
+          return
+        }
         await componentHandler(data)
         success = true
       } catch (err) {
@@ -74,7 +82,7 @@ export const useBaseSubmit = (componentName?: string) => {
         })
       }
     },
-    [setError, throwError, observability, componentName, processError],
+    [setError, throwError, observability, componentName, processError, readOnly],
   )
 
   return {

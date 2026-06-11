@@ -172,4 +172,28 @@ describe('ApiProvider', () => {
 
     expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-11-15')
   })
+
+  test('blocks mutating requests in read-only mode while allowing read requests', () => {
+    render(
+      <ApiProvider url="https://api.example.com" readOnly={true}>
+        <div>Test</div>
+      </ApiProvider>,
+    )
+
+    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledTimes(2)
+
+    const hookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
+    const readOnlyHook = hookCalls[1]![0] as {
+      beforeRequest: (context: object, request: Request) => Request
+    }
+    const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
+
+    const readRequest = new Request('https://example.com', { method: 'GET' })
+    expect(readOnlyHook.beforeRequest(mockContext, readRequest)).toBe(readRequest)
+
+    const writeRequest = new Request('https://example.com', { method: 'POST' })
+    expect(() => readOnlyHook.beforeRequest(mockContext, writeRequest)).toThrow(
+      'This SDK instance is in read-only mode and cannot perform write actions.',
+    )
+  })
 })

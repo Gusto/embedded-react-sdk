@@ -14,6 +14,7 @@ import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { useReadOnly } from '@/contexts/ReadOnlyProvider/useReadOnly'
 import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
 
 /**
@@ -105,6 +106,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
 }: BaseComponentInterface<TResourceKey> & InternalBaseComponentProps) => {
   const { error, baseSubmitHandler, setError } = useBaseSubmit(componentName)
   const { observability } = useObservability()
+  const { readOnly } = useReadOnly()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
@@ -129,6 +131,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         setError,
         onEvent,
         baseSubmitHandler,
+        readOnly,
         LoadingIndicator: LoaderComponent,
         componentName,
       }}

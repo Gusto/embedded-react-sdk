@@ -24,16 +24,21 @@ void i18n.use(initReactI18next).init({
   },
 })
 
+interface RenderWithProvidersOptions extends Omit<RenderOptions, 'wrapper'> {
+  readOnly?: boolean
+}
+
 /**
  * Custom render function that wraps the component with necessary providers
  * - ComponentsProvider: Provides UI components
  * - LocaleProvider: Provides locale settings
  * - I18nextProvider: Provides translation functions
  */
-export const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => {
+export const renderWithProviders = (ui: ReactElement, options?: RenderWithProvidersOptions) => {
+  const { readOnly = false, ...renderOptions } = options ?? {}
   const TestProvider = ({ children }: { children: React.ReactNode }) => (
-    <GustoTestProvider>{children}</GustoTestProvider>
+    <GustoTestProvider readOnly={readOnly}>{children}</GustoTestProvider>
   )
 
-  return render(ui, { wrapper: TestProvider, ...options })
+  return render(ui, { wrapper: TestProvider, ...renderOptions })
 }

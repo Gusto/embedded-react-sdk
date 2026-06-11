@@ -593,5 +593,27 @@ describe('PayrollOverviewPresentation', () => {
       expect(await screen.findByRole('button', { name: /^Edit$/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
     })
+
+    it('hides Edit and Submit buttons in read-only mode', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} isProcessed={false} />, {
+        readOnly: true,
+      })
+
+      await screen.findByText(/Review payroll/i)
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Submit$/i })).not.toBeInTheDocument()
+    })
+
+    it('keeps receipt access but hides cancel for processed payrolls in read-only mode', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={true} canCancel={true} />,
+        { readOnly: true },
+      )
+
+      expect(
+        await screen.findByRole('button', { name: /View payroll receipt/i }),
+      ).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Cancel payroll/i })).not.toBeInTheDocument()
+    })
   })
 })
