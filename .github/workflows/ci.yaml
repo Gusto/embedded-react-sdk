@@ -88,6 +88,9 @@ jobs:
       - name: Lint
         run: npm run lint:check
 
+      - name: Validate docs front matter
+        run: npm run docs:lint
+
   # Format job: Run Prettier check (parallel with other checks)
   format:
     needs: setup
@@ -171,8 +174,9 @@ jobs:
   # Docs build job: validates the Docusaurus site compiles, catching broken
   # links/anchors (onBrokenLinks: 'throw') at PR time rather than at release
   # time. Uses its own node_modules under docs-site/ — not the root cache.
+  # Mirrors the publish-docs.yaml sync job environment so a green CI build
+  # means the sync job will also pass.
   docs-build:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -180,15 +184,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
-
-      - name: Validate docs front matter
-        run: npm run docs:lint
 
       - name: Install docs dependencies
         working-directory: docs-site
