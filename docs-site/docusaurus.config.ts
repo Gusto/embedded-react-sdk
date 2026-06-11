@@ -10,7 +10,7 @@ const config: Config = {
   // docs-site/ in this repo is a local-dev preview of the current docs
   // only. The public site (with version history) lives in
   // Gusto/embedded-sdk-docs and owns its own production URL.
-  url: 'http://localhost',
+  url: process.env.DOCUSAURUS_URL || 'http://localhost',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
