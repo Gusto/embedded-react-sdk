@@ -673,7 +673,7 @@ export class SDKRouter extends MemberRouter {
     const pages = super.buildPages(project)
 
     for (const [domain, hooks] of hooksByDomain) {
-      const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
+      const hooksNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
       hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
@@ -718,25 +718,54 @@ export class SDKRouter extends MemberRouter {
         // Split namespace into flows and blocks pages.
         // The namespace's canonical URL points to flows.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
-        const blocks = children.filter(c => !c.name.endsWith('Flow'))
+        const ns = reflection as DeclarationReflection
+
+        // Props interfaces are inlined by the parametersTable override; exclude them
+        // from .children so they don't also appear as standalone entries. Register
+        // them as anchors on the correct page so cross-references still resolve:
+        // props for a flow component → flows.md; props for a block component → blocks.md.
+        const allPropsSet = componentPropsInterfaces(ns)
+        const flowProps: DeclarationReflection[] = []
+        const blockProps: DeclarationReflection[] = []
+        for (const propsIface of allPropsSet) {
+          const isFlowProp = flows.some(flow =>
+            flow.signatures?.some(sig =>
+              sig.parameters?.some(
+                p => p.type instanceof ReferenceType && p.type.reflection === propsIface,
+              ),
+            ),
+          )
+          ;(isFlowProp ? flowProps : blockProps).push(propsIface)
+        }
+        const blocks = children.filter(c => !c.name.endsWith('Flow') && !allPropsSet.has(c))
 
         const flowsNs = new DeclarationReflection(
-          'flows',
+          'Flow Components',
           ReflectionKind.Namespace,
           reflection.parent,
         )
         flowsNs.children = flows
-        const flowsUrl = this.buildSyntheticPage(`${nsBasePath}/flows`, flowsNs, flows, outPages)
+        const flowsUrl = this.buildSyntheticPage(
+          `${nsBasePath}/flows`,
+          flowsNs,
+          [...flows, ...flowProps],
+          outPages,
+        )
         this.fullUrls.set(reflection, flowsUrl)
 
         if (blocks.length > 0) {
           const blocksNs = new DeclarationReflection(
-            'blocks',
+            'Block Components',
             ReflectionKind.Namespace,
             reflection.parent,
           )
           blocksNs.children = blocks
-          this.buildSyntheticPage(`${nsBasePath}/blocks`, blocksNs, blocks, outPages)
+          this.buildSyntheticPage(
+            `${nsBasePath}/blocks`,
+            blocksNs,
+            [...blocks, ...blockProps],
+            outPages,
+          )
         }
         return
       }

@@ -346,6 +346,84 @@ describe('buildPages — namespace flows/blocks splitting', () => {
 })
 
 // ---------------------------------------------------------------------------
+// buildPages — props interfaces excluded from standalone rendering
+// ---------------------------------------------------------------------------
+
+describe('buildPages — props interfaces excluded from standalone rendering', () => {
+  it('flow component props are not rendered as standalone children of the flows model', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const flowsModel = pages.find(p => p.url === 'Employee/EmployeeManagement/flows.md')
+      ?.model as DeclarationReflection
+    expect(flowsModel.children).not.toContain(propsIface)
+    expect(router.hasOwnDocument(propsIface)).toBe(false)
+    expect(router.getAnchor(propsIface)).toBeDefined()
+  })
+
+  it('flow component props are anchored on flows.md, not blocks.md', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+      ?.model as DeclarationReflection
+    expect(blocksModel.children).not.toContain(propsIface)
+  })
+
+  it('block component props are not rendered as standalone children of the blocks model', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    const block = makeChild(ns, 'CompensationCard', ReflectionKind.Function)
+    markAsComponent(block)
+    const propsIface = makeChild(ns, 'CompensationCardProps', ReflectionKind.Interface)
+    attachPropsSignature(block, propsIface, project)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+      ?.model as DeclarationReflection
+    expect(blocksModel.children).not.toContain(propsIface)
+    expect(router.hasOwnDocument(propsIface)).toBe(false)
+    expect(router.getAnchor(propsIface)).toBeDefined()
+  })
+
+  it('namespace with only flows + their props does not produce a blocks page', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
+    expect(urls).not.toContain('Employee/EmployeeManagement/blocks.md')
+    expect(router.getAnchor(propsIface)).toBeDefined()
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — domain hooks are consolidated onto a single page per domain
 // ---------------------------------------------------------------------------
 
