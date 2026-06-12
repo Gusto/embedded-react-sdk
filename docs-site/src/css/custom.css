@@ -781,6 +781,26 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
   --ifm-alert-border-color: rgba(250, 56, 56, 0.3);
 }
 
+/* ── Sidebar group labels (non-interactive section dividers) ── */
+
+.sidebar-group-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+  padding: 0.25rem 0.75rem 0.75rem;
+  margin-top: 2rem;
+}
+
+.sidebar-group-label:first-child {
+  margin-top: 0;
+}
+
+[data-theme='dark'] .sidebar-group-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* ── Sidebar scrollbars ── */
 
 .theme-doc-sidebar-container .menu,

@@ -12,30 +12,30 @@ Hooks let you own the layout while the SDK manages data fetching, validation, su
 
 ## Available Form Hooks
 
-| Hook                             | Description                                                                                        | Reference                                                             |
-| -------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `useEmployeeDetailsForm`         | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)        | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)                 |
-| `useJobForm`                     | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)     | [useJobForm](./useJobForm.md)                                         |
-| `useCompensationForm`            | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date) | [useCompensationForm](./useCompensationForm.md)                       |
-| `useWorkAddressForm`             | Create or update an employee's work address (company location select, effective date)              | [useWorkAddressForm](./useWorkAddressForm.md)                         |
-| `useFederalTaxesForm`            | Update an employee's federal tax (W-4) withholding information                                     | [useFederalTaxesForm](./useFederalTaxesForm.md)                       |
-| `useEmployeeStateTaxesForm`      | Update an employee's state tax withholding answers (dynamic, per-state question groups)            | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md)           |
-| `usePayScheduleForm`             | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        | [usePayScheduleForm](./usePayScheduleForm.md)                         |
-| `useSignCompanyForm`             | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)                         |
-| `useSignEmployeeForm`            | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)                       |
-| `useBankForm`                    | Create a bank account for an employee (nickname, routing/account number, account type)             | [useBankForm](./useBankForm.md)                                       |
-| `usePaymentMethodForm`           | Switch an employee's payment method between Direct Deposit and Check                               | [usePaymentMethodForm](./usePaymentMethodForm.md)                     |
-| `useSplitPaymentsForm`           | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)       | [useSplitPaymentsForm](./useSplitPaymentsForm.md)                     |
-| `useDeductionForm`               | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)      | [useDeductionForm](./useDeductionForm.md)                             |
-| `useChildSupportGarnishmentForm` | Create or update a child-support garnishment (agency-keyed required attributes, county selection)  | [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md) |
+| Hook                                                                  | Description                                                                                        |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)                 | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)        |
+| [useJobForm](./useJobForm.md)                                         | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)     |
+| [useCompensationForm](./useCompensationForm.md)                       | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date) |
+| [useWorkAddressForm](./useWorkAddressForm.md)                         | Create or update an employee's work address (company location select, effective date)              |
+| [useFederalTaxesForm](./useFederalTaxesForm.md)                       | Update an employee's federal tax (W-4) withholding information                                     |
+| [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md)           | Update an employee's state tax withholding answers (dynamic, per-state question groups)            |
+| [usePayScheduleForm](./usePayScheduleForm.md)                         | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        |
+| [useSignCompanyForm](./useSignCompanyForm.md)                         | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           |
+| [useSignEmployeeForm](./useSignEmployeeForm.md)                       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  |
+| [useBankForm](./useBankForm.md)                                       | Create a bank account for an employee (nickname, routing/account number, account type)             |
+| [usePaymentMethodForm](./usePaymentMethodForm.md)                     | Switch an employee's payment method between Direct Deposit and Check                               |
+| [useSplitPaymentsForm](./useSplitPaymentsForm.md)                     | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)       |
+| [useDeductionForm](./useDeductionForm.md)                             | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)      |
+| [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md) | Create or update a child-support garnishment (agency-keyed required attributes, county selection)  |
 
 ## Available Data Hooks
 
 Data hooks fetch and decorate server data and expose the actions valid for it, leaving presentation to you. They follow the same `isLoading` discriminated union and `errorHandling` contract as the rest of the SDK hooks, returning domain `data`, `status`, and `actions`.
 
-| Hook              | Description                                                                                      | Reference                               |
-| ----------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------- |
-| `useEmployeeList` | Paginated list of a company's employees, each decorated with its allowed actions and primary job | [useEmployeeList](./useEmployeeList.md) |
+| Hook                                    | Description                                                                                      |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [useEmployeeList](./useEmployeeList.md) | Paginated list of a company's employees, each decorated with its allowed actions and primary job |
 
 ---
 

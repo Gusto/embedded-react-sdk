@@ -1,0 +1,27 @@
+---
+title: Customize
+description: Tailor the SDK's visual appearance to your product — start with theming, then reach for the component adapter when you need to swap in your own primitives.
+order: 5
+---
+
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
+The SDK ships with sensible visual defaults, but every surface — colors, typography, shadows, and the primitive components themselves — is customizable. Start with **theming** for the broadest set of changes, and reach for the **component adapter** when you need to replace SDK primitives with components from your own design system.
+
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Theming',
+      description:
+        'Override design tokens — colors, typography, shadows, and other variables — to globally restyle the SDK to match your application.',
+      to: '/docs/theming/',
+    },
+    {
+      title: 'Component Adapter',
+      description:
+        "Replace the SDK's default UI primitives with components from your own design system while keeping all SDK business logic intact.",
+      to: '/docs/component-adapter/',
+    },
+  ]}
+/>
