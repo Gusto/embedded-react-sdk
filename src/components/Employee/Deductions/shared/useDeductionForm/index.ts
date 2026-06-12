@@ -5,7 +5,6 @@ export {
   type UseDeductionFormReady,
   type DeductionFormFields,
   type DeductionFormFieldsMetadata,
-  type DeductionFormFieldsType,
   type DeductionFormOptionalFieldsToRequire,
 } from './useDeductionForm'
 export {
@@ -14,7 +13,6 @@ export {
   type DeductionFormErrorCode,
   type DeductionFormData,
   type DeductionFormOutputs,
-  type DeductionFormField,
 } from './deductionFormSchema'
 export type {
   RequiredValidation as DeductionFormRequiredValidation,

@@ -185,4 +185,3 @@ export function useBankForm({
 
 export type UseBankFormResult = HookLoadingResult | UseBankFormReady
 export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata']
-export type BankFormFieldsType = UseBankFormReady['form']['Fields']

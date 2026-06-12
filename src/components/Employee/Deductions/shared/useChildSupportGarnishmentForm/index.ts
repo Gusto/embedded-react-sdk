@@ -5,7 +5,6 @@ export {
   type UseChildSupportGarnishmentFormReady,
   type ChildSupportGarnishmentFormFields,
   type ChildSupportGarnishmentFormFieldsMetadata,
-  type ChildSupportGarnishmentFormFieldsType,
 } from './useChildSupportGarnishmentForm'
 export {
   createChildSupportGarnishmentFormSchema,
@@ -13,10 +12,8 @@ export {
   type ChildSupportGarnishmentFormErrorCode,
   type ChildSupportGarnishmentFormData,
   type ChildSupportGarnishmentFormOutputs,
-  type ChildSupportGarnishmentFormField,
   type SupportedRequiredAttrKey,
   getRequiredAttrKeys,
-  REQUIRED_ATTR_FIELD_NAME,
   SUPPORTED_REQUIRED_ATTR_KEYS,
 } from './childSupportGarnishmentFormSchema'
 export type {

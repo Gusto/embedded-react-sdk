@@ -177,4 +177,3 @@ export function usePaymentMethodForm({
 
 export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFormReady
 export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata']
-export type PaymentMethodFormFieldsType = UsePaymentMethodFormReady['form']['Fields']

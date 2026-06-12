@@ -232,6 +232,8 @@ export type {
   DateOfBirthFieldProps,
   SsnFieldProps,
   SelfOnboardingFieldProps,
+  SsnRequiredValidation,
+  EmployeeDetailsFields,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 
 export {

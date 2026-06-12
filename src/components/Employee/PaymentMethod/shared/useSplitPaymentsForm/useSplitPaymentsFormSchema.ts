@@ -66,7 +66,7 @@ interface SplitPaymentsFormSchemaOptions {
  * Exported so the hook can mirror the same selection rule when deriving
  * dynamic field metadata.
  */
-export function resolveRemainderUuid(priority: Record<string, number>): string {
+function resolveRemainderUuid(priority: Record<string, number>): string {
   return Object.entries(priority).reduce<string>((maxId, [uuid, value]) => {
     if (!maxId) return uuid
     const currentMax = priority[maxId] ?? 0

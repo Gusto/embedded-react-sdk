@@ -7,7 +7,7 @@ export interface UseStateTaxesSummaryParams {
   employeeId: string
 }
 
-export type UseStateTaxesSummaryReady = BaseHookReady<
+type UseStateTaxesSummaryReady = BaseHookReady<
   { employeeStateTaxesList: EmployeeStateTaxesList[] },
   { isFetching: boolean; isPending: boolean }
 >

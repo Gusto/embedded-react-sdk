@@ -7,7 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type DeductionsSuccessAlertCode = 'deductionAdded' | 'deductionUpdated' | 'deductionDeleted'
+type DeductionsSuccessAlertCode = 'deductionAdded' | 'deductionUpdated' | 'deductionDeleted'
 
 export interface DeductionsContextInterface extends FlowContextInterface {
   employeeId?: string

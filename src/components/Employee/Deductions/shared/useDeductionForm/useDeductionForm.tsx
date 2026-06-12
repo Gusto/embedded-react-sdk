@@ -376,7 +376,6 @@ export function useDeductionForm({
 }
 
 export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsMetadata']
-export type DeductionFormFieldsType = UseDeductionFormReady['form']['Fields']
 
 // ── Internal loader ─────────────────────────────────────────────────────
 //

@@ -33,13 +33,6 @@ export const SUPPORTED_REQUIRED_ATTR_KEYS = [
 
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number]
 
-// Field name on the form for each required-attribute key.
-export const REQUIRED_ATTR_FIELD_NAME: Record<SupportedRequiredAttrKey, string> = {
-  case_number: 'caseNumber',
-  order_number: 'orderNumber',
-  remittance_number: 'remittanceNumber',
-}
-
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey> {
   const keys = new Set<SupportedRequiredAttrKey>()
   if (!agency?.requiredAttributes) return keys
@@ -82,8 +75,6 @@ const fieldValidators = {
   ),
   paymentPeriod: z.enum(PaymentPeriod),
 }
-
-export type ChildSupportGarnishmentFormField = keyof typeof fieldValidators
 
 export type ChildSupportGarnishmentFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

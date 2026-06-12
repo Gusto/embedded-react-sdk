@@ -47,8 +47,6 @@ const fieldValidators = {
   garnishmentType: z.enum(GarnishmentType),
 }
 
-export type DeductionFormField = keyof typeof fieldValidators
-
 export type DeductionFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }

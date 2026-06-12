@@ -11,7 +11,7 @@ export interface UseFederalTaxesSummaryParams {
   employeeId: string
 }
 
-export type UseFederalTaxesSummaryReady = BaseHookReady<
+type UseFederalTaxesSummaryReady = BaseHookReady<
   { employeeFederalTax: EmployeeFederalTax | undefined },
   { isFetching: boolean; isPending: boolean }
 >

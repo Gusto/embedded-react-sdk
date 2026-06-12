@@ -9,7 +9,7 @@ export interface UseDeductionsListProps {
   employeeId: string
 }
 
-export interface DeductionsListDeleteResult {
+interface DeductionsListDeleteResult {
   garnishment: Garnishment
   remainingActiveCount: number
 }

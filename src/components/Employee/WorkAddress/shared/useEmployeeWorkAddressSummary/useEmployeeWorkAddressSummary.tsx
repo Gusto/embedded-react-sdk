@@ -7,7 +7,7 @@ export interface UseEmployeeWorkAddressSummaryParams {
   employeeId: string
 }
 
-export type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
+type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
   { currentWorkAddress: EmployeeWorkAddress | undefined },
   { isFetching: boolean; isPending: boolean }
 >

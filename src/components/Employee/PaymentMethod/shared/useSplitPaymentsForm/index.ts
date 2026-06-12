@@ -5,7 +5,6 @@ export type {
   UseSplitPaymentsFormReady,
   SplitPaymentsFormFields,
   SplitPaymentsFormFieldsMetadata,
-  SplitPaymentsFormFieldsType,
   WorkingSplit,
 } from './useSplitPaymentsForm'
 export {
@@ -20,7 +19,6 @@ export {
   type SplitByValue,
 } from './useSplitPaymentsFormSchema'
 export {
-  SplitByField,
   type SplitByFieldProps,
   type RequiredValidation as SplitPaymentsFormRequiredValidation,
 } from './fields'

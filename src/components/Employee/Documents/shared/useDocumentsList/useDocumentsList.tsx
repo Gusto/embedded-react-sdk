@@ -7,7 +7,7 @@ export interface UseDocumentsListParams {
   employeeId: string
 }
 
-export type UseDocumentsListReady = BaseHookReady<{ forms: Form[] }, { isFetching: boolean }>
+type UseDocumentsListReady = BaseHookReady<{ forms: Form[] }, { isFetching: boolean }>
 
 export type UseDocumentsListResult = HookLoadingResult | UseDocumentsListReady
 

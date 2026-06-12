@@ -435,5 +435,3 @@ export function useChildSupportGarnishmentForm({
 
 export type ChildSupportGarnishmentFormFieldsMetadata =
   UseChildSupportGarnishmentFormReady['form']['fieldsMetadata']
-export type ChildSupportGarnishmentFormFieldsType =
-  UseChildSupportGarnishmentFormReady['form']['Fields']

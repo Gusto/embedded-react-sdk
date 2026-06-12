@@ -7,7 +7,7 @@ export interface UseEmployeeProfileSummaryParams {
   employeeId: string
 }
 
-export type UseEmployeeProfileSummaryReady = BaseHookReady<
+type UseEmployeeProfileSummaryReady = BaseHookReady<
   { employee: Employee },
   { isFetching: boolean; isPending: boolean }
 >

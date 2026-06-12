@@ -7,7 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type ProfileSuccessAlertCode = 'profileUpdated'
+type ProfileSuccessAlertCode = 'profileUpdated'
 
 export interface ProfileContextInterface extends FlowContextInterface {
   employeeId?: string

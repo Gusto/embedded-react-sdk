@@ -436,4 +436,3 @@ export function useSplitPaymentsForm({
 
 export type UseSplitPaymentsFormResult = HookLoadingResult | UseSplitPaymentsFormReady
 export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata']
-export type SplitPaymentsFormFieldsType = UseSplitPaymentsFormReady['form']['Fields']

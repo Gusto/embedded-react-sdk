@@ -7,7 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type FederalTaxesSuccessAlertCode = 'federalTaxesUpdated'
+type FederalTaxesSuccessAlertCode = 'federalTaxesUpdated'
 
 export interface FederalTaxesContextInterface extends FlowContextInterface {
   employeeId?: string

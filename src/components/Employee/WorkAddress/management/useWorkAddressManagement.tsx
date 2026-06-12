@@ -25,7 +25,7 @@ export interface UseWorkAddressManagementParams {
   onEvent: OnEventType<EventType, unknown>
 }
 
-export interface UseWorkAddressManagementDataPendingForms extends Record<string, unknown> {
+interface UseWorkAddressManagementDataPendingForms extends Record<string, unknown> {
   employeeDisplayName: string
   employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
@@ -33,7 +33,7 @@ export interface UseWorkAddressManagementDataPendingForms extends Record<string,
   changeWorkAddressForm: UseWorkAddressFormResult
 }
 
-export interface UseWorkAddressManagementDataReady extends Record<string, unknown> {
+interface UseWorkAddressManagementDataReady extends Record<string, unknown> {
   employeeDisplayName: string
   employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
@@ -41,22 +41,22 @@ export interface UseWorkAddressManagementDataReady extends Record<string, unknow
   changeWorkAddressForm: UseWorkAddressFormReady
 }
 
-export interface UseWorkAddressManagementStatusEmployeeError extends Record<string, unknown> {
+interface UseWorkAddressManagementStatusEmployeeError extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: true
 }
 
-export interface UseWorkAddressManagementStatusSuccess extends Record<string, unknown> {
+interface UseWorkAddressManagementStatusSuccess extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: false
 }
 
-export interface UseWorkAddressManagementActions {
+interface UseWorkAddressManagementActions {
   setEditTargetUuid: (workAddressUuid: string | undefined) => void
   confirmDeleteWorkAddress: (workAddressUuid: string) => Promise<boolean>
 }
 
-export interface UseWorkAddressManagementReadyEmployeeError extends BaseHookReady<
+interface UseWorkAddressManagementReadyEmployeeError extends BaseHookReady<
   UseWorkAddressManagementDataPendingForms,
   UseWorkAddressManagementStatusEmployeeError
 > {
@@ -70,7 +70,7 @@ export interface UseWorkAddressManagementReadySuccess extends BaseHookReady<
   actions: UseWorkAddressManagementActions
 }
 
-export type UseWorkAddressManagementReady =
+type UseWorkAddressManagementReady =
   | UseWorkAddressManagementReadyEmployeeError
   | UseWorkAddressManagementReadySuccess
 

@@ -7,7 +7,7 @@ export interface UseHomeAddressSummaryParams {
   employeeId: string
 }
 
-export type UseHomeAddressSummaryReady = BaseHookReady<
+type UseHomeAddressSummaryReady = BaseHookReady<
   {
     currentHomeAddress: EmployeeAddress | undefined
     employeeAddressList: EmployeeAddress[]

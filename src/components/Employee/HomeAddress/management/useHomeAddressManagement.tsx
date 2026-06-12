@@ -25,7 +25,7 @@ export interface UseHomeAddressManagementParams {
   onEvent: OnEventType<EventType, unknown>
 }
 
-export interface UseHomeAddressManagementDataPendingForms extends Record<string, unknown> {
+interface UseHomeAddressManagementDataPendingForms extends Record<string, unknown> {
   employeeDisplayName: string
   employeeHomeAddresses: EmployeeAddress[] | undefined
   editingHomeAddressUuid: string | undefined
@@ -33,7 +33,7 @@ export interface UseHomeAddressManagementDataPendingForms extends Record<string,
   createHomeAddressForm: UseHomeAddressFormResult
 }
 
-export interface UseHomeAddressManagementDataReady extends Record<string, unknown> {
+interface UseHomeAddressManagementDataReady extends Record<string, unknown> {
   employeeDisplayName: string
   employeeHomeAddresses: EmployeeAddress[] | undefined
   editingHomeAddressUuid: string | undefined
@@ -41,22 +41,22 @@ export interface UseHomeAddressManagementDataReady extends Record<string, unknow
   createHomeAddressForm: UseHomeAddressFormReady
 }
 
-export interface UseHomeAddressManagementStatusEmployeeError extends Record<string, unknown> {
+interface UseHomeAddressManagementStatusEmployeeError extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: true
 }
 
-export interface UseHomeAddressManagementStatusSuccess extends Record<string, unknown> {
+interface UseHomeAddressManagementStatusSuccess extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: false
 }
 
-export interface UseHomeAddressManagementActions {
+interface UseHomeAddressManagementActions {
   setEditAddressTarget: (homeAddressUuid: string | undefined) => void
   confirmDeleteHomeAddress: (homeAddressUuid: string) => Promise<boolean>
 }
 
-export interface UseHomeAddressManagementReadyEmployeeError extends BaseHookReady<
+interface UseHomeAddressManagementReadyEmployeeError extends BaseHookReady<
   UseHomeAddressManagementDataPendingForms,
   UseHomeAddressManagementStatusEmployeeError
 > {
@@ -70,7 +70,7 @@ export interface UseHomeAddressManagementReadySuccess extends BaseHookReady<
   actions: UseHomeAddressManagementActions
 }
 
-export type UseHomeAddressManagementReady =
+type UseHomeAddressManagementReady =
   | UseHomeAddressManagementReadyEmployeeError
   | UseHomeAddressManagementReadySuccess
 

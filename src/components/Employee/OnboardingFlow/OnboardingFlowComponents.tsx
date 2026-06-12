@@ -8,11 +8,6 @@ export type {
   OnboardingContextInterface,
   OnboardingDefaultValues,
 } from '../OnboardingExecutionFlow/OnboardingExecutionFlowComponents'
-export {
-  FederalTaxesContextual,
-  StateTaxesContextual,
-  DeductionsContextual,
-} from '../OnboardingExecutionFlow/OnboardingExecutionFlowComponents'
 
 export const EmployeeListContextual = () => {
   const { companyId, onEvent } = useFlow<OnboardingContextInterface>()

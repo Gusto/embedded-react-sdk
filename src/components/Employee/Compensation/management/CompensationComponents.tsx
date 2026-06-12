@@ -9,7 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type CompensationSuccessAlertCode = 'jobAdded'
+type CompensationSuccessAlertCode = 'jobAdded'
 
 export interface CompensationContextInterface extends FlowContextInterface {
   employeeId?: string
