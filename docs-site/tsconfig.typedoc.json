@@ -1,4 +1,5 @@
 {
   "extends": "../tsconfig.json",
-  "exclude": ["node_modules", "../src/**/*.test.*", "../src/**/*.spec.*", "../.storybook/**"]
+  "include": ["../src", "../types"],
+  "exclude": ["node_modules", "../src/**/*.test.*", "../src/**/*.spec.*", "../src/**/*.stories.*"]
 }
