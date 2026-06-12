@@ -98,7 +98,7 @@
     "@release-it/conventional-changelog": "^11.0.1",
     "@storybook/addon-a11y": "^10.4.4",
     "@storybook/addon-docs": "^10.4.4",
-    "@storybook/addon-onboarding": "^10.4.3",
+    "@storybook/addon-onboarding": "^10.4.4",
     "@storybook/react-vite": "^10.4.3",
     "@storybook/test-runner": "^0.24.4",
     "@testing-library/jest-dom": "^6.9.1",
