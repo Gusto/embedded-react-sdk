@@ -46,6 +46,7 @@ html {
   --gusto-table-header-bg: #eef0f2;
   --gusto-pagination-border: #ebedf0;
   --gusto-code-block-bg: #f7f7f8;
+  --gusto-body-text-color: rgba(27, 27, 29, 0.82);
 
   --docusaurus-highlighted-code-line-bg: rgba(241, 94, 73, 0.1);
 }
@@ -86,6 +87,7 @@ html {
   --gusto-table-header-bg: #2a2a2d;
   --gusto-pagination-border: #3a3a3d;
   --gusto-code-block-bg: #2a2a2d;
+  --gusto-body-text-color: rgba(255, 255, 255, 0.72);
 
   --docusaurus-highlighted-code-line-bg: rgba(241, 94, 73, 0.15);
 }
@@ -457,6 +459,18 @@ aside.theme-doc-sidebar-container {
 
 .markdown > p {
   line-height: 1.7;
+}
+
+.markdown p,
+.markdown li {
+  color: var(--gusto-body-text-color);
+}
+
+.markdown table p,
+.markdown table li,
+.markdown blockquote p,
+.markdown blockquote li {
+  color: inherit;
 }
 
 /* ── Tables ── */
