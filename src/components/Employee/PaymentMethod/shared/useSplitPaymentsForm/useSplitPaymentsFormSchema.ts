@@ -6,6 +6,12 @@ import {
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { SPLIT_BY } from '@/shared/constants'
 
+/**
+ * Validation error codes emitted by the split payments form schema. Map these
+ * codes to localized copy in `validationMessages` when composing the hook.
+ *
+ * @public
+ */
 export const SplitPaymentsFormErrorCodes = {
   REQUIRED: 'REQUIRED',
   INVALID_PERCENTAGE: 'INVALID_PERCENTAGE',
@@ -18,13 +24,32 @@ export const SplitPaymentsFormErrorCodes = {
  * Synthetic form path where the schema emits the percentage-sum-to-100
  * invariant. The hook subscribes to errors at this path to drive
  * `status.hasPercentageImbalance`.
+ *
+ * @internal
  */
 export const PERCENTAGE_TOTAL_PATH = 'percentageTotal' as const
 
+/**
+ * Union of validation error code strings emitted by the split payments form
+ * schema.
+ *
+ * @public
+ */
 export type SplitPaymentsFormErrorCode =
   (typeof SplitPaymentsFormErrorCodes)[keyof typeof SplitPaymentsFormErrorCodes]
 
+/**
+ * Supported split-by modes: split by percentage of net pay, or by fixed dollar
+ * amount per account.
+ *
+ * @public
+ */
 export const SPLIT_BY_VALUES = [SPLIT_BY.percentage, SPLIT_BY.amount] as const
+/**
+ * Union of split-by mode values that the form accepts.
+ *
+ * @public
+ */
 export type SplitByValue = (typeof SPLIT_BY_VALUES)[number]
 
 // Cleared NumberInput emits `NaN`. Normalize NaN to `null` at the schema
@@ -42,21 +67,47 @@ const fieldValidators = {
   priority: z.record(z.string(), z.number()),
 }
 
+/**
+ * Field names accepted by the split payments form.
+ *
+ * @public
+ */
 export type SplitPaymentsFormField = keyof typeof fieldValidators
 
+/**
+ * Shape of the values managed by the split payments form. `splitAmount` and
+ * `priority` are keyed by bank account uuid.
+ *
+ * @public
+ */
 export type SplitPaymentsFormData = {
+  /** Selected split mode — by percentage or by fixed amount. */
   splitBy: SplitByValue
+  /** Per-account split values keyed by bank account uuid (percent or dollars depending on `splitBy`). */
   splitAmount: Record<string, number | null>
+  /** Per-account priority values keyed by bank account uuid; the highest priority receives the remainder. */
   priority: Record<string, number>
 }
+/**
+ * Shape of the validated values produced by the split payments form on submit.
+ *
+ * @public
+ */
 export type SplitPaymentsFormOutputs = SplitPaymentsFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 
+/**
+ * Keys of optional split payments fields that can be promoted to required via
+ * the hook's `optionalFieldsToRequire` option.
+ *
+ * @public
+ */
 export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
+/** @internal */
 interface SplitPaymentsFormSchemaOptions {
   optionalFieldsToRequire?: SplitPaymentsFormOptionalFieldsToRequire
 }
@@ -74,6 +125,7 @@ function resolveRemainderUuid(priority: Record<string, number>): string {
   }, '')
 }
 
+/** @internal */
 export function createSplitPaymentsFormSchema(options: SplitPaymentsFormSchemaOptions = {}) {
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,

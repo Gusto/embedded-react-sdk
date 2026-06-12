@@ -22,6 +22,7 @@ const returnToCardWithAlert = (alert: ProfileContextInterface['successAlert']) =
     }),
   )
 
+/** @internal */
 export const profileStateMachine = {
   card: state<MachineTransition>(
     transition(

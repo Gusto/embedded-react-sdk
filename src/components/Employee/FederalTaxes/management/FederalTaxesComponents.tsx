@@ -9,11 +9,13 @@ import { componentEvents } from '@/shared/constants'
 
 type FederalTaxesSuccessAlertCode = 'federalTaxesUpdated'
 
+/** @internal */
 export interface FederalTaxesContextInterface extends FlowContextInterface {
   employeeId?: string
   successAlert?: FederalTaxesSuccessAlertCode | null
 }
 
+/** @internal */
 export function FederalTaxesCardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<FederalTaxesContextInterface>()
   const { t } = useTranslation('Employee.Management.FederalTaxes')
@@ -34,6 +36,7 @@ export function FederalTaxesCardContextual() {
   )
 }
 
+/** @internal */
 export function FederalTaxesEditFormContextual() {
   const { employeeId, onEvent } = useFlow<FederalTaxesContextInterface>()
   return <FederalTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />

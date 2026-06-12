@@ -15,6 +15,8 @@ import { SPLIT_BY } from '@/shared/constants'
  * (Amount mode, `value < 0`), `INVALID_PERCENTAGE` (Percentage mode, non-integer
  * or out of `0..100`). Supply translations for all three via `validationMessages`.
  * The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance`.
+ *
+ * @public
  */
 export type SplitFieldValidation =
   | typeof SplitPaymentsFormErrorCodes.REQUIRED
@@ -27,22 +29,43 @@ export type SplitFieldValidation =
  * formats values as currency in Amount mode and as a percentage in
  * Percentage mode. The remainder split is auto-disabled and treated as not
  * required by the hook; the rest are required.
+ *
+ * @public
  */
 export interface SplitFieldProps {
+  /** Label shown above the input. */
   label: string
+  /** Optional descriptive text rendered below the label. */
   description?: ReactNode
+  /** Pass-through of the parent form hook result for cross-field validation context. */
   formHookResult?: FormHookResult
+  /** Override the default localized validation message(s). */
   validationMessages?: ValidationMessages<SplitFieldValidation>
+  /** Forwarded to the underlying number input. */
   min?: NumberInputProps['min']
+  /** Forwarded to the underlying number input. */
   max?: NumberInputProps['max']
+  /** Forwarded to the underlying number input. */
   placeholder?: NumberInputProps['placeholder']
+  /** Override the rendered number input component. */
   FieldComponent?: ComponentType<NumberInputProps>
 }
 
+/**
+ * Single per-account entry surfaced on `form.Fields.splits`. Each entry
+ * carries identifying metadata for the underlying bank account plus the bound
+ * Field component for its split amount.
+ *
+ * @public
+ */
 export interface SplitFieldEntry {
+  /** Bank account uuid that this split targets. */
   uuid: string
+  /** Display name of the bank account, when available. */
   name: string | null
+  /** Last-four masking string for the bank account number, when available. */
   hiddenAccountNumber: string | null
+  /** Bound Field component for this split's amount input. */
   Field: ComponentType<SplitFieldProps>
 }
 
@@ -93,6 +116,8 @@ function createBoundSplitField(uuid: string): ComponentType<SplitFieldProps> {
  * memoizing on the stable set of split uuids so Field identity stays stable
  * across mode toggles and reorders — those changes are observed inside each
  * Field rather than baked into the closure.
+ *
+ * @internal
  */
 export function buildSplitFieldEntries(splits: BuildSplitFieldsInput[]): SplitFieldEntry[] {
   return splits.map(split => ({

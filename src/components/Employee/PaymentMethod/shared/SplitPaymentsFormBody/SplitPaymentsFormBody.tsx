@@ -18,8 +18,10 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { SPLIT_BY } from '@/shared/constants'
 import type { ResourceDictionary } from '@/types/Helpers'
 
+/** @internal */
 export type SplitPaymentsFormBodyDictionary = ResourceDictionary<'Employee.SplitPaymentsFormBody'>
 
+/** @internal */
 export interface SplitPaymentsFormBodyProps extends UseSplitPaymentsFormProps {
   /**
    * Translation overrides for the form's strings. Each consuming surface passes
@@ -38,6 +40,8 @@ export interface SplitPaymentsFormBodyProps extends UseSplitPaymentsFormProps {
  * Reads its copy from the internal `Employee.SplitPaymentsFormBody` namespace;
  * consuming surfaces inject their own copy via the `dictionary` prop and map the
  * `onSaved`/`onCancel` callbacks onto their surface-specific events.
+ *
+ * @internal
  */
 export function SplitPaymentsFormBody({
   dictionary,

@@ -30,6 +30,7 @@ interface StandardDeductionFormProps {
   onCancel: () => void
 }
 
+/** @internal */
 export function StandardDeductionForm({
   employeeId,
   deduction,

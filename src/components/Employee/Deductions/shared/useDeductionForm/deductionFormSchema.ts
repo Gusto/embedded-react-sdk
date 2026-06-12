@@ -9,11 +9,22 @@ import { coerceNaN, coerceStringBoolean } from '@/partner-hook-utils/form/prepro
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by the deduction form schema. Map these
+ * codes to localized copy in `validationMessages` when composing the hook.
+ *
+ * @public
+ */
 export const DeductionFormErrorCodes = {
   REQUIRED: 'REQUIRED',
   NEGATIVE_AMOUNT: 'NEGATIVE_AMOUNT',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the deduction form schema.
+ *
+ * @public
+ */
 export type DeductionFormErrorCode =
   (typeof DeductionFormErrorCodes)[keyof typeof DeductionFormErrorCodes]
 
@@ -47,10 +58,20 @@ const fieldValidators = {
   garnishmentType: z.enum(GarnishmentType),
 }
 
+/**
+ * Shape of the values managed by the deduction form.
+ *
+ * @public
+ */
 export type DeductionFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
+/**
+ * Shape of the validated values produced by the deduction form on submit.
+ *
+ * @public
+ */
 export type DeductionFormOutputs = DeductionFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -65,10 +86,17 @@ const requiredFieldsConfig = {
   annualMaximum: 'never',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
+/**
+ * Keys of optional deduction fields that can be promoted to required via the
+ * hook's `optionalFieldsToRequire` option.
+ *
+ * @public
+ */
 export type DeductionFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
+/** @internal */
 interface DeductionFormSchemaOptions {
   mode?: 'create' | 'update'
   /**
@@ -81,6 +109,7 @@ interface DeductionFormSchemaOptions {
   optionalFieldsToRequire?: DeductionFormOptionalFieldsToRequire
 }
 
+/** @internal */
 export function createDeductionFormSchema(options: DeductionFormSchemaOptions) {
   const { mode = 'create', courtOrdered, optionalFieldsToRequire } = options
 

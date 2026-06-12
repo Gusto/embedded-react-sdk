@@ -8,6 +8,8 @@ import { useFormatCompensationRate } from '@/helpers/formattedStrings'
  * labels and formats pay/min-wage rates with the shared `useFormatCompensationRate`
  * helper so the copy matches the form. All copy resolves from the
  * `Employee.Management.Compensation` namespace.
+ *
+ * @internal
  */
 export function usePendingChangeDetailRenderer(employeeFirstName: string | null | undefined) {
   const { t } = useTranslation('Employee.Management.Compensation')

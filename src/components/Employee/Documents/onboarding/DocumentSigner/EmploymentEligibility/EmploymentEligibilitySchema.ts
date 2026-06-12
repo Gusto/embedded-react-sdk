@@ -7,6 +7,7 @@ import {
 const isValidUscisNumber = (value: string) => /^[Aa]?\d{7,9}$/.test(value)
 const isValidI94Number = (value: string) => /^\d{9} ?[A-Za-z\d]\d$/.test(value)
 
+/** @internal */
 export const generateEmploymentEligibilitySchema = (hasDocumentNumber?: boolean | null) =>
   z
     .object({
@@ -87,9 +88,11 @@ export const generateEmploymentEligibilitySchema = (hasDocumentNumber?: boolean 
       }
     })
 
+/** @internal */
 export type EmploymentEligibilityInputs = z.input<
   ReturnType<typeof generateEmploymentEligibilitySchema>
 >
+/** @internal */
 export type EmploymentEligibilityPayload = z.infer<
   ReturnType<typeof generateEmploymentEligibilitySchema>
 >

@@ -7,6 +7,8 @@ import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/compon
  * `setPendingDeleteDeduction(...)` to open the dialog, and the dialog's
  * confirm calls `handleConfirmDelete`, which in turn invokes the
  * caller-supplied `handleDelete(garnishment)`.
+ *
+ * @internal
  */
 export function useDeleteDeduction(handleDelete: (garnishment: Garnishment) => Promise<void>) {
   const [pendingDeleteDeduction, setPendingDeleteDeduction] = useState<Garnishment | null>(null)

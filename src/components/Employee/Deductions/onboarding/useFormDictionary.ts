@@ -12,6 +12,8 @@ import type { DeductionsFormDictionary } from '../shared/DeductionsForm'
  * `childSupport.agencyLabel`, `childSupport.paymentPeriodLabel`, …). Keeping
  * the source keys unchanged preserves backward compatibility for partners
  * overriding them through the onboarding block's `dictionary` prop.
+ *
+ * @internal
  */
 export function useOnboardingDeductionsFormDictionary(): DeductionsFormDictionary {
   const { t } = useTranslation('Employee.Deductions')

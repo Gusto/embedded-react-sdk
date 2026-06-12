@@ -11,6 +11,7 @@ import { componentEvents } from '@/shared/constants'
 
 type CompensationSuccessAlertCode = 'jobAdded'
 
+/** @internal */
 export interface CompensationContextInterface extends FlowContextInterface {
   employeeId?: string
   /** Set when transitioning to `editCompensation` via the card EDIT event;
@@ -19,6 +20,7 @@ export interface CompensationContextInterface extends FlowContextInterface {
   successAlert?: CompensationSuccessAlertCode | null
 }
 
+/** @internal */
 export function CompensationCardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<CompensationContextInterface>()
   const { t } = useTranslation('Employee.Management.Compensation')
@@ -39,6 +41,7 @@ export function CompensationCardContextual() {
   )
 }
 
+/** @internal */
 export function CompensationEditFormContextual() {
   const { employeeId, currentJobId, onEvent } = useFlow<CompensationContextInterface>()
   return (
@@ -50,11 +53,13 @@ export function CompensationEditFormContextual() {
   )
 }
 
+/** @internal */
 export function CompensationAddJobFormContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
   return <CompensationAddJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function CompensationAddAnotherJobFormContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
   return <CompensationAddAnotherJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />

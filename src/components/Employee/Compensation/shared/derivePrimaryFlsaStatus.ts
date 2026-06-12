@@ -6,6 +6,8 @@ import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job
  *
  * The primary job is the one with `primary === true`; "current compensation" is the
  * entry in `job.compensations` whose `uuid` matches `job.currentCompensationUuid`.
+ *
+ * @internal
  */
 export function derivePrimaryFlsaStatus(jobs: Job[] | undefined): string | undefined {
   return (jobs ?? []).reduce<string | undefined>((acc, job) => {

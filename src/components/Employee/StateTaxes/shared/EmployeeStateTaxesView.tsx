@@ -24,9 +24,12 @@ type ReadyEmployeeStateTaxesForm = Extract<
  *
  * The underlying `Employee.StateTaxesView` namespace is an implementation
  * detail of the shared view — consumers shouldn't reference it directly.
+ *
+ * @internal
  */
 export type StateTaxesViewDictionary = ResourceDictionary<'Employee.StateTaxesView'>
 
+/** @internal */
 export interface EmployeeStateTaxesViewProps {
   stateTaxes: ReadyEmployeeStateTaxesForm
   onSubmit: () => void | Promise<void>
@@ -42,6 +45,7 @@ export interface EmployeeStateTaxesViewProps {
   dictionary?: StateTaxesViewDictionary
 }
 
+/** @internal */
 export function EmployeeStateTaxesView({
   stateTaxes,
   onSubmit,

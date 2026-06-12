@@ -26,6 +26,12 @@ interface SummaryProps extends CommonComponentInterface<'Employee.OnboardingSumm
   isAdmin?: boolean
 }
 
+/**
+ * Displays a summary of an employee's onboarding status, listing completed and
+ * outstanding steps. Rendered as a standalone step inside `OnboardingFlow`.
+ *
+ * @public
+ */
 export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
   useI18n('Employee.OnboardingSummary')
   useComponentDictionary('Employee.OnboardingSummary', props.dictionary)
@@ -151,6 +157,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   )
 }
 
+/** @internal */
 export const OnboardingSummaryContextual = () => {
   const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')

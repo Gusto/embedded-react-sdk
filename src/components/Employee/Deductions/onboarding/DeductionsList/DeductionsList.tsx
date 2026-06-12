@@ -13,6 +13,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
+/** @internal */
 export interface DeductionsListProps {
   className?: string
   deductionsList: UseDeductionsListReady
@@ -22,6 +23,7 @@ export interface DeductionsListProps {
   onContinue: () => void
 }
 
+/** @internal */
 export function DeductionsList({
   className,
   deductionsList,

@@ -13,6 +13,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/** @internal */
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
   /**
@@ -35,6 +36,7 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function EditCompensation({ dictionary, ...props }: EditCompensationProps) {
   useComponentDictionary('Employee.Compensation', dictionary)
   return (

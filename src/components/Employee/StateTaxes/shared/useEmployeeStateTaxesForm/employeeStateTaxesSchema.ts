@@ -26,17 +26,42 @@ export const EmployeeStateTaxesErrorCodes = {
   REQUIRED: 'REQUIRED',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the employee state taxes
+ * form schema.
+ *
+ * @public
+ */
 export type EmployeeStateTaxesErrorCode =
   (typeof EmployeeStateTaxesErrorCodes)[keyof typeof EmployeeStateTaxesErrorCodes]
 
 // ── Form data shape ────────────────────────────────────────────────────
 
+/**
+ * Union of value types a single state-tax answer may hold in the form. The
+ * shape depends on the API-provided question variant.
+ *
+ * @public
+ */
 export type StateTaxValue = string | number | boolean | Date | null | undefined
 
+/**
+ * Shape of the values managed by the employee state taxes form. Keyed by
+ * two-letter state code, then by question key (camelCased from the API key).
+ *
+ * @public
+ */
 export interface EmployeeStateTaxesFormData {
+  /** Per-state answer map: state code → (camelCased question key → value). */
   states: Record<string, Record<string, StateTaxValue>>
 }
 
+/**
+ * Shape of the validated values produced by the employee state taxes form on
+ * submit.
+ *
+ * @public
+ */
 export type EmployeeStateTaxesFormOutputs = EmployeeStateTaxesFormData
 
 // ── Empty-value detection ──────────────────────────────────────────────
@@ -59,6 +84,7 @@ function isEmpty(value: unknown): boolean {
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
+/** @internal */
 export interface EmployeeStateTaxesSchemaOptions {
   isAdmin?: boolean
 }
@@ -80,6 +106,7 @@ interface QuestionEntry {
   initialValue: unknown
 }
 
+/** @internal */
 export interface EmployeeStateTaxesQuestionMeta {
   state: string
   isWorkState: boolean
@@ -90,6 +117,7 @@ export interface EmployeeStateTaxesQuestionMeta {
   isWireSelectWithBooleanOptions: boolean
 }
 
+/** @internal */
 export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<
   Record<string, z.ZodType>
 > {
@@ -101,6 +129,7 @@ export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<
   }>
 }
 
+/** @internal */
 export type EmployeeStateTaxesSchemaResult = [
   schema: z.ZodType<EmployeeStateTaxesFormData, EmployeeStateTaxesFormData>,
   metadataConfig: EmployeeStateTaxesMetadataConfig,
