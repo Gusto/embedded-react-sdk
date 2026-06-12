@@ -1,1 +1,5 @@
-export { EmployeeDocuments, EmployeeDocumentsContextual } from './EmployeeDocuments'
+export {
+  EmployeeDocuments,
+  EmployeeDocumentsContextual,
+  type EmployeeDocumentsProps,
+} from './EmployeeDocuments'

@@ -18,12 +18,12 @@ import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types'
 import { ButtonHTMLAttributes } from 'react';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
-import { Contractor as Contractor_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
-import { Employee as Employee_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
+import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
 import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax';
@@ -72,22 +72,16 @@ import { z } from 'zod';
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
 
-// Warning: (ae-missing-release-tag) "AccountNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type AccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<AccountNumberValidation>>;
 
-// Warning: (ae-missing-release-tag) "AccountNumberValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type AccountNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typeof BankFormErrorCodes, 'REQUIRED' | 'INVALID_ACCOUNT_NUMBER'>];
 
 // @public
 export type AccountType = (typeof ACCOUNT_TYPES)[number];
 
-// Warning: (ae-missing-release-tag) "AccountTypeFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
 
 // Warning: (ae-missing-release-tag) "AddEmployeesHoliday" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -162,9 +156,7 @@ export type AnchorEndOfPayPeriodFieldProps = HookFieldProps<DatePickerHookFieldP
 // @public (undocumented)
 export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "AnnualMaximumFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // @public
@@ -238,31 +230,23 @@ export const BankFormErrorCodes: {
 // @public
 export type BankFormField = keyof typeof fieldValidators_8;
 
-// Warning: (ae-missing-release-tag) "BankFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BankFormFields {
     // Warning: (ae-forgotten-export) The symbol "AccountNumberField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AccountNumberField"
     AccountNumber: typeof AccountNumberField;
     // Warning: (ae-forgotten-export) The symbol "AccountTypeField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AccountTypeField"
     AccountType: typeof AccountTypeField;
     // Warning: (ae-forgotten-export) The symbol "NameField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NameField"
     Name: typeof NameField;
     // Warning: (ae-forgotten-export) The symbol "RoutingNumberField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "RoutingNumberField"
     RoutingNumber: typeof RoutingNumberField;
 }
 
-// Warning: (ae-missing-release-tag) "BankFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata'];
 
 // Warning: (ae-forgotten-export) The symbol "OptionalFieldsToRequire" needs to be exported by the entry point index.d.ts
@@ -274,14 +258,10 @@ export type BankFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof req
 // @public
 export type BankFormOutputs = BankFormData;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type BankFormRequiredValidation = typeof BankFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "BankFormSubmitOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BankFormSubmitOptions {
     employeeId?: string;
 }
@@ -400,9 +380,7 @@ export interface CardProps {
     menu?: ReactNode;
 }
 
-// Warning: (ae-missing-release-tag) "CaseNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -446,14 +424,10 @@ export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<In
     value?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "AmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<ChildSupportGarnishmentAmountValidation>>;
 
-// Warning: (ae-missing-release-tag) "AmountValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentAmountValidation = ChildSupportGarnishmentRequiredValidation | ChildSupportGarnishmentPercentValidation;
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_2" needs to be exported by the entry point index.d.ts
@@ -473,13 +447,9 @@ export const ChildSupportGarnishmentFormErrorCodes: {
     readonly PERCENT_OUT_OF_RANGE: "PERCENT_OUT_OF_RANGE";
 };
 
-// Warning: (ae-missing-release-tag) "ChildSupportGarnishmentFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ChildSupportGarnishmentFormFields {
     // Warning: (ae-forgotten-export) The symbol "AmountField_2" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Amount: typeof AmountField_2;
     // Warning: (ae-forgotten-export) The symbol "CaseNumberField" needs to be exported by the entry point index.d.ts
     CaseNumber: typeof CaseNumberField | undefined;
@@ -488,52 +458,34 @@ export interface ChildSupportGarnishmentFormFields {
     // Warning: (ae-forgotten-export) The symbol "OrderNumberField" needs to be exported by the entry point index.d.ts
     OrderNumber: typeof OrderNumberField | undefined;
     // Warning: (ae-forgotten-export) The symbol "PaymentPeriodField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     PaymentPeriod: typeof PaymentPeriodField;
     // Warning: (ae-forgotten-export) The symbol "PayPeriodMaximumField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     PayPeriodMaximum: typeof PayPeriodMaximumField;
     // Warning: (ae-forgotten-export) The symbol "RemittanceNumberField" needs to be exported by the entry point index.d.ts
     RemittanceNumber: typeof RemittanceNumberField | undefined;
     // Warning: (ae-forgotten-export) The symbol "StateField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     State: typeof StateField;
 }
 
-// Warning: (ae-missing-release-tag) "ChildSupportGarnishmentFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentFormFieldsMetadata = UseChildSupportGarnishmentFormReady['form']['fieldsMetadata'];
 
 // @public
 export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData;
 
-// Warning: (ae-missing-release-tag) "NegativeAmountValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentNegativeAmountValidation = typeof ChildSupportGarnishmentFormErrorCodes.NEGATIVE_AMOUNT;
 
-// Warning: (ae-missing-release-tag) "PercentValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentPercentValidation = typeof ChildSupportGarnishmentFormErrorCodes.PERCENT_OUT_OF_RANGE;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentRequiredValidation = typeof ChildSupportGarnishmentFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "StateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, StateFieldEntry>>;
 
-// Warning: (ae-missing-release-tag) "CityFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "QueryWithError" needs to be exported by the entry point index.d.ts
@@ -562,33 +514,11 @@ export interface ComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAtt
     value?: string | null;
 }
 
-declare namespace Company {
-    export {
-        Industry,
-        AssignSignatory,
-        CreateSignatory,
-        InviteSignatory,
-        DocumentList,
-        SignatureForm,
-        DocumentSigner,
-        OnboardingOverview,
-        Locations,
-        LocationForm,
-        PaySchedule,
-        FederalTaxes,
-        BankAccount,
-        StateTaxesList,
-        StateTaxesForm,
-        StateTaxes,
-        OnboardingFlow
-    }
-}
-
 declare namespace CompanyOnboarding {
     export {
-        OnboardingFlow,
+        OnboardingFlow_2 as OnboardingFlow,
         OnboardingOverview,
-        DocumentSigner,
+        DocumentSigner_2 as DocumentSigner,
         DocumentList,
         SignatureForm,
         Industry,
@@ -596,8 +526,8 @@ declare namespace CompanyOnboarding {
         Locations,
         LocationForm,
         PaySchedule,
-        FederalTaxes,
-        StateTaxes,
+        FederalTaxes_3 as FederalTaxes,
+        StateTaxes_3 as StateTaxes,
         StateTaxesForm,
         StateTaxesList,
         AssignSignatory,
@@ -606,7 +536,6 @@ declare namespace CompanyOnboarding {
     }
 }
 
-// Warning: (ae-forgotten-export) The symbol "CompensationProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Job"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Job"
@@ -763,6 +692,16 @@ export type CompensationFormOutputs = CompensationFormData;
 //
 // @public
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_2>;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
+//
+// @public
+interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
+    // Warning: (ae-forgotten-export) The symbol "CompensationDefaultValues" needs to be exported by the entry point index.d.ts
+    defaultValues?: CompensationDefaultValues;
+    employeeId: string;
+    startDate: string;
+}
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 //
@@ -1163,15 +1102,14 @@ export interface ConfirmWireDetailsProps {
     wireInId?: string;
 }
 
-declare namespace Contractor {
+// Warning: (ae-forgotten-export) The symbol "ContractorListProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
+
+declare namespace ContractorManagement {
     export {
-        PaymentMethod,
-        Address,
-        ContractorList,
-        NewHireReport,
-        ContractorSubmit,
-        ContractorProfile,
-        OnboardingFlow_2 as OnboardingFlow,
         PaymentFlow,
         PaymentsList,
         CreatePayment,
@@ -1181,19 +1119,13 @@ declare namespace Contractor {
     }
 }
 
-// Warning: (ae-forgotten-export) The symbol "ContractorListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
-
 declare namespace ContractorOnboarding {
     export {
-        OnboardingFlow_2 as OnboardingFlow,
+        OnboardingFlow_3 as OnboardingFlow,
         ContractorList,
         ContractorProfile,
         Address,
-        PaymentMethod,
+        PaymentMethod_3 as PaymentMethod,
         NewHireReport,
         ContractorSubmit
     }
@@ -1225,17 +1157,13 @@ export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "
 // @public (undocumented)
 function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "CountyEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type CountyEntry = {
     fipsCode: string;
     county: string | null;
 };
 
-// Warning: (ae-missing-release-tag) "CourtesyWithholdingFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
@@ -1516,9 +1444,8 @@ effectiveDate: z.ZodISODate;
 }>;
 
 // Warning: (ae-forgotten-export) The symbol "BaseStateTaxFieldProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "CurrencyStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type CurrencyStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
@@ -1532,6 +1459,9 @@ export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PaySch
 //
 // @public (undocumented)
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
+
+// @internal (undocumented)
+function Dashboard(input: DashboardProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
@@ -1556,9 +1486,17 @@ interface DashboardFlowProps extends BaseComponentInterface {
     employeeId: string;
 }
 
-// Warning: (ae-missing-release-tag) "DateOfBirthFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @internal (undocumented)
+interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
+    // (undocumented)
+    employeeId: string;
+    // Warning: (ae-forgotten-export) The symbol "DashboardTab" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    selectedTab?: DashboardTab;
+}
+
+// @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
 
 // Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
@@ -1609,9 +1547,7 @@ export interface DateRangePickerProps {
     value: DateRange | null;
 }
 
-// Warning: (ae-missing-release-tag) "DateStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DateStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<DatePickerProps>;
 };
@@ -1631,24 +1567,16 @@ export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidat
 // @public (undocumented)
 export type DayValidation = (typeof PayScheduleErrorCodes)['REQUIRED' | 'DAY_RANGE'];
 
-// Warning: (ae-missing-release-tag) "DeductAsPercentageFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductAsPercentageFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
-// Warning: (ae-missing-release-tag) "AmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormAmountValidation>>;
 
-// Warning: (ae-missing-release-tag) "AmountValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionFormAmountValidation = DeductionFormRequiredValidation | DeductionFormNegativeAmountValidation;
 
-// Warning: (ae-missing-release-tag) "CapValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionFormCapValidation = DeductionFormNegativeAmountValidation;
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators" needs to be exported by the entry point index.d.ts
@@ -1667,42 +1595,28 @@ export const DeductionFormErrorCodes: {
     readonly NEGATIVE_AMOUNT: "NEGATIVE_AMOUNT";
 };
 
-// Warning: (ae-missing-release-tag) "DeductionFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DeductionFormFields {
     // Warning: (ae-forgotten-export) The symbol "AmountField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Amount: typeof AmountField;
     // Warning: (ae-forgotten-export) The symbol "AnnualMaximumField" needs to be exported by the entry point index.d.ts
     AnnualMaximum: typeof AnnualMaximumField | undefined;
     // Warning: (ae-forgotten-export) The symbol "DeductAsPercentageField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     DeductAsPercentage: typeof DeductAsPercentageField;
     // Warning: (ae-forgotten-export) The symbol "DescriptionField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Description: typeof DescriptionField;
     // Warning: (ae-forgotten-export) The symbol "GarnishmentTypeField" needs to be exported by the entry point index.d.ts
     GarnishmentType: typeof GarnishmentTypeField | undefined;
     // Warning: (ae-forgotten-export) The symbol "RecurringField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Recurring: typeof RecurringField;
     // Warning: (ae-forgotten-export) The symbol "TotalAmountField" needs to be exported by the entry point index.d.ts
     TotalAmount: typeof TotalAmountField | undefined;
 }
 
-// Warning: (ae-missing-release-tag) "DeductionFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-missing-release-tag) "NegativeAmountValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionFormNegativeAmountValidation = typeof DeductionFormErrorCodes.NEGATIVE_AMOUNT;
 
 // Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig" needs to be exported by the entry point index.d.ts
@@ -1713,76 +1627,76 @@ export type DeductionFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeo
 // @public
 export type DeductionFormOutputs = DeductionFormData;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQUIRED;
 
-// Warning: (ae-forgotten-export) The symbol "DeductionsProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "Deductions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsProps"
 //
-// @public (undocumented)
+// @public
 function Deductions(input: DeductionsProps): JSX;
 
-// Warning: (ae-missing-release-tag) "Deductions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsProps"
 //
-// @public (undocumented)
+// @public
 function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX;
 
-// Warning: (ae-missing-release-tag) "DeductionsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCardProps"
 //
 // @public
 function DeductionsCard(props: DeductionsCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "DeductionsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
 //
-// @public (undocumented)
+// @public
 interface DeductionsCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "DeductionsEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditFormProps"
 //
 // @public
 function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "DeductionsEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
 //
-// @public (undocumented)
+// @public
 interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
     editingDeductionId?: string;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-missing-release-tag) "DeductionsFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "DeductionsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
 //
-// @public (undocumented)
-interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Management.Deductions'> {
-    // (undocumented)
+// @public
+interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> {
     employeeId: string;
-    // (undocumented)
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
+//
+// @public
+interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Management.Deductions'> {
+    employeeId: string;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "DependentsAmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "DescriptionFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
 
 // @public
@@ -1874,31 +1788,29 @@ interface DocumentManagerProps {
     formId: string;
 }
 
-// Warning: (ae-missing-release-tag) "Documents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsProps"
 //
-// @public (undocumented)
+// @public
 function Documents(input: DocumentsProps & BaseComponentInterface<'Employee.Management.Documents'>): JSX;
 
-// Warning: (ae-missing-release-tag) "DocumentsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useDocumentsList"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsCardProps"
 //
 // @public
 function DocumentsCard(props: DocumentsCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "DocumentsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsCard"
 //
-// @public (undocumented)
+// @public
 interface DocumentsCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "DocumentSignerProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "DocumentSigner" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSignerProps"
 //
-// @public (undocumented)
+// @public
 function DocumentSigner(props: DocumentSignerProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
@@ -1907,73 +1819,32 @@ function DocumentSigner(props: DocumentSignerProps): JSX;
 // @public (undocumented)
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
-// Warning: (ae-missing-release-tag) "DocumentsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSigner"
 //
-// @public (undocumented)
-interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
-    // (undocumented)
+// @public
+interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
-    // (undocumented)
+    withEmployeeI9?: boolean;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Documents"
+//
+// @public
+interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
+    employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<WorkAddressRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "EmailFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>;
 
-// Warning: (ae-missing-release-tag) "EmailValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL' | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'];
 
-declare namespace Employee {
-    export {
-        EmployeeList,
-        Deductions,
-        OnboardingSummary,
-        Profile,
-        Compensation_2 as Compensation,
-        FederalTaxes_2 as FederalTaxes,
-        FederalTaxesProps_2 as FederalTaxesProps,
-        StateTaxes_2 as StateTaxes,
-        PaymentMethod_2 as PaymentMethod,
-        Landing,
-        DocumentSigner_2 as DocumentSigner,
-        OnboardingFlow_3 as OnboardingFlow,
-        OnboardingExecutionFlow,
-        OnboardingExecutionFlowProps,
-        OnboardingExecutionInitialState,
-        SelfOnboardingFlow,
-        EmployeeDocuments,
-        DashboardFlow,
-        DashboardFlowProps,
-        EmployeeListFlow,
-        EmployeeListFlowProps,
-        HomeAddress,
-        HomeAddressProps,
-        EmploymentEligibility,
-        EmploymentEligibilityProps,
-        TerminateEmployee,
-        TerminateEmployeeProps,
-        TerminationSummary,
-        TerminationSummaryProps,
-        TerminationFlow,
-        TerminationFlowProps,
-        PayrollOption,
-        WorkAddress,
-        WorkAddressProps
-    }
-}
-
-// Warning: (ae-missing-release-tag) "EmployeeAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire';
 
 // @public
@@ -1993,43 +1864,40 @@ export const EmployeeDetailsErrorCodes: {
 // @public
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators_5, 'selfOnboarding'>;
 
-// Warning: (ae-missing-release-tag) "EmployeeDetailsFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FirstNameField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "MiddleInitialField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LastNameField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmailField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DateOfBirthField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SsnField"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingField"
 //
-// @public (undocumented)
+// @public
 export interface EmployeeDetailsFields {
     // Warning: (ae-forgotten-export) The symbol "DateOfBirthField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DateOfBirthField"
     DateOfBirth: typeof DateOfBirthField;
     // Warning: (ae-forgotten-export) The symbol "EmailField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmailField"
     Email: typeof EmailField;
     // Warning: (ae-forgotten-export) The symbol "FirstNameField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FirstNameField"
     FirstName: typeof FirstNameField;
     // Warning: (ae-forgotten-export) The symbol "LastNameField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LastNameField"
     LastName: typeof LastNameField;
     // Warning: (ae-forgotten-export) The symbol "MiddleInitialField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "MiddleInitialField"
     MiddleInitial: typeof MiddleInitialField;
     // Warning: (ae-forgotten-export) The symbol "SelfOnboardingField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingField"
     SelfOnboarding: typeof SelfOnboardingField | undefined;
     // Warning: (ae-forgotten-export) The symbol "SsnField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SsnField"
     Ssn: typeof SsnField;
 }
 
-// Warning: (ae-missing-release-tag) "EmployeeDetailsFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
 
 // @public
@@ -2037,9 +1905,7 @@ export type EmployeeDetailsFormData = {
     [K in keyof typeof fieldValidators_5]: z.infer<(typeof fieldValidators_5)[K]>;
 };
 
-// Warning: (ae-missing-release-tag) "EmployeeDetailsFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields'];
 
 // @public
@@ -2050,38 +1916,35 @@ export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
 // @public
 export type EmployeeDetailsOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_4>;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "EmployeeDetailsSubmitCallbacks" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface EmployeeDetailsSubmitCallbacks {
-    // (undocumented)
-    onEmployeeCreated?: (employee: Employee_2) => void;
-    // (undocumented)
-    onEmployeeUpdated?: (employee: Employee_2) => void;
-    // (undocumented)
+    onEmployeeCreated?: (employee: Employee) => void;
+    onEmployeeUpdated?: (employee: Employee) => void;
     onOnboardingStatusUpdated?: (status: unknown) => void;
 }
 
-// Warning: (ae-forgotten-export) The symbol "EmployeeDocumentsProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "EmployeeDocuments" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "EmployeeListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "EmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "EmployeeDocumentsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
+interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
 function EmployeeList(input: EmployeeListProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DashboardFlow"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingExecutionFlow"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: This type of declaration is not supported yet by the resolver
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeListFlowProps"
 //
 // @public
@@ -2094,9 +1957,19 @@ interface EmployeeListFlowProps extends BaseComponentInterface {
     companyId: string;
 }
 
+// Warning: (ae-missing-release-tag) "EmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
+    // (undocumented)
+    companyId: string;
+}
+
 declare namespace EmployeeManagement {
     export {
         ManagementEmployeeList as EmployeeList,
+        ManagementEmployeeListProps,
+        EmployeeTab,
         EmployeeListFlow,
         EmployeeListFlowProps,
         Documents,
@@ -2106,7 +1979,9 @@ declare namespace EmployeeManagement {
         DocumentsCardProps,
         DocumentManagerProps,
         DashboardFlow,
+        Dashboard,
         DashboardFlowProps,
+        DashboardProps,
         HomeAddress,
         HomeAddressCard,
         HomeAddressEditForm,
@@ -2137,8 +2012,8 @@ declare namespace EmployeeManagement {
         ProfileProps_2 as ProfileProps,
         ProfileCardProps,
         ProfileEditFormProps,
-        PaymentMethod_3 as PaymentMethod,
-        PaymentMethodProps_3 as PaymentMethodProps,
+        PaymentMethod_2 as PaymentMethod,
+        PaymentMethodProps_2 as PaymentMethodProps,
         PaymentMethodCard,
         PaymentMethodCardProps,
         PaymentMethodBankForm,
@@ -2164,33 +2039,45 @@ declare namespace EmployeeManagement {
         CompensationAddJobFormProps,
         CompensationAddAnotherJobFormProps,
         TerminateEmployee,
+        TerminateEmployeeProps,
         TerminationSummary,
-        TerminationFlow
+        TerminationSummaryProps,
+        TerminationFlow,
+        TerminationFlowProps,
+        PayrollOption
     }
 }
 
 declare namespace EmployeeOnboarding {
     export {
-        OnboardingFlow_3 as OnboardingFlow,
+        OnboardingFlow,
+        OnboardingFlowProps,
         OnboardingExecutionFlow,
         OnboardingExecutionFlowProps,
         OnboardingExecutionInitialState,
         SelfOnboardingFlow,
         EmployeeList,
+        EmployeeListProps,
         OnboardingSummary,
         Landing,
-        DocumentSigner_2 as DocumentSigner,
+        DocumentSigner,
+        DocumentSignerProps,
         EmploymentEligibility,
+        EmploymentEligibilityProps,
         EmployeeDocuments,
+        EmployeeDocumentsProps,
         Profile,
+        ProfileProps,
         Compensation_2 as Compensation,
-        FederalTaxes_3 as FederalTaxes,
-        FederalTaxesProps_3 as FederalTaxesProps,
-        StateTaxes_3 as StateTaxes,
-        StateTaxesProps_3 as StateTaxesProps,
+        CompensationProps,
+        FederalTaxes,
+        FederalTaxesProps,
+        StateTaxes,
+        StateTaxesProps,
         Deductions,
-        PaymentMethod_2 as PaymentMethod,
-        PaymentMethodProps_2 as PaymentMethodProps
+        DeductionsProps,
+        PaymentMethod,
+        PaymentMethodProps
     }
 }
 
@@ -2217,9 +2104,7 @@ export const EmployeeStateTaxesErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-missing-release-tag) "EmployeeStateTaxesFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeStateTaxesFieldsMetadata = UseEmployeeStateTaxesFormReady['form']['fieldsMetadata'];
 
 // @public
@@ -2227,9 +2112,7 @@ export interface EmployeeStateTaxesFormData {
     states: Record<string, Record<string, StateTaxValue>>;
 }
 
-// Warning: (ae-missing-release-tag) "EmployeeStateTaxesFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
 
 // @public
@@ -2275,87 +2158,82 @@ export interface EmployeeStateTaxesSchemaOptions {
     isAdmin?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "EmployeeType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "EmployeeTab" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
+type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
+
+// @public
 export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 
-// Warning: (ae-missing-release-tag) "EmployeeWithActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export interface EmployeeWithActions extends Employee_2 {
-    // (undocumented)
+// @public
+export interface EmployeeWithActions extends Employee {
     allowedActions: EmployeeAction[];
-    // (undocumented)
     primaryJob?: Job;
 }
 
-// Warning: (ae-missing-release-tag) "EmploymentEligibility" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmploymentEligibilityProps"
 //
-// @public (undocumented)
+// @public
 function EmploymentEligibility(props: EmploymentEligibilityProps): JSX;
 
-// Warning: (ae-missing-release-tag) "EmploymentEligibilityProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmploymentEligibility"
 //
-// @public (undocumented)
+// @public
 interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.EmploymentEligibility'> {
-    // (undocumented)
     employeeId: string;
 }
 
 // @public
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 
-// Warning: (ae-missing-release-tag) "ExtraWithholdingFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesProps"
 //
-// @public (undocumented)
-function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX;
+// @public
+function FederalTaxes(input: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesProps"
 //
-// @public (undocumented)
+// @public
 function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "FederalTaxesProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function FederalTaxes_3(props: FederalTaxesProps_3 & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "FederalTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "FederalTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
 //
-// @public (undocumented)
+// @public
 interface FederalTaxesCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "FederalTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditFormProps"
 //
-// @public (undocumented)
+// @public
 function FederalTaxesEditForm(input: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "FederalTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
 //
-// @public (undocumented)
+// @public
 interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
-    // (undocumented)
     defaultValues?: Partial<FederalTaxesFormData>;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -2372,39 +2250,23 @@ export const FederalTaxesErrorCodes: {
 // @public
 export type FederalTaxesField = keyof typeof fieldValidators_11;
 
-// Warning: (ae-missing-release-tag) "FederalTaxesFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface FederalTaxesFields {
     // Warning: (ae-forgotten-export) The symbol "DeductionsField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Deductions: typeof DeductionsField;
     // Warning: (ae-forgotten-export) The symbol "DependentsAmountField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     DependentsAmount: typeof DependentsAmountField;
     // Warning: (ae-forgotten-export) The symbol "ExtraWithholdingField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     ExtraWithholding: typeof ExtraWithholdingField;
     // Warning: (ae-forgotten-export) The symbol "FilingStatusField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     FilingStatus: typeof FilingStatusField;
     // Warning: (ae-forgotten-export) The symbol "OtherIncomeField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     OtherIncome: typeof OtherIncomeField;
     // Warning: (ae-forgotten-export) The symbol "TwoJobsField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     TwoJobs: typeof TwoJobsField;
 }
 
-// Warning: (ae-missing-release-tag) "FederalTaxesFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata'];
 
 // @public
@@ -2412,9 +2274,7 @@ export type FederalTaxesFormData = {
     [K in keyof typeof fieldValidators_11]: z.infer<(typeof fieldValidators_11)[K]>;
 };
 
-// Warning: (ae-missing-release-tag) "FederalTaxesFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields'];
 
 // @public
@@ -2425,31 +2285,26 @@ export type FederalTaxesFormOutputs = FederalTaxesFormData;
 // @public
 export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_10>;
 
-// Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
 //
-// @public (undocumented)
-interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
-    // (undocumented)
-    employeeId: string;
-    // (undocumented)
-    onEvent: OnEventType<EventType, unknown>;
-}
-
-// Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-interface FederalTaxesProps_3 extends CommonComponentInterface<'Employee.FederalTaxes'> {
-    // (undocumented)
+// @public
+interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
     defaultValues?: Partial<FederalTaxesFormData>;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
 //
-// @public (undocumented)
+// @public
+interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+    employeeId: string;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
 export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED;
 
 // @public
@@ -2492,22 +2347,16 @@ export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisu
 // @public
 export const FILING_STATUS_VALUES: readonly ["Single", "Married", "Head of Household", "Exempt from withholding"];
 
-// Warning: (ae-missing-release-tag) "FilingStatusFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FilingStatusFieldProps = HookFieldProps<SelectHookFieldProps<FederalTaxesRequiredValidation, FilingStatusValue>>;
 
 // @public
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number];
 
-// Warning: (ae-missing-release-tag) "FipsCodeFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, CountyEntry>>;
 
-// Warning: (ae-missing-release-tag) "FirstNameFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
 // @public
@@ -2548,9 +2397,7 @@ export type FormHookResult = {
 // @public (undocumented)
 export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PayScheduleRequiredValidation, PayScheduleFrequency>>;
 
-// Warning: (ae-missing-release-tag) "GarnishmentTypeFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
 
 // Warning: (ae-internal-missing-underscore) The name "getQuestionVariant" should be prefixed with an underscore because the declaration is marked as @internal
@@ -2569,9 +2416,6 @@ export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
     components?: Partial<ComponentsContextType>;
     queryClient?: QueryClient;
 }
-
-// @public @deprecated
-export const GustoApiProvider: default_2.FC<GustoApiProps>;
 
 // @public
 export const GustoProvider: default_2.FC<GustoApiProps>;
@@ -2749,44 +2593,40 @@ interface HolidaySelectionFormProps extends BaseComponentInterface {
     mode?: 'create' | 'edit';
 }
 
-// Warning: (ae-missing-release-tag) "HomeAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
 //
-// @public (undocumented)
+// @public
 function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>): JSX;
 
-// Warning: (ae-missing-release-tag) "HomeAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function HomeAddressCard(props: HomeAddressCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "HomeAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddressCard"
 //
-// @public (undocumented)
+// @public
 interface HomeAddressCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "HomeAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
 //
-// @public (undocumented)
+// @public
 function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "HomeAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddressEditForm"
 //
-// @public (undocumented)
+// @public
 interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type HomeAddressEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
@@ -2803,43 +2643,25 @@ export const HomeAddressErrorCodes: {
 // @public
 export type HomeAddressField = keyof typeof fieldValidators_7;
 
-// Warning: (ae-missing-release-tag) "HomeAddressFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface HomeAddressFields {
     // Warning: (ae-forgotten-export) The symbol "CityField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     City: typeof CityField;
     // Warning: (ae-forgotten-export) The symbol "CourtesyWithholdingField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     CourtesyWithholding: typeof CourtesyWithholdingField;
     // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_3" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     EffectiveDate: typeof EffectiveDateField_3 | undefined;
     // Warning: (ae-forgotten-export) The symbol "StateField_2" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     State: typeof StateField_2;
     // Warning: (ae-forgotten-export) The symbol "Street1Field" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Street1: typeof Street1Field;
     // Warning: (ae-forgotten-export) The symbol "Street2Field" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Street2: typeof Street2Field;
     // Warning: (ae-forgotten-export) The symbol "ZipField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Zip: typeof ZipField;
 }
 
-// Warning: (ae-missing-release-tag) "HomeAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata'];
 
 // @public
@@ -2847,9 +2669,7 @@ export type HomeAddressFormData = {
     [K in keyof typeof fieldValidators_7]: z.infer<(typeof fieldValidators_7)[K]>;
 };
 
-// Warning: (ae-missing-release-tag) "HomeAddressFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields'];
 
 // @public
@@ -2860,27 +2680,20 @@ export type HomeAddressFormOutputs = HomeAddressFormData;
 // @public
 export type HomeAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_6>;
 
-// Warning: (ae-missing-release-tag) "HomeAddressProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddress"
 //
-// @public (undocumented)
+// @public
 interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type HomeAddressRequiredValidation = typeof HomeAddressErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "HomeAddressSubmitOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface HomeAddressSubmitOptions {
     effectiveDate?: string;
-    // (undocumented)
     employeeId?: string;
 }
 
@@ -3019,9 +2832,7 @@ export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequi
 // @public
 function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "LastNameFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
 // @public
@@ -3083,9 +2894,7 @@ export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>
     style?: 'inline' | 'block';
 }
 
-// Warning: (ae-missing-release-tag) "LocationFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type LocationFieldProps = HookFieldProps<SelectHookFieldProps<WorkAddressRequiredValidation, Location_2>>;
 
 // Warning: (ae-forgotten-export) The symbol "LocationFormProps" needs to be exported by the entry point index.d.ts
@@ -3100,11 +2909,20 @@ function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
 // @public (undocumented)
 function Locations(input: LocationsProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "ManagementEmployeeListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ManagementEmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// @public
+function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
+
+// Warning: (ae-missing-release-tag) "ManagementEmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
+interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+    // (undocumented)
+    companyId: string;
+    // (undocumented)
+    initialTab?: EmployeeTab;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // @public
 export const MAX_PREPARERS = 4;
@@ -3131,9 +2949,7 @@ export interface MenuProps extends DataAttributes {
     triggerRef?: RefObject<Element | null>;
 }
 
-// Warning: (ae-missing-release-tag) "MiddleInitialFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<EmployeeDetailsRequiredValidation>>;
 
 // @public
@@ -3175,14 +2991,10 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     value?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "NameFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "NameValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
 // Warning: (ae-forgotten-export) The symbol "NewHireReportProps" needs to be exported by the entry point index.d.ts
@@ -3229,9 +3041,7 @@ export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTML
     value?: number;
 }
 
-// Warning: (ae-missing-release-tag) "NumberStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
@@ -3438,7 +3248,6 @@ function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX;
 // @public
 interface OnboardingExecutionFlowProps {
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "OnboardingDefaultValues" needs to be exported by the entry point index.d.ts
     defaultValues?: OnboardingDefaultValues;
     initialEmployeeId?: string;
     initialOnboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus];
@@ -3455,19 +3264,6 @@ interface OnboardingExecutionFlowProps {
 // @public
 type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
-
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
-
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeList"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
@@ -3480,7 +3276,31 @@ const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlowProps"
 //
 // @public
+const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
+
+// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
+
+// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_3" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
+//
+// @public
+interface OnboardingFlowProps extends BaseComponentInterface {
+    companyId: string;
+    // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "OnboardingDefaultValues" needs to be exported by the entry point index.d.ts
+    defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
+    isSelfOnboardingEnabled?: boolean;
+    withEmployeeI9?: boolean;
+}
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3498,14 +3318,10 @@ function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 // @public
 export type OrderedListProps = BaseListProps;
 
-// Warning: (ae-missing-release-tag) "OrderNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "OtherIncomeFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
@@ -3540,51 +3356,48 @@ const PaymentFlow: (input: PaymentFlowProps) => JSX;
 // @public (undocumented)
 function PaymentHistory(props: PaymentHistoryProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
+//
+// @public
+function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitForm"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
+//
+// @public
+function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "PaymentMethodProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod(props: PaymentMethodProps): JSX;
+function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
 
-// Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface): JSX;
-
-// Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-function PaymentMethod_3(input: PaymentMethodProps_3 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
-
-// Warning: (ae-missing-release-tag) "PaymentMethodBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "BankFormBody"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankFormProps"
 //
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PaymentMethodBankFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankForm"
 //
-// @public (undocumented)
+// @public
 interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "PaymentMethodCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaymentMethodList"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCardProps"
 //
 // @public
 function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PaymentMethodCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCard"
 //
-// @public (undocumented)
+// @public
 interface PaymentMethodCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -3606,19 +3419,14 @@ export const PaymentMethodFormErrorCodes: {
 // @public
 export type PaymentMethodFormField = keyof typeof fieldValidators_9;
 
-// Warning: (ae-missing-release-tag) "PaymentMethodFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface PaymentMethodFormFields {
     // Warning: (ae-forgotten-export) The symbol "TypeField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TypeField"
     Type: typeof TypeField;
 }
 
-// Warning: (ae-missing-release-tag) "PaymentMethodFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata'];
 
 // Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_8" needs to be exported by the entry point index.d.ts
@@ -3629,63 +3437,47 @@ export type PaymentMethodFormOptionalFieldsToRequire = OptionalFieldsToRequire<t
 // @public
 export type PaymentMethodFormOutputs = PaymentMethodFormData;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "PaymentMethodProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
 //
-// @public (undocumented)
-interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.PaymentMethod'> {
-    // (undocumented)
+// @public
+interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
     defaultValues?: never;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     isAdmin?: boolean;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "PaymentMethodProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
 //
-// @public (undocumented)
-interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
-    // (undocumented)
+// @public
+interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
     defaultValues?: never;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     initialState?: 'list' | 'add' | 'split';
-    // (undocumented)
     isAdmin?: boolean;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "PaymentMethodSplitForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SplitPaymentsFormBody"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitFormProps"
 //
 // @public
 function PaymentMethodSplitForm(input: PaymentMethodSplitFormProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PaymentMethodSplitFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitForm"
 //
-// @public (undocumented)
+// @public
 interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'employeeId'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 
-// Warning: (ae-missing-release-tag) "PaymentPeriodFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentsListProps" needs to be exported by the entry point index.d.ts
@@ -3709,14 +3501,10 @@ const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 // @public
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
 
-// Warning: (ae-missing-release-tag) "PayPeriodMaximumFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayPeriodMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<PayPeriodMaximumValidation>>;
 
-// Warning: (ae-missing-release-tag) "PayPeriodMaximumValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayPeriodMaximumValidation = ChildSupportGarnishmentRequiredValidation | ChildSupportGarnishmentNegativeAmountValidation;
 
 declare namespace Payroll {
@@ -3933,19 +3721,16 @@ export type PayScheduleOptionalFieldsToRequire = OptionalFieldsToRequire<typeof 
 // @public (undocumented)
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "PaystubsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaystubsList"
 //
 // @public
 function PaystubsCard(props: PaystubsCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PaystubsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaystubsCard"
 //
-// @public (undocumented)
+// @public
 interface PaystubsCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4070,15 +3855,12 @@ interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOf
 // @public
 export const PREPARER_FIELDS_BY_INDEX: SignEmployeeFormField[][];
 
-// Warning: (ae-missing-release-tag) "PreparerCheckboxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PreparerCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "preparer1Fields" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PreparerFieldGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type PreparerFieldGroup = typeof preparer1Fields;
 
 // Warning: (ae-internal-missing-underscore) The name "preparerFieldName" should be prefixed with an underscore because the declaration is marked as @internal
@@ -4092,59 +3874,72 @@ export type PreparerFieldSuffix = 'FirstName' | 'LastName' | 'Street1' | 'Street
 // @public
 export type PreparerIndex = 1 | 2 | 3 | 4;
 
-// Warning: (ae-missing-release-tag) "PreparerTextFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "ProfileProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileProps"
 //
-// @public (undocumented)
+// @public
 function Profile(input: ProfileProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileProps"
 //
-// @public (undocumented)
+// @public
 function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Management.Profile'>): JSX;
 
-// Warning: (ae-missing-release-tag) "ProfileCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileCardProps"
 //
 // @public
 function ProfileCard(props: ProfileCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "ProfileCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileCard"
 //
-// @public (undocumented)
+// @public
 interface ProfileCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "ProfileEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileEditFormProps"
 //
-// @public (undocumented)
+// @public
 function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "ProfileEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileEditForm"
 //
-// @public (undocumented)
+// @public
 interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-missing-release-tag) "ProfileProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
 //
-// @public (undocumented)
+// @public
+interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
+    companyId: string;
+    // Warning: (ae-forgotten-export) The symbol "ProfileDefaultValues" needs to be exported by the entry point index.d.ts
+    defaultValues?: ProfileDefaultValues;
+    employeeId?: string;
+    isAdmin?: boolean;
+    isSelfOnboardingEnabled?: boolean;
+    onEvent: BaseComponentInterface['onEvent'];
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
+//
+// @public
 interface ProfileProps_2 extends CommonComponentInterface<'Employee.Management.Profile'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -4199,9 +3994,7 @@ export interface RadioProps extends SharedHorizontalFieldLayoutProps, Pick<Input
     value?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "RadioStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<RadioGroupProps>;
 };
@@ -4218,24 +4011,16 @@ export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_
 // @public (undocumented)
 function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
 
-// Warning: (ae-missing-release-tag) "RecurringFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
-// Warning: (ae-missing-release-tag) "RemittanceNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "RoutingNumberFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RoutingNumberValidation>>;
 
-// Warning: (ae-missing-release-tag) "RoutingNumberValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type RoutingNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typeof BankFormErrorCodes, 'REQUIRED' | 'INVALID_ROUTING_NUMBER'>];
 
 // @public
@@ -4339,17 +4124,13 @@ interface SelectReasonPayload {
     reason: OffCycleReason;
 }
 
-// Warning: (ae-missing-release-tag) "SelectStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
     placeholder?: string;
     FieldComponent?: ComponentType<SelectProps>;
 };
 
-// Warning: (ae-missing-release-tag) "SelfOnboardingFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
@@ -4449,9 +4230,7 @@ export type SignCompanyFormOutputs = SignCompanyFormData;
 // @public (undocumented)
 export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "ConfirmSignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignEmployeeFormConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_12" needs to be exported by the entry point index.d.ts
@@ -4472,61 +4251,39 @@ export const SignEmployeeFormErrorCodes: {
 // @public
 export type SignEmployeeFormField = keyof typeof fieldValidators_12;
 
-// Warning: (ae-missing-release-tag) "SignEmployeeFormFieldComponents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SignEmployeeFormFieldComponents {
     // Warning: (ae-forgotten-export) The symbol "ConfirmSignatureField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     ConfirmSignature: typeof ConfirmSignatureField;
-    // (undocumented)
     Preparer1: PreparerFieldGroup | undefined;
-    // (undocumented)
     Preparer2: PreparerFieldGroup | undefined;
-    // (undocumented)
     Preparer3: PreparerFieldGroup | undefined;
-    // (undocumented)
     Preparer4: PreparerFieldGroup | undefined;
     // Warning: (ae-forgotten-export) The symbol "SignatureField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Signature: typeof SignatureField;
     // Warning: (ae-forgotten-export) The symbol "UsedPreparerField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     UsedPreparer: typeof UsedPreparerField | undefined;
 }
 
-// Warning: (ae-missing-release-tag) "SignEmployeeFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields'];
 
-// Warning: (ae-missing-release-tag) "SignEmployeeFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata'];
 
 // @public
 export type SignEmployeeFormOutputs = SignEmployeeFormData;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignEmployeeFormRequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "SignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignEmployeeFormSignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
 export const SPLIT_BY_VALUES: readonly ["Percentage", "Amount"];
 
-// Warning: (ae-missing-release-tag) "SplitByFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SplitByFieldProps = HookFieldProps<RadioGroupHookFieldProps<SplitPaymentsFormRequiredValidation, SplitByValue>>;
 
 // @public
@@ -4579,19 +4336,14 @@ export const SplitPaymentsFormErrorCodes: {
 // @public
 export type SplitPaymentsFormField = keyof typeof fieldValidators_10;
 
-// Warning: (ae-missing-release-tag) "SplitPaymentsFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SplitPaymentsFormFields {
-    // (undocumented)
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SplitByField"
     SplitBy: ComponentType<SplitByFieldProps>;
-    // (undocumented)
     splits: SplitFieldEntry[];
 }
 
-// Warning: (ae-missing-release-tag) "SplitPaymentsFormFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata'];
 
 // Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_9" needs to be exported by the entry point index.d.ts
@@ -4602,79 +4354,60 @@ export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<t
 // @public
 export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "SsnFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "SsnRequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SsnRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "SsnValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SsnValidation = typeof EmployeeDetailsErrorCodes.INVALID_SSN;
 
-// Warning: (ae-missing-release-tag) "StateFieldEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type StateFieldEntry = {
     state: string;
     name: string;
     manualPaymentRequired?: boolean;
 };
 
-// Warning: (ae-missing-release-tag) "StateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressRequiredValidation, string>>;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-function StateTaxes(input: StateTaxesProps): JSX;
+// @public
+function StateTaxes(input: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesCard"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesEditForm"
 //
-// @public (undocumented)
+// @public
 function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
-// Warning: (ae-missing-release-tag) "StateTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function StateTaxesCard(props: StateTaxesCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "StateTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesCard"
 //
-// @public (undocumented)
+// @public
 interface StateTaxesCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "StateTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function StateTaxesEditForm(input: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-missing-release-tag) "StateTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesEditForm"
 //
-// @public (undocumented)
+// @public
 type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Management.StateTaxes'>, 'children'> & {
     employeeId: string;
     onEvent: BaseComponentInterface['onEvent'];
@@ -4692,24 +4425,22 @@ function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JS
 // @public (undocumented)
 function StateTaxesList(props: StateTaxesListProps): JSX;
 
-// Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
 //
-// @public (undocumented)
-interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
-    // (undocumented)
-    employeeId: string;
-    // (undocumented)
-    onEvent: OnEventType<EventType, unknown>;
-}
-
-// Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-type StateTaxesProps_3 = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+// @public
+type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
     employeeId: string;
     isAdmin?: boolean;
     onEvent: BaseComponentInterface['onEvent'];
 };
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
+//
+// @public
+interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+    employeeId: string;
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // @public
 export interface StateTaxFieldsGroup {
@@ -4754,14 +4485,10 @@ export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<Job
 // @public
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>;
 
-// Warning: (ae-missing-release-tag) "Street1FieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type Street1FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "Street2FieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type Street2FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
@@ -4927,9 +4654,7 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
     weight?: 'regular' | 'medium' | 'semibold' | 'bold';
 }
 
-// Warning: (ae-missing-release-tag) "TextStateTaxFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type TextStateTaxFieldProps = BaseStateTaxFieldProps & {
     placeholder?: string;
     FieldComponent?: ComponentType<TextInputProps>;
@@ -5028,9 +4753,7 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface {
     policyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "TotalAmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // Warning: (ae-missing-release-tag) "TransitionCreation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5101,99 +4824,67 @@ interface TransitionFlowProps {
     startDate: string;
 }
 
-// Warning: (ae-missing-release-tag) "TwoJobsFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
 
 // @public
 export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldProps>;
 
-// Warning: (ae-missing-release-tag) "TypeFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMethodFormRequiredValidation, PaymentMethodType>>;
 
 // @public
 export type UnorderedListProps = BaseListProps;
 
-// Warning: (ae-missing-release-tag) "useBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useBankForm(input: UseBankFormProps): HookLoadingResult | UseBankFormReady;
 
-// Warning: (ae-missing-release-tag) "UseBankFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseBankFormProps {
-    // (undocumented)
     defaultValues?: Partial<BankFormData>;
     employeeId?: string;
-    // (undocumented)
     optionalFieldsToRequire?: BankFormOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseBankFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseBankFormReady extends BaseFormHookReady<FieldsMetadata, BankFormData, BankFormFields> {
-    // (undocumented)
     actions: {
         onSubmit: (options?: BankFormSubmitOptions) => Promise<HookSubmitResult<EmployeeBankAccount> | undefined>;
     };
-    // (undocumented)
     data: Record<string, never>;
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseBankFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseBankFormResult = HookLoadingResult | UseBankFormReady;
 
-// Warning: (ae-missing-release-tag) "useChildSupportGarnishmentForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useChildSupportGarnishmentForm(input: UseChildSupportGarnishmentFormProps): UseChildSupportGarnishmentFormResult;
 
-// Warning: (ae-missing-release-tag) "UseChildSupportGarnishmentFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseChildSupportGarnishmentFormProps {
-    // (undocumented)
     defaultValues?: Partial<ChildSupportGarnishmentFormData>;
-    // (undocumented)
     employeeId: string;
     garnishmentId?: string;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseChildSupportGarnishmentFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<FieldsMetadata, ChildSupportGarnishmentFormData, ChildSupportGarnishmentFormFields> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>;
     };
-    // (undocumented)
     data: {
         agencies: StateFieldEntry[];
         counties: CountyEntry[];
         deduction: Garnishment | null;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
@@ -5203,9 +4894,7 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<F
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseChildSupportGarnishmentFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseChildSupportGarnishmentFormResult = HookLoadingResult | UseChildSupportGarnishmentFormReady;
 
 // @public
@@ -5249,62 +4938,40 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
 
-// Warning: (ae-missing-release-tag) "useCurrentHomeAddressForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
-// Warning: (ae-missing-release-tag) "UseCurrentHomeAddressFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseCurrentHomeAddressFormProps = Omit<UseHomeAddressFormProps, 'homeAddressUuid'>;
 
-// Warning: (ae-missing-release-tag) "useCurrentWorkAddressForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useCurrentWorkAddressForm(props: UseCurrentWorkAddressFormProps): UseWorkAddressFormResult;
 
-// Warning: (ae-missing-release-tag) "UseCurrentWorkAddressFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseCurrentWorkAddressFormProps = Omit<UseWorkAddressFormProps, 'workAddressUuid'>;
 
-// Warning: (ae-missing-release-tag) "useDeductionForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useDeductionForm(input: UseDeductionFormProps): UseDeductionFormResult;
 
-// Warning: (ae-missing-release-tag) "UseDeductionFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseDeductionFormProps {
     courtOrdered: boolean;
-    // (undocumented)
     defaultValues?: Partial<DeductionFormData>;
-    // (undocumented)
     employeeId: string;
     garnishmentId?: string;
-    // (undocumented)
     optionalFieldsToRequire?: DeductionFormOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseDeductionFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseDeductionFormReady extends BaseFormHookReady<FieldsMetadata, DeductionFormData, DeductionFormFields> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>;
     };
-    // (undocumented)
     data: {
         deduction: Garnishment | null;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
@@ -5312,9 +4979,7 @@ export interface UseDeductionFormReady extends BaseFormHookReady<FieldsMetadata,
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseDeductionFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 
 // Warning: (ae-internal-missing-underscore) The name "useDeriveFieldsMetadata" should be prefixed with an underscore because the declaration is marked as @internal
@@ -5322,20 +4987,15 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 // @internal
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
-// Warning: (ae-missing-release-tag) "UsedPreparerFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "useEmployeeDetailsForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useEmployeeDetailsForm(input: UseEmployeeDetailsFormProps): HookLoadingResult | UseEmployeeDetailsFormReady;
 
 // Warning: (ae-forgotten-export) The symbol "UseEmployeeDetailsFormSharedProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "UseEmployeeDetailsFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
     companyId: string;
     employeeId?: never;
@@ -5344,158 +5004,108 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
     companyId?: string;
 });
 
-// Warning: (ae-missing-release-tag) "UseEmployeeDetailsFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFields> {
-    // (undocumented)
     actions: {
-        onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee_2> | undefined>;
+        onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee> | undefined>;
     };
-    // (undocumented)
     data: {
-        employee: Employee_2 | null;
+        employee: Employee | null;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseEmployeeDetailsFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady;
 
-// Warning: (ae-missing-release-tag) "useEmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useEmployeeList(input: UseEmployeeListProps): UseEmployeeListResult;
 
-// Warning: (ae-missing-release-tag) "UseEmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseEmployeeListProps {
-    // (undocumented)
     companyId: string;
-    // (undocumented)
     employeeType?: EmployeeType;
 }
 
-// Warning: (ae-missing-release-tag) "UseEmployeeListReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseEmployeeListReady extends BaseHookReady<{
     employees: EmployeeWithActions[];
 }, {
     isFetching: boolean;
     isPending: boolean;
 }> {
-    // (undocumented)
     actions: {
         onDelete: (employeeId: string) => Promise<void>;
         onReview: (employeeId: string) => Promise<EmployeeOnboardingStatus_2 | undefined>;
         onCancelSelfOnboarding: (employeeId: string) => Promise<EmployeeOnboardingStatus_2 | undefined>;
     };
-    // (undocumented)
     pagination: PaginationControlProps;
 }
 
-// Warning: (ae-missing-release-tag) "UseEmployeeListResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady;
 
-// Warning: (ae-missing-release-tag) "useEmployeeStateTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useEmployeeStateTaxesForm(input: UseEmployeeStateTaxesFormProps): UseEmployeeStateTaxesFormResult;
 
-// Warning: (ae-missing-release-tag) "UseEmployeeStateTaxesFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseEmployeeStateTaxesFormProps {
-    // (undocumented)
     employeeId: string;
     isAdmin?: boolean;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseEmployeeStateTaxesFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>;
     };
-    // (undocumented)
     data: {
         employeeStateTaxes: EmployeeStateTaxesList[];
     };
-    // (undocumented)
     form: BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]>['form'] & {
         Fields: StateTaxFieldsGroup[];
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseEmployeeStateTaxesFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseEmployeeStateTaxesFormResult = HookLoadingResult | UseEmployeeStateTaxesFormReady;
 
-// Warning: (ae-missing-release-tag) "useFederalTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useFederalTaxesForm(input: UseFederalTaxesFormProps): HookLoadingResult | UseFederalTaxesFormReady;
 
-// Warning: (ae-missing-release-tag) "UseFederalTaxesFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseFederalTaxesFormProps {
-    // (undocumented)
     defaultValues?: Partial<FederalTaxesFormData>;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     optionalFieldsToRequire?: FederalTaxesOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseFederalTaxesFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFields> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>;
     };
-    // (undocumented)
     data: {
         employeeFederalTax: EmployeeFederalTax;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseFederalTaxesFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormReady;
 
 // Warning: (ae-internal-missing-underscore) The name "useFieldErrorMessage" should be prefixed with an underscore because the declaration is marked as @internal
@@ -5503,53 +5113,36 @@ export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormR
 // @internal
 export function useFieldErrorMessage<TErrorCode extends string>(fieldName: string, validationMessages?: ValidationMessages<TErrorCode>): string | undefined;
 
-// Warning: (ae-missing-release-tag) "useHomeAddressForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useHomeAddressForm(input: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady;
 
-// Warning: (ae-missing-release-tag) "UseHomeAddressFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseHomeAddressFormProps {
-    // (undocumented)
     defaultValues?: Partial<HomeAddressFormData>;
-    // (undocumented)
     employeeId: string;
     homeAddressUuid?: string;
     initialAddress?: EmployeeAddress;
-    // (undocumented)
     optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
-    // (undocumented)
     withEffectiveDateField?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "UseHomeAddressFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFields> {
-    // (undocumented)
     actions: {
         onSubmit: (options?: HomeAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeAddress> | undefined>;
     };
-    // (undocumented)
     data: {
         homeAddress: EmployeeAddress | null;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseHomeAddressFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady;
 
 // @public
@@ -5575,7 +5168,7 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
     data: {
         currentJob: Job | null;
         jobs: Job[] | undefined;
-        employee: Employee_2 | null;
+        employee: Employee | null;
         currentWorkAddress: EmployeeWorkAddress | null;
         showTwoPercentShareholder: boolean;
         showStateWc: boolean;
@@ -5594,49 +5187,33 @@ export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
 // @internal
 export const useObservability: () => ObservabilityContextValue;
 
-// Warning: (ae-missing-release-tag) "usePaymentMethodForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;
 
-// Warning: (ae-missing-release-tag) "UsePaymentMethodFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UsePaymentMethodFormProps {
-    // (undocumented)
     defaultValues?: Partial<PaymentMethodFormData>;
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     optionalFieldsToRequire?: PaymentMethodFormOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UsePaymentMethodFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UsePaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, PaymentMethodFormData, PaymentMethodFormFields> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>;
     };
-    // (undocumented)
     data: {
         paymentMethod: EmployeePaymentMethod;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UsePaymentMethodFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFormReady;
 
 // Warning: (ae-missing-release-tag) "usePayScheduleForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5736,37 +5313,26 @@ export interface UseSignCompanyFormReady extends BaseFormHookReady<FieldsMetadat
 // @public (undocumented)
 export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormReady;
 
-// Warning: (ae-missing-release-tag) "useSignEmployeeForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useSignEmployeeForm(input: UseSignEmployeeFormProps): HookLoadingResult | UseSignEmployeeFormReady;
 
-// Warning: (ae-missing-release-tag) "UseSignEmployeeFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseSignEmployeeFormProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     formId: string;
 }
 
-// Warning: (ae-missing-release-tag) "UseSignEmployeeFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Form> | undefined>;
         addPreparer?: () => void;
         removePreparer?: () => void;
     };
-    // (undocumented)
     data: {
         form: Form;
         pdfUrl: string | null | undefined;
     };
-    // (undocumented)
     form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents>['form'] & {
         preparers?: {
             count: number;
@@ -5774,54 +5340,38 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
             canRemove: boolean;
         };
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseSignEmployeeFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady;
 
-// Warning: (ae-missing-release-tag) "useSplitPaymentsForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady;
 
-// Warning: (ae-missing-release-tag) "UseSplitPaymentsFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseSplitPaymentsFormProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     optionalFieldsToRequire?: SplitPaymentsFormOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
 }
 
-// Warning: (ae-missing-release-tag) "UseSplitPaymentsFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseSplitPaymentsFormReady extends BaseFormHookReady<FieldsMetadata, SplitPaymentsFormData, SplitPaymentsFormFields> {
-    // (undocumented)
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>;
         reorderSplits: (orderedUuids: string[]) => void;
     };
-    // (undocumented)
     data: {
         paymentMethod: EmployeePaymentMethod;
         bankAccounts: EmployeeBankAccount[];
         splits: WorkingSplit[];
         remainderId: string;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'update';
@@ -5831,63 +5381,44 @@ export interface UseSplitPaymentsFormReady extends BaseFormHookReady<FieldsMetad
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseSplitPaymentsFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseSplitPaymentsFormResult = HookLoadingResult | UseSplitPaymentsFormReady;
 
 // @public
 export function useStateFields(employeeStateTaxes: EmployeeStateTaxesList[], isAdmin: boolean): StateTaxFieldsGroup[];
 
-// Warning: (ae-missing-release-tag) "useWorkAddressForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function useWorkAddressForm(input: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady;
 
-// Warning: (ae-missing-release-tag) "UseWorkAddressFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseWorkAddressFormProps {
     companyId?: string;
-    // (undocumented)
     defaultValues?: Partial<WorkAddressFormData>;
-    // (undocumented)
     employeeId: string;
     initialAddress?: EmployeeWorkAddress;
-    // (undocumented)
     optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire;
-    // (undocumented)
     shouldFocusError?: boolean;
-    // (undocumented)
     validationMode?: UseFormProps['mode'];
-    // (undocumented)
     withEffectiveDateField?: boolean;
     workAddressUuid?: string;
 }
 
-// Warning: (ae-missing-release-tag) "UseWorkAddressFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFields> {
-    // (undocumented)
     actions: {
         onSubmit: (callbacks?: WorkAddressSubmitCallbacks, options?: WorkAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>;
     };
-    // (undocumented)
     data: {
         workAddress: EmployeeWorkAddress | null;
         companyLocations: Location_2[] | undefined;
     };
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
     };
 }
 
-// Warning: (ae-missing-release-tag) "UseWorkAddressFormResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormReady;
 
 // @public
@@ -5942,38 +5473,36 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
     value: string;
 }>, entries?: readonly TEntry[]): FieldMetadataWithOptions<TEntry>;
 
-// Warning: (ae-missing-release-tag) "WorkAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
 //
-// @public (undocumented)
+// @public
 function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX;
 
-// Warning: (ae-missing-release-tag) "WorkAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function WorkAddressCard(props: WorkAddressCardProps): JSX;
 
-// Warning: (ae-missing-release-tag) "WorkAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddressCard"
 //
-// @public (undocumented)
+// @public
 interface WorkAddressCardProps {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "WorkAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
 //
-// @public (undocumented)
+// @public
 function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "WorkAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddressEditForm"
 //
-// @public (undocumented)
+// @public
 interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -5990,23 +5519,15 @@ export const WorkAddressErrorCodes: {
 // @public
 export type WorkAddressField = keyof typeof fieldValidators_6;
 
-// Warning: (ae-missing-release-tag) "WorkAddressFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface WorkAddressFields {
     // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_2" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     EffectiveDate: typeof EffectiveDateField_2 | undefined;
     // Warning: (ae-forgotten-export) The symbol "LocationField" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     Location: typeof LocationField;
 }
 
-// Warning: (ae-missing-release-tag) "WorkAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata'];
 
 // @public
@@ -6014,9 +5535,7 @@ export type WorkAddressFormData = {
     [K in keyof typeof fieldValidators_6]: z.infer<(typeof fieldValidators_6)[K]>;
 };
 
-// Warning: (ae-missing-release-tag) "WorkAddressFormFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields'];
 
 // @public
@@ -6027,65 +5546,42 @@ export type WorkAddressFormOutputs = WorkAddressFormData;
 // @public
 export type WorkAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_5>;
 
-// Warning: (ae-missing-release-tag) "WorkAddressProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddress"
 //
-// @public (undocumented)
+// @public
 interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type WorkAddressRequiredValidation = typeof WorkAddressErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "WorkAddressSubmitCallbacks" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface WorkAddressSubmitCallbacks {
-    // (undocumented)
     onWorkAddressCreated?: (workAddress: EmployeeWorkAddress) => void;
-    // (undocumented)
     onWorkAddressUpdated?: (workAddress: EmployeeWorkAddress) => void;
 }
 
-// Warning: (ae-missing-release-tag) "WorkAddressSubmitOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface WorkAddressSubmitOptions {
-    // (undocumented)
     effectiveDate?: string;
-    // (undocumented)
     employeeId?: string;
 }
 
-// Warning: (ae-missing-release-tag) "WorkingSplit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface WorkingSplit {
-    // (undocumented)
     hiddenAccountNumber: string | null;
-    // (undocumented)
     name: string | null;
-    // (undocumented)
     priority: number;
-    // (undocumented)
     splitAmount: number | null;
-    // (undocumented)
     uuid: string;
 }
 
-// Warning: (ae-missing-release-tag) "ZipFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation>>;
 
-// Warning: (ae-missing-release-tag) "ZipValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
 
 // Warnings were encountered during analysis:

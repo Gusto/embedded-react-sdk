@@ -1,4 +1,8 @@
-export { ManagementEmployeeList as EmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
+export {
+  ManagementEmployeeList as EmployeeList,
+  type ManagementEmployeeListProps,
+  type EmployeeTab,
+} from '../EmployeeList/management/ManagementEmployeeList'
 export { EmployeeListFlow } from '../EmployeeListFlow'
 export type { EmployeeListFlowProps } from '../EmployeeListFlow'
 export { Documents, DocumentsCard, DocumentManager } from '../Documents/management'

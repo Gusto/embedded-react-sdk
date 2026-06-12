@@ -21,7 +21,7 @@ import { useFlow } from '@/components/Flow/useFlow'
 import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
-interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
+export interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }

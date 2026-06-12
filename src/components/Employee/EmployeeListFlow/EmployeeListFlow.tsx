@@ -14,7 +14,7 @@ import { Flow } from '@/components/Flow/Flow'
  * @remarks
  * Drop-in entry point for managing all employees in a company. Begins on the
  * management employee list and routes into {@link DashboardFlow},
- * {@link TerminationFlow}, or {@link OnboardingExecutionFlow} based on the
+ * {@link TerminationFlow}, or {@link EmployeeOnboarding.OnboardingExecutionFlow | OnboardingExecutionFlow} based on the
  * action the admin invokes on a row (or the "Add employee" CTA). A "Back to
  * employees" header is added to each sub-flow so the admin can return to the
  * list at any time.

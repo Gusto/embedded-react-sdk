@@ -5,7 +5,7 @@ import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/compo
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
+export interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
   companyId: string
 }
 

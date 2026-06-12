@@ -10,9 +10,9 @@ import {
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
+export type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+export interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
   companyId: string
   initialTab?: EmployeeTab
   onEvent: BaseComponentInterface['onEvent']
