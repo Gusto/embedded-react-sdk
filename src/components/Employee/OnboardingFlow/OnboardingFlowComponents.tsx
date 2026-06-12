@@ -9,11 +9,13 @@ export type {
   OnboardingDefaultValues,
 } from '../OnboardingExecutionFlow/OnboardingExecutionFlowComponents'
 
+/** @internal */
 export const EmployeeListContextual = () => {
   const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
   return <EmployeeList companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function OnboardingExecutionFlowContextual() {
   const {
     companyId,

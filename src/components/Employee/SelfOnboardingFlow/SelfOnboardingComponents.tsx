@@ -11,11 +11,21 @@ import { PaymentMethod as PaymentMethodComponent } from '@/components/Employee/P
 import { OnboardingSummary as OnboardingSummaryComponent } from '@/components/Employee/OnboardingSummary'
 import { DocumentSigner as DocumentSignerComponent } from '@/components/Employee/Documents/onboarding/DocumentSigner'
 
+/**
+ * Props for {@link SelfOnboardingFlow}.
+ *
+ * @public
+ */
 export interface SelfOnboardingFlowProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** The associated employee identifier. */
   employeeId: string
+  /** When true, the Document Signer step checks if the employee has I-9 enabled and routes to the Employment Eligibility and I-9 signature form steps. Defaults to `false`. */
   withEmployeeI9?: boolean
 }
+
+/** @internal */
 export interface SelfOnboardingContextInterface extends FlowContextInterface {
   companyId: string
   employeeId: string
@@ -23,6 +33,7 @@ export interface SelfOnboardingContextInterface extends FlowContextInterface {
   paymentMethod?: PaymentMethodBankAccount
 }
 
+/** @internal */
 export function Landing() {
   const { companyId, employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (
@@ -34,6 +45,7 @@ export function Landing() {
   )
 }
 
+/** @internal */
 export function Profile() {
   const { companyId, employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (
@@ -46,11 +58,13 @@ export function Profile() {
   )
 }
 
+/** @internal */
 export function FederalTaxes() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return <FederalTaxesComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function StateTaxes() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (
@@ -62,11 +76,13 @@ export function StateTaxes() {
   )
 }
 
+/** @internal */
 export function PaymentMethod() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return <PaymentMethodComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function OnboardingSummary() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (
@@ -78,6 +94,7 @@ export function OnboardingSummary() {
   )
 }
 
+/** @internal */
 export function DocumentSigner() {
   const { employeeId, withEmployeeI9 = false, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (

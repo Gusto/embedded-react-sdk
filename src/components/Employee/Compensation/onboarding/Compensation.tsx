@@ -55,19 +55,79 @@ function deriveInitialFlowConfig(employeeJobs: Job[]): InitialFlowConfig {
   return { initialState: 'viewJobs', currentJobId: null }
 }
 
+/**
+ * Default values for the compensation form fields.
+ *
+ * @remarks
+ * At least one of the fields must be provided. If employee data is available
+ * via the API, these values are overwritten.
+ *
+ * @public
+ */
 export type CompensationDefaultValues = RequireAtLeastOne<{
+  /** The compensation rate (an amount in dollars). */
   rate?: Job['rate']
+  /** The job title. */
   title?: Job['title']
+  /** The pay period — one of `Hour`, `Week`, `Month`, `Year`, `Paycheck`. */
   paymentUnit?: (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS]
+  /** The FLSA classification — drives whether the role is treated as exempt, nonexempt, etc. */
   flsaStatus?: FlsaStatusType
 }>
 
+/**
+ * Props for {@link Compensation}.
+ *
+ * @public
+ */
 export interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The date the employee will start work. */
   startDate: string
+  /** Default values for the compensation form fields. If employee data is available via the API, these values are overwritten. */
   defaultValues?: CompensationDefaultValues
 }
 
+/**
+ * Onboarding step for collecting an employee's role and compensation details.
+ *
+ * @remarks
+ * Collects the job title, employee type (hourly, salary), compensation
+ * amount, and pay period. For hourly employees, allows configuring multiple
+ * roles. Automatically routes between editing the only job (when an employee
+ * has zero or one non-Nonexempt job) and a jobs-list view (when multiple
+ * roles need to be managed) on first mount; on subsequent refetches the user
+ * stays on their current step.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/job/created` | Fired after a job is successfully created | {@link Job} |
+ * | `employee/job/updated` | Fired after a job is successfully updated | {@link Job} |
+ * | `employee/job/deleted` | Fired after a job is successfully deleted | — |
+ * | `employee/compensation/updated` | Fired after compensation details are updated | {@link Compensation} |
+ * | `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
+ *
+ * @param props - See {@link CompensationProps}.
+ * @returns The compensation onboarding step.
+ * @public
+ * @group Block Components
+ *
+ * @example
+ * ```tsx
+ * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <EmployeeOnboarding.Compensation
+ *       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+ *       startDate="2025-01-01"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function Compensation(props: CompensationProps) {
   return (
     <BaseComponent {...props}>
@@ -127,6 +187,7 @@ function CompensationFlow({
   return <Flow machine={manageCompensation} onEvent={onEvent} />
 }
 
+/** @internal */
 export const CompensationContextual = () => {
   const { employeeId, onEvent, startDate, defaultValues } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
