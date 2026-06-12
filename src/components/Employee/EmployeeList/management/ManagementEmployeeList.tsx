@@ -88,6 +88,21 @@ function ManagementEmployeeListRoot({
   )
 }
 
+/**
+ * Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
+ * tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+ *
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/create` | Fired when the user clicks "Add employee". | — |
+ * | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
+ * | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
+ * | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
+ *
+ * @public
+ */
 export function ManagementEmployeeList({
   FallbackComponent,
   ...props

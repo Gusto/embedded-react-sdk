@@ -10,21 +10,27 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 import { SPLIT_BY } from '@/shared/constants'
 
+/** @internal */
 export interface UsePaymentMethodListParams {
+  /** Employee whose payment method and bank accounts to load. */
   employeeId: string
 }
 
+/** @internal */
 export interface UsePaymentMethodListReady extends BaseHookReady<
   { paymentMethod: EmployeePaymentMethod; bankAccounts: EmployeeBankAccount[] },
   { isFetching: boolean; isPending: boolean; deletePendingBankAccountUuid?: string }
 > {
+  /** Delete a bank account by UUID. Returns the delete response on success or `undefined` on failure. */
   actions: {
     onDelete: (bankAccountUuid: string) => Promise<HookSubmitResult<unknown> | undefined>
   }
 }
 
+/** @internal */
 export type UsePaymentMethodListResult = HookLoadingResult | UsePaymentMethodListReady
 
+/** @internal */
 export function usePaymentMethodList({
   employeeId,
 }: UsePaymentMethodListParams): UsePaymentMethodListResult {

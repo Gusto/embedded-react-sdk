@@ -39,9 +39,15 @@ import { STATES_ABBR } from '@/shared/constants'
 
 export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
 
+/**
+ * Optional overrides passed to {@link UseHomeAddressFormReady.actions.onSubmit | onSubmit}.
+ *
+ * @public
+ */
 export interface HomeAddressSubmitOptions {
+  /** Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). */
   employeeId?: string
-  /** When omitted on update without an effective-date field, the row’s `effectiveDate` from the fetched address is used. */
+  /** Override the effective date submitted with the address. When omitted on update without an effective-date field, the row's `effectiveDate` from the fetched address is used. */
   effectiveDate?: string
 }
 

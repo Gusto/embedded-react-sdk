@@ -17,12 +17,36 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Props for {@link FederalTaxesEditForm}.
+ *
+ * @public
+ */
 export interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Pre-fill form values. Server data takes precedence when the employee already has values on file. */
   defaultValues?: Partial<FederalTaxesFormData>
+  /** Callback invoked when the form emits an event. See the events table on {@link FederalTaxesEditForm} for the available event types and payloads. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/**
+ * Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
+ *
+ * @remarks
+ * Pair with {@link FederalTaxesCard} to route its `employee/management/federalTaxes/card/editRequested` event to this form. {@link FederalTaxes} bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
+ * | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+ *
+ * @param props - See {@link FederalTaxesEditFormProps}.
+ * @returns The rendered federal taxes edit form.
+ * @public
+ * @group Block Components
+ */
 export function FederalTaxesEditForm({
   FallbackComponent,
   ...props

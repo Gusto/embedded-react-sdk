@@ -12,6 +12,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
 
+/** @internal */
 export type DeductionsFormDictionary = ResourceDictionary<'Employee.DeductionsForm'>
 
 // Garnishment types the form supports (mirrors the legacy SUPPORTED_GARNISHMENT_TYPES).
@@ -36,8 +37,11 @@ function deductionToVariant(deduction: Garnishment): Variant {
   }
 }
 
+/** @internal */
 export interface DeductionsFormProps {
+  /** Optional CSS class for the root section. */
   className?: string
+  /** The associated employee identifier. */
   employeeId: string
   /** When provided, the form is in edit mode and the deduction's existing
    *  garnishment type selects the inline form variant. Omit for add mode. */
@@ -48,10 +52,13 @@ export interface DeductionsFormProps {
    * overrides on that namespace flow into the form text.
    */
   dictionary?: DeductionsFormDictionary
+  /** Called after a successful save with the saved row and whether it was a create or update. */
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
+  /** Called when the user cancels the form. */
   onCancel: () => void
 }
 
+/** @internal */
 export function DeductionsForm({
   className,
   employeeId,

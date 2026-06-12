@@ -36,56 +36,100 @@ import { SDKInternalError } from '@/types/sdkError'
 import { centsToDollars, dollarsToCents } from '@/helpers/currencyHelpers'
 import { PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
 
+/**
+ * A single split entry — pairs a bank account identifier with its current split allocation.
+ *
+ * @remarks
+ * Surfaced on `data.splits` from {@link useSplitPaymentsForm}. Derived from
+ * `paymentMethod.splits` when present, otherwise from the employee's bank
+ * accounts (one entry per account, no allocated amount). Carries the raw
+ * domain data — use it for label construction or lookups by uuid.
+ *
+ * @public
+ */
 export interface WorkingSplit {
+  /** UUID of the underlying bank account. */
   uuid: string
+  /** Account nickname, when available. */
   name: string | null
+  /** Masked account number suffix, when available. */
   hiddenAccountNumber: string | null
+  /** Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. */
   splitAmount: number | null
+  /** Ordering value — splits are processed in ascending priority; the highest priority is the remainder. */
   priority: number
 }
 
+/**
+ * Props for {@link useSplitPaymentsForm}.
+ *
+ * @public
+ */
 export interface UseSplitPaymentsFormProps {
+  /** Employee whose payment splits are being edited. */
   employeeId: string
+  /** Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. */
   optionalFieldsToRequire?: SplitPaymentsFormOptionalFieldsToRequire
+  /** When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Field components exposed by {@link useSplitPaymentsForm} on `form.Fields`.
+ *
+ * @public
+ */
 export interface SplitPaymentsFormFields {
+  /** Bound to `splitBy` — see {@link SplitByField}. */
   SplitBy: ComponentType<SplitByFieldProps>
+  /** One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount. */
   splits: SplitFieldEntry[]
 }
 
+/**
+ * Ready-state return value of {@link useSplitPaymentsForm}.
+ *
+ * @public
+ */
 export interface UseSplitPaymentsFormReady extends BaseFormHookReady<
   FieldsMetadata,
   SplitPaymentsFormData,
   SplitPaymentsFormFields
 > {
+  /** Server-fetched data and derived working values. */
   data: {
+    /** The employee's current payment method. */
     paymentMethod: EmployeePaymentMethod
+    /** All bank accounts available to allocate splits across. */
     bankAccounts: EmployeeBankAccount[]
+    /** The current working split entries, one per bank account. */
     splits: WorkingSplit[]
     /** UUID of the split that absorbs the remainder in Amount mode (always the last by priority). */
     remainderId: string
   }
+  /** Submission state and reactive form-level flags. */
   status: {
+    /** `true` while the update mutation is in flight. */
     isPending: boolean
+    /** Always `'update'` — the hook always edits an existing payment method. */
     mode: 'update'
     /** Current `splitBy` value, reactively tracked. */
     splitBy: SplitByValue
     /** Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. */
     percentageTotal: number
     /**
-     * Mirrors the schema-emitted `PERCENTAGE_TOTAL_MISMATCH` error at the
-     * synthetic form path. Tracks `formState.errors` directly and follows
-     * the standard react-hook-form validation lifecycle: with the default
-     * `validationMode: 'onSubmit'`, becomes `true` after the first failed
-     * Save attempt and clears live as the user corrects the total. Only
-     * surfaces in Percentage mode.
+     * `true` after a failed Percentage-mode Save when the splits don't sum to
+     * 100; clears live as the user corrects the total. Follows the standard
+     * react-hook-form validation lifecycle (controlled by `validationMode`).
+     * Only surfaces in Percentage mode.
      */
     hasPercentageImbalance: boolean
   }
+  /** Actions that mutate the form or submit it. */
   actions: {
+    /** Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. */
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
     /**
      * Reorder splits by uuid (Amount mode). Pass the ordered list of split
@@ -119,6 +163,70 @@ const buildWorkingSplits = (
   }))
 }
 
+/**
+ * Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
+ *
+ * @remarks
+ * Supports two split modes: Percentage (whole-number shares that sum to 100)
+ * and Amount (dollar amounts, with the last-priority split absorbing the
+ * remainder). Always operates in update mode against the employee's existing
+ * payment method.
+ *
+ * The Percentage sum-to-100 invariant is surfaced via
+ * `status.hasPercentageImbalance` (not as a per-field error). With the default
+ * `validationMode: 'onSubmit'`, the imbalance flag appears after the first
+ * failed Save and clears live as the user corrects the total.
+ *
+ * @param props - See {@link UseSplitPaymentsFormProps}.
+ * @returns A loading-state result while the payment method and bank accounts are loading, or a {@link UseSplitPaymentsFormReady} once ready.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useSplitPaymentsForm,
+ *   SDKFormProvider,
+ *   type SplitByValue,
+ *   type UseSplitPaymentsFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function SplitPaycheckScreen({ employeeId }: { employeeId: string }) {
+ *   const splitForm = useSplitPaymentsForm({ employeeId })
+ *
+ *   if (splitForm.isLoading) return null
+ *   return <SplitPaycheckReady splitForm={splitForm} />
+ * }
+ *
+ * function SplitPaycheckReady({ splitForm }: { splitForm: UseSplitPaymentsFormReady }) {
+ *   const { Fields } = splitForm.form
+ *   const { hasPercentageImbalance, percentageTotal } = splitForm.status
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={splitForm}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void splitForm.actions.onSubmit()
+ *         }}
+ *       >
+ *         {hasPercentageImbalance && (
+ *           <div role="alert">Splits must total 100%. Currently {percentageTotal}%.</div>
+ *         )}
+ *         <Fields.SplitBy label="Split by" getOptionLabel={(value: SplitByValue) => value} />
+ *         {Fields.splits.map(split => (
+ *           <split.Field
+ *             key={split.uuid}
+ *             label={split.name ?? 'Account'}
+ *             min={0}
+ *           />
+ *         ))}
+ *         <button type="submit" disabled={splitForm.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useSplitPaymentsForm({
   employeeId,
   optionalFieldsToRequire,
@@ -434,5 +542,16 @@ export function useSplitPaymentsForm({
   }
 }
 
+/**
+ * Return type of {@link useSplitPaymentsForm} — a discriminated union on `isLoading`.
+ *
+ * @public
+ */
 export type UseSplitPaymentsFormResult = HookLoadingResult | UseSplitPaymentsFormReady
+
+/**
+ * Per-field metadata exposed on `form.fieldsMetadata` for {@link useSplitPaymentsForm}.
+ *
+ * @public
+ */
 export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata']

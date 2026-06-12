@@ -14,8 +14,15 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Props for {@link HomeAddressEditForm}.
+ *
+ * @public
+ */
 export interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on form save, cancel, and delete actions. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -61,6 +68,19 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
   )
 }
 
+/**
+ * Standalone employee home address edit form for creating, updating, and deleting addresses.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/homeAddress/created` | A new home address was created | {@link EmployeeAddress} |
+ * | `employee/management/homeAddress/updated` | An existing home address was updated | {@link EmployeeAddress} |
+ * | `employee/management/homeAddress/deleted` | A home address was deleted | {@link EmployeeAddress} |
+ * | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
+ *
+ * @public
+ */
 export function HomeAddressEditForm({
   FallbackComponent,
   ...props

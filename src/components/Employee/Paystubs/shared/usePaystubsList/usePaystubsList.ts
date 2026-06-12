@@ -13,21 +13,39 @@ import type {
   PaginationItemsPerPage,
 } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+/**
+ * A single paystub entry returned by {@link usePaystubsList}.
+ *
+ * @public
+ */
 export type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
 >[number]
 
+/**
+ * Parameters for {@link usePaystubsList}.
+ *
+ * @public
+ */
 export interface UsePaystubsListParams {
+  /** The associated employee identifier. */
   employeeId: string
   /** Items per page for the paystubs list. Defaults to 10. */
   defaultItemsPerPage?: PaginationItemsPerPage
 }
 
+/**
+ * Ready-state shape returned by {@link usePaystubsList} once data has loaded.
+ *
+ * @public
+ */
 export interface UsePaystubsListReady extends BaseHookReady<
   { payStubs: EmployeePayStub[] },
   { isFetching: boolean; isPending: boolean }
 > {
+  /** Pagination controls for the paystubs list. */
   pagination: { payStubs?: PaginationControlProps }
+  /** Actions exposed by the hook. */
   actions: {
     /** Fetch the paystub PDF for the given payroll. Returns a Blob on success
      * so the caller decides how to surface it (open in a new tab, save to
@@ -36,6 +54,11 @@ export interface UsePaystubsListReady extends BaseHookReady<
   }
 }
 
+/**
+ * Return type of {@link usePaystubsList}.
+ *
+ * @public
+ */
 export type UsePaystubsListResult = HookLoadingResult | UsePaystubsListReady
 
 /**
@@ -43,6 +66,8 @@ export type UsePaystubsListResult = HookLoadingResult | UsePaystubsListReady
  * paystubs and an action to download an individual paystub PDF. Used by the
  * standalone `PaystubsCard` component and consumable directly by partners
  * building a fully custom paystubs UI.
+ *
+ * @public
  */
 export function usePaystubsList({
   employeeId,

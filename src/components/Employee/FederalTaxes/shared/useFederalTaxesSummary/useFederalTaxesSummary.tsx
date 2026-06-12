@@ -7,7 +7,13 @@ type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
 >
 
+/**
+ * Parameters accepted by {@link useFederalTaxesSummary}.
+ *
+ * @public
+ */
 export interface UseFederalTaxesSummaryParams {
+  /** UUID of the employee whose federal tax record is being read. */
   employeeId: string
 }
 
@@ -16,12 +22,19 @@ type UseFederalTaxesSummaryReady = BaseHookReady<
   { isFetching: boolean; isPending: boolean }
 >
 
+/**
+ * Discriminated union returned by {@link useFederalTaxesSummary} — either the loading state or the ready state carrying the loaded federal tax record.
+ *
+ * @public
+ */
 export type UseFederalTaxesSummaryResult = HookLoadingResult | UseFederalTaxesSummaryReady
 
 /**
  * Read-only data hook for the Federal Taxes management card. Wraps
  * `useEmployeeTaxSetupGetFederalTaxes` and returns the loaded federal-tax
  * record. Mutations live in `useFederalTaxesForm`.
+ *
+ * @public
  */
 export function useFederalTaxesSummary({
   employeeId,

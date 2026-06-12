@@ -3,7 +3,13 @@ import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/component
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
+/**
+ * Options for {@link useEmployeeProfileSummary}.
+ *
+ * @public
+ */
 export interface UseEmployeeProfileSummaryParams {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
@@ -12,12 +18,38 @@ type UseEmployeeProfileSummaryReady = BaseHookReady<
   { isFetching: boolean; isPending: boolean }
 >
 
+/**
+ * Return type of {@link useEmployeeProfileSummary}.
+ *
+ * @public
+ */
 export type UseEmployeeProfileSummaryResult = HookLoadingResult | UseEmployeeProfileSummaryReady
 
 /**
- * Read-only data hook for the Profile management card. Wraps `useEmployeesGet`
- * without `?include=all_compensations` so the basic-details surface fetches
- * only the fields it displays. Mutations live in `useEmployeeDetailsForm`.
+ * Read-only data hook for the basic-details Profile card.
+ *
+ * @remarks
+ * Fetches a single employee record scoped to the fields the
+ * basic-details surface displays. Pair with {@link useEmployeeDetailsForm}
+ * to render an edit form against the same record.
+ *
+ * @param input - See {@link UseEmployeeProfileSummaryParams}.
+ * @returns A {@link HookLoadingResult} while loading, or the ready result with the loaded employee once available.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useEmployeeProfileSummary } from '@gusto/embedded-react-sdk'
+ *
+ * function ProfileSummary({ employeeId }: { employeeId: string }) {
+ *   const summary = useEmployeeProfileSummary({ employeeId })
+ *
+ *   if (summary.isLoading) return <div>Loading...</div>
+ *
+ *   const { employee } = summary.data
+ *   return <h2>{employee.firstName} {employee.lastName}</h2>
+ * }
+ * ```
  */
 export function useEmployeeProfileSummary({
   employeeId,

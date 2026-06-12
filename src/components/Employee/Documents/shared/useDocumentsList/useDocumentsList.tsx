@@ -3,20 +3,36 @@ import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/fo
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
+/**
+ * Parameters for {@link useDocumentsList}.
+ *
+ * @public
+ */
 export interface UseDocumentsListParams {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
 type UseDocumentsListReady = BaseHookReady<{ forms: Form[] }, { isFetching: boolean }>
 
+/**
+ * Result of {@link useDocumentsList} — a discriminated union of loading and ready states.
+ *
+ * @public
+ */
 export type UseDocumentsListResult = HookLoadingResult | UseDocumentsListReady
 
 /**
- * Standalone data hook for an employee's forms (documents). Wraps the
- * `employeeFormsList` query in the `BaseHookReady` shape consumed by both the
- * SDK's {@link DocumentsCard} and partners building a fully custom documents
- * surface. Read-only — viewing or signing a form is handled by the
- * `DocumentManager` screen the block routes to, so this hook exposes no actions.
+ * Standalone data hook for an employee's forms (documents).
+ *
+ * @remarks
+ * Wraps the `employeeFormsList` query in the standard `BaseHookReady` shape.
+ * Read-only — viewing or signing a form is handled by the screen the parent
+ * routes to, so this hook exposes no actions.
+ *
+ * @param params - See {@link UseDocumentsListParams}.
+ * @returns A {@link HookLoadingResult} while loading, or the ready state with `data.forms` once loaded.
+ * @public
  */
 export function useDocumentsList({ employeeId }: UseDocumentsListParams): UseDocumentsListResult {
   // staleTime: Infinity — the SDK QueryClient invalidates on any mutation

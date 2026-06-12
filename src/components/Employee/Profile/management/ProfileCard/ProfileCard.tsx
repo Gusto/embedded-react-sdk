@@ -9,18 +9,34 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link ProfileCard}.
+ *
+ * @public
+ */
 export interface ProfileCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the user requests to edit the profile. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Basic details" card. Owns its own data fetch via
- * `useEmployeeProfileSummary` and emits
- * `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED` when the Edit button is
- * clicked. The card has no alert API — alert rendering is the
- * orchestrator's responsibility (block's `CardContextual` for standalone
- * consumption, dashboard chrome for dashboard consumption).
+ * Read-only card showing an employee's basic profile details with an Edit action.
+ *
+ * @remarks
+ * Standalone card that fetches its own data. Emits an event when the user
+ * clicks Edit so the parent can switch to the edit form. The card does not
+ * render success or error alerts itself — alert presentation is the
+ * surrounding surface's responsibility.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |
+ *
+ * @param props - See {@link ProfileCardProps}.
+ * @returns The basic-details profile card.
+ * @public
  */
 export function ProfileCard(props: ProfileCardProps) {
   return (

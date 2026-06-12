@@ -20,8 +20,15 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Params for {@link useHomeAddressManagement}.
+ *
+ * @public
+ */
 export interface UseHomeAddressManagementParams {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when a home address is deleted. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -63,10 +70,16 @@ interface UseHomeAddressManagementReadyEmployeeError extends BaseHookReady<
   actions: UseHomeAddressManagementActions
 }
 
+/**
+ * Ready state of {@link useHomeAddressManagement} when the employee was fetched successfully.
+ *
+ * @public
+ */
 export interface UseHomeAddressManagementReadySuccess extends BaseHookReady<
   UseHomeAddressManagementDataReady,
   UseHomeAddressManagementStatusSuccess
 > {
+  /** Actions for changing edit target and confirming home address deletion. */
   actions: UseHomeAddressManagementActions
 }
 
@@ -74,8 +87,20 @@ type UseHomeAddressManagementReady =
   | UseHomeAddressManagementReadyEmployeeError
   | UseHomeAddressManagementReadySuccess
 
+/**
+ * Return type of {@link useHomeAddressManagement}.
+ *
+ * @public
+ */
 export type UseHomeAddressManagementResult = HookLoadingResult | UseHomeAddressManagementReady
 
+/**
+ * Type guard for the success branch of {@link useHomeAddressManagement}.
+ *
+ * @param value - The hook result to narrow.
+ * @returns `true` when the hook has finished loading and the employee fetch succeeded.
+ * @public
+ */
 export function isUseHomeAddressManagementSuccess(
   value: UseHomeAddressManagementResult,
 ): value is UseHomeAddressManagementReadySuccess {
@@ -101,6 +126,19 @@ function homeAddressFormsReady(
   }
 }
 
+/**
+ * Headless hook for managing an employee's home addresses.
+ *
+ * @remarks
+ * Fetches the employee and their home addresses, exposes edit and create form hooks
+ * for the address modal, and provides an action to delete a non-active address.
+ * Use {@link isUseHomeAddressManagementSuccess} to narrow the ready state when the
+ * employee fetch succeeded.
+ *
+ * @param params - {@link UseHomeAddressManagementParams}
+ * @returns A {@link HookLoadingResult} while loading, or the ready state once data is available.
+ * @public
+ */
 export function useHomeAddressManagement({
   employeeId,
   onEvent,

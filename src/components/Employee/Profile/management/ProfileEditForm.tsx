@@ -17,11 +17,37 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
+/**
+ * Props for {@link ProfileEditForm}.
+ *
+ * @public
+ */
+export interface ProfileEditFormProps
+  extends CommonComponentInterface<'Employee.Management.Profile'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the user saves changes or cancels editing. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/**
+ * Standalone edit form for an employee's basic profile details.
+ *
+ * @remarks
+ * Renders fields for first name, middle initial, last name, email, SSN, and
+ * date of birth — all required on update — and shows a success alert when
+ * the save completes. Save and Cancel both emit events so the parent can
+ * return to the read view.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | {@link Employee} |
+ * | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
+ *
+ * @param input - See {@link ProfileEditFormProps}.
+ * @returns The employee profile edit form.
+ * @public
+ */
 export function ProfileEditForm({
   FallbackComponent,
   ...props

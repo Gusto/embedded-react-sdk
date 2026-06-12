@@ -3,6 +3,7 @@ import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/mo
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
+/** @internal */
 export interface UseStateTaxesSummaryParams {
   employeeId: string
 }
@@ -12,15 +13,10 @@ type UseStateTaxesSummaryReady = BaseHookReady<
   { isFetching: boolean; isPending: boolean }
 >
 
+/** @internal */
 export type UseStateTaxesSummaryResult = HookLoadingResult | UseStateTaxesSummaryReady
 
-/**
- * Read-only data hook for the State taxes management card. Wraps
- * `useEmployeeTaxSetupGetStateTaxes` and returns the full list of
- * per-state tax records in `BaseHookReady` shape. Mutations live in
- * `useEmployeeStateTaxesForm` (the form-driven hook the edit form
- * consumes).
- */
+/** @internal */
 export function useStateTaxesSummary({
   employeeId,
 }: UseStateTaxesSummaryParams): UseStateTaxesSummaryResult {

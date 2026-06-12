@@ -13,6 +13,12 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
+/**
+ * Action that may be performed on an employee row, determined by the employee's onboarding state
+ * and the `employeeType` filter passed to {@link useEmployeeList}.
+ *
+ * @public
+ */
 export type EmployeeAction =
   | 'edit'
   | 'delete'
@@ -21,32 +27,66 @@ export type EmployeeAction =
   | 'dismiss'
   | 'rehire'
 
+/**
+ * An employee entity extended with the actions permitted on it and a reference to its primary job.
+ *
+ * @public
+ */
 export interface EmployeeWithActions extends Employee {
+  /** Actions permitted for this employee given its onboarding status and the active filter. */
   allowedActions: EmployeeAction[]
+  /** The employee's primary job, if one is marked primary. */
   primaryJob?: Job
 }
 
+/**
+ * Filter applied to {@link useEmployeeList} that scopes the result set and tailors the per-row action list.
+ *
+ * @public
+ */
 export type EmployeeType = 'active' | 'onboarding' | 'terminated'
 
+/**
+ * Props for {@link useEmployeeList}.
+ *
+ * @public
+ */
 export interface UseEmployeeListProps {
+  /** The associated company identifier. */
   companyId: string
+  /** Filters the list and tailors the allowed actions. Omit to list all employees. */
   employeeType?: EmployeeType
 }
 
+/**
+ * Ready state of {@link useEmployeeList}.
+ *
+ * @public
+ */
 export interface UseEmployeeListReady extends BaseHookReady<
   { employees: EmployeeWithActions[] },
   { isFetching: boolean; isPending: boolean }
 > {
+  /** Pagination controls for the current employee list page. */
   pagination: PaginationControlProps
+  /** Actions that mutate an employee's state, gated by the entry's `allowedActions`. */
   actions: {
+    /** Deletes the employee. */
     onDelete: (employeeId: string) => Promise<void>
+    /** Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. */
     onReview: (employeeId: string) => Promise<EmployeeOnboardingStatusEntity | undefined>
+    /** Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. */
     onCancelSelfOnboarding: (
       employeeId: string,
     ) => Promise<EmployeeOnboardingStatusEntity | undefined>
   }
 }
 
+/**
+ * Return type of {@link useEmployeeList}.
+ *
+ * @public
+ */
 export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
 
 function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): EmployeeAction[] {
@@ -97,6 +137,46 @@ function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): 
   return actions
 }
 
+/**
+ * Fetches a paginated list of a company's employees and decorates each entry with the actions
+ * allowed for its current onboarding state.
+ *
+ * @remarks
+ * `employeeType` maps to a server-side filter and changes which actions appear on each row:
+ * `'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
+ * to list every employee.
+ *
+ * Page changes use placeholder data: the previous page stays rendered while the next one loads,
+ * and `status.isFetching` flips to `true` during the request.
+ *
+ * @param input - Company and optional filter for the list.
+ * @returns A {@link HookLoadingResult} while the first page is in flight, or a {@link UseEmployeeListReady} once data has arrived.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useEmployeeList } from '@gusto/embedded-react-sdk'
+ *
+ * function EmployeeListPage({ companyId }: { companyId: string }) {
+ *   const employeeList = useEmployeeList({ companyId, employeeType: 'onboarding' })
+ *
+ *   if (employeeList.isLoading) return <div>Loading...</div>
+ *
+ *   return (
+ *     <ul>
+ *       {employeeList.data.employees.map(employee => (
+ *         <li key={employee.uuid}>
+ *           {employee.firstName} {employee.lastName}
+ *           {employee.allowedActions.includes('delete') && (
+ *             <button onClick={() => employeeList.actions.onDelete(employee.uuid)}>Delete</button>
+ *           )}
+ *         </li>
+ *       ))}
+ *     </ul>
+ *   )
+ * }
+ * ```
+ */
 export function useEmployeeList({
   companyId,
   employeeType,

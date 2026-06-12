@@ -57,11 +57,22 @@ const GARNISHMENT_TYPES: readonly GarnishmentType[] = [
   'other_garnishment',
 ] as const
 
+/**
+ * Configuration options for {@link useDeductionForm}.
+ *
+ * @remarks
+ * Presence or absence of `garnishmentId` selects the API verb — see the
+ * `garnishmentId` field description. `courtOrdered` selects between the
+ * post-tax custom variant and the court-ordered garnishment variant.
+ *
+ * @public
+ */
 export interface UseDeductionFormProps {
+  /** UUID of the employee whose deduction is being created or edited. */
   employeeId: string
   /**
-   * When set, loads that garnishment via the list query and updates it (PUT).
-   * When omitted, the form is in create mode (POST).
+   * When set, loads that garnishment and updates it (PUT). When omitted, the
+   * form is in create mode (POST).
    */
   garnishmentId?: string
   /**
@@ -71,19 +82,38 @@ export interface UseDeductionFormProps {
    * `garnishmentType` is excluded from the schema and submit payload.
    *
    * Note: this hook does NOT handle `garnishmentType: 'child_support'`. Use
-   * `useChildSupportGarnishmentForm` for child-support agency-keyed payloads.
+   * {@link useChildSupportGarnishmentForm} for child-support agency-keyed payloads.
    */
   courtOrdered: boolean
+  /** Override fields that are optional on a given mode to be required. See {@link DeductionFormOptionalFieldsToRequire}. */
   optionalFieldsToRequire?: DeductionFormOptionalFieldsToRequire
+  /** Pre-fill form values. Server data takes precedence on update. */
   defaultValues?: Partial<DeductionFormData>
+  /** Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Pre-bound field components exposed on `useDeductionForm().form.Fields`.
+ *
+ * @remarks
+ * Each property is either the field component or `undefined`. A field is
+ * `undefined` when conditions for rendering it aren't met — see each member
+ * for its visibility rule. Always null-check conditional fields (e.g.
+ * `{Fields.TotalAmount && <Fields.TotalAmount ... />}`) before rendering.
+ *
+ * @public
+ */
 export interface DeductionFormFields {
+  /** Description text input. Always available. */
   Description: typeof DescriptionField
+  /** Recurring vs one-time radio group. Always available. */
   Recurring: typeof RecurringField
+  /** Fixed-amount vs percentage radio group. Always available. */
   DeductAsPercentage: typeof DeductAsPercentageField
+  /** Deduction amount input. Always available. */
   Amount: typeof AmountField
   /** Only available when `status.isRecurring` is true. */
   TotalAmount: typeof TotalAmountField | undefined
@@ -93,17 +123,32 @@ export interface DeductionFormFields {
   GarnishmentType: typeof GarnishmentTypeField | undefined
 }
 
+/**
+ * Ready-state shape returned by {@link useDeductionForm} once data has loaded.
+ *
+ * @remarks
+ * Discriminated by `isLoading: false`. Extends {@link BaseFormHookReady} with
+ * the deduction-specific `data`, `status`, `actions`, and `form.Fields` shape.
+ * Static, entity-derived values live under `data.*`; reactive values that
+ * flip with form input live under `status.*`.
+ *
+ * @public
+ */
 export interface UseDeductionFormReady extends BaseFormHookReady<
   FieldsMetadata,
   DeductionFormData,
   DeductionFormFields
 > {
+  /** Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. */
   data: {
     /** The garnishment loaded for update; `null` in create mode. */
     deduction: Garnishment | null
   }
+  /** Submission state and reactive flags derived from current form input. */
   status: {
+    /** `true` while a create or update mutation is in flight. */
     isPending: boolean
+    /** Reflects whether the next submit will POST a new deduction or PUT an existing one. */
     mode: 'create' | 'update'
     /**
      * Mirrors the watched `recurring` value. Cap fields (`TotalAmount`,
@@ -113,13 +158,85 @@ export interface UseDeductionFormReady extends BaseFormHookReady<
      */
     isRecurring: boolean
   }
+  /** Submission action. */
   actions: {
+    /** Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. */
     onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>
   }
 }
 
+/**
+ * Return value of {@link useDeductionForm}.
+ *
+ * @remarks
+ * Discriminated union: {@link HookLoadingResult} while the existing garnishment
+ * is loading (update mode only); {@link UseDeductionFormReady} once data is
+ * ready. In create mode the hook returns the ready branch immediately.
+ *
+ * @public
+ */
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady
 
+/**
+ * Headless hook for creating or updating a non-child-support deduction.
+ *
+ * @remarks
+ * Both variants — post-tax custom deductions and court-ordered garnishments —
+ * share the same field set (description, frequency, deduct-as-percentage,
+ * amount, optional caps) and differ only in whether the deduction is
+ * court-ordered and carries a `garnishmentType`. Set `courtOrdered: true` to
+ * surface the garnishment-type select; set it to `false` for a custom post-tax
+ * deduction.
+ *
+ * Presence or absence of `garnishmentId` selects the API verb: omit it to POST
+ * a new deduction, supply it to PUT updates against the existing row. For
+ * child-support garnishments, use {@link useChildSupportGarnishmentForm}
+ * instead — those require agency-keyed required attributes (case number,
+ * order number, remittance number, county) that this hook doesn't model.
+ *
+ * @param input - See {@link UseDeductionFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseDeductionFormReady} once ready.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useDeductionForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
+ *   const form = useDeductionForm({ employeeId, garnishmentId, courtOrdered: false })
+ *
+ *   if (form.isLoading) return <p>Loading…</p>
+ *
+ *   const { Fields } = form.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={form}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void form.actions.onSubmit()
+ *         }}
+ *       >
+ *         <Fields.Description label="Description" validationMessages={{ REQUIRED: 'Required' }} />
+ *         <Fields.Recurring
+ *           label="Frequency"
+ *           getOptionLabel={v => (v ? 'Recurring' : 'One-time')}
+ *           validationMessages={{ REQUIRED: 'Required' }}
+ *         />
+ *         <Fields.Amount
+ *           label="Amount"
+ *           validationMessages={{ REQUIRED: 'Required', NEGATIVE_AMOUNT: 'Must be ≥ 0' }}
+ *         />
+ *         {Fields.TotalAmount && (
+ *           <Fields.TotalAmount label="Total cap" validationMessages={{ NEGATIVE_AMOUNT: 'Must be ≥ 0' }} />
+ *         )}
+ *         <button type="submit">Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useDeductionForm({
   employeeId,
   garnishmentId,
@@ -375,6 +492,17 @@ export function useDeductionForm({
   }
 }
 
+/**
+ * Per-field metadata returned by {@link useDeductionForm} as `form.fieldsMetadata`.
+ *
+ * @remarks
+ * Carries per-field `isRequired`, `isDisabled`, label, description, and option
+ * entries derived from the schema and form state. Use these to drive UI such
+ * as disabled state or option lists when not relying on the pre-bound
+ * {@link DeductionFormFields} components.
+ *
+ * @public
+ */
 export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsMetadata']
 
 // ── Internal loader ─────────────────────────────────────────────────────

@@ -29,32 +29,106 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
 
+/**
+ * Props for {@link usePaymentMethodForm}.
+ *
+ * @public
+ */
 export interface UsePaymentMethodFormProps {
+  /** Employee whose payment method is being edited. */
   employeeId: string
+  /** Override optional fields to be required. Reserved for future schema expansion — `type` is always required and always has a default. */
   optionalFieldsToRequire?: PaymentMethodFormOptionalFieldsToRequire
+  /** Pre-fill form values. Server data (the current payment method) is used when no override is supplied. */
   defaultValues?: Partial<PaymentMethodFormData>
+  /** When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Field components exposed by {@link usePaymentMethodForm} on `form.Fields`.
+ *
+ * @public
+ */
 export interface PaymentMethodFormFields {
+  /** Bound to `type` — see {@link TypeField}. */
   Type: typeof TypeField
 }
 
+/**
+ * Ready-state return value of {@link usePaymentMethodForm}.
+ *
+ * @public
+ */
 export interface UsePaymentMethodFormReady extends BaseFormHookReady<
   FieldsMetadata,
   PaymentMethodFormData,
   PaymentMethodFormFields
 > {
+  /** The employee's current payment method, loaded from the API. */
   data: {
     paymentMethod: EmployeePaymentMethod
   }
+  /** `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. */
   status: { isPending: boolean; mode: 'update' }
+  /** Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. */
   actions: {
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
   }
 }
 
+/**
+ * Headless React Hook Form hook for updating an employee's payment method.
+ *
+ * @remarks
+ * Switches between Direct Deposit and Check. Always operates in update mode —
+ * every employee has a payment method, defaulting to Check. Switching to Check
+ * sends a minimal request body; switching to or staying on Direct Deposit
+ * preserves the existing splits and version so split allocations are not lost
+ * when only the type changes.
+ *
+ * @param props - See {@link UsePaymentMethodFormProps}.
+ * @returns A loading-state result while the current payment method is loading, or a {@link UsePaymentMethodFormReady} once ready.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   usePaymentMethodForm,
+ *   SDKFormProvider,
+ *   PAYMENT_METHODS,
+ *   type PaymentMethodType,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
+ *   const paymentMethodForm = usePaymentMethodForm({ employeeId })
+ *
+ *   if (paymentMethodForm.isLoading) return null
+ *   const { Fields } = paymentMethodForm.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={paymentMethodForm}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void paymentMethodForm.actions.onSubmit()
+ *         }}
+ *       >
+ *         <Fields.Type
+ *           label="Select payment method"
+ *           getOptionLabel={(value: PaymentMethodType) =>
+ *             value === PAYMENT_METHODS.directDeposit ? 'Direct Deposit' : 'Check'
+ *           }
+ *         />
+ *         <button type="submit" disabled={paymentMethodForm.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function usePaymentMethodForm({
   employeeId,
   optionalFieldsToRequire,
@@ -175,5 +249,16 @@ export function usePaymentMethodForm({
   }
 }
 
+/**
+ * Return type of {@link usePaymentMethodForm} — a discriminated union on `isLoading`.
+ *
+ * @public
+ */
 export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFormReady
+
+/**
+ * Per-field metadata exposed on `form.fieldsMetadata` for {@link usePaymentMethodForm}.
+ *
+ * @public
+ */
 export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata']
