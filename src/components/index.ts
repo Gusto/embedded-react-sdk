@@ -1,5 +1,3 @@
-/** @deprecated Use `ContractorOnboarding` (or future `ContractorManagement`) instead. Will be removed in a future major version. */
-export * as Contractor from './Contractor'
 export * as InformationRequests from './InformationRequests'
 export * as Payroll from './Payroll'
 export * as TimeOff from './TimeOff'

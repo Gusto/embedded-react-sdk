@@ -15,44 +15,6 @@ Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond t
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-## Contractor components
-
-| Component | Method | Path |
-| --- | --- | --- |
-| **Contractor.PaymentMethod** | GET | `/v1/contractors/:contractorUuid/bank_accounts` |
-|  | POST | `/v1/contractors/:contractorUuid/bank_accounts` |
-|  | GET | `/v1/contractors/:contractorUuid/payment_method` |
-|  | PUT | `/v1/contractors/:contractorUuid/payment_method` |
-| **Contractor.Address** | GET | `/v1/contractors/:contractorUuid` |
-|  | GET | `/v1/contractors/:contractorUuid/address` |
-|  | PUT | `/v1/contractors/:contractorUuid/address` |
-| **Contractor.ContractorList** | GET | `/v1/companies/:companyUuid/contractors` |
-|  | DELETE | `/v1/contractors/:contractorUuid` |
-| **Contractor.NewHireReport** | GET | `/v1/contractors/:contractorUuid` |
-|  | PUT | `/v1/contractors/:contractorUuid` |
-| **Contractor.ContractorSubmit** | GET | `/v1/contractors/:contractorUuid` |
-|  | GET | `/v1/contractors/:contractorUuid/onboarding_status` |
-|  | PUT | `/v1/contractors/:contractorUuid/onboarding_status` |
-| **Contractor.ContractorProfile** | POST | `/v1/companies/:companyUuid/contractors` |
-|  | GET | `/v1/contractors/:contractorUuid` |
-|  | PUT | `/v1/contractors/:contractorUuid` |
-| **Contractor.PaymentsList** | GET | `/v1/companies/:companyId/contractor_payment_groups` |
-|  | GET | `/v1/companies/:companyUuid/information_requests` |
-| **Contractor.CreatePayment** | GET | `/v1/companies/:companyId/bank_accounts` |
-|  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
-|  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
-|  | GET | `/v1/companies/:companyUuid/contractors` |
-|  | GET | `/v1/companies/:companyUuid/payment_configs` |
-| **Contractor.PaymentHistory** | DELETE | `/v1/companies/:companyId/contractor_payments/:contractorPaymentId` |
-|  | GET | `/v1/companies/:companyUuid/contractors` |
-|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
-| **Contractor.PaymentSummary** | GET | `/v1/companies/:companyId/bank_accounts` |
-|  | GET | `/v1/companies/:companyUuid/contractors` |
-|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
-| **Contractor.PaymentStatement** | GET | `/v1/companies/:companyUuid/contractors` |
-|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
-|  | GET | `/v1/contractor_payments/:contractorPaymentUuid/receipt` |
-
 ## InformationRequests components
 
 | Component | Method | Path |
@@ -353,8 +315,6 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | Flow | Blocks included |
 | --- | --- |
 | **CompanyOnboarding.OnboardingFlow** | CompanyOnboarding.BankAccount, CompanyOnboarding.DocumentSigner, CompanyOnboarding.FederalTaxes, CompanyOnboarding.Industry, CompanyOnboarding.Locations, CompanyOnboarding.OnboardingOverview, CompanyOnboarding.PaySchedule, CompanyOnboarding.StateTaxes, EmployeeOnboarding.OnboardingFlow |
-| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
-| **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
 | **EmployeeManagement.DashboardFlow** | EmployeeManagement.Compensation, EmployeeManagement.Deductions, EmployeeManagement.Documents, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |
