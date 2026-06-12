@@ -1960,6 +1960,40 @@ export const EmployeeDetailsErrorCodes: {
 // @public (undocumented)
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators_5, 'selfOnboarding'>;
 
+// Warning: (ae-missing-release-tag) "EmployeeDetailsFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface EmployeeDetailsFields {
+    // Warning: (ae-forgotten-export) The symbol "DateOfBirthField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    DateOfBirth: typeof DateOfBirthField;
+    // Warning: (ae-forgotten-export) The symbol "EmailField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Email: typeof EmailField;
+    // Warning: (ae-forgotten-export) The symbol "FirstNameField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    FirstName: typeof FirstNameField;
+    // Warning: (ae-forgotten-export) The symbol "LastNameField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    LastName: typeof LastNameField;
+    // Warning: (ae-forgotten-export) The symbol "MiddleInitialField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    MiddleInitial: typeof MiddleInitialField;
+    // Warning: (ae-forgotten-export) The symbol "SelfOnboardingField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    SelfOnboarding: typeof SelfOnboardingField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "SsnField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Ssn: typeof SsnField;
+}
+
 // Warning: (ae-missing-release-tag) "EmployeeDetailsFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2766,6 +2800,40 @@ export const HomeAddressErrorCodes: {
 //
 // @public (undocumented)
 export type HomeAddressField = keyof typeof fieldValidators_7;
+
+// Warning: (ae-missing-release-tag) "HomeAddressFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface HomeAddressFields {
+    // Warning: (ae-forgotten-export) The symbol "CityField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    City: typeof CityField;
+    // Warning: (ae-forgotten-export) The symbol "CourtesyWithholdingField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    CourtesyWithholding: typeof CourtesyWithholdingField;
+    // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_3" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    EffectiveDate: typeof EffectiveDateField_3 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "StateField_2" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    State: typeof StateField_2;
+    // Warning: (ae-forgotten-export) The symbol "Street1Field" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Street1: typeof Street1Field;
+    // Warning: (ae-forgotten-export) The symbol "Street2Field" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Street2: typeof Street2Field;
+    // Warning: (ae-forgotten-export) The symbol "ZipField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Zip: typeof ZipField;
+}
 
 // Warning: (ae-missing-release-tag) "HomeAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4590,11 +4658,15 @@ export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
 // @public (undocumented)
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
 
-// Warning: (ae-forgotten-export) The symbol "SsnRequiredValidation" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SsnFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>>;
+
+// Warning: (ae-missing-release-tag) "SsnRequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type SsnRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
 
 // Warning: (ae-missing-release-tag) "SsnValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5338,7 +5410,6 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
     companyId?: string;
 });
 
-// Warning: (ae-forgotten-export) The symbol "EmployeeDetailsFields" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "UseEmployeeDetailsFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -5523,7 +5594,6 @@ export interface UseHomeAddressFormProps {
     withEffectiveDateField?: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "HomeAddressFields" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "UseHomeAddressFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -5861,7 +5931,6 @@ export interface UseWorkAddressFormProps {
     workAddressUuid?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "WorkAddressFields" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "UseWorkAddressFormReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -5991,6 +6060,20 @@ export const WorkAddressErrorCodes: {
 //
 // @public (undocumented)
 export type WorkAddressField = keyof typeof fieldValidators_6;
+
+// Warning: (ae-missing-release-tag) "WorkAddressFields" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface WorkAddressFields {
+    // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_2" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    EffectiveDate: typeof EffectiveDateField_2 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "LocationField" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    Location: typeof LocationField;
+}
 
 // Warning: (ae-missing-release-tag) "WorkAddressFieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

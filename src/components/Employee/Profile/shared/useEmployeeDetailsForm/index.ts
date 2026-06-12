@@ -21,6 +21,7 @@ export type {
   NameValidation,
   EmailValidation,
   SsnValidation,
+  SsnRequiredValidation,
   FirstNameFieldProps,
   MiddleInitialFieldProps,
   LastNameFieldProps,
@@ -29,3 +30,4 @@ export type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
 } from './fields'
+export type { EmployeeDetailsFields } from './useEmployeeDetailsForm'

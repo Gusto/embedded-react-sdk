@@ -259,6 +259,7 @@ export type {
   WorkAddressRequiredValidation,
   LocationFieldProps,
   EffectiveDateFieldProps,
+  WorkAddressFields,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 
 export {
@@ -289,6 +290,7 @@ export type {
   ZipFieldProps,
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
+  HomeAddressFields,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {

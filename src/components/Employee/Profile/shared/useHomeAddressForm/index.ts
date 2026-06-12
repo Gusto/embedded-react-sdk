@@ -8,6 +8,7 @@ export type {
   UseHomeAddressFormReady,
   HomeAddressFieldsMetadata,
   HomeAddressFormFields,
+  HomeAddressFields,
 } from './useHomeAddressForm'
 export type { UseCurrentHomeAddressFormProps } from './useCurrentHomeAddressForm'
 export {

@@ -10,6 +10,7 @@ export type {
   UseWorkAddressFormReady,
   WorkAddressFieldsMetadata,
   WorkAddressFormFields,
+  WorkAddressFields,
 } from './useWorkAddressForm'
 export {
   createWorkAddressSchema,
