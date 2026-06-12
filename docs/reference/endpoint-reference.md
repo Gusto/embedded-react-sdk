@@ -252,6 +252,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.DismissalFlow** | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+| **Payroll.DismissalPayPeriodSelection** | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
+|  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.TransitionFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.TransitionCreation** | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
@@ -481,7 +484,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **EmployeeOnboarding.OnboardingFlow** | EmployeeOnboarding.EmployeeList, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeOnboarding.SelfOnboardingFlow** | Employee.PaymentMethod, EmployeeOnboarding.DocumentSigner, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.Landing, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
 | **InformationRequests.InformationRequestsFlow** | InformationRequests.InformationRequestForm, InformationRequests.InformationRequestList |
-| **Payroll.DismissalFlow** | Payroll.PayrollExecutionFlow |
+| **Payroll.DismissalFlow** | Payroll.DismissalPayPeriodSelection, Payroll.PayrollExecutionFlow |
 | **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollExecutionFlow |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
 | **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
