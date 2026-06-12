@@ -6,22 +6,33 @@ import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link CompensationAddJobForm}.
+ *
+ * @public
+ */
 export interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
-  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED` (with the saved
-   *  `Compensation`) on a successful save, and
-   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED` when the user cancels. */
+  /** Callback invoked when the form emits an event. See the events table on {@link CompensationAddJobForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Adds the employee's first job + compensation from the management surface.
- * Wraps the onboarding `EditCompensation` and supplies management-isolated
- * title/CTA copy plus a dictionary resolved from `Employee.Management.Compensation`,
- * passed through `EditCompensation`'s `dictionary` prop so the rendered fields
- * show management copy and stay isolated from the onboarding surface. Translates
- * the onboarding flow's save/cancel events into the management block's scoped
- * events so the partner-visible surface is the management block's, not onboarding's.
+ * Standalone form for adding an employee's first job and compensation from the management surface.
+ *
+ * @remarks
+ * Routed from {@link CompensationCard}'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. {@link Compensation} bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/compensation/addJobForm/submitted` | Fired after the job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
+ * | `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+ *
+ * @param props - See {@link CompensationAddJobFormProps}.
+ * @returns The rendered add-job form.
+ * @public
+ * @group Block Components
  */
 export function CompensationAddJobForm({ dictionary, ...props }: CompensationAddJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)

@@ -6,6 +6,7 @@ import {
   DeclarationReflection,
   ParameterReflection,
   ProjectReflection,
+  ReferenceReflection,
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
@@ -16,7 +17,9 @@ import {
 import {
   componentPropsInterfaces,
   domainFromSources,
+  hookDirFromSources,
   isHookSourceFile,
+  reparentDeprecatedMembers,
   SDKRouter,
 } from './sdk-router'
 
@@ -30,6 +33,8 @@ beforeAll(async () => {
  * Create a child reflection with the parent set both in the constructor (so
  * child.parent is populated) and via addChild (so parent.childrenIncludingDocuments
  * is populated — that's what the router's parseChildPages iterates over).
+ * Also registers the child in the root project so that
+ * ReferenceReflection.tryGetTargetReflection() can resolve it by ID.
  */
 function makeChild(
   parent: DeclarationReflection | ProjectReflection,
@@ -38,6 +43,7 @@ function makeChild(
 ): DeclarationReflection {
   const child = new DeclarationReflection(name, kind, parent)
   parent.addChild(child)
+  child.project.registerReflection(child, undefined, undefined)
   return child
 }
 
@@ -130,6 +136,53 @@ describe('isHookSourceFile', () => {
   it('returns false when sources are absent', () => {
     const r = new DeclarationReflection('UseBankFormProps', ReflectionKind.Interface)
     expect(isHookSourceFile(r)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// hookDirFromSources
+// ---------------------------------------------------------------------------
+
+describe('hookDirFromSources', () => {
+  it('returns the hook directory name for a companion file inside a hook directory', () => {
+    const r = new DeclarationReflection('CompensationFormFields', ReflectionKind.Interface)
+    r.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/fields.tsx',
+    )
+    expect(hookDirFromSources(r)).toBe('useCompensationForm')
+  })
+
+  it('returns the hook name for a flat hook file (no subdirectory)', () => {
+    const r = new DeclarationReflection('UseBankFormProps', ReflectionKind.Interface)
+    r.sources = sourceRef('/workspace/src/components/Employee/PaymentMethod/shared/useBankForm.ts')
+    expect(hookDirFromSources(r)).toBe('useBankForm')
+  })
+
+  it('returns the hook directory when the hook function file shares the directory name', () => {
+    const r = new DeclarationReflection('useCompensationForm', ReflectionKind.Function)
+    r.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+    expect(hookDirFromSources(r)).toBe('useCompensationForm')
+  })
+
+  it('returns the first matching hook segment for deeply nested paths', () => {
+    const r = new DeclarationReflection('EmployeeStateTaxesErrorCodes', ReflectionKind.Variable)
+    r.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fieldProps.ts',
+    )
+    expect(hookDirFromSources(r)).toBe('useEmployeeStateTaxesForm')
+  })
+
+  it('returns null for a non-hook file', () => {
+    const r = new DeclarationReflection('SomeUtil', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/components/Employee/utils/helpers.ts')
+    expect(hookDirFromSources(r)).toBeNull()
+  })
+
+  it('returns null when sources are absent', () => {
+    const r = new DeclarationReflection('UseBankFormProps', ReflectionKind.Interface)
+    expect(hookDirFromSources(r)).toBeNull()
   })
 })
 
@@ -289,6 +342,84 @@ describe('buildPages — namespace flows/blocks splitting', () => {
 
     expect(urls).toContain('Employee/EmployeeManagement/README.md')
     expect(urls).not.toContain('Employee/EmployeeManagement/flows.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildPages — props interfaces excluded from standalone rendering
+// ---------------------------------------------------------------------------
+
+describe('buildPages — props interfaces excluded from standalone rendering', () => {
+  it('flow component props are not rendered as standalone children of the flows model', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const flowsModel = pages.find(p => p.url === 'Employee/EmployeeManagement/flows.md')
+      ?.model as DeclarationReflection
+    expect(flowsModel.children).not.toContain(propsIface)
+    expect(router.hasOwnDocument(propsIface)).toBe(false)
+    expect(router.getAnchor(propsIface)).toBeDefined()
+  })
+
+  it('flow component props are anchored on flows.md, not blocks.md', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+    makeChild(ns, 'JobForm', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+      ?.model as DeclarationReflection
+    expect(blocksModel.children).not.toContain(propsIface)
+  })
+
+  it('block component props are not rendered as standalone children of the blocks model', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    const block = makeChild(ns, 'CompensationCard', ReflectionKind.Function)
+    markAsComponent(block)
+    const propsIface = makeChild(ns, 'CompensationCardProps', ReflectionKind.Interface)
+    attachPropsSignature(block, propsIface, project)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+      ?.model as DeclarationReflection
+    expect(blocksModel.children).not.toContain(propsIface)
+    expect(router.hasOwnDocument(propsIface)).toBe(false)
+    expect(router.getAnchor(propsIface)).toBeDefined()
+  })
+
+  it('namespace with only flows + their props does not produce a blocks page', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+    markAsComponent(flow)
+    const propsIface = makeChild(ns, 'DashboardFlowProps', ReflectionKind.Interface)
+    attachPropsSignature(flow, propsIface, project)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
+    expect(urls).not.toContain('Employee/EmployeeManagement/blocks.md')
+    expect(router.getAnchor(propsIface)).toBeDefined()
   })
 })
 
@@ -580,6 +711,270 @@ describe('componentPropsInterfaces', () => {
     const result = componentPropsInterfaces(project)
 
     expect(result.size).toBe(0)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// reparentDeprecatedMembers
+// ---------------------------------------------------------------------------
+
+function markAsDeprecated(ns: DeclarationReflection): void {
+  if (!ns.comment) ns.comment = new Comment()
+  ns.comment.blockTags.push(new CommentTag('@deprecated', []))
+}
+
+function makeRef(
+  name: string,
+  target: DeclarationReflection,
+  parent: DeclarationReflection | ProjectReflection,
+): ReferenceReflection {
+  const ref = new ReferenceReflection(name, target, parent)
+  parent.addChild(ref)
+  return ref
+}
+
+describe('reparentDeprecatedMembers', () => {
+  it('moves the declaration to the non-deprecated namespace and removes the reference', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    const active = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const member = makeChild(deprecated, 'DashboardFlow', ReflectionKind.Function)
+    makeRef('DashboardFlow', member, active)
+
+    reparentDeprecatedMembers(project)
+
+    expect(active.children).toContain(member)
+    expect(member.parent).toBe(active)
+    // removeChild deletes the children property entirely when it empties
+    expect(deprecated.children?.includes(member) ?? false).toBe(false)
+    expect(active.children?.every(c => !(c instanceof ReferenceReflection))).toBe(true)
+  })
+
+  it('moves multiple members from the same deprecated namespace', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    const active = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const memberA = makeChild(deprecated, 'DashboardFlow', ReflectionKind.Function)
+    const memberB = makeChild(deprecated, 'HomeAddress', ReflectionKind.Function)
+    makeRef('DashboardFlow', memberA, active)
+    makeRef('HomeAddress', memberB, active)
+
+    reparentDeprecatedMembers(project)
+
+    expect(active.children).toContain(memberA)
+    expect(active.children).toContain(memberB)
+    // removeChild deletes the children property entirely when it empties
+    expect(deprecated.children == null || deprecated.children.length === 0).toBe(true)
+  })
+
+  it('leaves members that exist only in the deprecated namespace', () => {
+    const project = makeProject()
+    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    markAsDeprecated(deprecated)
+    makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const onlyInDeprecated = makeChild(deprecated, 'OldComponent', ReflectionKind.Function)
+
+    reparentDeprecatedMembers(project)
+
+    expect(deprecated.children).toContain(onlyInDeprecated)
+  })
+
+  it('ignores references between two non-deprecated namespaces', () => {
+    const project = makeProject()
+    const nsA = makeChild(project, 'EmployeeOnboarding', ReflectionKind.Namespace)
+    const nsB = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+
+    const member = makeChild(nsA, 'SomeComponent', ReflectionKind.Function)
+    const ref = makeRef('SomeComponent', member, nsB)
+
+    reparentDeprecatedMembers(project)
+
+    expect(nsA.children).toContain(member)
+    expect(member.parent).toBe(nsA)
+    expect(nsB.children).toContain(ref)
+  })
+
+  it('does nothing when there are no deprecated namespaces', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const member = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
+
+    reparentDeprecatedMembers(project)
+
+    expect(ns.children).toContain(member)
+    expect(member.parent).toBe(ns)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildPages — hook directory controls grouping on domain hooks page
+//
+// groupSyntheticMembers uses hookGroupMap (built from source paths before they
+// are cleared) as the primary group key. Each member lands in the group named
+// after its hook directory, regardless of any @group tag. @group is only
+// consulted as a fallback when no hook directory is present, and kind-based
+// grouping is the last resort.
+// ---------------------------------------------------------------------------
+
+describe('buildPages — hook directory controls grouping on domain hooks page', () => {
+  it('hook function is grouped under its own hook directory name', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
+    expect(group).toBeDefined()
+    expect(group!.children).toContain(hook)
+  })
+
+  it('companion type from the same hook directory goes to that hook group', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+    const errorCodes = makeChild(project, 'CompensationErrorCodes', ReflectionKind.Variable)
+    errorCodes.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/compensationSchema.ts',
+    )
+    const propsIface = makeChild(project, 'UseCompensationFormProps', ReflectionKind.Interface)
+    propsIface.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
+    expect(group).toBeDefined()
+    expect(group!.children).toContain(hook)
+    expect(group!.children).toContain(errorCodes)
+    expect(group!.children).toContain(propsIface)
+  })
+
+  it('hook directory takes priority over an explicit @group tag', () => {
+    const project = makeProject()
+    const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+    // Explicit @group would previously have placed this in 'Data Hooks'
+    hook.comment = new Comment()
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data Hooks' }]))
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const hookDirGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
+    const tagGroup = hooksModel.groups?.find(g => g.title === 'Data Hooks')
+    expect(hookDirGroup).toBeDefined()
+    expect(hookDirGroup!.children).toContain(hook)
+    expect(tagGroup).toBeUndefined()
+  })
+
+  it('members from different hook directories land in separate groups', () => {
+    const project = makeProject()
+
+    const compHook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    compHook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+    const jobHook = makeChild(project, 'useJobForm', ReflectionKind.Function)
+    jobHook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useJobForm/useJobForm.tsx',
+    )
+    const stateTaxHelper = makeChild(project, 'useStateFields', ReflectionKind.Function)
+    stateTaxHelper.sources = sourceRef(
+      '/workspace/src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/fields.tsx',
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const compGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
+    const jobGroup = hooksModel.groups?.find(g => g.title === 'useJobForm')
+    const stateTaxGroup = hooksModel.groups?.find(g => g.title === 'useEmployeeStateTaxesForm')
+
+    expect(compGroup?.children).toContain(compHook)
+    expect(jobGroup?.children).toContain(jobHook)
+    expect(stateTaxGroup?.children).toContain(stateTaxHelper)
+    expect(compGroup?.children).not.toContain(jobHook)
+    expect(compGroup?.children).not.toContain(stateTaxHelper)
+  })
+
+  it('primary hook function is sorted first within its hook group', () => {
+    const project = makeProject()
+    const errorCodes = makeChild(project, 'CompensationErrorCodes', ReflectionKind.Variable)
+    errorCodes.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/compensationSchema.ts',
+    )
+    const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
+    hook.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+    const propsIface = makeChild(project, 'UseCompensationFormProps', ReflectionKind.Interface)
+    propsIface.sources = sourceRef(
+      '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
+    )
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
+    expect(group!.children[0]).toBe(hook)
+  })
+
+  it('hook function in a non-hook directory falls back to @group tag when present', () => {
+    // A use[A-Z] function caught by isHookFn but living outside any hook directory
+    // (hookDirFromSources returns null). Should fall back to an explicit @group tag.
+    const project = makeProject()
+    const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
+    hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
+    hook.comment = new Comment()
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Form Hooks' }]))
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.title === 'Form Hooks')
+    expect(group?.children).toContain(hook)
+  })
+
+  it('hook function in a non-hook directory with no @group falls back to kind name', () => {
+    // A use[A-Z] function outside any hook directory with no @group tag lands in 'Functions'.
+    const project = makeProject()
+    const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
+    hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+      ?.model as DeclarationReflection
+    const group = hooksModel.groups?.find(g => g.children.includes(hook))
+    expect(group?.title).toBe('Functions')
   })
 })
 

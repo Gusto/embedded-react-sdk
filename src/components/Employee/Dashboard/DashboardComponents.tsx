@@ -18,6 +18,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/** @internal */
 export type DashboardSuccessAlert =
   | 'bankAccountAdded'
   | 'bankAccountDeleted'
@@ -30,10 +31,15 @@ export type DashboardSuccessAlert =
   | 'federalTaxesUpdated'
   | 'stateTaxesUpdated'
 
+/** @internal */
 export interface DashboardContextInterface extends FlowContextInterface {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Form identifier set when the state machine transitions to the document viewer. */
   formId?: string
+  /** Job identifier set when the state machine transitions to the edit-compensation screen. */
   currentJobId?: string | null
+  /** Which success alert to surface above the dashboard cards, or `null` to clear it. */
   successAlert?: DashboardSuccessAlert | null
   /** Set by the EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED transition;
    *  consumed by `DeductionsEditFormContextual` to pre-populate the form. */
@@ -43,6 +49,7 @@ export interface DashboardContextInterface extends FlowContextInterface {
   selectedTab?: DashboardTab
 }
 
+/** @internal */
 export function DashboardViewContextual() {
   useI18n('Employee.Dashboard')
   const { t } = useTranslation('Employee.Dashboard')
@@ -83,41 +90,49 @@ export function DashboardViewContextual() {
   )
 }
 
+/** @internal */
 export function HomeAddressContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <HomeAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function WorkAddressContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <WorkAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function FederalTaxesContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <FederalTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function StateTaxesContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <StateTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function ProfileContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function PaymentBankFormContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <PaymentMethodBankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function PaymentSplitViewContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <PaymentMethodSplitForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function DocumentManagerContextual() {
   const { employeeId, formId, onEvent } = useFlow<DashboardContextInterface>()
   return (
@@ -129,6 +144,7 @@ export function DocumentManagerContextual() {
   )
 }
 
+/** @internal */
 export function DeductionsEditFormContextual() {
   const { employeeId, editingDeductionId, onEvent } = useFlow<DashboardContextInterface>()
   return (
@@ -140,11 +156,13 @@ export function DeductionsEditFormContextual() {
   )
 }
 
+/** @internal */
 export function AddJobContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <CompensationAddJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function EditCompensationContextual() {
   const { employeeId, currentJobId, onEvent } = useFlow<DashboardContextInterface>()
   return (
@@ -156,6 +174,7 @@ export function EditCompensationContextual() {
   )
 }
 
+/** @internal */
 export function AddAnotherJobContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <CompensationAddAnotherJobForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />

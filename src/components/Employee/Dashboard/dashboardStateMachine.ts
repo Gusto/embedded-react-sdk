@@ -54,6 +54,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
     }),
   )
 
+/** @internal */
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
     transition(

@@ -1,10 +1,9 @@
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion'
 
 /**
- * Lowercase post-mapping variant that decides which UI primitive renders
- * a given state-tax question. Mirrors the existing `QuestionInput` switch
- * in `src/components/Common/TaxInputs/TaxInputs.tsx`, narrowed to the
- * cases that apply to the employee state-tax endpoint.
+ * UI input variant for a state-tax question — determines which field type renders for a given question from the employee state-taxes API.
+ *
+ * @public
  */
 export type StateTaxQuestionVariant = 'select' | 'radio' | 'text' | 'number' | 'currency' | 'date'
 
@@ -26,11 +25,7 @@ export type StateTaxQuestionVariant = 'select' | 'radio' | 'text' | 'number' | '
  */
 const SELECT_TO_RADIO_PROMOTION_KEYS = new Set<string>(['file_new_hire_report'])
 
-/**
- * Resolves a question's UI variant from its API shape and per-key promotion
- * rules. Unknown wire types fall through to `text` to mirror the existing
- * `QuestionInput` default branch.
- */
+/** @internal */
 export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTaxQuestionVariant {
   if (SELECT_TO_RADIO_PROMOTION_KEYS.has(question.key)) {
     return 'radio'

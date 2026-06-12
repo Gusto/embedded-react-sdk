@@ -14,14 +14,34 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link CompensationAddAnotherJobForm}.
+ *
+ * @public
+ */
 export interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
-  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED` (with
-   *  the saved `Compensation`) on a successful save, and
-   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED` when the user cancels. */
+  /** Callback invoked when the form emits an event. See the events table on {@link CompensationAddAnotherJobForm} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Standalone form for adding a secondary job and compensation to an employee from the management surface.
+ *
+ * @remarks
+ * Routed from {@link CompensationCard}'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. {@link Compensation} bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
+ * | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
+ *
+ * @param props - See {@link CompensationAddAnotherJobFormProps}.
+ * @returns The rendered add-another-job form.
+ * @public
+ * @group Block Components
+ */
 export function CompensationAddAnotherJobForm({
   dictionary,
   ...props

@@ -68,7 +68,7 @@ For each batch, spawn `tsdoc-api-documenter` with **`run_in_background: true`**:
 - **description**: `"Document violations in $DIRECTORY (batch $BATCH_N of $BATCH_TOTAL)"`
 - **prompt**:
 
-```
+````
 Document the following exported symbols in the embedded-react-sdk repo.
 These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
 
@@ -82,8 +82,37 @@ Work through each file in order. For each file:
 3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
 4. After writing all symbols in a file, fix any ESLint errors in a single pass, then run ESLint once to confirm clean before moving to the next file.
 
+### @group tags for hooks
+
+Hooks and their companion exports (types, interfaces, enums from the same hook file) are consolidated onto a per-domain `hooks.md` page. TypeDoc auto-assigns groups by name convention, but you can override with an explicit `@group` tag.
+
+**Auto-assignment rules (no tag needed unless overriding):**
+- Hook name ends with `Form` → `Form Hooks`
+- All other hooks → `Hooks` (fallback)
+
+**When to add `@group` explicitly:**
+- A hook that fetches or derives data belongs in `Data Hooks` (e.g. `useEmployeeList`, `useCompanyDetails`)
+- A hook that builds field configs, utilities, or helpers belongs in `Utility Hooks` (e.g. `useStateFields`)
+- **Always** add `@group` for components — the router auto-assigns as a fallback, but the tag should be explicit in source:
+  - Inside a namespace, name ends with `Flow` → `@group Flow Components`
+  - Inside a namespace, all other components → `@group Block Components`
+  - Top-level (not in a namespace) → `@group Components`
+
+**Valid `@group` values for hooks:** `Form Hooks`, `Data Hooks`, `Utility Hooks`, `Hooks`
+**Valid `@group` values for components:** `Flow Components`, `Block Components`, `Components`
+
+Any other value is an ESLint error (`tsdoc-coverage/valid-group`).
+
+**To verify group placement after writing docs**, run TypeDoc and inspect the generated markdown — no Docusaurus server needed:
+
+```bash
+npm --prefix docs-site run typedoc
+# then open docs/api/{Domain}/hooks.md — groups appear as ## headings
+````
+
 Return a summary of what was documented and any symbols skipped with reasons. Check stderr output from tsdoc-stub calls and include any unresolved symbol warnings.
-```
+
+````
 
 ## Phase 3 — Final verification and report (on completion notification)
 
@@ -93,7 +122,7 @@ When the background agents complete, run in sequence:
 
 ```bash
 npx eslint '$TARGET' --fix 2>&1
-```
+````
 
 **Step 2 — Build and API report**
 

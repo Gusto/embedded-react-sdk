@@ -8,6 +8,7 @@ export type {
   DocumentManagerProps,
 } from '../Documents/management'
 export { DashboardFlow } from '../Dashboard'
+export type { DashboardFlowProps } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {
   HomeAddressProps,
