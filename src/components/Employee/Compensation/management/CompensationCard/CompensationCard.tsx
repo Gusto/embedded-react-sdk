@@ -30,19 +30,36 @@ function parseJobRate(rate: Job['rate']): number | null {
   return Number.isFinite(numericRate) ? numericRate : null
 }
 
+/**
+ * Props for {@link CompensationCard}.
+ *
+ * @public
+ */
 export interface CompensationCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Callback invoked when the card emits an event. See the events table on {@link CompensationCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Compensation" management card. Owns its own data fetch via
- * `useCompensationManagement`, the pending-change alerts + review modal, and
- * the delete-job confirm dialog. It emits scoped
- * `EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_*` events for edit/add/add-another
- * requests and for completed in-card delete/cancel actions; an orchestrator
- * (the `Compensation` block or the dashboard) routes those to the edit/add
- * surfaces and renders any success alerts.
+ * Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances.
+ *
+ * @remarks
+ * The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to {@link CompensationEditForm}, {@link CompensationAddJobForm}, or {@link CompensationAddAnotherJobForm} and renders any post-save success alerts. {@link Compensation} bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job | `{ employeeId: string, jobId: string }` |
+ * | `employee/management/compensation/card/addRequested` | Fired when the "Add job" CTA is clicked from the empty state | `{ employeeId: string }` |
+ * | `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked | `{ employeeId: string }` |
+ * | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
+ * | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+ *
+ * @param props - See {@link CompensationCardProps}.
+ * @returns The rendered compensation card.
+ * @public
+ * @group Block Components
  */
 export function CompensationCard(props: CompensationCardProps) {
   return (

@@ -5,10 +5,126 @@ import { type DashboardContextInterface, DashboardViewContextual } from './Dashb
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 
+/**
+ * Props for {@link DashboardFlow}.
+ *
+ * @public
+ */
 export interface DashboardFlowProps extends BaseComponentInterface {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
+/**
+ * The main entry point for the employee dashboard.
+ *
+ * @remarks
+ * Renders a tabbed view of an employee's profile (Basic details, Job and pay,
+ * Taxes, Documents), wires the card surfaces to their corresponding edit
+ * screens via an internal state machine, and surfaces success alerts at the
+ * top of the dashboard after each successful edit. Wraps the dashboard in
+ * error and suspense boundaries.
+ *
+ * Every tab section of the dashboard is also exported as a self-contained
+ * block that can be dropped into a custom layout without the surrounding
+ * dashboard chrome:
+ *
+ * - {@link Compensation} — Job &amp; Pay tab (jobs, pay type, wage, effective date)
+ * - {@link Profile} — Basic details tab (name, start date, SSN, DOB, email)
+ * - {@link FederalTaxes} — Taxes tab, federal withholding settings
+ * - {@link StateTaxes} — Taxes tab, state withholding settings
+ * - {@link PaymentMethod} — direct-deposit bank accounts and split-paycheck configuration
+ * - {@link Deductions} — post-tax deductions (garnishments)
+ * - {@link HomeAddress} — home address management
+ * - {@link WorkAddress} — work address management
+ * - {@link Documents} — documents and forms (read-only viewer)
+ *
+ * Each block wraps its read-only card, its edit form, and the card↔form
+ * transitions as a single drop-in. For cases where that built-in orchestration
+ * doesn't fit — rendering a form in a modal, driving navigation via a router,
+ * or showing a card read-only — each block's card and form are also exported
+ * individually (e.g. {@link CompensationCard}, {@link CompensationEditForm}).
+ * Using the individual pieces means owning the swap, any success alerts, and
+ * cross-component state yourself.
+ *
+ * The dashboard composes self-fetching cards and their edit forms and forwards
+ * every event they emit to the partner via `onEvent`; its internal state
+ * machine also reacts to a subset of these events to swap between the cards
+ * and edit screens and to surface success alerts. The table below is the
+ * complete, current set of events observable from `DashboardFlow`, grouped by
+ * the tab that emits them.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/profile/editRequested` | Fired when "Edit" is clicked on the Basic details (Profile) card | `{ employeeId: string }` |
+ * | `employee/management/profile/updated` | Fired after the basic-details edit form is saved; the dashboard returns to the cards and surfaces the "Profile updated" alert | Updated `Employee` entity |
+ * | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel on the basic-details edit form; the dashboard returns to the cards | — |
+ * | `employee/management/homeAddress/editRequested` | Fired when "Manage" is clicked on the Home address card | `{ employeeId: string }` |
+ * | `employee/management/homeAddress/created` | Fired after a new home address is created on the manage screen; the manage screen stays open | Created `EmployeeAddress` entity |
+ * | `employee/management/homeAddress/updated` | Fired after a home address is updated on the manage screen; the manage screen stays open | Updated `EmployeeAddress` entity |
+ * | `employee/management/homeAddress/deleted` | Fired after a non-active home address is deleted on the manage screen; the manage screen stays open | Deleted `EmployeeAddress` entity |
+ * | `employee/management/homeAddress/editCancelled` | Fired when the user clicks Back on the manage screen; the dashboard returns to the cards | — |
+ * | `employee/management/workAddress/editRequested` | Fired when "Manage" is clicked on the Work address card | `{ employeeId: string }` |
+ * | `employee/management/workAddress/created` | Fired after a new work address is created on the manage screen; the manage screen stays open | Created `EmployeeWorkAddress` entity |
+ * | `employee/management/workAddress/updated` | Fired after a work address is updated on the manage screen; the manage screen stays open | Updated `EmployeeWorkAddress` entity |
+ * | `employee/management/workAddress/deleted` | Fired after a work address is deleted on the manage screen; the manage screen stays open | Deleted `EmployeeWorkAddress` entity |
+ * | `employee/management/workAddress/editCancelled` | Fired when the user clicks Back on the manage screen; the dashboard returns to the cards | — |
+ * | `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job on the Compensation card | `{ employeeId: string, jobId: string }` |
+ * | `employee/management/compensation/card/addRequested` | Fired when "Add job" is clicked from the Compensation card's empty state | `{ employeeId: string }` |
+ * | `employee/management/compensation/card/addAnotherRequested` | Fired when "Add another job" is clicked on the Compensation card | `{ employeeId: string }` |
+ * | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
+ * | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+ * | `employee/management/compensation/editForm/submitted` | Fired after an edit-compensation save completes; the dashboard returns to the cards | Updated `Compensation` entity |
+ * | `employee/management/compensation/editForm/cancelled` | Fired when the user cancels the edit-compensation form; the dashboard returns to the cards | — |
+ * | `employee/management/compensation/addJobForm/submitted` | Fired after the first job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert | Updated `Compensation` entity |
+ * | `employee/management/compensation/addJobForm/cancelled` | Fired when the user cancels the add-job form; the dashboard returns to the cards | — |
+ * | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after a secondary job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert | Updated `Compensation` entity |
+ * | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user cancels the add-another-job form; the dashboard returns to the cards | — |
+ * | `employee/management/paymentMethod/card/addRequested` | Fired when "Add bank account" / "Add another bank account" is clicked on the Payment card | — |
+ * | `employee/management/paymentMethod/card/splitRequested` | Fired when "Split paycheck" is clicked on the Payment card | — |
+ * | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is deleted from the card; the dashboard surfaces the "Bank account deleted" alert | Response from the Delete a bank account endpoint |
+ * | `employee/management/paymentMethod/bankForm/submitted` | Fired after a new bank account is saved; the dashboard returns to the cards and surfaces the "Bank account added" alert | Created `EmployeeBankAccount` entity |
+ * | `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the add-bank-account screen; the dashboard returns to the cards | — |
+ * | `employee/management/paymentMethod/splitForm/submitted` | Fired after the split configuration is saved; the dashboard returns to the cards and surfaces the "Split updated" alert | Updated `EmployeePaymentMethod` entity |
+ * | `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the split-paycheck screen; the dashboard returns to the cards | — |
+ * | `employee/management/deductions/card/addRequested` | Fired when "Add deduction" is clicked on the Deductions card | `{ employeeId: string }` |
+ * | `employee/management/deductions/card/editRequested` | Fired when a row's "Edit" menu item is chosen on the Deductions card | The `Garnishment` row being edited |
+ * | `employee/management/deductions/card/deleted` | Fired after the soft-delete dialog is confirmed; the dashboard surfaces the "Deduction deleted" alert | The now-inactive `Garnishment` |
+ * | `employee/management/deductions/editForm/created` | Fired after a new deduction is created; the dashboard returns to the cards and surfaces the "Deduction added" alert | The created `Garnishment` |
+ * | `employee/management/deductions/editForm/updated` | Fired after a deduction is updated; the dashboard returns to the cards and surfaces the "Deduction updated" alert | The updated `Garnishment` |
+ * | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the add/edit deduction form; the dashboard returns to the cards | — |
+ * | `employee/management/paystubs/card/downloadRequested` | Fired when a paystub row's download button is clicked, before the PDF is fetched | `{ employeeId: string, payrollUuid: string }` |
+ * | `employee/management/paystubs/card/downloaded` | Fired after the paystub PDF is fetched and opened in a new tab | `{ employeeId: string, payrollUuid: string }` |
+ * | `employee/management/federalTaxes/card/editRequested` | Fired when "Edit" is clicked on the Federal taxes card | `{ employeeId: string }` |
+ * | `employee/management/federalTaxes/editForm/submitted` | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal taxes updated" alert | Updated `EmployeeFederalTax` entity |
+ * | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the federal-taxes edit form; the dashboard returns to the cards | — |
+ * | `employee/management/stateTaxes/editRequested` | Fired when "Edit" is clicked on the State taxes card | `{ employeeId: string }` |
+ * | `employee/management/stateTaxes/updated` | Fired after a state-taxes save succeeds; the dashboard returns to the cards and surfaces the "State taxes updated" alert | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+ * | `employee/management/stateTaxes/editCancelled` | Fired when the user cancels the state-taxes edit form; the dashboard returns to the cards | — |
+ * | `employee/management/documents/card/viewRequested` | Fired when a document row's "View" CTA is clicked; the dashboard swaps to the read-only document viewer | `{ employeeId: string, formId: string }` |
+ * | `CANCEL` | Fired when the user clicks Back in the document viewer; the dashboard returns to the cards | — |
+ * | `employee/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }` |
+ * | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
+ *
+ * @param props - See {@link DashboardFlowProps}.
+ * @returns The tabbed dashboard with internal navigation between cards and edit screens.
+ * @public
+ * @group Flow Components
+ *
+ * @example
+ * ```tsx
+ * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <EmployeeManagement.DashboardFlow
+ *       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export const DashboardFlow = ({ employeeId, onEvent }: DashboardFlowProps) => {
   const dashboardMachine = useMemo(
     () =>

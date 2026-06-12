@@ -12,8 +12,10 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+/** @internal */
 export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
+/** @internal */
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
   employeeId: string
   selectedTab?: DashboardTab
@@ -112,6 +114,7 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
   )
 }
 
+/** @internal */
 export function Dashboard({
   FallbackComponent,
   ...props

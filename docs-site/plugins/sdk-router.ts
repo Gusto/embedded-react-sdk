@@ -7,6 +7,7 @@ import {
   type PageDefinition,
   ParameterReflection,
   ProjectReflection,
+  ReferenceReflection,
   ReferenceType,
   type Reflection,
   ReflectionGroup,
@@ -74,6 +75,24 @@ export function domainFromSources(reflection: Reflection): string | null {
 }
 
 /**
+ * Return the hook name derived from the reflection's source path — the first
+ * path segment (after stripping its extension) that matches useCamelCase.
+ * Returns null when no such segment exists.
+ *
+ * Examples:
+ *   useCompensationForm/compensationSchema.ts → "useCompensationForm"
+ *   useEmployeeStateTaxesForm/fields.tsx      → "useEmployeeStateTaxesForm"
+ *   useJobForm.ts (flat file)                 → "useJobForm"
+ */
+export function hookDirFromSources(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  const fp = source.fullFileName ?? source.fileName ?? ''
+  const seg = fp.split(/[/\\]/).find(s => /^use[A-Z]/.test(s.replace(/\.[^.]+$/, '')))
+  return seg ? seg.replace(/\.[^.]+$/, '') : null
+}
+
+/**
  * Return true if the reflection's source file is, or lives inside, a hook
  * directory/file — i.e. any path segment (after stripping its extension)
  * matches useCamelCase. This co-locates companion types from files like
@@ -81,10 +100,61 @@ export function domainFromSources(reflection: Reflection): string | null {
  * the hook itself.
  */
 export function isHookSourceFile(reflection: Reflection): boolean {
-  const source = (reflection as DeclarationReflection).sources?.[0]
-  if (!source) return false
-  const fp = source.fullFileName ?? source.fileName ?? ''
-  return fp.split(/[/\\]/).some(seg => /^use[A-Z]/.test(seg.replace(/\.[^.]+$/, '')))
+  return hookDirFromSources(reflection) !== null
+}
+
+/**
+ * Move DeclarationReflections from deprecated namespaces to non-deprecated ones
+ * when the non-deprecated namespace holds a ReferenceReflection pointing at the
+ * same canonical declaration.
+ *
+ * Background: TypeDoc places the canonical DeclarationReflection under whichever
+ * namespace it processes first. Since deprecated namespaces (e.g. Employee) are
+ * listed before non-deprecated ones (e.g. EmployeeManagement) in
+ * src/components/index.ts, symbols exported by both end up documented under the
+ * deprecated namespace — the non-deprecated namespace gets only a ReferenceReflection.
+ * This function inverts that so documentation lives in the preferred, non-deprecated
+ * home. The reference is discarded; the actual declaration is adopted.
+ *
+ * Call this before CommentPlugin's RESOLVE_BEGIN (priority 0) runs so that
+ * excludeNotDocumented hasn't yet had a chance to remove the ReferenceReflections
+ * that make the cross-namespace link visible.
+ */
+export function reparentDeprecatedMembers(project: ProjectReflection): void {
+  const namespaces = (project.children ?? []).filter(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection && c.kind === ReflectionKind.Namespace,
+  )
+
+  for (const ns of namespaces) {
+    if (ns.isDeprecated()) continue
+    if (!ns.children?.length) continue
+
+    // Snapshot before mutating — we remove children during this loop.
+    for (const child of [...ns.children]) {
+      if (!(child instanceof ReferenceReflection)) continue
+      const target = child.tryGetTargetReflectionDeep()
+      if (!(target instanceof DeclarationReflection)) continue
+      if (!(target.parent instanceof DeclarationReflection)) continue
+      if (!target.parent.isDeprecated()) continue
+
+      // Detach from the deprecated namespace (children + childrenIncludingDocuments).
+      const oldParent = target.parent
+      oldParent.removeChild(target)
+
+      // Adopt into the non-deprecated namespace.
+      target.parent = ns
+      ns.addChild(target)
+
+      // Fully remove the ReferenceReflection from TypeDoc's tracking structures
+      // (project.reflections, children, childrenIncludingDocuments, symbol maps).
+      // Using project.removeReflection rather than direct array mutation is critical:
+      // the link resolver runs at RESOLVE_END -300 and searches childrenIncludingDocuments
+      // by name — leaving the reference there would cause getTargetReflectionDeep() to
+      // be called on a stale reference, throwing "Reference was unresolved."
+      project.removeReflection(child)
+    }
+  }
 }
 
 export function load(app: Application): void {
@@ -144,6 +214,18 @@ export function load(app: Application): void {
     100,
   )
 
+  // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
+  // ReferenceReflections in non-deprecated namespaces haven't yet been removed by
+  // excludeNotDocumented. Priority 50 = after auto-comment injection (100) but
+  // before CommentPlugin (0).
+  app.converter.on(
+    Converter.EVENT_RESOLVE_BEGIN,
+    context => {
+      reparentDeprecatedMembers(context.project)
+    },
+    50,
+  )
+
   // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,
   // so priority 0 (default) runs before GroupPlugin's -100.
   //
@@ -153,6 +235,9 @@ export function load(app: Application): void {
   //   Hooks ending with Form      → Form Hooks  (Data Hooks / Utility Hooks come from JSDoc)
   //   Other hooks                 → Hooks (fallback)
   // Skips reflections that already carry an explicit @group tag from their JSDoc.
+  // NOTE: TypeDoc places @group block tags on SignatureReflections, not the parent
+  // DeclarationReflection. We copy any signature-level @group to the declaration so
+  // the skip check fires and groupSyntheticMembers can read the group from member.comment.
   app.converter.on(
     Converter.EVENT_RESOLVE_END,
     context => {
@@ -160,6 +245,18 @@ export function load(app: Application): void {
         if (!(reflection instanceof DeclarationReflection)) continue
         if (reflection.kind !== ReflectionKind.Function) continue
         if (reflection.comment?.blockTags.some(t => t.tag === '@group')) continue
+
+        // TypeDoc places @group block tags on the SignatureReflection, not the
+        // DeclarationReflection. Copy any explicit tag to the declaration so the
+        // check above fires on the next pass and groupSyntheticMembers can read it.
+        const sigGroupTag = reflection.signatures
+          ?.flatMap(sig => sig.comment?.blockTags ?? [])
+          .find(t => t.tag === '@group')
+        if (sigGroupTag) {
+          if (!reflection.comment) reflection.comment = new Comment()
+          reflection.comment.blockTags.push(sigGroupTag)
+          continue
+        }
 
         let group: string
         if (/^[A-Z]/.test(reflection.name)) {
@@ -471,20 +568,39 @@ function kindGroupName(kind: ReflectionKind): string {
 /**
  * Build ReflectionGroups for a synthetic namespace. GroupPlugin only runs
  * during conversion, so synthetic namespaces created in buildPages need their
- * groups constructed manually. Reads @group tags already stamped by the
- * converter event, then falls back to kind-based names.
+ * groups constructed manually.
+ *
+ * For the domain hooks page, pass `hookGroupMap` (built before sources are
+ * cleared) so each member is grouped under its hook directory name rather than
+ * a kind-based section. Priority: hookGroupMap entry → @group tag → kind name.
+ *
+ * Within each hook-named group the primary hook function (member whose name
+ * matches the group title) is sorted to the top.
  */
 function groupSyntheticMembers(
   members: DeclarationReflection[],
   owner: DeclarationReflection,
+  hookGroupMap?: Map<DeclarationReflection, string>,
 ): ReflectionGroup[] {
   const byTitle = new Map<string, DeclarationReflection[]>()
   for (const member of members) {
+    const hookGroup = hookGroupMap?.get(member)
     const tag = member.comment?.blockTags.find(t => t.tag === '@group')
-    const title = tag?.content[0]?.text?.trim() ?? kindGroupName(member.kind)
+    const title = hookGroup ?? tag?.content[0]?.text?.trim() ?? kindGroupName(member.kind)
     const bucket = byTitle.get(title) ?? []
     bucket.push(member)
     byTitle.set(title, bucket)
+  }
+
+  // Within each hook-named group, sort the primary hook function to the top.
+  for (const [title, groupMembers] of byTitle) {
+    if (/^use[A-Z]/.test(title)) {
+      groupMembers.sort((a, b) => {
+        if (a.name === title) return -1
+        if (b.name === title) return 1
+        return 0
+      })
+    }
   }
 
   const ordered = [
@@ -511,6 +627,10 @@ export class SDKRouter extends MemberRouter {
    */
   override buildPages(project: ProjectReflection): PageDefinition[] {
     const hooksByDomain = new Map<string, DeclarationReflection[]>()
+    // Capture hook directory affiliation here, before SDKRouter.clearSources
+    // wipes reflection.sources. groupSyntheticMembers uses this map to group
+    // each hooks-page member under its hook's name rather than a kind section.
+    const hookGroupMap = new Map<DeclarationReflection, string>()
 
     for (const child of project.children ?? []) {
       if (child.kind === ReflectionKind.Namespace) continue
@@ -527,6 +647,9 @@ export class SDKRouter extends MemberRouter {
         bucket.push(child)
         hooksByDomain.set(domain, bucket)
         this.handledHooks.add(child)
+
+        const hookDir = hookDirFromSources(child)
+        if (hookDir) hookGroupMap.set(child, hookDir)
       }
     }
 
@@ -550,9 +673,9 @@ export class SDKRouter extends MemberRouter {
     const pages = super.buildPages(project)
 
     for (const [domain, hooks] of hooksByDomain) {
-      const hooksNs = new DeclarationReflection('hooks', ReflectionKind.Namespace, project)
+      const hooksNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
-      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs)
+      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
     }
 
@@ -595,25 +718,58 @@ export class SDKRouter extends MemberRouter {
         // Split namespace into flows and blocks pages.
         // The namespace's canonical URL points to flows.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
-        const blocks = children.filter(c => !c.name.endsWith('Flow'))
+        const ns = reflection as DeclarationReflection
+
+        // Props interfaces are inlined by the parametersTable override; exclude them
+        // from .children so they don't also appear as standalone entries. Register
+        // them as anchors on the correct page so cross-references still resolve:
+        // props for a flow component → flows.md; props for a block component → blocks.md.
+        const allPropsSet = componentPropsInterfaces(ns)
+        const flowProps: DeclarationReflection[] = []
+        const blockProps: DeclarationReflection[] = []
+        for (const propsIface of allPropsSet) {
+          const isFlowProp = flows.some(flow =>
+            flow.signatures?.some(sig =>
+              sig.parameters?.some(
+                p => p.type instanceof ReferenceType && p.type.reflection === propsIface,
+              ),
+            ),
+          )
+          ;(isFlowProp ? flowProps : blockProps).push(propsIface)
+        }
+        const blocks = children.filter(c => !c.name.endsWith('Flow') && !allPropsSet.has(c))
 
         const flowsNs = new DeclarationReflection(
-          'flows',
+          'Flow Components',
           ReflectionKind.Namespace,
           reflection.parent,
         )
         flowsNs.children = flows
-        const flowsUrl = this.buildSyntheticPage(`${nsBasePath}/flows`, flowsNs, flows, outPages)
+        const flowsGroups = groupSyntheticMembers(flows, flowsNs)
+        if (flowsGroups.length > 1) flowsNs.groups = flowsGroups
+        const flowsUrl = this.buildSyntheticPage(
+          `${nsBasePath}/flows`,
+          flowsNs,
+          [...flows, ...flowProps],
+          outPages,
+        )
         this.fullUrls.set(reflection, flowsUrl)
 
         if (blocks.length > 0) {
           const blocksNs = new DeclarationReflection(
-            'blocks',
+            'Block Components',
             ReflectionKind.Namespace,
             reflection.parent,
           )
           blocksNs.children = blocks
-          this.buildSyntheticPage(`${nsBasePath}/blocks`, blocksNs, blocks, outPages)
+          const blocksGroups = groupSyntheticMembers(blocks, blocksNs)
+          if (blocksGroups.length > 1) blocksNs.groups = blocksGroups
+          this.buildSyntheticPage(
+            `${nsBasePath}/blocks`,
+            blocksNs,
+            [...blocks, ...blockProps],
+            outPages,
+          )
         }
         return
       }
@@ -681,6 +837,11 @@ export class SDKRouter extends MemberRouter {
       const slug = slugger.slug(member.name)
       this.anchors.set(member, slug)
       this.fullUrls.set(member, `${url}#${slug}`)
+      // Re-parent to the synthetic namespace so TypeDoc's relativeUrl walk
+      // finds ns (which hasOwnDocument) before reaching Project. Without this,
+      // cross-references from non-hook pages (e.g. BaseFormHookReady "Extended
+      // by" on index.md) generate same-page hash links instead of cross-page URLs.
+      member.parent = ns
     }
     return url
   }

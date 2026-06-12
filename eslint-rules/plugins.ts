@@ -3,6 +3,7 @@ import requireComment from './tsdoc-require-comment'
 import requireMemberComment from './tsdoc-require-member-comment'
 import requireReleaseTag from './tsdoc-require-release-tag'
 import sortTags from './tsdoc-sort-tags'
+import validGroup from './tsdoc-valid-group'
 
 /**
  * Enforce rules related to TSDoc to ensure documentation coverage.
@@ -18,5 +19,6 @@ export const tsdocCoverage: FlatConfig.Plugin = {
     'require-comment': requireComment,
     'require-member-comment': requireMemberComment,
     'sort-tags': sortTags,
+    'valid-group': validGroup,
   },
 }

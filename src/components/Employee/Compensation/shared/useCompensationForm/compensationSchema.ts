@@ -8,8 +8,40 @@ import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocess
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
-// ── Error codes ────────────────────────────────────────────────────────
-
+/**
+ * Validation error codes produced by the {@link useCompensationForm} schema.
+ *
+ * @remarks
+ * Use these constants as the keys in a field's `validationMessages` prop to
+ * map an error code to a user-facing message.
+ *
+ * | Code | When it triggers |
+ * | ---- | ---------------- |
+ * | `REQUIRED` | A required field is empty (per mode and `optionalFieldsToRequire`). |
+ * | `RATE_MINIMUM` | `rate` is less than `$1.00` for non-commission FLSA statuses. |
+ * | `RATE_EXEMPT_THRESHOLD` | FLSA `Exempt` employees must clear the federal salary threshold (annualized). |
+ * | `PAYMENT_UNIT_OWNER` | `Owner` FLSA status requires `paymentUnit === 'Paycheck'`. |
+ * | `PAYMENT_UNIT_COMMISSION` | Commission-only FLSA statuses require `paymentUnit === 'Year'`. |
+ * | `RATE_COMMISSION_ZERO` | Commission-only FLSA statuses require `rate === 0`. |
+ * | `EFFECTIVE_DATE_BEFORE_HIRE` | `effectiveDate` precedes the parent job's `hireDate`. |
+ * | `EFFECTIVE_DATE_BEFORE_MIN` | `effectiveDate` precedes the caller-supplied minimum (typically tomorrow). |
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
+ *
+ * <Fields.Rate
+ *   label="Compensation amount"
+ *   validationMessages={{
+ *     [CompensationErrorCodes.REQUIRED]: 'Amount is required',
+ *     [CompensationErrorCodes.RATE_MINIMUM]: 'Amount must be at least $1.00',
+ *     [CompensationErrorCodes.RATE_EXEMPT_THRESHOLD]: 'Exempt employees must meet the salary threshold',
+ *   }}
+ * />
+ * ```
+ */
 export const CompensationErrorCodes = {
   REQUIRED: 'REQUIRED',
   RATE_MINIMUM: 'RATE_MINIMUM',
@@ -21,6 +53,11 @@ export const CompensationErrorCodes = {
   EFFECTIVE_DATE_BEFORE_MIN: 'EFFECTIVE_DATE_BEFORE_MIN',
 } as const
 
+/**
+ * Union of every error code produced by the {@link useCompensationForm} schema.
+ *
+ * @public
+ */
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
@@ -72,6 +109,18 @@ const fieldValidators = {
   minimumWageId: z.string(),
 }
 
+/**
+ * Shape of the form values managed by {@link useCompensationForm}.
+ *
+ * @remarks
+ * Accepted as `defaultValues` on `useCompensationForm` and returned by
+ * `form.getFormSubmissionValues()` once the form has validated. `effectiveDate`
+ * is an ISO date string (`YYYY-MM-DD`) or `null`; `flsaStatus` is optional so
+ * the field can render an empty placeholder when nothing is preselected
+ * (requiredness is enforced on submit per mode).
+ *
+ * @public
+ */
 export type CompensationFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
@@ -149,13 +198,60 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   }
 }
 
+/**
+ * Override which fields are required on a given submission mode of {@link useCompensationForm}.
+ *
+ * @remarks
+ * Each mode key lists the fields that are optional by default for that mode
+ * but should be promoted to required. `adjustForMinimumWage` is always
+ * required and `minimumWageId` is automatically required when
+ * `adjustForMinimumWage` is `true` — neither is configurable here.
+ *
+ * | Field | Required on create | Required on update | Configurable? |
+ * | ----- | ------------------ | ------------------ | ------------- |
+ * | `flsaStatus` | Yes | No | Yes (on update) |
+ * | `paymentUnit` | Yes | No | Yes (on update) |
+ * | `rate` | Yes | No | Yes (on update) |
+ * | `effectiveDate` | Yes | No | Yes (on update) |
+ * | `title` | No | No | Yes (either mode) |
+ * | `adjustForMinimumWage` | Yes | Yes | No |
+ * | `minimumWageId` | When toggle is on | When toggle is on | No |
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * const compensation = useCompensationForm({
+ *   employeeId,
+ *   jobId,
+ *   compensationId,
+ *   optionalFieldsToRequire: {
+ *     update: ['title', 'rate'],
+ *   },
+ * })
+ * ```
+ */
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
+
+/**
+ * Validated submission shape produced by the {@link useCompensationForm} schema.
+ *
+ * @remarks
+ * Identical to {@link CompensationFormData} — exposed as a separate alias so
+ * the input vs. output sides of the schema remain distinguishable in advanced
+ * usages.
+ *
+ * @public
+ */
 export type CompensationFormOutputs = CompensationFormData
 
+/** @internal */
 export interface CompensationSchemaOptions {
+  /** Selects required-field rules: `'create'` (POST) or `'update'` (PUT). Defaults to `'create'`. */
   mode?: 'create' | 'update'
+  /** Promote default-optional fields to required for the selected mode. See {@link CompensationOptionalFieldsToRequire}. */
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   /**
    * Lower bound for `effectiveDate` (typically the parent job's `hireDate`).
@@ -188,6 +284,7 @@ export interface CompensationSchemaOptions {
   withEffectiveDateField?: boolean
 }
 
+/** @internal */
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
   const {
     mode = 'create',
