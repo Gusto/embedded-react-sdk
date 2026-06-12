@@ -1866,6 +1866,23 @@ interface DismissalFlowProps {
     payrollId?: string;
 }
 
+// Warning: (ae-missing-release-tag) "DismissalPayPeriodSelection" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionProps): JSX;
+
+// Warning: (ae-missing-release-tag) "DismissalPayPeriodSelectionProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
+    // (undocumented)
+    companyId: string;
+    // (undocumented)
+    employeeId?: string;
+    // (undocumented)
+    payrollId?: string;
+}
+
 // Warning: (ae-forgotten-export) The symbol "DocumentListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3754,6 +3771,8 @@ declare namespace Payroll {
         DismissalFlow,
         DismissalFlowProps,
         DismissalFlowContextInterface,
+        DismissalPayPeriodSelection,
+        DismissalPayPeriodSelectionProps,
         TransitionFlow,
         TransitionFlowContextInterface,
         TransitionFlowProps,
