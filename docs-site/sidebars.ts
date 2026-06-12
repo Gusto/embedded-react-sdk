@@ -141,7 +141,11 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Hooks (Experimental)',
       link: { type: 'doc', id: 'hooks/hooks' },
-      items: ['hooks/useEmployeeDetailsForm', 'hooks/useWorkAddressForm'],
+      items: [
+        'hooks/useEmployeeDetailsForm',
+        'hooks/useCompensationForm',
+        'hooks/useWorkAddressForm',
+      ],
     },
     {
       type: 'category',
