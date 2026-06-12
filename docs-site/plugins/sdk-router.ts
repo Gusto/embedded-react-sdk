@@ -837,6 +837,11 @@ export class SDKRouter extends MemberRouter {
       const slug = slugger.slug(member.name)
       this.anchors.set(member, slug)
       this.fullUrls.set(member, `${url}#${slug}`)
+      // Re-parent to the synthetic namespace so TypeDoc's relativeUrl walk
+      // finds ns (which hasOwnDocument) before reaching Project. Without this,
+      // cross-references from non-hook pages (e.g. BaseFormHookReady "Extended
+      // by" on index.md) generate same-page hash links instead of cross-page URLs.
+      member.parent = ns
     }
     return url
   }
