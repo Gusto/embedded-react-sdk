@@ -18,30 +18,30 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Surfaces',
-      link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
+      link: { type: 'doc', id: 'surfaces/surfaces' },
       collapsible: false,
       items: [
         {
           type: 'category',
           label: 'Companies',
-          link: { type: 'doc', id: 'workflows-overview/companies' },
+          link: { type: 'doc', id: 'surfaces/companies' },
           items: [
             {
               type: 'category',
               label: 'Onboard a company',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/company-onboarding/company-onboarding',
+                id: 'surfaces/company-onboarding/company-onboarding',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/company-onboarding/workflow',
+                  id: 'surfaces/company-onboarding/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/company-onboarding/sub-components',
+                  id: 'surfaces/company-onboarding/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -51,17 +51,17 @@ const sidebars: SidebarsConfig = {
               label: 'Information requests',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/information-requests/information-requests',
+                id: 'surfaces/information-requests/information-requests',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/information-requests/workflow',
+                  id: 'surfaces/information-requests/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/information-requests/sub-components',
+                  id: 'surfaces/information-requests/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -71,24 +71,24 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Employees',
-          link: { type: 'doc', id: 'workflows-overview/employees' },
+          link: { type: 'doc', id: 'surfaces/employees' },
           items: [
             {
               type: 'category',
               label: 'Onboard an employee',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/employee-onboarding/employee-onboarding',
+                id: 'surfaces/employee-onboarding/employee-onboarding',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/employee-onboarding/workflow',
+                  id: 'surfaces/employee-onboarding/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/employee-onboarding/sub-components',
+                  id: 'surfaces/employee-onboarding/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -98,17 +98,17 @@ const sidebars: SidebarsConfig = {
               label: 'Employee self-onboarding',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/employee-self-onboarding/employee-self-onboarding',
+                id: 'surfaces/employee-self-onboarding/employee-self-onboarding',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/employee-self-onboarding/workflow',
+                  id: 'surfaces/employee-self-onboarding/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/employee-self-onboarding/sub-components',
+                  id: 'surfaces/employee-self-onboarding/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -118,24 +118,24 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Contractors',
-          link: { type: 'doc', id: 'workflows-overview/contractors' },
+          link: { type: 'doc', id: 'surfaces/contractors' },
           items: [
             {
               type: 'category',
               label: 'Contractor onboarding',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/contractor-onboarding/contractor-onboarding',
+                id: 'surfaces/contractor-onboarding/contractor-onboarding',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/contractor-onboarding/workflow',
+                  id: 'surfaces/contractor-onboarding/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/contractor-onboarding/sub-components',
+                  id: 'surfaces/contractor-onboarding/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -145,17 +145,17 @@ const sidebars: SidebarsConfig = {
               label: 'Contractor payments',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/contractor-payments/contractor-payments',
+                id: 'surfaces/contractor-payments/contractor-payments',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/contractor-payments/workflow',
+                  id: 'surfaces/contractor-payments/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/contractor-payments/sub-components',
+                  id: 'surfaces/contractor-payments/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -165,24 +165,24 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Payroll',
-          link: { type: 'doc', id: 'workflows-overview/payroll' },
+          link: { type: 'doc', id: 'surfaces/payroll' },
           items: [
             {
               type: 'category',
               label: 'Payroll processing',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/run-payroll/run-payroll',
+                id: 'surfaces/run-payroll/run-payroll',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/run-payroll/workflow',
+                  id: 'surfaces/run-payroll/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/run-payroll/sub-components',
+                  id: 'surfaces/run-payroll/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -192,17 +192,17 @@ const sidebars: SidebarsConfig = {
               label: 'Off-cycle payroll',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/off-cycle-payroll/off-cycle-payroll',
+                id: 'surfaces/off-cycle-payroll/off-cycle-payroll',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/off-cycle-payroll/workflow',
+                  id: 'surfaces/off-cycle-payroll/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/off-cycle-payroll/sub-components',
+                  id: 'surfaces/off-cycle-payroll/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -212,17 +212,17 @@ const sidebars: SidebarsConfig = {
               label: 'Dismissal payroll',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/dismissal-payroll/dismissal-payroll',
+                id: 'surfaces/dismissal-payroll/dismissal-payroll',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/dismissal-payroll/workflow',
+                  id: 'surfaces/dismissal-payroll/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/dismissal-payroll/sub-components',
+                  id: 'surfaces/dismissal-payroll/sub-components',
                   label: 'Sub-components',
                 },
               ],
@@ -232,17 +232,17 @@ const sidebars: SidebarsConfig = {
               label: 'Transition payroll',
               link: {
                 type: 'doc',
-                id: 'workflows-overview/transition-payroll/transition-payroll',
+                id: 'surfaces/transition-payroll/transition-payroll',
               },
               items: [
                 {
                   type: 'doc',
-                  id: 'workflows-overview/transition-payroll/workflow',
+                  id: 'surfaces/transition-payroll/workflow',
                   label: 'Workflow',
                 },
                 {
                   type: 'doc',
-                  id: 'workflows-overview/transition-payroll/sub-components',
+                  id: 'surfaces/transition-payroll/sub-components',
                   label: 'Sub-components',
                 },
               ],

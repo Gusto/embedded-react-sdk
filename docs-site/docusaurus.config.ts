@@ -113,7 +113,7 @@ const config: Config = {
         {
           title: 'Build',
           items: [
-            { label: 'Workflows', to: '/docs/workflows-overview' },
+            { label: 'Workflows', to: '/docs/surfaces' },
             { label: 'Event Handling', to: '/docs/integration-guide/event-handling' },
             { label: 'Hooks', to: '/docs/hooks' },
           ],

@@ -36,4 +36,4 @@ function EmployeeOnboardingPage({ companyId }) {
 }
 ```
 
-Each surface in the SDK ships a workflow. See the [Surfaces section](../workflows-overview/workflows-overview.mdx) for the full list, with the props and events each one accepts.
+Each surface in the SDK ships a workflow. See the [Surfaces section](../surfaces/surfaces.mdx) for the full list, with the props and events each one accepts.
