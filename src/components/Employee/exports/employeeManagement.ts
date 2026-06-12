@@ -68,5 +68,9 @@ export type {
   CompensationAddAnotherJobFormProps,
 } from '../Compensation/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
+export type { TerminateEmployeeProps } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
+export type { TerminationSummaryProps } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'
+export type { TerminationFlowProps } from '../Terminations/TerminationFlow/TerminationFlowComponents'
+export type { PayrollOption } from '../Terminations/types'

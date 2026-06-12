@@ -2168,8 +2168,12 @@ declare namespace EmployeeManagement {
         CompensationAddJobFormProps,
         CompensationAddAnotherJobFormProps,
         TerminateEmployee,
+        TerminateEmployeeProps,
         TerminationSummary,
-        TerminationFlow
+        TerminationSummaryProps,
+        TerminationFlow,
+        TerminationFlowProps,
+        PayrollOption
     }
 }
 
