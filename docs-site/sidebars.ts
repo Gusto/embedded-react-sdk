@@ -9,15 +9,12 @@ const sidebars: SidebarsConfig = {
       collapsed: true,
       items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
     },
-    // {
-    //   type: 'category',
-    //   label: 'Deciding to build with the SDK',
-    //   link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
-    //   items: [
-    //     'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
-    //     'deciding-to-build-with-the-sdk/component-types',
-    //   ],
-    // },
+    {
+      type: 'category',
+      label: 'Build methods',
+      link: { type: 'doc', id: 'build-methods/build-methods' },
+      items: ['build-methods/workflows', 'build-methods/sub-components', 'build-methods/hooks'],
+    },
     {
       type: 'category',
       label: 'Surfaces',
