@@ -461,8 +461,10 @@ aside.theme-doc-sidebar-container {
 /* ── Tables ── */
 
 .markdown table {
-  display: table;
-  width: 100%;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   font-size: 0.9rem;
   margin: 1.5rem 0;
