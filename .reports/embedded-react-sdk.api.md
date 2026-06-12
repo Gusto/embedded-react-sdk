@@ -3985,6 +3985,11 @@ interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff.TimeOf
     companyId: string;
 }
 
+// Warning: (ae-missing-release-tag) "PolicySettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function PolicySettings(props: PolicySettingsProps): JSX;
+
 // Warning: (ae-missing-release-tag) "PolicySettingsDisplay" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -4028,6 +4033,16 @@ interface PolicySettingsPresentationProps {
     //
     // (undocumented)
     onContinue: (data: PolicySettingsFormData) => void;
+}
+
+// Warning: (ae-missing-release-tag) "PolicySettingsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface PolicySettingsProps extends BaseComponentInterface {
+    // (undocumented)
+    mode?: 'create' | 'edit';
+    // (undocumented)
+    policyId: string;
 }
 
 // Warning: (ae-missing-release-tag) "PolicyTypeSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4973,8 +4988,10 @@ declare namespace TimeOff {
         PolicyTypeSelectorProps,
         PolicyConfigurationForm,
         PolicyConfigurationFormProps,
-        PolicySettingsPresentation as PolicySettings,
-        PolicySettingsPresentationProps as PolicySettingsProps,
+        PolicySettings,
+        PolicySettingsProps,
+        PolicySettingsPresentation,
+        PolicySettingsPresentationProps,
         AddEmployeesToPolicy,
         AddEmployeesToPolicyProps,
         HolidaySelectionForm,
@@ -4989,6 +5006,8 @@ declare namespace TimeOff {
         ViewHolidayScheduleProps,
         HolidayPolicyDetailPresentationProps,
         HolidayPolicyDetailEmployee,
+        TimeOffPolicyDetail,
+        TimeOffPolicyDetailProps,
         TimeOffPolicyDetailPresentation,
         TimeOffPolicyDetailPresentationProps,
         TimeOffPolicyDetailEmployee,
@@ -5011,6 +5030,11 @@ interface TimeOffFlowProps extends BaseComponentInterface {
     // (undocumented)
     companyId: string;
 }
+
+// Warning: (ae-missing-release-tag) "TimeOffPolicyDetail" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function TimeOffPolicyDetail(props: TimeOffPolicyDetailProps): JSX;
 
 // Warning: (ae-missing-release-tag) "TimeOffPolicyDetailEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5040,6 +5064,14 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
     policySettings: PolicySettingsDisplay;
     onChangeSettings?: () => void;
 });
+
+// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface TimeOffPolicyDetailProps extends BaseComponentInterface {
+    // (undocumented)
+    policyId: string;
+}
 
 // Warning: (ae-missing-release-tag) "TotalAmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

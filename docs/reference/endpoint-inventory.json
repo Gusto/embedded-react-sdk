@@ -1445,6 +1445,21 @@
         "timeOffPolicyUuid"
       ]
     },
+    "TimeOff.PolicySettingsPresentation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        }
+      ],
+      "variables": [
+        "timeOffPolicyUuid"
+      ]
+    },
     "TimeOff.AddEmployeesToPolicy": {
       "endpoints": [
         {
@@ -1566,6 +1581,30 @@
       "variables": [
         "companyId",
         "companyUuid"
+      ]
+    },
+    "TimeOff.TimeOffPolicyDetail": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "timeOffPolicyUuid"
       ]
     },
     "TimeOff.TimeOffPolicyDetailPresentation": {
@@ -2697,7 +2736,7 @@
         "TimeOff.PolicyList",
         "TimeOff.PolicySettings",
         "TimeOff.PolicyTypeSelector",
-        "TimeOff.TimeOffPolicyDetailPresentation",
+        "TimeOff.TimeOffPolicyDetail",
         "TimeOff.ViewHolidayEmployees",
         "TimeOff.ViewHolidaySchedule"
       ]

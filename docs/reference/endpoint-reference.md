@@ -272,6 +272,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 | **TimeOff.PolicySettings** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
+| **TimeOff.PolicySettingsPresentation** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 | **TimeOff.AddEmployeesToPolicy** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
@@ -291,6 +293,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **TimeOff.ViewHolidaySchedule** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
+| **TimeOff.TimeOffPolicyDetail** | GET | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.TimeOffPolicyDetailPresentation** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
@@ -486,4 +492,4 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
 | **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
 | **Payroll.TransitionFlow** | Payroll.PayrollExecutionFlow, Payroll.TransitionCreation |
-| **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetailPresentation, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
+| **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetail, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
