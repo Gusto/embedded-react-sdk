@@ -22,8 +22,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface ProfileEditFormProps
-  extends CommonComponentInterface<'Employee.Management.Profile'> {
+export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Event handler fired when the user saves changes or cancels editing. */
