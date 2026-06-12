@@ -143,6 +143,24 @@ export default function SearchBar(): ReactNode {
     }
   }, [isOpen])
 
+  // The underlying autocomplete library closes and empties its dropdown on
+  // input blur. When the OS moves focus to another app (e.g. Terminal), the
+  // input blurs and the results vanish. Block the blur event from reaching the
+  // library's handler whenever the document itself is losing focus — the user
+  // blur (clicking elsewhere in the page) still closes as expected.
+  useEffect(() => {
+    if (!isOpen) return
+    const blockBlurOnWindowSwitch = (event: FocusEvent) => {
+      const target = event.target as HTMLElement | null
+      if (!target?.matches('input.navbar__search-input')) return
+      if (document.hasFocus()) return
+      event.stopImmediatePropagation()
+      event.stopPropagation()
+    }
+    document.addEventListener('blur', blockBlurOnWindowSwitch, true)
+    return () => document.removeEventListener('blur', blockBlurOnWindowSwitch, true)
+  }, [isOpen])
+
   return (
     <>
       <SearchTrigger onClick={open} triggerRef={triggerRef} />
