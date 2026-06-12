@@ -12,7 +12,7 @@ import {
   getPaySchedules,
   updatePaySchedule,
 } from '@/test/mocks/apis/payschedule'
-import { GustoApiProvider } from '@/contexts'
+import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 
 const paymentConfigsMock = http.get(
@@ -48,9 +48,9 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -76,9 +76,9 @@ describe('PaySchedule', () => {
       server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -103,9 +103,9 @@ describe('PaySchedule', () => {
 
     it('starts in LIST_PAY_SCHEDULES mode with correct components', async () => {
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -129,9 +129,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -162,9 +162,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -195,9 +195,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -229,9 +229,9 @@ describe('PaySchedule', () => {
   describe('when viewing pay schedules', () => {
     it('renders existing pay schedules in list mode', async () => {
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -247,9 +247,9 @@ describe('PaySchedule', () => {
       const onEvent = vi.fn()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -285,9 +285,9 @@ describe('PaySchedule', () => {
       const onEvent = vi.fn()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -336,9 +336,9 @@ describe('PaySchedule', () => {
       }
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} defaultValues={defaultValues} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -373,9 +373,9 @@ describe('PaySchedule', () => {
       const onEvent = vi.fn()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -392,9 +392,9 @@ describe('PaySchedule', () => {
       const onEvent = vi.fn()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -423,9 +423,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -452,9 +452,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -477,9 +477,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -510,9 +510,9 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -535,9 +535,9 @@ describe('PaySchedule', () => {
       server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -574,9 +574,9 @@ describe('PaySchedule', () => {
       )
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -598,9 +598,9 @@ describe('PaySchedule', () => {
       server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -645,9 +645,9 @@ describe('PaySchedule', () => {
       server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -686,9 +686,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -722,9 +722,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -747,9 +747,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
@@ -782,9 +782,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
+        </GustoProvider>,
       )
 
       await waitFor(() => {
