@@ -1,5 +1,3 @@
-/** @deprecated Use `CompanyOnboarding` (or future `CompanyManagement`) instead. Will be removed in a future major version. */
-export * as Company from './Company'
 /** @deprecated Use `ContractorOnboarding` (or future `ContractorManagement`) instead. Will be removed in a future major version. */
 export * as Contractor from './Contractor'
 export * as InformationRequests from './InformationRequests'

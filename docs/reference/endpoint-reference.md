@@ -15,57 +15,6 @@ Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond t
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-## Company components
-
-| Component | Method | Path |
-| --- | --- | --- |
-| **Company.Industry** | GET | `/v1/companies/:companyId/industry_selection` |
-|  | PUT | `/v1/companies/:companyId/industry_selection` |
-| **Company.AssignSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
-|  | POST | `/v1/companies/:companyUuid/signatories` |
-|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
-|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
-|  | POST | `/v1/companies/:companyUuid/signatories/invite` |
-| **Company.CreateSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
-|  | POST | `/v1/companies/:companyUuid/signatories` |
-|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
-|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
-| **Company.InviteSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
-|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
-|  | POST | `/v1/companies/:companyUuid/signatories/invite` |
-| **Company.DocumentList** | GET | `/v1/companies/:companyId/forms` |
-|  | GET | `/v1/companies/:companyUuid/signatories` |
-| **Company.DocumentSigner** | GET | `/v1/companies/:companyId/forms` |
-|  | GET | `/v1/companies/:companyUuid/signatories` |
-|  | GET | `/v1/forms/:formId` |
-|  | GET | `/v1/forms/:formId/pdf` |
-|  | PUT | `/v1/forms/:formId/sign` |
-| **Company.OnboardingOverview** | GET | `/v1/companies/:companyUuid/onboarding_status` |
-| **Company.Locations** | GET | `/v1/companies/:companyId/locations` |
-|  | POST | `/v1/companies/:companyId/locations` |
-|  | GET | `/v1/locations/:locationId` |
-|  | PUT | `/v1/locations/:locationId` |
-| **Company.LocationForm** | POST | `/v1/companies/:companyId/locations` |
-|  | GET | `/v1/locations/:locationId` |
-|  | PUT | `/v1/locations/:locationId` |
-| **Company.PaySchedule** | GET | `/v1/companies/:companyId/pay_schedules` |
-|  | POST | `/v1/companies/:companyId/pay_schedules` |
-|  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
-|  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
-|  | GET | `/v1/companies/:companyId/pay_schedules/preview` |
-|  | GET | `/v1/companies/:companyUuid/payment_configs` |
-| **Company.FederalTaxes** | GET | `/v1/companies/:companyId/federal_tax_details` |
-|  | PUT | `/v1/companies/:companyId/federal_tax_details` |
-| **Company.BankAccount** | GET | `/v1/companies/:companyId/bank_accounts` |
-|  | POST | `/v1/companies/:companyId/bank_accounts` |
-|  | PUT | `/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify` |
-| **Company.StateTaxesList** | GET | `/v1/companies/:companyUuid/tax_requirements` |
-| **Company.StateTaxesForm** | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
-|  | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
-| **Company.StateTaxes** | GET | `/v1/companies/:companyUuid/tax_requirements` |
-|  | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
-|  | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
-
 ## Contractor components
 
 | Component | Method | Path |
@@ -403,7 +352,6 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 
 | Flow | Blocks included |
 | --- | --- |
-| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, EmployeeOnboarding.OnboardingFlow |
 | **CompanyOnboarding.OnboardingFlow** | CompanyOnboarding.BankAccount, CompanyOnboarding.DocumentSigner, CompanyOnboarding.FederalTaxes, CompanyOnboarding.Industry, CompanyOnboarding.Locations, CompanyOnboarding.OnboardingOverview, CompanyOnboarding.PaySchedule, CompanyOnboarding.StateTaxes, EmployeeOnboarding.OnboardingFlow |
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
