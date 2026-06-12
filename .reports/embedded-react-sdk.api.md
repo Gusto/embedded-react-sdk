@@ -18,12 +18,12 @@ import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types'
 import { ButtonHTMLAttributes } from 'react';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
-import { Contractor as Contractor_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
-import { Employee as Employee_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
+import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
 import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax';
@@ -583,33 +583,11 @@ export interface ComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAtt
     value?: string | null;
 }
 
-declare namespace Company {
-    export {
-        Industry,
-        AssignSignatory,
-        CreateSignatory,
-        InviteSignatory,
-        DocumentList,
-        SignatureForm,
-        DocumentSigner,
-        OnboardingOverview,
-        Locations,
-        LocationForm,
-        PaySchedule,
-        FederalTaxes,
-        BankAccount,
-        StateTaxesList,
-        StateTaxesForm,
-        StateTaxes,
-        OnboardingFlow
-    }
-}
-
 declare namespace CompanyOnboarding {
     export {
-        OnboardingFlow,
+        OnboardingFlow_2 as OnboardingFlow,
         OnboardingOverview,
-        DocumentSigner,
+        DocumentSigner_2 as DocumentSigner,
         DocumentList,
         SignatureForm,
         Industry,
@@ -617,8 +595,8 @@ declare namespace CompanyOnboarding {
         Locations,
         LocationForm,
         PaySchedule,
-        FederalTaxes,
-        StateTaxes,
+        FederalTaxes_3 as FederalTaxes,
+        StateTaxes_3 as StateTaxes,
         StateTaxesForm,
         StateTaxesList,
         AssignSignatory,
@@ -1181,15 +1159,14 @@ export interface ConfirmWireDetailsProps {
     wireInId?: string;
 }
 
-declare namespace Contractor {
+// Warning: (ae-forgotten-export) The symbol "ContractorListProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
+
+declare namespace ContractorManagement {
     export {
-        PaymentMethod,
-        Address,
-        ContractorList,
-        NewHireReport,
-        ContractorSubmit,
-        ContractorProfile,
-        OnboardingFlow_2 as OnboardingFlow,
         PaymentFlow,
         PaymentsList,
         CreatePayment,
@@ -1199,19 +1176,13 @@ declare namespace Contractor {
     }
 }
 
-// Warning: (ae-forgotten-export) The symbol "ContractorListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
-
 declare namespace ContractorOnboarding {
     export {
-        OnboardingFlow_2 as OnboardingFlow,
+        OnboardingFlow_3 as OnboardingFlow,
         ContractorList,
         ContractorProfile,
         Address,
-        PaymentMethod,
+        PaymentMethod_3 as PaymentMethod,
         NewHireReport,
         ContractorSubmit
     }
@@ -1945,45 +1916,6 @@ export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValida
 // @public (undocumented)
 export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL' | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'];
 
-declare namespace Employee {
-    export {
-        EmployeeList,
-        Deductions,
-        OnboardingSummary,
-        Profile,
-        Compensation_2 as Compensation,
-        FederalTaxes_2 as FederalTaxes,
-        FederalTaxesProps_2 as FederalTaxesProps,
-        StateTaxes_2 as StateTaxes,
-        PaymentMethod_2 as PaymentMethod,
-        Landing,
-        DocumentSigner_2 as DocumentSigner,
-        OnboardingFlow_3 as OnboardingFlow,
-        OnboardingExecutionFlow,
-        OnboardingExecutionFlowProps,
-        OnboardingExecutionInitialState,
-        SelfOnboardingFlow,
-        EmployeeDocuments,
-        DashboardFlow,
-        DashboardFlowProps,
-        EmployeeListFlow,
-        EmployeeListFlowProps,
-        HomeAddress,
-        HomeAddressProps,
-        EmploymentEligibility,
-        EmploymentEligibilityProps,
-        TerminateEmployee,
-        TerminateEmployeeProps,
-        TerminationSummary,
-        TerminationSummaryProps,
-        TerminationFlow,
-        TerminationFlowProps,
-        PayrollOption,
-        WorkAddress,
-        WorkAddressProps
-    }
-}
-
 // Warning: (ae-missing-release-tag) "EmployeeAction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2049,9 +1981,9 @@ export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes
 // @public (undocumented)
 export interface EmployeeDetailsSubmitCallbacks {
     // (undocumented)
-    onEmployeeCreated?: (employee: Employee_2) => void;
+    onEmployeeCreated?: (employee: Employee) => void;
     // (undocumented)
-    onEmployeeUpdated?: (employee: Employee_2) => void;
+    onEmployeeUpdated?: (employee: Employee) => void;
     // (undocumented)
     onOnboardingStatusUpdated?: (status: unknown) => void;
 }
@@ -2124,8 +2056,8 @@ declare namespace EmployeeManagement {
         ProfileProps_2 as ProfileProps,
         ProfileCardProps,
         ProfileEditFormProps,
-        PaymentMethod_3 as PaymentMethod,
-        PaymentMethodProps_3 as PaymentMethodProps,
+        PaymentMethod_2 as PaymentMethod,
+        PaymentMethodProps_2 as PaymentMethodProps,
         PaymentMethodCard,
         PaymentMethodCardProps,
         PaymentMethodBankForm,
@@ -2151,14 +2083,18 @@ declare namespace EmployeeManagement {
         CompensationAddJobFormProps,
         CompensationAddAnotherJobFormProps,
         TerminateEmployee,
+        TerminateEmployeeProps,
         TerminationSummary,
-        TerminationFlow
+        TerminationSummaryProps,
+        TerminationFlow,
+        TerminationFlowProps,
+        PayrollOption
     }
 }
 
 declare namespace EmployeeOnboarding {
     export {
-        OnboardingFlow_3 as OnboardingFlow,
+        OnboardingFlow,
         OnboardingExecutionFlow,
         OnboardingExecutionFlowProps,
         OnboardingExecutionInitialState,
@@ -2166,18 +2102,19 @@ declare namespace EmployeeOnboarding {
         EmployeeList,
         OnboardingSummary,
         Landing,
-        DocumentSigner_2 as DocumentSigner,
+        DocumentSigner,
         EmploymentEligibility,
+        EmploymentEligibilityProps,
         EmployeeDocuments,
         Profile,
         Compensation_2 as Compensation,
-        FederalTaxes_3 as FederalTaxes,
-        FederalTaxesProps_3 as FederalTaxesProps,
-        StateTaxes_3 as StateTaxes,
-        StateTaxesProps_3 as StateTaxesProps,
+        FederalTaxes,
+        FederalTaxesProps,
+        StateTaxes,
+        StateTaxesProps,
         Deductions,
-        PaymentMethod_2 as PaymentMethod,
-        PaymentMethodProps_2 as PaymentMethodProps
+        PaymentMethod,
+        PaymentMethodProps
     }
 }
 
@@ -2277,7 +2214,7 @@ export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 // Warning: (ae-missing-release-tag) "EmployeeWithActions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export interface EmployeeWithActions extends Employee_2 {
+export interface EmployeeWithActions extends Employee {
     // (undocumented)
     allowedActions: EmployeeAction[];
     // (undocumented)
@@ -2305,21 +2242,21 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 // @public (undocumented)
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX;
+function FederalTaxes(input: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "FederalTaxesProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function FederalTaxes_3(props: FederalTaxesProps_3 & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2432,23 +2369,23 @@ export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
-    // (undocumented)
-    employeeId: string;
-    // (undocumented)
-    onEvent: OnEventType<EventType, unknown>;
-}
-
-// Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-interface FederalTaxesProps_3 extends CommonComponentInterface<'Employee.FederalTaxes'> {
+interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
     // (undocumented)
     defaultValues?: Partial<FederalTaxesFormData>;
     // (undocumented)
     employeeId: string;
     // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
+}
+
+// Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2577,9 +2514,6 @@ export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
     components?: Partial<ComponentsContextType>;
     queryClient?: QueryClient;
 }
-
-// @public @deprecated
-export const GustoApiProvider: default_2.FC<GustoApiProps>;
 
 // @public
 export const GustoProvider: default_2.FC<GustoApiProps>;
@@ -3521,21 +3455,21 @@ const PaymentFlow: (input: PaymentFlowProps) => JSX;
 // @public (undocumented)
 function PaymentHistory(props: PaymentHistoryProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod(props: PaymentMethodProps): JSX;
+function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface): JSX;
+function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "PaymentMethodProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod_3(input: PaymentMethodProps_3 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
+function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethodBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "BankFormBody"
@@ -3628,7 +3562,7 @@ export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorC
 // Warning: (ae-missing-release-tag) "PaymentMethodProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.PaymentMethod'> {
+interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
     // (undocumented)
     defaultValues?: never;
     // (undocumented)
@@ -3642,7 +3576,7 @@ interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Paymen
 // Warning: (ae-missing-release-tag) "PaymentMethodProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
+interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
     // (undocumented)
     defaultValues?: never;
     // (undocumented)
@@ -4647,21 +4581,21 @@ export type StateFieldEntry = {
 // @public (undocumented)
 export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressRequiredValidation, string>>;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes(input: StateTaxesProps): JSX;
+function StateTaxes(input: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4706,21 +4640,21 @@ function StateTaxesList(props: StateTaxesListProps): JSX;
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
+type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+    employeeId: string;
+    isAdmin?: boolean;
+    onEvent: BaseComponentInterface['onEvent'];
+};
+
+// Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
 interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
-
-// Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-type StateTaxesProps_3 = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
-    employeeId: string;
-    isAdmin?: boolean;
-    onEvent: BaseComponentInterface['onEvent'];
-};
 
 // Warning: (ae-missing-release-tag) "StateTaxFieldsGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5360,11 +5294,11 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFields> {
     // (undocumented)
     actions: {
-        onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee_2> | undefined>;
+        onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee> | undefined>;
     };
     // (undocumented)
     data: {
-        employee: Employee_2 | null;
+        employee: Employee | null;
     };
     // (undocumented)
     status: {
@@ -5586,7 +5520,7 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
     data: {
         currentJob: Job | null;
         jobs: Job[] | undefined;
-        employee: Employee_2 | null;
+        employee: Employee | null;
         currentWorkAddress: EmployeeWorkAddress | null;
         showTwoPercentShareholder: boolean;
         showStateWc: boolean;

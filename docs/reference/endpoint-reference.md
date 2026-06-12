@@ -308,6 +308,27 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/contractors/:contractorUuid/onboarding_status` |
 |  | PUT | `/v1/contractors/:contractorUuid/onboarding_status` |
 
+## ContractorManagement components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **ContractorManagement.PaymentsList** | GET | `/v1/companies/:companyId/contractor_payment_groups` |
+|  | GET | `/v1/companies/:companyUuid/information_requests` |
+| **ContractorManagement.CreatePayment** | GET | `/v1/companies/:companyId/bank_accounts` |
+|  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
+|  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
+|  | GET | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
+| **ContractorManagement.PaymentHistory** | DELETE | `/v1/companies/:companyId/contractor_payments/:contractorPaymentId` |
+|  | GET | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
+| **ContractorManagement.PaymentSummary** | GET | `/v1/companies/:companyId/bank_accounts` |
+|  | GET | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
+| **ContractorManagement.PaymentStatement** | GET | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
+|  | GET | `/v1/contractor_payments/:contractorPaymentUuid/receipt` |
+
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.
@@ -315,6 +336,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | Flow | Blocks included |
 | --- | --- |
 | **CompanyOnboarding.OnboardingFlow** | CompanyOnboarding.BankAccount, CompanyOnboarding.DocumentSigner, CompanyOnboarding.FederalTaxes, CompanyOnboarding.Industry, CompanyOnboarding.Locations, CompanyOnboarding.OnboardingOverview, CompanyOnboarding.PaySchedule, CompanyOnboarding.StateTaxes, EmployeeOnboarding.OnboardingFlow |
+| **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement, ContractorManagement.PaymentSummary, ContractorManagement.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
 | **EmployeeManagement.DashboardFlow** | EmployeeManagement.Compensation, EmployeeManagement.Deductions, EmployeeManagement.Documents, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |

@@ -9,7 +9,10 @@ export { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 export { OnboardingSummary } from '../OnboardingSummary'
 export { Landing } from '../Landing'
 export { DocumentSigner } from '../Documents/onboarding/DocumentSigner'
-export { EmploymentEligibility } from '../Documents/onboarding/DocumentSigner/EmploymentEligibility'
+export {
+  EmploymentEligibility,
+  type EmploymentEligibilityProps,
+} from '../Documents/onboarding/DocumentSigner/EmploymentEligibility'
 export { EmployeeDocuments } from '../Documents/onboarding/EmployeeDocuments'
 
 export { Profile } from '../Profile/onboarding/Profile'
