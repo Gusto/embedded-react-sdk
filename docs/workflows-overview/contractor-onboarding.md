@@ -37,12 +37,12 @@ Contractor onboarding components can be used to compose your own workflow, or ca
 
 ### Available Subcomponents
 
-- [ContractorOnboarding.ContractorList](#contractorcontractorlist)
-- [ContractorOnboarding.ContractorProfile](#contractorcontractorprofile)
-- [ContractorOnboarding.Address](#contractoraddress)
-- [ContractorOnboarding.PaymentMethod](#contractorpaymentmethod)
-- [ContractorOnboarding.NewHireReport](#contractornewhirereport)
-- [ContractorOnboarding.ContractorSubmit](#contractorcontractorsubmit)
+- [ContractorOnboarding.ContractorList](#contractoronboardingcontractorlist)
+- [ContractorOnboarding.ContractorProfile](#contractoronboardingcontractorprofile)
+- [ContractorOnboarding.Address](#contractoronboardingaddress)
+- [ContractorOnboarding.PaymentMethod](#contractoronboardingpaymentmethod)
+- [ContractorOnboarding.NewHireReport](#contractoronboardingnewhirereport)
+- [ContractorOnboarding.ContractorSubmit](#contractoronboardingcontractorsubmit)
 
 ### ContractorOnboarding.ContractorList
 

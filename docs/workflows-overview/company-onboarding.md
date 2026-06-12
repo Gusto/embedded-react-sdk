@@ -35,22 +35,22 @@ Company onboarding components can be used to compose your own workflow, or can b
 
 ### Available Subcomponents
 
-- [CompanyOnboarding.AssignSignatory](#companyassignsignatory)
-- [CompanyOnboarding.CreateSignatory](#companycreatesignatory)
-- [CompanyOnboarding.InviteSignatory](#companyinvitesignatory)
-- [CompanyOnboarding.Industry](#companyindustry)
-- [CompanyOnboarding.DocumentSigner](#companydocumentsigner)
-- [CompanyOnboarding.DocumentList](#companydocumentlist)
-- [CompanyOnboarding.SignatureForm](#companysignatureform)
-- [CompanyOnboarding.FederalTaxes](#companyfederaltaxes)
-- [CompanyOnboarding.PaySchedule](#companypayschedule)
-- [CompanyOnboarding.Locations](#companylocations)
-- [CompanyOnboarding.LocationForm](#companylocationform)
-- [CompanyOnboarding.BankAccount](#companybankaccount)
-- [CompanyOnboarding.StateTaxes](#companystatetaxes)
-- [CompanyOnboarding.StateTaxesForm](#companystatetaxesform)
-- [CompanyOnboarding.StateTaxesList](#companystatetaxeslist)
-- [CompanyOnboarding.OnboardingOverview](#companyonboardingoverview)
+- [CompanyOnboarding.AssignSignatory](#companyonboardingassignsignatory)
+- [CompanyOnboarding.CreateSignatory](#companyonboardingcreatesignatory)
+- [CompanyOnboarding.InviteSignatory](#companyonboardinginvitesignatory)
+- [CompanyOnboarding.Industry](#companyonboardingindustry)
+- [CompanyOnboarding.DocumentSigner](#companyonboardingdocumentsigner)
+- [CompanyOnboarding.DocumentList](#companyonboardingdocumentlist)
+- [CompanyOnboarding.SignatureForm](#companyonboardingsignatureform)
+- [CompanyOnboarding.FederalTaxes](#companyonboardingfederaltaxes)
+- [CompanyOnboarding.PaySchedule](#companyonboardingpayschedule)
+- [CompanyOnboarding.Locations](#companyonboardinglocations)
+- [CompanyOnboarding.LocationForm](#companyonboardinglocationform)
+- [CompanyOnboarding.BankAccount](#companyonboardingbankaccount)
+- [CompanyOnboarding.StateTaxes](#companyonboardingstatetaxes)
+- [CompanyOnboarding.StateTaxesForm](#companyonboardingstatetaxesform)
+- [CompanyOnboarding.StateTaxesList](#companyonboardingstatetaxeslist)
+- [CompanyOnboarding.OnboardingOverview](#companyonboardingonboardingoverview)
 
 ### CompanyOnboarding.AssignSignatory
 

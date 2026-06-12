@@ -39,15 +39,15 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
-- [EmployeeOnboarding.EmployeeList](#employeelist)
-- [EmployeeOnboarding.Profile](#employeeprofile)
-- [EmployeeOnboarding.Compensation](#employeecompensation)
+- [EmployeeOnboarding.EmployeeList](#employeeonboardingemployeelist)
+- [EmployeeOnboarding.Profile](#employeeonboardingprofile)
+- [EmployeeOnboarding.Compensation](#employeeonboardingcompensation)
 - [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes--employeemanagementfederaltaxes)
 - [EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes](#employeeonboardingstatetaxes--employeemanagementstatetaxes)
-- [EmployeeOnboarding.PaymentMethod](#employeepaymentmethod)
-- [EmployeeOnboarding.Deductions](#employeedeductions)
-- [EmployeeOnboarding.EmployeeDocuments](#employeeemployeedocuments)
-- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingsummary)
+- [EmployeeOnboarding.PaymentMethod](#employeeonboardingpaymentmethod)
+- [EmployeeOnboarding.Deductions](#employeeonboardingdeductions)
+- [EmployeeOnboarding.EmployeeDocuments](#employeeonboardingemployeedocuments)
+- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingonboardingsummary)
 
 ### EmployeeOnboarding.EmployeeList
 
