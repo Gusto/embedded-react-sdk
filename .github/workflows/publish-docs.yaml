@@ -62,6 +62,9 @@ jobs:
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
+      - name: Install SDK dependencies for TypeDoc
+        run: npm ci
+
       - name: Generate TypeDoc markdown
         run: cd docs-site && npm ci && npm run typedoc
 
