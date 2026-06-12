@@ -44,18 +44,16 @@ Contractor onboarding components can be used to compose your own workflow, or ca
 - [ContractorOnboarding.NewHireReport](#contractornewhirereport)
 - [ContractorOnboarding.ContractorSubmit](#contractorcontractorsubmit)
 
-> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
-
-### Contractor.ContractorList
+### ContractorOnboarding.ContractorList
 
 Displays a list of contractors for a company, allowing users to add new contractors, edit existing ones, delete contractors, and continue the onboarding process.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorList
+    <ContractorOnboarding.ContractorList
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -80,16 +78,16 @@ function MyComponent() {
 | CONTRACTOR_DELETED             | Fired when a contractor is deleted              | { contractorId: string } |
 | CONTRACTOR_ONBOARDING_CONTINUE | Fired when user chooses to continue onboarding  | None                     |
 
-### Contractor.ContractorProfile
+### ContractorOnboarding.ContractorProfile
 
 A comprehensive form for creating and editing contractor profiles. Supports both individual and business contractor types, with different field sets for each. Includes options for wage type, self-onboarding invitations, and start date.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorProfile
+    <ContractorOnboarding.ContractorProfile
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -114,15 +112,15 @@ function MyComponent() {
 | CONTRACTOR_UPDATED      | Fired when an existing contractor is updated        | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid)         |
 | CONTRACTOR_PROFILE_DONE | Fired when the contractor profile step is complete  | { contractorId: string, selfOnboarding: boolean }                                                                                               |
 
-### Contractor.Address
+### ContractorOnboarding.Address
 
 A form for collecting and updating a contractor's mailing address.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.Address contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.Address contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -141,15 +139,15 @@ function MyComponent() {
 | CONTRACTOR_ADDRESS_UPDATED | Fired when the contractor address is updated | [Response from the create or update a contractor's address API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid-address) |
 | CONTRACTOR_ADDRESS_DONE    | Fired when the address step is complete      | None                                                                                                                                                                  |
 
-### Contractor.PaymentMethod
+### ContractorOnboarding.PaymentMethod
 
 Manages the contractor's payment method, including adding a bank account for direct deposit or selecting check as the payment method.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -168,15 +166,15 @@ function MyComponent() {
 | CONTRACTOR_PAYMENT_METHOD_UPDATED | Fired when the payment method is updated                | [Response from the update a contractor's payment method API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_id-payment_method) |
 | CONTRACTOR_PAYMENT_METHOD_DONE    | Fired when the payment method step is complete          | None                                                                                                                                                                    |
 
-### Contractor.NewHireReport
+### ContractorOnboarding.NewHireReport
 
 Handles new hire reporting requirements for the contractor. Behavior varies based on whether the contractor is going through admin onboarding or self-onboarding.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -195,15 +193,15 @@ function MyComponent() {
 | CONTRACTOR_NEW_HIRE_REPORT_UPDATED | Fired when the new hire report is updated       | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid) |
 | CONTRACTOR_NEW_HIRE_REPORT_DONE    | Fired when the new hire report step is complete | None                                                                                                                                    |
 
-### Contractor.ContractorSubmit
+### ContractorOnboarding.ContractorSubmit
 
 Finalizes the contractor onboarding process. Updates the onboarding status and, in the self-onboarding flow, can trigger an invitation to the contractor.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 

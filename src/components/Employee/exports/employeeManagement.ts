@@ -7,8 +7,8 @@ export type {
   DocumentsCardProps,
   DocumentManagerProps,
 } from '../Documents/management'
-export { DashboardFlow } from '../Dashboard'
-export type { DashboardFlowProps } from '../Dashboard'
+export { DashboardFlow, Dashboard } from '../Dashboard'
+export type { DashboardFlowProps, DashboardProps } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {
   HomeAddressProps,
