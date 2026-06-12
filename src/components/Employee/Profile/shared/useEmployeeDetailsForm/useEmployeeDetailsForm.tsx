@@ -61,11 +61,21 @@ export interface EmployeeDetailsSubmitCallbacks {
   onOnboardingStatusUpdated?: (status: unknown) => void
 }
 
-type UseEmployeeDetailsFormSharedProps = {
+/**
+ * Shared options merged into both branches of {@link UseEmployeeDetailsFormProps}.
+ *
+ * @public
+ */
+export type UseEmployeeDetailsFormSharedProps = {
+  /** Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. */
   withSelfOnboardingField?: boolean
+  /** Fields that are optional by default but should be promoted to required for this form instance. */
   optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
+  /** Initial values applied before any employee data loads. */
   defaultValues?: Partial<EmployeeDetailsFormData>
+  /** When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
@@ -121,8 +131,11 @@ export interface EmployeeDetailsFields {
  *
  * @public
  */
-export interface UseEmployeeDetailsFormReady
-  extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFields> {
+export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  EmployeeDetailsFormData,
+  EmployeeDetailsFields
+> {
   /** The loaded employee data, or `null` in create mode. */
   data: {
     /** The employee being edited, or `null` in create mode. */

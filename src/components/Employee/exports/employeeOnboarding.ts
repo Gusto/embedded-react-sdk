@@ -3,6 +3,7 @@ export {
   OnboardingExecutionFlow,
   type OnboardingExecutionFlowProps,
   type OnboardingExecutionInitialState,
+  type OnboardingDefaultValues,
 } from '../OnboardingExecutionFlow'
 export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeList, type EmployeeListProps } from '../EmployeeList/onboarding/EmployeeList'
@@ -18,8 +19,21 @@ export {
   type EmployeeDocumentsProps,
 } from '../Documents/onboarding/EmployeeDocuments'
 
-export { Profile, type ProfileProps } from '../Profile/onboarding/Profile'
-export { Compensation, type CompensationProps } from '../Compensation'
+export {
+  Profile,
+  type ProfileProps,
+  type ProfileDefaultValues,
+} from '../Profile/onboarding/Profile'
+export {
+  Compensation,
+  type CompensationProps,
+  type CompensationDefaultValues,
+} from '../Compensation'
+export { JobsList, type JobsListProps } from '../Compensation/onboarding/JobsList'
+export {
+  EditCompensation,
+  type EditCompensationProps,
+} from '../Compensation/onboarding/EditCompensation'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/onboarding/FederalTaxes'
 export { StateTaxes, type StateTaxesProps } from '../StateTaxes/onboarding'
 export { Deductions, type DeductionsProps } from '../Deductions'

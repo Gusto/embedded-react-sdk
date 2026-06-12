@@ -715,7 +715,11 @@ export const SIGNATORY_TITLES = {
   MEMBER: 'member',
 } as const
 
-/** @internal */
+/**
+ * Pay period unit values for the `paymentUnit` field on a compensation, describing the unit a pay rate is expressed against.
+ *
+ * @public
+ */
 export const PAY_PERIODS = {
   HOUR: 'Hour',
   WEEK: 'Week',

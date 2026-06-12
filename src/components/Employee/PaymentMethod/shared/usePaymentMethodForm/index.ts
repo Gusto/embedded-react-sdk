@@ -18,6 +18,7 @@ export {
   type PaymentMethodType,
 } from './usePaymentMethodFormSchema'
 export {
+  TypeField as PaymentMethodTypeField,
   type TypeFieldProps,
   type RequiredValidation as PaymentMethodFormRequiredValidation,
 } from './fields'

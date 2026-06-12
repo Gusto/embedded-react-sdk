@@ -5,7 +5,13 @@ import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/compo
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Props for {@link EmployeeList}.
+ *
+ * @public
+ */
 export interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
+  /** The associated company identifier. */
   companyId: string
 }
 

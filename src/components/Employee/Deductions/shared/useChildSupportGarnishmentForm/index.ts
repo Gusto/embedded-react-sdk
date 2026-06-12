@@ -16,6 +16,16 @@ export {
   getRequiredAttrKeys,
   SUPPORTED_REQUIRED_ATTR_KEYS,
 } from './childSupportGarnishmentFormSchema'
+export {
+  StateField,
+  FipsCodeField,
+  CaseNumberField,
+  OrderNumberField,
+  RemittanceNumberField,
+  PayPeriodMaximumField,
+  AmountField,
+  PaymentPeriodField,
+} from './fields'
 export type {
   RequiredValidation as ChildSupportGarnishmentRequiredValidation,
   NegativeAmountValidation as ChildSupportGarnishmentNegativeAmountValidation,

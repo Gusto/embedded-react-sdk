@@ -19,6 +19,10 @@ export {
   type BankFormOutputs,
 } from './useBankFormSchema'
 export {
+  NameField,
+  RoutingNumberField,
+  AccountNumberField,
+  AccountTypeField,
   type NameFieldProps,
   type RoutingNumberFieldProps,
   type AccountNumberFieldProps,

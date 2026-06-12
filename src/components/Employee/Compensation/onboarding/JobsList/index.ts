@@ -1,1 +1,1 @@
-export { JobsList } from './JobsList'
+export { JobsList, type JobsListProps } from './JobsList'

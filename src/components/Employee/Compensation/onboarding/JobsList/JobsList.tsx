@@ -12,12 +12,13 @@ import {
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-/** @internal */
+/** @public */
 export interface JobsListProps extends CommonComponentInterface<'Employee.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
-/** @internal */
+/** @public */
 export function JobsList(props: JobsListProps & BaseComponentInterface) {
   useComponentDictionary('Employee.Compensation', props.dictionary)
   return (

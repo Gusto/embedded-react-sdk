@@ -20,6 +20,7 @@ export {
   type WorkAddressFormOutputs,
   type WorkAddressField,
 } from './workAddressSchema'
+export { LocationField, EffectiveDateField } from './fields'
 export type {
   RequiredValidation as WorkAddressRequiredValidation,
   LocationFieldProps,

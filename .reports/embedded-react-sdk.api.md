@@ -73,6 +73,9 @@ import { z } from 'zod';
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
 
 // @public
+export function AccountNumberField(props: AccountNumberFieldProps): JSX;
+
+// @public
 export type AccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<AccountNumberValidation>>;
 
 // @public
@@ -80,6 +83,9 @@ export type AccountNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typ
 
 // @public
 export type AccountType = (typeof ACCOUNT_TYPES)[number];
+
+// @public
+export function AccountTypeField(props: AccountTypeFieldProps): JSX;
 
 // @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
@@ -157,6 +163,9 @@ export type AnchorEndOfPayPeriodFieldProps = HookFieldProps<DatePickerHookFieldP
 export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
 
 // @public
+export function AnnualMaximumField(props: AnnualMaximumFieldProps): JSX;
+
+// @public
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // @public
@@ -232,17 +241,9 @@ export type BankFormField = keyof typeof fieldValidators_8;
 
 // @public
 export interface BankFormFields {
-    // Warning: (ae-forgotten-export) The symbol "AccountNumberField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AccountNumberField"
     AccountNumber: typeof AccountNumberField;
-    // Warning: (ae-forgotten-export) The symbol "AccountTypeField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AccountTypeField"
     AccountType: typeof AccountTypeField;
-    // Warning: (ae-forgotten-export) The symbol "NameField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NameField"
     Name: typeof NameField;
-    // Warning: (ae-forgotten-export) The symbol "RoutingNumberField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "RoutingNumberField"
     RoutingNumber: typeof RoutingNumberField;
 }
 
@@ -381,6 +382,9 @@ export interface CardProps {
 }
 
 // @public
+export function CaseNumberField(props: CaseNumberFieldProps): JSX;
+
+// @public
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -424,6 +428,11 @@ export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<In
     value?: boolean;
 }
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AmountFieldProps"
+//
+// @public
+export function ChildSupportAmountField(props: ChildSupportGarnishmentAmountFieldProps): JSX;
+
 // @public
 export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<ChildSupportGarnishmentAmountValidation>>;
 
@@ -449,22 +458,14 @@ export const ChildSupportGarnishmentFormErrorCodes: {
 
 // @public
 export interface ChildSupportGarnishmentFormFields {
-    // Warning: (ae-forgotten-export) The symbol "AmountField_2" needs to be exported by the entry point index.d.ts
-    Amount: typeof AmountField_2;
-    // Warning: (ae-forgotten-export) The symbol "CaseNumberField" needs to be exported by the entry point index.d.ts
+    Amount: typeof ChildSupportAmountField;
     CaseNumber: typeof CaseNumberField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "FipsCodeField" needs to be exported by the entry point index.d.ts
     FipsCode: typeof FipsCodeField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "OrderNumberField" needs to be exported by the entry point index.d.ts
     OrderNumber: typeof OrderNumberField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "PaymentPeriodField" needs to be exported by the entry point index.d.ts
     PaymentPeriod: typeof PaymentPeriodField;
-    // Warning: (ae-forgotten-export) The symbol "PayPeriodMaximumField" needs to be exported by the entry point index.d.ts
     PayPeriodMaximum: typeof PayPeriodMaximumField;
-    // Warning: (ae-forgotten-export) The symbol "RemittanceNumberField" needs to be exported by the entry point index.d.ts
     RemittanceNumber: typeof RemittanceNumberField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "StateField" needs to be exported by the entry point index.d.ts
-    State: typeof StateField;
+    State: typeof ChildSupportStateField;
 }
 
 // @public
@@ -484,6 +485,12 @@ export type ChildSupportGarnishmentRequiredValidation = typeof ChildSupportGarni
 
 // @public
 export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, StateFieldEntry>>;
+
+// @public
+export function ChildSupportStateField(props: ChildSupportGarnishmentStateFieldProps): JSX;
+
+// @public
+export function CityField(props: CityFieldProps): JSX;
 
 // @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
@@ -547,13 +554,9 @@ function Compensation_2(props: CompensationProps): JSX;
 
 // @public (undocumented)
 namespace Compensation_2 {
-    var // Warning: (ae-forgotten-export) The symbol "JobsList" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    var // (undocumented)
     JobsList: JobsList;
-    var // Warning: (ae-forgotten-export) The symbol "EditCompensation" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    var // (undocumented)
     EditCompensation: EditCompensation;
 }
 
@@ -600,6 +603,9 @@ interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// @public
+export function CompensationAdjustForMinimumWageField(props: AdjustForMinimumWageFieldProps): JSX;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
@@ -618,6 +624,16 @@ interface CompensationCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
+//
+// @public
+type CompensationDefaultValues = RequireAtLeastOne<{
+    rate?: Job['rate'];
+    title?: Job['title'];
+    paymentUnit?: (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS];
+    flsaStatus?: FlsaStatusType;
+}>;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditFormProps"
@@ -635,6 +651,9 @@ interface CompensationEditFormProps extends CommonComponentInterface<'Employee.M
     // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
     onEvent: OnEventType<EventType, unknown>;
 }
+
+// @public
+export function CompensationEffectiveDateField(props: CompensationEffectiveDateFieldProps): JSX;
 
 // @public
 export type CompensationEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<CompensationEffectiveDateValidation>>;
@@ -660,6 +679,9 @@ export const CompensationErrorCodes: {
 // @public
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata'];
 
+// @public
+export function CompensationFlsaStatusField(props: FlsaStatusFieldProps): JSX;
+
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_3" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -669,35 +691,33 @@ export type CompensationFormData = {
 
 // @public
 export interface CompensationFormFields {
-    // Warning: (ae-forgotten-export) The symbol "AdjustForMinimumWageField" needs to be exported by the entry point index.d.ts
-    AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "EffectiveDateField" needs to be exported by the entry point index.d.ts
-    EffectiveDate: typeof EffectiveDateField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "FlsaStatusField" needs to be exported by the entry point index.d.ts
-    FlsaStatus: typeof FlsaStatusField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "MinimumWageIdField" needs to be exported by the entry point index.d.ts
-    MinimumWageId: typeof MinimumWageIdField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "PaymentUnitField" needs to be exported by the entry point index.d.ts
-    PaymentUnit: typeof PaymentUnitField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "RateField" needs to be exported by the entry point index.d.ts
-    Rate: typeof RateField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "TitleField" needs to be exported by the entry point index.d.ts
-    Title: typeof TitleField;
+    AdjustForMinimumWage: typeof CompensationAdjustForMinimumWageField | undefined;
+    EffectiveDate: typeof CompensationEffectiveDateField | undefined;
+    FlsaStatus: typeof CompensationFlsaStatusField | undefined;
+    MinimumWageId: typeof CompensationMinimumWageIdField | undefined;
+    PaymentUnit: typeof CompensationPaymentUnitField | undefined;
+    Rate: typeof CompensationRateField | undefined;
+    Title: typeof CompensationTitleField;
 }
 
 // @public
 export type CompensationFormOutputs = CompensationFormData;
+
+// @public
+export function CompensationMinimumWageIdField(props: MinimumWageIdFieldProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_2" needs to be exported by the entry point index.d.ts
 //
 // @public
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_2>;
 
+// @public
+export function CompensationPaymentUnitField(props: PaymentUnitFieldProps): JSX;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 //
 // @public
 interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
-    // Warning: (ae-forgotten-export) The symbol "CompensationDefaultValues" needs to be exported by the entry point index.d.ts
     defaultValues?: CompensationDefaultValues;
     employeeId: string;
     startDate: string;
@@ -711,6 +731,9 @@ interface CompensationProps_2 extends CommonComponentInterface<'Employee.Managem
     // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
     onEvent: OnEventType<EventType, unknown>;
 }
+
+// @public
+export function CompensationRateField(props: RateFieldProps): JSX;
 
 // @public
 export type CompensationRequiredValidation = typeof CompensationErrorCodes.REQUIRED;
@@ -733,6 +756,11 @@ export interface CompensationSubmitOptions {
     effectiveDate?: string;
     jobId?: string;
 }
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TitleFieldProps"
+//
+// @public
+export function CompensationTitleField(props: CompensationTitleFieldProps): JSX;
 
 // @public
 export type CompensationTitleFieldProps = HookFieldProps<TextInputHookFieldProps<CompensationRequiredValidation>>;
@@ -1074,6 +1102,9 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(form
     [K in keyof TForms]: ComposeSubmitInput<TForms[K]>;
 }], onAllValid: () => Promise<void>): ComposeSubmitHandlerResult;
 
+// @public
+export function ConfirmSignatureField(props: SignEmployeeFormConfirmSignatureFieldProps): JSX;
+
 // Warning: (ae-missing-release-tag) "ConfirmSignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1162,6 +1193,9 @@ export type CountyEntry = {
     fipsCode: string;
     county: string | null;
 };
+
+// @public
+export function CourtesyWithholdingField(props: CourtesyWithholdingFieldProps): JSX;
 
 // @public
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
@@ -1497,6 +1531,9 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
 }
 
 // @public
+export function DateOfBirthField(props: DateOfBirthFieldProps): JSX;
+
+// @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
 
 // Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
@@ -1568,7 +1605,15 @@ export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidat
 export type DayValidation = (typeof PayScheduleErrorCodes)['REQUIRED' | 'DAY_RANGE'];
 
 // @public
+export function DeductAsPercentageField(props: DeductAsPercentageFieldProps): JSX;
+
+// @public
 export type DeductAsPercentageFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AmountFieldProps"
+//
+// @public
+export function DeductionAmountField(props: DeductionAmountFieldProps): JSX;
 
 // @public
 export type DeductionAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormAmountValidation>>;
@@ -1597,19 +1642,12 @@ export const DeductionFormErrorCodes: {
 
 // @public
 export interface DeductionFormFields {
-    // Warning: (ae-forgotten-export) The symbol "AmountField" needs to be exported by the entry point index.d.ts
-    Amount: typeof AmountField;
-    // Warning: (ae-forgotten-export) The symbol "AnnualMaximumField" needs to be exported by the entry point index.d.ts
+    Amount: typeof DeductionAmountField;
     AnnualMaximum: typeof AnnualMaximumField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "DeductAsPercentageField" needs to be exported by the entry point index.d.ts
     DeductAsPercentage: typeof DeductAsPercentageField;
-    // Warning: (ae-forgotten-export) The symbol "DescriptionField" needs to be exported by the entry point index.d.ts
     Description: typeof DescriptionField;
-    // Warning: (ae-forgotten-export) The symbol "GarnishmentTypeField" needs to be exported by the entry point index.d.ts
     GarnishmentType: typeof GarnishmentTypeField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "RecurringField" needs to be exported by the entry point index.d.ts
     Recurring: typeof RecurringField;
-    // Warning: (ae-forgotten-export) The symbol "TotalAmountField" needs to be exported by the entry point index.d.ts
     TotalAmount: typeof TotalAmountField | undefined;
 }
 
@@ -1675,6 +1713,9 @@ interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Man
 }
 
 // @public
+export function DeductionsField(props: DeductionsFieldProps): JSX;
+
+// @public
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
@@ -1694,7 +1735,13 @@ interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Managemen
 }
 
 // @public
+export function DependentsAmountField(props: DependentsAmountFieldProps): JSX;
+
+// @public
 export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
+
+// @public
+export function DescriptionField(props: DescriptionFieldProps): JSX;
 
 // @public
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
@@ -1835,8 +1882,31 @@ interface DocumentsProps extends CommonComponentInterface<'Employee.Management.D
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensationProps"
+//
+// @public
+function EditCompensation(input: EditCompensationProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensation"
+//
+// @public
+interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+    currentJobId?: string | null;
+    employeeId: string;
+    onCancel?: () => void;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensation"
+    onEvent: OnEventType<EventType, unknown>;
+    partnerDefaultValues?: CompensationDefaultValues;
+    startDate?: string;
+    submitCtaLabel: string;
+    title: string;
+}
+
 // @public
 export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<WorkAddressRequiredValidation>>;
+
+// @public
+export function EmailField(props: EmailFieldProps): JSX;
 
 // @public
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>;
@@ -1864,36 +1934,14 @@ export const EmployeeDetailsErrorCodes: {
 // @public
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators_5, 'selfOnboarding'>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FirstNameField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "MiddleInitialField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LastNameField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmailField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DateOfBirthField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SsnField"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingField"
-//
 // @public
 export interface EmployeeDetailsFields {
-    // Warning: (ae-forgotten-export) The symbol "DateOfBirthField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DateOfBirthField"
     DateOfBirth: typeof DateOfBirthField;
-    // Warning: (ae-forgotten-export) The symbol "EmailField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmailField"
     Email: typeof EmailField;
-    // Warning: (ae-forgotten-export) The symbol "FirstNameField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FirstNameField"
     FirstName: typeof FirstNameField;
-    // Warning: (ae-forgotten-export) The symbol "LastNameField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LastNameField"
     LastName: typeof LastNameField;
-    // Warning: (ae-forgotten-export) The symbol "MiddleInitialField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "MiddleInitialField"
     MiddleInitial: typeof MiddleInitialField;
-    // Warning: (ae-forgotten-export) The symbol "SelfOnboardingField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingField"
     SelfOnboarding: typeof SelfOnboardingField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "SsnField" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SsnField"
     Ssn: typeof SsnField;
 }
 
@@ -1929,13 +1977,11 @@ export interface EmployeeDetailsSubmitCallbacks {
 // @public
 function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 
-// Warning: (ae-missing-release-tag) "EmployeeDocumentsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeDocuments"
 //
-// @public (undocumented)
+// @public
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
-    // (undocumented)
     employeeId: string;
-    // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1957,11 +2003,10 @@ interface EmployeeListFlowProps extends BaseComponentInterface {
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "EmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeList"
 //
-// @public (undocumented)
+// @public
 interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
-    // (undocumented)
     companyId: string;
 }
 
@@ -2055,6 +2100,7 @@ declare namespace EmployeeOnboarding {
         OnboardingExecutionFlow,
         OnboardingExecutionFlowProps,
         OnboardingExecutionInitialState,
+        OnboardingDefaultValues,
         SelfOnboardingFlow,
         EmployeeList,
         EmployeeListProps,
@@ -2068,8 +2114,14 @@ declare namespace EmployeeOnboarding {
         EmployeeDocumentsProps,
         Profile,
         ProfileProps,
+        ProfileDefaultValues,
         Compensation_2 as Compensation,
         CompensationProps,
+        CompensationDefaultValues,
+        JobsList,
+        JobsListProps,
+        EditCompensation,
+        EditCompensationProps,
         FederalTaxes,
         FederalTaxesProps,
         StateTaxes,
@@ -2158,9 +2210,9 @@ export interface EmployeeStateTaxesSchemaOptions {
     isAdmin?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "EmployeeTab" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ManagementEmployeeList"
 //
-// @public (undocumented)
+// @public
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
 // @public
@@ -2186,6 +2238,9 @@ interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.Em
 
 // @public
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
+
+// @public
+export function ExtraWithholdingField(props: ExtraWithholdingFieldProps): JSX;
 
 // @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -2252,17 +2307,11 @@ export type FederalTaxesField = keyof typeof fieldValidators_11;
 
 // @public
 export interface FederalTaxesFields {
-    // Warning: (ae-forgotten-export) The symbol "DeductionsField" needs to be exported by the entry point index.d.ts
     Deductions: typeof DeductionsField;
-    // Warning: (ae-forgotten-export) The symbol "DependentsAmountField" needs to be exported by the entry point index.d.ts
     DependentsAmount: typeof DependentsAmountField;
-    // Warning: (ae-forgotten-export) The symbol "ExtraWithholdingField" needs to be exported by the entry point index.d.ts
     ExtraWithholding: typeof ExtraWithholdingField;
-    // Warning: (ae-forgotten-export) The symbol "FilingStatusField" needs to be exported by the entry point index.d.ts
     FilingStatus: typeof FilingStatusField;
-    // Warning: (ae-forgotten-export) The symbol "OtherIncomeField" needs to be exported by the entry point index.d.ts
     OtherIncome: typeof OtherIncomeField;
-    // Warning: (ae-forgotten-export) The symbol "TwoJobsField" needs to be exported by the entry point index.d.ts
     TwoJobs: typeof TwoJobsField;
 }
 
@@ -2348,13 +2397,22 @@ export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisu
 export const FILING_STATUS_VALUES: readonly ["Single", "Married", "Head of Household", "Exempt from withholding"];
 
 // @public
+export function FilingStatusField(props: FilingStatusFieldProps): JSX;
+
+// @public
 export type FilingStatusFieldProps = HookFieldProps<SelectHookFieldProps<FederalTaxesRequiredValidation, FilingStatusValue>>;
 
 // @public
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number];
 
 // @public
+export function FipsCodeField(props: FipsCodeFieldProps): JSX;
+
+// @public
 export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, CountyEntry>>;
+
+// @public
+export function FirstNameField(props: FirstNameFieldProps): JSX;
 
 // @public
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
@@ -2396,6 +2454,9 @@ export type FormHookResult = {
 //
 // @public (undocumented)
 export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PayScheduleRequiredValidation, PayScheduleFrequency>>;
+
+// @public
+export function GarnishmentTypeField(props: GarnishmentTypeFieldProps): JSX;
 
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
@@ -2529,6 +2590,9 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 }
 
 // @public
+export function HireDateField(props: HireDateFieldProps): JSX;
+
+// @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "EmployeeTableItem" needs to be exported by the entry point index.d.ts
@@ -2627,6 +2691,9 @@ interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Ma
 }
 
 // @public
+export function HomeAddressEffectiveDateField(props: HomeAddressEffectiveDateFieldProps): JSX;
+
+// @public
 export type HomeAddressEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
@@ -2645,19 +2712,12 @@ export type HomeAddressField = keyof typeof fieldValidators_7;
 
 // @public
 export interface HomeAddressFields {
-    // Warning: (ae-forgotten-export) The symbol "CityField" needs to be exported by the entry point index.d.ts
     City: typeof CityField;
-    // Warning: (ae-forgotten-export) The symbol "CourtesyWithholdingField" needs to be exported by the entry point index.d.ts
     CourtesyWithholding: typeof CourtesyWithholdingField;
-    // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_3" needs to be exported by the entry point index.d.ts
-    EffectiveDate: typeof EffectiveDateField_3 | undefined;
-    // Warning: (ae-forgotten-export) The symbol "StateField_2" needs to be exported by the entry point index.d.ts
-    State: typeof StateField_2;
-    // Warning: (ae-forgotten-export) The symbol "Street1Field" needs to be exported by the entry point index.d.ts
+    EffectiveDate: typeof HomeAddressEffectiveDateField | undefined;
+    State: typeof HomeAddressStateField;
     Street1: typeof Street1Field;
-    // Warning: (ae-forgotten-export) The symbol "Street2Field" needs to be exported by the entry point index.d.ts
     Street2: typeof Street2Field;
-    // Warning: (ae-forgotten-export) The symbol "ZipField" needs to be exported by the entry point index.d.ts
     Zip: typeof ZipField;
 }
 
@@ -2690,6 +2750,9 @@ interface HomeAddressProps extends CommonComponentInterface<'Employee.Management
 
 // @public
 export type HomeAddressRequiredValidation = typeof HomeAddressErrorCodes.REQUIRED;
+
+// @public
+export function HomeAddressStateField(props: StateFieldProps): JSX;
 
 // @public
 export interface HomeAddressSubmitOptions {
@@ -2795,15 +2858,10 @@ export type JobFormData = {
 
 // @public
 export interface JobFormFields {
-    // Warning: (ae-forgotten-export) The symbol "HireDateField" needs to be exported by the entry point index.d.ts
     HireDate: typeof HireDateField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "StateWcClassCodeField" needs to be exported by the entry point index.d.ts
     StateWcClassCode: typeof StateWcClassCodeField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "StateWcCoveredField" needs to be exported by the entry point index.d.ts
     StateWcCovered: typeof StateWcCoveredField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "JobTitleField" needs to be exported by the entry point index.d.ts
     Title: typeof JobTitleField | undefined;
-    // Warning: (ae-forgotten-export) The symbol "TwoPercentShareholderField" needs to be exported by the entry point index.d.ts
     TwoPercentShareholder: typeof TwoPercentShareholderField | undefined;
 }
 
@@ -2818,11 +2876,22 @@ export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof required
 // @public
 export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED;
 
+// @public (undocumented)
+function JobsList(props: JobsListProps & BaseComponentInterface): JSX;
+
+// @public (undocumented)
+interface JobsListProps extends CommonComponentInterface<'Employee.Compensation'> {
+    employeeId: string;
+}
+
 // @public
 export interface JobSubmitOptions {
     employeeId?: string;
     hireDate?: string;
 }
+
+// @public
+export function JobTitleField(props: JobTitleFieldProps): JSX;
 
 // @public
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequiredValidation>>;
@@ -2831,6 +2900,9 @@ export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequi
 //
 // @public
 function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX;
+
+// @public
+export function LastNameField(props: LastNameFieldProps): JSX;
 
 // @public
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
@@ -2912,15 +2984,12 @@ function Locations(input: LocationsProps): JSX;
 // @public
 function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-missing-release-tag) "ManagementEmployeeListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ManagementEmployeeList"
 //
-// @public (undocumented)
+// @public
 interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
-    // (undocumented)
     companyId: string;
-    // (undocumented)
     initialTab?: EmployeeTab;
-    // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -2948,6 +3017,9 @@ export interface MenuProps extends DataAttributes {
     portalContainer?: HTMLElement;
     triggerRef?: RefObject<Element | null>;
 }
+
+// @public
+export function MiddleInitialField(props: MiddleInitialFieldProps): JSX;
 
 // @public
 export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<EmployeeDetailsRequiredValidation>>;
@@ -2990,6 +3062,9 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
     options: MultiSelectComboBoxOption[];
     value?: string[];
 }
+
+// @public
+export function NameField(props: NameFieldProps): JSX;
 
 // @public
 export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequiredValidation>>;
@@ -3228,6 +3303,15 @@ interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.O
     companyId: string;
 }
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
+//
+// @public
+type OnboardingDefaultValues = RequireAtLeastOne<{
+    profile?: ProfileDefaultValues;
+    compensation?: CompensationDefaultValues;
+}>;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingFlow"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
@@ -3295,8 +3379,6 @@ const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 // @public
 interface OnboardingFlowProps extends BaseComponentInterface {
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "OnboardingDefaultValues" needs to be exported by the entry point index.d.ts
     defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
     isSelfOnboardingEnabled?: boolean;
     withEmployeeI9?: boolean;
@@ -3319,7 +3401,13 @@ function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 export type OrderedListProps = BaseListProps;
 
 // @public
+export function OrderNumberField(props: OrderNumberFieldProps): JSX;
+
+// @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
+
+// @public
+export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
 
 // @public
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -3340,6 +3428,15 @@ export type PaginationControlProps = {
 
 // @public (undocumented)
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50;
+
+// @public
+export const PAY_PERIODS: {
+    readonly HOUR: "Hour";
+    readonly WEEK: "Week";
+    readonly MONTH: "Month";
+    readonly YEAR: "Year";
+    readonly PAYCHECK: "Paycheck";
+};
 
 // @public
 export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
@@ -3421,9 +3518,8 @@ export type PaymentMethodFormField = keyof typeof fieldValidators_9;
 
 // @public
 export interface PaymentMethodFormFields {
-    // Warning: (ae-forgotten-export) The symbol "TypeField" needs to be exported by the entry point index.d.ts
     // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TypeField"
-    Type: typeof TypeField;
+    Type: typeof PaymentMethodTypeField;
 }
 
 // @public
@@ -3478,6 +3574,12 @@ interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'e
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 
 // @public
+export function PaymentMethodTypeField(props: TypeFieldProps): JSX;
+
+// @public
+export function PaymentPeriodField(props: PaymentPeriodFieldProps): JSX;
+
+// @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentsListProps" needs to be exported by the entry point index.d.ts
@@ -3500,6 +3602,9 @@ const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 
 // @public
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
+
+// @public
+export function PayPeriodMaximumField(props: PayPeriodMaximumFieldProps): JSX;
 
 // @public
 export type PayPeriodMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<PayPeriodMaximumValidation>>;
@@ -3875,6 +3980,9 @@ export type PreparerFieldSuffix = 'FirstName' | 'LastName' | 'Street1' | 'Street
 export type PreparerIndex = 1 | 2 | 3 | 4;
 
 // @public
+export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignEmployeeFormRequiredValidation, string>>;
+
+// @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
@@ -3908,6 +4016,27 @@ interface ProfileCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
+//
+// @public
+type ProfileDefaultValues = RequireAtLeastOne<{
+    employee?: RequireAtLeastOne<{
+        firstName?: string;
+        middleInitial?: string;
+        lastName?: string;
+        email?: string;
+        dateOfBirth?: string;
+    }>;
+    homeAddress?: RequireAtLeastOne<{
+        street1?: string;
+        street2?: string;
+        city?: string;
+        state?: string;
+        zip?: string;
+    }>;
+    inviteEmployeeDefault?: boolean;
+}>;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileEditFormProps"
 //
@@ -3927,7 +4056,6 @@ interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Manage
 // @public
 interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "ProfileDefaultValues" needs to be exported by the entry point index.d.ts
     defaultValues?: ProfileDefaultValues;
     employeeId?: string;
     isAdmin?: boolean;
@@ -4012,10 +4140,19 @@ export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_
 function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
 
 // @public
+export function RecurringField(props: RecurringFieldProps): JSX;
+
+// @public
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
 // @public
+export function RemittanceNumberField(props: RemittanceNumberFieldProps): JSX;
+
+// @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
+
+// @public
+export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
 
 // @public
 export type RoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RoutingNumberValidation>>;
@@ -4131,6 +4268,9 @@ export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
 };
 
 // @public
+export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
+
+// @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
@@ -4158,6 +4298,9 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 
 // @public
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
+
+// @public
+export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
 
 // Warning: (ae-missing-release-tag) "SignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4253,15 +4396,12 @@ export type SignEmployeeFormField = keyof typeof fieldValidators_12;
 
 // @public
 export interface SignEmployeeFormFieldComponents {
-    // Warning: (ae-forgotten-export) The symbol "ConfirmSignatureField" needs to be exported by the entry point index.d.ts
     ConfirmSignature: typeof ConfirmSignatureField;
     Preparer1: PreparerFieldGroup | undefined;
     Preparer2: PreparerFieldGroup | undefined;
     Preparer3: PreparerFieldGroup | undefined;
     Preparer4: PreparerFieldGroup | undefined;
-    // Warning: (ae-forgotten-export) The symbol "SignatureField" needs to be exported by the entry point index.d.ts
     Signature: typeof SignatureField;
-    // Warning: (ae-forgotten-export) The symbol "UsedPreparerField" needs to be exported by the entry point index.d.ts
     UsedPreparer: typeof UsedPreparerField | undefined;
 }
 
@@ -4356,6 +4496,9 @@ export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
 
 // @public
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
+
+// @public
+export function SsnField(props: SsnFieldProps): JSX;
 
 // @public
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>>;
@@ -4477,16 +4620,28 @@ export type StateTaxQuestionVariant = 'select' | 'radio' | 'text' | 'number' | '
 // @public
 export type StateTaxValue = string | number | boolean | Date | null | undefined;
 
+// @public
+export function StateWcClassCodeField(props: StateWcClassCodeFieldProps): JSX;
+
 // Warning: (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
 //
 // @public
 export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>>;
 
 // @public
+export function StateWcCoveredField(props: StateWcCoveredFieldProps): JSX;
+
+// @public
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>;
 
 // @public
+export function Street1Field(props: Street1FieldProps): JSX;
+
+// @public
 export type Street1FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
+
+// @public
+export function Street2Field(props: Street2FieldProps): JSX;
 
 // @public
 export type Street2FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
@@ -4754,6 +4909,9 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface {
 }
 
 // @public
+export function TotalAmountField(props: TotalAmountFieldProps): JSX;
+
+// @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // Warning: (ae-missing-release-tag) "TransitionCreation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4825,7 +4983,13 @@ interface TransitionFlowProps {
 }
 
 // @public
+export function TwoJobsField(props: TwoJobsFieldProps): JSX;
+
+// @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
+
+// @public
+export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProps): JSX;
 
 // @public
 export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldProps>;
@@ -4988,13 +5152,14 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
 // @public
+export function UsedPreparerField(props: UsedPreparerFieldProps): JSX;
+
+// @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
 export function useEmployeeDetailsForm(input: UseEmployeeDetailsFormProps): HookLoadingResult | UseEmployeeDetailsFormReady;
 
-// Warning: (ae-forgotten-export) The symbol "UseEmployeeDetailsFormSharedProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
     companyId: string;
@@ -5020,6 +5185,15 @@ export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMet
 
 // @public
 export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady;
+
+// @public
+export type UseEmployeeDetailsFormSharedProps = {
+    withSelfOnboardingField?: boolean;
+    optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire;
+    defaultValues?: Partial<EmployeeDetailsFormData>;
+    validationMode?: UseFormProps['mode'];
+    shouldFocusError?: boolean;
+};
 
 // @public
 export function useEmployeeList(input: UseEmployeeListProps): UseEmployeeListResult;
@@ -5507,6 +5681,9 @@ interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Ma
 }
 
 // @public
+export function WorkAddressEffectiveDateField(props: EffectiveDateFieldProps): JSX;
+
+// @public
 export type WorkAddressErrorCode = (typeof WorkAddressErrorCodes)[keyof typeof WorkAddressErrorCodes];
 
 // @public
@@ -5521,10 +5698,8 @@ export type WorkAddressField = keyof typeof fieldValidators_6;
 
 // @public
 export interface WorkAddressFields {
-    // Warning: (ae-forgotten-export) The symbol "EffectiveDateField_2" needs to be exported by the entry point index.d.ts
-    EffectiveDate: typeof EffectiveDateField_2 | undefined;
-    // Warning: (ae-forgotten-export) The symbol "LocationField" needs to be exported by the entry point index.d.ts
-    Location: typeof LocationField;
+    EffectiveDate: typeof WorkAddressEffectiveDateField | undefined;
+    Location: typeof WorkAddressLocationField;
 }
 
 // @public
@@ -5540,6 +5715,9 @@ export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields'];
 
 // @public
 export type WorkAddressFormOutputs = WorkAddressFormData;
+
+// @public
+export function WorkAddressLocationField(props: LocationFieldProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_5" needs to be exported by the entry point index.d.ts
 //
@@ -5577,6 +5755,9 @@ export interface WorkingSplit {
     splitAmount: number | null;
     uuid: string;
 }
+
+// @public
+export function ZipField(props: ZipFieldProps): JSX;
 
 // @public
 export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation>>;

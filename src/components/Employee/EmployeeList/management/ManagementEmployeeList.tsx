@@ -10,11 +10,24 @@ import {
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * The tab currently selected on {@link ManagementEmployeeList}.
+ *
+ * @public
+ */
 export type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
+/**
+ * Props for {@link ManagementEmployeeList}.
+ *
+ * @public
+ */
 export interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+  /** The associated company identifier. */
   companyId: string
+  /** Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. */
   initialTab?: EmployeeTab
+  /** Event handler fired on flow state changes. */
   onEvent: BaseComponentInterface['onEvent']
 }
 

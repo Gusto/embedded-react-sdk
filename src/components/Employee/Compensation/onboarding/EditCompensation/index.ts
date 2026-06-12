@@ -1,1 +1,1 @@
-export { EditCompensation } from './EditCompensation'
+export { EditCompensation, type EditCompensationProps } from './EditCompensation'

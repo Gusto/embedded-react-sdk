@@ -184,6 +184,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | DELETE | `/v1/jobs/:jobId` |
 |  | POST | `/v1/jobs/:jobId/compensations` |
 |  | GET | `/v1/locations/:locationUuid/minimum_wages` |
+| **EmployeeOnboarding.JobsList** | GET | `/v1/employees/:employeeId/jobs` |
+|  | DELETE | `/v1/jobs/:jobId` |
 | **EmployeeOnboarding.FederalTaxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 | **EmployeeOnboarding.StateTaxes** | GET | `/v1/employees/:employeeUuid/state_taxes` |
