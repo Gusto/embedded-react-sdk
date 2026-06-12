@@ -4,28 +4,36 @@ description: SDK surface for running payroll — regular, off-cycle, dismissal, 
 order: 4
 ---
 
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
 The Payroll surface covers every way a company runs payroll: the regular pay-schedule flow, off-cycle payrolls (bonus or correction), the dismissal payroll for terminated employees, and the transition payroll for pay-schedule changes. All payroll types share the same execution steps; they differ only in how the payroll is created.
 
-## Payroll processing
-
-The main regular payroll flow — select a payroll, configure employee compensation, review, confirm wire transfers, and submit.
-
-[Read more →](./run-payroll/run-payroll.mdx)
-
-## Off-cycle payroll
-
-Run a payroll outside the regular pay schedule — bonus or correction — then transition into the standard execution experience.
-
-[Read more →](./off-cycle-payroll/off-cycle-payroll.mdx)
-
-## Dismissal payroll
-
-Guided final-paycheck flow for a terminated employee. Surfaces unprocessed termination pay periods and hands off to the standard payroll execution.
-
-[Read more →](./dismissal-payroll/dismissal-payroll.mdx)
-
-## Transition payroll
-
-Run payrolls that cover gaps between old and new pay schedules. Includes an alert surfaced inside the payroll landing for unprocessed transition periods.
-
-[Read more →](./transition-payroll/transition-payroll.mdx)
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Payroll processing',
+      description:
+        'The main regular payroll flow — select a payroll, configure employee compensation, review, confirm wire transfers, and submit.',
+      to: './run-payroll/run-payroll',
+    },
+    {
+      title: 'Off-cycle payroll',
+      description:
+        'Run a payroll outside the regular pay schedule — bonus or correction — then transition into the standard execution experience.',
+      to: './off-cycle-payroll/off-cycle-payroll',
+    },
+    {
+      title: 'Dismissal payroll',
+      description:
+        'Guided final-paycheck flow for a terminated employee. Surfaces unprocessed termination pay periods and hands off to the standard payroll execution.',
+      to: './dismissal-payroll/dismissal-payroll',
+    },
+    {
+      title: 'Transition payroll',
+      description:
+        'Run payrolls that cover gaps between old and new pay schedules. Includes an alert surfaced inside the payroll landing for unprocessed transition periods.',
+      to: './transition-payroll/transition-payroll',
+    },
+  ]}
+/>

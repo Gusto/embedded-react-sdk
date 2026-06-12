@@ -4,16 +4,24 @@ description: SDK surface for onboarding a new company to Gusto Embedded Payroll 
 order: 1
 ---
 
+import LinkCardGrid from '@site/src/components/LinkCardGrid'
+
 The Companies surface covers everything required to onboard a new company to Gusto Embedded Payroll and to manage ongoing company-level interactions like outstanding information requests.
 
-## Company onboarding
-
-Walks a company through everything needed before they can run payroll: industry, signatory assignment, locations, federal and state taxes, pay schedule, bank account, and document signing.
-
-[Read more →](./company-onboarding/company-onboarding.mdx)
-
-## Information requests
-
-A standalone surface for outstanding information requests Gusto has issued for a company — for example a missing tax document or identity verification artifact — and lets the user respond to them.
-
-[Read more →](./information-requests/information-requests.mdx)
+<LinkCardGrid
+  columns={2}
+  items={[
+    {
+      title: 'Company onboarding',
+      description:
+        'Walks a company through everything needed before they can run payroll: industry, signatory assignment, locations, federal and state taxes, pay schedule, bank account, and document signing.',
+      to: './company-onboarding/company-onboarding',
+    },
+    {
+      title: 'Information requests',
+      description:
+        'Standalone surface for outstanding information requests Gusto has issued for a company — for example a missing tax document or identity verification artifact — and lets the user respond to them.',
+      to: './information-requests/information-requests',
+    },
+  ]}
+/>
