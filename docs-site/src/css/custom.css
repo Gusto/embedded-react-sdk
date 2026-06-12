@@ -460,29 +460,61 @@ aside.theme-doc-sidebar-container {
 
 /* ── Tables ── */
 
+.markdownTableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
 .markdown table {
   display: table;
   width: 100%;
+  min-width: max-content;
   border-collapse: collapse;
   font-size: 0.9rem;
+  margin: 0;
+}
+
+.markdown table thead {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--ifm-table-border-color);
+}
+
+.markdown table thead tr {
+  background: transparent;
+  border: none;
 }
 
 .markdown table th {
-  background-color: var(--gusto-table-header-bg);
+  background: transparent;
   font-weight: 600;
   text-align: left;
-  padding: 12px 16px;
-  border: 1px solid var(--ifm-table-border-color);
+  padding: 10px 32px 10px 0;
+  border: none;
+  color: rgba(27, 27, 29, 0.6);
+}
+
+[data-theme='dark'] .markdown table th {
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .markdown table td {
-  padding: 12px 16px;
-  border: 1px solid var(--ifm-table-border-color);
+  padding: 14px 32px 14px 0;
+  border: none;
+  border-top: 1px solid var(--ifm-table-border-color);
   vertical-align: top;
+  line-height: 1.55;
+  max-width: 28rem;
+}
+
+.markdown table th:last-child,
+.markdown table td:last-child {
+  padding-right: 0;
 }
 
 .markdown table tr:nth-child(even) {
-  background-color: var(--ifm-table-stripe-background);
+  background: transparent;
 }
 
 /* ── Code blocks ── */

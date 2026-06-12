@@ -14,7 +14,7 @@ To get started with the Gusto Embedded React SDK, first install it from NPM via 
 
 In this case, installing via NPM:
 
-```
+```bash title="Command line"
 npm i @gusto/embedded-react-sdk
 ```
 
@@ -22,7 +22,7 @@ npm i @gusto/embedded-react-sdk
 
 The `GustoProvider` is used to configure the SDK at the application level. It must wrap the top-level component tree (typically at the root of the application) to ensure SDK components have access to the necessary configurations.
 
-```jsx
+```jsx title="App.tsx"
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 
 function App() {
