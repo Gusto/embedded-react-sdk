@@ -24,8 +24,6 @@ function MyApp() {
 }
 ```
 
-> Legacy import via `Employee.TerminationFlow` continues to work.
-
 ### Props
 
 | Name                | Type     | Description                                                     |
@@ -80,19 +78,19 @@ Employee termination components can be used to compose your own workflow, or can
 
 ### Available Subcomponents
 
-- [Employee.TerminateEmployee](#employeeterminateemployee)
-- [Employee.TerminationSummary](#employeeterminationsummary)
+- [EmployeeManagement.TerminateEmployee](#employeemanagementterminateemployee)
+- [EmployeeManagement.TerminationSummary](#employeemanagementterminationsummary)
 
-### Employee.TerminateEmployee
+### EmployeeManagement.TerminateEmployee
 
 The main termination form where users specify the last day of work and select how to process the final payroll.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.TerminateEmployee
+    <EmployeeManagement.TerminateEmployee
       companyId="your-company-id"
       employeeId="employee-id"
       onEvent={() => {}}
@@ -131,16 +129,16 @@ function MyComponent() {
   - Include in their regular payroll
   - I'll handle it another way
 
-### Employee.TerminationSummary
+### EmployeeManagement.TerminationSummary
 
 Displays termination details and provides actions for managing the termination (edit, cancel, run payroll). Also includes an offboarding checklist for post-termination tasks.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.TerminationSummary
+    <EmployeeManagement.TerminationSummary
       companyId="your-company-id"
       employeeId="employee-id"
       payrollOption="dismissalPayroll"

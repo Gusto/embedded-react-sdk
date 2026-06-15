@@ -47,8 +47,6 @@ Like Employee onboarding, self-onboarding components can be used to compose your
 - [EmployeeOnboarding.EmploymentEligibility](#employeeonboardingemploymenteligibility)
 - [EmployeeOnboarding.OnboardingSummary](#employee-onboarding-summary)
 
-> Legacy imports via `Employee.*` (e.g. `Employee.Landing`) continue to work.
-
 ### EmployeeOnboarding.Landing
 
 Displays guidance on what to expect from the workflow and what information the employee will be required to have on hand and provide.
