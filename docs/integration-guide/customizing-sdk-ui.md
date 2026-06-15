@@ -18,7 +18,7 @@ Theming sets the visual baseline for all of the SDK UI, and it is recommended to
 
 Theming allows you to set typography and color styles universally and change the entire look of the UI to match your brand by specifying a limited set of values. For example:
 
-```
+```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 

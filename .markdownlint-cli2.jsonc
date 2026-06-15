@@ -1,0 +1,40 @@
+{
+  // Markdownlint config for the partner-facing docs at docs/**/*.md and the
+  // Docusaurus site source under docs-site/**/*.md(x). Rules are tuned to
+  // match existing conventions:
+  //   - YAML frontmatter supplies the page title; bodies still open with an
+  //     `# H1` so the raw .md renders on GitHub. We tell MD025 to ignore the
+  //     frontmatter title so the in-body H1 is the only "top-level" heading.
+  //   - Lists use `-`, code fences carry a language tag
+  //   - Inline HTML is allowed because MDX uses it
+  //   - Long prose lines are intentional; no hard wrap is enforced
+  //   - TypeDoc-generated pages legitimately repeat "Parameters"/"Returns"
+  //     and the endpoint reference uses a `**Field**` pattern as in-row
+  //     labels, so MD024/MD036/MD060 are disabled
+  "config": {
+    "default": true,
+    "MD003": { "style": "atx" },
+    "MD004": { "style": "dash" },
+    "MD013": false,
+    "MD024": false,
+    "MD025": { "front_matter_title": "" },
+    "MD033": false,
+    "MD034": false,
+    "MD036": false,
+    "MD040": true,
+    "MD041": false,
+    "MD046": { "style": "fenced" },
+    "MD060": false
+  },
+  "globs": ["docs/**/*.md", "docs-site/**/*.md", "docs-site/**/*.mdx"],
+  "ignores": [
+    "**/node_modules/**",
+    "docs/api/**",
+    "docs/reference/endpoint-reference.md",
+    "docs/test-fests/**",
+    "docs-site/build/**",
+    "docs-site/.docusaurus/**",
+    "docs-site/versioned_docs/**",
+    "CHANGELOG.md"
+  ]
+}

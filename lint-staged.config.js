@@ -4,7 +4,10 @@ export default {
     `npm run format:staged -- ${filenames.join(' ')}`,
     `npm run lint:staged -- ${filenames.join(' ')}`,
   ],
-  '*.md': filenames => [`npm run format:staged -- ${filenames.join(' ')}`],
+  '*.md': filenames => [
+    `npm run format:staged -- ${filenames.join(' ')}`,
+    `npx markdownlint-cli2 ${filenames.map(f => `"${f}"`).join(' ')}`,
+  ],
   'src/components/Common/UI/**/*Types.ts': () => [
     'npm run adapter:docs:generate',
     'npm run format:staged -- docs/component-adapter/component-inventory.md',
