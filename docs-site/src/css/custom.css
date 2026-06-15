@@ -250,9 +250,15 @@ html {
 .navbar__logo {
   display: flex;
   align-items: center;
+  color: black;
 }
 
-.navbar__logo img {
+[data-theme='dark'] .navbar__logo {
+  color: white;
+}
+
+.navbar__logo img,
+.navbar__logo svg {
   display: block;
   height: 22px;
   width: auto;
