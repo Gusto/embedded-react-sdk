@@ -11,7 +11,8 @@
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "typedoc": "typedoc --options typedoc.config.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "docs:version": "docusaurus docs:version"
   },
   "dependencies": {
     "@docusaurus/core": "^3.7.0",
