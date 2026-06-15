@@ -190,14 +190,7 @@ jobs:
             fi
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            # HUSKY=0 skips lint-staged, which is safe here because
-            # docs:api:generate already ran prettier on docs/api with the
-            # correct config (including the compact-markdown-table plugin).
-            # lint-staged passes absolute paths to prettier, so the plugin's
-            # override pattern (docs/api/**/*.md) doesn't match and it formats
-            # without the plugin — producing output that differs from what
-            # docs:api:generate committed, causing an infinite diff cycle.
-            HUSKY=0 git commit -m "chore: update derived files"
+            git commit -m "chore: update derived files"
             git push
           fi
 

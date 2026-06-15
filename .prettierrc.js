@@ -13,13 +13,5 @@ const config = {
   requirePragma: false,
   insertPragma: false,
   proseWrap: 'preserve',
-  overrides: [
-    {
-      files: 'docs/api/**/*.md',
-      options: {
-        plugins: ['prettier-plugin-compact-markdown-table'],
-      },
-    },
-  ],
 }
 export default config
