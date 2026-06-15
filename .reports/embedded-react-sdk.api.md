@@ -1522,6 +1522,9 @@ export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PaySch
 // @public (undocumented)
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
 
+// @internal (undocumented)
+function Dashboard(input: DashboardProps & BaseComponentInterface): JSX;
+
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
@@ -1543,6 +1546,16 @@ const DashboardFlow: (input: DashboardFlowProps) => JSX;
 // @public
 interface DashboardFlowProps extends BaseComponentInterface {
     employeeId: string;
+}
+
+// @internal (undocumented)
+interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
+    // (undocumented)
+    employeeId: string;
+    // Warning: (ae-forgotten-export) The symbol "DashboardTab" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    selectedTab?: DashboardTab;
 }
 
 // Warning: (ae-missing-release-tag) "DateOfBirthFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2042,7 +2055,9 @@ declare namespace EmployeeManagement {
         DocumentsCardProps,
         DocumentManagerProps,
         DashboardFlow,
+        Dashboard,
         DashboardFlowProps,
+        DashboardProps,
         HomeAddress,
         HomeAddressCard,
         HomeAddressEditForm,
