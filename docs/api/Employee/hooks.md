@@ -500,6 +500,7 @@ map an error code to a user-facing message.
 
 ```tsx
 import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
+
 ;<Fields.Rate
   label="Compensation amount"
   validationMessages={{
@@ -904,6 +905,7 @@ map an error code to a user-facing message.
 
 ```tsx
 import { JobErrorCodes } from '@gusto/embedded-react-sdk'
+
 ;<Fields.Title
   label="Job title"
   validationMessages={{ [JobErrorCodes.REQUIRED]: 'Job title is required' }}

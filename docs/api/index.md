@@ -533,6 +533,7 @@ a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
 
 ```tsx
 import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+
 ;<EmployeeOnboarding
   companyId={companyId}
   onEvent={(type, data) => {
