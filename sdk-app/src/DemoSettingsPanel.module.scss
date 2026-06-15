@@ -306,12 +306,42 @@
   background: var(--color-hover-bg);
 }
 
+.optionPrimaryRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
 .optionPrimary {
   font-size: 0.8125rem;
   color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.optionBadge {
+  flex: 0 0 auto;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.625rem;
+  line-height: 1;
+}
+
+.optionBadgeProcessed {
+  background: var(--color-badge-build-bg);
+  color: var(--color-badge-build-text);
+}
+
+.optionBadgeUnprocessed {
+  background: var(--color-badge-demo-bg);
+  color: var(--color-badge-demo-text);
 }
 
 .optionSecondary {
