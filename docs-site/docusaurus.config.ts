@@ -78,9 +78,10 @@ const config: Config = {
           exclude: ['test-fests/**'],
           ...(hasVersions && {
             lastVersion,
-            versions: {
-              current: { label: 'Next (unreleased)', path: 'next' },
-            },
+            includeCurrentVersion: false,
+            versions: Object.fromEntries(
+              versions.map(version => [version, { banner: 'none' as const }]),
+            ),
           }),
         },
         blog: false,
