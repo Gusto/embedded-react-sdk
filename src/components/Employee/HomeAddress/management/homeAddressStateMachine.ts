@@ -12,6 +12,7 @@ const returnToCard = reduce(
   }),
 )
 
+/** @internal */
 export const homeAddressStateMachine = {
   card: state<MachineTransition>(
     transition(

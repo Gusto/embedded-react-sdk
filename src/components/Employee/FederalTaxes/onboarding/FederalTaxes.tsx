@@ -17,12 +17,36 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Props for {@link FederalTaxes}.
+ *
+ * @public
+ */
 export interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Pre-fill form values. Server data takes precedence when the employee already has values on file. */
   defaultValues?: Partial<FederalTaxesFormData>
+  /** Callback invoked when the block emits an event. See the events table on {@link FederalTaxes} for the available event types and payloads. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/**
+ * Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
+ *
+ * @remarks
+ * The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/federalTaxes/updated` | Fired after the form is saved | The updated `EmployeeFederalTax` entity |
+ * | `employee/federalTaxes/done` | Fired after a successful save so the parent flow can advance | — |
+ *
+ * @param props - See {@link FederalTaxesProps}.
+ * @returns The federal taxes onboarding step.
+ * @public
+ * @group Block Components
+ */
 export function FederalTaxes({
   FallbackComponent,
   ...props

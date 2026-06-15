@@ -31,6 +31,7 @@ interface ListViewProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function ListView({ employeeId, isAdmin, onEvent }: ListViewProps) {
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethodForm = usePaymentMethodForm({ employeeId })

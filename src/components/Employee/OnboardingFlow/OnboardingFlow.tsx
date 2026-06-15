@@ -10,13 +10,72 @@ import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
+/**
+ * Props for {@link OnboardingFlow}.
+ *
+ * @public
+ */
 export interface OnboardingFlowProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** Default values for individual flow step components. */
   defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>
+  /**
+   * When true, presents the self-onboarding toggle allowing the admin to opt
+   * the employee into self-onboarding. When false, the option to self-onboard
+   * is not available. Defaults to `true`.
+   */
   isSelfOnboardingEnabled?: boolean
+  /**
+   * When true, enables the Employee Documents step in the onboarding flow,
+   * allowing the admin to configure I-9 document requirements. Defaults to
+   * `false`.
+   */
   withEmployeeI9?: boolean
 }
 
+/**
+ * Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
+ *
+ * @remarks
+ * Renders a multi-step experience that collects every piece of information
+ * required to add an employee to payroll. Begins on the employee list and
+ * transitions into the onboarding execution flow when "Add employee" or a
+ * row's "Edit"/"Review" action is invoked; returning from the execution flow
+ * surfaces the list again. The flow is driven by an internal state machine
+ * and wraps each step in error and suspense boundaries.
+ *
+ * Each step of the flow is also exported as a standalone block — see
+ * {@link EmployeeList}, {@link Profile}, {@link Compensation},
+ * {@link FederalTaxes}, {@link StateTaxes}, {@link PaymentMethod},
+ * {@link Deductions}, {@link EmployeeDocuments}, and
+ * {@link OnboardingSummary} — for composing a custom workflow when this
+ * orchestration is the wrong fit.
+ *
+ * The flow forwards every event emitted by its sub-components to `onEvent`;
+ * see the events table on each sub-component for the full set of events and
+ * payloads observable from this flow.
+ *
+ * @param props - See {@link OnboardingFlowProps}.
+ * @returns The multi-step onboarding flow with internal navigation between the employee list and the per-step screens.
+ * @public
+ * @group Flow Components
+ *
+ * @example
+ * ```tsx
+ * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <EmployeeOnboarding.OnboardingFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       withEmployeeI9
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export const OnboardingFlow = ({
   companyId,
   onEvent,

@@ -8,18 +8,29 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link WorkAddressCard}.
+ *
+ * @public
+ */
 export interface WorkAddressCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the card's Manage button is clicked. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Work address" card. Owns its own data fetch via
- * `useEmployeeWorkAddressSummary` and emits
- * `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED` when the Manage button
- * is clicked. The card has no alert API — alert rendering is the
- * orchestrator's responsibility (block's `WorkAddressCardContextual` for
- * standalone consumption, dashboard chrome for dashboard consumption).
+ * Standalone employee work address summary card.
+ *
+ * @remarks
+ * Fetches the employee's active work address and renders it alongside a Manage button.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+ *
+ * @public
  */
 export function WorkAddressCard(props: WorkAddressCardProps) {
   return (

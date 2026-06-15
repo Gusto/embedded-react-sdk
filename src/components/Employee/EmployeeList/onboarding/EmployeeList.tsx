@@ -5,7 +5,13 @@ import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/compo
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
+/**
+ * Props for {@link EmployeeList}.
+ *
+ * @public
+ */
+export interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
+  /** The associated company identifier. */
   companyId: string
 }
 
@@ -66,6 +72,22 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
   )
 }
 
+/**
+ * Renders a paginated list of a company's employees with per-row onboarding actions (edit,
+ * delete, review, cancel self-onboarding) and an "Add employee" entry point.
+ *
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/create` | Fired when the user clicks "Add employee". | — |
+ * | `employee/update` | Fired when the user selects "Edit" or "Review" on a row. | `{ employeeId: string, onboardingStatus?: OnboardingStatus }` |
+ * | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
+ * | `employee/onboardingStatus/updated` | Fired after the "Review" or "Cancel self-onboarding" action updates an employee's onboarding status. | The updated `EmployeeOnboardingStatus` record |
+ * | `employee/onboarding/done` | Fired when the user clicks the skip/done control to leave the onboarding employee list. | — |
+ *
+ * @public
+ */
 export function EmployeeList({
   FallbackComponent,
   ...props

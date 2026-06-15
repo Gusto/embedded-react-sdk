@@ -10,18 +10,33 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link StateTaxesCard}.
+ *
+ * @public
+ */
 export interface StateTaxesCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the Edit button is clicked. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "State taxes" card. Owns its own data fetch via
- * `useStateTaxesSummary` and emits
- * `EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED` when the Edit
- * button is clicked. The Edit button is hidden when no state on
- * record has any tax-withholding questions (e.g. WA), matching the
- * product rule that a state with no income tax has nothing to edit.
+ * Standalone read-only summary card showing an employee's per-state tax
+ * withholding answers. Fetches its own data and surfaces an Edit button
+ * that emits an event for the orchestrator to swap in the edit form.
+ *
+ * @remarks
+ * The Edit button is hidden when no state on record has any tax-withholding
+ * questions (e.g. states with no income tax), since there is nothing to edit.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |
+ *
+ * @param props - The component props.
+ * @public
  */
 export function StateTaxesCard(props: StateTaxesCardProps) {
   return (

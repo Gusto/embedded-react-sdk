@@ -45,6 +45,7 @@ type EventPayloads = {
   }
 }
 
+/** @internal */
 export const terminationBreadcrumbNodes: BreadcrumbNodes = {
   form: {
     parent: null,
@@ -118,6 +119,7 @@ const summaryBreadcrumbTransition = transition(
   reduce(toSummaryReducer),
 )
 
+/** @internal */
 export const terminationMachine = {
   form: state<MachineTransition>(
     transition(

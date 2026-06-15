@@ -2,6 +2,7 @@ export { useEmployeeDetailsForm } from './useEmployeeDetailsForm'
 export type {
   EmployeeDetailsSubmitCallbacks,
   EmployeeDetailsOptionalFieldsToRequire,
+  UseEmployeeDetailsFormSharedProps,
   UseEmployeeDetailsFormProps,
   UseEmployeeDetailsFormResult,
   UseEmployeeDetailsFormReady,
@@ -16,11 +17,21 @@ export {
   type EmployeeDetailsFormOutputs,
   type EmployeeDetailsField,
 } from './employeeDetailsSchema'
+export {
+  FirstNameField,
+  MiddleInitialField,
+  LastNameField,
+  EmailField,
+  DateOfBirthField,
+  SsnField,
+  SelfOnboardingField,
+} from './fields'
 export type {
   RequiredValidation as EmployeeDetailsRequiredValidation,
   NameValidation,
   EmailValidation,
   SsnValidation,
+  SsnRequiredValidation,
   FirstNameFieldProps,
   MiddleInitialFieldProps,
   LastNameFieldProps,
@@ -29,3 +40,4 @@ export type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
 } from './fields'
+export type { EmployeeDetailsFields } from './useEmployeeDetailsForm'

@@ -5,6 +5,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  * Presentational confirm dialog for deleting a bank account. All copy is
  * passed in by the caller so each consumer owns its own translation strings
  * — partner overrides on one flow's namespace won't leak into another.
+ *
+ * @internal
  */
 export function DeleteBankAccountDialog({
   pendingDeleteAccount,

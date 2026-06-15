@@ -16,20 +16,33 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
+/**
+ * Props for {@link DeductionsCard}.
+ *
+ * @public
+ */
 export interface DeductionsCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Callback invoked when the card emits an event. See the events table on {@link DeductionsCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Deductions" management card. Owns its own data fetch via
- * `useDeductionsList`, plus the delete confirm dialog, and emits
- * `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED` /
- * `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED` /
- * `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED` events. The card has no
- * alert API — alert rendering is the orchestrator's responsibility (block's
- * `DeductionsCardContextual` for standalone consumption, dashboard chrome
- * for dashboard consumption).
+ * Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction.
+ *
+ * @remarks
+ * Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders {@link DeductionsEditForm} (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use {@link Deductions} instead.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked | `{ employeeId: string }` |
+ * | `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction | The matching `Garnishment` |
+ * | `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment` |
+ *
+ * @param props - See {@link DeductionsCardProps}.
+ * @returns The rendered deductions card.
+ * @public
  */
 export function DeductionsCard(props: DeductionsCardProps) {
   return (

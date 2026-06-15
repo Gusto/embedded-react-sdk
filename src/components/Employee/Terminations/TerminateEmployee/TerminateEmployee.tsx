@@ -23,16 +23,69 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+/**
+ * Props for {@link TerminateEmployee}.
+ *
+ * @public
+ */
 export interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Terminations.TerminateEmployee'> {
+  /** The employee identifier to terminate. */
   employeeId: string
+  /** The associated company identifier. */
   companyId: string
 }
 
+/**
+ * Form values collected by {@link TerminateEmployee}.
+ *
+ * @public
+ */
 export interface TerminateEmployeeFormData {
+  /** The effective date of the termination — the employee's last day of work. */
   lastDayOfWork: Date
+  /** How to process the employee's final paycheck. */
   payrollOption: PayrollOption
 }
 
+/**
+ * Standalone form for capturing an employee's termination details — last day of work and how to process final payroll.
+ *
+ * @remarks
+ * The main termination form used inside {@link TerminationFlow}. Detects existing
+ * terminations and pre-populates for editing when one is active, or routes to
+ * the summary view (via the `employee/termination/viewSummary` event) when the
+ * employee is already terminated.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+ * | `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+ * | `employee/termination/done` | Fired when the termination form is completed | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
+ * | `employee/termination/viewSummary` | Fired when redirecting to view an existing termination | `{ employeeId: string, effectiveDate: string }` |
+ * | `employee/termination/payrollCreated` | Fired after a dismissal-payroll period was successfully created | `{ payrolls: PayrollUnprocessed[] }` |
+ * | `employee/termination/payrollFailed` | Fired if creating a dismissal payroll fails | `{ employeeId: string, error: unknown }` |
+ * | `CANCEL` | Fired when the user clicks Cancel | — |
+ *
+ * @param props - See {@link TerminateEmployeeProps}.
+ * @returns The termination form.
+ * @public
+ * @group Block Components
+ *
+ * @example
+ * ```tsx
+ * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <EmployeeManagement.TerminateEmployee
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function TerminateEmployee(props: TerminateEmployeeProps) {
   return (
     <BaseComponent {...props}>

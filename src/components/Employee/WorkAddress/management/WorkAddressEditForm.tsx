@@ -14,8 +14,15 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Props for {@link WorkAddressEditForm}.
+ *
+ * @public
+ */
 export interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on form save, cancel, and delete actions. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -61,6 +68,19 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
   )
 }
 
+/**
+ * Standalone employee work address edit form for creating, updating, and deleting addresses.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/workAddress/created` | A new work address was created | {@link EmployeeWorkAddress} |
+ * | `employee/management/workAddress/updated` | An existing work address was updated | {@link EmployeeWorkAddress} |
+ * | `employee/management/workAddress/deleted` | A work address was deleted | {@link EmployeeWorkAddress} |
+ * | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
+ *
+ * @public
+ */
 export function WorkAddressEditForm({
   FallbackComponent,
   ...props

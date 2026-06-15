@@ -7,6 +7,8 @@ import type { FederalTaxesViewDictionary } from '../shared'
  * `Employee.FederalTaxes` namespace. Partner overrides supplied through the
  * onboarding block's `dictionary` prop flow into the view text via `t(...)`
  * resolution at render time.
+ *
+ * @internal
  */
 export function useOnboardingFederalTaxesViewDictionary(): FederalTaxesViewDictionary {
   const { t } = useTranslation('Employee.FederalTaxes')

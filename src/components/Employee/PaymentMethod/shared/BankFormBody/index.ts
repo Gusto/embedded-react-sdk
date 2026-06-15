@@ -1,1 +1,1 @@
-export { BankFormBody, type BankFormBodyProps, type BankFormBodyDictionary } from './BankFormBody'
+export { BankFormBody, type BankFormBodyDictionary } from './BankFormBody'

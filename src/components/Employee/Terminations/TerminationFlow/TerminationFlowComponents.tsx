@@ -13,17 +13,33 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link TerminationFlow}.
+ *
+ * @public
+ */
 export interface TerminationFlowProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** The employee identifier to terminate. */
   employeeId: string
 }
 
+/**
+ * Alert payload surfaced by {@link TerminationFlow} on selected events (e.g. `employee/termination/cancelled`).
+ *
+ * @public
+ */
 export type TerminationFlowAlert = {
+  /** Visual severity of the alert. */
   type: 'error' | 'info' | 'success'
+  /** Alert title. */
   title: string
+  /** Optional alert body content. */
   content?: ReactNode
 }
 
+/** @internal */
 export interface TerminationFlowContextInterface extends FlowContextInterface {
   companyId: string
   employeeId: string
@@ -32,6 +48,7 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
   alerts?: TerminationFlowAlert[]
 }
 
+/** @internal */
 export function TerminateEmployeeContextual() {
   const { companyId, employeeId, onEvent, alerts } = useFlow<TerminationFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -53,6 +70,7 @@ export function TerminateEmployeeContextual() {
   )
 }
 
+/** @internal */
 export function TerminationSummaryContextual() {
   const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
@@ -84,6 +102,7 @@ export function TerminationSummaryContextual() {
   )
 }
 
+/** @internal */
 export function DismissalFlowContextual() {
   const { companyId, employeeId, payrollUuid, onEvent } = useFlow<TerminationFlowContextInterface>()
 
@@ -97,6 +116,7 @@ export function DismissalFlowContextual() {
   )
 }
 
+/** @internal */
 export function PayrollLandingContextual() {
   const { companyId, onEvent } = useFlow<TerminationFlowContextInterface>()
 

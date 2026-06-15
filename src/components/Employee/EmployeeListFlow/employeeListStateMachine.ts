@@ -33,6 +33,7 @@ const returnToList = reduce(
   }),
 )
 
+/** @internal */
 export const employeeListStateMachine = {
   list: state<MachineTransition>(
     transition(

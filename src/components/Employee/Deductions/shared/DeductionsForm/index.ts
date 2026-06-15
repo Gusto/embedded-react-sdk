@@ -1,5 +1,1 @@
-export {
-  DeductionsForm,
-  type DeductionsFormProps,
-  type DeductionsFormDictionary,
-} from './DeductionsForm'
+export { DeductionsForm, type DeductionsFormDictionary } from './DeductionsForm'

@@ -8,6 +8,13 @@ import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by the employee details form schema. Map
+ * these codes to localized copy in `validationMessages` when composing the
+ * hook.
+ *
+ * @public
+ */
 export const EmployeeDetailsErrorCodes = {
   REQUIRED: 'REQUIRED',
   INVALID_NAME: 'INVALID_NAME',
@@ -16,6 +23,12 @@ export const EmployeeDetailsErrorCodes = {
   EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the employee details form
+ * schema.
+ *
+ * @public
+ */
 export type EmployeeDetailsErrorCode =
   (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes]
 
@@ -46,11 +59,27 @@ const fieldValidators = {
   selfOnboarding: z.boolean(),
 }
 
+/**
+ * Field names accepted by the employee details form.
+ *
+ * @public
+ */
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
 
+/**
+ * Shape of the values managed by the employee details form.
+ *
+ * @public
+ */
 export type EmployeeDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/**
+ * Shape of the validated values produced by the employee details form on
+ * submit.
+ *
+ * @public
+ */
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -66,16 +95,24 @@ const requiredFieldsConfig = {
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
+/**
+ * Keys of optional employee details fields that can be promoted to required
+ * via the hook's `optionalFieldsToRequire` option.
+ *
+ * @public
+ */
 export type EmployeeDetailsOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
+/** @internal */
 interface EmployeeDetailsSchemaOptions {
   mode?: 'create' | 'update'
   optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
   hasSsn?: boolean
 }
 
+/** @internal */
 export function createEmployeeDetailsSchema(options: EmployeeDetailsSchemaOptions = {}) {
   const { mode = 'create', optionalFieldsToRequire, hasSsn = false } = options
 

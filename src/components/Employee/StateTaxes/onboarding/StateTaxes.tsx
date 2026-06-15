@@ -12,13 +12,35 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Props for {@link StateTaxes}.
+ *
+ * @public
+ */
 export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+  /** The associated employee identifier. */
   employeeId: string
   /** Render admin-only questions and submit them. Defaults to `false`. */
   isAdmin?: boolean
+  /** Event handler fired when the form is submitted successfully. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/**
+ * Onboarding step that collects an employee's per-state tax withholding
+ * answers. The set of fields is driven by the API response for each state
+ * on record.
+ *
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+ * | `employee/stateTaxes/done` | Onboarding step has finished — emitted immediately after `updated` | — |
+ *
+ * @param props - The component props.
+ * @public
+ */
 export function StateTaxes({
   FallbackComponent,
   ...props

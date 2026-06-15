@@ -22,6 +22,7 @@ const returnToCardWithAlert = (alert: StateTaxesSuccessAlertCode) =>
     }),
   )
 
+/** @internal */
 export const stateTaxesStateMachine = {
   card: state<MachineTransition>(
     transition(
