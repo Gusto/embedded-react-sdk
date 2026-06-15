@@ -10,7 +10,65 @@ import {
 } from './design/registry'
 import type { AppMode } from './useAppMode'
 import styles from './Sidebar.module.scss'
-import CaretRightIcon from '@/assets/icons/caret-right.svg?react'
+
+function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  )
+}
+
+function PanelLeftCloseIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+      <path d="m16 15-3-3 3-3" />
+    </svg>
+  )
+}
+
+function PanelLeftOpenIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+      <path d="m14 9 3 3-3 3" />
+    </svg>
+  )
+}
 
 interface SidebarProps {
   mode: AppMode
@@ -82,7 +140,7 @@ function CategorySection({
         }}
       >
         <div className={styles.categoryTitle}>
-          <CaretRightIcon
+          <ChevronRightIcon
             className={`${styles.categoryArrow} ${collapsed ? styles.categoryArrowCollapsed : ''}`}
           />
           {displayCategory}
@@ -153,7 +211,7 @@ export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }:
           aria-label="Show components sidebar"
           title="Show components sidebar"
         >
-          <span>▸</span>
+          <PanelLeftOpenIcon />
         </button>
       </aside>
     )
@@ -178,7 +236,7 @@ export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }:
             aria-label="Hide sidebar"
             title="Hide sidebar"
           >
-            <span>◂</span>
+            <PanelLeftCloseIcon />
           </button>
         </div>
       </div>
