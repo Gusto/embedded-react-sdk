@@ -12,9 +12,9 @@ Headless hook for creating or updating a compensation row on a job — FLSA clas
 
 #### Parameters
 
-| Parameter | Type                                                    | Description                                                                                                                                                                                          |
-| --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `input`   | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
+|Parameter|Type|Description|
+|-|-|-|
+|`input`|[`UseCompensationFormProps`](#usecompensationformprops)|[UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders.|
 
 #### Returns
 
@@ -28,12 +28,12 @@ Companion hook to `useJobForm`. Jobs and their compensations are separate
 entities in the Gusto API and this hook focuses exclusively on the
 compensation side. Presence of `compensationId` selects the verb:
 
-| Hook config / submit options                                               | Mode   | API call                                                              |
-| -------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------- |
-| `{ jobId, compensationId }`                                                | update | `PUT /v1/compensations/:compensationId` (with `version`)              |
-| `{ jobId }` (no `compensationId`)                                          | create | `POST /v1/jobs/:jobId/compensations`                                  |
-| `{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }` | update | `PUT /v1/compensations/:compensationId` (with the supplied `version`) |
-| `{ employeeId }` + submit `{ jobId }` (no `compensationId`)                | create | `POST /v1/jobs/:options.jobId/compensations`                          |
+|Hook config / submit options|Mode|API call|
+|-|-|-|
+|`{ jobId, compensationId }`|update|`PUT /v1/compensations/:compensationId` (with `version`)|
+|`{ jobId }` (no `compensationId`)|create|`POST /v1/jobs/:jobId/compensations`|
+|`{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }`|update|`PUT /v1/compensations/:compensationId` (with the supplied `version`)|
+|`{ employeeId }` + submit `{ jobId }` (no `compensationId`)|create|`POST /v1/jobs/:options.jobId/compensations`|
 
 Use the submit-options form for the **onboarding stub-fill** chain: after
 `useJobForm.actions.onSubmit()` creates a job, capture the auto-created
@@ -101,15 +101,15 @@ for its visibility rule. Always null-check conditional fields (e.g.
 
 #### Properties
 
-| Property               | Type                                    | Description                                                                                                                                                          |
-| ---------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AdjustForMinimumWage` | ((`props`) => `Element`) \| `undefined` | Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
-| `EffectiveDate`        | ((`props`) => `Element`) \| `undefined` | Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode.                |
-| `FlsaStatus`           | ((`props`) => `Element`) \| `undefined` | FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary).                                      |
-| `MinimumWageId`        | ((`props`) => `Element`) \| `undefined` | Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked.                                                                    |
-| `PaymentUnit`          | ((`props`) => `Element`) \| `undefined` | Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`).                                                             |
-| `Rate`                 | ((`props`) => `Element`) \| `undefined` | Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate.                                                |
-| `Title`                | (`props`) => `Element`                  | Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it.                                                             |
+|Property|Type|Description|
+|-|-|-|
+|`AdjustForMinimumWage`|((`props`) => `Element`) \| `undefined`|Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits.|
+|`EffectiveDate`|((`props`) => `Element`) \| `undefined`|Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode.|
+|`FlsaStatus`|((`props`) => `Element`) \| `undefined`|FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary).|
+|`MinimumWageId`|((`props`) => `Element`) \| `undefined`|Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked.|
+|`PaymentUnit`|((`props`) => `Element`) \| `undefined`|Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`).|
+|`Rate`|((`props`) => `Element`) \| `undefined`|Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate.|
+|`Title`|(`props`) => `Element`|Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it.|
 
 ---
 
@@ -129,12 +129,12 @@ stub.
 
 #### Properties
 
-| Property               | Type     | Description                                                                                                                                                                                                                                                                                                                                                         |
-| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `compensationId?`      | `string` | Override compensationId — when present, forces update (PUT) routing regardless of hook construction.                                                                                                                                                                                                                                                                |
-| `compensationVersion?` | `string` | Compensation version for optimistic locking on PUT. Required when forcing update routing post-create (e.g. updating the auto-created stub returned from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the version from its cached `currentCompensation`.                                                                                             |
-| `effectiveDate?`       | `string` | Supply `effectiveDate` at submit time. When `withEffectiveDateField` is `true`, this overrides the form's value. When `withEffectiveDateField` is `false`, this is the only way to put `effective_date` on the wire — the form value is not read in that mode (matching the options-only convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`). |
-| `jobId?`               | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain).                                                                                                                                                                                                 |
+|Property|Type|Description|
+|-|-|-|
+|`compensationId?`|`string`|Override compensationId — when present, forces update (PUT) routing regardless of hook construction.|
+|`compensationVersion?`|`string`|Compensation version for optimistic locking on PUT. Required when forcing update routing post-create (e.g. updating the auto-created stub returned from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the version from its cached `currentCompensation`.|
+|`effectiveDate?`|`string`|Supply `effectiveDate` at submit time. When `withEffectiveDateField` is `true`, this overrides the form's value. When `withEffectiveDateField` is `false`, this is the only way to put `effective_date` on the wire — the form value is not read in that mode (matching the options-only convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`).|
+|`jobId?`|`string`|Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain).|
 
 ---
 
@@ -156,16 +156,16 @@ the same submit chain.
 
 #### Properties
 
-| Property                   | Type                                                                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `compensationId?`          | `string`                                                                      | Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations).                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `defaultValues?`           | `Partial`\<[`CompensationFormData`](#compensationformdata)\>                  | Pre-fill form values. Server data takes precedence on update mode.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `employeeId?`              | `string`                                                                      | UUID of the employee whose compensation is being created or edited. Drives data fetching for derived helpers (jobs list, work address, minimum wages). May be omitted when composing alongside an employee-creation step.                                                                                                                                                                                                                                                                                                                                                              |
-| `jobId?`                   | `string`                                                                      | The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation.                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `optionalFieldsToRequire?` | [`CompensationOptionalFieldsToRequire`](#compensationoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [CompensationOptionalFieldsToRequire](#compensationoptionalfieldstorequire).                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `shouldFocusError?`        | `boolean`                                                                     | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`.                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `validationMode?`          | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`        | Passed through to react-hook-form. Defaults to `'onSubmit'`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `withEffectiveDateField?`  | `boolean`                                                                     | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
+|Property|Type|Description|
+|-|-|-|
+|`compensationId?`|`string`|Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations).|
+|`defaultValues?`|`Partial`\<[`CompensationFormData`](#compensationformdata)\>|Pre-fill form values. Server data takes precedence on update mode.|
+|`employeeId?`|`string`|UUID of the employee whose compensation is being created or edited. Drives data fetching for derived helpers (jobs list, work address, minimum wages). May be omitted when composing alongside an employee-creation step.|
+|`jobId?`|`string`|The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation.|
+|`optionalFieldsToRequire?`|[`CompensationOptionalFieldsToRequire`](#compensationoptionalfieldstorequire)|Override fields that are optional on a given mode to be required. See [CompensationOptionalFieldsToRequire](#compensationoptionalfieldstorequire).|
+|`shouldFocusError?`|`boolean`|Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`.|
+|`validationMode?`|`"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`|Passed through to react-hook-form. Defaults to `'onSubmit'`.|
+|`withEffectiveDateField?`|`boolean`|When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`.|
 
 ---
 
@@ -188,31 +188,31 @@ that flip with form input live under `status.*`.
 
 #### Properties
 
-| Property                                      | Type                                                                                                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `actions`                                     | `object`                                                                                                         | Submit actions exposed by the hook.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `actions.onSubmit`                            | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `data`                                        | `object`                                                                                                         | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `data.compensation`                           | `Compensation` \| `null`                                                                                         | The compensation row loaded for update; `null` in create mode.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `data.currentJob`                             | `Job` \| `null`                                                                                                  | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `data.hasPendingFutureCompensation`           | `boolean`                                                                                                        | True when at least one future-dated compensation already exists for this job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `data.maximumEffectiveDate`                   | `string` \| `null`                                                                                               | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `data.minimumEffectiveDate`                   | `string` \| `null`                                                                                               | Lower bound for `effectiveDate` (typically the parent job's hire date).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `data.minimumWages`                           | `MinimumWage`[]                                                                                                  | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `errorHandling`                               | [`HookErrorHandling`](../index.md#hookerrorhandling)                                                             | Error state and recovery actions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `form`                                        | `object`                                                                                                         | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `form.Fields`                                 | [`CompensationFormFields`](#compensationformfields)                                                              | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `form.fieldsMetadata`                         | [`FieldsMetadata`](../index.md#fieldsmetadata)                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `form.getFormSubmissionValues`                | () => `Record`\<`string`, `unknown`\> \| `undefined`                                                             | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `form.hookFormInternals`                      | [`HookFormInternals`](../index.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\>          | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `isLoading`                                   | `false`                                                                                                          | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `status`                                      | `object`                                                                                                         | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `status.isPending`                            | `boolean`                                                                                                        | `true` while a create or update mutation is in flight.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `status.mode`                                 | `"create"` \| `"update"`                                                                                         | Reflects whether the next submit will POST a new compensation or PUT an existing one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `status.showCommissionFederalMinimumPayAlert` | `boolean`                                                                                                        | True when the current `flsaStatus` is `COMMISSION_ONLY_EXEMPT` (Commission Only/No Overtime). Render the federal-minimum-pay warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `status.showCommissionMinimumWageAlert`       | `boolean`                                                                                                        | True when the current `flsaStatus` is `COMMISSION_ONLY_NONEXEMPT` (Commission Only/Eligible for overtime). Render the local-minimum-wage warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `status.showOwnerSalaryAlert`                 | `boolean`                                                                                                        | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `status.willDeleteSecondaryJobs`              | `boolean`                                                                                                        | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
+|Property|Type|Description|
+|-|-|-|
+|`actions`|`object`|Submit actions exposed by the hook.|
+|`actions.onSubmit`|(`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\>|Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain.|
+|`data`|`object`|Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds.|
+|`data.compensation`|`Compensation` \| `null`|The compensation row loaded for update; `null` in create mode.|
+|`data.currentJob`|`Job` \| `null`|The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves.|
+|`data.hasPendingFutureCompensation`|`boolean`|True when at least one future-dated compensation already exists for this job.|
+|`data.maximumEffectiveDate`|`string` \| `null`|Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists.|
+|`data.minimumEffectiveDate`|`string` \| `null`|Lower bound for `effectiveDate` (typically the parent job's hire date).|
+|`data.minimumWages`|`MinimumWage`[]|Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined.|
+|`errorHandling`|[`HookErrorHandling`](../index.md#hookerrorhandling)|Error state and recovery actions.|
+|`form`|`object`|Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals.|
+|`form.Fields`|[`CompensationFormFields`](#compensationformfields)|-|
+|`form.fieldsMetadata`|[`FieldsMetadata`](../index.md#fieldsmetadata)|-|
+|`form.getFormSubmissionValues`|() => `Record`\<`string`, `unknown`\> \| `undefined`|-|
+|`form.hookFormInternals`|[`HookFormInternals`](../index.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\>|-|
+|`isLoading`|`false`|Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult).|
+|`status`|`object`|Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings.|
+|`status.isPending`|`boolean`|`true` while a create or update mutation is in flight.|
+|`status.mode`|`"create"` \| `"update"`|Reflects whether the next submit will POST a new compensation or PUT an existing one.|
+|`status.showCommissionFederalMinimumPayAlert`|`boolean`|True when the current `flsaStatus` is `COMMISSION_ONLY_EXEMPT` (Commission Only/No Overtime). Render the federal-minimum-pay warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values).|
+|`status.showCommissionMinimumWageAlert`|`boolean`|True when the current `flsaStatus` is `COMMISSION_ONLY_NONEXEMPT` (Commission Only/Eligible for overtime). Render the local-minimum-wage warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values).|
+|`status.showOwnerSalaryAlert`|`boolean`|True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions.|
+|`status.willDeleteSecondaryJobs`|`boolean`|True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed.|
 
 ---
 
@@ -327,15 +327,15 @@ but should be promoted to required. `adjustForMinimumWage` is always
 required and `minimumWageId` is automatically required when
 `adjustForMinimumWage` is `true` — neither is configurable here.
 
-| Field                  | Required on create | Required on update | Configurable?     |
-| ---------------------- | ------------------ | ------------------ | ----------------- |
-| `flsaStatus`           | Yes                | No                 | Yes (on update)   |
-| `paymentUnit`          | Yes                | No                 | Yes (on update)   |
-| `rate`                 | Yes                | No                 | Yes (on update)   |
-| `effectiveDate`        | Yes                | No                 | Yes (on update)   |
-| `title`                | No                 | No                 | Yes (either mode) |
-| `adjustForMinimumWage` | Yes                | Yes                | No                |
-| `minimumWageId`        | When toggle is on  | When toggle is on  | No                |
+|Field|Required on create|Required on update|Configurable?|
+|-|-|-|-|
+|`flsaStatus`|Yes|No|Yes (on update)|
+|`paymentUnit`|Yes|No|Yes (on update)|
+|`rate`|Yes|No|Yes (on update)|
+|`effectiveDate`|Yes|No|Yes (on update)|
+|`title`|No|No|Yes (either mode)|
+|`adjustForMinimumWage`|Yes|Yes|No|
+|`minimumWageId`|When toggle is on|When toggle is on|No|
 
 #### Example
 
@@ -458,38 +458,37 @@ Validation error codes produced by the [useCompensationForm](#usecompensationfor
 
 #### Type Declaration
 
-| Name                         | Type                           | Default value                  |
-| ---------------------------- | ------------------------------ | ------------------------------ |
-| `EFFECTIVE_DATE_BEFORE_HIRE` | `"EFFECTIVE_DATE_BEFORE_HIRE"` | `'EFFECTIVE_DATE_BEFORE_HIRE'` |
-| `EFFECTIVE_DATE_BEFORE_MIN`  | `"EFFECTIVE_DATE_BEFORE_MIN"`  | `'EFFECTIVE_DATE_BEFORE_MIN'`  |
-| `PAYMENT_UNIT_COMMISSION`    | `"PAYMENT_UNIT_COMMISSION"`    | `'PAYMENT_UNIT_COMMISSION'`    |
-| `PAYMENT_UNIT_OWNER`         | `"PAYMENT_UNIT_OWNER"`         | `'PAYMENT_UNIT_OWNER'`         |
-| `RATE_COMMISSION_ZERO`       | `"RATE_COMMISSION_ZERO"`       | `'RATE_COMMISSION_ZERO'`       |
-| `RATE_EXEMPT_THRESHOLD`      | `"RATE_EXEMPT_THRESHOLD"`      | `'RATE_EXEMPT_THRESHOLD'`      |
-| `RATE_MINIMUM`               | `"RATE_MINIMUM"`               | `'RATE_MINIMUM'`               |
-| `REQUIRED`                   | `"REQUIRED"`                   | `'REQUIRED'`                   |
+|Name|Type|Default value|
+|-|-|-|
+|`EFFECTIVE_DATE_BEFORE_HIRE`|`"EFFECTIVE_DATE_BEFORE_HIRE"`|`'EFFECTIVE_DATE_BEFORE_HIRE'`|
+|`EFFECTIVE_DATE_BEFORE_MIN`|`"EFFECTIVE_DATE_BEFORE_MIN"`|`'EFFECTIVE_DATE_BEFORE_MIN'`|
+|`PAYMENT_UNIT_COMMISSION`|`"PAYMENT_UNIT_COMMISSION"`|`'PAYMENT_UNIT_COMMISSION'`|
+|`PAYMENT_UNIT_OWNER`|`"PAYMENT_UNIT_OWNER"`|`'PAYMENT_UNIT_OWNER'`|
+|`RATE_COMMISSION_ZERO`|`"RATE_COMMISSION_ZERO"`|`'RATE_COMMISSION_ZERO'`|
+|`RATE_EXEMPT_THRESHOLD`|`"RATE_EXEMPT_THRESHOLD"`|`'RATE_EXEMPT_THRESHOLD'`|
+|`RATE_MINIMUM`|`"RATE_MINIMUM"`|`'RATE_MINIMUM'`|
+|`REQUIRED`|`"REQUIRED"`|`'REQUIRED'`|
 
 #### Remarks
 
 Use these constants as the keys in a field's `validationMessages` prop to
 map an error code to a user-facing message.
 
-| Code                         | When it triggers                                                              |
-| ---------------------------- | ----------------------------------------------------------------------------- |
-| `REQUIRED`                   | A required field is empty (per mode and `optionalFieldsToRequire`).           |
-| `RATE_MINIMUM`               | `rate` is less than `$1.00` for non-commission FLSA statuses.                 |
-| `RATE_EXEMPT_THRESHOLD`      | FLSA `Exempt` employees must clear the federal salary threshold (annualized). |
-| `PAYMENT_UNIT_OWNER`         | `Owner` FLSA status requires `paymentUnit === 'Paycheck'`.                    |
-| `PAYMENT_UNIT_COMMISSION`    | Commission-only FLSA statuses require `paymentUnit === 'Year'`.               |
-| `RATE_COMMISSION_ZERO`       | Commission-only FLSA statuses require `rate === 0`.                           |
-| `EFFECTIVE_DATE_BEFORE_HIRE` | `effectiveDate` precedes the parent job's `hireDate`.                         |
-| `EFFECTIVE_DATE_BEFORE_MIN`  | `effectiveDate` precedes the caller-supplied minimum (typically tomorrow).    |
+|Code|When it triggers|
+|-|-|
+|`REQUIRED`|A required field is empty (per mode and `optionalFieldsToRequire`).|
+|`RATE_MINIMUM`|`rate` is less than `$1.00` for non-commission FLSA statuses.|
+|`RATE_EXEMPT_THRESHOLD`|FLSA `Exempt` employees must clear the federal salary threshold (annualized).|
+|`PAYMENT_UNIT_OWNER`|`Owner` FLSA status requires `paymentUnit === 'Paycheck'`.|
+|`PAYMENT_UNIT_COMMISSION`|Commission-only FLSA statuses require `paymentUnit === 'Year'`.|
+|`RATE_COMMISSION_ZERO`|Commission-only FLSA statuses require `rate === 0`.|
+|`EFFECTIVE_DATE_BEFORE_HIRE`|`effectiveDate` precedes the parent job's `hireDate`.|
+|`EFFECTIVE_DATE_BEFORE_MIN`|`effectiveDate` precedes the caller-supplied minimum (typically tomorrow).|
 
 #### Example
 
 ```tsx
 import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
-
 ;<Fields.Rate
   label="Compensation amount"
   validationMessages={{
@@ -513,9 +512,9 @@ Headless hook for creating or updating an employee's job — title, hire date, S
 
 #### Parameters
 
-| Parameter | Type                                  | Description                                                                                                                                                                            |
-| --------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `input`   | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
+|Parameter|Type|Description|
+|-|-|-|
+|`input`|[`UseJobFormProps`](#usejobformprops)|[UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders.|
 
 #### Returns
 
@@ -529,11 +528,11 @@ Companion hook to `useCompensationForm`. Jobs and their compensations are
 separate entities in the Gusto API and this hook focuses exclusively on
 the job side. Presence of `jobId` selects the verb:
 
-| Hook config                   | Mode   | API call                                      |
-| ----------------------------- | ------ | --------------------------------------------- |
-| `{ employeeId, jobId }`       | update | `PUT /v1/jobs/:jobId` (with `version`)        |
-| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs`         |
-| `{}` + submit `employeeId`    | create | `POST /v1/employees/:options.employeeId/jobs` |
+|Hook config|Mode|API call|
+|-|-|-|
+|`{ employeeId, jobId }`|update|`PUT /v1/jobs/:jobId` (with `version`)|
+|`{ employeeId }` (no `jobId`)|create|`POST /v1/employees/:employeeId/jobs`|
+|`{}` + submit `employeeId`|create|`POST /v1/employees/:options.employeeId/jobs`|
 
 Creating a job auto-creates a stub compensation. To update the stub in the
 same flow, capture `currentCompensationUuid` (and the compensation's
@@ -593,13 +592,13 @@ before rendering.
 
 #### Properties
 
-| Property                | Type                                    | Description                                                                                                                                                       |
-| ----------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `HireDate`              | ((`props`) => `Element`) \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`.                                                                                                    |
-| `StateWcClassCode`      | ((`props`) => `Element`) \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
-| `StateWcCovered`        | ((`props`) => `Element`) \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`).              |
-| `Title`                 | ((`props`) => `Element`) \| `undefined` | Job title text input. `undefined` when `withTitleField: false`.                                                                                                   |
-| `TwoPercentShareholder` | ((`props`) => `Element`) \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`).                                  |
+|Property|Type|Description|
+|-|-|-|
+|`HireDate`|((`props`) => `Element`) \| `undefined`|Hire date picker. `undefined` when `withHireDateField: false`.|
+|`StateWcClassCode`|((`props`) => `Element`) \| `undefined`|Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`.|
+|`StateWcCovered`|((`props`) => `Element`) \| `undefined`|Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`).|
+|`Title`|((`props`) => `Element`) \| `undefined`|Job title text input. `undefined` when `withTitleField: false`.|
+|`TwoPercentShareholder`|((`props`) => `Element`) \| `undefined`|S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`).|
 
 ---
 
@@ -618,10 +617,10 @@ the employee being saved was created in the same submit chain and the
 
 #### Properties
 
-| Property      | Type     | Description                                                                                                                                                                                                                                                                                                                                    |
-| ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain.                                                                                                                                                                                                                       |
-| `hireDate?`   | `string` | Supply `hireDate` at submit time rather than via a rendered field. Use with `withHireDateField: false` for screens that derive hireDate from external context (e.g. the employee's `startDate` during onboarding). Falls back to the loaded job's `hireDate` on update mode when omitted; required (or sourced from a default) on create mode. |
+|Property|Type|Description|
+|-|-|-|
+|`employeeId?`|`string`|Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain.|
+|`hireDate?`|`string`|Supply `hireDate` at submit time rather than via a rendered field. Use with `withHireDateField: false` for screens that derive hireDate from external context (e.g. the employee's `startDate` during onboarding). Falls back to the loaded job's `hireDate` on update mode when omitted; required (or sourced from a default) on create mode.|
 
 ---
 
@@ -640,16 +639,16 @@ an employee-creation step; supply it at submit time via
 
 #### Properties
 
-| Property                   | Type                                                                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| -------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `defaultValues?`           | `Partial`\<[`JobFormData`](#jobformdata)\>                             | Pre-fill form values. Server data takes precedence on update mode.                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `employeeId?`              | `string`                                                               | UUID of the employee whose job is being created or edited. May be omitted when the employee is created in the same submit chain — supply the value via [JobSubmitOptions.employeeId](#jobsubmitoptions) at submit time.                                                                                                                                                                                                                                                                        |
-| `jobId?`                   | `string`                                                               | Present → update mode (PUT /v1/jobs/:id with `version`). Omitted → create mode (POST /v1/employees/:id/jobs).                                                                                                                                                                                                                                                                                                                                                                                  |
-| `optionalFieldsToRequire?` | [`JobOptionalFieldsToRequire`](#joboptionalfieldstorequire)            | Override fields that are optional on a given mode to be required. See [JobOptionalFieldsToRequire](#joboptionalfieldstorequire).                                                                                                                                                                                                                                                                                                                                                               |
-| `shouldFocusError?`        | `boolean`                                                              | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`.                                                                                                                                                                                                                                                                                                                  |
-| `validationMode?`          | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `withHireDateField?`       | `boolean`                                                              | When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes `hireDate` from schema validation. Supply the value via [JobSubmitOptions.hireDate](#jobsubmitoptions) at submit time, or rely on the loaded job's existing value on update. Use this when the date is driven by external context rather than user input (e.g. the employee's `startDate`). Defaults to `true`.                                                                                                        |
-| `withTitleField?`          | `boolean`                                                              | When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body. |
+|Property|Type|Description|
+|-|-|-|
+|`defaultValues?`|`Partial`\<[`JobFormData`](#jobformdata)\>|Pre-fill form values. Server data takes precedence on update mode.|
+|`employeeId?`|`string`|UUID of the employee whose job is being created or edited. May be omitted when the employee is created in the same submit chain — supply the value via [JobSubmitOptions.employeeId](#jobsubmitoptions) at submit time.|
+|`jobId?`|`string`|Present → update mode (PUT /v1/jobs/:id with `version`). Omitted → create mode (POST /v1/employees/:id/jobs).|
+|`optionalFieldsToRequire?`|[`JobOptionalFieldsToRequire`](#joboptionalfieldstorequire)|Override fields that are optional on a given mode to be required. See [JobOptionalFieldsToRequire](#joboptionalfieldstorequire).|
+|`shouldFocusError?`|`boolean`|Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`.|
+|`validationMode?`|`"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`|Passed through to react-hook-form. Defaults to `'onSubmit'`.|
+|`withHireDateField?`|`boolean`|When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes `hireDate` from schema validation. Supply the value via [JobSubmitOptions.hireDate](#jobsubmitoptions) at submit time, or rely on the loaded job's existing value on update. Use this when the date is driven by external context rather than user input (e.g. the employee's `startDate`). Defaults to `true`.|
+|`withTitleField?`|`boolean`|When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body.|
 
 ---
 
@@ -671,27 +670,27 @@ Discriminated by `isLoading: false`. Extends
 
 #### Properties
 
-| Property                         | Type                                                                                                    | Description                                                                                                                                                                                                                                                                                                           |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `actions`                        | `object`                                                                                                | Submit actions exposed by the hook.                                                                                                                                                                                                                                                                                   |
-| `actions.onSubmit`               | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error.                                                                                        |
-| `data`                           | `object`                                                                                                | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields.                                                                                                                                           |
-| `data.currentJob`                | `Job` \| `null`                                                                                         | The job row loaded for update; `null` in create mode.                                                                                                                                                                                                                                                                 |
-| `data.currentWorkAddress`        | `EmployeeWorkAddress` \| `null`                                                                         | The employee's active work address, or `null` when none is set.                                                                                                                                                                                                                                                       |
-| `data.employee`                  | `Employee` \| `null`                                                                                    | The loaded employee record, or `null` when `employeeId` was omitted.                                                                                                                                                                                                                                                  |
-| `data.jobs`                      | `Job`[] \| `undefined`                                                                                  | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs.                                                                                                                                                                                                                  |
-| `data.showStateWc`               | `boolean`                                                                                               | True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly. |
-| `data.showTwoPercentShareholder` | `boolean`                                                                                               | True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`.                                                                                                                                                                                                          |
-| `errorHandling`                  | [`HookErrorHandling`](../index.md#hookerrorhandling)                                                    | Error state and recovery actions.                                                                                                                                                                                                                                                                                     |
-| `form`                           | `object`                                                                                                | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals.                                                                                                                                                                                                      |
-| `form.Fields`                    | [`JobFormFields`](#jobformfields)                                                                       | -                                                                                                                                                                                                                                                                                                                     |
-| `form.fieldsMetadata`            | [`FieldsMetadata`](../index.md#fieldsmetadata)                                                          | -                                                                                                                                                                                                                                                                                                                     |
-| `form.getFormSubmissionValues`   | () => `Record`\<`string`, `unknown`\> \| `undefined`                                                    | -                                                                                                                                                                                                                                                                                                                     |
-| `form.hookFormInternals`         | [`HookFormInternals`](../index.md#hookforminternals)\<[`JobFormData`](#jobformdata)\>                   | -                                                                                                                                                                                                                                                                                                                     |
-| `isLoading`                      | `false`                                                                                                 | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult).                                                                                                                                                                                                                 |
-| `status`                         | `object`                                                                                                | Submission state. `isPending` is `true` while any in-flight mutation (including the secondary-compensation correction block) hasn't settled. `mode` reflects whether the next submit will create or update.                                                                                                           |
-| `status.isPending`               | `boolean`                                                                                               | -                                                                                                                                                                                                                                                                                                                     |
-| `status.mode`                    | `"create"` \| `"update"`                                                                                | -                                                                                                                                                                                                                                                                                                                     |
+|Property|Type|Description|
+|-|-|-|
+|`actions`|`object`|Submit actions exposed by the hook.|
+|`actions.onSubmit`|(`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Job`\> \| `undefined`\>|Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error.|
+|`data`|`object`|Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields.|
+|`data.currentJob`|`Job` \| `null`|The job row loaded for update; `null` in create mode.|
+|`data.currentWorkAddress`|`EmployeeWorkAddress` \| `null`|The employee's active work address, or `null` when none is set.|
+|`data.employee`|`Employee` \| `null`|The loaded employee record, or `null` when `employeeId` was omitted.|
+|`data.jobs`|`Job`[] \| `undefined`|All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs.|
+|`data.showStateWc`|`boolean`|True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly.|
+|`data.showTwoPercentShareholder`|`boolean`|True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`.|
+|`errorHandling`|[`HookErrorHandling`](../index.md#hookerrorhandling)|Error state and recovery actions.|
+|`form`|`object`|Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals.|
+|`form.Fields`|[`JobFormFields`](#jobformfields)|-|
+|`form.fieldsMetadata`|[`FieldsMetadata`](../index.md#fieldsmetadata)|-|
+|`form.getFormSubmissionValues`|() => `Record`\<`string`, `unknown`\> \| `undefined`|-|
+|`form.hookFormInternals`|[`HookFormInternals`](../index.md#hookforminternals)\<[`JobFormData`](#jobformdata)\>|-|
+|`isLoading`|`false`|Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult).|
+|`status`|`object`|Submission state. `isPending` is `true` while any in-flight mutation (including the secondary-compensation correction block) hasn't settled. `mode` reflects whether the next submit will create or update.|
+|`status.isPending`|`boolean`|-|
+|`status.mode`|`"create"` \| `"update"`|-|
 
 ---
 
@@ -778,13 +777,13 @@ Each mode key lists the fields that are optional by default for that mode
 but should be promoted to required. `stateWcClassCode` is automatically
 required when `stateWcCovered` is `true` and is not configurable here.
 
-| Field                   | Required on create | Required on update | Configurable?     |
-| ----------------------- | ------------------ | ------------------ | ----------------- |
-| `title`                 | Yes                | No                 | Yes (on update)   |
-| `hireDate`              | Yes                | No                 | Yes (on update)   |
-| `twoPercentShareholder` | No                 | No                 | Yes (either mode) |
-| `stateWcCovered`        | No                 | No                 | Yes (either mode) |
-| `stateWcClassCode`      | When WC is covered | When WC is covered | No (auto)         |
+|Field|Required on create|Required on update|Configurable?|
+|-|-|-|-|
+|`title`|Yes|No|Yes (on update)|
+|`hireDate`|Yes|No|Yes (on update)|
+|`twoPercentShareholder`|No|No|Yes (either mode)|
+|`stateWcCovered`|No|No|Yes (either mode)|
+|`stateWcClassCode`|When WC is covered|When WC is covered|No (auto)|
 
 #### Example
 
@@ -881,9 +880,9 @@ Validation error codes produced by the [useJobForm](#usejobform) schema.
 
 #### Type Declaration
 
-| Name       | Type         | Default value |
-| ---------- | ------------ | ------------- |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'`  |
+|Name|Type|Default value|
+|-|-|-|
+|`REQUIRED`|`"REQUIRED"`|`'REQUIRED'`|
 
 #### Remarks
 
@@ -894,7 +893,6 @@ map an error code to a user-facing message.
 
 ```tsx
 import { JobErrorCodes } from '@gusto/embedded-react-sdk'
-
 ;<Fields.Title
   label="Job title"
   validationMessages={{ [JobErrorCodes.REQUIRED]: 'Job title is required' }}
@@ -949,9 +947,9 @@ Validation error codes produced by the useEmployeeStateTaxesForm schema.
 
 #### Type Declaration
 
-| Name       | Type         | Default value |
-| ---------- | ------------ | ------------- |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'`  |
+|Name|Type|Default value|
+|-|-|-|
+|`REQUIRED`|`"REQUIRED"`|`'REQUIRED'`|
 
 #### Remarks
 
@@ -972,10 +970,10 @@ Memoizes the bound field components for a state-taxes form, avoiding unnecessary
 
 #### Parameters
 
-| Parameter            | Type                       | Description                                                                          |
-| -------------------- | -------------------------- | ------------------------------------------------------------------------------------ |
-| `employeeStateTaxes` | `EmployeeStateTaxesList`[] | Array of state-tax groups returned by the employee state-taxes API.                  |
-| `isAdmin`            | `boolean`                  | When `true`, admin-only questions are included; when `false`, they are filtered out. |
+|Parameter|Type|Description|
+|-|-|-|
+|`employeeStateTaxes`|`EmployeeStateTaxesList`[]|Array of state-tax groups returned by the employee state-taxes API.|
+|`isAdmin`|`boolean`|When `true`, admin-only questions are included; when `false`, they are filtered out.|
 
 #### Returns
 
