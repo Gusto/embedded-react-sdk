@@ -6,6 +6,7 @@ export {
   EmployeeSelfOnboardingStatuses,
   ContractorOnboardingStatus,
   ContractorSelfOnboardingStatuses,
+  PAY_PERIODS,
 } from '@/shared/constants'
 export type { EventType } from '@/shared/constants'
 export type {
@@ -93,6 +94,13 @@ export {
   useDeductionForm,
   DeductionFormErrorCodes,
   createDeductionFormSchema,
+  DescriptionField,
+  RecurringField,
+  DeductAsPercentageField,
+  AmountField as DeductionAmountField,
+  TotalAmountField,
+  AnnualMaximumField,
+  GarnishmentTypeField,
 } from '@/components/Employee/Deductions/shared/useDeductionForm'
 export type {
   UseDeductionFormProps,
@@ -123,6 +131,14 @@ export {
   createChildSupportGarnishmentFormSchema,
   getRequiredAttrKeys,
   SUPPORTED_REQUIRED_ATTR_KEYS,
+  StateField as ChildSupportStateField,
+  FipsCodeField,
+  CaseNumberField,
+  OrderNumberField,
+  RemittanceNumberField,
+  PayPeriodMaximumField,
+  AmountField as ChildSupportAmountField,
+  PaymentPeriodField,
 } from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
 export type {
   UseChildSupportGarnishmentFormProps,
@@ -155,6 +171,13 @@ export {
   useCompensationForm,
   CompensationErrorCodes,
   createCompensationSchema,
+  TitleField as CompensationTitleField,
+  FlsaStatusField as CompensationFlsaStatusField,
+  RateField as CompensationRateField,
+  PaymentUnitField as CompensationPaymentUnitField,
+  AdjustForMinimumWageField as CompensationAdjustForMinimumWageField,
+  MinimumWageIdField as CompensationMinimumWageIdField,
+  EffectiveDateField as CompensationEffectiveDateField,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 export type {
   CompensationSubmitOptions,
@@ -184,6 +207,11 @@ export {
   useJobForm,
   JobErrorCodes,
   createJobSchema,
+  JobTitleField,
+  HireDateField,
+  TwoPercentShareholderField,
+  StateWcCoveredField,
+  StateWcClassCodeField,
 } from '@/components/Employee/Compensation/shared/useJobForm'
 export type {
   JobSubmitOptions,
@@ -208,10 +236,18 @@ export {
   useEmployeeDetailsForm,
   EmployeeDetailsErrorCodes,
   createEmployeeDetailsSchema,
+  FirstNameField,
+  MiddleInitialField,
+  LastNameField,
+  EmailField,
+  DateOfBirthField,
+  SsnField,
+  SelfOnboardingField,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 export type {
   EmployeeDetailsSubmitCallbacks,
   EmployeeDetailsOptionalFieldsToRequire,
+  UseEmployeeDetailsFormSharedProps,
   UseEmployeeDetailsFormProps,
   UseEmployeeDetailsFormResult,
   UseEmployeeDetailsFormReady,
@@ -232,6 +268,8 @@ export type {
   DateOfBirthFieldProps,
   SsnFieldProps,
   SelfOnboardingFieldProps,
+  SsnRequiredValidation,
+  EmployeeDetailsFields,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 
 export {
@@ -239,6 +277,8 @@ export {
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
   createWorkAddressSchema,
+  LocationField as WorkAddressLocationField,
+  EffectiveDateField as WorkAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 export type {
   WorkAddressSubmitCallbacks,
@@ -257,6 +297,7 @@ export type {
   WorkAddressRequiredValidation,
   LocationFieldProps,
   EffectiveDateFieldProps,
+  WorkAddressFields,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 
 export {
@@ -264,6 +305,13 @@ export {
   useCurrentHomeAddressForm,
   HomeAddressErrorCodes,
   createHomeAddressSchema,
+  Street1Field,
+  Street2Field,
+  CityField,
+  StateField as HomeAddressStateField,
+  ZipField,
+  CourtesyWithholdingField,
+  EffectiveDateField as HomeAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 export type {
   HomeAddressSubmitOptions,
@@ -287,6 +335,7 @@ export type {
   ZipFieldProps,
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
+  HomeAddressFields,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
@@ -294,6 +343,10 @@ export {
   BankFormErrorCodes,
   createBankFormSchema,
   ACCOUNT_TYPES,
+  NameField,
+  RoutingNumberField,
+  AccountNumberField,
+  AccountTypeField,
 } from '@/components/Employee/PaymentMethod/shared/useBankForm'
 export type {
   BankFormSubmitOptions,
@@ -322,6 +375,7 @@ export {
   PaymentMethodFormErrorCodes,
   createPaymentMethodFormSchema,
   PAYMENT_METHOD_TYPES,
+  PaymentMethodTypeField,
 } from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
 export type {
   UsePaymentMethodFormProps,
@@ -370,6 +424,12 @@ export {
   FederalTaxesErrorCodes,
   createFederalTaxesSchema,
   FILING_STATUS_VALUES,
+  FilingStatusField,
+  TwoJobsField,
+  DependentsAmountField,
+  OtherIncomeField,
+  DeductionsField,
+  ExtraWithholdingField,
 } from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
 export {
   useEmployeeStateTaxesForm,
@@ -432,6 +492,9 @@ export {
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
   preparerFieldName,
+  SignatureField,
+  ConfirmSignatureField,
+  UsedPreparerField,
 } from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 export type {
   UseSignEmployeeFormProps,
@@ -452,6 +515,7 @@ export type {
   ConfirmSignatureFieldProps as SignEmployeeFormConfirmSignatureFieldProps,
   UsedPreparerFieldProps,
   PreparerTextFieldProps,
+  PreparerSelectFieldProps,
   PreparerCheckboxFieldProps,
 } from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 

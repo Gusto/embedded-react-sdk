@@ -11,6 +11,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const employeeSelfOnboardingMachine = {
   index: state<MachineTransition>(
     transition(

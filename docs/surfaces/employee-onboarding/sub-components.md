@@ -63,7 +63,7 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Profile
+    <EmployeeOnboarding.Profile
       defaultValues={{ employee: { email: 'myown@data.com' } }}
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
@@ -115,7 +115,7 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Compensation
+    <EmployeeOnboarding.Compensation
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       startDate="01-01-2025"
       onEvent={() => {}}
@@ -150,7 +150,7 @@ function MyComponent() {
 Provides required form inputs for employee federal tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs and emitted events; pick the variant that matches your screen instead of toggling a prop.
 
 - **`EmployeeOnboarding.FederalTaxes`** renders a single **Continue** submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save so the parent onboarding flow can advance.
-- **`EmployeeManagement.FederalTaxes`** (also exported as `Employee.FederalTaxes` for backwards compatibility) renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen.
+- **`EmployeeManagement.FederalTaxes`** (also exported as `EmployeeOnboarding.FederalTaxes` for backwards compatibility) renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen.
 
 ```jsx
 // Onboarding journey
@@ -255,7 +255,10 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.PaymentMethod employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.PaymentMethod
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -288,7 +291,10 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Deductions employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.Deductions
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -323,7 +329,7 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.EmployeeDocuments
+    <EmployeeOnboarding.EmployeeDocuments
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
     />
@@ -356,7 +362,7 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.OnboardingSummary
+    <EmployeeOnboarding.OnboardingSummary
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
       isAdmin // Set to true for admin onboarding

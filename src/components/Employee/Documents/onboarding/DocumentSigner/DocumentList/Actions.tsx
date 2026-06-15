@@ -3,6 +3,7 @@ import { useDocumentList } from './useDocumentList'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Actions() {
   const { t } = useTranslation('Employee.DocumentSigner')
   const { handleContinue, hasSignedAllForms } = useDocumentList()

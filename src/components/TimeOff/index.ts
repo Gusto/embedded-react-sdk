@@ -4,8 +4,10 @@ export { PolicyTypeSelector } from './PolicyTypeSelector/PolicyTypeSelector'
 export type { PolicyTypeSelectorProps } from './PolicyTypeSelector/PolicyTypeSelector'
 export { PolicyConfigurationForm } from './TimeOffManagement/PolicyConfigurationForm'
 export type { PolicyConfigurationFormProps } from './TimeOffManagement/PolicyConfigurationForm'
-export { PolicySettingsPresentation as PolicySettings } from './PolicySettings/PolicySettingsPresentation'
-export type { PolicySettingsPresentationProps as PolicySettingsProps } from './PolicySettings/PolicySettingsTypes'
+export { PolicySettings } from './PolicySettings/PolicySettings'
+export type { PolicySettingsProps } from './PolicySettings/PolicySettings'
+export { PolicySettingsPresentation } from './PolicySettings/PolicySettingsPresentation'
+export type { PolicySettingsPresentationProps } from './PolicySettings/PolicySettingsTypes'
 export { AddEmployeesToPolicy } from './AddEmployeesToPolicy/AddEmployeesToPolicy'
 export type { AddEmployeesToPolicyProps } from './AddEmployeesToPolicy/AddEmployeesToPolicy'
 export { HolidaySelectionForm } from './HolidaySelectionForm/HolidaySelectionForm'
@@ -22,6 +24,8 @@ export type {
   HolidayPolicyDetailPresentationProps,
   HolidayPolicyDetailEmployee,
 } from './HolidayPolicyDetail'
+export { TimeOffPolicyDetail } from './TimeOffPolicyDetail/TimeOffPolicyDetail'
+export type { TimeOffPolicyDetailProps } from './TimeOffPolicyDetail/TimeOffPolicyDetail'
 export { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetail'
 export type {
   TimeOffPolicyDetailPresentationProps,

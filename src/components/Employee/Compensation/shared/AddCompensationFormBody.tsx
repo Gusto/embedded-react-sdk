@@ -17,9 +17,12 @@ import type { ResourceDictionary } from '@/types/Helpers'
  * default; management surfaces resolve this dictionary from
  * `Employee.Management.Compensation` and pass it in so management copy renders
  * while the two surfaces stay isolated.
+ *
+ * @internal
  */
 export type AddCompensationFormDictionary = ResourceDictionary<'Employee.Compensation'>
 
+/** @internal */
 export interface AddCompensationFormBodyProps {
   jobForm: UseJobFormReady
   compensationForm: UseCompensationFormReady
@@ -41,6 +44,8 @@ export interface AddCompensationFormBodyProps {
  * Copy resolves from the onboarding `Employee.Compensation` namespace by default; management
  * consumers inject a `dictionary` mapped from `Employee.Management.Compensation` to keep
  * onboarding and management strings independently overridable.
+ *
+ * @internal
  */
 export function AddCompensationFormBody({
   jobForm,

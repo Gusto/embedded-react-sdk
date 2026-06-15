@@ -13,28 +13,51 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link EditCompensation}.
+ *
+ * @public
+ */
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
   /**
-   * When provided, the hire date is pre-filled from this value and the hire
-   * date field is hidden. When absent (add-job from empty state), the hire
-   * date field is rendered so the user can set it explicitly.
+   * When provided, the hire date is pre-filled from this value and the hire date field is hidden.
+   * When absent, the hire date field is rendered so it can be set explicitly.
    */
   startDate?: string
+  /** Existing job to edit. When omitted, a new job is created on submit. */
   currentJobId?: string | null
+  /** Heading text shown above the form. */
   title: string
+  /** Label for the primary submit button. */
   submitCtaLabel: string
+  /** Optional handler invoked when the secondary cancel button is clicked. */
   onCancel?: () => void
+  /** Initial values for the job title and compensation fields. */
   partnerDefaultValues?: CompensationDefaultValues
-  /**
-   * Receives the broadcast events: `EMPLOYEE_JOB_CREATED` / `EMPLOYEE_JOB_UPDATED`
-   * (with the saved `Job`), then `EMPLOYEE_COMPENSATION_UPDATED` (with the saved
-   * `Compensation`) on a successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED`
-   * for "save complete" branching.
-   */
+  /** Event handler fired on flow state changes. See the events table on {@link EditCompensation}. */
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Renders a form for creating or editing one of an employee's jobs together with its compensation.
+ *
+ * @remarks
+ * The submit chain saves the job first, then the compensation. The `employee/job_created` or
+ * `employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
+ * fires once the compensation is saved and signals the full save is complete.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/job_created` | Fired when a new job is saved. | The saved {@link https://docs.gusto.com/embedded-payroll/reference/get-v1-jobs-job_id | Job}. |
+ * | `employee/job_updated` | Fired when an existing job is saved. | The saved {@link https://docs.gusto.com/embedded-payroll/reference/get-v1-jobs-job_id | Job}. |
+ * | `employee/compensation_updated` | Fired when the compensation is saved. Treat as the "save complete" signal. | The saved {@link https://docs.gusto.com/embedded-payroll/reference/get-v1-compensations-compensation_id | Compensation}. |
+ *
+ * @param props - See {@link EditCompensationProps}.
+ * @returns The rendered edit-compensation form.
+ * @public
+ */
 export function EditCompensation({ dictionary, ...props }: EditCompensationProps) {
   useComponentDictionary('Employee.Compensation', dictionary)
   return (

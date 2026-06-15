@@ -19,7 +19,10 @@ import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.PaymentsList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <ContractorManagement.PaymentsList
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -51,7 +54,10 @@ import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.CreatePayment companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <ContractorManagement.CreatePayment
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -93,7 +99,7 @@ Displays detailed information about a specific contractor payment group, includi
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentHistory paymentId="payment-group-uuid" onEvent={() => {}} />
+  return <ContractorManagement.PaymentHistory paymentId="payment-group-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -129,7 +135,7 @@ import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.PaymentSummary
+    <ContractorManagement.PaymentSummary
       paymentGroupId="payment-group-uuid"
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
@@ -169,7 +175,9 @@ Displays an individual contractor payment statement with detailed payment inform
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentStatement paymentId="contractor-payment-uuid" onEvent={() => {}} />
+  return (
+    <ContractorManagement.PaymentStatement paymentId="contractor-payment-uuid" onEvent={() => {}} />
+  )
 }
 ```
 

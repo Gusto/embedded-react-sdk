@@ -7,13 +7,15 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type ProfileSuccessAlertCode = 'profileUpdated'
+type ProfileSuccessAlertCode = 'profileUpdated'
 
+/** @internal */
 export interface ProfileContextInterface extends FlowContextInterface {
   employeeId?: string
   successAlert?: ProfileSuccessAlertCode | null
 }
 
+/** @internal */
 export function CardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<ProfileContextInterface>()
   const { t } = useTranslation('Employee.Management.Profile')
@@ -34,6 +36,7 @@ export function CardContextual() {
   )
 }
 
+/** @internal */
 export function ProfileEditFormContextual() {
   const { employeeId, onEvent } = useFlow<ProfileContextInterface>()
   return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />

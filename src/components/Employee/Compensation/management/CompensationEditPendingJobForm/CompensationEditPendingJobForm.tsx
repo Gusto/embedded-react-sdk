@@ -12,8 +12,15 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link CompensationEditPendingJobForm}.
+ *
+ * @public
+ */
 export interface CompensationEditPendingJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The job whose pending compensation is being edited. */
   jobId: string
   /** The UUID of the pending (future-dated) compensation to update. Always required — this
    *  component only operates in update mode. */
@@ -34,6 +41,11 @@ export interface CompensationEditPendingJobFormProps extends CommonComponentInte
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Edits a pending (future-dated) compensation in place.
+ *
+ * @public
+ */
 export function CompensationEditPendingJobForm({
   dictionary,
   ...props

@@ -106,9 +106,9 @@
   -webkit-backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 12vh 1rem 1rem;
+  padding: 1rem;
   animation: searchBackdropFadeIn 0.15s ease;
 }
 
@@ -131,12 +131,17 @@
 .searchModal {
   width: 100%;
   max-width: 640px;
+  max-height: 100%;
+  min-height: 0;
   padding: 1.25rem 1.25rem 0;
   background-color: #ffffff;
   border: 1px solid rgba(27, 27, 29, 0.08);
   border-radius: 14px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
   animation: searchModalScaleIn 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   --search-local-modal-width: 100%;
   --search-local-modal-width-sm: 100%;
@@ -169,6 +174,10 @@
 .searchInputArea {
   position: relative;
   margin: -1.25rem -1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .searchInputIcon {
@@ -182,10 +191,13 @@
 }
 
 .searchModal :global(.navbar__search) {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin: 0;
   width: 100%;
   position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .searchModal :global(.navbar__search-input) {
@@ -198,6 +210,7 @@
   border: none;
   border-bottom: 1px solid var(--ifm-hr-background-color);
   border-radius: 0;
+  flex-shrink: 0;
 }
 
 .searchEscChip {
@@ -260,8 +273,11 @@
 }
 
 .searchModal :global([class*='searchBar_']) {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column;
   width: 100% !important;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .searchModal :global([class*='dropdownMenu_']) {
@@ -271,6 +287,9 @@
   padding: 1.5rem 1.5rem;
   background: transparent;
   box-shadow: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .searchModal :global([class*='suggestion_']) {

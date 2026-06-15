@@ -62,11 +62,3 @@ const GustoProvider: React.FC<GustoApiProps> = props => {
 }
 
 export { GustoProvider }
-
-/**
- * Alias for {@link GustoProvider}.
- *
- * @deprecated Use {@link GustoProvider} instead.
- * @public
- */
-export const GustoApiProvider = GustoProvider

@@ -8,6 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/** @internal */
 export interface DocumentManagerProps {
   employeeId: string
   formId: string
@@ -18,6 +19,8 @@ export interface DocumentManagerProps {
  * selected form's PDF — including unsigned forms, which are shown as-is.
  * Signing is intentionally not offered here; forms are signed by the employee
  * during onboarding, not by an admin viewing the dashboard.
+ *
+ * @internal
  */
 export function DocumentManager(props: DocumentManagerProps & BaseComponentInterface) {
   useI18n('Employee.DocumentManager')

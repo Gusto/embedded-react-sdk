@@ -6,6 +6,8 @@ const startOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.g
 /**
  * Returns the next inactive home address whose effective date is strictly after today (local),
  * or undefined when there is no such scheduled change.
+ *
+ * @internal
  */
 export function getPendingFutureHomeAddress(
   addresses: EmployeeAddress[] | undefined,
@@ -55,7 +57,11 @@ function formatCountryForDisplay(country: string | null | undefined): string {
   return USA_LABELS.has(c) ? 'United States' : c
 }
 
-/** Single-line address for pending-change copy (matches product mock: street, city, ST zip, country). */
+/**
+ * Single-line address for pending-change copy (matches product mock: street, city, ST zip, country).
+ *
+ * @internal
+ */
 export function formatPendingHomeAddressLine(address: EmployeeAddress): string {
   const streetLine = [address.street1, address.street2].filter(Boolean).join(', ')
   const cityStateZip = [address.city, [address.state, address.zip].filter(Boolean).join(' ')]

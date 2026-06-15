@@ -8,6 +8,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const compensationStateMachine = {
   initialEditJob: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'done'),

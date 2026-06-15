@@ -20,6 +20,7 @@ interface SignatureFormProps extends CommonComponentInterface {
   formId: string
 }
 
+/** @internal */
 export function SignatureForm(props: SignatureFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

@@ -33,19 +33,48 @@ import { addressInline } from '@/helpers/formattedStrings'
 
 export type { WorkAddressOptionalFieldsToRequire } from './workAddressSchema'
 
+/**
+ * Optional callbacks passed to {@link UseWorkAddressFormReady.actions.onSubmit | onSubmit}.
+ *
+ * @remarks
+ * Only the callback matching the submit mode fires —
+ * `onWorkAddressCreated` on create, `onWorkAddressUpdated` on update.
+ *
+ * @public
+ */
 export interface WorkAddressSubmitCallbacks {
+  /** Fired after a new work address is successfully created. */
   onWorkAddressCreated?: (workAddress: EmployeeWorkAddress) => void
+  /** Fired after an existing work address is successfully updated. */
   onWorkAddressUpdated?: (workAddress: EmployeeWorkAddress) => void
 }
 
+/**
+ * Optional overrides passed to {@link UseWorkAddressFormReady.actions.onSubmit | onSubmit}.
+ *
+ * @public
+ */
 export interface WorkAddressSubmitOptions {
+  /** Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). */
   employeeId?: string
+  /** Override the effective date submitted with the address. */
   effectiveDate?: string
 }
 
+/**
+ * Configuration options for {@link useWorkAddressForm}.
+ *
+ * @remarks
+ * Presence or absence of `workAddressUuid` selects the API verb — see the
+ * `workAddressUuid` field description. `companyId` is required to fetch
+ * the location list; pass it when it is known.
+ *
+ * @public
+ */
 export interface UseWorkAddressFormProps {
   /** Company UUID for locations; omit or leave unset while resolving from the employee record. */
   companyId?: string
+  /** UUID of the employee whose work address is being created or edited. */
   employeeId: string
   /**
    * When set, loads that work address via GET `/v1/work_addresses/{work_address_uuid}` and updates it (PUT).
@@ -57,29 +86,58 @@ export interface UseWorkAddressFormProps {
    * instead of issuing a GET — useful when the parent already has the row from a list query.
    */
   initialAddress?: EmployeeWorkAddress
+  /** When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. */
   withEffectiveDateField?: boolean
+  /** Override fields that are optional on a given mode to be required. See `WorkAddressOptionalFieldsToRequire`. */
   optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
+  /** Pre-fill form values. Server data takes precedence on update. */
   defaultValues?: Partial<WorkAddressFormData>
+  /** Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
+ *
+ * @remarks
+ * `EffectiveDate` is `undefined` when `withEffectiveDateField` is `false`.
+ * Always null-check it before rendering.
+ *
+ * @public
+ */
 export interface WorkAddressFields {
+  /** Location selector. Always available. */
   Location: typeof LocationField
+  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
   EffectiveDate: typeof EffectiveDateField | undefined
 }
 
+/**
+ * Ready-state shape returned by {@link useWorkAddressForm} once data has loaded.
+ *
+ * @remarks
+ * Discriminated by `isLoading: false`. Extends {@link BaseFormHookReady} with
+ * the work-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
+ *
+ * @public
+ */
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   WorkAddressFormData,
   WorkAddressFields
 > {
+  /** Static entity data resolved from the API. */
   data: {
     /** The address row loaded for update; `null` in create mode. */
     workAddress: EmployeeWorkAddress | null
+    /** Company locations available for selection; `undefined` until the locations query resolves. */
     companyLocations: Location[] | undefined
   }
+  /** Reactive status flags. */
   status: { isPending: boolean; mode: 'create' | 'update' }
+  /** Available actions. */
   actions: {
     onSubmit: (
       callbacks?: WorkAddressSubmitCallbacks,
@@ -88,6 +146,18 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
   }
 }
 
+/**
+ * Form hook for creating or editing an employee's work address.
+ *
+ * @remarks
+ * When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+ * when omitted it operates in create mode and issues a POST. The hook requires `companyId`
+ * to fetch the company's location list — it stays in loading state until `companyId` is known.
+ *
+ * @param props - See {@link UseWorkAddressFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseWorkAddressFormReady} once ready.
+ * @public
+ */
 export function useWorkAddressForm({
   companyId,
   employeeId,
@@ -300,6 +370,21 @@ export function useWorkAddressForm({
   }
 }
 
+/**
+ * Discriminated union returned by {@link useWorkAddressForm}.
+ *
+ * @public
+ */
 export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormReady
+/**
+ * Type of `form.fieldsMetadata` returned by {@link useWorkAddressForm}.
+ *
+ * @public
+ */
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata']
+/**
+ * Type of `form.Fields` returned by {@link useWorkAddressForm}.
+ *
+ * @public
+ */
 export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields']

@@ -8,7 +8,7 @@ order: 2
 
 Like the admin-driven employee onboarding, self-onboarding components can be used to compose your own workflow or be rendered in isolation. Many of these components are the same as the ones used for general employee onboarding; some fields are hidden or shown based on the current user type. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-> Legacy imports via `Employee.*` (e.g. `Employee.Landing`) continue to work.
+> Legacy imports via `Employee.*` (e.g. `EmployeeOnboarding.Landing`) continue to work.
 
 ---
 

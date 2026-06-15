@@ -9,15 +9,33 @@ import { coerceNaN, coerceStringBoolean } from '@/partner-hook-utils/form/prepro
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by the federal taxes form schema. Map these
+ * codes to localized copy in `validationMessages` when composing the hook.
+ *
+ * @public
+ */
 export const FederalTaxesErrorCodes = {
   REQUIRED: 'REQUIRED',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the federal taxes form
+ * schema.
+ *
+ * @public
+ */
 export type FederalTaxesErrorCode =
   (typeof FederalTaxesErrorCodes)[keyof typeof FederalTaxesErrorCodes]
 
 // ── Filing status options ──────────────────────────────────────────────
 
+/**
+ * Supported W-4 filing status values: single, married filing jointly, head of
+ * household, and exempt from withholding.
+ *
+ * @public
+ */
 export const FILING_STATUS_VALUES = [
   FilingStatus.Single,
   FilingStatus.Married,
@@ -25,6 +43,11 @@ export const FILING_STATUS_VALUES = [
   FilingStatus.ExemptFromWithholding,
 ] as const
 
+/**
+ * Union of filing status values that the form accepts.
+ *
+ * @public
+ */
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number]
 
 // ── Field validators ───────────────────────────────────────────────────
@@ -42,11 +65,26 @@ const fieldValidators = {
   extraWithholding: z.preprocess(coerceNaN(0), z.number()),
 }
 
+/**
+ * Field names accepted by the federal taxes form.
+ *
+ * @public
+ */
 export type FederalTaxesField = keyof typeof fieldValidators
 
+/**
+ * Shape of the values managed by the federal taxes form.
+ *
+ * @public
+ */
 export type FederalTaxesFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/**
+ * Shape of the validated values produced by the federal taxes form on submit.
+ *
+ * @public
+ */
 export type FederalTaxesFormOutputs = FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -65,14 +103,22 @@ const requiredFieldsConfig = {
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
+/**
+ * Keys of optional federal taxes fields that can be promoted to required via
+ * the hook's `optionalFieldsToRequire` option.
+ *
+ * @public
+ */
 export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
+/** @internal */
 interface FederalTaxesSchemaOptions {
   optionalFieldsToRequire?: FederalTaxesOptionalFieldsToRequire
 }
 
+/** @internal */
 export function createFederalTaxesSchema(options: FederalTaxesSchemaOptions = {}) {
   const { optionalFieldsToRequire } = options
 

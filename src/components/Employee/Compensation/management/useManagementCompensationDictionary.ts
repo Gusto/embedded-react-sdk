@@ -10,6 +10,8 @@ import type { AddCompensationFormDictionary } from '../shared/AddCompensationFor
  * `Employee.Management.Compensation` flow through here into the rendered form.
  * Interpolated strings keep their `{{limit}}` placeholder intact so the form
  * body interpolates the live value at render.
+ *
+ * @internal
  */
 export function useManagementCompensationDictionary(): AddCompensationFormDictionary {
   const { t } = useTranslation('Employee.Management.Compensation')

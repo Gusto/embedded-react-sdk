@@ -3,23 +3,39 @@ import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/model
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
+/**
+ * Params for {@link useEmployeeWorkAddressSummary}.
+ *
+ * @public
+ */
 export interface UseEmployeeWorkAddressSummaryParams {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
-export type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
+type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
   { currentWorkAddress: EmployeeWorkAddress | undefined },
   { isFetching: boolean; isPending: boolean }
 >
 
+/**
+ * Return type of {@link useEmployeeWorkAddressSummary}.
+ *
+ * @public
+ */
 export type UseEmployeeWorkAddressSummaryResult =
   | HookLoadingResult
   | UseEmployeeWorkAddressSummaryReady
 
 /**
- * Read-only data hook for the Work address management card. Wraps
- * `useEmployeeAddressesGetWorkAddresses` and selects the active row, returning
- * `BaseHookReady`-shaped data. Mutations live in the work-address forms hook.
+ * Read-only data hook for the employee work address summary card.
+ *
+ * @remarks
+ * Fetches the employee's work addresses and selects the active row.
+ *
+ * @param params - {@link UseEmployeeWorkAddressSummaryParams}
+ * @returns A {@link HookLoadingResult} while loading, or the ready state with `currentWorkAddress` once data is available.
+ * @public
  */
 export function useEmployeeWorkAddressSummary({
   employeeId,

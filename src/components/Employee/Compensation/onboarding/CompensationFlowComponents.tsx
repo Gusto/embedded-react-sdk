@@ -10,6 +10,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type EventPayloads = {
   [componentEvents.EMPLOYEE_JOB_ADD]: undefined
   [componentEvents.EMPLOYEE_JOB_EDIT]: { uuid: string }
@@ -22,6 +23,7 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_COMPENSATION_DONE]: undefined
 }
 
+/** @internal */
 export interface CompensationFlowContextInterface extends FlowContextInterface {
   employeeId: string
   startDate: string
@@ -29,11 +31,13 @@ export interface CompensationFlowContextInterface extends FlowContextInterface {
   partnerDefaultValues?: CompensationDefaultValues
 }
 
+/** @internal */
 export function JobsListContextual() {
   const { employeeId, onEvent } = useFlow<CompensationFlowContextInterface>()
   return <JobsList employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
+/** @internal */
 export function InitialEditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()
@@ -65,6 +69,7 @@ export function InitialEditCompensationContextual() {
   )
 }
 
+/** @internal */
 export function EditCompensationContextual() {
   const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
     useFlow<CompensationFlowContextInterface>()

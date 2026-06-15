@@ -39,13 +39,29 @@ import { STATES_ABBR } from '@/shared/constants'
 
 export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
 
+/**
+ * Optional overrides passed to {@link UseHomeAddressFormReady.actions.onSubmit | onSubmit}.
+ *
+ * @public
+ */
 export interface HomeAddressSubmitOptions {
+  /** Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). */
   employeeId?: string
-  /** When omitted on update without an effective-date field, the row’s `effectiveDate` from the fetched address is used. */
+  /** Override the effective date submitted with the address. When omitted on update without an effective-date field, the row's `effectiveDate` from the fetched address is used. */
   effectiveDate?: string
 }
 
+/**
+ * Configuration options for {@link useHomeAddressForm}.
+ *
+ * @remarks
+ * Presence or absence of `homeAddressUuid` selects the API verb — see the
+ * `homeAddressUuid` field description.
+ *
+ * @public
+ */
 export interface UseHomeAddressFormProps {
+  /** UUID of the employee whose home address is being created or edited. */
   employeeId: string
   /**
    * When set, loads that home address via GET `/v1/home_addresses/{uuid}` and updates it (PUT).
@@ -57,33 +73,66 @@ export interface UseHomeAddressFormProps {
    * instead of issuing a GET — useful when the parent already has the row from a list query.
    */
   initialAddress?: EmployeeAddress
+  /** When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. */
   withEffectiveDateField?: boolean
+  /** Override fields that are optional on a given mode to be required. See `HomeAddressOptionalFieldsToRequire`. */
   optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire
+  /** Pre-fill form values. Server data takes precedence on update. */
   defaultValues?: Partial<HomeAddressFormData>
+  /** Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
+ *
+ * @remarks
+ * `EffectiveDate` is `undefined` when `withEffectiveDateField` is `false`.
+ * Always null-check it before rendering.
+ *
+ * @public
+ */
 export interface HomeAddressFields {
+  /** Street address line 1 text input. Always available. */
   Street1: typeof Street1Field
+  /** Street address line 2 text input. Always available. */
   Street2: typeof Street2Field
+  /** City text input. Always available. */
   City: typeof CityField
+  /** State selector. Always available. */
   State: typeof StateField
+  /** ZIP code text input. Always available. */
   Zip: typeof ZipField
+  /** Courtesy withholding checkbox. Always available. */
   CourtesyWithholding: typeof CourtesyWithholdingField
+  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
   EffectiveDate: typeof EffectiveDateField | undefined
 }
 
+/**
+ * Ready-state shape returned by {@link useHomeAddressForm} once data has loaded.
+ *
+ * @remarks
+ * Discriminated by `isLoading: false`. Extends {@link BaseFormHookReady} with
+ * the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
+ *
+ * @public
+ */
 export interface UseHomeAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   HomeAddressFormData,
   HomeAddressFields
 > {
+  /** Static entity data resolved from the API. */
   data: {
     /** The address row loaded for update; `null` in create mode. */
     homeAddress: EmployeeAddress | null
   }
+  /** Reactive status flags. */
   status: { isPending: boolean; mode: 'create' | 'update' }
+  /** Available actions. */
   actions: {
     onSubmit: (
       options?: HomeAddressSubmitOptions,
@@ -91,6 +140,18 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
   }
 }
 
+/**
+ * Form hook for creating or editing an employee's home address.
+ *
+ * @remarks
+ * When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+ * when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
+ * skip the fetch when the parent already holds the row.
+ *
+ * @param props - See {@link UseHomeAddressFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseHomeAddressFormReady} once ready.
+ * @public
+ */
 export function useHomeAddressForm({
   employeeId,
   homeAddressUuid,
@@ -308,6 +369,21 @@ export function useHomeAddressForm({
   }
 }
 
+/**
+ * Discriminated union returned by {@link useHomeAddressForm}.
+ *
+ * @public
+ */
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady
+/**
+ * Type of `form.fieldsMetadata` returned by {@link useHomeAddressForm}.
+ *
+ * @public
+ */
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
+/**
+ * Type of `form.Fields` returned by {@link useHomeAddressForm}.
+ *
+ * @public
+ */
 export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']

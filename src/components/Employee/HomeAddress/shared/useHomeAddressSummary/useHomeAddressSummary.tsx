@@ -3,11 +3,17 @@ import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/co
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
+/**
+ * Params for {@link useHomeAddressSummary}.
+ *
+ * @public
+ */
 export interface UseHomeAddressSummaryParams {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
-export type UseHomeAddressSummaryReady = BaseHookReady<
+type UseHomeAddressSummaryReady = BaseHookReady<
   {
     currentHomeAddress: EmployeeAddress | undefined
     employeeAddressList: EmployeeAddress[]
@@ -15,14 +21,22 @@ export type UseHomeAddressSummaryReady = BaseHookReady<
   { isFetching: boolean; isPending: boolean }
 >
 
+/**
+ * Return type of {@link useHomeAddressSummary}.
+ *
+ * @public
+ */
 export type UseHomeAddressSummaryResult = HookLoadingResult | UseHomeAddressSummaryReady
 
 /**
- * Read-only data hook for the Home address management card. Wraps
- * `useEmployeeAddressesGet` and surfaces the active row plus the full
- * list (the latter lets partners build their own history/pending UI).
- * Mutations live in `useHomeAddressManagement` (the form-driven hook
- * the edit form consumes).
+ * Read-only headless hook returning the employee's active home address and full address list.
+ *
+ * @remarks
+ * Use {@link useHomeAddressManagement} when you need create, update, or delete actions.
+ *
+ * @param params - {@link UseHomeAddressSummaryParams}
+ * @returns A {@link HookLoadingResult} while loading, or the ready state with `currentHomeAddress` and `employeeAddressList`.
+ * @public
  */
 export function useHomeAddressSummary({
   employeeId,

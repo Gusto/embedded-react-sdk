@@ -13,10 +13,21 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 
+/**
+ * Props for {@link useCompensationManagement}.
+ *
+ * @public
+ */
 export interface UseCompensationManagementProps {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
+/**
+ * Ready state of {@link useCompensationManagement}.
+ *
+ * @public
+ */
 export interface UseCompensationManagementReady extends BaseHookReady<
   {
     jobs: Job[]
@@ -34,6 +45,7 @@ export interface UseCompensationManagementReady extends BaseHookReady<
     cancellingCompensationUuid: string | null
   }
 > {
+  /** Actions available when the hook has loaded. */
   actions: {
     cancelPendingChange: (
       pendingChange: PendingCompensationChange,
@@ -41,12 +53,19 @@ export interface UseCompensationManagementReady extends BaseHookReady<
   }
 }
 
+/**
+ * Return type of {@link useCompensationManagement}.
+ *
+ * @public
+ */
 export type UseCompensationManagementResult = HookLoadingResult | UseCompensationManagementReady
 
 /**
  * Non-Suspense queries powering the standalone Compensation management card.
  * Returns jobs + pending-changes + the employee's first name (for cosmetic
  * alert copy) along with a cancel-pending-change action.
+ *
+ * @public
  */
 export function useCompensationManagement({
   employeeId,

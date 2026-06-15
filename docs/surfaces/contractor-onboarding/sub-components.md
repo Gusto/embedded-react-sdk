@@ -8,7 +8,7 @@ order: 2
 
 Contractor onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
+> Legacy imports via `Contractor.*` (e.g. `ContractorOnboarding.OnboardingFlow`) continue to work.
 
 ---
 
@@ -21,7 +21,7 @@ import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorList
+    <ContractorOnboarding.ContractorList
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -57,7 +57,7 @@ import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorProfile
+    <ContractorOnboarding.ContractorProfile
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -92,7 +92,7 @@ A form for collecting and updating a contractor's mailing address.
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.Address contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.Address contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -121,7 +121,7 @@ Manages the contractor's payment method, including adding a bank account for dir
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -150,7 +150,7 @@ Handles new hire reporting requirements for the contractor. Behavior varies base
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -179,7 +179,7 @@ Finalizes the contractor onboarding process. Updates the onboarding status and, 
 import { Contractor } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 

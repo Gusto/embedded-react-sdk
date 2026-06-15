@@ -951,7 +951,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByText('$25.00')).toBeInTheDocument()
     })
 
-    it('always renders the reimbursements section header and Add link when withReimbursements is true', () => {
+    it('always renders the reimbursements section header and empty-state Add button when withReimbursements is true', () => {
       const propsWithoutReimbursements = {
         ...defaultPropsWithAdditionalEarnings,
         employeeCompensation: {
@@ -1411,7 +1411,7 @@ describe('PayrollEditEmployeePresentation', () => {
       },
     }
 
-    it('renders the Add one-time reimbursement link', async () => {
+    it('renders the empty-state Add reimbursement button when no reimbursements exist', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
 
       expect(
@@ -1592,11 +1592,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       expect(await screen.findByText('Phone stipend')).toBeInTheDocument()
       expect(screen.getByText('$50.00')).toBeInTheDocument()
-      expect(
-        screen.getByRole('img', {
-          name: 'Recurring reimbursements are managed outside of payroll.',
-        }),
-      ).toBeInTheDocument()
+      expect(screen.getByText('Recurring')).toBeInTheDocument()
       expect(screen.queryByLabelText(/Description/i)).not.toBeInTheDocument()
       expect(screen.queryByLabelText('Amount')).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /Remove/i })).not.toBeInTheDocument()

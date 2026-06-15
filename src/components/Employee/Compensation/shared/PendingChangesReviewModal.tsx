@@ -5,6 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { Flex } from '@/components/Common/Flex/Flex'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 
+/** @internal */
 export interface PendingChangesReviewModalProps {
   isOpen: boolean
   pendingChanges: PendingCompensationChange[]
@@ -14,6 +15,7 @@ export interface PendingChangesReviewModalProps {
   onCancelChange: (pendingChange: PendingCompensationChange) => void
 }
 
+/** @internal */
 export function PendingChangesReviewModal({
   isOpen,
   pendingChanges,

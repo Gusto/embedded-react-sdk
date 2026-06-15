@@ -368,28 +368,88 @@ function isDomainHub(model: DeclarationReflection): boolean {
   return model.comment?.blockTags.some(tag => tag.tag === '@domainHub') ?? false
 }
 
+/**
+ * Return the summary text for a reflection. Function summaries live on the
+ * first SignatureReflection, not the DeclarationReflection, so we check there
+ * first before falling back to the declaration's own comment.
+ */
+function getReflectionDescription(
+  reflection: DeclarationReflection,
+  context: SDKThemeContext,
+): string {
+  const comment = reflection.signatures?.[0]?.comment ?? reflection.comment
+  if (!comment) return ''
+  return context.helpers.getDescriptionForComment(comment) ?? ''
+}
+
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
   const parts: string[] = [`# ${model.name}`, '']
 
-  const namespaces = (model.children ?? []).filter(c => c.kind === ReflectionKind.Namespace)
+  const namespaces = (model.children ?? []).filter(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection && c.kind === ReflectionKind.Namespace,
+  )
 
-  if (namespaces.length > 0) {
-    parts.push('## Namespaces', '')
-    parts.push('| Namespace | Description |')
-    parts.push('| --------- | ----------- |')
+  for (const ns of namespaces) {
+    const nsUrl = context.urlTo(ns)
+    const nsLabel = ns.isDeprecated() ? `~~${ns.name}~~` : ns.name
+    parts.push(`## [${nsLabel}](${nsUrl})`, '')
 
-    for (const ns of namespaces) {
-      const url = context.urlTo(ns)
-      const label = ns.isDeprecated() ? `~~${ns.name}~~` : ns.name
-      const description = ns.comment
-        ? (context.helpers.getDescriptionForComment(ns.comment) ?? '')
-        : ''
-      parts.push(`| [${label}](${url}) | ${description} |`)
+    const nsDescription = ns.comment
+      ? (context.helpers.getDescriptionForComment(ns.comment) ?? '')
+      : ''
+    if (nsDescription) parts.push(nsDescription, '')
+
+    // isComponent filters out interfaces (props types), hooks, and other non-component exports.
+    const componentChildren = (ns.children ?? []).filter(
+      (c): c is DeclarationReflection => c instanceof DeclarationReflection && isComponent(c),
+    )
+    const flows = componentChildren.filter(c => c.name.endsWith('Flow'))
+    const blocks = componentChildren.filter(c => !c.name.endsWith('Flow'))
+
+    if (flows.length > 0) {
+      parts.push('### Flow Components', '')
+      parts.push('| Component | Description |')
+      parts.push('| --------- | ----------- |')
+      for (const flow of flows) {
+        const url = context.urlTo(flow)
+        const description = getReflectionDescription(flow, context)
+        parts.push(`| [${flow.name}](${url}) | ${description} |`)
+      }
+      parts.push('')
     }
-    parts.push('')
+
+    if (blocks.length > 0) {
+      parts.push('### Block Components', '')
+      parts.push('| Component | Description |')
+      parts.push('| --------- | ----------- |')
+      for (const block of blocks) {
+        const url = context.urlTo(block)
+        const description = getReflectionDescription(block, context)
+        parts.push(`| [${block.name}](${url}) | ${description} |`)
+      }
+      parts.push('')
+    }
   }
 
-  parts.push('## Hooks', '', `See [${model.name} Hooks](./hooks).`)
+  const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(model.name)
+  const hookGroups = (hooksNs?.groups ?? []).filter(g => /^use[A-Z]/.test(g.title))
+
+  if (hookGroups.length > 0) {
+    parts.push('## Hooks', '')
+    parts.push('| Hook | Description |')
+    parts.push('| ---- | ----------- |')
+    for (const group of hookGroups) {
+      // groupSyntheticMembers sorts the primary hook function to the top of each group.
+      const primaryHook = group.children[0] as DeclarationReflection | undefined
+      if (!primaryHook) continue
+      const url = context.urlTo(primaryHook)
+      const description = getReflectionDescription(primaryHook, context)
+      parts.push(`| [${group.title}](${url}) | ${description} |`)
+    }
+  } else {
+    parts.push('## Hooks', '', `See [${model.name} Hooks](./hooks).`)
+  }
 
   return parts.join('\n')
 }
@@ -619,6 +679,9 @@ export class SDKRouter extends MemberRouter {
   // domain hooks page and must be skipped when buildChildPages encounters them.
   private readonly handledHooks = new Set<DeclarationReflection>()
 
+  // Keyed by domain name; populated in buildPages so renderDomainHub can list hooks.
+  readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
+
   /**
    * Pre-scan for domain hooks and consolidate them into one synthetic namespace
    * page per domain (e.g. Employee/hooks.md), then delegate everything else to
@@ -677,6 +740,7 @@ export class SDKRouter extends MemberRouter {
       hooksNs.children = hooks
       hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
+      this.hooksNsByDomain.set(domain, hooksNs)
     }
 
     for (const [domain, nsNames] of Object.entries(DOMAIN_HUBS)) {

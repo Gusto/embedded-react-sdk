@@ -7,8 +7,9 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
-export type DeductionsSuccessAlertCode = 'deductionAdded' | 'deductionUpdated' | 'deductionDeleted'
+type DeductionsSuccessAlertCode = 'deductionAdded' | 'deductionUpdated' | 'deductionDeleted'
 
+/** @internal */
 export interface DeductionsContextInterface extends FlowContextInterface {
   employeeId?: string
   /** Set when transitioning to `editDeduction` via the EDIT event; consumed
@@ -18,6 +19,7 @@ export interface DeductionsContextInterface extends FlowContextInterface {
   successAlert?: DeductionsSuccessAlertCode | null
 }
 
+/** @internal */
 export function DeductionsCardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<DeductionsContextInterface>()
   const { t } = useTranslation('Employee.Management.Deductions')
@@ -38,6 +40,7 @@ export function DeductionsCardContextual() {
   )
 }
 
+/** @internal */
 export function DeductionsEditFormContextual() {
   const { employeeId, editingDeductionId, onEvent } = useFlow<DeductionsContextInterface>()
   return (

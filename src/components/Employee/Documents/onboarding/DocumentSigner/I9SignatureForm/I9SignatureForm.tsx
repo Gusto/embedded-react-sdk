@@ -23,6 +23,7 @@ interface I9SignatureFormProps extends CommonComponentInterface {
   formId: string
 }
 
+/** @internal */
 export function I9SignatureForm(props: I9SignatureFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
