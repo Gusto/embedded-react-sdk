@@ -80,7 +80,7 @@ const config: Config = {
             lastVersion,
             includeCurrentVersion: false,
             versions: Object.fromEntries(
-              versions.map(version => [version, { banner: 'none' as const }]),
+              versions.map(version => [version, { banner: 'none' as const, badge: false }]),
             ),
           }),
         },
