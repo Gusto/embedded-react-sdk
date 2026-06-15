@@ -10,6 +10,11 @@ const ROOT = join(__dirname, '..')
 const DOCS_DIR = join(ROOT, 'docs')
 const REQUIRED_FIELDS = ['title', 'description'] as const
 
+// Generated content lives here (gitignored, rebuilt by TypeDoc on each
+// build). It legitimately has no frontmatter — skip the directory so a
+// local lint after a prior typedoc run doesn't see stale generated files.
+const SKIP_DIRS = new Set(['api'])
+
 interface Violation {
   file: string
   reason: string
@@ -20,6 +25,7 @@ function collectMarkdownFiles(dir: string): string[] {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry)
     if (statSync(full).isDirectory()) {
+      if (dir === DOCS_DIR && SKIP_DIRS.has(entry)) continue
       out.push(...collectMarkdownFiles(full))
     } else if (entry.endsWith('.md')) {
       out.push(full)
