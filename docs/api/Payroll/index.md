@@ -1,0 +1,50 @@
+---
+title: Payroll
+description: Payroll API reference.
+custom_edit_url: null
+---
+
+# Payroll
+
+## Block Components
+
+<a id="payrollblockerlist"></a>
+
+### PayrollBlockerList
+
+PayrollBlockerList - DataView-based component displaying payroll blockers
+Shows each blocker with individual resolution buttons
+Also displays recovery cases and information requests sections when applicable
+
+#### Parameters
+
+|Parameter|Type|
+|-|-|
+|`props`|`PayrollBlockerListProps`|
+
+---
+
+<a id="payrolllist"></a>
+
+### PayrollList
+
+Lists upcoming payrolls and lets users start running them.
+
+Disables the Run Payroll action on Regular rows when the company has any
+unprocessed transition pay periods within the next 90 days — running a
+regular payroll before resolving a transition causes the transition to be
+dropped on the backend, so this gate matches the behavior shipped in
+Gusto-hosted flows. Off-cycle rows and the Run off-cycle CTA are
+intentionally left enabled, since off-cycle is the path used to actually
+run a transition payroll.
+
+When composed via `Payroll.PayrollLanding`, the alert that explains the
+block (and lets the user resolve it via Run / Skip) is rendered
+automatically. When using `PayrollList` directly, render an equivalent
+resolution surface alongside it.
+
+#### Parameters
+
+|Parameter|Type|
+|-|-|
+|`props`|`PayrollListBlockProps`|

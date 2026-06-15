@@ -1,0 +1,134 @@
+---
+title: EmployeeManagement Flows
+description: EmployeeManagement Flows API reference.
+custom_edit_url: null
+---
+
+# Flow Components
+
+<a id="dashboardflow"></a>
+
+## DashboardFlow
+
+The main entry point for the employee dashboard.
+
+### DashboardFlowProps
+
+<a id="dashboardflowprops"></a>
+
+Props for [DashboardFlow](#dashboardflow).
+
+|Property|Type|Description|
+|-|-|-|
+|`children?`|`ReactNode`|Optional child content rendered inside the component's layout.|
+|`className?`|`string`|CSS class name applied to the component's root element.|
+|`defaultValues?`|`unknown`|Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.|
+|`dictionary?`|`Record`\<`"en"`, `DeepPartial`\<`common`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAddresses`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAssignSignatory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyDocumentList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyIndustry`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyLocations`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyOnboardingOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyPaySchedule`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanySignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffCreateTimeOffPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffEmployeeTable`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffPolicyDetail`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectEmployees`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectPolicyType`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicies`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicyDetails`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorContractorList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorNewHireReport`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorSubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDashboard`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductionsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentManager`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentSigner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmploymentEligibility`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeI9SignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodBankForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodSplitForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaystubs`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeOnboardingSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaySchedules`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaycheck`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaymentsFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollCommon`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsBanner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollDismissal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollEmployeeSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollGrossUpModal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycle`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCyclePayPeriodDateForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleReasonSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleTaxWithholding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollBlocker`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollConfiguration`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollReceipts`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesResubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransition`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionPayrollAlert`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollWireInstructions`\>\>|Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.|
+|`employeeId`|`string`|The associated employee identifier.|
+|`FallbackComponent?`|(`props`) => `Element`|Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.|
+|`LoaderComponent?`|(`__namedParameters`) => `Element`|Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.|
+|`onEvent`|`OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\>|Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events.|
+
+### Remarks
+
+Renders a tabbed view of an employee's profile (Basic details, Job and pay,
+Taxes, Documents), wires the card surfaces to their corresponding edit
+screens via an internal state machine, and surfaces success alerts at the
+top of the dashboard after each successful edit. Wraps the dashboard in
+error and suspense boundaries.
+
+Every tab section of the dashboard is also exported as a self-contained
+block that can be dropped into a custom layout without the surrounding
+dashboard chrome:
+
+- [Compensation](blocks.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
+- Profile — Basic details tab (name, start date, SSN, DOB, email)
+- FederalTaxes — Taxes tab, federal withholding settings
+- StateTaxes — Taxes tab, state withholding settings
+- PaymentMethod — direct-deposit bank accounts and split-paycheck configuration
+- Deductions — post-tax deductions (garnishments)
+- HomeAddress — home address management
+- WorkAddress — work address management
+- Documents — documents and forms (read-only viewer)
+
+Each block wraps its read-only card, its edit form, and the card↔form
+transitions as a single drop-in. For cases where that built-in orchestration
+doesn't fit — rendering a form in a modal, driving navigation via a router,
+or showing a card read-only — each block's card and form are also exported
+individually (e.g. [CompensationCard](blocks.md#compensationcard), [CompensationEditForm](blocks.md#compensationeditform)).
+Using the individual pieces means owning the swap, any success alerts, and
+cross-component state yourself.
+
+The dashboard composes self-fetching cards and their edit forms and forwards
+every event they emit to the partner via `onEvent`; its internal state
+machine also reacts to a subset of these events to swap between the cards
+and edit screens and to surface success alerts. The table below is the
+complete, current set of events observable from `DashboardFlow`, grouped by
+the tab that emits them.
+
+|Event|Description|Data|
+|-|-|-|
+|`employee/management/profile/editRequested`|Fired when "Edit" is clicked on the Basic details (Profile) card|`{ employeeId: string }`|
+|`employee/management/profile/updated`|Fired after the basic-details edit form is saved; the dashboard returns to the cards and surfaces the "Profile updated" alert|Updated `Employee` entity|
+|`employee/management/profile/editCancelled`|Fired when the user clicks Cancel on the basic-details edit form; the dashboard returns to the cards|—|
+|`employee/management/homeAddress/editRequested`|Fired when "Manage" is clicked on the Home address card|`{ employeeId: string }`|
+|`employee/management/homeAddress/created`|Fired after a new home address is created on the manage screen; the manage screen stays open|Created `EmployeeAddress` entity|
+|`employee/management/homeAddress/updated`|Fired after a home address is updated on the manage screen; the manage screen stays open|Updated `EmployeeAddress` entity|
+|`employee/management/homeAddress/deleted`|Fired after a non-active home address is deleted on the manage screen; the manage screen stays open|Deleted `EmployeeAddress` entity|
+|`employee/management/homeAddress/editCancelled`|Fired when the user clicks Back on the manage screen; the dashboard returns to the cards|—|
+|`employee/management/workAddress/editRequested`|Fired when "Manage" is clicked on the Work address card|`{ employeeId: string }`|
+|`employee/management/workAddress/created`|Fired after a new work address is created on the manage screen; the manage screen stays open|Created `EmployeeWorkAddress` entity|
+|`employee/management/workAddress/updated`|Fired after a work address is updated on the manage screen; the manage screen stays open|Updated `EmployeeWorkAddress` entity|
+|`employee/management/workAddress/deleted`|Fired after a work address is deleted on the manage screen; the manage screen stays open|Deleted `EmployeeWorkAddress` entity|
+|`employee/management/workAddress/editCancelled`|Fired when the user clicks Back on the manage screen; the dashboard returns to the cards|—|
+|`employee/management/compensation/card/editRequested`|Fired when an "Edit" CTA is clicked for a job on the Compensation card|`{ employeeId: string, jobId: string }`|
+|`employee/management/compensation/card/addRequested`|Fired when "Add job" is clicked from the Compensation card's empty state|`{ employeeId: string }`|
+|`employee/management/compensation/card/addAnotherRequested`|Fired when "Add another job" is clicked on the Compensation card|`{ employeeId: string }`|
+|`employee/management/compensation/card/jobDeleted`|Fired after a non-primary job is deleted via the card's confirm dialog|`{ employeeId: string, jobId: string }`|
+|`employee/management/compensation/card/changeCancelled`|Fired after a scheduled future-dated change is cancelled from the card|`{ employeeId: string, compensationId: string }`|
+|`employee/management/compensation/editForm/submitted`|Fired after an edit-compensation save completes; the dashboard returns to the cards|Updated `Compensation` entity|
+|`employee/management/compensation/editForm/cancelled`|Fired when the user cancels the edit-compensation form; the dashboard returns to the cards|—|
+|`employee/management/compensation/addJobForm/submitted`|Fired after the first job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert|Updated `Compensation` entity|
+|`employee/management/compensation/addJobForm/cancelled`|Fired when the user cancels the add-job form; the dashboard returns to the cards|—|
+|`employee/management/compensation/addAnotherJobForm/submitted`|Fired after a secondary job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert|Updated `Compensation` entity|
+|`employee/management/compensation/addAnotherJobForm/cancelled`|Fired when the user cancels the add-another-job form; the dashboard returns to the cards|—|
+|`employee/management/paymentMethod/card/addRequested`|Fired when "Add bank account" / "Add another bank account" is clicked on the Payment card|—|
+|`employee/management/paymentMethod/card/splitRequested`|Fired when "Split paycheck" is clicked on the Payment card|—|
+|`employee/management/paymentMethod/card/bankAccountDeleted`|Fired after a bank account is deleted from the card; the dashboard surfaces the "Bank account deleted" alert|Response from the Delete a bank account endpoint|
+|`employee/management/paymentMethod/bankForm/submitted`|Fired after a new bank account is saved; the dashboard returns to the cards and surfaces the "Bank account added" alert|Created `EmployeeBankAccount` entity|
+|`employee/management/paymentMethod/bankForm/cancelled`|Fired when the user cancels the add-bank-account screen; the dashboard returns to the cards|—|
+|`employee/management/paymentMethod/splitForm/submitted`|Fired after the split configuration is saved; the dashboard returns to the cards and surfaces the "Split updated" alert|Updated `EmployeePaymentMethod` entity|
+|`employee/management/paymentMethod/splitForm/cancelled`|Fired when the user cancels the split-paycheck screen; the dashboard returns to the cards|—|
+|`employee/management/deductions/card/addRequested`|Fired when "Add deduction" is clicked on the Deductions card|`{ employeeId: string }`|
+|`employee/management/deductions/card/editRequested`|Fired when a row's "Edit" menu item is chosen on the Deductions card|The `Garnishment` row being edited|
+|`employee/management/deductions/card/deleted`|Fired after the soft-delete dialog is confirmed; the dashboard surfaces the "Deduction deleted" alert|The now-inactive `Garnishment`|
+|`employee/management/deductions/editForm/created`|Fired after a new deduction is created; the dashboard returns to the cards and surfaces the "Deduction added" alert|The created `Garnishment`|
+|`employee/management/deductions/editForm/updated`|Fired after a deduction is updated; the dashboard returns to the cards and surfaces the "Deduction updated" alert|The updated `Garnishment`|
+|`employee/management/deductions/editForm/cancelled`|Fired when the user cancels the add/edit deduction form; the dashboard returns to the cards|—|
+|`employee/management/paystubs/card/downloadRequested`|Fired when a paystub row's download button is clicked, before the PDF is fetched|`{ employeeId: string, payrollUuid: string }`|
+|`employee/management/paystubs/card/downloaded`|Fired after the paystub PDF is fetched and opened in a new tab|`{ employeeId: string, payrollUuid: string }`|
+|`employee/management/federalTaxes/card/editRequested`|Fired when "Edit" is clicked on the Federal taxes card|`{ employeeId: string }`|
+|`employee/management/federalTaxes/editForm/submitted`|Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal taxes updated" alert|Updated `EmployeeFederalTax` entity|
+|`employee/management/federalTaxes/editForm/cancelled`|Fired when the user cancels the federal-taxes edit form; the dashboard returns to the cards|—|
+|`employee/management/stateTaxes/editRequested`|Fired when "Edit" is clicked on the State taxes card|`{ employeeId: string }`|
+|`employee/management/stateTaxes/updated`|Fired after a state-taxes save succeeds; the dashboard returns to the cards and surfaces the "State taxes updated" alert|`{ employeeStateTaxesList: EmployeeStateTaxesList[] }`|
+|`employee/management/stateTaxes/editCancelled`|Fired when the user cancels the state-taxes edit form; the dashboard returns to the cards|—|
+|`employee/management/documents/card/viewRequested`|Fired when a document row's "View" CTA is clicked; the dashboard swaps to the read-only document viewer|`{ employeeId: string, formId: string }`|
+|`CANCEL`|Fired when the user clicks Back in the document viewer; the dashboard returns to the cards|—|
+|`employee/dashboard/tabChange`|Fired when the user switches dashboard tabs|`{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }`|
+|`employee/dismiss`|Fired when the user dismisses a top-of-dashboard success alert|—|
+
+### Example
+
+```tsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeManagement.DashboardFlow
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
