@@ -173,7 +173,7 @@ jobs:
         run: npm run api-report:derive
 
       - name: Generate TypeDoc markdown
-        run: cd docs-site && npm ci && npm run typedoc
+        run: npm run docs:api:generate
 
       - name: Commit and push derived files
         run: |
@@ -181,7 +181,7 @@ jobs:
           git add docs/api
           if ! git diff --staged --quiet; then
             if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-              echo "::error::Derived files are stale on main — run 'npm run endpoints:derive && npm run api-report:derive && cd docs-site && npm run typedoc' locally and commit the result."
+              echo "::error::Derived files are stale on main — run 'npm run endpoints:derive && npm run api-report:derive && npm run docs:api:generate' locally and commit the result."
               exit 1
             fi
             git config user.name "github-actions[bot]"
