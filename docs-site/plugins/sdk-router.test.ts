@@ -25,6 +25,7 @@ import {
   reparentDeprecatedMembers,
   SDKRouter,
   serializeFrontmatter,
+  standalonePageFromSources,
 } from './sdk-router'
 
 let app: Application
@@ -979,6 +980,180 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.children.includes(hook))
     expect(group?.title).toBe('Functions')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// standalonePageFromSources
+// ---------------------------------------------------------------------------
+
+describe('standalonePageFromSources', () => {
+  it('returns the theme-variables page for a ThemeProvider source file', () => {
+    const r = new DeclarationReflection('GustoSDKTheme', ReflectionKind.TypeAlias)
+    r.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    expect(standalonePageFromSources(r)).toBe('theme-variables')
+  })
+
+  it('returns the theme-variables page for any file under the ThemeProvider directory', () => {
+    const r = new DeclarationReflection('createTheme', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/contexts/ThemeProvider/theme.ts')
+    expect(standalonePageFromSources(r)).toBe('theme-variables')
+  })
+
+  it('returns the utilities page for a partner-hook-utils source file', () => {
+    const r = new DeclarationReflection('composeErrorHandler', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+    expect(standalonePageFromSources(r)).toBe('utilities')
+  })
+
+  it('returns the utilities page for a file nested under partner-hook-utils', () => {
+    const r = new DeclarationReflection('composeSubmitHandler', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/partner-hook-utils/form/composeSubmitHandler.ts')
+    expect(standalonePageFromSources(r)).toBe('utilities')
+  })
+
+  it('returns null when sources are absent', () => {
+    const r = new DeclarationReflection('GustoSDKTheme', ReflectionKind.TypeAlias)
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+
+  it('returns null for a path that does not match any STANDALONE_PAGES key', () => {
+    const r = new DeclarationReflection('SomeUtil', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/utils/helpers.ts')
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+
+  it('returns the component-adapter page for a Common UI types file (TypeDoc resolves re-exports to their definition)', () => {
+    const r = new DeclarationReflection('AlertProps', ReflectionKind.Interface)
+    r.sources = sourceRef('/workspace/src/components/Common/UI/Alert/AlertTypes.ts')
+    expect(standalonePageFromSources(r)).toBe('component-adapter')
+  })
+
+  it('returns null for a src/components path (those go to domain or hook pages, not standalone)', () => {
+    const r = new DeclarationReflection('useSomething', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/components/Employee/hooks/useSomething.ts')
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildPages — standalone page routing
+// ---------------------------------------------------------------------------
+
+describe('buildPages — standalone page routing', () => {
+  it('ThemeProvider export gets its own page at theme-variables.md', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('theme-variables.md')
+    expect(router.hasOwnDocument(themeType)).toBe(false)
+    expect(router.getAnchor(themeType)).toBeDefined()
+  })
+
+  it('partner-hook-utils export gets its own page at utilities.md', () => {
+    const project = makeProject()
+    const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
+    util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('utilities.md')
+    expect(router.hasOwnDocument(util)).toBe(false)
+    expect(router.getAnchor(util)).toBeDefined()
+  })
+
+  it('multiple members from the same source are consolidated onto one page', () => {
+    const project = makeProject()
+    const typeA = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    typeA.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const typeB = makeChild(project, 'GustoSDKThemeColors', ReflectionKind.TypeAlias)
+    typeB.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const fnA = makeChild(project, 'createTheme', ReflectionKind.Function)
+    fnA.sources = sourceRef('/workspace/src/contexts/ThemeProvider/theme.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.filter(p => p.url === 'theme-variables.md')).toHaveLength(1)
+    expect(router.getAnchor(typeA)).toBeDefined()
+    expect(router.getAnchor(typeB)).toBeDefined()
+    expect(router.getAnchor(fnA)).toBeDefined()
+  })
+
+  it('members from different standalone sources go to separate pages', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
+    util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('theme-variables.md')
+    expect(urls).toContain('utilities.md')
+  })
+
+  it('standalone page model has the display name, not the page path', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const page = pages.find(p => p.url === 'theme-variables.md')
+    expect((page?.model as DeclarationReflection).name).toBe('Theme Variables')
+  })
+
+  it('standalone members are removed from project groups', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const group = new ReflectionGroup('Type Aliases', themeType)
+    project.groups = [group]
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    expect(project.groups?.flatMap(g => g.children)).not.toContain(themeType)
+  })
+
+  it('standalone member does NOT appear on the project index page', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    // standalone members must not anchor to the project index
+    const projectUrl = router.getFullUrl(project)
+    const memberUrl = router.getFullUrl(themeType)
+    expect(memberUrl).not.toBe(projectUrl)
+    expect(memberUrl).toContain('theme-variables')
+  })
+
+  it('namespace members are not affected by STANDALONE_PAGES (namespace routing is unchanged)', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const nsMember = makeChild(ns, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    // Source path matches ThemeProvider pattern, but it's inside a namespace — not project-level
+    nsMember.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).not.toContain('theme-variables.md')
   })
 })
 
