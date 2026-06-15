@@ -11,12 +11,98 @@ custom_edit_url: null
 
 # Employee
 
-## Namespaces
+## [EmployeeOnboarding](EmployeeOnboarding/flows.md)
 
-| Namespace | Description |
+### Flow Components
+
+| Component | Description |
 | --------- | ----------- |
-| [EmployeeManagement](EmployeeManagement/flows.md) |  |
+| [OnboardingExecutionFlow](EmployeeOnboarding/flows.md#onboardingexecutionflow) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+| [OnboardingFlow](EmployeeOnboarding/flows.md#onboardingflow) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
+| [SelfOnboardingFlow](EmployeeOnboarding/flows.md#selfonboardingflow) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
+
+### Block Components
+
+| Component | Description |
+| --------- | ----------- |
+| [Compensation](EmployeeOnboarding/blocks.md#compensation) | Onboarding step for collecting an employee's role and compensation details. |
+| [Deductions](EmployeeOnboarding/blocks.md#deductions) | Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments. |
+| [DocumentSigner](EmployeeOnboarding/blocks.md#documentsigner) | Onboarding step for signing employee documents. |
+| [EditCompensation](EmployeeOnboarding/blocks.md#editcompensation) | Renders a form for creating or editing one of an employee's jobs together with its compensation. |
+| [EmployeeDocuments](EmployeeOnboarding/blocks.md#employeedocuments) | Onboarding step for selecting which documents the employee must complete. |
+| [EmployeeList](EmployeeOnboarding/blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
+| [EmploymentEligibility](EmployeeOnboarding/blocks.md#employmenteligibility) | Captures the employee's I-9 employment eligibility (Section 1) before signing. |
+| [FederalTaxes](EmployeeOnboarding/blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [JobsList](EmployeeOnboarding/blocks.md#jobslist) |  |
+| [Landing](EmployeeOnboarding/blocks.md#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
+| [OnboardingSummary](EmployeeOnboarding/blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
+| [PaymentMethod](EmployeeOnboarding/blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |
+| [Profile](EmployeeOnboarding/blocks.md#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
+| [StateTaxes](EmployeeOnboarding/blocks.md#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
+
+## [EmployeeManagement](EmployeeManagement/flows.md)
+
+### Flow Components
+
+| Component | Description |
+| --------- | ----------- |
+| [DashboardFlow](EmployeeManagement/flows.md#dashboardflow) | The main entry point for the employee dashboard. |
+| [EmployeeListFlow](EmployeeManagement/flows.md#employeelistflow) | Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows. |
+| [TerminationFlow](EmployeeManagement/flows.md#terminationflow) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
+
+### Block Components
+
+| Component | Description |
+| --------- | ----------- |
+| [Compensation](EmployeeManagement/blocks.md#compensation) | Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [CompensationAddAnotherJobForm](EmployeeManagement/blocks.md#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
+| [CompensationAddJobForm](EmployeeManagement/blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
+| [CompensationCard](EmployeeManagement/blocks.md#compensationcard) | Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances. |
+| [CompensationEditForm](EmployeeManagement/blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
+| [Deductions](EmployeeManagement/blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [DeductionsCard](EmployeeManagement/blocks.md#deductionscard) | Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction. |
+| [DeductionsEditForm](EmployeeManagement/blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
+| [Documents](EmployeeManagement/blocks.md#documents) | Standalone employee documents management flow. |
+| [DocumentsCard](EmployeeManagement/blocks.md#documentscard) | Standalone "Documents" (forms) card. Owns its own data fetch via useDocumentsList and renders the employee's forms in a table with a per-row "View" action. Emits `employee/management/documents/card/viewRequested` with `{ employeeId, formId }` when a row's View CTA is clicked. The card is read-only — viewing or signing a form happens in the screen the parent routes to — and renders no alerts: alert rendering is the parent's responsibility. |
+| [EmployeeList](EmployeeManagement/blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [FederalTaxes](EmployeeManagement/blocks.md#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [FederalTaxesCard](EmployeeManagement/blocks.md#federaltaxescard) | Standalone "Federal taxes" card. Owns its own data fetch via `useFederalTaxesSummary` and emits `EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED` when the Edit button is clicked. The card has no alert API — alert rendering (when introduced) is the orchestrator's responsibility. |
+| [FederalTaxesEditForm](EmployeeManagement/blocks.md#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [HomeAddress](EmployeeManagement/blocks.md#homeaddress) | Standalone employee home address management flow. |
+| [HomeAddressCard](EmployeeManagement/blocks.md#homeaddresscard) | Standalone employee home address summary card. |
+| [HomeAddressEditForm](EmployeeManagement/blocks.md#homeaddresseditform) | Standalone employee home address edit form for creating, updating, and deleting addresses. |
+| [PaymentMethod](EmployeeManagement/blocks.md#paymentmethod) | Management flow for editing an employee's payment method. |
+| [PaymentMethodBankForm](EmployeeManagement/blocks.md#paymentmethodbankform) | Standalone bank-account form for the management flow. |
+| [PaymentMethodCard](EmployeeManagement/blocks.md#paymentmethodcard) | Standalone "Payment" card. |
+| [PaymentMethodSplitForm](EmployeeManagement/blocks.md#paymentmethodsplitform) | Standalone split-paycheck form for the management flow. |
+| [PaystubsCard](EmployeeManagement/blocks.md#paystubscard) | Standalone "Paystubs" card. Owns its own data fetch via usePaystubsList and renders the paginated paystubs table with a per-row PDF download action. Emits the management block's scoped events (`EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_*`) on download request and on download success. The card has no edit transitions and no alert API — paystubs is a read-only surface whose only action is a download side effect that opens the PDF in a new tab. |
+| [Profile](EmployeeManagement/blocks.md#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
+| [ProfileCard](EmployeeManagement/blocks.md#profilecard) | Read-only card showing an employee's basic profile details with an Edit action. |
+| [ProfileEditForm](EmployeeManagement/blocks.md#profileeditform) | Standalone edit form for an employee's basic profile details. |
+| [StateTaxes](EmployeeManagement/blocks.md#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](EmployeeManagement/blocks.md#statetaxescard) and [StateTaxesEditForm](EmployeeManagement/blocks.md#statetaxeseditform) drive the internal state machine. |
+| [StateTaxesCard](EmployeeManagement/blocks.md#statetaxescard) | Standalone read-only summary card showing an employee's per-state tax withholding answers. Fetches its own data and surfaces an Edit button that emits an event for the orchestrator to swap in the edit form. |
+| [StateTaxesEditForm](EmployeeManagement/blocks.md#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
+| [TerminateEmployee](EmployeeManagement/blocks.md#terminateemployee) | Standalone form for capturing an employee's termination details — last day of work and how to process final payroll. |
+| [TerminationSummary](EmployeeManagement/blocks.md#terminationsummary) | Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist. |
+| [WorkAddress](EmployeeManagement/blocks.md#workaddress) | Standalone employee work address management flow. |
+| [WorkAddressCard](EmployeeManagement/blocks.md#workaddresscard) | Standalone employee work address summary card. |
+| [WorkAddressEditForm](EmployeeManagement/blocks.md#workaddresseditform) | Standalone employee work address edit form for creating, updating, and deleting addresses. |
 
 ## Hooks
 
-See [Employee Hooks](./hooks).
+| Hook | Description |
+| ---- | ----------- |
+| [useBankForm](hooks.md#usebankform) | Headless React Hook Form hook for creating an employee bank account. |
+| [useChildSupportGarnishmentForm](hooks.md#usechildsupportgarnishmentform) | Headless hook for creating or updating a child-support garnishment. |
+| [useCompensationForm](hooks.md#usecompensationform) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
+| [useDeductionForm](hooks.md#usedeductionform) | Headless hook for creating or updating a non-child-support deduction. |
+| [useEmployeeDetailsForm](hooks.md#useemployeedetailsform) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
+| [useEmployeeStateTaxesForm](hooks.md#useemployeestatetaxesform) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
+| [useEmployeeList](hooks.md#useemployeelist) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
+| [useFederalTaxesForm](hooks.md#usefederaltaxesform) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [useHomeAddressForm](hooks.md#usehomeaddressform) | Form hook for creating or editing an employee's home address. |
+| [useJobForm](hooks.md#usejobform) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
+| [usePaymentMethodForm](hooks.md#usepaymentmethodform) | Headless React Hook Form hook for updating an employee's payment method. |
+| [useSignEmployeeForm](hooks.md#usesignemployeeform) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
+| [useSplitPaymentsForm](hooks.md#usesplitpaymentsform) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
+| [useWorkAddressForm](hooks.md#useworkaddressform) | Form hook for creating or editing an employee's work address. |

@@ -47,14 +47,14 @@ block that can be dropped into a custom layout without the surrounding
 dashboard chrome:
 
 - [Compensation](blocks.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
-- Profile — Basic details tab (name, start date, SSN, DOB, email)
-- FederalTaxes — Taxes tab, federal withholding settings
-- StateTaxes — Taxes tab, state withholding settings
-- PaymentMethod — direct-deposit bank accounts and split-paycheck configuration
-- Deductions — post-tax deductions (garnishments)
-- HomeAddress — home address management
-- WorkAddress — work address management
-- Documents — documents and forms (read-only viewer)
+- [Profile](blocks.md#profile) — Basic details tab (name, start date, SSN, DOB, email)
+- [FederalTaxes](blocks.md#federaltaxes) — Taxes tab, federal withholding settings
+- [StateTaxes](blocks.md#statetaxes) — Taxes tab, state withholding settings
+- [PaymentMethod](blocks.md#paymentmethod) — direct-deposit bank accounts and split-paycheck configuration
+- [Deductions](blocks.md#deductions) — post-tax deductions (garnishments)
+- [HomeAddress](blocks.md#homeaddress) — home address management
+- [WorkAddress](blocks.md#workaddress) — work address management
+- [Documents](blocks.md#documents) — documents and forms (read-only viewer)
 
 Each block wraps its read-only card, its edit form, and the card↔form
 transitions as a single drop-in. For cases where that built-in orchestration
@@ -131,6 +131,126 @@ import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 function MyApp() {
   return (
     <EmployeeManagement.DashboardFlow
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+***
+
+<a id="employeelistflow"></a>
+
+## EmployeeListFlow
+
+Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
+
+### EmployeeListFlowProps
+
+<a id="employeelistflowprops"></a>
+
+Props for [EmployeeListFlow](#employeelistflow).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `companyId` | `string` | The associated company identifier. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`common`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAddresses`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAssignSignatory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyDocumentList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyIndustry`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyLocations`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyOnboardingOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyPaySchedule`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanySignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffCreateTimeOffPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffEmployeeTable`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffPolicyDetail`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectEmployees`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectPolicyType`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicies`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicyDetails`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorContractorList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorNewHireReport`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorSubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDashboard`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductionsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentManager`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentSigner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmploymentEligibility`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeI9SignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodBankForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodSplitForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaystubs`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeOnboardingSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaySchedules`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaycheck`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaymentsFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollCommon`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsBanner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollDismissal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollEmployeeSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollGrossUpModal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycle`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCyclePayPeriodDateForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleReasonSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleTaxWithholding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollBlocker`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollConfiguration`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollReceipts`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesResubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransition`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionPayrollAlert`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollWireInstructions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+### Remarks
+
+Drop-in entry point for managing all employees in a company. Begins on the
+management employee list and routes into [DashboardFlow](#dashboardflow),
+[TerminationFlow](#terminationflow), or [OnboardingExecutionFlow](../EmployeeOnboarding/flows.md#onboardingexecutionflow) based on the
+action the admin invokes on a row (or the "Add employee" CTA). A "Back to
+employees" header is added to each sub-flow so the admin can return to the
+list at any time.
+
+The flow forwards every event emitted by its sub-components to `onEvent`;
+see the events table on each sub-component for the full set of events and
+payloads observable from this flow.
+
+### Example
+
+```tsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeManagement.EmployeeListFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+***
+
+<a id="terminationflow"></a>
+
+## TerminationFlow
+
+Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
+
+### TerminationFlowProps
+
+<a id="terminationflowprops"></a>
+
+Props for [TerminationFlow](#terminationflow).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `companyId` | `string` | The associated company identifier. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`common`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAddresses`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAssignSignatory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyDocumentList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyIndustry`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyLocations`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyOnboardingOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyPaySchedule`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanySignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffCreateTimeOffPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffEmployeeTable`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffPolicyDetail`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectEmployees`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectPolicyType`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicies`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicyDetails`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorContractorList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorNewHireReport`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorSubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDashboard`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductionsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentManager`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentSigner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmploymentEligibility`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeI9SignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodBankForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodSplitForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaystubs`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeOnboardingSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaySchedules`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaycheck`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaymentsFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollCommon`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsBanner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollDismissal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollEmployeeSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollGrossUpModal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycle`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCyclePayPeriodDateForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleReasonSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleTaxWithholding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollBlocker`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollConfiguration`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollReceipts`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesResubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransition`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionPayrollAlert`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollWireInstructions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `employeeId` | `string` | The employee identifier to terminate. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+### Remarks
+
+Provides a complete experience for terminating an employee — guides the user through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process. Drives a multi-step flow with breadcrumb navigation between the termination form, the summary, and the dismissal payroll flow (when the partner selects the dismissal payroll option).
+
+On mount, the flow detects existing terminations: if an active termination exists, the form is pre-populated for editing; if the employee is already terminated, the user is routed to the summary view.
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/done` | Fired when the termination process is complete | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
+| `employee/termination/viewSummary` | Fired when viewing an existing termination summary | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
+| `employee/termination/cancelled` | Fired when a termination is cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }` |
+| `employee/termination/runPayroll` | Fired when user chooses to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
+| `employee/termination/runOffCyclePayroll` | Fired when user chooses to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
+| `employee/termination/payrollCreated` | Fired when an off-cycle payroll is created for termination | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/payrollFailed` | Fired when off-cycle payroll creation fails | `{ employeeId: string }` |
+
+The [PayrollOption](blocks.md#payrolloption) on each event identifies how the partner has chosen to handle the employee's final paycheck:
+
+- `dismissalPayroll` — Run a dismissal payroll (the most guided option). The flow swaps the employee's last regular payroll into a dismissal payroll with the termination date as the pay-period end and makes a default PTO payout recommendation.
+- `regularPayroll` — Include the final pay in the employee's next scheduled regular payroll. The termination can still be cancelled after the fact.
+- `anotherWay` — Handle final pay outside of Gusto. Triggers the off-cycle payroll creation flow and removes the employee from unprocessed future payrolls. The termination can still be cancelled after the fact.
+
+### Example
+
+```tsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeManagement.TerminationFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
     />

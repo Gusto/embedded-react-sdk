@@ -16,6 +16,7 @@ custom_edit_url: null
 | Namespace | Description |
 | ------ | ------ |
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
+| [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
 | [Payroll](Payroll/index.md) | - |
 
 ## Components
@@ -689,6 +690,26 @@ See [GustoProviderCustomUIAdapterProps](#gustoprovidercustomuiadapterprops).
 
 The configured provider tree wrapping `children`.
 
+***
+
+<a id="pay_periods"></a>
+
+### PAY\_PERIODS
+
+> `const` **PAY\_PERIODS**: `object`
+
+Pay period unit values for the `paymentUnit` field on a compensation, describing the unit a pay rate is expressed against.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` | `'Hour'` |
+| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` | `'Month'` |
+| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` | `'Paycheck'` |
+| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` | `'Week'` |
+| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` | `'Year'` |
+
 ## Interfaces
 
 <a id="alertprops"></a>
@@ -820,8 +841,19 @@ parsed values (or `undefined` if invalid).
 
 #### Extended by
 
+- [`UseDeductionFormReady`](Employee/hooks.md#usedeductionformready)
+- [`UseChildSupportGarnishmentFormReady`](Employee/hooks.md#usechildsupportgarnishmentformready)
 - [`UseCompensationFormReady`](Employee/hooks.md#usecompensationformready)
 - [`UseJobFormReady`](Employee/hooks.md#usejobformready)
+- [`UseEmployeeDetailsFormReady`](Employee/hooks.md#useemployeedetailsformready)
+- [`UseWorkAddressFormReady`](Employee/hooks.md#useworkaddressformready)
+- [`UseHomeAddressFormReady`](Employee/hooks.md#usehomeaddressformready)
+- [`UseBankFormReady`](Employee/hooks.md#usebankformready)
+- [`UsePaymentMethodFormReady`](Employee/hooks.md#usepaymentmethodformready)
+- [`UseSplitPaymentsFormReady`](Employee/hooks.md#usesplitpaymentsformready)
+- [`UseEmployeeStateTaxesFormReady`](Employee/hooks.md#useemployeestatetaxesformready)
+- [`UseFederalTaxesFormReady`](Employee/hooks.md#usefederaltaxesformready)
+- [`UseSignEmployeeFormReady`](Employee/hooks.md#usesignemployeeformready)
 
 #### Type Parameters
 
@@ -862,6 +894,10 @@ Each concrete hook substitutes its own `data` and `status` shape via the
 type parameters so consumers see fully-typed payloads without manual
 narrowing. `isLoading: false` discriminates this branch from
 [HookLoadingResult](#hookloadingresult).
+
+#### Extended by
+
+- [`UseEmployeeListReady`](Employee/hooks.md#useemployeelistready)
 
 #### Type Parameters
 
