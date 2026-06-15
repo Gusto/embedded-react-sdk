@@ -9,17 +9,29 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link HomeAddressCard}.
+ *
+ * @public
+ */
 export interface HomeAddressCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the card's Manage button is clicked. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Home address" card. Owns its own data fetch via
- * `useHomeAddressSummary` and emits
- * `EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED` when the Manage
- * button is clicked. The card has no alert API — alert rendering
- * (when introduced) is the orchestrator's responsibility.
+ * Standalone employee home address summary card.
+ *
+ * @remarks
+ * Fetches the employee's active home address and renders it alongside a Manage button.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
+ *
+ * @public
  */
 export function HomeAddressCard(props: HomeAddressCardProps) {
   return (

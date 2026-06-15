@@ -21,11 +21,13 @@ export {
   type PreparerIndex,
   type PreparerFieldSuffix,
 } from './signEmployeeFormSchema'
+export { SignatureField, ConfirmSignatureField, UsedPreparerField } from './fields'
 export type {
   RequiredValidation as SignEmployeeFormRequiredValidation,
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
   UsedPreparerFieldProps,
   PreparerTextFieldProps,
+  PreparerSelectFieldProps,
   PreparerCheckboxFieldProps,
 } from './fields'

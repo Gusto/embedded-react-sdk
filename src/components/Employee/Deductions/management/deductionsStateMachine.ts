@@ -29,6 +29,7 @@ const returnToCardWithAlert = (alert: DeductionsContextInterface['successAlert']
     }),
   )
 
+/** @internal */
 export const deductionsStateMachine = {
   card: state<MachineTransition>(
     transition(

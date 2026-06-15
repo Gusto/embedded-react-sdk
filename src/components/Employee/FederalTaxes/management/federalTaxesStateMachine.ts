@@ -25,6 +25,7 @@ const returnToCardWithAlert = (alert: FederalTaxesContextInterface['successAlert
     }),
   )
 
+/** @internal */
 export const federalTaxesStateMachine = {
   card: state<MachineTransition>(
     transition(

@@ -20,9 +20,12 @@ type ReadyFederalTaxesForm = Extract<ReturnType<typeof useFederalTaxesForm>, { i
  *
  * The underlying `Employee.FederalTaxesView` namespace is an implementation
  * detail of the shared view — consumers shouldn't reference it directly.
+ *
+ * @internal
  */
 export type FederalTaxesViewDictionary = ResourceDictionary<'Employee.FederalTaxesView'>
 
+/** @internal */
 export interface FederalTaxesViewProps {
   federalTaxes: ReadyFederalTaxesForm
   onSubmit: () => void | Promise<void>
@@ -39,6 +42,7 @@ export interface FederalTaxesViewProps {
   dictionary?: FederalTaxesViewDictionary
 }
 
+/** @internal */
 export function FederalTaxesView({
   federalTaxes,
   onSubmit,

@@ -39,6 +39,7 @@ const statusDescriptionKeys = {
   alien: 'statusDescriptions.alien',
 } as const satisfies Record<AuthorizationStatus, string>
 
+/** @internal */
 export const EmploymentEligibilityPresentation = ({
   onSubmit,
   defaultValues,

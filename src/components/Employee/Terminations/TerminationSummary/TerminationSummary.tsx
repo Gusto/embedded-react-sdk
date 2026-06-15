@@ -16,13 +16,61 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
+/**
+ * Props for {@link TerminationSummary}.
+ *
+ * @public
+ */
 export interface TerminationSummaryProps extends BaseComponentInterface<'Employee.Terminations.TerminationSummary'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The associated company identifier. */
   companyId: string
+  /** The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. */
   payrollOption?: PayrollOption
+  /** UUID of the created off-cycle payroll (when applicable). */
   payrollUuid?: string
 }
 
+/**
+ * Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist.
+ *
+ * @remarks
+ * Displays termination details and provides actions for managing the termination. Includes an offboarding checklist covering payroll timing, tax forms, and account disconnection. The available actions depend on the termination state:
+ *
+ * - **Edit** is available when the termination date is in the future and the employee is not yet terminated. The effective date cannot be edited if it is in the past.
+ * - **Cancel** is available when the termination is still cancellable — `regularPayroll` or `anotherWay` options can be cancelled; `dismissalPayroll` cannot.
+ * - **Run termination payroll** is shown for the `dismissalPayroll` option and navigates to the dismissal payroll flow.
+ * - **Run off-cycle payroll** is shown for the `anotherWay` option and navigates to the off-cycle payroll creation flow.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
+ * | `employee/termination/cancelled` | Fired when a termination is successfully cancelled | `{ employeeId: string, alert?: `{@link TerminationFlowAlert}` }` |
+ * | `employee/termination/runPayroll` | Fired when user clicks to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
+ * | `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
+ *
+ * @param props - See {@link TerminationSummaryProps}.
+ * @returns The termination summary view.
+ * @public
+ * @group Block Components
+ *
+ * @example
+ * ```tsx
+ * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <EmployeeManagement.TerminationSummary
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+ *       payrollOption="dismissalPayroll"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function TerminationSummary(props: TerminationSummaryProps) {
   return (
     <BaseComponent {...props}>

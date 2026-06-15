@@ -8,6 +8,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const deductionsMachine = {
   include: state<MachineTransition>(
     transition(

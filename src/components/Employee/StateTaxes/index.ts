@@ -1,9 +1,2 @@
-export {
-  StateTaxes,
-  StateTaxesCard,
-  StateTaxesEditForm,
-  type StateTaxesProps,
-  type StateTaxesCardProps,
-  type StateTaxesEditFormProps,
-} from './management'
+export { StateTaxes } from './management'
 export * from './shared'

@@ -9,8 +9,10 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
 
+/** @internal */
 export type BankFormBodyDictionary = ResourceDictionary<'Employee.BankFormBody'>
 
+/** @internal */
 export interface BankFormBodyProps extends Omit<UseBankFormProps, 'employeeId'> {
   employeeId: string
   /**
@@ -30,6 +32,8 @@ export interface BankFormBodyProps extends Omit<UseBankFormProps, 'employeeId'> 
  * `Employee.BankFormBody` namespace; consuming surfaces inject their own copy
  * via the `dictionary` prop and map the `onSaved`/`onCancel` callbacks onto
  * their surface-specific events.
+ *
+ * @internal
  */
 export function BankFormBody({
   employeeId,

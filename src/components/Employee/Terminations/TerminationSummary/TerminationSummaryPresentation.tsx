@@ -23,6 +23,7 @@ interface TerminationSummaryPresentationProps {
   isCancelling: boolean
 }
 
+/** @internal */
 export function TerminationSummaryPresentation({
   employeeName,
   effectiveDate,

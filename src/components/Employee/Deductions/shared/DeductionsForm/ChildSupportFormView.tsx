@@ -17,6 +17,7 @@ interface ChildSupportFormViewProps {
   onCancel: () => void
 }
 
+/** @internal */
 export function ChildSupportFormView({
   employeeId,
   deduction,

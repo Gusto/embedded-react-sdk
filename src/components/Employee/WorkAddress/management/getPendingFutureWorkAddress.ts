@@ -5,6 +5,7 @@ import { addressInline } from '@/helpers/formattedStrings'
 
 const startOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
 
+/** @internal */
 export function getPendingFutureWorkAddress(
   addresses: EmployeeWorkAddress[] | undefined,
   now: Date = new Date(),
@@ -43,6 +44,7 @@ export function getPendingFutureWorkAddress(
   return pending[0]
 }
 
+/** @internal */
 export function formatPendingWorkAddressLine(
   address: EmployeeWorkAddress,
   companyLocations: Location[] | undefined,

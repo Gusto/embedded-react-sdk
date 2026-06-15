@@ -22,13 +22,11 @@ import type {
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 export type {
-  BaseStateTaxFieldProps,
   CurrencyStateTaxFieldProps,
   DateStateTaxFieldProps,
   NumberStateTaxFieldProps,
   RadioStateTaxFieldProps,
   SelectStateTaxFieldProps,
-  StateTaxValidationMessages,
   TextStateTaxFieldProps,
 } from './fieldProps'
 
@@ -43,6 +41,14 @@ interface SharedQuestionMetadata {
   description: string | null
 }
 
+/**
+ * One question entry within a {@link StateTaxFieldsGroup}, discriminated by
+ * `type` to identify which input variant the question uses. Each entry carries
+ * a `Field` component pre-bound to its API-supplied metadata so callers can
+ * render the input directly.
+ *
+ * @public
+ */
 export type StateTaxQuestionFieldEntry =
   | ({ type: 'select'; Field: ComponentType<SelectStateTaxFieldProps> } & SharedQuestionMetadata)
   | ({ type: 'radio'; Field: ComponentType<RadioStateTaxFieldProps> } & SharedQuestionMetadata)
@@ -54,17 +60,27 @@ export type StateTaxQuestionFieldEntry =
     } & SharedQuestionMetadata)
   | ({ type: 'date'; Field: ComponentType<DateStateTaxFieldProps> } & SharedQuestionMetadata)
 
+/**
+ * Group of state-tax questions for a single jurisdiction returned by
+ * {@link useStateFields}.
+ *
+ * @public
+ */
 export interface StateTaxFieldsGroup {
+  /** Two-letter state code. */
   state: string
+  /** Ordered list of question entries for this state, post admin-only filtering. */
   questions: StateTaxQuestionFieldEntry[]
 }
 
 // ── Factory ────────────────────────────────────────────────────────────
 
+/** @internal */
 export interface CreateStateFieldsOptions {
   isAdmin: boolean
 }
 
+/** @internal */
 export function createStateFields(
   employeeStateTaxes: EmployeeStateTaxesList[],
   options: CreateStateFieldsOptions,

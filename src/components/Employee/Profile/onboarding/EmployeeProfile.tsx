@@ -25,6 +25,7 @@ const SELF_OPTIONAL_FIELDS: EmployeeDetailsOptionalFieldsToRequire = {
   update: ['firstName', 'lastName', 'dateOfBirth', 'ssn'],
 }
 
+/** @internal */
 export function EmployeeProfile({
   companyId,
   employeeId,

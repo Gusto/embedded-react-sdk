@@ -9,6 +9,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const paymentMethodStateMachine = {
   list: state<MachineTransition>(
     transition(

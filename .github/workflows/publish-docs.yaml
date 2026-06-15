@@ -1,11 +1,42 @@
 name: Sync Docs Source
 
-# Fires after a successful NPM publish on main. Runs TypeDoc to generate
-# docs/api/ markdown, then pushes the Docusaurus source
-# (docs/ + docs-site/ + .nvmrc, including the generated docs/api/ files)
-# to the main branch of Gusto/embedded-sdk-docs. That repo's Buildkite
-# pipeline runs the Docusaurus build and publishes the result to its
-# gh-pages branch.
+# Builds docs source on this repo and pushes it to Gusto/embedded-sdk-docs.
+# The downstream repo's Buildkite pipeline then runs the Docusaurus build
+# and publishes the result to its gh-pages branch.
+#
+# Versioning lives entirely in the downstream repo, not here. This repo
+# only ever carries the live (current) docs in `docs/`. Versioned snapshots
+# (`docs-site/versioned_docs/`, `versions.json`, `versioned_sidebars/`)
+# accumulate in `embedded-sdk-docs` over time as releases land.
+#
+# Three triggers, all funnel through the same job:
+#   1. workflow_run after Publish to NPM — the release path. If the released
+#      minor isn't in downstream's versions.json, creates a new snapshot.
+#      If it is, refreshes the existing snapshot's content from the freshly
+#      synced docs (content-only; structural changes to versioned docs are
+#      explicit edits in the downstream repo).
+#   2. push to main on docs/** or docs-site/** — the live-content path.
+#      Syncs the latest docs source down so /docs/ refreshes. Does not touch
+#      versioned snapshots.
+#   3. workflow_dispatch — manual run. Always allowed; useful for recovery,
+#      end-to-end testing, or bootstrapping the first snapshot on a clean
+#      downstream (it will create the snapshot if missing for the current
+#      package.json minor).
+#
+# Snapshot mechanics:
+#   New minor / bootstrap: `npx docusaurus docs:version <X.Y>` runs inside the
+#   freshly-synced downstream working tree. Docusaurus copies the current
+#   docs/ into versioned_docs/version-<X.Y>/, captures the sidebar, and adds
+#   <X.Y> to versions.json. The conditional config in docs-site/docusaurus.config.ts
+#   then derives lastVersion from versions.json[0], so the unprefixed /docs/
+#   automatically points at the newest snapshot — no manual config change.
+#
+#   Patch refresh: walks versioned_docs/version-<X.Y>/ and refreshes the
+#   content of each file from the matching path in the freshly-synced docs/.
+#   Files in the snapshot that have no live counterpart are left as-is.
+#   Files in live docs/ that aren't already in the snapshot are NOT added —
+#   adding a doc to a released minor is an intentional change made directly
+#   in the downstream repo.
 #
 # Auth: a GitHub App installed on Gusto/embedded-sdk-docs with
 # Contents: write. Credentials live in this repo's `publish-docs`
@@ -18,17 +49,22 @@ name: Sync Docs Source
 #      DOCS_APP_ID and DOCS_APP_PRIVATE_KEY (paste the entire .pem
 #      contents for the private key).
 #   3. Once a manual workflow_dispatch run is green, set repo variable
-#      DOCS_PUBLISH_ENABLED=true to turn on auto-publish on release.
+#      DOCS_PUBLISH_ENABLED=true to turn on the workflow_run + push paths.
 #
 # Manual `workflow_dispatch` triggers fire any time (the gate below only
-# guards the auto-on-release path), so the pipeline can be exercised
-# end-to-end before flipping the variable.
+# guards the auto paths), so the pipeline can be exercised end-to-end
+# before flipping the variable.
 
 on:
   workflow_run:
     workflows: [Publish to NPM]
     types: [completed]
     branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'docs-site/**'
   workflow_dispatch:
 
 concurrency:
@@ -38,12 +74,15 @@ concurrency:
 jobs:
   sync:
     # workflow_dispatch always allowed (for manual testing). workflow_run
-    # only fires when DOCS_PUBLISH_ENABLED=true, so the next NPM release
-    # won't auto-publish docs until that variable is explicitly set.
+    # and push only fire when DOCS_PUBLISH_ENABLED=true, so neither an NPM
+    # release nor a docs push will auto-publish until that variable is
+    # explicitly set.
     if: |
       github.event_name == 'workflow_dispatch' ||
-      (vars.DOCS_PUBLISH_ENABLED == 'true' &&
-       github.event.workflow_run.conclusion == 'success')
+      (vars.DOCS_PUBLISH_ENABLED == 'true' && (
+        github.event_name == 'push' ||
+        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      ))
     runs-on:
       group: gusto-ubuntu-default
     environment: publish-docs
@@ -60,7 +99,13 @@ jobs:
 
       - name: Read SDK version
         id: version
-        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+          {
+            echo "version=${VERSION}"
+            echo "minor=${MINOR}"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Install SDK dependencies for TypeDoc
         run: npm ci
@@ -77,32 +122,29 @@ jobs:
           owner: Gusto
           repositories: embedded-sdk-docs
 
-      # Push docs source (markdown + Docusaurus config + Node pin) to
-      # embedded-sdk-docs/main. Its Buildkite pipeline then builds and
-      # publishes the result to gh-pages.
+      # Sync live source to downstream, then create or refresh the versioned
+      # snapshot if appropriate. Versioning is owned by the downstream repo —
+      # this is the only place that knows about versioned_docs/ etc.
       #
-      # docs/api/ contains a mix of tracked and generated files:
-      #   docs/api/index.md        — hand-authored, tracked in this repo
-      #   docs/api/reference.md    — generated by TypeDoc (step above)
-      #   docs/api/{domain}/...    — generated by TypeDoc (step above)
-      # All are copied and force-staged so the docs repo always has the
-      # full generated output regardless of its own .gitignore rules.
-      #
-      # Safety model: this workflow only touches paths it explicitly
-      # manages (docs/, docs-site/, .nvmrc). Everything else in the
-      # docs repo (.buildkite/, README.md, CODEOWNERS, CNAME, .github/,
-      # …) is left untouched, ever. A defense-in-depth check at the
-      # end fails the push if any staged change escapes the allowlist
-      # — so if someone later widens the cp/rm logic by accident, the
-      # push fails closed instead of silently wiping unrelated files.
-      #
-      # `concurrency: publish-docs` above prevents overlapping pushes,
-      # so a non-force push is safe.
-      - name: Push docs source to embedded-sdk-docs
+      # Sequencing:
+      #   1. Clone downstream (which may already have versioned_docs/, etc.)
+      #   2. Wipe the source-owned paths in downstream (docs/, .nvmrc, and
+      #      everything in docs-site/ EXCEPT the versioned files)
+      #   3. Copy fresh source into downstream
+      #   4. Run versioning logic (create new snapshot OR refresh existing
+      #      snapshot content), but only when the trigger calls for it
+      #   5. Defense-in-depth: refuse to push anything outside the managed
+      #      allowlist (docs/, docs-site/, .nvmrc)
+      #   6. Commit + push
+      - name: Sync source and update versioned snapshot in embedded-sdk-docs
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SDK_VERSION: ${{ steps.version.outputs.version }}
+          MINOR: ${{ steps.version.outputs.minor }}
+          TRIGGER: ${{ github.event_name }}
         run: |
+          set -euo pipefail
+
           git clone --depth 50 \
             "https://x-access-token:$GH_TOKEN@github.com/Gusto/embedded-sdk-docs.git" \
             docs-repo
@@ -110,13 +152,22 @@ jobs:
           git config user.name "gusto-embedded-docs[bot]"
           git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
 
-          # Remove only the paths this workflow owns. Anything else in
-          # the docs repo (.buildkite/, README.md, etc.) stays put.
-          # --ignore-unmatch so first-run (no prior docs/ on the repo)
-          # doesn't fail.
-          git rm -rf --quiet --ignore-unmatch docs docs-site .nvmrc
+          # ---- Step 2: wipe source-owned paths, preserve versioned files ----
+          # docs/ and .nvmrc are entirely source-owned.
+          git rm -rf --quiet --ignore-unmatch docs .nvmrc
 
-          # Copy fresh source in.
+          # docs-site/ is mostly source-owned, but versioned_docs/,
+          # versioned_sidebars/, versions.json belong to downstream.
+          # Move them aside so the wipe doesn't take them out.
+          mkdir -p /tmp/preserved
+          for v in versioned_docs versioned_sidebars versions.json; do
+            if [ -e "docs-site/$v" ]; then
+              mv "docs-site/$v" "/tmp/preserved/$v"
+            fi
+          done
+          git rm -rf --quiet --ignore-unmatch docs-site
+
+          # ---- Step 3: copy fresh source in ----
           cp -R ../docs .
           cp -R ../docs-site .
           cp ../.nvmrc .
@@ -124,16 +175,75 @@ jobs:
           # Strip anything that shouldn't ship with source.
           rm -rf docs-site/node_modules docs-site/build
 
-          # Stage only the paths we manage. NOT `git add -A` — that
-          # could pick up unrelated tree changes if anything went sideways.
+          # Restore the versioned files (or initialize empty placeholders if
+          # downstream was bare — the snapshot step below populates them).
+          for v in versioned_docs versioned_sidebars versions.json; do
+            if [ -e "/tmp/preserved/$v" ]; then
+              mv "/tmp/preserved/$v" "docs-site/$v"
+            fi
+          done
+
+          # ---- Step 4: snapshot creation or refresh ----
+          # Snapshot ACTION is determined by trigger + downstream state:
+          #   workflow_run, minor missing  -> create (new minor)
+          #   workflow_run, minor present  -> refresh (patch)
+          #   workflow_dispatch, missing   -> create (bootstrap / recover)
+          #   workflow_dispatch, present   -> none
+          #   push                         -> none
+          MINOR_IN_VERSIONS=false
+          if [ -f docs-site/versions.json ] \
+             && jq -e --arg key "${MINOR}" 'index($key) != null' docs-site/versions.json > /dev/null 2>&1; then
+            MINOR_IN_VERSIONS=true
+          fi
+
+          SNAPSHOT_ACTION=none
+          if [ "$TRIGGER" = "workflow_run" ] || [ "$TRIGGER" = "workflow_dispatch" ]; then
+            if [ "$MINOR_IN_VERSIONS" = "false" ]; then
+              SNAPSHOT_ACTION=create
+            elif [ "$TRIGGER" = "workflow_run" ]; then
+              SNAPSHOT_ACTION=refresh
+            fi
+          fi
+          echo "Snapshot action for SDK ${SDK_VERSION} (minor ${MINOR}, trigger ${TRIGGER}): ${SNAPSHOT_ACTION}"
+
+          if [ "$SNAPSHOT_ACTION" = "create" ]; then
+            # docusaurus docs:version copies docs/ -> versioned_docs/version-<minor>/,
+            # captures the sidebar, prepends <minor> to versions.json.
+            # The conditional config picks up versions.json[0] as lastVersion automatically.
+            (cd docs-site && npm ci && npx docusaurus docs:version "${MINOR}")
+            echo "Created snapshot version-${MINOR} in downstream."
+          elif [ "$SNAPSHOT_ACTION" = "refresh" ]; then
+            VERSIONED_DIR="docs-site/versioned_docs/version-${MINOR}"
+            if [ ! -d "$VERSIONED_DIR" ]; then
+              echo "::error::${MINOR} is in versions.json but ${VERSIONED_DIR}/ is missing in downstream."
+              exit 1
+            fi
+            updated=0
+            orphan=0
+            while IFS= read -r snap_file; do
+              rel="${snap_file#${VERSIONED_DIR}/}"
+              live="docs/${rel}"
+              if [ -f "$live" ]; then
+                cp "$live" "$snap_file"
+                updated=$((updated + 1))
+              else
+                orphan=$((orphan + 1))
+              fi
+            done < <(find "$VERSIONED_DIR" -type f)
+            echo "Refreshed ${updated} file(s) in version-${MINOR}; ${orphan} orphan(s) left as-is."
+          fi
+
+          # ---- Step 5: stage and validate ----
+          # Stage only the paths we manage. NOT `git add -A` — that could
+          # pick up unrelated tree changes if anything went sideways.
           # Force-add docs/api/ so the TypeDoc-generated files are staged
           # even if the docs repo's .gitignore excludes them.
           git add docs docs-site .nvmrc
           git add -f docs/api
 
-          # Defense in depth: refuse to push if any staged change
-          # escapes the managed allowlist. No-op when the workflow is
-          # correct; catches future drift.
+          # Defense in depth: refuse to push if any staged change escapes
+          # the managed allowlist. No-op when the workflow is correct;
+          # catches future drift.
           unexpected=$(git diff --cached --name-only | grep -vE '^(docs/|docs-site/|\.nvmrc$)' || true)
           if [[ -n "$unexpected" ]]; then
             echo "ERROR: refusing to push — staged changes outside managed paths:" >&2
@@ -141,8 +251,28 @@ jobs:
             exit 1
           fi
 
+          # ---- Step 6: commit and push ----
+          # Commit message records the trigger + snapshot action so the
+          # downstream history is traceable to whichever cause prompted it.
+          SHORT_SHA=$(git -C "${GITHUB_WORKSPACE}" rev-parse --short HEAD)
+          case "${TRIGGER}" in
+            workflow_run)
+              MSG="docs: sync source for SDK ${SDK_VERSION}"
+              ;;
+            push)
+              MSG="docs: sync docs source from ${SHORT_SHA} (SDK ${SDK_VERSION})"
+              ;;
+            *)
+              MSG="docs: sync source from ${SHORT_SHA} (SDK ${SDK_VERSION}, ${TRIGGER})"
+              ;;
+          esac
+          if [ "$SNAPSHOT_ACTION" = "create" ]; then
+            MSG="${MSG} — created version-${MINOR} snapshot"
+          elif [ "$SNAPSHOT_ACTION" = "refresh" ]; then
+            MSG="${MSG} — refreshed version-${MINOR} snapshot"
+          fi
+
           # Always commit (even with no file changes) so every sync run
-          # leaves a release-marker in the docs repo's history, matching
-          # 1:1 with the NPM releases that triggered it.
-          git commit -q --allow-empty -m "docs: sync source for SDK $SDK_VERSION"
+          # leaves a marker in the docs repo's history.
+          git commit -q --allow-empty -m "${MSG}"
           git push origin main

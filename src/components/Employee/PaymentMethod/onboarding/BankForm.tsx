@@ -4,11 +4,13 @@ import { useOnboardingBankFormDictionary } from './useFormDictionary'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/** @internal */
 export interface BankFormProps extends Omit<UseBankFormProps, 'employeeId'> {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function BankForm({ employeeId, onEvent, ...hookProps }: BankFormProps) {
   const dictionary = useOnboardingBankFormDictionary()
 

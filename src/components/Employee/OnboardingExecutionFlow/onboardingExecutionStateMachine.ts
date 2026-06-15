@@ -57,6 +57,7 @@ const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
       )
     : true
 
+/** @internal */
 export const onboardingExecutionMachine = {
   employeeProfile: state<MachineTransition>(
     transition(
@@ -135,8 +136,14 @@ export const onboardingExecutionMachine = {
   summary: state<MachineTransition>(),
 }
 
+/** @internal */
 export const INITIAL_COMPONENT_MAP = {
   employeeProfile: ProfileContextual,
 } as const
 
+/**
+ * The set of steps {@link OnboardingExecutionFlow} can be started on.
+ *
+ * @public
+ */
 export type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP

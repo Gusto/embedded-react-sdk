@@ -16,8 +16,15 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link FederalTaxes}.
+ *
+ * @public
+ */
 export interface FederalTaxesProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Callback invoked when the block emits an event. See the events table on {@link FederalTaxes} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -38,6 +45,26 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
   return <Flow machine={machine} onEvent={onEvent} />
 }
 
+/**
+ * Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
+ *
+ * @remarks
+ * Renders a read-only card showing filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding, with an Edit CTA that swaps to the edit form. Submitting the form returns to the card; cancelling returns without saving. Wraps everything in error and suspense boundaries.
+ *
+ * The card and form surfaces ({@link FederalTaxesCard}, {@link FederalTaxesEditForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/federalTaxes/card/editRequested` | Fired when the card's Edit CTA is clicked; the block opens the edit form | `{ employeeId: string }` |
+ * | `employee/management/federalTaxes/editForm/submitted` | Fired after the edit form is saved; the block returns to the card view | The updated `EmployeeFederalTax` entity |
+ * | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
+ * | `employee/management/federalTaxes/alertDismissed` | Fired when the user dismisses an alert above the card | `null` |
+ *
+ * @param props - See {@link FederalTaxesProps}.
+ * @returns The rendered federal taxes block.
+ * @public
+ * @group Block Components
+ */
 export function FederalTaxes({
   dictionary,
   FallbackComponent,

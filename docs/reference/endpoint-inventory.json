@@ -936,6 +936,22 @@
         "locationUuid"
       ]
     },
+    "EmployeeOnboarding.JobsList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "jobId"
+      ]
+    },
     "EmployeeOnboarding.FederalTaxes": {
       "endpoints": [
         {

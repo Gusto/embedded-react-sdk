@@ -9,8 +9,15 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link FederalTaxesCard}.
+ *
+ * @public
+ */
 export interface FederalTaxesCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Callback invoked when the card emits an event. See the events table on {@link FederalTaxesCard} for the available event types and payloads. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -20,6 +27,8 @@ export interface FederalTaxesCardProps {
  * `EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED` when the Edit
  * button is clicked. The card has no alert API — alert rendering (when
  * introduced) is the orchestrator's responsibility.
+ *
+ * @public
  */
 export function FederalTaxesCard(props: FederalTaxesCardProps) {
   return (

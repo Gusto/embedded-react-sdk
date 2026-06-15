@@ -4,11 +4,13 @@ import { useOnboardingSplitFormDictionary } from './useFormDictionary'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/** @internal */
 export interface SplitViewProps extends Omit<UseSplitPaymentsFormProps, 'employeeId'> {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function SplitView({ employeeId, onEvent, ...hookProps }: SplitViewProps) {
   const dictionary = useOnboardingSplitFormDictionary()
 

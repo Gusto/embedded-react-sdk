@@ -1,7 +1,2 @@
 export { usePaystubsList } from './usePaystubsList'
-export type {
-  UsePaystubsListParams,
-  UsePaystubsListResult,
-  UsePaystubsListReady,
-  EmployeePayStub,
-} from './usePaystubsList'
+export type { UsePaystubsListReady, EmployeePayStub } from './usePaystubsList'

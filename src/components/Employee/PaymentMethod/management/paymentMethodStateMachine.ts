@@ -29,6 +29,7 @@ const returnToListWithAlert = (alert: PaymentMethodSuccessAlertCode) =>
     }),
   )
 
+/** @internal */
 export const paymentMethodStateMachine = {
   list: state<MachineTransition>(
     transition(

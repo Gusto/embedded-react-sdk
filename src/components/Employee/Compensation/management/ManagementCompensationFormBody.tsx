@@ -9,6 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
+/** @internal */
 export interface ManagementCompensationFormBodyProps {
   jobForm: UseJobFormReady
   compensationForm: UseCompensationFormReady
@@ -24,6 +25,8 @@ export interface ManagementCompensationFormBodyProps {
  * Field visibility is driven entirely by hook configuration — the hooks expose `undefined`
  * for fields that should not render — so this component renders the correct subset for each
  * use case without extra conditional props.
+ *
+ * @internal
  */
 export function ManagementCompensationFormBody({
   jobForm,

@@ -36,6 +36,7 @@ const returnToCardWithAlert = (alert: CompensationContextInterface['successAlert
     }),
   )
 
+/** @internal */
 export const compensationStateMachine = {
   card: state<MachineTransition>(
     transition(
