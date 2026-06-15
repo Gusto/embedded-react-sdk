@@ -461,7 +461,7 @@ function MyComponent() {
 | COMPANY_BANK_ACCOUNT_CHANGE   | Fired when a user chooses to change existing bank account                        | None                                                                                                                                                              |
 | COMPANY_BANK_ACCOUNT_CREATED  | Fired when a new bank account is created                                         | [Response from the create a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-bank-accounts)       |
 | COMPANY_BANK_ACCOUNT_VERIFY   | Fired when a user chooses to verify bank account (after micro-deposits are made) | None                                                                                                                                                              |
-| COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
+| COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verified                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
 | COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
 
 ### CompanyOnboarding.StateTaxes
