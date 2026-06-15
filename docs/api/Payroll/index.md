@@ -23,11 +23,11 @@ Also displays recovery cases and information requests sections when applicable
 
 #### Parameters
 
-|Parameter|Type|
-|-|-|
-|`props`|`PayrollBlockerListProps`|
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `PayrollBlockerListProps` |
 
----
+***
 
 <a id="payrolllist"></a>
 
@@ -50,6 +50,6 @@ resolution surface alongside it.
 
 #### Parameters
 
-|Parameter|Type|
-|-|-|
-|`props`|`PayrollListBlockProps`|
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `PayrollListBlockProps` |

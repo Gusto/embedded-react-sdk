@@ -13,9 +13,9 @@ custom_edit_url: null
 
 ## Namespaces
 
-|Namespace|Description|
-|-|-|
-|[EmployeeManagement](EmployeeManagement/flows.md)||
+| Namespace | Description |
+| --------- | ----------- |
+| [EmployeeManagement](EmployeeManagement/flows.md) |  |
 
 ## Hooks
 
