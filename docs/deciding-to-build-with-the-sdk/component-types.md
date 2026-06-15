@@ -1,18 +1,39 @@
 ---
 title: Component Types
-description: How the SDK organizes UI into Workflow components (end-to-end, off-the-shelf flows) and Building Block components (granular pieces with more customization).
+description: How the SDK organizes UI into hooks (headless), sub-components (granular building blocks), and workflows (end-to-end, off-the-shelf flows) — with tradeoffs around control and build speed.
 order: 1
 ---
 
-## SDK Component Types and “Altitude”
+## SDK component types
 
-Given that a UI “component” can be anything ranging from a table to an entire end-to-end workflow reflecting the various steps of a user journey (e.g. employee onboarding), we wanted to provide more optionality for our developers by building a mix of components in terms of complexity/granularity.
+The SDK offers three levels of abstraction. They can be mixed and matched across workflows in your application — use whichever fits each part of your build.
 
-For each domain in the payroll application (e.g. run payroll, company onboarding, etc.), we include:
+| Type               | What it gives you                                             | Best for                                         |
+| ------------------ | ------------------------------------------------------------- | ------------------------------------------------ |
+| **Hooks**          | Headless utilities — you own all UI, SDK handles data and API | Design-system-first teams; deepest customization |
+| **Sub-components** | Individual form and UI components with SDK logic built in     | Custom layouts and sequencing; mid-level control |
+| **Workflows**      | Full multi-step experiences as a single component             | Fastest path to a working feature                |
 
-- **“Workflow”** SDK components function as a full, off-the-shelf-ready solutions that can either serve as the entirety or the starting point for your build. This component would still have many of the customization and flexibility of the individual SDK components, but would lack the following capabilities:
-  - Cannot re-order or remove fields
-  - Has less flexibility to support A/B testing due to rigidity of the sub-components
-- **“Building Block”** SDK components that represent the individual pieces of the Workflow above. Using these would provide more customization and flexibility, but would be more time-consuming compared to the ready-built Workflow above.
+### Hooks
 
-While we generally recommend using the Workflow approach, your build needs may vary and we recommend discussing with a dedicated specialist from our side to determine what makes sense given your goals and your current application.
+Hooks are headless — they handle data fetching, form state, validation, and API submission while you supply all markup and styling. If your team has a mature design system and wants the SDK to stay out of your UI, hooks are the right choice.
+
+See the [Hooks documentation](../hooks/hooks.md) for available hooks and usage examples.
+
+### Sub-components
+
+Sub-components are individual components for a single step or interaction (for example, `CompanyOnboarding.FederalTaxes`). They give you control over layout and sequencing while handling the business logic of each step. Using sub-components instead of a full workflow means:
+
+- You can re-order or omit steps
+- You can insert your own content between SDK steps
+- You can apply [Component Adapters](../component-adapter/component-adapter.md) to bring your own UI components while keeping the SDK's business logic
+
+See the [Workflows Overview](../workflows-overview/workflows-overview.md) for the sub-components available in each domain.
+
+### Workflows
+
+Workflows are single components that encapsulate an entire multi-step user experience. They are the fastest path to a production-ready feature and support the same theming and event handling as individual sub-components.
+
+See the [Workflows Overview](../workflows-overview/workflows-overview.md) for all available workflows.
+
+> Not sure which type is right for you? Starting with a workflow and dropping down to sub-components or hooks for areas that need more control is a common pattern.
