@@ -128,8 +128,8 @@ jobs:
       - name: TypeScript check
         run: npm run tsc
 
-  # Derive job: Re-run endpoint inventory and API report, then commit any changes back to the
-  # branch. Runs after build so api-extractor has dist/index.d.ts available.
+  # Derive job: Re-run endpoint inventory, API report, and TypeDoc, then commit any changes
+  # back to the branch. Runs after build so api-extractor has dist/index.d.ts available.
   # On non-main branches: auto-commits and pushes derived files if stale.
   # On main: fails if derived files are stale (they should always be up-to-date after PRs).
   derive:
@@ -172,16 +172,20 @@ jobs:
       - name: Derive API report
         run: npm run api-report:derive
 
+      - name: Generate TypeDoc markdown
+        run: cd docs-site && npm ci && npm run typedoc
+
       - name: Commit and push derived files
         run: |
-          if ! git diff --quiet; then
+          git add -u
+          git add docs/api
+          if ! git diff --staged --quiet; then
             if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-              echo "::error::Derived files are stale on main — run 'npm run endpoints:derive && npm run api-report:derive' locally and commit the result."
+              echo "::error::Derived files are stale on main — run 'npm run endpoints:derive && npm run api-report:derive && cd docs-site && npm run typedoc' locally and commit the result."
               exit 1
             fi
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add -u
             git commit -m "chore: update derived files"
             git push
           fi
