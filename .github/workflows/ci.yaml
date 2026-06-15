@@ -171,6 +171,13 @@ jobs:
   # Docs build job: validates the Docusaurus site compiles, catching broken
   # links/anchors (onBrokenLinks: 'throw') at PR time rather than at release
   # time. Uses its own node_modules under docs-site/ — not the root cache.
+  #
+  # Quality gates run cheap-to-expensive:
+  #   1. Frontmatter validator — pure Node, no docs-site deps
+  #   2. markdownlint + cspell — root deps only, fast
+  #   3. TypeDoc + Docusaurus build — installs docs-site/, slowest step
+  #   4. Lychee external link check — runs against the built HTML so it
+  #      verifies the rendered site, not just the source markdown
   docs-build:
     needs: setup
     runs-on: ubuntu-latest
@@ -190,6 +197,12 @@ jobs:
       - name: Validate docs front matter
         run: npm run docs:lint
 
+      - name: Lint markdown
+        run: npm run docs:lint:markdown
+
+      - name: Spell check docs
+        run: npm run docs:lint:spell
+
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
@@ -199,6 +212,26 @@ jobs:
 
       - name: Build docs
         run: npm run docs:build
+
+      # Verify external + cross-page links resolve against the built site.
+      # Runs against the rendered HTML under docs-site/build/ so anchors
+      # injected by Docusaurus (e.g. heading slugs) are exercised the same
+      # way a real visitor would hit them. .lycheeignore at repo root
+      # carves out rate-limited hosts and auth-walled URLs.
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            --max-retries 2
+            --timeout 20
+            --exclude-mail
+            --exclude-loopback
+            --exclude-private
+            './docs-site/build/**/*.html'
+          fail: true
 
   # SDK app build job: validates the dev app's vite config and entry compile
   sdk-app-build:

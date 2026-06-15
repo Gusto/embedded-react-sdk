@@ -13,7 +13,7 @@ import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 > **Looking for `jobTitle`, `hireDate`, `twoPercentShareholder`, `stateWcCovered` / `stateWcClassCode`?** Those moved to [`useJobForm`](./useJobForm.md). Compensation now models only what `POST /v1/jobs/:jobId/compensations` and `PUT /v1/compensations/:id` accept.
-
+>
 > **Composing with `useJobForm`?** See [Working with Jobs and Compensations](./jobs-and-compensations.md) for end-to-end patterns covering onboarding stub-fill (POST job → PUT auto-created stub) and steady-state edits.
 
 ---

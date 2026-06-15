@@ -16,7 +16,7 @@ You can use the `dictionary` prop on the `GustoProvider` to set translations. Th
 
 For example, take the payment details step from the Employee Onboarding Flow. Initially it renders with the following copy:
 
-![](https://files.readme.io/60f9722f17827245dfcbf39e4f3789f283553f90a51e205c93ec26aa1f12943d-image.png)
+![Payment details step with default copy](https://files.readme.io/60f9722f17827245dfcbf39e4f3789f283553f90a51e205c93ec26aa1f12943d-image.png)
 
 <br />
 
@@ -48,7 +48,7 @@ function MyApp({ companyId }) {
 
 Which results in the following:
 
-![](https://files.readme.io/9b2c1714d6cc54f6ba776ce547d05513f01c5bc200324ca41eb3cf0876c1f118-image.png)
+![Payment details step rendered with overridden dictionary copy](https://files.readme.io/9b2c1714d6cc54f6ba776ce547d05513f01c5bc200324ca41eb3cf0876c1f118-image.png)
 
 We could provide custom text in a similar manner for any copy on the page.
 
@@ -56,4 +56,4 @@ We could provide custom text in a similar manner for any copy on the page.
 
 Documenting available translations is still a work in progress. Every entry in the dictionary, however, is typed. This means that if you can begin typing and get available options in your IDE:
 
-![](https://files.readme.io/8868a0a3673f6a34d8f6da8e1592f36d0ed7d7c98c333d1e13f72a2c4ccc042b-image.png)
+![IDE autocomplete showing typed dictionary entries](https://files.readme.io/8868a0a3673f6a34d8f6da8e1592f36d0ed7d7c98c333d1e13f72a2c4ccc042b-image.png)

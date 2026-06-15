@@ -319,12 +319,14 @@ sequenceDiagram
 **Exact carve-out trigger condition** (both client and server agree):
 
 - Client (`compensation_edit_controller.js:86-90`):
+
   ```js
   isPrimaryJobValue &&
     secondaryJobsCountValue > 0 &&
     originalValues.flsa_status === 'Nonexempt' &&
     currentValues.flsa_status !== 'Nonexempt'
   ```
+
 - Server (`compensations_controller.rb:377-385`): `current_flsa == 'Nonexempt' && new_flsa != 'Nonexempt'` AND `has_secondary_jobs?`.
 
 So the trigger is **`Nonexempt → any non-Nonexempt`** — including Owner, Commission Only Exempt, Commission Only Nonexempt, Exempt, and Salaried Nonexempt. Not just "salaried."
@@ -506,7 +508,7 @@ For employee-management compensation changes, the SDK adopts gws-flows' implemen
 **Carve-out UX in the SDK**: gws-flows' approach is to clear and disable the effective-date field on the carve-out branch (`compensation_edit_controller.js` L93-111) and re-label it `Effective date (Change will be immediate)`. The SDK should mirror this exactly. We are not changing the verb, the date-injection, or the field-disable behavior.
 
 > **Note on TPO-27036**: there is an open ticket reporting customer pain around the date-field-disappearance UX in a different Gusto.com surface. The API itself has no FLSA-related date restriction, so the gws-flows pattern we're matching is implementing a UX-layer rule that isn't an API correctness requirement. We are not addressing that ticket in the SDK; we are matching the established flows behavior.
-
+>
 > **SDK roadmap context**: the [Steady-State-Management PRD](https://docs.google.com/document/d/10IY_m6F8l7j1BJ9_OjNc28I3BsNdIg4j6kGo_vHteio) flags effective-date editing/cancellation as a P0 milestone-1 deliverable. The current `useCompensationForm` (PUT-only, no date field exposed) does not yet match the flows pattern described here. Section 13 tracks the implementation work.
 
 ---

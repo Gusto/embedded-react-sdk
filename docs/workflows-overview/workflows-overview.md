@@ -49,7 +49,7 @@ function MyApp({ companyId }) {
 
 This example renders a fully functional flow with the following steps:
 
-![](https://files.readme.io/ef7be0a7bb31a99a6b2ac03f1fcb8fe85d6e0301b90aa8ced632e465d0b3dc99-image.png)
+![Fully functional flow rendered with default workflow steps](https://files.readme.io/ef7be0a7bb31a99a6b2ac03f1fcb8fe85d6e0301b90aa8ced632e465d0b3dc99-image.png)
 
 As can be seen, using workflow components can allow for implementing complex flows in a simple way.
 
