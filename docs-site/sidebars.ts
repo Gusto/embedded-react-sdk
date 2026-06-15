@@ -13,10 +13,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Deciding to build with the SDK',
       link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
-      items: [
-        'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
-        'deciding-to-build-with-the-sdk/component-types',
-      ],
+      items: ['deciding-to-build-with-the-sdk/component-types'],
     },
     {
       type: 'category',
