@@ -25,6 +25,7 @@ export interface Breadcrumb {
  * Renders a navigation breadcrumb trail showing the user's position in a multi-step flow.
  *
  * @public
+ * @group Component Props
  */
 export interface BreadcrumbsProps {
   /**

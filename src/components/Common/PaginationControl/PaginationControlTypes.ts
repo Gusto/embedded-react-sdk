@@ -6,6 +6,7 @@ export type PaginationItemsPerPage = 5 | 10 | 25 | 50
  * Renders pagination controls for navigating between pages of results.
  *
  * @public
+ * @group Component Props
  */
 export type PaginationControlProps = {
   /** Navigate to the first page. */

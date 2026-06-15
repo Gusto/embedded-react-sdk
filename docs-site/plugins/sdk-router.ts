@@ -51,6 +51,7 @@ const STANDALONE_PAGES: Record<string, { sources: string[]; displayName: string 
   'component-adapter': {
     sources: [
       'components/Common/UI',
+      'components/Common/FieldLayout',
       'components/Common/PaginationControl',
       'components/Common/PayrollLoading',
       'contexts/ComponentAdapter',

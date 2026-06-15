@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a status message with an optional dismiss action; used for errors, warnings, success confirmations, and informational messages.
  *
  * @public
+ * @group Component Props
  */
 export interface AlertProps {
   /**

@@ -42,11 +42,11 @@ import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/Pay
  * Full map of UI components used by the SDK. Every property is a React component that the
  * SDK renders internally — override any of them to substitute your own design system.
  *
- * Pass a `Partial<ComponentsContextType>` to `GustoProvider` via the `components` prop to
+ * Pass a `Partial<ComponentsContextType>` to {@link GustoProvider} via the `components` prop to
  * replace specific components while keeping SDK defaults for the rest.
  *
  * To take full control of every UI component (and eliminate the React Aria dependency),
- * pass a complete `ComponentsContextType` to `GustoProviderCustomUIAdapter` instead.
+ * pass a complete {@link ComponentsContextType} to {@link GustoProviderCustomUIAdapter} instead.
  * All properties are then required except `PaginationControl` and `PayrollLoading`,
  * which fall back to built-in SDK implementations when omitted.
  *

@@ -19,6 +19,7 @@ export interface DateRange {
  * Renders a form field wrapping paired `<input type="date" />` elements for selecting an inclusive date range.
  *
  * @public
+ * @group Component Props
  */
 export interface DateRangePickerProps {
   /**
