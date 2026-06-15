@@ -59,19 +59,44 @@ const PAYMENT_PERIOD_ENTRIES = [
   PaymentPeriod.Monthly,
 ] as const
 
+/**
+ * Configuration options for {@link useChildSupportGarnishmentForm}.
+ *
+ * @remarks
+ * Presence or absence of `garnishmentId` selects the API verb — see the
+ * `garnishmentId` field description.
+ *
+ * @public
+ */
 export interface UseChildSupportGarnishmentFormProps {
+  /** UUID of the employee whose child-support garnishment is being created or edited. */
   employeeId: string
   /**
-   * When set, loads that garnishment via the list query and updates it (PUT).
-   * When omitted, the form is in create mode (POST).
+   * When set, loads that garnishment and updates it (PUT). When omitted, the
+   * form is in create mode (POST).
    */
   garnishmentId?: string
+  /** Pre-fill form values. Server data takes precedence on update. */
   defaultValues?: Partial<ChildSupportGarnishmentFormData>
+  /** Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.
+ *
+ * @remarks
+ * Each property is either the field component or `undefined`. A field is
+ * `undefined` when conditions for rendering it aren't met — see each member
+ * for its visibility rule. Always null-check conditional fields (e.g.
+ * `{Fields.FipsCode && <Fields.FipsCode ... />}`) before rendering.
+ *
+ * @public
+ */
 export interface ChildSupportGarnishmentFormFields {
+  /** Agency (state) select. Always available. */
   State: typeof StateField
   /** Only available when the selected agency has more than one fips code, or the
    *  sole code is county-scoped (not an "all counties" auto-pick). */
@@ -82,16 +107,31 @@ export interface ChildSupportGarnishmentFormFields {
   OrderNumber: typeof OrderNumberField | undefined
   /** Only available when the selected agency requires `remittance_number`. */
   RemittanceNumber: typeof RemittanceNumberField | undefined
+  /** Per-pay-period currency cap input. Always available. */
   PayPeriodMaximum: typeof PayPeriodMaximumField
+  /** Percent-of-paycheck input (0–100). Always available. */
   Amount: typeof AmountField
+  /** Payment period select. Always available. */
   PaymentPeriod: typeof PaymentPeriodField
 }
 
+/**
+ * Ready-state shape returned by {@link useChildSupportGarnishmentForm} once data has loaded.
+ *
+ * @remarks
+ * Discriminated by `isLoading: false`. Extends {@link BaseFormHookReady} with
+ * the child-support-specific `data`, `status`, `actions`, and `form.Fields`
+ * shape. Static, entity-derived values live under `data.*`; reactive values
+ * that flip with form input live under `status.*`.
+ *
+ * @public
+ */
 export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
   FieldsMetadata,
   ChildSupportGarnishmentFormData,
   ChildSupportGarnishmentFormFields
 > {
+  /** Child-support-specific data payload: the available agencies, counties for the selected state, and the loaded garnishment for update mode. */
   data: {
     /** Agencies offered as `State` options; raw entries the consumer can use
      *  with `getOptionLabel` for translated names. */
@@ -102,8 +142,11 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
     /** The garnishment loaded for update; `null` in create mode. */
     deduction: Garnishment | null
   }
+  /** Submission state and reactive flags derived from current form input. */
   status: {
+    /** `true` while a create or update mutation is in flight. */
     isPending: boolean
+    /** Reflects whether the next submit will POST a new garnishment or PUT an existing one. */
     mode: 'create' | 'update'
     /** The agency record matching the currently selected `state`. */
     selectedAgency: Agencies | null
@@ -113,15 +156,88 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
     /** Which `required_attributes` keys the selected agency declares. */
     requiredAttrKeys: ReadonlySet<SupportedRequiredAttrKey>
   }
+  /** Submission action. */
   actions: {
+    /** Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. */
     onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>
   }
 }
 
+/**
+ * Return value of {@link useChildSupportGarnishmentForm}.
+ *
+ * @remarks
+ * Discriminated union: {@link HookLoadingResult} while the agency catalog (and,
+ * in update mode, the existing garnishment) is loading;
+ * {@link UseChildSupportGarnishmentFormReady} once data is ready.
+ *
+ * @public
+ */
 export type UseChildSupportGarnishmentFormResult =
   | HookLoadingResult
   | UseChildSupportGarnishmentFormReady
 
+/**
+ * Headless hook for creating or updating a child-support garnishment.
+ *
+ * @remarks
+ * Unlike standard garnishments, child support requires agency-specific
+ * attributes (case number, order number, remittance number) that vary by
+ * state, plus an optional county selection when the state has multiple
+ * counties. The hook loads the agency catalog from the Gusto API, derives
+ * which attributes the selected state requires, and exposes the right Fields
+ * conditionally.
+ *
+ * Presence or absence of `garnishmentId` selects the API verb: omit it to
+ * POST a new garnishment, supply it to PUT updates against the existing row.
+ * For non-child-support deductions (court-ordered garnishments and post-tax
+ * custom), use {@link useDeductionForm} instead.
+ *
+ * @param input - See {@link UseChildSupportGarnishmentFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseChildSupportGarnishmentFormReady} once ready.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
+ *   const form = useChildSupportGarnishmentForm({ employeeId, garnishmentId })
+ *
+ *   if (form.isLoading) return <p>Loading…</p>
+ *
+ *   const { Fields } = form.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={form}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void form.actions.onSubmit()
+ *         }}
+ *       >
+ *         <Fields.State
+ *           label="Agency"
+ *           getOptionLabel={entry => entry.name}
+ *           validationMessages={{ REQUIRED: 'Required' }}
+ *         />
+ *         {Fields.CaseNumber && (
+ *           <Fields.CaseNumber label="Case number" validationMessages={{ REQUIRED: 'Required' }} />
+ *         )}
+ *         <Fields.Amount
+ *           label="Percentage of paycheck"
+ *           validationMessages={{
+ *             REQUIRED: 'Required',
+ *             PERCENT_OUT_OF_RANGE: 'Must be between 0 and 100',
+ *           }}
+ *         />
+ *         <button type="submit">Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useChildSupportGarnishmentForm({
   employeeId,
   garnishmentId,
@@ -433,7 +549,16 @@ export function useChildSupportGarnishmentForm({
   }
 }
 
+/**
+ * Per-field metadata returned by {@link useChildSupportGarnishmentForm} as `form.fieldsMetadata`.
+ *
+ * @remarks
+ * Carries per-field `isRequired`, `isDisabled`, label, description, and option
+ * entries derived from the schema and form state. Use these to drive UI such
+ * as disabled state or option lists when not relying on the pre-bound
+ * {@link ChildSupportGarnishmentFormFields} components.
+ *
+ * @public
+ */
 export type ChildSupportGarnishmentFormFieldsMetadata =
   UseChildSupportGarnishmentFormReady['form']['fieldsMetadata']
-export type ChildSupportGarnishmentFormFieldsType =
-  UseChildSupportGarnishmentFormReady['form']['Fields']

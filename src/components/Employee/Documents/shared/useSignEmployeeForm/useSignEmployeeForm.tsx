@@ -120,51 +120,173 @@ const preparer4Fields = {
   ConfirmSignature: Preparer4ConfirmSignature,
 }
 
+/**
+ * Field group exposed for each I-9 preparer/translator on {@link useSignEmployeeForm}.
+ *
+ * @remarks
+ * Each preparer (1–4) exposes the same nine sub-fields covering name,
+ * address, signature, and consent. Render the sub-fields directly on the
+ * group, e.g. `<Fields.Preparer1.FirstName />`.
+ *
+ * @public
+ */
 export type PreparerFieldGroup = typeof preparer1Fields
 
 // ── Types ──────────────────────────────────────────────────────────────
 
+/**
+ * Props for {@link useSignEmployeeForm}.
+ *
+ * @public
+ */
 export interface UseSignEmployeeFormProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The UUID of the employee form to sign. */
   formId: string
 }
 
+/**
+ * Field components exposed by {@link useSignEmployeeForm} on `form.Fields`.
+ *
+ * @remarks
+ * `Signature` and `ConfirmSignature` are always present. `UsedPreparer` and
+ * the `Preparer1`–`Preparer4` field groups are only defined when the form
+ * being signed is an I-9 and the preparer count has reached that index —
+ * always null-check before rendering.
+ *
+ * @public
+ */
 export interface SignEmployeeFormFieldComponents {
+  /** Text input for the employee's typed signature; always present. */
   Signature: typeof SignatureField
+  /** Checkbox for the employee's electronic-signature consent; always present. */
   ConfirmSignature: typeof ConfirmSignatureField
+  /** Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. */
   UsedPreparer: typeof UsedPreparerField | undefined
+  /** First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. */
   Preparer1: PreparerFieldGroup | undefined
+  /** Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. */
   Preparer2: PreparerFieldGroup | undefined
+  /** Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. */
   Preparer3: PreparerFieldGroup | undefined
+  /** Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. */
   Preparer4: PreparerFieldGroup | undefined
 }
 
+/**
+ * Ready-state shape returned by {@link useSignEmployeeForm} once the form metadata and PDF have loaded.
+ *
+ * @public
+ */
 export interface UseSignEmployeeFormReady extends BaseFormHookReady<
   FieldsMetadata,
   SignEmployeeFormData,
   SignEmployeeFormFieldComponents
 > {
+  /** Loaded data — the form entity and a preview PDF URL. */
   data: {
+    /** The employee form entity fetched from the API (includes `uuid`, `name`, `title`). */
     form: Form
+    /** URL to the form's signed PDF for preview, or `undefined` while it is still being generated. */
     pdfUrl: string | null | undefined
   }
-  status: { isPending: boolean; mode: 'create' }
+  /** Submit-state flags. */
+  status: {
+    /** `true` while the sign mutation is in flight. */
+    isPending: boolean
+    /** Always `'create'`; the hook always submits as a signing operation. */
+    mode: 'create'
+  }
+  /** Imperative actions exposed by the hook. */
   actions: {
+    /** Validates the form and submits the signature. Resolves with the signed form on success. */
     onSubmit: () => Promise<HookSubmitResult<Form> | undefined>
+    /** Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. */
     addPreparer?: () => void
+    /** Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. */
     removePreparer?: () => void
   }
+  /** Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. */
   form: BaseFormHookReady<
     FieldsMetadata,
     SignEmployeeFormData,
     SignEmployeeFormFieldComponents
   >['form'] & {
-    preparers?: { count: number; canAdd: boolean; canRemove: boolean }
+    /** Preparer-section state. Defined only for I-9 forms. */
+    preparers?: {
+      /** Current number of preparer sections, between 0 and 4. */
+      count: number
+      /** `true` when fewer than 4 preparers are active. */
+      canAdd: boolean
+      /** `true` when at least 1 preparer is active. */
+      canRemove: boolean
+    }
   }
 }
 
 // ── Hook ───────────────────────────────────────────────────────────────
 
+/**
+ * Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
+ *
+ * @remarks
+ * The hook fetches the form metadata and PDF, then exposes the
+ * {@link BaseFormHookReady} contract with `Fields`, `fieldsMetadata`,
+ * `onSubmit`, and error handling. The hook inspects the form's `name` to
+ * detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
+ * `Fields.Preparer1`–`Preparer4` field groups become defined, along with
+ * `actions.addPreparer` / `actions.removePreparer` and `form.preparers`
+ * state. Selecting `usedPreparer: 'yes'` automatically reveals the first
+ * preparer section; switching back to `'no'` removes all preparer sections
+ * and unregisters their fields.
+ *
+ * Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
+ * `useCompensationForm`, `useWorkAddressForm`), this hook does not accept
+ * `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
+ * fixed and all fields except preparer street-2 are required.
+ *
+ * @param props - See {@link UseSignEmployeeFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseSignEmployeeFormReady} once the form is loaded.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
+ *   const signForm = useSignEmployeeForm({ employeeId, formId })
+ *
+ *   if (signForm.isLoading) return <div>Loading...</div>
+ *
+ *   const { Fields } = signForm.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={signForm}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void signForm.actions.onSubmit()
+ *         }}
+ *       >
+ *         <Fields.Signature
+ *           label="Signature"
+ *           description="Type your full, legal name."
+ *           validationMessages={{ REQUIRED: 'Signature is required' }}
+ *         />
+ *         <Fields.ConfirmSignature
+ *           label="I agree to sign electronically"
+ *           validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
+ *         />
+ *         <button type="submit" disabled={signForm.status.isPending}>
+ *           Sign form
+ *         </button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useSignEmployeeForm({
   employeeId,
   formId,
@@ -381,6 +503,21 @@ function buildPreparerPayload(payload: SignEmployeeFormOutputs, count: number) {
   return result
 }
 
+/**
+ * Result of {@link useSignEmployeeForm} — a discriminated union on `isLoading`.
+ *
+ * @public
+ */
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady
+/**
+ * Shape of the `form.fieldsMetadata` object returned by {@link useSignEmployeeForm}.
+ *
+ * @public
+ */
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata']
+/**
+ * Shape of the `form.Fields` object returned by {@link useSignEmployeeForm}.
+ *
+ * @public
+ */
 export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields']

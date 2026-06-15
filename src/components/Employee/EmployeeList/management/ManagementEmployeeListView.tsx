@@ -14,6 +14,7 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
+/** @internal */
 export interface ManagementEmployeeListViewProps extends Pick<
   Extract<UseEmployeeListResult, { isLoading: false }>,
   'pagination' | 'status'
@@ -28,6 +29,7 @@ export interface ManagementEmployeeListViewProps extends Pick<
   onAddEmployee: () => void
 }
 
+/** @internal */
 export function ManagementEmployeeListView({
   selectedTab,
   onTabChange,

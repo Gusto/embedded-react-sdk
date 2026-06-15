@@ -6,19 +6,48 @@ import {
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by the I-9 sign-employee form schema. Map
+ * these codes to localized copy in `validationMessages` when composing the
+ * hook.
+ *
+ * @public
+ */
 export const SignEmployeeFormErrorCodes = {
   REQUIRED: 'REQUIRED',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the I-9 sign-employee
+ * form schema.
+ *
+ * @public
+ */
 export type SignEmployeeFormErrorCode =
   (typeof SignEmployeeFormErrorCodes)[keyof typeof SignEmployeeFormErrorCodes]
 
 // ── Preparer naming helpers ────────────────────────────────────────────
 
+/**
+ * Maximum number of I-9 preparers and translators the form supports.
+ *
+ * @public
+ */
 export const MAX_PREPARERS = 4
 
+/**
+ * One-based preparer index used to reference preparer field groups (1–4).
+ *
+ * @public
+ */
 export type PreparerIndex = 1 | 2 | 3 | 4
 
+/**
+ * Suffix segment of a preparer field name — the part that follows
+ * `preparer` (or `preparerN`) in the field key.
+ *
+ * @public
+ */
 export type PreparerFieldSuffix =
   | 'FirstName'
   | 'LastName'
@@ -30,6 +59,7 @@ export type PreparerFieldSuffix =
   | 'Signature'
   | 'Agree'
 
+/** @internal */
 export function preparerFieldName(index: PreparerIndex, field: PreparerFieldSuffix): string {
   return index === 1 ? `preparer${field}` : `preparer${index}${field}`
 }
@@ -97,6 +127,14 @@ const PREPARER_4 = {
   agree: 'preparer4Agree',
 } as const
 
+/**
+ * Per-preparer field name maps indexed by preparer position (0-based). Use
+ * these to look up the form field name for a given preparer slot — for
+ * example `PREPARERS_BY_INDEX[1].firstName` resolves to
+ * `'preparer2FirstName'`.
+ *
+ * @public
+ */
 export const PREPARERS_BY_INDEX = [
   PREPARER_1,
   PREPARER_2,
@@ -121,6 +159,12 @@ const PREPARER_4_FIELDS: SignEmployeeFormField[] = Object.values(PREPARER_4) as 
   typeof PREPARER_4
 >[]
 
+/**
+ * Flat list of preparer field names per preparer slot (0-based), useful for
+ * iterating every field that belongs to a single preparer.
+ *
+ * @public
+ */
 export const PREPARER_FIELDS_BY_INDEX: SignEmployeeFormField[][] = [
   PREPARER_1_FIELDS,
   PREPARER_2_FIELDS,
@@ -186,11 +230,27 @@ const fieldValidators = {
   [PREPARER_4.agree]: agreeValidator,
 }
 
+/**
+ * Field names accepted by the I-9 sign-employee form.
+ *
+ * @public
+ */
 export type SignEmployeeFormField = keyof typeof fieldValidators
 
+/**
+ * Shape of the values managed by the I-9 sign-employee form.
+ *
+ * @public
+ */
 export type SignEmployeeFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/**
+ * Shape of the validated values produced by the I-9 sign-employee form on
+ * submit.
+ *
+ * @public
+ */
 export type SignEmployeeFormOutputs = SignEmployeeFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -204,11 +264,13 @@ const requiredFieldsConfig = {
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
+/** @internal */
 interface SignEmployeeFormSchemaOptions {
   isI9?: boolean
   preparerCount?: number
 }
 
+/** @internal */
 export function createSignEmployeeFormSchema(options: SignEmployeeFormSchemaOptions = {}) {
   const { isI9 = false, preparerCount = 0 } = options
 

@@ -10,11 +10,24 @@ import {
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
+/**
+ * The tab currently selected on {@link ManagementEmployeeList}.
+ *
+ * @public
+ */
+export type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+/**
+ * Props for {@link ManagementEmployeeList}.
+ *
+ * @public
+ */
+export interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+  /** The associated company identifier. */
   companyId: string
+  /** Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. */
   initialTab?: EmployeeTab
+  /** Event handler fired on flow state changes. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -88,6 +101,21 @@ function ManagementEmployeeListRoot({
   )
 }
 
+/**
+ * Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
+ * tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+ *
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/create` | Fired when the user clicks "Add employee". | — |
+ * | `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
+ * | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
+ * | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
+ *
+ * @public
+ */
 export function ManagementEmployeeList({
   FallbackComponent,
   ...props

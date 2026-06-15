@@ -74,7 +74,7 @@ export const useI18n = (
     | Array<keyof CustomTypeOptions['resources']>
     | null,
 ) => {
-  //Getting our instance of i18n -> supplied by the provider set in GustoApiProvider
+  //Getting our instance of i18n -> supplied by the provider set in GustoProvider
   const { i18n: i18nInstance } = useTranslation()
   //Abort when namespace is not provided
   if (!namespaces) return
@@ -96,7 +96,7 @@ export const useI18n = (
         resource,
         true,
         false,
-      ) //Last argument is set to false to prevent override of keys provided by partners on GustoApiProvider level through dictionary prop
+      ) //Last argument is set to false to prevent override of keys provided by partners on GustoProvider level through dictionary prop
     }
   }
 }

@@ -10,8 +10,6 @@ Hooks are the headless layer of the SDK. They handle data fetching, validation, 
 
 Hooks are the deepest level of control the SDK exposes. Reach for them when [sub-components](./sub-components.md) don't give you enough say over layout or copy, when you need to slot fields into an existing form shell, or when you're building a screen that doesn't map cleanly onto a single sub-component.
 
-> Hooks are an experimental feature. APIs may change between minor versions during 0.x.x releases.
-
 ## Two kinds of hooks
 
 - **Form hooks** return pre-bound Field components, form actions, and metadata. You arrange the fields, label them, and decide when to call submit. Validation, submission, and error handling are wired up for you.

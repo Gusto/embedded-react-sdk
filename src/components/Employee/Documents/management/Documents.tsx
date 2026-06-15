@@ -13,8 +13,15 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link Documents}.
+ *
+ * @public
+ */
 export interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on flow state changes. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -34,6 +41,23 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
   return <Flow machine={machine} onEvent={onEvent} />
 }
 
+/**
+ * Standalone employee documents management flow.
+ *
+ * @remarks
+ * Orchestrates the documents card and the per-form document manager. The flow
+ * starts on the documents card and routes to the document manager when a row's
+ * View CTA is selected; cancelling from the document manager returns to the
+ * card.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/documents/card/viewRequested` | Fired when a row's View CTA is clicked on the documents card | `{ employeeId: string; formId: string }` |
+ *
+ * @param props - See {@link DocumentsProps}.
+ * @returns The documents management flow.
+ * @public
+ */
 export function Documents({
   dictionary,
   FallbackComponent,

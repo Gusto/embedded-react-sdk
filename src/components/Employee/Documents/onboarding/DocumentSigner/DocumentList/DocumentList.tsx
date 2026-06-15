@@ -18,6 +18,7 @@ interface DocumentListProps extends CommonComponentInterface {
   employeeId: string
 }
 
+/** @internal */
 export function DocumentList(props: DocumentListProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

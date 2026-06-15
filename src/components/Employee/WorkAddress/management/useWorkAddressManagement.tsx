@@ -20,12 +20,19 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import { normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Params for {@link useWorkAddressManagement}.
+ *
+ * @public
+ */
 export interface UseWorkAddressManagementParams {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when a work address is deleted. */
   onEvent: OnEventType<EventType, unknown>
 }
 
-export interface UseWorkAddressManagementDataPendingForms extends Record<string, unknown> {
+interface UseWorkAddressManagementDataPendingForms extends Record<string, unknown> {
   employeeDisplayName: string
   employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
@@ -33,7 +40,7 @@ export interface UseWorkAddressManagementDataPendingForms extends Record<string,
   changeWorkAddressForm: UseWorkAddressFormResult
 }
 
-export interface UseWorkAddressManagementDataReady extends Record<string, unknown> {
+interface UseWorkAddressManagementDataReady extends Record<string, unknown> {
   employeeDisplayName: string
   employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
@@ -41,41 +48,59 @@ export interface UseWorkAddressManagementDataReady extends Record<string, unknow
   changeWorkAddressForm: UseWorkAddressFormReady
 }
 
-export interface UseWorkAddressManagementStatusEmployeeError extends Record<string, unknown> {
+interface UseWorkAddressManagementStatusEmployeeError extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: true
 }
 
-export interface UseWorkAddressManagementStatusSuccess extends Record<string, unknown> {
+interface UseWorkAddressManagementStatusSuccess extends Record<string, unknown> {
   isDeletePending: boolean
   isEmployeeError: false
 }
 
-export interface UseWorkAddressManagementActions {
+interface UseWorkAddressManagementActions {
   setEditTargetUuid: (workAddressUuid: string | undefined) => void
   confirmDeleteWorkAddress: (workAddressUuid: string) => Promise<boolean>
 }
 
-export interface UseWorkAddressManagementReadyEmployeeError extends BaseHookReady<
+interface UseWorkAddressManagementReadyEmployeeError extends BaseHookReady<
   UseWorkAddressManagementDataPendingForms,
   UseWorkAddressManagementStatusEmployeeError
 > {
   actions: UseWorkAddressManagementActions
 }
 
+/**
+ * Ready state of {@link useWorkAddressManagement} when the employee was fetched successfully.
+ *
+ * @public
+ */
 export interface UseWorkAddressManagementReadySuccess extends BaseHookReady<
   UseWorkAddressManagementDataReady,
   UseWorkAddressManagementStatusSuccess
 > {
+  /** Actions for changing the edit target and confirming work address deletion. */
   actions: UseWorkAddressManagementActions
 }
 
-export type UseWorkAddressManagementReady =
+type UseWorkAddressManagementReady =
   | UseWorkAddressManagementReadyEmployeeError
   | UseWorkAddressManagementReadySuccess
 
+/**
+ * Return type of {@link useWorkAddressManagement}.
+ *
+ * @public
+ */
 export type UseWorkAddressManagementResult = HookLoadingResult | UseWorkAddressManagementReady
 
+/**
+ * Type guard for the success branch of {@link useWorkAddressManagement}.
+ *
+ * @param value - The hook result to narrow.
+ * @returns `true` when the hook has finished loading and the employee fetch succeeded.
+ * @public
+ */
 export function isUseWorkAddressManagementSuccess(
   value: UseWorkAddressManagementResult,
 ): value is UseWorkAddressManagementReadySuccess {
@@ -101,6 +126,19 @@ function workAddressFormsReady(
   }
 }
 
+/**
+ * Headless hook for managing an employee's work addresses.
+ *
+ * @remarks
+ * Fetches the employee and their work addresses, exposes edit and change form hooks
+ * for the address modal, and provides an action to delete a non-active address.
+ * Use {@link isUseWorkAddressManagementSuccess} to narrow the ready state when the
+ * employee fetch succeeded.
+ *
+ * @param params - {@link UseWorkAddressManagementParams}
+ * @returns A {@link HookLoadingResult} while loading, or the ready state once data is available.
+ * @public
+ */
 export function useWorkAddressManagement({
   employeeId,
   onEvent,

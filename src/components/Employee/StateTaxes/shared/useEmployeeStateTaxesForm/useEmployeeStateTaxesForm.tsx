@@ -33,7 +33,13 @@ import { SDKInternalError } from '@/types/sdkError'
 
 const DEFAULT_TAX_VALID_FROM = '2010-01-01'
 
+/**
+ * Options accepted by {@link useEmployeeStateTaxesForm}.
+ *
+ * @public
+ */
 export interface UseEmployeeStateTaxesFormProps {
+  /** The UUID of the employee whose state taxes are being updated. */
   employeeId: string
   /**
    * When `true`, admin-only questions are visible and submitted. When
@@ -41,22 +47,35 @@ export interface UseEmployeeStateTaxesFormProps {
    * questions is preserved unchanged on submit.
    */
   isAdmin?: boolean
+  /** When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Ready-state return value of {@link useEmployeeStateTaxesForm} — the
+ * `isLoading: false` branch of {@link UseEmployeeStateTaxesFormResult}.
+ *
+ * @public
+ */
 export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
   FieldsMetadata,
   EmployeeStateTaxesFormData,
   StateTaxFieldsGroup[]
 > {
+  /** Current per-state tax records returned by the server. */
   data: {
     employeeStateTaxes: EmployeeStateTaxesList[]
   }
+  /** Submission status. `mode` is always `'update'` since state-tax records are created with the employee. */
   status: { isPending: boolean; mode: 'update' }
+  /** Form actions. */
   actions: {
+    /** Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>
   }
+  /** Form internals plus the iterable per-state `Fields` array. */
   form: BaseFormHookReady<
     FieldsMetadata,
     EmployeeStateTaxesFormData,
@@ -67,8 +86,83 @@ export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
   }
 }
 
+/**
+ * Discriminated union returned by {@link useEmployeeStateTaxesForm}. Loading
+ * branch carries only `errorHandling`; ready branch carries form data,
+ * fields, status, and actions.
+ *
+ * @public
+ */
 export type UseEmployeeStateTaxesFormResult = HookLoadingResult | UseEmployeeStateTaxesFormReady
 
+/**
+ * Headless form hook for updating an employee's state tax withholding answers.
+ * The set of questions is driven by the API response per state, so
+ * `form.Fields` is an array of state groups with discriminated, render-ready
+ * `Field` components rather than a fixed named object.
+ *
+ * @remarks
+ * The state-tax record(s) are created automatically with the employee, so this
+ * hook is always in update mode. When the form has no states with submittable
+ * answers (e.g. an employee in a no-income-tax state), submit resolves with
+ * the existing record list without making a network request.
+ *
+ * @param props - Hook options.
+ * @returns A loading result while data is fetching, or a ready result with
+ * form data, fields, status, actions, and error handling.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useEmployeeStateTaxesForm,
+ *   SDKFormProvider,
+ *   type UseEmployeeStateTaxesFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function StateTaxesPage({ employeeId }: { employeeId: string }) {
+ *   const stateTaxes = useEmployeeStateTaxesForm({ employeeId })
+ *
+ *   if (stateTaxes.isLoading) return <div>Loading...</div>
+ *
+ *   return <StateTaxesFormReady stateTaxes={stateTaxes} />
+ * }
+ *
+ * function StateTaxesFormReady({
+ *   stateTaxes,
+ * }: {
+ *   stateTaxes: UseEmployeeStateTaxesFormReady
+ * }) {
+ *   const handleSubmit = async () => {
+ *     const result = await stateTaxes.actions.onSubmit()
+ *     if (result) console.log('Updated state tax records:', result.data)
+ *   }
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={stateTaxes}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void handleSubmit()
+ *         }}
+ *       >
+ *         {stateTaxes.form.Fields.map(group => (
+ *           <section key={group.state}>
+ *             <h2>{group.state}</h2>
+ *             {group.questions.map(question => (
+ *               <question.Field key={question.questionId} />
+ *             ))}
+ *           </section>
+ *         ))}
+ *         <button type="submit" disabled={stateTaxes.status.isPending}>
+ *           Save
+ *         </button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useEmployeeStateTaxesForm({
   employeeId,
   isAdmin = false,
@@ -310,6 +404,19 @@ function serializeStatesPayload(
   return result
 }
 
+/**
+ * Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
+ * with `isRequired` / `isDisabled` and option lists.
+ *
+ * @public
+ */
 export type EmployeeStateTaxesFieldsMetadata =
   UseEmployeeStateTaxesFormReady['form']['fieldsMetadata']
+
+/**
+ * The array of per-state field groups exposed by
+ * {@link useEmployeeStateTaxesForm} on `form.Fields`.
+ *
+ * @public
+ */
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields']

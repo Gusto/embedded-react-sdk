@@ -8,8 +8,6 @@ order: 1
 
 Hooks let you own the layout while the SDK manages data fetching, validation, submission, and error handling. **Form hooks** return pre-bound field components, metadata, and actions for rendering a form — you supply the layout and labels. **Data hooks** return fetched, decorated data plus the actions valid for it — you supply the presentation. Both share the same loading/error/`HookErrorHandling` conventions.
 
-> Hooks are an experimental feature. APIs may change between minor versions during 0.x.x releases.
-
 ## Available Form Hooks
 
 | Hook                                                                  | Description                                                                                        |

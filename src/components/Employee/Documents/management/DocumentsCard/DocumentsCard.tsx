@@ -8,21 +8,31 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link DocumentsCard}.
+ *
+ * @public
+ */
 export interface DocumentsCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when a row's View CTA is clicked. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
  * Standalone "Documents" (forms) card. Owns its own data fetch via
  * {@link useDocumentsList} and renders the employee's forms in a table with a
- * per-row "View" action. Emits the management block's scoped event
- * (`EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED`) when a row's View CTA is
- * clicked. The card is read-only — viewing or signing a form happens in the
- * `DocumentManager` screen the orchestrator routes to — and has no alert API:
- * alert rendering is the orchestrator's responsibility (the block's
- * `DocumentsCardContextual` for standalone consumption; the dashboard chrome
- * for dashboard consumption).
+ * per-row "View" action. Emits
+ * `employee/management/documents/card/viewRequested` with
+ * `{ employeeId, formId }` when a row's View CTA is clicked. The card is
+ * read-only — viewing or signing a form happens in the screen the parent
+ * routes to — and renders no alerts: alert rendering is the parent's
+ * responsibility.
+ *
+ * @param props - See {@link DocumentsCardProps}.
+ * @returns The documents card.
+ * @public
  */
 export function DocumentsCard(props: DocumentsCardProps) {
   return (

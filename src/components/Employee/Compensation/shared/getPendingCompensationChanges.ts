@@ -3,6 +3,7 @@ import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/com
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { normalizeToDate } from '@/helpers/dateFormatting'
 
+/** @internal */
 export type PendingChangeDetail =
   | { kind: 'titleChange'; title: string }
   | { kind: 'payChange'; rate: number; paymentUnit: string }
@@ -17,6 +18,7 @@ export type PendingChangeDetail =
       paymentUnit: string | null
     }
 
+/** @internal */
 export interface PendingCompensationChange {
   compensationUuid: string
   jobUuid: string
@@ -126,6 +128,8 @@ function buildNewJobDetails(future: Compensation): PendingChangeDetail[] {
  * The helper returns structured deltas (a discriminated union per detail) so
  * the consuming UI is responsible for formatting them via i18n / pay-rate
  * helpers. This keeps the helper pure and trivially unit-testable.
+ *
+ * @internal
  */
 export function getPendingCompensationChanges(
   jobs: Job[] | undefined,

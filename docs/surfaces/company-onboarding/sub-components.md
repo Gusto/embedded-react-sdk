@@ -14,14 +14,14 @@ Company onboarding components can be used to compose your own workflow, or can b
 
 A component allowing users to choose between creating a new signatory with full details or inviting someone else to become the signatory.
 
-For more granular control, you can use `Company.CreateSignatory` or `Company.InviteSignatory` directly.
+For more granular control, you can use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.AssignSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.AssignSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -52,11 +52,11 @@ function MyComponent() {
 A standalone form for creating a new signatory with full personal details including name, contact information, SSN, and home address. Use this component when you want to provide only the create signatory flow without the invite option.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.CreateSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.CreateSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -85,11 +85,11 @@ function MyComponent() {
 A standalone form for inviting someone else to become the company signatory. The invited person will receive an email to complete their signatory information. Use this component when you want to provide only the invite signatory flow without the create option.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.InviteSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.InviteSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -116,10 +116,10 @@ function MyComponent() {
 A component for selecting and saving the company's industry classification (NAICS code). The selector presents a searchable list of industry options for the company.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Company.Industry companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <CompanyOnboarding.Industry companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -143,11 +143,11 @@ function MyComponent() {
 Provides an interface for company representatives to read and sign required company documents. The component handles document listing, signatory management, and document signing workflow.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.DocumentSigner companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.DocumentSigner companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -180,14 +180,14 @@ function MyComponent() {
 
 ## Documents list
 
-A standalone component that displays the list of company documents to be signed and lets the user manage signatories. This is the lower-level building block used internally by `Company.DocumentSigner` for its list view. Use this component directly when you need full control over navigation between the document list and the signature form.
+A standalone component that displays the list of company documents to be signed and lets the user manage signatories. This is the lower-level building block used internally by `CompanyOnboarding.DocumentSigner` for its list view. Use this component directly when you need full control over navigation between the document list and the signature form.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.DocumentList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.DocumentList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -212,14 +212,14 @@ function MyComponent() {
 
 ## Sign a document
 
-A standalone form for signing an individual company document. This is the lower-level building block used internally by `Company.DocumentSigner` for its signing view. Use this component directly when you need full control over navigation between the document list and the signature form (e.g. you are routing the user yourself after they select a form from `Company.DocumentList`).
+A standalone form for signing an individual company document. This is the lower-level building block used internally by `CompanyOnboarding.DocumentSigner` for its signing view. Use this component directly when you need full control over navigation between the document list and the signature form (e.g. you are routing the user yourself after they select a form from `CompanyOnboarding.DocumentList`).
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.SignatureForm
+    <CompanyOnboarding.SignatureForm
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       formId="form-uuid"
       onEvent={() => {}}
@@ -251,11 +251,11 @@ function MyComponent() {
 A component for adding company federal tax information including EIN, tax payer type, filing form, and legal name.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.FederalTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.FederalTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -282,10 +282,10 @@ function MyComponent() {
 A component for managing company pay schedules, including creating, editing, and viewing pay schedules with preview functionality.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Company.PaySchedule companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <CompanyOnboarding.PaySchedule companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -308,13 +308,13 @@ function MyComponent() {
 
 ## Locations
 
-An orchestrated component for managing company addresses, including mailing and filing address. Internally uses a state machine to switch between a list view and a create/edit form. For more granular control, you can use `Company.LocationForm` directly.
+An orchestrated component for managing company addresses, including mailing and filing address. Internally uses a state machine to switch between a list view and a create/edit form. For more granular control, you can use `CompanyOnboarding.LocationForm` directly.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Company.Locations companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <CompanyOnboarding.Locations companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -340,16 +340,16 @@ function MyComponent() {
 
 ## Location form
 
-A standalone form component for creating a new company location or editing an existing one. This is the lower-level building block used internally by `Company.Locations` for its create/edit views. Use this component directly when you need full control over navigation between the list and form views.
+A standalone form component for creating a new company location or editing an existing one. This is the lower-level building block used internally by `CompanyOnboarding.Locations` for its create/edit views. Use this component directly when you need full control over navigation between the list and form views.
 
 Pass a `locationId` to edit an existing location; omit it to create a new location.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.LocationForm
+    <CompanyOnboarding.LocationForm
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       locationId="d3b4c1e2-1234-5678-9abc-def012345678"
       onEvent={() => {}}
@@ -381,10 +381,10 @@ function MyComponent() {
 A component for managing company bank account
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Company.BankAccount companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <CompanyOnboarding.BankAccount companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -413,10 +413,10 @@ function MyComponent() {
 An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `CompanyOnboarding.StateTaxesList` or `CompanyOnboarding.StateTaxesForm` directly.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Company.StateTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <CompanyOnboarding.StateTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -439,14 +439,14 @@ function MyComponent() {
 
 ## State taxes form
 
-A standalone form component for editing state tax requirements for a specific state. This is the lower-level building block used internally by `Company.StateTaxes` for its edit view. Use this component directly when you need full control over navigation between the list and form views.
+A standalone form component for editing state tax requirements for a specific state. This is the lower-level building block used internally by `CompanyOnboarding.StateTaxes` for its edit view. Use this component directly when you need full control over navigation between the list and form views.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.StateTaxesForm
+    <CompanyOnboarding.StateTaxesForm
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       state="CA"
       onEvent={() => {}}
@@ -474,14 +474,14 @@ function MyComponent() {
 
 ## State taxes list
 
-A standalone component that displays the list of state tax requirements for a company. This is the lower-level building block used internally by `Company.StateTaxes` for its list view. Use this component directly when you need full control over navigation between the list and form views.
+A standalone component that displays the list of state tax requirements for a company. This is the lower-level building block used internally by `CompanyOnboarding.StateTaxes` for its list view. Use this component directly when you need full control over navigation between the list and form views.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.StateTaxesList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.StateTaxesList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -507,11 +507,11 @@ function MyComponent() {
 Displays the company's overall onboarding status. Shows completed steps and remaining requirements, providing a high-level summary of where the company is in the onboarding process. Used as the landing/summary screen of the onboarding flow.
 
 ```jsx title="MyComponent.tsx"
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Company.OnboardingOverview
+    <CompanyOnboarding.OnboardingOverview
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />

@@ -8,7 +8,6 @@ order: 2
 
 Contractor onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
 
 ---
 
@@ -17,11 +16,11 @@ Contractor onboarding components can be used to compose your own workflow, or ca
 Displays a list of contractors for a company, allowing users to add new contractors, edit existing ones, delete contractors, and continue the onboarding process.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorList
+    <ContractorOnboarding.ContractorList
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -53,11 +52,11 @@ function MyComponent() {
 A comprehensive form for creating and editing contractor profiles. Supports both individual and business contractor types, with different field sets for each. Includes options for wage type, self-onboarding invitations, and start date.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.ContractorProfile
+    <ContractorOnboarding.ContractorProfile
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
@@ -89,10 +88,10 @@ function MyComponent() {
 A form for collecting and updating a contractor's mailing address.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.Address contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.Address contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -118,10 +117,10 @@ function MyComponent() {
 Manages the contractor's payment method, including adding a bank account for direct deposit or selecting check as the payment method.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.PaymentMethod contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -147,10 +146,10 @@ function MyComponent() {
 Handles new hire reporting requirements for the contractor. Behavior varies based on whether the contractor is going through admin onboarding or self-onboarding.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.NewHireReport contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -176,10 +175,10 @@ function MyComponent() {
 Finalizes the contractor onboarding process. Updates the onboarding status and, in the self-onboarding flow, can trigger an invitation to the contractor.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
+  return <ContractorOnboarding.ContractorSubmit contractorId="contractor-uuid" onEvent={() => {}} />
 }
 ```
 

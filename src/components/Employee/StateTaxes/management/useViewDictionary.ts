@@ -7,6 +7,8 @@ import type { StateTaxesViewDictionary } from '../shared'
  * `Employee.Management.StateTaxes` namespace. Partner overrides supplied
  * through the management edit form's `dictionary` prop flow into the view
  * text via `t(...)` resolution at render time.
+ *
+ * @internal
  */
 export function useManagementStateTaxesViewDictionary(): StateTaxesViewDictionary {
   const { t } = useTranslation('Employee.Management.StateTaxes')

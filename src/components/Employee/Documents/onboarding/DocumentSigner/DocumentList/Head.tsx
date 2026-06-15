@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 function Head() {
   const { t } = useTranslation('Employee.DocumentSigner')
   const Components = useComponentContext()

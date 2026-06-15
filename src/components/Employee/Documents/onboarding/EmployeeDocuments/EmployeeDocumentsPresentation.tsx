@@ -13,8 +13,10 @@ const EmployeeDocumentsSchema = z.object({
   includeI9: z.boolean(),
 })
 
+/** @internal */
 export type EmployeeDocumentsFormValues = z.infer<typeof EmployeeDocumentsSchema>
 
+/** @internal */
 export interface EmployeeDocumentsPresentationProps {
   isEmployeeSelfOnboarding: boolean
   currentI9Status: boolean
@@ -23,6 +25,7 @@ export interface EmployeeDocumentsPresentationProps {
   isPending: boolean
 }
 
+/** @internal */
 export const EmployeeDocumentsPresentation = ({
   isEmployeeSelfOnboarding,
   currentI9Status,

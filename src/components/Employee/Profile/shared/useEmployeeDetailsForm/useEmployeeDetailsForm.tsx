@@ -41,44 +41,116 @@ import { removeNonDigits } from '@/helpers/formattedStrings'
 
 export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSchema'
 
+/**
+ * Optional callbacks passed to {@link UseEmployeeDetailsFormReady.actions.onSubmit | onSubmit}.
+ *
+ * @remarks
+ * Only the callback matching the submit mode fires —
+ * `onEmployeeCreated` on create, `onEmployeeUpdated` on update.
+ * `onOnboardingStatusUpdated` fires when toggling the self-onboarding
+ * switch changes the employee's onboarding status as part of an update.
+ *
+ * @public
+ */
 export interface EmployeeDetailsSubmitCallbacks {
+  /** Fired after a new employee is successfully created. */
   onEmployeeCreated?: (employee: Employee) => void
+  /** Fired after an existing employee is successfully updated. */
   onEmployeeUpdated?: (employee: Employee) => void
+  /** Fired when an update toggles self-onboarding and the employee's onboarding status changes. */
   onOnboardingStatusUpdated?: (status: unknown) => void
 }
 
-type UseEmployeeDetailsFormSharedProps = {
+/**
+ * Shared options merged into both branches of {@link UseEmployeeDetailsFormProps}.
+ *
+ * @public
+ */
+export type UseEmployeeDetailsFormSharedProps = {
+  /** Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. */
   withSelfOnboardingField?: boolean
+  /** Fields that are optional by default but should be promoted to required for this form instance. */
   optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
+  /** Initial values applied before any employee data loads. */
   defaultValues?: Partial<EmployeeDetailsFormData>
+  /** When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Options for {@link useEmployeeDetailsForm}.
+ *
+ * @remarks
+ * Discriminated by mode: in create mode supply `companyId` and omit
+ * `employeeId`; in update mode supply `employeeId` (and optionally
+ * `companyId`).
+ *
+ * @public
+ */
 export type UseEmployeeDetailsFormProps =
   | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
   | (UseEmployeeDetailsFormSharedProps & { employeeId: string; companyId?: string })
 
+/**
+ * The Field components exposed by {@link useEmployeeDetailsForm} as `form.Fields`.
+ *
+ * @remarks
+ * Each entry is a component bound to a specific form field — see
+ * {@link FirstNameField}, {@link MiddleInitialField}, {@link LastNameField},
+ * {@link EmailField}, {@link DateOfBirthField}, {@link SsnField}, and
+ * {@link SelfOnboardingField}. `SelfOnboarding` may be `undefined` when
+ * the field is not toggleable.
+ *
+ * @public
+ */
 export interface EmployeeDetailsFields {
+  /** Text input bound to `firstName`. See {@link FirstNameField}. */
   FirstName: typeof FirstNameField
+  /** Text input bound to `middleInitial`. See {@link MiddleInitialField}. */
   MiddleInitial: typeof MiddleInitialField
+  /** Text input bound to `lastName`. See {@link LastNameField}. */
   LastName: typeof LastNameField
+  /** Text input bound to `email`. See {@link EmailField}. */
   Email: typeof EmailField
+  /** Date picker bound to `dateOfBirth`. See {@link DateOfBirthField}. */
   DateOfBirth: typeof DateOfBirthField
+  /** Text input bound to `ssn`. See {@link SsnField}. */
   Ssn: typeof SsnField
+  /** Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. See {@link SelfOnboardingField}. */
   SelfOnboarding: typeof SelfOnboardingField | undefined
 }
 
+/**
+ * The ready-state result returned by {@link useEmployeeDetailsForm} once data has loaded.
+ *
+ * @remarks
+ * Provides the form's `data` snapshot, pending `status`, submit `actions`,
+ * error handling, and the `form.Fields` map.
+ *
+ * @public
+ */
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
   FieldsMetadata,
   EmployeeDetailsFormData,
   EmployeeDetailsFields
 > {
+  /** The loaded employee data, or `null` in create mode. */
   data: {
+    /** The employee being edited, or `null` in create mode. */
     employee: Employee | null
   }
-  status: { isPending: boolean; mode: 'create' | 'update' }
+  /** Submit status and form mode. */
+  status: {
+    /** `true` while the create, update, or onboarding-status mutation is in flight. */
+    isPending: boolean
+    /** `'create'` when no `employeeId` was supplied, `'update'` otherwise. */
+    mode: 'create' | 'update'
+  }
+  /** Submit and related actions. */
   actions: {
+    /** Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. */
     onSubmit: (
       callbacks?: EmployeeDetailsSubmitCallbacks,
     ) => Promise<HookSubmitResult<Employee> | undefined>
@@ -106,6 +178,61 @@ const canToggleSelfOnboarding = (employee?: Employee) => {
   )
 }
 
+/**
+ * Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
+ *
+ * @remarks
+ * Returns a discriminated union: a loading variant while the underlying
+ * employee fetch resolves, and a ready variant exposing the form's data,
+ * pending status, submit action, error handling, and bound `Fields`.
+ * Self-onboarding is only toggleable when the employee's onboarding status
+ * allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
+ *
+ * @param input - See {@link UseEmployeeDetailsFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseEmployeeDetailsFormReady} once ready.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useEmployeeDetailsForm,
+ *   SDKFormProvider,
+ *   type UseEmployeeDetailsFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function EmployeeDetailsPage({ companyId, employeeId }: { companyId: string; employeeId?: string }) {
+ *   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+ *
+ *   if (employeeDetails.isLoading) return <div>Loading...</div>
+ *
+ *   return <EmployeeDetailsReady employeeDetails={employeeDetails} />
+ * }
+ *
+ * function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmployeeDetailsFormReady }) {
+ *   const { Fields } = employeeDetails.form
+ *
+ *   const handleSubmit = async () => {
+ *     await employeeDetails.actions.onSubmit({
+ *       onEmployeeCreated: emp => console.log('Created:', emp.uuid),
+ *       onEmployeeUpdated: emp => console.log('Updated:', emp.uuid),
+ *     })
+ *   }
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={employeeDetails}>
+ *       <form onSubmit={e => { e.preventDefault(); void handleSubmit() }}>
+ *         <Fields.FirstName label="First name" />
+ *         <Fields.LastName label="Last name" />
+ *         <Fields.Email label="Personal email" />
+ *         <Fields.DateOfBirth label="Date of birth" />
+ *         <Fields.Ssn label="Social Security number" />
+ *         <button type="submit" disabled={employeeDetails.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useEmployeeDetailsForm({
   companyId,
   employeeId,
@@ -306,6 +433,23 @@ export function useEmployeeDetailsForm({
   }
 }
 
+/**
+ * Return type of {@link useEmployeeDetailsForm}.
+ *
+ * @public
+ */
 export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady
+
+/**
+ * Shape of `form.fieldsMetadata` returned by {@link useEmployeeDetailsForm}.
+ *
+ * @public
+ */
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata']
+
+/**
+ * Shape of `form.Fields` returned by {@link useEmployeeDetailsForm}.
+ *
+ * @public
+ */
 export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields']

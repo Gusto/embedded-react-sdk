@@ -21,8 +21,6 @@ function MyApp() {
 }
 ```
 
-> Legacy imports via `Employee.*` (e.g. `Employee.DashboardFlow`) continue to work.
-
 ## Using Employee Management Subcomponents
 
 Employee management components can be used to compose your own workflow, or can be rendered in isolation. Each section of the dashboard is also exported as a self-contained block (e.g. `EmployeeManagement.Profile`) that wraps its read-only card surface, its edit form, and the transitions between them — drop it into any page and it works the same way that section works inside `DashboardFlow`. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).

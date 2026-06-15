@@ -1,4 +1,8 @@
-export { ManagementEmployeeList as EmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
+export {
+  ManagementEmployeeList as EmployeeList,
+  type ManagementEmployeeListProps,
+  type EmployeeTab,
+} from '../EmployeeList/management/ManagementEmployeeList'
 export { EmployeeListFlow } from '../EmployeeListFlow'
 export type { EmployeeListFlowProps } from '../EmployeeListFlow'
 export { Documents, DocumentsCard, DocumentManager } from '../Documents/management'
@@ -7,8 +11,8 @@ export type {
   DocumentsCardProps,
   DocumentManagerProps,
 } from '../Documents/management'
-export { DashboardFlow } from '../Dashboard'
-export type { DashboardFlowProps } from '../Dashboard'
+export { DashboardFlow, Dashboard } from '../Dashboard'
+export type { DashboardFlowProps, DashboardProps } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {
   HomeAddressProps,
@@ -68,5 +72,9 @@ export type {
   CompensationAddAnotherJobFormProps,
 } from '../Compensation/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
+export type { TerminateEmployeeProps } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
+export type { TerminationSummaryProps } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'
+export type { TerminationFlowProps } from '../Terminations/TerminationFlow/TerminationFlowComponents'
+export type { PayrollOption } from '../Terminations/types'

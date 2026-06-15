@@ -19,19 +19,36 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
+/**
+ * Props for {@link PaymentMethodCard}.
+ *
+ * @public
+ */
 export interface PaymentMethodCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on card interactions. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 /**
- * Standalone "Payment" card. Owns its own data fetch via
- * {@link usePaymentMethodList} and emits the management block's scoped events
- * (`EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_*`) when the user clicks the card's
- * CTAs or confirms a bank-account deletion. The card has no alert API — alert
- * rendering is the orchestrator's responsibility (the block's
- * `PaymentMethodCardContextual` for standalone consumption; the dashboard
- * chrome for dashboard consumption).
+ * Standalone "Payment" card.
+ *
+ * @remarks
+ * Owns its own data fetch and emits the management block's scoped events
+ * when the user clicks the card's CTAs or confirms a bank-account deletion.
+ * The card has no alert API — alert rendering is the orchestrator's
+ * responsibility.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/paymentMethod/card/addRequested` | Fired when the user clicks the add-account CTA | — |
+ * | `employee/management/paymentMethod/card/splitRequested` | Fired when the user clicks the split-paycheck CTA | — |
+ * | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is successfully deleted | The delete response payload |
+ *
+ * @param props - See {@link PaymentMethodCardProps}.
+ * @returns The "Payment" card.
+ * @public
  */
 export function PaymentMethodCard(props: PaymentMethodCardProps) {
   return (

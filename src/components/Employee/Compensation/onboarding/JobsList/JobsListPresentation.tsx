@@ -8,16 +8,25 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { FlsaStatus } from '@/shared/constants'
 
+/** @internal */
 export interface JobsListPresentationProps {
+  /** @internal */
   jobs: Job[]
+  /** @internal */
   primaryFlsaStatus: string | undefined
+  /** @internal */
   isPending: boolean
+  /** @internal */
   onAdd: () => void
+  /** @internal */
   onEdit: (jobId: string) => void
+  /** @internal */
   onDelete: (jobId: string) => void
+  /** @internal */
   onContinue: () => void
 }
 
+/** @internal */
 export function JobsListPresentation({
   jobs,
   primaryFlsaStatus,

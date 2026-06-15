@@ -7,13 +7,16 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type StateTaxesSuccessAlertCode = 'stateTaxesUpdated'
 
+/** @internal */
 export interface StateTaxesContextInterface extends FlowContextInterface {
   employeeId?: string
   successAlert?: StateTaxesSuccessAlertCode | null
 }
 
+/** @internal */
 export function StateTaxesCardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<StateTaxesContextInterface>()
   const { t } = useTranslation('Employee.Management.StateTaxes')
@@ -34,6 +37,7 @@ export function StateTaxesCardContextual() {
   )
 }
 
+/** @internal */
 export function StateTaxesEditFormContextual() {
   const { employeeId, onEvent } = useFlow<StateTaxesContextInterface>()
   return <StateTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />

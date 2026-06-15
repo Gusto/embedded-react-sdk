@@ -8,12 +8,14 @@ import { useI18n } from '@/i18n'
 import CoinsHandsIcon from '@/assets/icons/coins-hand.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
+/** @internal */
 export interface IncludeDeductionsProps {
   className?: string
   onAdd: () => void
   onContinue: () => void
 }
 
+/** @internal */
 export function IncludeDeductions({ className, onAdd, onContinue }: IncludeDeductionsProps) {
   useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Deductions')

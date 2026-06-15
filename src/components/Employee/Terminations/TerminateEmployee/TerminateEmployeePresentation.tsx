@@ -25,6 +25,7 @@ const terminateEmployeeSchema = z.object({
   }),
 })
 
+/** @internal */
 export function TerminateEmployeePresentation({
   employeeName,
   existingTermination,

@@ -9,6 +9,7 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type EventPayloads = {
   [componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_NO]: undefined
@@ -23,12 +24,14 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_DEDUCTION_DONE]: undefined
 }
 
+/** @internal */
 export interface DeductionsContextInterface extends FlowContextInterface {
   employeeId: string
   /** Set by the EDIT transition; consumed by the form-mode contextual. */
   editingDeductionId?: string
 }
 
+/** @internal */
 export function IncludeDeductionsContextual() {
   const { onEvent } = useFlow<DeductionsContextInterface>()
 
@@ -53,6 +56,7 @@ export function IncludeDeductionsContextual() {
   )
 }
 
+/** @internal */
 export function DeductionsListContextual() {
   const { employeeId, onEvent } = useFlow<DeductionsContextInterface>()
   const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
@@ -95,6 +99,7 @@ export function DeductionsListContextual() {
   )
 }
 
+/** @internal */
 export function DeductionsFormContextual() {
   const { employeeId, editingDeductionId, onEvent } = useFlow<DeductionsContextInterface>()
   // The same list query the form hooks use internally — React Query dedupes

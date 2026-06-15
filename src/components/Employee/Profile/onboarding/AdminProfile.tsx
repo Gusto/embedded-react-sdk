@@ -48,6 +48,7 @@ function computeOptionalFieldsToRequire(
   }
 }
 
+/** @internal */
 export function AdminProfile({
   companyId,
   employeeId,

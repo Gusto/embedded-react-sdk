@@ -11,6 +11,7 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
+/** @internal */
 export interface EmployeeListViewProps extends Pick<
   Extract<UseEmployeeListResult, { isLoading: false }>,
   'pagination' | 'status'
@@ -25,6 +26,7 @@ export interface EmployeeListViewProps extends Pick<
   onSkip: () => void
 }
 
+/** @internal */
 export function EmployeeListView({
   employees,
   isFetching,

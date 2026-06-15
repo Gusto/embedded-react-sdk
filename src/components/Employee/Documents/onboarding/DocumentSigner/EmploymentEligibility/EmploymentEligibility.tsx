@@ -12,10 +12,33 @@ import { useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Props for {@link EmploymentEligibility}.
+ *
+ * @public
+ */
 export interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.EmploymentEligibility'> {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
+/**
+ * Captures the employee's I-9 employment eligibility (Section 1) before signing.
+ *
+ * @remarks
+ * Collects the employee's authorization status — U.S. citizen, noncitizen
+ * national, permanent resident, or alien authorized to work — and any
+ * document details required for that status. Updates the employee's I-9
+ * authorization record on submit.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |
+ *
+ * @param props - See {@link EmploymentEligibilityProps}.
+ * @returns The employment eligibility form.
+ * @public
+ */
 export function EmploymentEligibility(props: EmploymentEligibilityProps) {
   return (
     <BaseComponent {...props}>

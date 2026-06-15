@@ -30,6 +30,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
+/** @internal */
 export interface WorkAddressViewProps {
   editWorkAddressForm: UseWorkAddressFormReady
   changeWorkAddressForm: UseWorkAddressFormReady
@@ -69,6 +70,7 @@ function formatWorkAddressLines(
   return { primary: street, secondary: locality }
 }
 
+/** @internal */
 export function WorkAddressView({
   editWorkAddressForm,
   changeWorkAddressForm,

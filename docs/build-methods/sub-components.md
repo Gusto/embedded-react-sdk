@@ -22,11 +22,11 @@ Sub-components sit between [workflows](./workflows.md) and [hooks](./hooks.md): 
 Render the Profile step in isolation:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function EditProfilePage({ companyId, employeeId }) {
   return (
-    <Employee.Profile
+    <EmployeeOnboarding.Profile
       companyId={companyId}
       employeeId={employeeId}
       isAdmin

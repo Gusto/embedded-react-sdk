@@ -15,11 +15,11 @@ Contractor payment components can be used to compose your own workflow, or can b
 Displays a list of contractor payment groups for a company, allowing users to view payment history, create new payments, and filter by date range. Includes alerts for pending information requests and wire transfer requirements.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.PaymentsList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <ContractorManagement.PaymentsList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -47,11 +47,11 @@ function MyComponent() {
 A comprehensive form for creating contractor payment groups. Allows selecting payment date, editing individual contractor payments with hours, wages, bonuses, and reimbursements. Supports preview before submission and handles submission blockers like Fast ACH thresholds.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.CreatePayment companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <ContractorManagement.CreatePayment companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
   )
 }
 ```
@@ -90,10 +90,10 @@ function MyComponent() {
 Displays detailed information about a specific contractor payment group, including all individual contractor payments. Allows viewing individual payment details and canceling payments when permitted.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentHistory paymentId="payment-group-uuid" onEvent={() => {}} />
+  return <ContractorManagement.PaymentHistory paymentId="payment-group-uuid" onEvent={() => {}} />
 }
 ```
 
@@ -125,11 +125,11 @@ function MyComponent() {
 Displays a summary of a created payment group, including payment details, contractor information, and wire transfer requirements if applicable. Used as a confirmation screen after payment creation.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Contractor.PaymentSummary
+    <ContractorManagement.PaymentSummary
       paymentGroupId="payment-group-uuid"
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
@@ -166,10 +166,10 @@ function MyComponent() {
 Displays an individual contractor payment statement with detailed payment information and breakdown.
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Contractor.PaymentStatement paymentId="contractor-payment-uuid" onEvent={() => {}} />
+  return <ContractorManagement.PaymentStatement paymentId="contractor-payment-uuid" onEvent={() => {}} />
 }
 ```
 

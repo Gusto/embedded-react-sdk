@@ -8,6 +8,7 @@ export type {
   UseHomeAddressFormReady,
   HomeAddressFieldsMetadata,
   HomeAddressFormFields,
+  HomeAddressFields,
 } from './useHomeAddressForm'
 export type { UseCurrentHomeAddressFormProps } from './useCurrentHomeAddressForm'
 export {
@@ -18,6 +19,15 @@ export {
   type HomeAddressFormOutputs,
   type HomeAddressField,
 } from './homeAddressSchema'
+export {
+  Street1Field,
+  Street2Field,
+  CityField,
+  StateField,
+  ZipField,
+  CourtesyWithholdingField,
+  EffectiveDateField,
+} from './fields'
 export type {
   RequiredValidation as HomeAddressRequiredValidation,
   ZipValidation,

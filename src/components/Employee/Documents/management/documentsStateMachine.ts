@@ -20,6 +20,7 @@ const returnToCard = reduce(
   }),
 )
 
+/** @internal */
 export const documentsStateMachine = {
   card: state<MachineTransition>(
     transition(

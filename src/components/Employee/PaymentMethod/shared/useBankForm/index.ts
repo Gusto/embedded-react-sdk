@@ -6,7 +6,6 @@ export type {
   UseBankFormReady,
   BankFormFields,
   BankFormFieldsMetadata,
-  BankFormFieldsType,
 } from './useBankForm'
 export {
   ACCOUNT_TYPES,
