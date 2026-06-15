@@ -44,13 +44,20 @@ import {
  *                                              project index page, which renders them inline)
  */
 
-// Maps a source-path substring to the output file path and display name for a standalone page.
-// Any project-level reflection whose source path contains the key is routed to that page
-// instead of becoming an anchor on index.md.
-const STANDALONE_PAGES: Record<string, { page: string; displayName: string }> = {
-  'contexts/ThemeProvider': { page: 'theme-variables', displayName: 'Theme Variables' },
-  'components/Common': { page: 'component-adapter', displayName: 'Component Adapter' },
-  'partner-hook-utils': { page: 'utilities', displayName: 'Hook Utilities' },
+// Maps an output page path to its display name and the list of source-path substrings
+// whose reflections are routed to that page instead of becoming anchors on index.md.
+const STANDALONE_PAGES: Record<string, { sources: string[]; displayName: string }> = {
+  'theme-variables': { sources: ['contexts/ThemeProvider'], displayName: 'Theme Variables' },
+  'component-adapter': {
+    sources: [
+      'components/Common/UI',
+      'components/Common/PaginationControl',
+      'components/Common/PayrollLoading',
+      'contexts/ComponentAdapter',
+    ],
+    displayName: 'Component Adapters',
+  },
+  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities' },
 }
 
 // Maps each namespace to its output directory prefix.
@@ -125,8 +132,8 @@ export function standalonePageFromSources(reflection: Reflection): string | null
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''
-  for (const [pattern, { page }] of Object.entries(STANDALONE_PAGES)) {
-    if (fp.includes(pattern)) return page
+  for (const [page, { sources }] of Object.entries(STANDALONE_PAGES)) {
+    if (sources.some(pattern => fp.includes(pattern))) return page
   }
   return null
 }
@@ -829,6 +836,19 @@ export class SDKRouter extends MemberRouter {
     for (const child of project.children ?? []) {
       if (child.kind === ReflectionKind.Namespace) continue
 
+      // Standalone pages take priority: check them before the hook-file heuristic so
+      // that types from files named useX.ts (e.g. ComponentsContextType from
+      // useComponentContext.ts) are routed to their designated page rather than being
+      // caught by isHookSourceFile and silently skipped.
+      const page = standalonePageFromSources(child)
+      if (page) {
+        const bucket = standaloneGroups.get(page) ?? []
+        bucket.push(child)
+        standaloneGroups.set(page, bucket)
+        this.handledStandalone.add(child)
+        continue
+      }
+
       // Route to the domain hooks page only for hooks (use[A-Z] functions) and
       // companion exports from hook files (useCamelCase.ts). Other domain exports
       // fall through to the project index as anchors.
@@ -845,14 +865,6 @@ export class SDKRouter extends MemberRouter {
           if (hookDir) hookGroupMap.set(child, hookDir)
         }
         continue
-      }
-
-      const page = standalonePageFromSources(child)
-      if (page) {
-        const bucket = standaloneGroups.get(page) ?? []
-        bucket.push(child)
-        standaloneGroups.set(page, bucket)
-        this.handledStandalone.add(child)
       }
     }
 
@@ -886,7 +898,7 @@ export class SDKRouter extends MemberRouter {
     }
 
     for (const [page, members] of standaloneGroups) {
-      const { displayName } = Object.values(STANDALONE_PAGES).find(v => v.page === page)!
+      const { displayName } = STANDALONE_PAGES[page]!
       const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)
