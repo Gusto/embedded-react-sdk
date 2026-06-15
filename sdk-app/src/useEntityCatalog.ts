@@ -51,10 +51,22 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
 
     const load = async () => {
       const base = `/api/v1/companies/${companyId}`
+      const today = new Date()
+      const startDate = new Date(today)
+      startDate.setMonth(startDate.getMonth() - 6)
+      const endDate = new Date(today)
+      endDate.setMonth(endDate.getMonth() + 3)
+      const toIso = (d: Date) => d.toISOString().slice(0, 10)
+      const payrollsQuery = new URLSearchParams({
+        processing_statuses: 'processed,unprocessed',
+        start_date: toIso(startDate),
+        end_date: toIso(endDate),
+        per: '100',
+      })
       const [employees, contractors, payrolls] = await Promise.all([
         fetchList<RawEmployee>(`${base}/employees`, controller.signal),
         fetchList<RawContractor>(`${base}/contractors`, controller.signal),
-        fetchList<RawPayroll>(`${base}/payrolls`, controller.signal),
+        fetchList<RawPayroll>(`${base}/payrolls?${payrollsQuery.toString()}`, controller.signal),
       ])
 
       if (controller.signal.aborted) return
@@ -78,10 +90,15 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
           .filter(p => !!(p.payroll_uuid || p.uuid))
           .map(p => {
             const id = (p.payroll_uuid || p.uuid) as string
+            const isProcessed = p.processed === true
             return {
               value: id,
               primary: formatPayPeriod(p),
               secondary: id,
+              badge: {
+                label: isProcessed ? 'Processed' : 'Unprocessed',
+                tone: isProcessed ? ('processed' as const) : ('unprocessed' as const),
+              },
             }
           }),
         isLoading: false,
