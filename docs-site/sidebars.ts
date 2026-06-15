@@ -60,7 +60,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'doc',
               id: 'workflows-overview/contractor-onboarding',
-              label: 'Conractor onboarding',
+              label: 'Contractor onboarding',
             },
             {
               type: 'doc',
@@ -136,7 +136,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Hooks (Experimental)',
+      label: 'Hooks',
       link: { type: 'doc', id: 'hooks/hooks' },
       items: [
         'hooks/useEmployeeDetailsForm',
