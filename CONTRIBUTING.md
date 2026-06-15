@@ -369,6 +369,14 @@ When the repo variable `DOCS_PUBLISH_ENABLED=true` is set (the current default),
 
 Inside `docs/`, use relative links between files (e.g. `[link](../getting-started/index.md)`), not `/docs/...` absolute links. Absolute links don't resolve correctly when the same file is served at a versioned URL like `/docs/0.47/...`.
 
+```md
+<!-- Good -->
+See the [Getting Started guide](../getting-started/index.md).
+
+<!-- Bad — breaks when served at /docs/0.47/... -->
+See the [Getting Started guide](/docs/getting-started/index.md).
+```
+
 ### After the PR is merged
 
 Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.
