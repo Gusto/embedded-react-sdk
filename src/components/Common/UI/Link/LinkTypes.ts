@@ -5,6 +5,7 @@ import type { AnchorHTMLAttributes, ReactNode } from 'react'
  * Renders an HTML anchor (`<a>`) for inline navigation.
  *
  * @public
+ * @group Component Props
  */
 export type LinkProps = Pick<
   AnchorHTMLAttributes<HTMLAnchorElement>,

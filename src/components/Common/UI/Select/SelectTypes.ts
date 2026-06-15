@@ -22,6 +22,7 @@ export interface SelectOption {
  * Renders a form field wrapping a single-select dropdown with a label, description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface SelectProps
   extends

@@ -1,8 +1,3 @@
----
-title: Component Inventory
-description: Complete catalog of customizable UI components in the Component Adapter, with prop interfaces for inputs, buttons, layout primitives, dialogs, and more.
----
-
 # Component Inventory
 
 - [AlertProps](#alertprops)
@@ -514,18 +509,18 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 
 ## PaginationControlProps
 
-| Prop                         | Type                                                             | Required | Description |
-| ---------------------------- | ---------------------------------------------------------------- | -------- | ----------- |
-| **handleFirstPage**          | `() => void`                                                     | Yes      | -           |
-| **handlePreviousPage**       | `() => void`                                                     | Yes      | -           |
-| **handleNextPage**           | `() => void`                                                     | Yes      | -           |
-| **handleLastPage**           | `() => void`                                                     | Yes      | -           |
-| **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | -           |
-| **currentPage**              | `number`                                                         | Yes      | -           |
-| **totalPages**               | `number`                                                         | Yes      | -           |
-| **totalCount**               | `number`                                                         | No       | -           |
-| **itemsPerPage**             | `5 \| 10 \| 25 \| 50`                                            | No       | -           |
-| **isFetching**               | `boolean`                                                        | No       | -           |
+| Prop                         | Type                                                             | Required | Description                                                          |
+| ---------------------------- | ---------------------------------------------------------------- | -------- | -------------------------------------------------------------------- |
+| **handleFirstPage**          | `() => void`                                                     | Yes      | Navigate to the first page.                                          |
+| **handlePreviousPage**       | `() => void`                                                     | Yes      | Navigate to the previous page.                                       |
+| **handleNextPage**           | `() => void`                                                     | Yes      | Navigate to the next page.                                           |
+| **handleLastPage**           | `() => void`                                                     | Yes      | Navigate to the last page.                                           |
+| **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | Called when the user changes the number of items displayed per page. |
+| **currentPage**              | `number`                                                         | Yes      | The currently active page (1-based).                                 |
+| **totalPages**               | `number`                                                         | Yes      | Total number of pages.                                               |
+| **totalCount**               | `number`                                                         | No       | Total number of items across all pages.                              |
+| **itemsPerPage**             | `5 \| 10 \| 25 \| 50`                                            | No       | Number of items shown per page.                                      |
+| **isFetching**               | `boolean`                                                        | No       | Whether a page fetch is in progress.                                 |
 
 ### PaginationItemsPerPage
 
@@ -535,10 +530,10 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
 ## PayrollLoadingProps
 
-| Prop            | Type              | Required | Description |
-| --------------- | ----------------- | -------- | ----------- |
-| **title**       | `React.ReactNode` | Yes      | -           |
-| **description** | `React.ReactNode` | No       | -           |
+| Prop            | Type              | Required | Description                                             |
+| --------------- | ----------------- | -------- | ------------------------------------------------------- |
+| **title**       | `React.ReactNode` | Yes      | The heading text displayed above the loading animation. |
+| **description** | `React.ReactNode` | No       | Optional supporting text displayed below the title.     |
 
 ## ProgressBarProps
 

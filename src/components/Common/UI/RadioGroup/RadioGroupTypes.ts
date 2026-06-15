@@ -30,6 +30,7 @@ export interface RadioGroupOption {
  * Renders a form field wrapping multiple `<input type="radio" />` elements with a label, optional description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface RadioGroupProps
   extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {

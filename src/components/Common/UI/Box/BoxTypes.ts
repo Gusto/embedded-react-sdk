@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a sectioned layout container with distinct header, body, and footer areas.
  *
  * @public
+ * @group Component Props
  */
 export interface BoxProps {
   /**

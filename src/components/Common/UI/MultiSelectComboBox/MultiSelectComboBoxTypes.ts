@@ -22,6 +22,7 @@ export interface MultiSelectComboBoxOption {
  * Renders a form field wrapping a typeahead input for multi-option selection.
  *
  * @public
+ * @group Component Props
  * @see {@link ComboBoxProps}
  */
 export interface MultiSelectComboBoxProps

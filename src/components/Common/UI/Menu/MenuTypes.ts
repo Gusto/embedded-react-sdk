@@ -35,6 +35,7 @@ export interface MenuItem extends DataAttributes {
  * Renders a popover menu of actions anchored to a trigger element.
  *
  * @public
+ * @group Component Props
  */
 export interface MenuProps extends DataAttributes {
   /**

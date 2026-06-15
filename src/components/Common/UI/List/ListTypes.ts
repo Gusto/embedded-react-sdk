@@ -33,6 +33,7 @@ interface BaseListProps {
  * Renders an unordered (bulleted) list of items.
  *
  * @public
+ * @group Component Props
  */
 export type UnorderedListProps = BaseListProps
 
@@ -41,5 +42,6 @@ export type UnorderedListProps = BaseListProps
  * Renders an ordered (numbered) list of items.
  *
  * @public
+ * @group Component Props
  */
 export type OrderedListProps = BaseListProps

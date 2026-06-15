@@ -37,6 +37,7 @@ export interface TableRow {
  * Renders a table with column headers, body rows, an optional footer row, and an optional empty state.
  *
  * @public
+ * @group Component Props
  */
 export interface TableProps extends Pick<
   TableHTMLAttributes<HTMLTableElement>,

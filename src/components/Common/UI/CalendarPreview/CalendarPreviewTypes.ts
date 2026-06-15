@@ -3,6 +3,7 @@
  * Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
  *
  * @public
+ * @group Component Props
  */
 export type CalendarPreviewProps = {
   /**

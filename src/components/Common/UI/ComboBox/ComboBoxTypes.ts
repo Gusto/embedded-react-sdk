@@ -22,6 +22,7 @@ export interface ComboBoxOption {
  * Renders a form field wrapping a filterable `<input />` for single-option selection, optionally allowing free-form values.
  *
  * @public
+ * @group Component Props
  * @see {@link MultiSelectComboBoxProps}
  */
 export interface ComboBoxProps

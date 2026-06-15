@@ -21,6 +21,7 @@ export interface DescriptionListItem {
  * Renders an HTML `<dl>` of term/description pairs in either a stacked or horizontal layout.
  *
  * @public
+ * @group Component Props
  */
 export interface DescriptionListProps {
   /**
