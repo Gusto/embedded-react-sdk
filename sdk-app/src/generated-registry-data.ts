@@ -89,6 +89,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'InformationRequests.InformationRequestsFlow': ['companyId'],
   'Payroll.ConfirmWireDetails': ['companyId'],
   'Payroll.DismissalFlow': ['companyId'],
+  'Payroll.DismissalPayPeriodSelection': ['companyId'],
   'Payroll.OffCycleCreation': ['companyId'],
   'Payroll.OffCycleDeductionsSetting': ['companyId'],
   'Payroll.OffCycleFlow': ['companyId'],

@@ -1,0 +1,42 @@
+.container {
+  position: relative;
+}
+
+.headerSection {
+  background-color: var(--g-colorBody);
+  width: 100%;
+  padding-bottom: toRem(32);
+}
+
+.headerSectionSticky {
+  position: sticky;
+  top: 0;
+  padding-top: toRem(16);
+  padding-bottom: toRem(20);
+  z-index: 1;
+}
+
+:global(.GSDK) {
+  .form {
+    gap: toRem(32);
+  }
+}
+
+.fieldGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+
+  &:first-child {
+    border-top: none;
+  }
+}
+
+.grossPayLabel {
+  color: var(--g-colorBodySubContent);
+}
+
+.inputContainer {
+  max-width: toRem(160);
+}

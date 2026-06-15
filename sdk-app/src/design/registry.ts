@@ -78,5 +78,24 @@ export const categorizedRegistry: CategorizedRegistry = {
       ],
     },
   ],
-  Payroll: [],
+  Payroll: [
+    {
+      name: 'Payroll Edit Employee',
+      path: '/design/payroll-edit-employee',
+      description:
+        'A duplicate of the PayrollEditEmployee form for design iteration — adjust the UI independently of the live SDK component.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/payroll-edit-employee',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/payroll-edit-employee/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+  ],
 }

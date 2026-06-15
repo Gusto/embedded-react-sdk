@@ -22,6 +22,10 @@ import {
   CompensationHistoryPrototype,
   CompensationHistoryStates,
 } from './design/prototypes/employee-management/CompensationHistory'
+import {
+  PayrollEditEmployeePrototype,
+  PayrollEditEmployeeStates,
+} from './design/prototypes/payroll-edit-employee'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -71,6 +75,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <ContractorSelfOnboardingStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'payroll-edit-employee',
+            children: [
+              { index: true, element: <PayrollEditEmployeePrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <PayrollEditEmployeeStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <PayrollEditEmployeeStates />,
                   },
                 ],
               },
