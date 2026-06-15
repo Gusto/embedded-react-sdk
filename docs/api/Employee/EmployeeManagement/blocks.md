@@ -1,3 +1,9 @@
+---
+title: EmployeeManagement Blocks
+description: EmployeeManagement Blocks API reference.
+custom_edit_url: null
+---
+
 # Block Components
 
 ## Block Components

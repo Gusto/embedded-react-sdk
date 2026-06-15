@@ -1,3 +1,9 @@
+---
+title: Employee
+description: Employee API reference.
+custom_edit_url: null
+---
+
 # Employee
 
 ## Namespaces

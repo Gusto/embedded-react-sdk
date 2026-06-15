@@ -1,3 +1,9 @@
+---
+title: API Reference
+description: API reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.
+custom_edit_url: null
+---
+
 # @gusto/embedded-react-sdk
 
 ## Namespaces

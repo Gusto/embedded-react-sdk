@@ -1,3 +1,9 @@
+---
+title: Payroll
+description: Payroll API reference.
+custom_edit_url: null
+---
+
 # Payroll
 
 ## Block Components

@@ -14,11 +14,14 @@ import {
   SourceReference,
   FileRegistry,
 } from 'typedoc'
+import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import {
   componentPropsInterfaces,
   domainFromSources,
   hookDirFromSources,
   isHookSourceFile,
+  pageDescription,
+  pageTitle,
   reparentDeprecatedMembers,
   SDKRouter,
 } from './sdk-router'
@@ -1076,5 +1079,111 @@ describe('buildPages — domain hub page', () => {
 
     expect(urls).toContain('Employee/index.md')
     expect(urls).toContain('Employee/hooks.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// pageTitle / pageDescription — frontmatter helpers
+// ---------------------------------------------------------------------------
+
+function makePage(
+  model: DeclarationReflection | ProjectReflection,
+  url: string,
+): MarkdownPageEvent {
+  const page = new MarkdownPageEvent(model)
+  page.url = url
+  return page
+}
+
+function makeHubModel(name: string): DeclarationReflection {
+  const hub = new DeclarationReflection(name, ReflectionKind.Namespace)
+  hub.comment = new Comment()
+  hub.comment.blockTags.push(new CommentTag('@domainHub', []))
+  return hub
+}
+
+describe('pageTitle', () => {
+  it('returns "API Reference" for the project root', () => {
+    const page = makePage(makeProject(), 'index.md')
+    expect(pageTitle(page)).toBe('API Reference')
+  })
+
+  it('returns the domain name for a domain hub page', () => {
+    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
+    expect(pageTitle(page)).toBe('Employee')
+  })
+
+  it('prefixes the domain from the URL for a hooks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Hooks', ReflectionKind.Namespace),
+      'Employee/hooks.md',
+    )
+    expect(pageTitle(page)).toBe('Employee Hooks')
+  })
+
+  it('prefixes the namespace from the URL for a flows page', () => {
+    const page = makePage(
+      new DeclarationReflection('Flow Components', ReflectionKind.Namespace),
+      'Employee/EmployeeManagement/flows.md',
+    )
+    expect(pageTitle(page)).toBe('EmployeeManagement Flows')
+  })
+
+  it('prefixes the namespace from the URL for a blocks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Block Components', ReflectionKind.Namespace),
+      'Employee/EmployeeManagement/blocks.md',
+    )
+    expect(pageTitle(page)).toBe('EmployeeManagement Blocks')
+  })
+
+  it('returns the namespace name for a regular namespace page', () => {
+    const page = makePage(
+      new DeclarationReflection('Payroll', ReflectionKind.Namespace),
+      'Payroll/index.md',
+    )
+    expect(pageTitle(page)).toBe('Payroll')
+  })
+})
+
+describe('pageDescription', () => {
+  it('uses the model comment summary when present', () => {
+    const ns = new DeclarationReflection('Payroll', ReflectionKind.Namespace)
+    ns.comment = new Comment([{ kind: 'text', text: 'Payroll processing components.' }])
+    const page = makePage(ns, 'Payroll/index.md')
+    expect(pageDescription(page)).toBe('Payroll processing components.')
+  })
+
+  it('uses the project comment summary when present', () => {
+    const project = makeProject()
+    project.comment = new Comment([{ kind: 'text', text: 'The embedded payroll SDK.' }])
+    const page = makePage(project, 'index.md')
+    expect(pageDescription(page)).toBe('The embedded payroll SDK.')
+  })
+
+  it('falls back to a branded description for the project root with no comment', () => {
+    const page = makePage(makeProject(), 'index.md')
+    expect(pageDescription(page)).toContain('@gusto/embedded-react-sdk')
+  })
+
+  it('falls back to "{title} API reference." for a namespace with no comment', () => {
+    const page = makePage(
+      new DeclarationReflection('Payroll', ReflectionKind.Namespace),
+      'Payroll/index.md',
+    )
+    expect(pageDescription(page)).toBe('Payroll API reference.')
+  })
+
+  it('uses the derived title in the fallback for a synthetic hooks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Hooks', ReflectionKind.Namespace),
+      'Employee/hooks.md',
+    )
+    expect(pageDescription(page)).toBe('Employee Hooks API reference.')
+  })
+
+  it('uses the derived title in the fallback for a domain hub with no comment', () => {
+    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
+    expect(pageDescription(page)).toBe('Employee API reference.')
   })
 })

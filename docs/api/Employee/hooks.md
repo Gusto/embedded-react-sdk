@@ -1,3 +1,9 @@
+---
+title: Employee Hooks
+description: Employee Hooks API reference.
+custom_edit_url: null
+---
+
 # Hooks
 
 ## useCompensationForm
