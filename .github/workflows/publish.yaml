@@ -80,3 +80,32 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Read SDK version
+        id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # Launch a Cursor cloud agent in the demo repo to integrate the version
+      # we just published. The agent runs the demo repo's update-embedded-react-sdk
+      # skill end to end (upgrade and open a PR; the PR notifies codeowners via
+      # GitHub). jq builds the JSON body so the prompt's backticks are encoded safely.
+      - name: Launch demo-app upgrade agent
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          SDK_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PROMPT="Use the \`update-embedded-react-sdk\` skill to upgrade @gusto/embedded-react-sdk to ${SDK_VERSION} (just published to npm). The target version is ${SDK_VERSION}. Run the skill end to end, including opening the PR."
+          jq -n --arg prompt "$PROMPT" '{
+            prompt: { text: $prompt },
+            repos: [
+              {
+                url: "https://github.com/Gusto/embedded-react-sdk-demo-app",
+                startingRef: "main"
+              }
+            ],
+            autoCreatePR: true,
+            skipReviewerRequest: true
+          }' | curl --fail-with-body -sS https://api.cursor.com/v1/agents \
+            -H "Authorization: Bearer $CURSOR_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d @-
