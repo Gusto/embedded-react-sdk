@@ -371,9 +371,11 @@ Inside `docs/`, use relative links between files (e.g. `[link](../getting-starte
 
 ```md
 <!-- Good -->
+
 See the [Getting Started guide](../getting-started/index.md).
 
 <!-- Bad — breaks when served at /docs/0.47/... -->
+
 See the [Getting Started guide](/docs/getting-started/index.md).
 ```
 

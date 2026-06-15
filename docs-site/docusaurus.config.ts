@@ -11,7 +11,7 @@ import { themes as prismThemes } from 'prism-react-renderer'
 const versionsPath = resolve(__dirname, 'versions.json')
 
 function isStringArray(val: unknown): val is string[] {
-  return Array.isArray(val) && val.every((v) => typeof v === 'string')
+  return Array.isArray(val) && val.every(v => typeof v === 'string')
 }
 
 const rawVersions: unknown = existsSync(versionsPath)
