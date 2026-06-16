@@ -50,8 +50,8 @@ type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The created bank account returned by the API |
- * | `contractor/paymentMethod/updated` | Fired after the payment method is updated | The updated payment method returned by the API |
+ * | `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The API response object; access the created bank account at `.contractorBankAccount` |
+ * | `contractor/paymentMethod/updated` | Fired after the payment method is updated | The API response object; access the updated payment method at `.contractorPaymentMethod` |
  * | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
  *
  * @param props - Component configuration; see {@link PaymentMethodProps}.

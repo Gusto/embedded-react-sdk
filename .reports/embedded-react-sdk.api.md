@@ -1190,6 +1190,7 @@ declare namespace ContractorOnboarding {
         AddressProps,
         AddressDefaultValues,
         PaymentMethod_3 as PaymentMethod,
+        PaymentMethodProps_3 as PaymentMethodProps,
         NewHireReport,
         NewHireReportProps,
         ContractorSubmit,
@@ -3561,7 +3562,6 @@ function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
 // @public
 function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
 //
 // @public
@@ -3650,6 +3650,13 @@ interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Manage
     initialState?: 'list' | 'add' | 'split';
     isAdmin?: boolean;
     onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
+//
+// @public
+interface PaymentMethodProps_3 extends BaseComponentInterface<'Contractor.PaymentMethod'> {
+    contractorId: string;
 }
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitFormProps"

@@ -40,7 +40,7 @@ type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The updated contractor record returned by the API |
+ * | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
  * | `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
  *
  * @param props - Component configuration; see {@link NewHireReportProps}.
