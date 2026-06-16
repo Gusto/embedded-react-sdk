@@ -9,6 +9,7 @@ import { useI18n } from '@/i18n/I18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 import SearchIcon from '@/assets/icons/search-lg.svg?react'
 
+/** @internal */
 export function EmployeeTable<T extends EmployeeTableItem>({
   data,
   label,

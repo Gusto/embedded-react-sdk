@@ -23,11 +23,37 @@ import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
+/**
+ * Props for {@link HolidaySelectionForm}.
+ *
+ * @public
+ */
 export interface HolidaySelectionFormProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** Whether to create a new holiday policy or edit the existing one. Defaults to `'create'`. */
   mode?: 'create' | 'edit'
 }
 
+/**
+ * Lets a user select which US federal holidays are observed by the company's holiday pay policy.
+ *
+ * In `'create'` mode, submitting creates a new holiday pay policy. In `'edit'` mode, the form
+ * is pre-populated with the existing policy's selections and submitting updates it. All 11 US
+ * federal holidays are shown with their observed and next-observation dates; in create mode they
+ * are all selected by default.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `timeOff/holidaySelection/done` | Holidays were saved in create mode | — |
+ * | `timeOff/holidaySelection/editDone` | Holidays were saved in edit mode | — |
+ * | `CANCEL` | The user backed out of the form | — |
+ *
+ * @param props - See {@link HolidaySelectionFormProps}.
+ * @returns The rendered holiday selection form.
+ * @public
+ */
 export function HolidaySelectionForm(props: HolidaySelectionFormProps) {
   return (
     <BaseComponent {...props}>

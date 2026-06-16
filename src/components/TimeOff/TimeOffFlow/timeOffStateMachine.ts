@@ -81,6 +81,7 @@ const backToListTransition = transition(
   ),
 )
 
+/** @internal */
 export const timeOffMachine = {
   policyList: state<MachineTransition>(
     transition(

@@ -51,6 +51,7 @@ function deriveCarryOverBalances(
   return map
 }
 
+/** @internal */
 export function SelectEmployeesTimeOff(props: SelectEmployeesTimeOffProps) {
   if (props.mode === 'wizard') {
     return <SelectEmployeesTimeOffInner {...props} mode="wizard" />

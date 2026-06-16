@@ -18,6 +18,7 @@ interface SelectEmployeesHolidayProps {
   mode?: 'standalone' | 'wizard'
 }
 
+/** @internal */
 export function SelectEmployeesHoliday(props: SelectEmployeesHolidayProps) {
   if (props.mode === 'wizard') {
     return <SelectEmployeesHolidayInner {...props} mode="wizard" />
