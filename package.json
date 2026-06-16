@@ -172,7 +172,11 @@
     "typescript": "^5.8.3"
   },
   "overrides": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "js-yaml": "^4.2.0",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^3.13.1"
+    }
   },
   "dependencies": {
     "@gusto/embedded-api-v-2025-11-15": "^0.0.2",
