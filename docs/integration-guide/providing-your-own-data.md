@@ -42,7 +42,7 @@ function MyApp({ employeeId, startDate }) {
 
 This would result in:
 
-![](https://files.readme.io/db4af956eb3ca4db36c8f67d3f67bc2c756ba5c9e18788456f337eaf5518a716-image.png)
+![Compensation form pre-populated with supplied default values](https://files.readme.io/db4af956eb3ca4db36c8f67d3f67bc2c756ba5c9e18788456f337eaf5518a716-image.png)
 
 Note that when you supply default values, they will be replaced if we have those values saved via the Gusto API already. For example, if we supplied the default values above and we were editing this employee but we already had compensation data saved for this employee, the saved data would take precedence over the default values.
 
