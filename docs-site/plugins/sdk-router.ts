@@ -46,8 +46,15 @@ import {
 
 // Maps an output page path to its display name and the list of source-path substrings
 // whose reflections are routed to that page instead of becoming anchors on index.md.
-const STANDALONE_PAGES: Record<string, { sources: string[]; displayName: string }> = {
-  'theme-variables': { sources: ['contexts/ThemeProvider'], displayName: 'Theme Variables' },
+const STANDALONE_PAGES: Record<
+  string,
+  { sources: string[]; displayName: string; sidebarPosition: number }
+> = {
+  'theme-variables': {
+    sources: ['contexts/ThemeProvider'],
+    displayName: 'Theme Variables',
+    sidebarPosition: 2,
+  },
   'component-adapter': {
     sources: [
       'components/Common/UI',
@@ -56,8 +63,9 @@ const STANDALONE_PAGES: Record<string, { sources: string[]; displayName: string 
       'contexts/ComponentAdapter',
     ],
     displayName: 'Component Adapters',
+    sidebarPosition: 3,
   },
-  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities' },
+  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
 }
 
 // Maps each namespace to its output directory prefix.
@@ -203,10 +211,12 @@ export function load(app: MarkdownApplication): void {
   // We set page.frontmatter in BEGIN (so other plugins can read/override it),
   // then serialize to YAML and prepend to page.contents in END (after rendering).
   app.renderer.on(MarkdownPageEvent.BEGIN, (page: MarkdownPageEvent) => {
+    const sidebarPosition = standaloneSidebarPosition(page.url)
     page.frontmatter = {
       title: pageTitle(page),
       description: pageDescription(page),
       custom_edit_url: null,
+      ...(sidebarPosition !== undefined && { sidebar_position: sidebarPosition }),
       ...page.frontmatter,
     }
   })
@@ -434,6 +444,13 @@ function getReflectionDescription(
   const comment = reflection.signatures?.[0]?.comment ?? reflection.comment
   if (!comment) return ''
   return context.helpers.getDescriptionForComment(comment) ?? ''
+}
+
+/** sidebar_position for standalone pages and the project index, or undefined for all others. */
+function standaloneSidebarPosition(url: string): number | undefined {
+  if (url === 'index.md') return 1
+  const key = url.replace(/\.md$/, '')
+  return STANDALONE_PAGES[key]?.sidebarPosition
 }
 
 /**
@@ -785,6 +802,7 @@ function groupSyntheticMembers(
   }
 
   // Within each hook-named group, sort the primary hook function to the top.
+  // Within all other groups, sort alphabetically by name.
   for (const [title, groupMembers] of byTitle) {
     if (/^use[A-Z]/.test(title)) {
       groupMembers.sort((a, b) => {
@@ -792,6 +810,8 @@ function groupSyntheticMembers(
         if (b.name === title) return 1
         return 0
       })
+    } else {
+      groupMembers.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
 
