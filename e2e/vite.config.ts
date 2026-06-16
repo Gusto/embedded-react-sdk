@@ -8,6 +8,14 @@ const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST || 'http://localhost:7777'
 export default defineConfig({
   root: resolve(__dirname),
   publicDir: resolve(__dirname, 'public'),
+  build: {
+    target: 'es2022',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2022',
+    },
+  },
   plugins: [react(), svgrPlugin()],
   resolve: {
     alias: {

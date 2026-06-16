@@ -58,6 +58,14 @@ export default defineConfig(() => {
     root: resolve(__dirname),
     publicDir: resolve(__dirname, 'public'),
     envDir: resolve(__dirname, 'env'),
+    build: {
+      target: 'es2022',
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        target: 'es2022',
+      },
+    },
     plugins: [
       react(),
       svgrPlugin(),
