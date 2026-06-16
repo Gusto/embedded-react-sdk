@@ -1,7 +1,7 @@
 import { ENTITY_REQUIREMENTS, ADDITIONAL_REQUIRED_PROPS } from './generated-registry-data'
 import * as Company from '@/components/Company'
-import * as ContractorOnboarding from '@/components/Contractor/exports/contractorOnboarding'
 import * as ContractorManagement from '@/components/Contractor/exports/contractorManagement'
+import * as ContractorOnboarding from '@/components/Contractor/exports/contractorOnboarding'
 import * as EmployeeManagement from '@/components/Employee/exports/employeeManagement'
 import * as EmployeeOnboarding from '@/components/Employee/exports/employeeOnboarding'
 import * as Payroll from '@/components/Payroll'
@@ -10,7 +10,8 @@ import * as TimeOff from '@/components/TimeOff'
 
 export type Category =
   | 'Company'
-  | 'Contractor'
+  | 'ContractorManagement'
+  | 'ContractorOnboarding'
   | 'EmployeeManagement'
   | 'EmployeeOnboarding'
   | 'Payroll'
@@ -27,7 +28,8 @@ export interface ComponentEntry {
 
 const namespaces: Record<Category, Record<string, unknown>> = {
   Company,
-  Contractor: { ...ContractorOnboarding, ...ContractorManagement },
+  ContractorManagement,
+  ContractorOnboarding,
   EmployeeManagement,
   EmployeeOnboarding,
   Payroll,
@@ -72,7 +74,8 @@ export const componentRegistry = buildRegistry()
 
 export const categorizedRegistry: Record<Category, ComponentEntry[]> = {
   Company: [],
-  Contractor: [],
+  ContractorManagement: [],
+  ContractorOnboarding: [],
   EmployeeManagement: [],
   EmployeeOnboarding: [],
   Payroll: [],
@@ -88,7 +91,8 @@ export const CATEGORIES: Category[] = [
   'Company',
   'EmployeeManagement',
   'EmployeeOnboarding',
-  'Contractor',
+  'ContractorOnboarding',
+  'ContractorManagement',
   'Payroll',
   'InformationRequests',
   'TimeOff',

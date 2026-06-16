@@ -28,10 +28,8 @@ const NAMESPACES: Record<string, string[]> = {
   Company: ['src/components/Company/index.tsx'],
   EmployeeManagement: ['src/components/Employee/exports/employeeManagement.ts'],
   EmployeeOnboarding: ['src/components/Employee/exports/employeeOnboarding.ts'],
-  Contractor: [
-    'src/components/Contractor/exports/contractorOnboarding.ts',
-    'src/components/Contractor/exports/contractorManagement.ts',
-  ],
+  ContractorOnboarding: ['src/components/Contractor/exports/contractorOnboarding.ts'],
+  ContractorManagement: ['src/components/Contractor/exports/contractorManagement.ts'],
   Payroll: ['src/components/Payroll/index.ts'],
   InformationRequests: ['src/components/InformationRequests/index.ts'],
   TimeOff: ['src/components/TimeOff/index.ts'],
