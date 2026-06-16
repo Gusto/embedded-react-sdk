@@ -134,6 +134,15 @@ jobs:
   # On main: fails if derived files are stale (they should always be up-to-date after PRs).
   derive:
     needs: [build]
+    # Dependabot pushes read from a separate Dependabot secrets store and
+    # cannot access `CI_TASKS_ID`/`CI_TASKS_SECRET` or the `ci-tasks`
+    # environment, so `create-github-app-token` fails with "appId option is
+    # required". Skip the job for Dependabot — derived files are produced
+    # from SDK source, not dep versions, so dep bumps can't make them stale.
+    # The merge_group event still runs derive with real secrets before the
+    # PR lands on main. Required status checks are satisfied by a skipped
+    # job, so branch protection is unaffected.
+    if: github.actor != 'dependabot[bot]'
     # Must use the self-hosted runner group — GitHub-hosted runners are blocked
     # by the org IP allow list and cannot push back to the repository.
     runs-on:
