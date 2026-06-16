@@ -274,11 +274,13 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: derived-src
+          path: docs
 
       - name: Download derived dist files
         uses: actions/download-artifact@v6
         with:
           name: derived-dist
+          path: .reports
 
       - name: Commit and push derived files
         run: |
