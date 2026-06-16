@@ -32,7 +32,7 @@ Props for [OnboardingExecutionFlow](#onboardingexecutionflow).
 | `initialState?` | `"employeeProfile"` | The step the flow starts on. Defaults to `employeeProfile`. |
 | `isAdmin?` | `boolean` | When true, the flow renders in the admin context. When false, it is configured for employee self-onboarding. Defaults to `true`. |
 | `isSelfOnboardingEnabled?` | `boolean` | When true, presents the self-onboarding toggle on the profile step. Defaults to `true`. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
 | `withEmployeeI9?` | `boolean` | When true, enables the Employee Documents step in the flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
 
 ### Remarks
@@ -82,7 +82,7 @@ Props for [OnboardingFlow](#onboardingflow).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `isSelfOnboardingEnabled?` | `boolean` | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. Defaults to `true`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `withEmployeeI9?` | `boolean` | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
 
 ### Remarks

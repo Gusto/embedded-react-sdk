@@ -67,7 +67,7 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
 
 #### Remarks
 
@@ -99,7 +99,7 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
 
 #### Remarks
 
@@ -127,7 +127,7 @@ Props for [CompensationCard](#compensationcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
 
 #### Remarks
 
@@ -163,7 +163,7 @@ Props for [CompensationEditForm](#compensationeditform).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
 | `jobId` | `string` | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
 
 #### Remarks
 
@@ -221,7 +221,7 @@ Props for [DeductionsCard](#deductionscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
 
 #### Remarks
 
@@ -306,7 +306,7 @@ Props for [DocumentsCard](#documentscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
 
 ***
 
@@ -380,7 +380,7 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
 
 ***
 
@@ -446,7 +446,7 @@ Props for [HomeAddressCard](#homeaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
@@ -535,7 +535,7 @@ Props for [PaymentMethodBankForm](#paymentmethodbankform).
 | ------ | ------ | ------ |
 | `defaultValues?` | `Partial`\<[`BankFormData`](../hooks.md#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
 | `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](../hooks.md#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
@@ -569,7 +569,7 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
 
 #### Remarks
 
@@ -601,7 +601,7 @@ Props for [PaymentMethodSplitForm](#paymentmethodsplitform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
 | `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](../hooks.md#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
@@ -641,7 +641,7 @@ Props for [PaystubsCard](#paystubscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
 
 ***
 
@@ -686,7 +686,7 @@ Props for [ProfileCard](#profilecard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
 
 #### Remarks
 
@@ -769,7 +769,7 @@ Props for [StateTaxesCard](#statetaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
 
 #### Remarks
 
@@ -828,7 +828,7 @@ Props for [TerminateEmployee](#terminateemployee).
 | `employeeId` | `string` | The employee identifier to terminate. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -887,7 +887,7 @@ Props for [TerminationSummary](#terminationsummary).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
 | `payrollUuid?` | `string` | UUID of the created off-cycle payroll (when applicable). |
 
@@ -965,7 +965,7 @@ Props for [WorkAddressCard](#workaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
@@ -1019,7 +1019,7 @@ Props for [Compensation](#compensation).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads. |
 
 ***
 
@@ -1043,7 +1043,7 @@ Props for [DeductionsEditForm](#deductionseditform).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `editingDeductionId?` | `string` | When provided, the form opens in edit mode pre-populated with the matching active deduction. Omit to open in add mode. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
 
 ***
 
@@ -1066,7 +1066,7 @@ Props for [Deductions](#deductions).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads. |
 
 ***
 
@@ -1089,7 +1089,7 @@ Props for [Documents](#documents).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1112,7 +1112,7 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads. |
 
 ***
 
@@ -1135,7 +1135,7 @@ Props for [FederalTaxes](#federaltaxes).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
 
 ***
 
@@ -1158,7 +1158,7 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
 
 ***
 
@@ -1181,7 +1181,7 @@ Props for [HomeAddress](#homeaddress).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1205,7 +1205,7 @@ Props for [ManagementEmployeeList](#employeelist).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `initialTab?` | [`EmployeeTab`](#employeetab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1230,7 +1230,7 @@ Props for [PaymentMethod](#paymentmethod).
 | `employeeId` | `string` | The associated employee identifier. |
 | `initialState?` | `"split"` \| `"list"` \| `"add"` | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. |
 | `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1253,7 +1253,7 @@ Props for [ProfileEditForm](#profileeditform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing. |
 
 ***
 
@@ -1276,7 +1276,7 @@ Props for [Profile](#profile).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1299,7 +1299,7 @@ Props for [StateTaxes](#statetaxes).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -1322,7 +1322,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
 
 ***
 
@@ -1345,7 +1345,7 @@ Props for [WorkAddress](#workaddress).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ## Type Aliases
 

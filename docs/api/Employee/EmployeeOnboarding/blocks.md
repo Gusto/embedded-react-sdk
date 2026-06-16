@@ -34,7 +34,7 @@ Props for [Compensation](#compensation).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `startDate` | `string` | The date the employee will start work. |
 
 #### Remarks
@@ -93,7 +93,7 @@ Props for [Deductions](#deductions).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -151,7 +151,7 @@ Props for [DocumentSigner](#documentsigner).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `withEmployeeI9?` | `boolean` | When `true`, the flow routes through I-9 employment eligibility before listing documents for signing. Defaults to `false`. |
 
 #### Remarks
@@ -193,7 +193,7 @@ Props for [EditCompensation](#editcompensation).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onCancel?` | () => `void` | Optional handler invoked when the secondary cancel button is clicked. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. See the events table on [EditCompensation](#editcompensation). |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. See the events table on [EditCompensation](#editcompensation). |
 | `partnerDefaultValues?` | [`CompensationDefaultValues`](#compensationdefaultvalues) | Initial values for the job title and compensation fields. |
 | `startDate?` | `string` | When provided, the hire date is pre-filled from this value and the hire date field is hidden. When absent, the hire date field is rendered so it can be set explicitly. |
 | `submitCtaLabel` | `string` | Label for the primary submit button. |
@@ -234,7 +234,7 @@ Props for [EmployeeDocuments](#employeedocuments).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 #### Remarks
 
@@ -296,7 +296,7 @@ Props for [EmploymentEligibility](#employmenteligibility).
 | `employeeId` | `string` | The associated employee identifier. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -496,7 +496,7 @@ Props for [EmployeeList](#employeelist).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 ***
 
@@ -519,7 +519,7 @@ Props for [FederalTaxes](#federaltaxes).
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
 
 ***
 
@@ -563,7 +563,7 @@ Props for [PaymentMethod](#paymentmethod).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeePaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
 | `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `false`. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 
 ***
 
@@ -589,7 +589,7 @@ Props for [Profile](#profile).
 | `employeeId?` | `string` | The associated employee identifier. Omit to create a new employee. |
 | `isAdmin?` | `boolean` | When `true`, renders the admin variant (collects work address, start date, and self-onboarding toggle). Defaults to `false`. |
 | `isSelfOnboardingEnabled?` | `boolean` | When `true`, the admin variant exposes the self-onboarding toggle. Defaults to `true`. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on profile creation, update, and address changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on profile creation, update, and address changes. |
 
 ## Type Aliases
 
