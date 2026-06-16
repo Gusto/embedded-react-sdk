@@ -64,23 +64,32 @@ export function CodePanel({ onClose }: CodePanelProps) {
             </div>
           </div>
           <Highlight code={snippet} language="tsx" theme={prismTheme}>
-            {({ className, style, tokens, getLineProps, getTokenProps }) => (
-              <pre className={`${styles.code} ${className}`} style={style}>
-                {tokens.map((line, i) => {
-                  const lineProps = getLineProps({ line })
-                  return (
-                    <div key={i} {...lineProps} className={`${styles.line} ${lineProps.className}`}>
-                      <span className={styles.lineNumber}>{i + 1}</span>
-                      <span className={styles.lineContent}>
-                        {line.map((token, key) => (
-                          <span key={key} {...getTokenProps({ token })} />
-                        ))}
-                      </span>
-                    </div>
-                  )
-                })}
-              </pre>
-            )}
+            {({ className, style, tokens, getLineProps, getTokenProps }) => {
+              const { background, backgroundColor, ...codeStyle } = style
+              void background
+              void backgroundColor
+              return (
+                <pre className={`${styles.code} ${className}`} style={codeStyle}>
+                  {tokens.map((line, i) => {
+                    const lineProps = getLineProps({ line })
+                    return (
+                      <div
+                        key={i}
+                        {...lineProps}
+                        className={`${styles.line} ${lineProps.className}`}
+                      >
+                        <span className={styles.lineNumber}>{i + 1}</span>
+                        <span className={styles.lineContent}>
+                          {line.map((token, key) => (
+                            <span key={key} {...getTokenProps({ token })} />
+                          ))}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </pre>
+              )
+            }}
           </Highlight>
         </>
       )}
