@@ -2,6 +2,7 @@
  * Inclusive start/end pair representing a selected date range.
  *
  * @public
+ * @group Utility Types
  */
 export interface DateRange {
   /**

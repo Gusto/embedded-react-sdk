@@ -61,6 +61,7 @@ const STANDALONE_PAGES: Record<
       'components/Common/FieldLayout',
       'components/Common/PaginationControl',
       'components/Common/PayrollLoading',
+      'components/Common/HorizontalFieldLayout',
       'contexts/ComponentAdapter',
     ],
     displayName: 'Component Adapters',

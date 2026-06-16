@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
  * Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
  *
  * @public
- * @group Component Props
+ * @group Utility Types
  */
 export interface BaseListProps {
   /**
@@ -33,6 +33,7 @@ export interface BaseListProps {
   'aria-describedby'?: string
 }
 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /**
  * Props your `UnorderedList` implementation must accept from the component adapter.
  * Renders an unordered (bulleted) list of items.
@@ -40,7 +41,7 @@ export interface BaseListProps {
  * @public
  * @group Component Props
  */
-export type UnorderedListProps = BaseListProps
+export interface UnorderedListProps extends BaseListProps {}
 
 /**
  * Props your `OrderedList` implementation must accept from the component adapter.
@@ -49,4 +50,5 @@ export type UnorderedListProps = BaseListProps
  * @public
  * @group Component Props
  */
-export type OrderedListProps = BaseListProps
+export interface OrderedListProps extends BaseListProps {}
+/* eslint-enable @typescript-eslint/no-empty-object-type */

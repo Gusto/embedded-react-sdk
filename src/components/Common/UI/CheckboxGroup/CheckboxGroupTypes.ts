@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry rendered as a single checkbox within a {@link CheckboxGroupProps | CheckboxGroup}.
  *
  * @public
+ * @group Utility Types
  */
 export interface CheckboxGroupOption {
   /**

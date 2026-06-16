@@ -5,7 +5,7 @@ export const COMPONENT_GROUPS = ['Flow Components', 'Block Components', 'Compone
 export const HOOK_GROUPS = ['Form Hooks', 'Data Hooks', 'Utility Hooks', 'Hooks']
 
 /** Valid @group names for component adapter prop types, in order they should be displayed in docs */
-export const COMPONENT_PROP_GROUPS = ['Component Props']
+export const COMPONENT_PROP_GROUPS = ['Component Props', 'Utility Types']
 
 /** Valid @group names for exported variable and type constants, in order they should be displayed in docs */
 export const VARIABLE_GROUPS = ['Events']

@@ -70,7 +70,7 @@ export interface ButtonProps extends Pick<
  * @public
  * @group Component Props
  */
-export type ButtonIconProps = ButtonProps & {
+export interface ButtonIconProps extends ButtonProps {
   /**
    * Required aria-label for icon buttons to ensure accessibility
    */

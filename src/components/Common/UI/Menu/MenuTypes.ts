@@ -6,6 +6,7 @@ import type { DataAttributes } from '@/types/Helpers'
  * from the component adapter.
  *
  * @public
+ * @group Utility Types
  */
 export interface MenuItem extends DataAttributes {
   /**
