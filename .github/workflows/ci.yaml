@@ -292,6 +292,22 @@ jobs:
           git commit -m "chore: update derived files"
           git push
 
+  # derive: Single required check that branch protection can gate on.
+  # Aggregates derive-check-src and derive-check-dist. derive-commit is excluded
+  # intentionally — it only runs when files are stale and is not a health signal.
+  derive:
+    needs: [derive-check-src, derive-check-dist]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify derive checks passed
+        env:
+          SRC: ${{ needs.derive-check-src.result }}
+          DIST: ${{ needs.derive-check-dist.result }}
+        run: |
+          if [[ "$SRC" != "success" && "$SRC" != "skipped" ]]; then exit 1; fi
+          if [[ "$DIST" != "success" && "$DIST" != "skipped" ]]; then exit 1; fi
+
   # Storybook build job: validates all stories compile and index successfully
   storybook-build:
     needs: setup
