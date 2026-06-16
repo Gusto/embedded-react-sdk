@@ -40,6 +40,8 @@ export const baseOptions = {
     hideOverrides: true,
   },
 
+  sort: ['required-first', 'alphabetical'],
+
   excludeNotDocumented: true,
   excludeInternal: true,
   excludePrivate: true,
