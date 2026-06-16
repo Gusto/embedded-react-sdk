@@ -174,11 +174,9 @@
   "overrides": {
     "esbuild": "^0.28.1",
     "js-yaml": "^4.2.0",
-    "@istanbuljs/load-nyc-config": {
-      "js-yaml": "^3.13.1"
-    },
     "uuid": "^11.1.1",
-    "@babel/core": "^7.29.6"
+    "@babel/core": "^7.29.6",
+    "markdown-it": "^14.2.0"
   },
   "dependencies": {
     "@gusto/embedded-api-v-2025-11-15": "^0.0.2",
