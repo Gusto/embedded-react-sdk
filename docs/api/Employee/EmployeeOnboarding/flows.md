@@ -21,7 +21,7 @@ The multi-step onboarding execution flow — profile, compensation, taxes, payme
 
 <a id="onboardingexecutionflowprops"></a>
 
-Props for [OnboardingExecutionFlow](#onboardingexecutionflow).
+Props for [OnboardingExecutionFlow](#onboardingexecutionflow)!
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
