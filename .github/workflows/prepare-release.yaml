@@ -15,8 +15,7 @@ permissions:
 jobs:
   prepare-release:
     name: Prepare Release PR
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
