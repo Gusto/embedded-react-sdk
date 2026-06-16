@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { JSX } from 'react'
+import type { FunctionComponent } from 'react'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
@@ -95,84 +95,84 @@ import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/Pay
  */
 export interface ComponentsContextType {
   /** Status message with an optional dismiss action; used for errors, warnings, success, and info. */
-  Alert: (props: AlertProps) => JSX.Element | null
+  Alert: FunctionComponent<AlertProps>
   /** Small inline label for status, counts, or tags; optionally dismissible. */
-  Badge: (props: BadgeProps) => JSX.Element | null
+  Badge: FunctionComponent<BadgeProps>
   /** Full-width notification banner for prominent warnings and errors. */
-  Banner: (props: BannerProps) => JSX.Element | null
+  Banner: FunctionComponent<BannerProps>
   /** HTML `<button>` with primary, secondary, tertiary, and error variants. */
-  Button: (props: ButtonProps) => JSX.Element | null
+  Button: FunctionComponent<ButtonProps>
   /** Icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies. */
-  ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
+  ButtonIcon: FunctionComponent<ButtonIconProps>
   /** Sectioned layout container with distinct header, body, and footer areas. */
-  Box: (props: BoxProps) => JSX.Element | null
+  Box: FunctionComponent<BoxProps>
   /** Header section of a Box with a title, optional description, and optional inline action. */
-  BoxHeader: (props: BoxHeaderProps) => JSX.Element | null
+  BoxHeader: FunctionComponent<BoxHeaderProps>
   /** Read-only calendar for visualizing a date range with optional highlighted dates. */
-  CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
+  CalendarPreview: FunctionComponent<CalendarPreviewProps>
   /** Content container with an optional overflow menu and a leading action slot. */
-  Card: (props: CardProps) => JSX.Element | null
+  Card: FunctionComponent<CardProps>
   /** Form field wrapping a single `<input type="checkbox" />`. */
-  Checkbox: (props: CheckboxProps) => JSX.Element | null
+  Checkbox: FunctionComponent<CheckboxProps>
   /** Form field grouping `<input type="checkbox" />` elements for multi-option selection. */
-  CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
+  CheckboxGroup: FunctionComponent<CheckboxGroupProps>
   /** Form field wrapping a typeahead `<input />` for single-option selection. */
-  ComboBox: (props: ComboBoxProps) => JSX.Element | null
+  ComboBox: FunctionComponent<ComboBoxProps>
   /** Form field wrapping an `<input type="date" />` with a calendar picker popover. */
-  DatePicker: (props: DatePickerProps) => JSX.Element | null
+  DatePicker: FunctionComponent<DatePickerProps>
   /** Form field wrapping paired `<input type="date" />` elements for a date range. */
-  DateRangePicker: (props: DateRangePickerProps) => JSX.Element | null
+  DateRangePicker: FunctionComponent<DateRangePickerProps>
   /** HTML `<dl>` of term/description pairs in stacked or horizontal layout. */
-  DescriptionList: (props: DescriptionListProps) => JSX.Element | null
+  DescriptionList: FunctionComponent<DescriptionListProps>
   /** Modal confirmation dialog with a primary action and a cancel action. */
-  Dialog: (props: DialogProps) => JSX.Element | null
+  Dialog: FunctionComponent<DialogProps>
   /** Form field wrapping an `<input type="file" />`. */
-  FileInput: (props: FileInputProps) => JSX.Element | null
+  FileInput: FunctionComponent<FileInputProps>
   /** HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. */
-  Heading: (props: HeadingProps) => JSX.Element | null
+  Heading: FunctionComponent<HeadingProps>
   /** HTML `<a>` for inline navigation. */
-  Link: (props: LinkProps) => JSX.Element | null
+  Link: FunctionComponent<LinkProps>
   /** Spinner shown while data or an action is pending. */
-  LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null
+  LoadingSpinner: FunctionComponent<LoadingSpinnerProps>
   /** Popover menu of actions anchored to a trigger element. */
-  Menu: (props: MenuProps) => JSX.Element | null
+  Menu: FunctionComponent<MenuProps>
   /** Overlay modal with customizable body content and footer. */
-  Modal: (props: ModalProps) => JSX.Element | null
+  Modal: FunctionComponent<ModalProps>
   /** Form field wrapping a typeahead `<input />` for multi-option selection. */
-  MultiSelectComboBox: (props: MultiSelectComboBoxProps) => JSX.Element | null
+  MultiSelectComboBox: FunctionComponent<MultiSelectComboBoxProps>
   /** Form field wrapping a numeric `<input />` for currency, decimal, or percent values. */
-  NumberInput: (props: NumberInputProps) => JSX.Element | null
+  NumberInput: FunctionComponent<NumberInputProps>
   /** HTML `<ol>` for a numbered list of items. */
-  OrderedList: (props: OrderedListProps) => JSX.Element | null
+  OrderedList: FunctionComponent<OrderedListProps>
   /** Step-based progress indicator for multi-step flows. */
-  ProgressBar: (props: ProgressBarProps) => JSX.Element | null
+  ProgressBar: FunctionComponent<ProgressBarProps>
   /** Navigation breadcrumb trail showing the user's position in a multi-step flow. */
-  Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null
+  Breadcrumbs: FunctionComponent<BreadcrumbsProps>
   /** Form field wrapping a single `<input type="radio" />`. */
-  Radio: (props: RadioProps) => JSX.Element | null
+  Radio: FunctionComponent<RadioProps>
   /** Form field grouping `<input type="radio" />` elements for single-option selection. */
-  RadioGroup: (props: RadioGroupProps) => JSX.Element | null
+  RadioGroup: FunctionComponent<RadioGroupProps>
   /** Form field wrapping a single-select dropdown. */
-  Select: (props: SelectProps) => JSX.Element | null
+  Select: FunctionComponent<SelectProps>
   /** Form field wrapping an `<input type="checkbox" />` styled as a toggle. */
-  Switch: (props: SwitchProps) => JSX.Element | null
+  Switch: FunctionComponent<SwitchProps>
   /** Tabbed navigation with associated content panels. */
-  Tabs: (props: TabsProps) => JSX.Element | null
+  Tabs: FunctionComponent<TabsProps>
   /** Tabular data display with headers, rows, optional footer, and empty state. */
-  Table: (props: TableProps) => JSX.Element | null
+  Table: FunctionComponent<TableProps>
   /** Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. */
-  Text: (props: TextProps) => JSX.Element | null
+  Text: FunctionComponent<TextProps>
   /** Form field wrapping an `<input />`. */
-  TextInput: (props: TextInputProps) => JSX.Element | null
+  TextInput: FunctionComponent<TextInputProps>
   /** Form field wrapping a `<textarea>`. */
-  TextArea: (props: TextAreaProps) => JSX.Element | null
+  TextArea: FunctionComponent<TextAreaProps>
   /** HTML `<ul>` for an unordered list of items. */
-  UnorderedList: (props: UnorderedListProps) => JSX.Element | null
+  UnorderedList: FunctionComponent<UnorderedListProps>
 
   /** Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. */
-  PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
+  PaginationControl?: FunctionComponent<PaginationControlProps>
   /** Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. */
-  PayrollLoading?: (props: PayrollLoadingProps) => JSX.Element | null
+  PayrollLoading?: FunctionComponent<PayrollLoadingProps>
 }
 
 /** @internal */
