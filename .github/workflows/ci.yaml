@@ -285,12 +285,15 @@ jobs:
 
       - name: Commit and push derived files
         run: |
-          git add -u
+          git add docs/reference
           git add docs/api
+          git add .reports
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: update derived files"
-          git push
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update derived files"
+            git push
+          fi
 
   # derive: Single required check that branch protection can gate on.
   # Aggregates derive-check-src and derive-check-dist. derive-commit is excluded
