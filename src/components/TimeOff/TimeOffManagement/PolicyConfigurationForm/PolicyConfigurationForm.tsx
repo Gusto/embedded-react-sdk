@@ -13,13 +13,42 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { formatMonthDay } from '@/helpers/dateFormatting'
 
+/**
+ * Props for {@link PolicyConfigurationForm}.
+ *
+ * @public
+ */
 export interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
+  /** Company that owns the policy being created or edited. */
   companyId: string
+  /** Type of policy being configured. */
   policyType: 'sick' | 'vacation'
+  /** When set, the form loads the existing policy and submits an update. */
   policyId?: string
+  /** Pre-populated values to merge into the form's defaults. */
   defaultValues?: Partial<PolicyConfigurationFormData>
 }
 
+/**
+ * Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration.
+ *
+ * @remarks
+ * Omit `policyId` to create a new policy; pass `policyId` to edit an existing
+ * one. In edit mode, the form fetches the policy via Suspense and merges the
+ * derived defaults with any `defaultValues` you supply (your overrides win).
+ * When editing a policy whose configuration is already complete, the accrual
+ * method selector is restricted to the matching category (unlimited vs.
+ * accrual-based).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `time-off/policy-details/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
+ * | `cancel` | Fired when the user clicks the cancel button | — |
+ *
+ * @param props - See {@link PolicyConfigurationFormProps}.
+ * @returns The rendered policy configuration form.
+ * @public
+ */
 export function PolicyConfigurationForm(props: PolicyConfigurationFormProps) {
   return (
     <BaseComponent {...props}>
