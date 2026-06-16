@@ -14,54 +14,6 @@ custom_edit_url: null
 
 ## Interfaces
 
-<a id="breadcrumb"></a>
-
-### Breadcrumb
-
-Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
-| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
-| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
-
-***
-
-<a id="checkboxgroupoption"></a>
-
-### CheckboxGroupOption
-
-Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
-| `label` | `ReactNode` | Label text or content for the checkbox option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="comboboxoption"></a>
-
-### ComboBoxOption
-
-Option entry for the ComboBox dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="componentscontexttype"></a>
 
 ### ComponentsContextType
@@ -151,7 +103,7 @@ function App() {
 | `Modal` | `FunctionComponent`\<[`ModalProps`](#modalprops)\> | Overlay modal with customizable body content and footer. |
 | `MultiSelectComboBox` | `FunctionComponent`\<[`MultiSelectComboBoxProps`](#multiselectcomboboxprops)\> | Form field wrapping a typeahead `<input />` for multi-option selection. |
 | `NumberInput` | `FunctionComponent`\<[`NumberInputProps`](#numberinputprops)\> | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
-| `OrderedList` | `FunctionComponent`\<[`BaseListProps`](#baselistprops)\> | HTML `<ol>` for a numbered list of items. |
+| `OrderedList` | `FunctionComponent`\<[`OrderedListProps`](#orderedlistprops)\> | HTML `<ol>` for a numbered list of items. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 | `ProgressBar` | `FunctionComponent`\<[`ProgressBarProps`](#progressbarprops)\> | Step-based progress indicator for multi-step flows. |
@@ -164,107 +116,7 @@ function App() {
 | `Text` | `FunctionComponent`\<[`TextProps`](#textprops)\> | Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. |
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
-| `UnorderedList` | `FunctionComponent`\<[`BaseListProps`](#baselistprops)\> | HTML `<ul>` for an unordered list of items. |
-
-***
-
-<a id="daterange"></a>
-
-### DateRange
-
-Inclusive start/end pair representing a selected date range.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `end` | `Date` | Last date in the range, inclusive. |
-| `start` | `Date` | First date in the range, inclusive. |
-
-***
-
-<a id="descriptionlistitem"></a>
-
-### DescriptionListItem
-
-Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
-| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
-
-***
-
-<a id="menuitem"></a>
-
-### MenuItem
-
-Action entry your `Menu` implementation must accept for each entry in its `items` array
-from the component adapter.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `href?` | `string` | Optional URL to navigate to when clicked |
-| `icon?` | `ReactNode` | Optional icon to display before the label |
-| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
-| `label` | `string` | Text label for the menu item |
-| `onClick` | () => `void` | Callback function when the menu item is clicked |
-
-***
-
-<a id="multiselectcomboboxoption"></a>
-
-### MultiSelectComboBoxOption
-
-Option entry for a `MultiSelectComboBox` dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="radiogroupoption"></a>
-
-### RadioGroupOption
-
-Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the radio option |
-| `isDisabled?` | `boolean` | Disables this specific radio option |
-| `label` | `ReactNode` | Label text or content for the radio option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="selectoption"></a>
-
-### SelectOption
-
-Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
+| `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
 
 ***
 
@@ -285,6 +137,7 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 #### Extended by
 
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops)
 - [`TextInputProps`](#textinputprops)
 - [`SelectProps`](#selectprops)
 - [`NumberInputProps`](#numberinputprops)
@@ -307,41 +160,36 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 ***
 
-<a id="tabledata"></a>
+<a id="sharedhorizontalfieldlayoutprops"></a>
 
-### TableData
+### SharedHorizontalFieldLayoutProps
 
-Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
+Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
+
+#### Remarks
+
+Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
+Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.
+
+#### Extends
+
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops)
+
+#### Extended by
+
+- [`CheckboxProps`](#checkboxprops)
+- [`SwitchProps`](#switchprops)
+- [`RadioProps`](#radioprops)
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to be displayed in the table cell |
-| `key` | `string` | Unique identifier for the table cell |
-
-***
-
-<a id="tablerow"></a>
-
-### TableRow
-
-Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
-| `key` | `string` | Unique identifier for the table row |
-
-## Type Aliases
-
-<a id="paginationitemsperpage"></a>
-
-### PaginationItemsPerPage
-
-> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
+| `description?` | `ReactNode` | Optional description text for the field |
+| `errorMessage?` | `string` | Error message to display when the field is invalid |
+| `isRequired?` | `boolean` | Indicates if the field is required |
+| `label` | `ReactNode` | Label text for the field |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
 ## Component Props
 
@@ -413,24 +261,6 @@ Renders a full-width notification banner with a colored header and body content 
 
 ***
 
-<a id="baselistprops"></a>
-
-### BaseListProps
-
-Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `aria-describedby?` | `string` | ID of an element that describes this list |
-| `aria-label?` | `string` | Accessibility label for the list |
-| `aria-labelledby?` | `string` | ID of an element that labels this list |
-| `className?` | `string` | Optional custom class name |
-| `items` | `ReactNode`[] | The list items to render |
-
-***
-
 <a id="boxheaderprops"></a>
 
 ### BoxHeaderProps
@@ -492,16 +322,28 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 
 ### ButtonIconProps
 
-> **ButtonIconProps** = [`ButtonProps`](#buttonprops) & `object`
-
 Props your `ButtonIcon` implementation must accept from the component adapter.
 Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `aria-label` | `string` | Required aria-label for icon buttons to ensure accessibility |
+- [`ButtonProps`](#buttonprops)
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label` | `string` | `undefined` | Required aria-label for icon buttons to ensure accessibility |
+| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
+| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
+| `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
+| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
 
@@ -515,6 +357,10 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 #### Extends
 
 - `Pick`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `"name"` \| `"id"` \| `"className"` \| `"type"` \| `"onClick"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"form"` \| `"title"` \| `"tabIndex"`\>
+
+#### Extended by
+
+- [`ButtonIconProps`](#buttoniconprops)
 
 #### Properties
 
@@ -537,8 +383,6 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 <a id="calendarpreviewprops"></a>
 
 ### CalendarPreviewProps
-
-> **CalendarPreviewProps** = `object`
 
 Props your `CalendarPreview` implementation must accept from the component adapter.
 Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
@@ -611,7 +455,7 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"`\>
 
 #### Properties
 
@@ -822,15 +666,20 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 
 ### LinkProps
 
-> **LinkProps** = `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\> & `object`
-
 Props your `Link` implementation must accept from the component adapter.
 Renders an HTML anchor (`<a>`) for inline navigation.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\>
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `aria-describedby?` | `string` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
 | `children?` | `ReactNode` | Content to be displayed inside the link |
 
 ***
@@ -974,18 +823,28 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 
 ### OrderedListProps
 
-> **OrderedListProps** = [`BaseListProps`](#baselistprops)
-
 Props your `OrderedList` implementation must accept from the component adapter.
 Renders an ordered (numbered) list of items.
+
+#### Extends
+
+- [`BaseListProps`](#baselistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
 
 ***
 
 <a id="paginationcontrolprops"></a>
 
 ### PaginationControlProps
-
-> **PaginationControlProps** = `object`
 
 Props your `PaginationControl` implementation must accept from the component adapter.
 Renders pagination controls for navigating between pages of results.
@@ -1081,7 +940,7 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"` \| `"onBlur"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"` \| `"onBlur"`\>
 
 #### Properties
 
@@ -1141,7 +1000,7 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"`\>.`Pick`\<`AriaAttributes`, `"aria-controls"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"`\>.`Pick`\<`AriaAttributes`, `"aria-controls"`\>
 
 #### Properties
 
@@ -1187,23 +1046,6 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 | `headers` | [`TableData`](#tabledata)[] | `undefined` | Array of header cells for the table |
 | `isWithinBox?` | `boolean` | `false` | Removes borders and background for use inside a Box component |
 | `rows` | [`TableRow`](#tablerow)[] | `undefined` | Array of rows to be displayed in the table |
-
-***
-
-<a id="tabprops"></a>
-
-### TabProps
-
-Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to display in the tab panel |
-| `id` | `string` | Unique identifier for the tab |
-| `isDisabled?` | `boolean` | Whether the tab is disabled |
-| `label` | `ReactNode` | Label to display in the tab button |
 
 ***
 
@@ -1319,7 +1161,245 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 
 ### UnorderedListProps
 
-> **UnorderedListProps** = [`BaseListProps`](#baselistprops)
-
 Props your `UnorderedList` implementation must accept from the component adapter.
 Renders an unordered (bulleted) list of items.
+
+#### Extends
+
+- [`BaseListProps`](#baselistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
+
+## Utility Types
+
+<a id="baselistprops"></a>
+
+### BaseListProps
+
+Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
+
+#### Extended by
+
+- [`OrderedListProps`](#orderedlistprops)
+- [`UnorderedListProps`](#unorderedlistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
+
+***
+
+<a id="breadcrumb"></a>
+
+### Breadcrumb
+
+Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+
+***
+
+<a id="checkboxgroupoption"></a>
+
+### CheckboxGroupOption
+
+Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
+| `label` | `ReactNode` | Label text or content for the checkbox option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="comboboxoption"></a>
+
+### ComboBoxOption
+
+Option entry for the ComboBox dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="daterange"></a>
+
+### DateRange
+
+Inclusive start/end pair representing a selected date range.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `end` | `Date` | Last date in the range, inclusive. |
+| `start` | `Date` | First date in the range, inclusive. |
+
+***
+
+<a id="descriptionlistitem"></a>
+
+### DescriptionListItem
+
+Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
+| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
+
+***
+
+<a id="menuitem"></a>
+
+### MenuItem
+
+Action entry your `Menu` implementation must accept for each entry in its `items` array
+from the component adapter.
+
+#### Extends
+
+- `DataAttributes`
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `href?` | `string` | Optional URL to navigate to when clicked |
+| `icon?` | `ReactNode` | Optional icon to display before the label |
+| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
+| `label` | `string` | Text label for the menu item |
+| `onClick` | () => `void` | Callback function when the menu item is clicked |
+
+***
+
+<a id="multiselectcomboboxoption"></a>
+
+### MultiSelectComboBoxOption
+
+Option entry for a `MultiSelectComboBox` dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="paginationitemsperpage"></a>
+
+### PaginationItemsPerPage
+
+> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
+
+***
+
+<a id="radiogroupoption"></a>
+
+### RadioGroupOption
+
+Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the radio option |
+| `isDisabled?` | `boolean` | Disables this specific radio option |
+| `label` | `ReactNode` | Label text or content for the radio option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="selectoption"></a>
+
+### SelectOption
+
+Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="tabledata"></a>
+
+### TableData
+
+Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to be displayed in the table cell |
+| `key` | `string` | Unique identifier for the table cell |
+
+***
+
+<a id="tablerow"></a>
+
+### TableRow
+
+Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
+| `key` | `string` | Unique identifier for the table row |
+
+***
+
+<a id="tabprops"></a>
+
+### TabProps
+
+Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to display in the tab panel |
+| `id` | `string` | Unique identifier for the tab |
+| `isDisabled?` | `boolean` | Whether the tab is disabled |
+| `label` | `ReactNode` | Label to display in the tab button |

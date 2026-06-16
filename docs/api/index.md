@@ -945,18 +945,3 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 > **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
 
 High-level classification of where an [SDKError](#sdkerror) originated.
-
-***
-
-<a id="sharedhorizontalfieldlayoutprops"></a>
-
-### SharedHorizontalFieldLayoutProps
-
-> **SharedHorizontalFieldLayoutProps** = [`SharedFieldLayoutProps`](component-adapter.md#sharedfieldlayoutprops)
-
-Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
-Alias of [SharedFieldLayoutProps](component-adapter.md#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.

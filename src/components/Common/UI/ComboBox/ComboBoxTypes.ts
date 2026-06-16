@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry for the ComboBox dropdown list.
  *
  * @public
+ * @group Utility Types
  */
 export interface ComboBoxOption {
   /**

@@ -39,6 +39,7 @@ import { FieldValues } from 'react-hook-form';
 import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
 import { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form';
+import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
 import { GarnishmentType } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
 import { HTMLAttributes } from 'react';
@@ -306,6 +307,15 @@ export interface BaseHookReady<TData extends Record<string, unknown> = Record<st
     status: TStatus;
 }
 
+// @public
+export interface BaseListProps {
+    'aria-describedby'?: string;
+    'aria-label'?: string;
+    'aria-labelledby'?: string;
+    className?: string;
+    items: ReactNode[];
+}
+
 export { BeforeCreateRequestContext }
 
 export { BeforeCreateRequestHook }
@@ -332,9 +342,15 @@ export interface BoxProps {
 }
 
 // @public
+export interface Breadcrumb {
+    id: string;
+    isClickable?: boolean;
+    label: ReactNode;
+}
+
+// @public
 export interface BreadcrumbsProps {
     'aria-label'?: string;
-    // Warning: (ae-forgotten-export) The symbol "Breadcrumb" needs to be exported by the entry point index.d.ts
     breadcrumbs: Breadcrumb[];
     className?: string;
     currentBreadcrumbId?: string;
@@ -343,9 +359,9 @@ export interface BreadcrumbsProps {
 }
 
 // @public
-export type ButtonIconProps = ButtonProps & {
+export interface ButtonIconProps extends ButtonProps {
     'aria-label': string;
-};
+}
 
 // @public
 export interface ButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'name' | 'id' | 'className' | 'type' | 'onClick' | 'onKeyDown' | 'onKeyUp' | 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'form' | 'title' | 'tabIndex'> {
@@ -360,18 +376,18 @@ export interface ButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement
 }
 
 // @public
-export type CalendarPreviewProps = {
-    highlightDates?: Array<{
-        date: Date;
-        highlightColor: 'primary' | 'secondary';
-        label: string;
-    }>;
+export interface CalendarPreviewProps {
     dateRange: {
         start: Date;
         end: Date;
         label: string;
     };
-};
+    highlightDates?: Array<{
+        date: Date;
+        highlightColor: 'primary' | 'secondary';
+        label: string;
+    }>;
+}
 
 // @public
 export interface CardProps {
@@ -1049,45 +1065,45 @@ export const componentEvents: {
 
 // @public
 export interface ComponentsContextType {
-    Alert: (props: AlertProps) => JSX.Element | null;
-    Badge: (props: BadgeProps) => JSX.Element | null;
-    Banner: (props: BannerProps) => JSX.Element | null;
-    Box: (props: BoxProps) => JSX.Element | null;
-    BoxHeader: (props: BoxHeaderProps) => JSX.Element | null;
-    Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null;
-    Button: (props: ButtonProps) => JSX.Element | null;
-    ButtonIcon: (props: ButtonIconProps) => JSX.Element | null;
-    CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null;
-    Card: (props: CardProps) => JSX.Element | null;
-    Checkbox: (props: CheckboxProps) => JSX.Element | null;
-    CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null;
-    ComboBox: (props: ComboBoxProps) => JSX.Element | null;
-    DatePicker: (props: DatePickerProps) => JSX.Element | null;
-    DateRangePicker: (props: DateRangePickerProps) => JSX.Element | null;
-    DescriptionList: (props: DescriptionListProps) => JSX.Element | null;
-    Dialog: (props: DialogProps) => JSX.Element | null;
-    FileInput: (props: FileInputProps) => JSX.Element | null;
-    Heading: (props: HeadingProps) => JSX.Element | null;
-    Link: (props: LinkProps) => JSX.Element | null;
-    LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null;
-    Menu: (props: MenuProps) => JSX.Element | null;
-    Modal: (props: ModalProps) => JSX.Element | null;
-    MultiSelectComboBox: (props: MultiSelectComboBoxProps) => JSX.Element | null;
-    NumberInput: (props: NumberInputProps) => JSX.Element | null;
-    OrderedList: (props: OrderedListProps) => JSX.Element | null;
-    PaginationControl?: (props: PaginationControlProps) => JSX.Element | null;
-    PayrollLoading?: (props: PayrollLoadingProps) => JSX.Element | null;
-    ProgressBar: (props: ProgressBarProps) => JSX.Element | null;
-    Radio: (props: RadioProps) => JSX.Element | null;
-    RadioGroup: (props: RadioGroupProps) => JSX.Element | null;
-    Select: (props: SelectProps) => JSX.Element | null;
-    Switch: (props: SwitchProps) => JSX.Element | null;
-    Table: (props: TableProps) => JSX.Element | null;
-    Tabs: (props: TabsProps) => JSX.Element | null;
-    Text: (props: TextProps) => JSX.Element | null;
-    TextArea: (props: TextAreaProps) => JSX.Element | null;
-    TextInput: (props: TextInputProps) => JSX.Element | null;
-    UnorderedList: (props: UnorderedListProps) => JSX.Element | null;
+    Alert: FunctionComponent<AlertProps>;
+    Badge: FunctionComponent<BadgeProps>;
+    Banner: FunctionComponent<BannerProps>;
+    Box: FunctionComponent<BoxProps>;
+    BoxHeader: FunctionComponent<BoxHeaderProps>;
+    Breadcrumbs: FunctionComponent<BreadcrumbsProps>;
+    Button: FunctionComponent<ButtonProps>;
+    ButtonIcon: FunctionComponent<ButtonIconProps>;
+    CalendarPreview: FunctionComponent<CalendarPreviewProps>;
+    Card: FunctionComponent<CardProps>;
+    Checkbox: FunctionComponent<CheckboxProps>;
+    CheckboxGroup: FunctionComponent<CheckboxGroupProps>;
+    ComboBox: FunctionComponent<ComboBoxProps>;
+    DatePicker: FunctionComponent<DatePickerProps>;
+    DateRangePicker: FunctionComponent<DateRangePickerProps>;
+    DescriptionList: FunctionComponent<DescriptionListProps>;
+    Dialog: FunctionComponent<DialogProps>;
+    FileInput: FunctionComponent<FileInputProps>;
+    Heading: FunctionComponent<HeadingProps>;
+    Link: FunctionComponent<LinkProps>;
+    LoadingSpinner: FunctionComponent<LoadingSpinnerProps>;
+    Menu: FunctionComponent<MenuProps>;
+    Modal: FunctionComponent<ModalProps>;
+    MultiSelectComboBox: FunctionComponent<MultiSelectComboBoxProps>;
+    NumberInput: FunctionComponent<NumberInputProps>;
+    OrderedList: FunctionComponent<OrderedListProps>;
+    PaginationControl?: FunctionComponent<PaginationControlProps>;
+    PayrollLoading?: FunctionComponent<PayrollLoadingProps>;
+    ProgressBar: FunctionComponent<ProgressBarProps>;
+    Radio: FunctionComponent<RadioProps>;
+    RadioGroup: FunctionComponent<RadioGroupProps>;
+    Select: FunctionComponent<SelectProps>;
+    Switch: FunctionComponent<SwitchProps>;
+    Table: FunctionComponent<TableProps>;
+    Tabs: FunctionComponent<TabsProps>;
+    Text: FunctionComponent<TextProps>;
+    TextArea: FunctionComponent<TextAreaProps>;
+    TextInput: FunctionComponent<TextInputProps>;
+    UnorderedList: FunctionComponent<UnorderedListProps>;
 }
 
 // @public
@@ -1747,9 +1763,14 @@ export function DescriptionField(props: DescriptionFieldProps): JSX;
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
 
 // @public
+export interface DescriptionListItem {
+    description: ReactNode | ReactNode[];
+    term: ReactNode | ReactNode[];
+}
+
+// @public
 export interface DescriptionListProps {
     className?: string;
-    // Warning: (ae-forgotten-export) The symbol "DescriptionListItem" needs to be exported by the entry point index.d.ts
     items: DescriptionListItem[];
     layout?: 'stacked' | 'horizontal';
     showSeparators?: boolean;
@@ -2908,7 +2929,7 @@ export function LastNameField(props: LastNameFieldProps): JSX;
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
 // @public
-export type LinkProps = Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
+export interface LinkProps extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 /**
 * URL that the link points to
 */
@@ -2956,9 +2977,9 @@ export type LinkProps = Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 /**
 * Title text shown on hover
 */
-| 'title'> & {
+| 'title'> {
     children?: ReactNode;
-};
+}
 
 // @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
@@ -3395,10 +3416,9 @@ function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterf
 // @public
 function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "BaseListProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type OrderedListProps = BaseListProps;
+export interface OrderedListProps extends BaseListProps {
+}
 
 // @public
 export function OrderNumberField(props: OrderNumberFieldProps): JSX;
@@ -3413,18 +3433,18 @@ export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
-export type PaginationControlProps = {
-    handleFirstPage: () => void;
-    handlePreviousPage: () => void;
-    handleNextPage: () => void;
-    handleLastPage: () => void;
-    handleItemsPerPageChange: (n: PaginationItemsPerPage) => void;
+export interface PaginationControlProps {
     currentPage: number;
-    totalPages: number;
-    totalCount?: number;
-    itemsPerPage?: PaginationItemsPerPage;
+    handleFirstPage: () => void;
+    handleItemsPerPageChange: (n: PaginationItemsPerPage) => void;
+    handleLastPage: () => void;
+    handleNextPage: () => void;
+    handlePreviousPage: () => void;
     isFetching?: boolean;
-};
+    itemsPerPage?: PaginationItemsPerPage;
+    totalCount?: number;
+    totalPages: number;
+}
 
 // @public (undocumented)
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50;
@@ -4297,7 +4317,8 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 }
 
 // @public
-export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
+export interface SharedHorizontalFieldLayoutProps extends SharedFieldLayoutProps {
+}
 
 // @public
 export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
@@ -4706,13 +4727,20 @@ export interface TableRow {
 }
 
 // @public
+export interface TabProps {
+    content: ReactNode;
+    id: string;
+    isDisabled?: boolean;
+    label: ReactNode;
+}
+
+// @public
 export interface TabsProps {
     'aria-label'?: string;
     'aria-labelledby'?: string;
     className?: string;
     onSelectionChange: (id: string) => void;
     selectedId?: string;
-    // Warning: (ae-forgotten-export) The symbol "TabProps" needs to be exported by the entry point index.d.ts
     tabs: TabProps[];
 }
 
@@ -4998,7 +5026,8 @@ export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldPr
 export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMethodFormRequiredValidation, PaymentMethodType>>;
 
 // @public
-export type UnorderedListProps = BaseListProps;
+export interface UnorderedListProps extends BaseListProps {
+}
 
 // @public
 export function useBankForm(input: UseBankFormProps): HookLoadingResult | UseBankFormReady;

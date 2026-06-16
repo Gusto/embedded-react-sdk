@@ -5,7 +5,7 @@
  * @public
  * @group Component Props
  */
-export type CalendarPreviewProps = {
+export interface CalendarPreviewProps {
   /**
    * Array of dates to highlight with custom colors and labels
    */

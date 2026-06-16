@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
  *
  * @public
+ * @group Utility Types
  */
 export interface RadioGroupOption {
   /**
