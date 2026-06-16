@@ -17,8 +17,8 @@ According to SemVer, versions in the 0.x.y range are considered experimental. Th
 
 To ensure a smooth experience during this transitional phase, we are dedicated to the following practices:
 
-- **Advance Notice: **We will communicate any upcoming breaking changes well in advance, allowing you time to prepare for adjustments.
-- **Upgrade Guides: **Each breaking change will come with a comprehensive upgrade guide to help you transition your code with minimal friction.
+- **Advance Notice:** We will communicate any upcoming breaking changes well in advance, allowing you time to prepare for adjustments.
+- **Upgrade Guides:** Each breaking change will come with a comprehensive upgrade guide to help you transition your code with minimal friction.
 
 ## Staying Informed
 

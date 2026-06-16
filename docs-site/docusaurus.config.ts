@@ -42,6 +42,9 @@ const config: Config = {
 
   markdown: {
     format: 'detect',
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
   },
 
   i18n: {
@@ -49,7 +52,7 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [],
+  plugins: [require.resolve('./plugins/global-docs-sidebar')],
 
   themes: [
     [
