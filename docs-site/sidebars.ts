@@ -121,7 +121,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'integration-guide/versioning',
         'integration-guide/event-handling',
-        'integration-guide/event-types',
         'integration-guide/request-interceptors',
         'integration-guide/customizing-sdk-ui',
         'integration-guide/composition',
