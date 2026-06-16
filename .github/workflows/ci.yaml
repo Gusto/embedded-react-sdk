@@ -180,6 +180,16 @@ jobs:
             echo "stale=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Upload derived src files
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-src
+          path: |
+            docs/reference
+            docs/api
+          retention-days: 1
+          if-no-files-found: error
+
   # derive-check-dist: Run API report check on a standard runner.
   # api-extractor reads dist/index.d.ts, so this job runs after `build`.
   # On non-main branches: outputs stale=true if the report changed.
@@ -225,6 +235,14 @@ jobs:
             echo "stale=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Upload derived dist files
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-dist
+          path: .reports
+          retention-days: 1
+          if-no-files-found: error
+
   # derive-commit: Re-derive and commit any stale files back to the branch.
   # Only runs when a check job detected staleness — the expensive self-hosted runner
   # (needed for the org IP allow list to push back to the repo) is never used otherwise.
@@ -251,36 +269,15 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: actions/setup-node@v6
+      - name: Download derived src files
+        uses: actions/download-artifact@v6
         with:
-          node-version-file: '.nvmrc'
+          name: derived-src
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Restore build artifacts
-        uses: actions/cache/restore@v5
+      - name: Download derived dist files
+        uses: actions/download-artifact@v6
         with:
-          path: dist
-          key: build-${{ github.sha }}
-
-      - name: Install docs-site dependencies
-        run: npm ci
-        working-directory: docs-site
-
-      - name: Derive all files in parallel
-        run: |
-          FAIL=0
-          npm run endpoints:derive &
-          PID_ENDPOINTS=$!
-          npm run api-report:derive &
-          PID_APIREPORT=$!
-          npm run docs:api:generate &
-          PID_DOCS=$!
-          wait $PID_ENDPOINTS || FAIL=1
-          wait $PID_APIREPORT || FAIL=1
-          wait $PID_DOCS || FAIL=1
-          exit $FAIL
+          name: derived-dist
 
       - name: Commit and push derived files
         run: |
