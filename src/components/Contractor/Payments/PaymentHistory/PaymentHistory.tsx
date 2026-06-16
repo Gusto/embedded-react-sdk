@@ -23,8 +23,8 @@ export interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor, paymentGroupId: string }` |
- * | `contractor/payments/cancel` | An individual contractor payment was successfully canceled. | `{ paymentId: string }` |
+ * | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
+ * | `contractor/payments/cancel` | An individual contractor payment was successfully canceled. | `{ paymentId: string }` — the individual contractor payment UUID, not the payment group UUID passed as `paymentId` prop |
  *
  * @param props - Component props including the payment group `paymentId` and the standard `onEvent` callback.
  * @returns The rendered payment history view for the payment group.

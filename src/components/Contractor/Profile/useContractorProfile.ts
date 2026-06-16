@@ -56,7 +56,11 @@ export const ContractorProfileSchema = z.object({
   hourlyRate: z.number().min(0).optional(),
 })
 
-/** @internal */
+/**
+ * Form field values for the contractor profile form.
+ *
+ * @public
+ */
 export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
 
 /** @internal */

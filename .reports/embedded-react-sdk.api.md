@@ -18,7 +18,6 @@ import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types'
 import { ButtonHTMLAttributes } from 'react';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
-import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
@@ -1173,8 +1172,7 @@ declare namespace ContractorManagement {
         PaymentSummary,
         PaymentSummaryProps,
         PaymentStatement,
-        PaymentStatementProps,
-        InternalAlert
+        PaymentStatementProps
     }
 }
 
@@ -1187,8 +1185,6 @@ declare namespace ContractorOnboarding {
         ContractorListProps,
         ContractorProfile,
         ContractorProfileProps,
-        ContractorProfileSchema,
-        UseContractorProfileProps,
         ContractorProfileFormData,
         Address,
         AddressProps,
@@ -1217,7 +1213,9 @@ export const ContractorOnboardingStatus: {
 // @public
 function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
 
-// @internal (undocumented)
+// Warning: (ae-forgotten-export) The symbol "ContractorProfileSchema" needs to be exported by the entry point index.d.ts
+//
+// @public
 type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfile"
@@ -1226,32 +1224,8 @@ type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
 interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
     companyId: string;
     contractorId?: string;
-    // Warning: (ae-incompatible-release-tags) The symbol "defaultValues" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "defaultValues" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
-    defaultValues?: UseContractorProfileProps['defaultValues'];
+    defaultValues?: Partial<ContractorProfileFormData>;
 }
-
-// @internal (undocumented)
-const ContractorProfileSchema: z.ZodObject<{
-    selfOnboarding: z.ZodBoolean;
-    email: z.ZodOptional<z.ZodString>;
-    contractorType: z.ZodEnum<{
-        Business: "Business";
-        Individual: "Individual";
-    }>;
-    wageType: z.ZodEnum<{
-        Fixed: "Fixed";
-        Hourly: "Hourly";
-    }>;
-    startDate: z.ZodDate;
-    firstName: z.ZodOptional<z.ZodString>;
-    middleInitial: z.ZodOptional<z.ZodString>;
-    lastName: z.ZodOptional<z.ZodString>;
-    ssn: z.ZodOptional<z.ZodString>;
-    businessName: z.ZodOptional<z.ZodString>;
-    ein: z.ZodOptional<z.ZodString>;
-    hourlyRate: z.ZodOptional<z.ZodNumber>;
-}, z.core.$strip>;
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
@@ -2917,17 +2891,6 @@ declare namespace InformationRequests {
 // @public (undocumented)
 function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX;
 
-// @internal (undocumented)
-type InternalAlert = {
-    type: 'error' | 'info' | 'success';
-    title: string;
-    content?: ReactNode;
-    onDismiss?: () => void;
-    translationParams?: Record<string, unknown>;
-    onAction?: () => void;
-    actionLabel?: string;
-};
-
 // Warning: (ae-forgotten-export) The symbol "InviteSignatoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InviteSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3484,7 +3447,7 @@ const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
 // @public
 type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
-    profile?: UseContractorProfileProps['defaultValues'];
+    profile?: Partial<ContractorProfileFormData>;
     address?: AddressDefaultValues;
 }>;
 
@@ -3721,8 +3684,9 @@ function PaymentsList(props: PaymentsListProps): JSX;
 //
 // @public
 interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
-    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    // Warning: (ae-forgotten-export) The symbol "InternalAlert" needs to be exported by the entry point index.d.ts
+    //
+    // @internal
     alerts?: InternalAlert[];
     companyId: string;
 }
@@ -3747,8 +3711,7 @@ const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 //
 // @public
 interface PaymentSummaryProps {
-    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    // @internal
     alerts?: InternalAlert[];
     companyId: string;
     onEvent: (type: EventType, data?: unknown) => void;
@@ -5257,14 +5220,6 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
 
-// @internal (undocumented)
-interface UseContractorProfileProps {
-    companyId: string;
-    contractorId?: string;
-    defaultValues?: Partial<ContractorProfileFormData>;
-    existingContractor?: Contractor;
-}
-
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
@@ -5930,8 +5885,6 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/components/Contractor/OnboardingFlow/OnboardingFlowComponents.d.ts:13:5 - (ae-incompatible-release-tags) The symbol "profile" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
-// dist/components/Contractor/OnboardingFlow/OnboardingFlowComponents.d.ts:13:5 - (ae-incompatible-release-tags) The symbol "profile" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
 // dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

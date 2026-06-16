@@ -19,7 +19,10 @@ export interface PaymentSummaryProps {
   companyId: string
   /** Callback invoked when a flow event occurs, e.g. when the user exits. */
   onEvent: (type: EventType, data?: unknown) => void
-  /** Optional alerts to display alongside the summary. */
+  /**
+   * @internal
+   * Flow-injected alerts (e.g. wire-transfer confirmation).
+   */
   alerts?: InternalAlert[]
 }
 

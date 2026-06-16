@@ -5,11 +5,7 @@ export type {
 } from '../OnboardingFlow/OnboardingFlowComponents'
 export { ContractorList, type ContractorListProps } from '../ContractorList'
 export { ContractorProfile, type ContractorProfileProps } from '../Profile'
-export { ContractorProfileSchema } from '../Profile/useContractorProfile'
-export type {
-  UseContractorProfileProps,
-  ContractorProfileFormData,
-} from '../Profile/useContractorProfile'
+export type { ContractorProfileFormData } from '../Profile/useContractorProfile'
 export { Address, type AddressProps } from '../Address'
 export type { AddressDefaultValues } from '../Address/useAddress'
 export { PaymentMethod } from '../PaymentMethod/PaymentMethod'

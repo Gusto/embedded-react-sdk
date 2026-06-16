@@ -7,4 +7,3 @@ export {
   PaymentStatement,
   type PaymentStatementProps,
 } from '../Payments/PaymentStatement/PaymentStatement'
-export type { InternalAlert } from '../Payments/types'

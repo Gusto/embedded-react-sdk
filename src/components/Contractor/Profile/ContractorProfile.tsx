@@ -1,6 +1,7 @@
 import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import { useContractorProfile, type UseContractorProfileProps } from './useContractorProfile'
+import type { ContractorProfileFormData } from './useContractorProfile'
+import { useContractorProfile } from './useContractorProfile'
 import { ContractorProfileForm } from './ContractorProfileForm'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -18,7 +19,7 @@ export interface ContractorProfileProps extends CommonComponentInterface<'Contra
   /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
   contractorId?: string
   /** Initial values for the contractor profile form fields. */
-  defaultValues?: UseContractorProfileProps['defaultValues']
+  defaultValues?: Partial<ContractorProfileFormData>
 }
 
 interface ContractorProfileConditionalProps {

@@ -17,7 +17,10 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
   /** UUID of the company whose contractor payment groups should be listed. */
   companyId: string
-  /** Optional alerts to display above the list. */
+  /**
+   * @internal
+   * Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation).
+   */
   alerts?: InternalAlert[]
 }
 

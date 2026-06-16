@@ -15,6 +15,8 @@ custom_edit_url: null
 
 | Namespace | Description |
 | ------ | ------ |
+| [ContractorManagement](ContractorManagement/flows.md) | - |
+| [ContractorOnboarding](Contractor/ContractorOnboarding/flows.md) | - |
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
 | [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
 | [Payroll](Payroll/index.md) | - |
