@@ -245,6 +245,9 @@ jobs:
       - name: Validate docs front matter
         run: npm run docs:lint
 
+      - name: Spell check docs
+        run: npm run docs:lint:spell
+
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
