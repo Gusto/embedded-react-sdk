@@ -24,6 +24,13 @@ This must happen before knip runs. If a symbol has an ae-forgotten-export warnin
 
 If the report has no ae-forgotten-export warnings touching `<TARGET>`, skip this sub-step.
 
+**Before adding any forgotten export, check its `@internal` / `@public` tag in the source file.** Do not export `@internal` symbols — doing so leaks implementation details onto the public API surface even though TypeDoc won't render them. The common cases:
+
+- **Props interfaces** (e.g. `FooProps`, `BarDefaultValues`) — these are almost always `@public` and should be exported.
+- **Schema constants** (e.g. `FooSchema`, `createFooSchema`) — these are always `@internal`. Never add them to a barrel. The `ae-forgotten-export` warning arises because a `@public` type is inferred from them; the fix is to export the inferred type (e.g. `FooFormData`) not the schema itself.
+- **Internal hook props** (e.g. `UseFooProps` with an `existingFoo` field) — `@internal`. The fix is to inline the relevant sub-type (e.g. `Partial<FooFormData>`) in the public props interface instead of exporting the internal interface.
+- **Flow-injected props** (e.g. `alerts?: InternalAlert[]`) — the containing interface may be `@public` but the prop itself is `@internal`. Mark the prop with `/** @internal */` in its JSDoc; do not export the type it references.
+
 ### Step 0b — Remove dead code with knip
 
 Run knip scoped to the target directory so deleted exports don't appear as TSDoc violations:
