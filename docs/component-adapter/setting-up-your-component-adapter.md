@@ -179,7 +179,7 @@ After implementing your Component Adapter, it's a good practice to:
 
 ## Complete Example
 
-Here's an example showing how to customize a few common components using Material UI with `GustoProvider`. For a full list of customizable components and their props, see the [Component Inventory](./component-inventory.md).
+Here's an example showing how to customize a few common components using Material UI with `GustoProvider`. For a full list of customizable components and their props, see the [Component Inventory](../api/component-inventory.md).
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
