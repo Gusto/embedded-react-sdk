@@ -17,7 +17,7 @@ custom_edit_url: null
 
 ### useBankForm()
 
-> **useBankForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+> **useBankForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Headless React Hook Form hook for creating an employee bank account.
 
@@ -29,7 +29,7 @@ Headless React Hook Form hook for creating an employee bank account.
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
 
@@ -130,22 +130,22 @@ Ready-state return value of [useBankForm](#usebankform).
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`BankFormData`](#bankformdata), [`BankFormFields`](#bankformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`BankFormData`](#bankformdata), [`BankFormFields`](#bankformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
 | `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`BankFormFields`](#bankformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
@@ -156,7 +156,7 @@ Ready-state return value of [useBankForm](#usebankform).
 
 ### AccountNumberFieldProps
 
-> **AccountNumberFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
+> **AccountNumberFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component.
 
@@ -186,7 +186,7 @@ Union of bank account type values that the form accepts.
 
 ### AccountTypeFieldProps
 
-> **AccountTypeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
+> **AccountTypeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
 
@@ -268,7 +268,7 @@ Validation error codes emitted by [useBankForm](#usebankform) fields that only e
 
 ### NameFieldProps
 
-> **NameFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
+> **NameFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
 
@@ -278,7 +278,7 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
 
 ### RoutingNumberFieldProps
 
-> **RoutingNumberFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
+> **RoutingNumberFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component.
 
@@ -298,7 +298,7 @@ Validation error codes emitted by the `routingNumber` field of [useBankForm](#us
 
 ### UseBankFormResult
 
-> **UseBankFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+> **UseBankFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Return type of [useBankForm](#usebankform) — a discriminated union on `isLoading`.
 
@@ -428,7 +428,7 @@ Headless hook for creating or updating a child-support garnishment.
 
 [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
 
 #### Remarks
 
@@ -547,32 +547,32 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the child-support-specific `data`, `status`, `actions`, and `form.Fields`
 shape. Static, entity-derived values live under `data.*`; reactive values
 that flip with form input live under `status.*`.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata), [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata), [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
 | `data` | `object` | Child-support-specific data payload: the available agencies, counties for the selected state, and the loaded garnishment for update mode. |
 | `data.agencies` | [`StateFieldEntry`](#statefieldentry)[] | Agencies offered as `State` options; raw entries the consumer can use with `getOptionLabel` for translated names. |
 | `data.counties` | [`CountyEntry`](#countyentry)[] | Counties for the currently selected state. Empty array when no state is selected. |
 | `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. |
 | `status.isManualPaymentRequired` | `boolean` | Mirrors `selectedAgency.manualPaymentRequired`; convenient for showing a warning alert. |
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
@@ -586,7 +586,7 @@ that flip with form input live under `status.*`.
 
 ### CaseNumberFieldProps
 
-> **CaseNumberFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+> **CaseNumberFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.CaseNumber` component.
 
@@ -596,7 +596,7 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ### ChildSupportGarnishmentAmountFieldProps
 
-> **ChildSupportGarnishmentAmountFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\>\>
+> **ChildSupportGarnishmentAmountFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.Amount` component.
 
@@ -717,7 +717,7 @@ number, order number, remittance number, and payment-period fields. See
 
 ### ChildSupportGarnishmentStateFieldProps
 
-> **ChildSupportGarnishmentStateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`StateFieldEntry`](#statefieldentry)\>\>
+> **ChildSupportGarnishmentStateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`StateFieldEntry`](#statefieldentry)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.State` component.
 
@@ -750,7 +750,7 @@ record represents the whole state. Supply `getOptionLabel` on
 
 ### FipsCodeFieldProps
 
-> **FipsCodeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`CountyEntry`](#countyentry)\>\>
+> **FipsCodeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`CountyEntry`](#countyentry)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.FipsCode` component.
 
@@ -760,7 +760,7 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ### OrderNumberFieldProps
 
-> **OrderNumberFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+> **OrderNumberFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.OrderNumber` component.
 
@@ -770,7 +770,7 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ### PaymentPeriodFieldProps
 
-> **PaymentPeriodFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
+> **PaymentPeriodFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PaymentPeriod` component.
 
@@ -780,7 +780,7 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ### PayPeriodMaximumFieldProps
 
-> **PayPeriodMaximumFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\>\>
+> **PayPeriodMaximumFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PayPeriodMaximum` component.
 
@@ -805,7 +805,7 @@ Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
 
 ### RemittanceNumberFieldProps
 
-> **RemittanceNumberFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+> **RemittanceNumberFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.RemittanceNumber` component.
 
@@ -848,13 +848,13 @@ Union of child support attribute key strings recognized by the form.
 
 ### UseChildSupportGarnishmentFormResult
 
-> **UseChildSupportGarnishmentFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)
+> **UseChildSupportGarnishmentFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)
 
 Return value of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
 
 #### Remarks
 
-Discriminated union: [HookLoadingResult](../index.md#hookloadingresult) while the agency catalog (and,
+Discriminated union: [HookLoadingResult](../utilities.md#hookloadingresult) while the agency catalog (and,
 in update mode, the existing garnishment) is loading;
 [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once data is ready.
 
@@ -1057,7 +1057,7 @@ Always null-check before rendering.
 
 ### useCompensationForm()
 
-> **useCompensationForm**(`input`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+> **useCompensationForm**(`input`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
@@ -1069,9 +1069,9 @@ Headless hook for creating or updating a compensation row on a job — FLSA clas
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
 
 #### Remarks
 
@@ -1221,21 +1221,21 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the compensation-specific `data`, `status`, `actions`, and `form.Fields`
 shape. Static, entity-derived values live under `data.*`; reactive values
 that flip with form input live under `status.*`.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`CompensationFormData`](#compensationformdata), [`CompensationFormFields`](#compensationformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`CompensationFormData`](#compensationformdata), [`CompensationFormFields`](#compensationformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
 | `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
 | `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
 | `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
@@ -1243,13 +1243,13 @@ that flip with form input live under `status.*`.
 | `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
 | `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
 | `data.minimumWages` | `MinimumWage`[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings. |
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new compensation or PUT an existing one. |
@@ -1264,7 +1264,7 @@ that flip with form input live under `status.*`.
 
 ### AdjustForMinimumWageFieldProps
 
-> **AdjustForMinimumWageFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../index.md#checkboxhookfieldprops)\>
+> **AdjustForMinimumWageFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../utilities.md#checkboxhookfieldprops)\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustForMinimumWage` component.
 
@@ -1274,7 +1274,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustFo
 
 ### CompensationEffectiveDateFieldProps
 
-> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../index.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
+> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
 
@@ -1415,7 +1415,7 @@ unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensat
 
 ### CompensationTitleFieldProps
 
-> **CompensationTitleFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
+> **CompensationTitleFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
 
@@ -1425,7 +1425,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` c
 
 ### FlsaStatusFieldProps
 
-> **FlsaStatusFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
+> **FlsaStatusFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
 
@@ -1435,7 +1435,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStat
 
 ### MinimumWageIdFieldProps
 
-> **MinimumWageIdFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
+> **MinimumWageIdFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
 
@@ -1445,7 +1445,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumW
 
 ### PaymentUnitFieldProps
 
-> **PaymentUnitFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
+> **PaymentUnitFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
 
@@ -1455,7 +1455,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentU
 
 ### RateFieldProps
 
-> **RateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
+> **RateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Rate` component.
 
@@ -1480,7 +1480,7 @@ Use these as keys in `validationMessages` on `Fields.Rate`. See
 
 ### UseCompensationFormResult
 
-> **UseCompensationFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+> **UseCompensationFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Discriminated union returned by [useCompensationForm](#usecompensationform) — either the loading state or the ready state.
 
@@ -1726,7 +1726,7 @@ Headless hook for creating or updating a non-child-support deduction.
 
 [`UseDeductionFormResult`](#usedeductionformresult)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
 
 #### Remarks
 
@@ -1846,30 +1846,30 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the deduction-specific `data`, `status`, `actions`, and `form.Fields` shape.
 Static, entity-derived values live under `data.*`; reactive values that
 flip with form input live under `status.*`.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`DeductionFormData`](#deductionformdata), [`DeductionFormFields`](#deductionformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`DeductionFormData`](#deductionformdata), [`DeductionFormFields`](#deductionformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
 | `data` | `object` | Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. |
 | `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. |
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
@@ -1881,7 +1881,7 @@ flip with form input live under `status.*`.
 
 ### AnnualMaximumFieldProps
 
-> **AnnualMaximumFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+> **AnnualMaximumFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
 
@@ -1891,7 +1891,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum`
 
 ### DeductAsPercentageFieldProps
 
-> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
 
@@ -1901,7 +1901,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercen
 
 ### DeductionAmountFieldProps
 
-> **DeductionAmountFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
+> **DeductionAmountFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
 
@@ -2031,7 +2031,7 @@ deduct-as-percentage, and garnishment-type fields. See
 
 ### DescriptionFieldProps
 
-> **DescriptionFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
+> **DescriptionFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
 
@@ -2041,7 +2041,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` c
 
 ### GarnishmentTypeFieldProps
 
-> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
+> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
 
@@ -2051,7 +2051,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentTyp
 
 ### RecurringFieldProps
 
-> **RecurringFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+> **RecurringFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
 
@@ -2061,7 +2061,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` com
 
 ### TotalAmountFieldProps
 
-> **TotalAmountFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+> **TotalAmountFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
 
@@ -2071,13 +2071,13 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` c
 
 ### UseDeductionFormResult
 
-> **UseDeductionFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
+> **UseDeductionFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
 
 Return value of [useDeductionForm](#usedeductionform).
 
 #### Remarks
 
-Discriminated union: [HookLoadingResult](../index.md#hookloadingresult) while the existing garnishment
+Discriminated union: [HookLoadingResult](../utilities.md#hookloadingresult) while the existing garnishment
 is loading (update mode only); [UseDeductionFormReady](#usedeductionformready) once data is
 ready. In create mode the hook returns the ready branch immediately.
 
@@ -2246,7 +2246,7 @@ drops it on the wire. Always null-check before rendering.
 
 ### useEmployeeDetailsForm()
 
-> **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+> **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
 
@@ -2258,9 +2258,9 @@ Headless hook for creating or updating an employee's profile details — name, e
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
 
 #### Remarks
 
@@ -2378,23 +2378,23 @@ error handling, and the `form.Fields` map.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`EmployeeDetailsFormData`](#employeedetailsformdata), [`EmployeeDetailsFields`](#employeedetailsfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`EmployeeDetailsFormData`](#employeedetailsformdata), [`EmployeeDetailsFields`](#employeedetailsfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
 | `data` | `object` | The loaded employee data, or `null` in create mode. |
 | `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submit status and form mode. |
 | `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
@@ -2405,7 +2405,7 @@ error handling, and the `form.Fields` map.
 
 ### DateOfBirthFieldProps
 
-> **DateOfBirthFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../index.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
+> **DateOfBirthFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.DateOfBirth` component.
 
@@ -2415,7 +2415,7 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Da
 
 ### EmailFieldProps
 
-> **EmailFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
+> **EmailFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Email` component.
 
@@ -2530,7 +2530,7 @@ birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ### FirstNameFieldProps
 
-> **FirstNameFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
+> **FirstNameFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
 
@@ -2540,7 +2540,7 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Fi
 
 ### LastNameFieldProps
 
-> **LastNameFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
+> **LastNameFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.LastName` component.
 
@@ -2550,7 +2550,7 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.La
 
 ### MiddleInitialFieldProps
 
-> **MiddleInitialFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
+> **MiddleInitialFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
 
@@ -2576,7 +2576,7 @@ description of each code.
 
 ### SelfOnboardingFieldProps
 
-> **SelfOnboardingFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SwitchHookFieldProps`](../index.md#switchhookfieldprops)\>
+> **SelfOnboardingFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../utilities.md#switchhookfieldprops)\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
 
@@ -2586,7 +2586,7 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Se
 
 ### SsnFieldProps
 
-> **SsnFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
+> **SsnFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Ssn` component.
 
@@ -2642,7 +2642,7 @@ Discriminated by mode: in create mode supply `companyId` and omit
 
 ### UseEmployeeDetailsFormResult
 
-> **UseEmployeeDetailsFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+> **UseEmployeeDetailsFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 Return type of [useEmployeeDetailsForm](#useemployeedetailsform).
 
@@ -2975,19 +2975,19 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata), [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata), [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Form actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
 | `data` | `object` | Current per-state tax records returned by the server. |
 | `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` & `object` | Form internals plus the iterable per-state `Fields` array. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
@@ -3006,7 +3006,7 @@ Props for a `Field` rendered as a currency-formatted number input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../index.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 
 ***
 
@@ -3022,7 +3022,7 @@ Props for a `Field` rendered as a date picker.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../index.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../component-adapter.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
 
 ***
 
@@ -3082,7 +3082,7 @@ Props for a `Field` rendered as a decimal number input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../index.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 
 ***
 
@@ -3098,7 +3098,7 @@ Props for a `Field` rendered as a radio group.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../index.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../component-adapter.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
 
 ***
 
@@ -3114,7 +3114,7 @@ Props for a `Field` rendered as a select (dropdown).
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../index.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../component-adapter.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. |
 
 ***
@@ -3165,7 +3165,7 @@ Props for a `Field` rendered as a single-line text input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../index.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../component-adapter.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
 
 ***
@@ -3174,7 +3174,7 @@ Props for a `Field` rendered as a single-line text input.
 
 ### UseEmployeeStateTaxesFormResult
 
-> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
+> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
 
 Discriminated union returned by [useEmployeeStateTaxesForm](#useemployeestatetaxesform). Loading
 branch carries only `errorHandling`; ready branch carries form data,
@@ -3247,7 +3247,7 @@ allowed for its current onboarding state.
 
 [`UseEmployeeListResult`](#useemployeelistresult)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
 
 #### Remarks
 
@@ -3350,7 +3350,7 @@ Ready state of [useEmployeeList](#useemployeelist).
 
 #### Extends
 
-- [`BaseHookReady`](../index.md#basehookready)\<\{ `employees`: [`EmployeeWithActions`](#employeewithactions)[]; \}, \{ `isFetching`: `boolean`; `isPending`: `boolean`; \}\>
+- [`BaseHookReady`](../utilities.md#basehookready)\<\{ `employees`: [`EmployeeWithActions`](#employeewithactions)[]; \}, \{ `isFetching`: `boolean`; `isPending`: `boolean`; \}\>
 
 #### Properties
 
@@ -3362,9 +3362,9 @@ Ready state of [useEmployeeList](#useemployeelist).
 | `actions.onReview` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
 | `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
-| `pagination` | [`PaginationControlProps`](../index.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
+| `pagination` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
@@ -3396,7 +3396,7 @@ Filter applied to [useEmployeeList](#useemployeelist) that scopes the result set
 
 ### UseEmployeeListResult
 
-> **UseEmployeeListResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
+> **UseEmployeeListResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
 
 Return type of [useEmployeeList](#useemployeelist).
 
@@ -3406,7 +3406,7 @@ Return type of [useEmployeeList](#useemployeelist).
 
 ### useFederalTaxesForm()
 
-> **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+> **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 
@@ -3418,9 +3418,9 @@ Headless hook for updating an employee's federal tax (W-4) withholding informati
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
 
 #### Remarks
 
@@ -3511,28 +3511,28 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the federal-taxes specific `data`, `status`, and `actions`.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`FederalTaxesFormData`](#federaltaxesformdata), [`FederalTaxesFields`](#federaltaxesfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`FederalTaxesFormData`](#federaltaxesformdata), [`FederalTaxesFields`](#federaltaxesfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeeFederalTax`\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeeFederalTax`\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../utilities.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
 | `data` | `object` | The loaded federal tax record. |
 | `data.employeeFederalTax` | `EmployeeFederalTax` | The current federal tax record for the employee. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
 | `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
@@ -3543,7 +3543,7 @@ the federal-taxes specific `data`, `status`, and `actions`.
 
 ### DeductionsFieldProps
 
-> **DeductionsFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+> **DeductionsFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
 
@@ -3553,7 +3553,7 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductio
 
 ### DependentsAmountFieldProps
 
-> **DependentsAmountFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+> **DependentsAmountFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
 
@@ -3563,7 +3563,7 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Dependen
 
 ### ExtraWithholdingFieldProps
 
-> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
 
@@ -3671,7 +3671,7 @@ Used as the `validationMessages` key for every federal taxes field. See
 
 ### FilingStatusFieldProps
 
-> **FilingStatusFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
+> **FilingStatusFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
 
@@ -3691,7 +3691,7 @@ Union of filing status values that the form accepts.
 
 ### OtherIncomeFieldProps
 
-> **OtherIncomeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../index.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+> **OtherIncomeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
 
@@ -3701,7 +3701,7 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherInc
 
 ### TwoJobsFieldProps
 
-> **TwoJobsFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
+> **TwoJobsFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.
 
@@ -3711,7 +3711,7 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs`
 
 ### UseFederalTaxesFormResult
 
-> **UseFederalTaxesFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+> **UseFederalTaxesFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 Discriminated union returned by [useFederalTaxesForm](#usefederaltaxesform) — either the loading state or the ready state.
 
@@ -3876,7 +3876,7 @@ Available on the hook result as `form.Fields.TwoJobs`. Two options for
 
 ### useHomeAddressForm()
 
-> **useHomeAddressForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+> **useHomeAddressForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Form hook for creating or editing an employee's home address.
 
@@ -3888,9 +3888,9 @@ Form hook for creating or editing an employee's home address.
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
 
 #### Remarks
 
@@ -3974,28 +3974,28 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`HomeAddressFormData`](#homeaddressformdata), [`HomeAddressFields`](#homeaddressfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`HomeAddressFormData`](#homeaddressformdata), [`HomeAddressFields`](#homeaddressfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.homeAddress` | `EmployeeAddress` \| `null` | The address row loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`HomeAddressFields`](#homeaddressfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
@@ -4006,7 +4006,7 @@ the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 ### CityFieldProps
 
-> **CityFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> **CityFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` component.
 
@@ -4016,7 +4016,7 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` comp
 
 ### CourtesyWithholdingFieldProps
 
-> **CourtesyWithholdingFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../index.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> **CourtesyWithholdingFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../utilities.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWithholding` component.
 
@@ -4026,7 +4026,7 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWi
 
 ### HomeAddressEffectiveDateFieldProps
 
-> **HomeAddressEffectiveDateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../index.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> **HomeAddressEffectiveDateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveDate` component.
 
@@ -4123,7 +4123,7 @@ withholding, and effective date fields. See [HomeAddressErrorCodes](#homeaddress
 
 ### StateFieldProps
 
-> **StateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
+> **StateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` component.
 
@@ -4133,7 +4133,7 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` com
 
 ### Street1FieldProps
 
-> **Street1FieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> **Street1FieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` component.
 
@@ -4143,7 +4143,7 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` c
 
 ### Street2FieldProps
 
-> **Street2FieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+> **Street2FieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street2` component.
 
@@ -4168,7 +4168,7 @@ the hook resolves the current home address itself.
 
 ### UseHomeAddressFormResult
 
-> **UseHomeAddressFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+> **UseHomeAddressFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
@@ -4178,7 +4178,7 @@ Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
 ### ZipFieldProps
 
-> **ZipFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
+> **ZipFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Zip` component.
 
@@ -4348,7 +4348,7 @@ Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-r
 
 [`UseHomeAddressFormResult`](#usehomeaddressformresult)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
 
 #### Remarks
 
@@ -4407,7 +4407,7 @@ not match.
 
 ### useJobForm()
 
-> **useJobForm**(`input`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+> **useJobForm**(`input`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
 
@@ -4419,9 +4419,9 @@ Headless hook for creating or updating an employee's job — title, hire date, S
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
 
 #### Remarks
 
@@ -4555,19 +4555,19 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 #### Remarks
 
 Discriminated by `isLoading: false`. Extends
-[BaseFormHookReady](../index.md#baseformhookready) with the job-specific `data`, `status`,
+[BaseFormHookReady](../utilities.md#baseformhookready) with the job-specific `data`, `status`,
 `actions`, and `form.Fields` shape.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`JobFormData`](#jobformdata), [`JobFormFields`](#jobformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`JobFormData`](#jobformdata), [`JobFormFields`](#jobformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../index.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
 | `data` | `object` | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields. |
 | `data.currentJob` | `Job` \| `null` | The job row loaded for update; `null` in create mode. |
 | `data.currentWorkAddress` | `EmployeeWorkAddress` \| `null` | The employee's active work address, or `null` when none is set. |
@@ -4575,13 +4575,13 @@ Discriminated by `isLoading: false`. Extends
 | `data.jobs` | `Job`[] \| `undefined` | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. |
 | `data.showStateWc` | `boolean` | True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly. |
 | `data.showTwoPercentShareholder` | `boolean` | True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`JobFormFields`](#jobformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`JobFormData`](#jobformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`JobFormData`](#jobformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state. `isPending` is `true` while any in-flight mutation (including the secondary-compensation correction block) hasn't settled. `mode` reflects whether the next submit will create or update. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
@@ -4592,7 +4592,7 @@ Discriminated by `isLoading: false`. Extends
 
 ### HireDateFieldProps
 
-> **HireDateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../index.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+> **HireDateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
 
@@ -4713,7 +4713,7 @@ may extend the union.
 
 ### JobTitleFieldProps
 
-> **JobTitleFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+> **JobTitleFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
@@ -4723,7 +4723,7 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
 ### StateWcClassCodeFieldProps
 
-> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
+> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
 
@@ -4733,7 +4733,7 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` componen
 
 ### StateWcCoveredFieldProps
 
-> **StateWcCoveredFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
+> **StateWcCoveredFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
 
@@ -4743,7 +4743,7 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
 
 ### TwoPercentShareholderFieldProps
 
-> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../index.md#checkboxhookfieldprops)\>
+> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../utilities.md#checkboxhookfieldprops)\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.
 
@@ -4753,13 +4753,13 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` com
 
 ### UseJobFormResult
 
-> **UseJobFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+> **UseJobFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 Discriminated union returned by [useJobForm](#usejobform).
 
 #### Remarks
 
-Branch on `isLoading` to narrow to either [HookLoadingResult](../index.md#hookloadingresult) or
+Branch on `isLoading` to narrow to either [HookLoadingResult](../utilities.md#hookloadingresult) or
 [UseJobFormReady](#usejobformready).
 
 ***
@@ -4906,7 +4906,7 @@ when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
 
 ### usePaymentMethodForm()
 
-> **usePaymentMethodForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **usePaymentMethodForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Headless React Hook Form hook for updating an employee's payment method.
 
@@ -4918,7 +4918,7 @@ Headless React Hook Form hook for updating an employee's payment method.
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
 
@@ -5009,23 +5009,23 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`PaymentMethodFormData`](#paymentmethodformdata), [`PaymentMethodFormFields`](#paymentmethodformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`PaymentMethodFormData`](#paymentmethodformdata), [`PaymentMethodFormFields`](#paymentmethodformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | - |
 | `data` | `object` | The employee's current payment method, loaded from the API. |
 | `data.paymentMethod` | `EmployeePaymentMethod` | - |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
@@ -5118,7 +5118,7 @@ Union of payment method type values that the form accepts.
 
 ### TypeFieldProps
 
-> **TypeFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
+> **TypeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
 
 Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
 
@@ -5128,7 +5128,7 @@ Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` 
 
 ### UsePaymentMethodFormResult
 
-> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.
 
@@ -5185,7 +5185,7 @@ method type. Supply `getOptionLabel` to translate the option labels.
 
 ### useSignEmployeeForm()
 
-> **useSignEmployeeForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+> **useSignEmployeeForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
@@ -5197,14 +5197,14 @@ Headless hook for signing an employee form — captures a typed signature, elect
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
 
 #### Remarks
 
 The hook fetches the form metadata and PDF, then exposes the
-[BaseFormHookReady](../index.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+[BaseFormHookReady](../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
 `onSubmit`, and error handling. The hook inspects the form's `name` to
 detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
 `Fields.Preparer1`–`Preparer4` field groups become defined, along with
@@ -5308,7 +5308,7 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`SignEmployeeFormData`](#signemployeeformdata), [`SignEmployeeFormFieldComponents`](#signemployeeformfieldcomponents)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`SignEmployeeFormData`](#signemployeeformdata), [`SignEmployeeFormFieldComponents`](#signemployeeformfieldcomponents)\>
 
 #### Properties
 
@@ -5316,14 +5316,14 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | ------ | ------ | ------ |
 | `actions` | `object` | Imperative actions exposed by the hook. |
 | `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
 | `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
 | `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
 | `data.form` | `Form` | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
 | `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submit-state flags. |
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
@@ -5334,7 +5334,7 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 
 ### PreparerCheckboxFieldProps
 
-> **PreparerCheckboxFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../index.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+> **PreparerCheckboxFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by the confirmation checkbox preparer field of [useSignEmployeeForm](#usesignemployeeform).
 
@@ -5381,7 +5381,7 @@ One-based preparer index used to reference preparer field groups (1–4).
 
 ### PreparerSelectFieldProps
 
-> **PreparerSelectFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
+> **PreparerSelectFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
 
 Props accepted by the state-select preparer field of [useSignEmployeeForm](#usesignemployeeform).
 
@@ -5391,7 +5391,7 @@ Props accepted by the state-select preparer field of [useSignEmployeeForm](#uses
 
 ### PreparerTextFieldProps
 
-> **PreparerTextFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+> **PreparerTextFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesignemployeeform) (name, address, signature).
 
@@ -5401,7 +5401,7 @@ Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesi
 
 ### SignEmployeeFormConfirmSignatureFieldProps
 
-> **SignEmployeeFormConfirmSignatureFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../index.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+> **SignEmployeeFormConfirmSignatureFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmSignature` component.
 
@@ -5488,7 +5488,7 @@ See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 
 ### SignEmployeeFormSignatureFieldProps
 
-> **SignEmployeeFormSignatureFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`TextInputHookFieldProps`](../index.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+> **SignEmployeeFormSignatureFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
 
@@ -5498,7 +5498,7 @@ Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signatur
 
 ### UsedPreparerFieldProps
 
-> **UsedPreparerFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+> **UsedPreparerFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
 
@@ -5508,7 +5508,7 @@ Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPrep
 
 ### UseSignEmployeeFormResult
 
-> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.
 
@@ -5616,7 +5616,7 @@ automatically reveals the first preparer field group; switching back to
 
 ### useSplitPaymentsForm()
 
-> **useSplitPaymentsForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+> **useSplitPaymentsForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
 
@@ -5628,7 +5628,7 @@ Headless React Hook Form hook for splitting an employee's Direct Deposit across 
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 A loading-state result while the payment method and bank accounts are loading, or a [UseSplitPaymentsFormReady](#usesplitpaymentsformready) once ready.
 
@@ -5727,13 +5727,13 @@ required by the hook; the rest are required.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `description?` | `ReactNode` | Optional descriptive text rendered below the label. |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../index.md#numberinputprops)\> | Override the rendered number input component. |
-| `formHookResult?` | [`FormHookResult`](../index.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Override the rendered number input component. |
+| `formHookResult?` | [`FormHookResult`](../utilities.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
 | `label` | `string` | Label shown above the input. |
 | `max?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `min?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `placeholder?` | `string` | Forwarded to the underlying number input. |
-| `validationMessages?` | [`ValidationMessages`](../index.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
+| `validationMessages?` | [`ValidationMessages`](../utilities.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
 
 ***
 
@@ -5777,27 +5777,27 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`SplitPaymentsFormData`](#splitpaymentsformdata), [`SplitPaymentsFormFields`](#splitpaymentsformfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`SplitPaymentsFormData`](#splitpaymentsformdata), [`SplitPaymentsFormFields`](#splitpaymentsformfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Actions that mutate the form or submit it. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
 | `actions.reorderSplits` | (`orderedUuids`) => `void` | Reorder splits by uuid (Amount mode). Pass the ordered list of split uuids; the last uuid becomes the remainder. The hook writes the new priority map and re-anchors the remainder's `splitAmount` to `null` (clearing the previous remainder to `0`). |
 | `data` | `object` | Server-fetched data and derived working values. |
 | `data.bankAccounts` | `EmployeeBankAccount`[] | All bank accounts available to allocate splits across. |
 | `data.paymentMethod` | `EmployeePaymentMethod` | The employee's current payment method. |
 | `data.remainderId` | `string` | UUID of the split that absorbs the remainder in Amount mode (always the last by priority). |
 | `data.splits` | [`WorkingSplit`](#workingsplit)[] | The current working split entries, one per bank account. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`SplitPaymentsFormFields`](#splitpaymentsformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive form-level flags. |
 | `status.hasPercentageImbalance` | `boolean` | `true` after a failed Percentage-mode Save when the splits don't sum to 100; clears live as the user corrects the total. Follows the standard react-hook-form validation lifecycle (controlled by `validationMode`). Only surfaces in Percentage mode. |
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
@@ -5836,7 +5836,7 @@ domain data — use it for label construction or lookups by uuid.
 
 ### SplitByFieldProps
 
-> **SplitByFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../index.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
+> **SplitByFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
 
 Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
 
@@ -5951,7 +5951,7 @@ Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) 
 
 ### UseSplitPaymentsFormResult
 
-> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
 
@@ -5993,7 +5993,7 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ### useWorkAddressForm()
 
-> **useWorkAddressForm**(`props`): [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+> **useWorkAddressForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Form hook for creating or editing an employee's work address.
 
@@ -6005,9 +6005,9 @@ Form hook for creating or editing an employee's work address.
 
 #### Returns
 
-[`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
 
 #### Remarks
 
@@ -6053,29 +6053,29 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../index.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
 the work-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 #### Extends
 
-- [`BaseFormHookReady`](../index.md#baseformhookready)\<[`FieldsMetadata`](../index.md#fieldsmetadata), [`WorkAddressFormData`](#workaddressformdata), [`WorkAddressFields`](#workaddressfields)\>
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`WorkAddressFormData`](#workaddressformdata), [`WorkAddressFields`](#workaddressfields)\>
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`callbacks?`, `options?`) => `Promise`\<[`HookSubmitResult`](../index.md#hooksubmitresult)\<`EmployeeWorkAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`callbacks?`, `options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`EmployeeWorkAddress`\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.companyLocations` | `Location`[] \| `undefined` | Company locations available for selection; `undefined` until the locations query resolves. |
 | `data.workAddress` | `EmployeeWorkAddress` \| `null` | The address row loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../index.md#hookerrorhandling) | Error state and recovery actions. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`WorkAddressFields`](#workaddressfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../index.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../index.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../index.md#hookloadingresult). |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
@@ -6141,7 +6141,7 @@ Optional overrides passed to [onSubmit](#useworkaddressformready).
 
 ### EffectiveDateFieldProps
 
-> **EffectiveDateFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../index.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
+> **EffectiveDateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
 
 Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveDate` component.
 
@@ -6151,7 +6151,7 @@ Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveD
 
 ### LocationFieldProps
 
-> **LocationFieldProps** = [`HookFieldProps`](../index.md#hookfieldprops)\<[`SelectHookFieldProps`](../index.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
+> **LocationFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
 
 Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
 
@@ -6176,7 +6176,7 @@ the hook resolves the current work address itself.
 
 ### UseWorkAddressFormResult
 
-> **UseWorkAddressFormResult** = [`HookLoadingResult`](../index.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+> **UseWorkAddressFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
@@ -6304,7 +6304,7 @@ Convenience wrapper around [useWorkAddressForm](#useworkaddressform) that auto-r
 
 [`UseWorkAddressFormResult`](#useworkaddressformresult)
 
-A [HookLoadingResult](../index.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
 
 #### Remarks
 
