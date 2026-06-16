@@ -14,7 +14,7 @@ import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType, EmployeeOnboardingStatus } from '@/shared/constants'
 
 /**
- * Props for {@link OnboardingExecutionFlow}!
+ * Props for {@link OnboardingExecutionFlow}.
  *
  * @public
  */
