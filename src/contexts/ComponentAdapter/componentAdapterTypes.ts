@@ -1,5 +1,5 @@
 export type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
-export type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
+export type { BreadcrumbsProps, Breadcrumb } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 export type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
 export type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 export type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
@@ -34,7 +34,11 @@ export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
 export type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 export type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 export type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
-export type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
+export type {
+  BaseListProps,
+  OrderedListProps,
+  UnorderedListProps,
+} from '@/components/Common/UI/List/ListTypes'
 export type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 export type {
   PaginationControlProps,
@@ -45,8 +49,11 @@ export type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 export type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 export type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 export type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
-export type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+export type {
+  DescriptionListProps,
+  DescriptionListItem,
+} from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 export type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
-export type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
+export type { TabsProps, TabProps } from '@/components/Common/UI/Tabs/TabsTypes'
 export type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 export type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'

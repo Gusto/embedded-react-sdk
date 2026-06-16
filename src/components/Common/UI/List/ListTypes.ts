@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react'
 
-// Base list props without HTML element specific attributes
-interface BaseListProps {
+/**
+ * Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
+ *
+ * @public
+ * @group Component Props
+ */
+export interface BaseListProps {
   /**
    * The list items to render
    */
