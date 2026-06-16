@@ -128,25 +128,71 @@ jobs:
       - name: TypeScript check
         run: npm run tsc
 
-  # Endpoint inventory job: Verify derived inventory is up to date (parallel with other checks)
-  endpoints:
-    needs: setup
-    runs-on: ubuntu-latest
+  # Derive job: Re-run endpoint inventory, API report, and TypeDoc, then commit any changes
+  # back to the branch. Runs after build so api-extractor has dist/index.d.ts available.
+  # On non-main branches: auto-commits and pushes derived files if stale.
+  # On main: fails if derived files are stale (they should always be up-to-date after PRs).
+  derive:
+    needs: [build]
+    # Must use the self-hosted runner group — GitHub-hosted runners are blocked
+    # by the org IP allow list and cannot push back to the repository.
+    runs-on:
+      group: gusto-ubuntu-default
+    environment: ci-tasks
+    permissions:
+      contents: write
     steps:
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.CI_TASKS_ID }}
+          private-key: ${{ secrets.CI_TASKS_SECRET }}
+
       - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
 
-      - name: Restore node_modules cache
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore build artifacts
         uses: actions/cache/restore@v5
         with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
+          path: dist
+          key: build-${{ github.sha }}
 
-      - name: Verify endpoint inventory
-        run: npm run endpoints:verify
+      - name: Derive endpoint inventory
+        run: npm run endpoints:derive
+
+      - name: Derive API report
+        run: npm run api-report:derive
+
+      - name: Install docs-site dependencies
+        run: npm ci
+        working-directory: docs-site
+
+      - name: Generate TypeDoc markdown
+        run: npm run docs:api:generate
+
+      - name: Commit and push derived files
+        run: |
+          git add -u
+          git add docs/api
+          if ! git diff --staged --quiet; then
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+              echo "::error::Derived files are stale on main — run 'npm run endpoints:derive && npm run api-report:derive && npm run docs:api:generate' locally and commit the result."
+              exit 1
+            fi
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: update derived files"
+            git push
+          fi
 
   # Storybook build job: validates all stories compile and index successfully
   storybook-build:
@@ -193,9 +239,6 @@ jobs:
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
-
-      - name: Generate TypeDoc markdown
-        run: cd docs-site && npm run typedoc
 
       - name: Build docs
         run: npm run docs:build
