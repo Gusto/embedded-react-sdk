@@ -15,7 +15,11 @@ permissions:
 jobs:
   prepare-release:
     name: Prepare Release PR
-    runs-on: ubuntu-latest
+    # Needs gusto-ubuntu-default: this job pushes the release branch and
+    # opens a PR, and the org IP allowlist blocks pushes from GitHub-hosted
+    # runner IPs.
+    runs-on:
+      group: gusto-ubuntu-default
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
