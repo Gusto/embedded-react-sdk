@@ -112,7 +112,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Theming',
       link: { type: 'doc', id: 'theming/theming' },
-      items: ['theming/theme-variables', 'theming/theming-guide'],
+      items: ['theming/theming-guide'],
     },
     {
       type: 'category',

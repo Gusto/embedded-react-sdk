@@ -4,7 +4,7 @@
 
 To install:
 
-```
+```bash
 npm add @gusto/embedded-react-sdk
 ```
 
@@ -41,12 +41,12 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
   - [Observability Examples](docs/integration-guide/observability-examples.md)
 - [Theming](docs/theming/theming.md)
   - [Theming Guide](docs/theming/theming-guide.md)
-  - [Theme Variables](docs/theming/theme-variables.md)
+  - [Theme Variables](docs/api/theme-variables.md)
 - [Component Adapter](docs/component-adapter/component-adapter.md)
   - [How the Component Adapter Works](docs/component-adapter/how-the-component-adapter-works.md)
   - [Component Adapter Types](docs/component-adapter/component-adapter-types.md)
   - [Setting up your Component Adapter](docs/component-adapter/setting-up-your-component-adapter.md)
-  - [Component Inventory](docs/component-adapter/component-inventory.md)
+  - [Component Inventory](docs/api/component-inventory.md)
   - [Component Adapter FAQ](docs/component-adapter/component-adapter-faq.md)
 - [Reference](docs/reference/endpoint-reference.md)
   - [Endpoint Reference](docs/reference/endpoint-reference.md)

@@ -22,6 +22,26 @@ Complete set of design tokens that control the SDK's visual theme. Pass a
 `Partial<GustoSDKTheme>` to `ThemeProvider` to override specific tokens; any
 token not supplied falls back to the SDK default.
 
+#### Example
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+
+function App() {
+  return (
+    <GustoProvider
+      theme={{
+        colorPrimary: '#007bff',
+        fontSizeRegular: '18px',
+        inputRadius: '12px',
+      }}
+    >
+      {/* your app */}
+    </GustoProvider>
+  )
+}
+```
+
 #### Extends
 
 - [`GustoSDKThemeColors`](#gustosdkthemecolors)
