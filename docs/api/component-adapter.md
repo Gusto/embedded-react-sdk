@@ -5,6 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Component Adapters
 description: Component Adapters API reference.
+sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -438,6 +439,23 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 
 ***
 
+<a id="buttoniconprops"></a>
+
+### ButtonIconProps
+
+> **ButtonIconProps** = [`ButtonProps`](#buttonprops) & `object`
+
+Props your `ButtonIcon` implementation must accept from the component adapter.
+Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
+
+#### Type Declaration
+
+| Name | Type | Description |
+| ------ | ------ | ------ |
+| `aria-label` | `string` | Required aria-label for icon buttons to ensure accessibility |
+
+***
+
 <a id="buttonprops"></a>
 
 ### ButtonProps
@@ -464,6 +482,27 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 | `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
 | `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
+
+***
+
+<a id="calendarpreviewprops"></a>
+
+### CalendarPreviewProps
+
+> **CalendarPreviewProps** = `object`
+
+Props your `CalendarPreview` implementation must accept from the component adapter.
+Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `dateRange` | `object` | Date range to display in the calendar preview |
+| `dateRange.end` | `Date` | End date of the range |
+| `dateRange.label` | `string` | Label text for the date range |
+| `dateRange.start` | `Date` | Start date of the range |
+| `highlightDates?` | `object`[] | Array of dates to highlight with custom colors and labels |
 
 ***
 
@@ -730,6 +769,23 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 
 ***
 
+<a id="linkprops"></a>
+
+### LinkProps
+
+> **LinkProps** = `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\> & `object`
+
+Props your `Link` implementation must accept from the component adapter.
+Renders an HTML anchor (`<a>`) for inline navigation.
+
+#### Type Declaration
+
+| Name | Type | Description |
+| ------ | ------ | ------ |
+| `children?` | `ReactNode` | Content to be displayed inside the link |
+
+***
+
 <a id="loadingspinnerprops"></a>
 
 ### LoadingSpinnerProps
@@ -862,6 +918,43 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 | `onChange?` | (`value`) => `void` | Callback when number input value changes |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `number` | Current value of the number input |
+
+***
+
+<a id="orderedlistprops"></a>
+
+### OrderedListProps
+
+> **OrderedListProps** = `BaseListProps`
+
+Props your `OrderedList` implementation must accept from the component adapter.
+Renders an ordered (numbered) list of items.
+
+***
+
+<a id="paginationcontrolprops"></a>
+
+### PaginationControlProps
+
+> **PaginationControlProps** = `object`
+
+Props your `PaginationControl` implementation must accept from the component adapter.
+Renders pagination controls for navigating between pages of results.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `currentPage` | `number` | The currently active page (1-based). |
+| `handleFirstPage` | () => `void` | Navigate to the first page. |
+| `handleItemsPerPageChange` | (`n`) => `void` | Called when the user changes the number of items displayed per page. |
+| `handleLastPage` | () => `void` | Navigate to the last page. |
+| `handleNextPage` | () => `void` | Navigate to the next page. |
+| `handlePreviousPage` | () => `void` | Navigate to the previous page. |
+| `isFetching?` | `boolean` | Whether a page fetch is in progress. |
+| `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
+| `totalCount?` | `number` | Total number of items across all pages. |
+| `totalPages` | `number` | Total number of pages. |
 
 ***
 
@@ -1153,98 +1246,6 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 | `textAlign?` | `"center"` \| `"start"` \| `"end"` | `undefined` | Text alignment within the container |
 | `variant?` | `"supporting"` \| `"leading"` | `undefined` | Visual style variant of the text |
 | `weight?` | `"bold"` \| `"medium"` \| `"regular"` \| `"semibold"` | `undefined` | Font weight of the text |
-
-***
-
-<a id="buttoniconprops"></a>
-
-### ButtonIconProps
-
-> **ButtonIconProps** = [`ButtonProps`](#buttonprops) & `object`
-
-Props your `ButtonIcon` implementation must accept from the component adapter.
-Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
-
-#### Type Declaration
-
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `aria-label` | `string` | Required aria-label for icon buttons to ensure accessibility |
-
-***
-
-<a id="calendarpreviewprops"></a>
-
-### CalendarPreviewProps
-
-> **CalendarPreviewProps** = `object`
-
-Props your `CalendarPreview` implementation must accept from the component adapter.
-Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `dateRange` | `object` | Date range to display in the calendar preview |
-| `dateRange.end` | `Date` | End date of the range |
-| `dateRange.label` | `string` | Label text for the date range |
-| `dateRange.start` | `Date` | Start date of the range |
-| `highlightDates?` | `object`[] | Array of dates to highlight with custom colors and labels |
-
-***
-
-<a id="linkprops"></a>
-
-### LinkProps
-
-> **LinkProps** = `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\> & `object`
-
-Props your `Link` implementation must accept from the component adapter.
-Renders an HTML anchor (`<a>`) for inline navigation.
-
-#### Type Declaration
-
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `children?` | `ReactNode` | Content to be displayed inside the link |
-
-***
-
-<a id="orderedlistprops"></a>
-
-### OrderedListProps
-
-> **OrderedListProps** = `BaseListProps`
-
-Props your `OrderedList` implementation must accept from the component adapter.
-Renders an ordered (numbered) list of items.
-
-***
-
-<a id="paginationcontrolprops"></a>
-
-### PaginationControlProps
-
-> **PaginationControlProps** = `object`
-
-Props your `PaginationControl` implementation must accept from the component adapter.
-Renders pagination controls for navigating between pages of results.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `currentPage` | `number` | The currently active page (1-based). |
-| `handleFirstPage` | () => `void` | Navigate to the first page. |
-| `handleItemsPerPageChange` | (`n`) => `void` | Called when the user changes the number of items displayed per page. |
-| `handleLastPage` | () => `void` | Navigate to the last page. |
-| `handleNextPage` | () => `void` | Navigate to the next page. |
-| `handlePreviousPage` | () => `void` | Navigate to the previous page. |
-| `isFetching?` | `boolean` | Whether a page fetch is in progress. |
-| `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
-| `totalCount?` | `number` | Total number of items across all pages. |
-| `totalPages` | `number` | Total number of pages. |
 
 ***
 
