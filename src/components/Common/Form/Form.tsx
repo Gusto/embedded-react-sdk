@@ -5,10 +5,11 @@ import styles from './Form.module.scss'
 export type FormProps = React.FormHTMLAttributes<HTMLFormElement>
 
 /** @internal */
-export const Form = ({ children, className, onSubmit, ...props }: FormProps) => {
+export const Form = ({ children, className, onSubmit, noValidate = true, ...props }: FormProps) => {
   return (
     <form
       className={classNames(styles.form, className)}
+      noValidate={noValidate}
       onSubmit={e => {
         e.preventDefault()
         onSubmit?.(e)
