@@ -7,8 +7,7 @@ on:
         required: true
 jobs:
   publish:
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write

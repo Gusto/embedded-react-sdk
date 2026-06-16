@@ -11,8 +11,7 @@ permissions:
 jobs:
   validate-pr-title:
     name: Validate PR Title
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
