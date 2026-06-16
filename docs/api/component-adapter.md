@@ -199,13 +199,13 @@ Renders a status message with an optional dismiss action; used for errors, warni
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `string` | `undefined` | The label text for the alert |
-| `action?` | `ReactNode` | `undefined` | Optional action node (e.g. a Button) rendered inline beside the label, before the dismiss button. Use this for compact alerts that need a single call-to-action next to the heading (e.g. a "Review" button summarising details available in a modal). Multi-line supporting copy should still pass through `children`. |
-| `children?` | `ReactNode` | `undefined` | Optional children to be rendered inside the alert |
-| `className?` | `string` | `undefined` | CSS className to be applied |
-| `disableScrollIntoView?` | `boolean` | `undefined` | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
-| `icon?` | `ReactNode` | `undefined` | Optional custom icon component to override the default icon |
-| `onDismiss?` | () => `void` | `undefined` | Optional callback function called when the dismiss button is clicked |
+| `label` | `string` | | The label text for the alert |
+| `action?` | `ReactNode` | | Optional action node (e.g. a Button) rendered inline beside the label, before the dismiss button. Use this for compact alerts that need a single call-to-action next to the heading (e.g. a "Review" button summarising details available in a modal). Multi-line supporting copy should still pass through `children`. |
+| `children?` | `ReactNode` | | Optional children to be rendered inside the alert |
+| `className?` | `string` | | CSS className to be applied |
+| `disableScrollIntoView?` | `boolean` | | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
+| `icon?` | `ReactNode` | | Optional custom icon component to override the default icon |
+| `onDismiss?` | () => `void` | | Optional callback function called when the dismiss button is clicked |
 | `status?` | `"error"` \| `"success"` \| `"warning"` \| `"info"` | `'info'` | The visual status that the alert should convey |
 
 ***
@@ -225,11 +225,11 @@ Renders a small inline label for status, counts, or tags; optionally dismissible
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `children` | `ReactNode` | `undefined` | Content to be displayed inside the badge |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `dismissAriaLabel?` | `string` | `undefined` | Accessible label for the dismiss button |
-| `isDisabled?` | `boolean` | `undefined` | Whether the badge interaction is disabled |
-| `onDismiss?` | () => `void` | `undefined` | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
+| `children` | `ReactNode` | | Content to be displayed inside the badge |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `dismissAriaLabel?` | `string` | | Accessible label for the dismiss button |
+| `isDisabled?` | `boolean` | | Whether the badge interaction is disabled |
+| `onDismiss?` | () => `void` | | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
 | `status?` | `"error"` \| `"success"` \| `"warning"` \| `"info"` | `'info'` | Visual style variant of the badge |
 
 ***
@@ -249,9 +249,9 @@ Renders a full-width notification banner with a colored header and body content 
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `children` | `ReactNode` | `undefined` | Content to be displayed in the main content area |
-| `title` | `ReactNode` | `undefined` | Title content displayed in the colored header section |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `children` | `ReactNode` | | Content to be displayed in the main content area |
+| `title` | `ReactNode` | | Title content displayed in the colored header section |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
 | `status?` | `"error"` \| `"warning"` | `'warning'` | Visual status variant of the banner |
 
 ***
@@ -267,9 +267,9 @@ Renders the header section of a Box, combining a title, optional description, an
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `title` | `ReactNode` | `undefined` | Title content rendered as the heading. |
-| `action?` | `ReactNode` | `undefined` | Optional action content (e.g. a Button) rendered inline opposite the title. |
-| `description?` | `ReactNode` | `undefined` | Optional supporting description rendered below the title. |
+| `title` | `ReactNode` | | Title content rendered as the heading. |
+| `action?` | `ReactNode` | | Optional action content (e.g. a Button) rendered inline opposite the title. |
+| `description?` | `ReactNode` | | Optional supporting description rendered below the title. |
 | `headingLevel?` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | `'h3'` | Semantic heading level for the title. Defaults to `h3`. |
 
 ***
@@ -304,12 +304,12 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `breadcrumbs` | [`Breadcrumb`](#breadcrumb)[] | `undefined` | Array of breadcrumbs |
+| `breadcrumbs` | [`Breadcrumb`](#breadcrumb)[] | | Array of breadcrumbs |
 | `aria-label?` | `string` | `'Breadcrumbs'` | Accessibility label for the breadcrumbs |
-| `className?` | `string` | `undefined` | Additional CSS class name for the breadcrumbs container |
-| `currentBreadcrumbId?` | `string` | `undefined` | Current breadcrumb id |
+| `className?` | `string` | | Additional CSS class name for the breadcrumbs container |
+| `currentBreadcrumbId?` | `string` | | Current breadcrumb id |
 | `isSmallContainer?` | `boolean` | `false` | Passed to the breadcrumbs when the container size is small (640px and below) At this size, the breadcrumb typically does not have sufficient size to render completely. In our implementation, we switch to a condensed mobile version of the breadcrumbs |
-| `onClick?` | (`id`) => `void` | `undefined` | Event handler for breadcrumb navigation |
+| `onClick?` | (`id`) => `void` | | Event handler for breadcrumb navigation |
 
 ***
 
@@ -328,16 +328,16 @@ Renders an icon-only `<button>`; requires `aria-label` since there is no visible
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label` | `string` | `undefined` | Required aria-label for icon buttons to ensure accessibility |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
-| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
-| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `aria-label` | `string` | | Required aria-label for icon buttons to ensure accessibility |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | | React ref for the button element |
+| `children?` | `ReactNode` | | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | | Optional leading icon rendered before children |
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
-| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
-| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -361,16 +361,16 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
-| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
-| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | | React ref for the button element |
+| `children?` | `ReactNode` | | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | | Optional leading icon rendered before children |
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
-| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
-| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -427,17 +427,17 @@ Renders a form field wrapping multiple `<input type="checkbox" />` elements with
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `options` | [`CheckboxGroupOption`](#checkboxgroupoption)[] | `undefined` | Array of checkbox options to display |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the first checkbox input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `options` | [`CheckboxGroupOption`](#checkboxgroupoption)[] | | Array of checkbox options to display |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the first checkbox input element |
 | `isDisabled?` | `boolean` | `false` | Disables all checkbox options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates if the checkbox group is in an invalid state |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when selection changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string`[] | `undefined` | Array of currently selected values |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string`[] | | Array of currently selected values |
 
 ***
 
@@ -456,17 +456,17 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the checkbox input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the checkbox input element |
 | `isDisabled?` | `boolean` | `false` | Disables the checkbox and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates if the checkbox is in an invalid state |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when checkbox state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the checkbox |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when checkbox state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the checkbox |
 
 ***
 
@@ -573,8 +573,8 @@ Renders an HTML `<dl>` of term/description pairs in either a stacked or horizont
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `items` | [`DescriptionListItem`](#descriptionlistitem)[] | `undefined` | Term/description pairs to render in order. |
-| `className?` | `string` | `undefined` | Additional class name applied to the root `<dl>`. |
+| `items` | [`DescriptionListItem`](#descriptionlistitem)[] | | Term/description pairs to render in order. |
+| `className?` | `string` | | Additional class name applied to the root `<dl>`. |
 | `layout?` | `"stacked"` \| `"horizontal"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
 | `showSeparators?` | `boolean` | `true` | Whether to render dividers between rows. Defaults to `true`. |
 
@@ -591,16 +591,16 @@ Renders a modal confirmation dialog with a primary action and a cancel action.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `closeActionLabel` | `string` | `undefined` | Text label for the close/cancel action button |
-| `primaryActionLabel` | `string` | `undefined` | Text label for the primary action button |
-| `children?` | `ReactNode` | `undefined` | Optional children content to be rendered in the dialog body |
+| `closeActionLabel` | `string` | | Text label for the close/cancel action button |
+| `primaryActionLabel` | `string` | | Text label for the primary action button |
+| `children?` | `ReactNode` | | Optional children content to be rendered in the dialog body |
 | `isDestructive?` | `boolean` | `false` | Whether the primary action is destructive (changes button style to error variant) |
 | `isOpen?` | `boolean` | `false` | Controls whether the dialog is open or closed |
 | `isPrimaryActionLoading?` | `boolean` | `false` | Whether the primary action button is in loading state |
-| `onClose?` | () => `void` | `undefined` | Callback function called when the dialog should be closed |
-| `onPrimaryActionClick?` | () => `void` | `undefined` | Callback function called when the primary action button is clicked |
+| `onClose?` | () => `void` | | Callback function called when the dialog should be closed |
+| `onPrimaryActionClick?` | () => `void` | | Callback function called when the primary action button is clicked |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the dialog |
-| `title?` | `ReactNode` | `undefined` | Optional title content to be displayed at the top of the dialog |
+| `title?` | `ReactNode` | | Optional title content to be displayed at the top of the dialog |
 
 ***
 
@@ -619,19 +619,19 @@ Renders a form field wrapping an `<input type="file" />` with a label, descripti
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onChange` | (`file`) => `void` | `undefined` | Callback when file selection changes |
+| `label` | `ReactNode` | | Label text for the field |
+| `onChange` | (`file`) => `void` | | Callback when file selection changes |
 | `value` | `File` \| `null` | `undefined` | Currently selected file |
-| `accept?` | `string`[] | `undefined` | Accepted file types (MIME types or extensions) **Examples** `['image/jpeg', 'image/png', 'application/pdf']` `['.jpg', '.png', '.pdf']` |
-| `aria-describedby?` | `string` | `undefined` | Aria-describedby attribute for accessibility |
-| `className?` | `string` | `undefined` | Additional CSS class name |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `id?` | `string` | `undefined` | ID for the file input element |
+| `accept?` | `string`[] | | Accepted file types (MIME types or extensions) **Examples** `['image/jpeg', 'image/png', 'application/pdf']` `['.jpg', '.png', '.pdf']` |
+| `aria-describedby?` | `string` | | Aria-describedby attribute for accessibility |
+| `className?` | `string` | | Additional CSS class name |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `id?` | `string` | | ID for the file input element |
 | `isDisabled?` | `boolean` | `false` | Disables the input and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
 
 ***
 
@@ -694,7 +694,7 @@ Renders a spinner indicating that content is loading.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
 | `size?` | `"sm"` \| `"lg"` | `'lg'` | Size of the spinner |
 | `style?` | `"inline"` \| `"block"` | `'block'` | Display style of the spinner |
 
@@ -715,12 +715,12 @@ Renders a popover menu of actions anchored to a trigger element.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label` | `string` | `undefined` | Accessible label describing the menu's purpose |
+| `aria-label` | `string` | | Accessible label describing the menu's purpose |
 | `isOpen?` | `boolean` | `false` | Controls whether the menu is currently open |
-| `items?` | [`MenuItem`](#menuitem)[] | `undefined` | Array of menu items to display |
-| `onClose?` | () => `void` | `undefined` | Callback when the menu is closed |
+| `items?` | [`MenuItem`](#menuitem)[] | | Array of menu items to display |
+| `onClose?` | () => `void` | | Callback when the menu is closed |
 | `placement?` | `"top"` \| `"top start"` \| `"top end"` \| `"bottom"` \| `"bottom start"` \| `"bottom end"` \| `"left"` \| `"right"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
-| `portalContainer?` | `HTMLElement` | `undefined` | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
 
 ***
@@ -736,11 +736,11 @@ Renders a modal overlay with body and footer content.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `children?` | `ReactNode` | `undefined` | Main content to be rendered in the modal body |
+| `children?` | `ReactNode` | | Main content to be rendered in the modal body |
 | `containerRef?` | `RefObject`\<`HTMLDivElement` \| `null`\> | `undefined` | Optional ref to the backdrop container |
-| `footer?` | `ReactNode` | `undefined` | Footer content to be rendered at the bottom of the modal |
+| `footer?` | `ReactNode` | | Footer content to be rendered at the bottom of the modal |
 | `isOpen?` | `boolean` | `false` | Controls whether the modal is open or closed |
-| `onClose?` | () => `void` | `undefined` | Callback function called when the modal should be closed |
+| `onClose?` | () => `void` | | Callback function called when the modal should be closed |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the modal |
 
 ***
@@ -911,17 +911,17 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `options` | [`RadioGroupOption`](#radiogroupoption)[] | `undefined` | Array of radio options to display |
-| `defaultValue?` | `string` | `undefined` | Initially selected value |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the first radio input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `options` | [`RadioGroupOption`](#radiogroupoption)[] | | Array of radio options to display |
+| `defaultValue?` | `string` | | Initially selected value |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the first radio input element |
 | `isDisabled?` | `boolean` | `false` | Disables all radio options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when selection changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | `undefined` | Currently selected value |
 
 ***
@@ -941,16 +941,16 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the radio input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the radio input element |
 | `isDisabled?` | `boolean` | `false` | Disables the radio button and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onChange?` | (`checked`) => `void` | `undefined` | Callback when radio button state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the radio button |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`checked`) => `void` | | Callback when radio button state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the radio button |
 
 ***
 
@@ -1001,19 +1001,19 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `string` | `undefined` | Label text for the switch |
-| `aria-controls?` | `string` | `undefined` | Identifies the element (or elements) whose contents or presence are controlled by the current element. **See** aria-owns. |
-| `className?` | `string` | `undefined` | Additional CSS class name for the switch container |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the switch input element |
+| `label` | `string` | | Label text for the switch |
+| `aria-controls?` | `string` | | Identifies the element (or elements) whose contents or presence are controlled by the current element. **See** aria-owns. |
+| `className?` | `string` | | Additional CSS class name for the switch container |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the switch input element |
 | `isDisabled?` | `boolean` | `false` | Disables the switch and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`checked`) => `void` | `undefined` | Callback when switch state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the switch |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`checked`) => `void` | | Callback when switch state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the switch |
 
 ***
 
@@ -1032,13 +1032,13 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `headers` | [`TableData`](#tabledata)[] | `undefined` | Array of header cells for the table |
-| `rows` | [`TableRow`](#tablerow)[] | `undefined` | Array of rows to be displayed in the table |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `emptyState?` | `ReactNode` | `undefined` | Content to display when the table has no rows |
-| `footer?` | [`TableData`](#tabledata)[] | `undefined` | Array of footer cells for the table |
+| `headers` | [`TableData`](#tabledata)[] | | Array of header cells for the table |
+| `rows` | [`TableRow`](#tablerow)[] | | Array of rows to be displayed in the table |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `emptyState?` | `ReactNode` | | Content to display when the table has no rows |
+| `footer?` | [`TableData`](#tabledata)[] | | Array of footer cells for the table |
 | `hasCheckboxColumn?` | `boolean` | `false` | Whether the first column contains checkboxes (affects which column gets leading variant) |
 | `isWithinBox?` | `boolean` | `false` | Removes borders and background for use inside a Box component |
 
@@ -1079,19 +1079,19 @@ Renders a form field wrapping a `<textarea>` with a label, description, and erro
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLTextAreaElement`\> | `undefined` | React ref for the textarea element |
+| `label` | `ReactNode` | | Label text for the field |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLTextAreaElement`\> | | React ref for the textarea element |
 | `isDisabled?` | `boolean` | `false` | Disables the textarea and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when textarea value changes |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when textarea value changes |
 | `rows?` | `number` | `4` | Number of visible text rows |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string` | `undefined` | Current value of the textarea |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string` | | Current value of the textarea |
 
 ***
 
@@ -1110,21 +1110,21 @@ Renders a form field wrapping an `<input />` with a label, description, error me
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `adornmentEnd?` | `ReactNode` | `undefined` | Element to display at the end of the input |
-| `adornmentStart?` | `ReactNode` | `undefined` | Element to display at the start of the input |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `adornmentEnd?` | `ReactNode` | | Element to display at the end of the input |
+| `adornmentStart?` | `ReactNode` | | Element to display at the start of the input |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the input element |
 | `isDisabled?` | `boolean` | `false` | Disables the input and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when input value changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string` | `undefined` | Current value of the input |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when input value changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string` | | Current value of the input |
 
 ***
 
@@ -1144,7 +1144,7 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `as?` | `"div"` \| `"span"` \| `"p"` \| `"pre"` | `'p'` | HTML element to render the text as |
-| `children?` | `ReactNode` | `undefined` | Content to be displayed |
+| `children?` | `ReactNode` | | Content to be displayed |
 | `size?` | `"xs"` \| `"sm"` \| `"md"` \| `"lg"` | `'md'` | Size variant of the text |
 | `textAlign?` | `"center"` \| `"start"` \| `"end"` | `undefined` | Text alignment within the container |
 | `variant?` | `"supporting"` \| `"leading"` | `undefined` | Visual style variant of the text |

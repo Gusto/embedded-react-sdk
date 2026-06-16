@@ -635,6 +635,7 @@ class SDKThemeContext extends MarkdownThemeContext {
     const origSignatureTitle = this.partials.signatureTitle.bind(this)
     const origSignatureReturns = this.partials.signatureReturns.bind(this)
     const origParametersTable = this.partials.parametersTable.bind(this)
+    const origPropertiesTable = this.partials.propertiesTable.bind(this)
 
     this.partials = {
       ...this.partials,
@@ -683,6 +684,24 @@ class SDKThemeContext extends MarkdownThemeContext {
           return ''
         }
         return origSignatureReturns(model, options)
+      },
+      propertiesTable: (...args: Parameters<typeof origPropertiesTable>) => {
+        const result = origPropertiesTable(...args)
+        const lines = result.split('\n')
+        // Find the Default value column index from the header row so this stays
+        // correct if other columns are hidden or reordered.
+        const headerLine = lines.find(l => l.startsWith('|') && l.includes('Default value'))
+        if (!headerLine) return result
+        const defaultColIndex = headerLine.split('|').findIndex(h => h.trim() === 'Default value')
+        if (defaultColIndex === -1) return result
+        return lines
+          .map(line => {
+            if (!line.startsWith('|')) return line
+            const cells = line.split('|')
+            if (cells[defaultColIndex]?.trim() === '`undefined`') cells[defaultColIndex] = ' '
+            return cells.join('|')
+          })
+          .join('\n')
       },
       parametersTable: (params: ParameterReflection[]) => {
         // For a Component whose single parameter is an interface sibling in the
