@@ -1,7 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
 import styles from './EmptyData.module.scss'
-import magnifyingGlass from '@/assets/icons/magnifyingGlass.png'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type EmptyDataProps = {
@@ -9,30 +7,25 @@ type EmptyDataProps = {
   description?: string
   children?: React.ReactNode
   /**
-   * When set, replaces the default search (magnifying glass) illustration.
+   * Optional illustration rendered above the title.
    */
   icon?: React.ReactNode
 }
 /** @internal */
 export function EmptyData({ title, description, children, icon }: EmptyDataProps) {
-  const { t } = useTranslation()
   const { Text } = useComponentContext()
   return (
     <div className={styles.emptyData} data-testid="emptydata">
-      <Flex flexDirection="column" alignItems="center">
-        {icon ? (
-          <span className={styles.iconSlot}>{icon}</span>
-        ) : (
-          <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} className={styles.image} />
-        )}
-        <div className={styles.textContent}>
-          {title && (
-            <Text weight="bold" className={styles.title}>
-              {title}
+      <Flex flexDirection="column" alignItems="center" gap={16}>
+        {icon && <span className={styles.iconSlot}>{icon}</span>}
+        <Flex flexDirection="column" alignItems="center" gap={4}>
+          {title && <Text weight="medium">{title}</Text>}
+          {description && (
+            <Text size="sm" variant="supporting">
+              {description}
             </Text>
           )}
-          {description && <Text>{description}</Text>}
-        </div>
+        </Flex>
         {children && children}
       </Flex>
     </div>

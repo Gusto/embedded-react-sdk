@@ -3842,7 +3842,6 @@ export interface common{
 "calendarArrow":string;
 "nextMonth":string;
 "previousMonth":string;
-"magnifyingGlass":string;
 "paginationFirst":string;
 "paginationPrev":string;
 "paginationNext":string;
