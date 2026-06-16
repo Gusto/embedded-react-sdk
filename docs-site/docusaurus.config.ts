@@ -42,6 +42,9 @@ const config: Config = {
 
   markdown: {
     format: 'detect',
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
   },
 
   i18n: {
