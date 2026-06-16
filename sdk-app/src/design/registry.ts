@@ -60,6 +60,24 @@ export const categorizedRegistry: CategorizedRegistry = {
   ],
   Employees: [
     {
+      name: 'Employee Management',
+      path: '/design/employee-management',
+      description:
+        'A prototype for managing employees — list active, onboarding, and dismissed employees, and rehire dismissed employees.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/employee-management',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/employee-management/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+    {
       name: 'Compensation History',
       path: '/design/employee-compensation-history',
       description:
