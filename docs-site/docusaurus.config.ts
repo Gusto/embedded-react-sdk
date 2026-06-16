@@ -49,7 +49,7 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [],
+  plugins: [require.resolve('./plugins/global-docs-sidebar')],
 
   themes: [
     [
