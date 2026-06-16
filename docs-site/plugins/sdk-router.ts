@@ -48,7 +48,7 @@ import {
 // whose reflections are routed to that page instead of becoming anchors on index.md.
 const STANDALONE_PAGES: Record<
   string,
-  { sources: string[]; displayName: string; sidebarPosition: number }
+  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
 > = {
   'theme-variables': {
     sources: ['contexts/ThemeProvider'],
@@ -68,6 +68,12 @@ const STANDALONE_PAGES: Record<
     sidebarPosition: 3,
   },
   utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
+  events: {
+    sources: ['shared/constants'],
+    groups: ['Events'],
+    displayName: 'Events',
+    sidebarPosition: 5,
+  },
 }
 
 // Maps each namespace to its output directory prefix.
@@ -142,8 +148,15 @@ export function standalonePageFromSources(reflection: Reflection): string | null
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''
-  for (const [page, { sources }] of Object.entries(STANDALONE_PAGES)) {
-    if (sources.some(pattern => fp.includes(pattern))) return page
+  for (const [page, { sources, groups }] of Object.entries(STANDALONE_PAGES)) {
+    if (!sources.some(pattern => fp.includes(pattern))) continue
+    if (groups) {
+      const inGroup = (reflection as DeclarationReflection).comment?.blockTags.some(
+        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+      )
+      if (!inGroup) continue
+    }
+    return page
   }
   return null
 }
@@ -769,6 +782,7 @@ const SYNTHETIC_GROUP_ORDER = [
   'Data Hooks',
   'Utility Hooks',
   'Hooks',
+  'Events',
   'Functions',
   'Variables',
   'Interfaces',

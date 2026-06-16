@@ -5,9 +5,15 @@ import {
   COMPONENT_GROUPS,
   HOOK_GROUPS,
   COMPONENT_PROP_GROUPS,
+  VARIABLE_GROUPS,
 } from '../docs-site/typedoc-utils.mjs'
 
-const VALID_GROUPS = new Set([...COMPONENT_GROUPS, ...HOOK_GROUPS, ...COMPONENT_PROP_GROUPS])
+const VALID_GROUPS = new Set([
+  ...COMPONENT_GROUPS,
+  ...HOOK_GROUPS,
+  ...COMPONENT_PROP_GROUPS,
+  ...VARIABLE_GROUPS,
+])
 
 interface GroupMatch {
   value: string

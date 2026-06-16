@@ -1,6 +1,11 @@
 import { type TypeDocOptions } from 'typedoc'
 import { type PluginOptions } from 'typedoc-plugin-markdown'
-import { COMPONENT_GROUPS, HOOK_GROUPS, COMPONENT_PROP_GROUPS } from './typedoc-utils.mjs'
+import {
+  COMPONENT_GROUPS,
+  HOOK_GROUPS,
+  COMPONENT_PROP_GROUPS,
+  VARIABLE_GROUPS,
+} from './typedoc-utils.mjs'
 
 export const baseOptions = {
   plugin: ['./plugins/sdk-router.ts'],
@@ -14,6 +19,7 @@ export const baseOptions = {
     'Namespaces',
     ...COMPONENT_GROUPS,
     ...HOOK_GROUPS,
+    ...VARIABLE_GROUPS,
     'Functions',
     'Variables',
     'Interfaces',

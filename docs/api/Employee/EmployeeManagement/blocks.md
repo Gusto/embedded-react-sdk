@@ -63,7 +63,7 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -95,7 +95,7 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -127,7 +127,7 @@ Props for [CompensationCard](#compensationcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
 
 #### Remarks
 
@@ -159,7 +159,7 @@ Props for [CompensationEditForm](#compensationeditform).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `jobId` | `string` | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -221,7 +221,7 @@ Props for [DeductionsCard](#deductionscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
 
 #### Remarks
 
@@ -306,7 +306,7 @@ Props for [DocumentsCard](#documentscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
 
 ***
 
@@ -380,7 +380,7 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
 
 ***
 
@@ -446,7 +446,7 @@ Props for [HomeAddressCard](#homeaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
@@ -534,7 +534,7 @@ Props for [PaymentMethodBankForm](#paymentmethodbankform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
 | `defaultValues?` | `Partial`\<[`BankFormData`](../hooks.md#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
 | `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](../hooks.md#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
@@ -569,7 +569,7 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
 
 #### Remarks
 
@@ -601,7 +601,7 @@ Props for [PaymentMethodSplitForm](#paymentmethodsplitform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
 | `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](../hooks.md#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
@@ -641,7 +641,7 @@ Props for [PaystubsCard](#paystubscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
 
 ***
 
@@ -686,7 +686,7 @@ Props for [ProfileCard](#profilecard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
 
 #### Remarks
 
@@ -769,7 +769,7 @@ Props for [StateTaxesCard](#statetaxescard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
 
 #### Remarks
 
@@ -822,7 +822,7 @@ Props for [TerminateEmployee](#terminateemployee).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `employeeId` | `string` | The employee identifier to terminate. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -881,7 +881,7 @@ Props for [TerminationSummary](#terminationsummary).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -965,7 +965,7 @@ Props for [WorkAddressCard](#workaddresscard).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
@@ -1015,7 +1015,7 @@ Props for [Compensation](#compensation).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1038,7 +1038,7 @@ Props for [DeductionsEditForm](#deductionseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1062,7 +1062,7 @@ Props for [Deductions](#deductions).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1085,7 +1085,7 @@ Props for [Documents](#documents).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1108,7 +1108,7 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
@@ -1131,7 +1131,7 @@ Props for [FederalTaxes](#federaltaxes).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1154,7 +1154,7 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1177,7 +1177,7 @@ Props for [HomeAddress](#homeaddress).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1200,7 +1200,7 @@ Props for [ManagementEmployeeList](#employeelist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1224,7 +1224,7 @@ Props for [PaymentMethod](#paymentmethod).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `undefined` | Not used — payment method management edits live data. |
@@ -1249,7 +1249,7 @@ Props for [ProfileEditForm](#profileeditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1272,7 +1272,7 @@ Props for [Profile](#profile).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1295,7 +1295,7 @@ Props for [StateTaxes](#statetaxes).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1318,7 +1318,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -1341,7 +1341,7 @@ Props for [WorkAddress](#workaddress).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../index.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
