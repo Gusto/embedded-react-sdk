@@ -73,15 +73,15 @@ Props for [DismissalPayPeriodSelection](#dismissalpayperiodselection).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company the dismissal payroll belongs to. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | Identifier of the company the dismissal payroll belongs to. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollDismissal`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId?` | `string` | Identifier of the terminated employee. When provided, the available pay periods are filtered to this employee. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollId?` | `string` | Identifier of an existing dismissal payroll. When provided alongside `employeeId`, pay period selection is skipped and the component immediately emits the selection event. |
 
 #### Remarks
@@ -112,14 +112,14 @@ Props for the [OffCycleCreation](#offcyclecreation) component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleCreation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollType?` | [`OffCyclePayrollDateType`](#offcyclepayrolldatetype) | Pre-selected off-cycle reason. The creation form starts with this reason selected. Defaults to `'bonus'`. |
 
 #### Remarks
@@ -148,12 +148,12 @@ Props for [OffCycleDeductionsSetting](#offcycledeductionssetting).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the deduction preference changes. See the events table on [OffCycleDeductionsSetting](#offcycledeductionssetting). |
+| `skipRegularDeductions` | `boolean` | Whether regular deductions are currently being skipped. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the deduction preference changes. See the events table on [OffCycleDeductionsSetting](#offcycledeductionssetting). |
-| `skipRegularDeductions` | `boolean` | Whether regular deductions are currently being skipped. |
 
 #### Remarks
 
@@ -181,14 +181,14 @@ Props for the [OffCycleReasonSelection](#offcyclereasonselection) component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleReasonSelection`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -215,14 +215,14 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollBlocker`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -318,14 +318,14 @@ Props for the [PayrollHistory](#payrollhistory) component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose processed payrolls should be listed. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | Identifier of the company whose processed payrolls should be listed. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollHistory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -357,15 +357,15 @@ Props for [PayrollLanding](#payrolllanding).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](../index.md#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `showPayrollCancelledAlert?` | `boolean` | When `true`, displays a dismissible success alert indicating a payroll was cancelled. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
@@ -406,14 +406,14 @@ Props for [PayrollList](#payrolllist).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`common`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAddresses`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyAssignSignatory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyDocumentList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyIndustry`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyLocations`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyOnboardingOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyPaySchedule`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanySignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffCreateTimeOffPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffEmployeeTable`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffPolicyDetail`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectEmployees`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffSelectPolicyType`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicies`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffPolicyDetails`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`CompanyTimeOffTimeOffRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorContractorList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorNewHireReport`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`ContractorSubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankAccount`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeBankFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDashboard`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDeductionsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentManager`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentSigner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmploymentEligibility`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeFederalTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeI9SignatureForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodBankForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethodSplitForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaystubs`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeOnboardingSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaySchedules`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeePaymentMethod`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeProfile`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaycheck`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeSplitPaymentsFormBody`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxes`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeStateTaxesView`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`InformationRequests`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollCommon`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsBanner`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollDismissal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollEmployeeSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollGrossUpModal`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycle`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCyclePayPeriodDateForm`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleReasonSelection`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleTaxWithholding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollBlocker`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollConfiguration`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollFlow`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollHistory`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollReceipts`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesList`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollRecoveryCasesResubmit`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransition`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionPayrollAlert`\>\> \| `Record`\<`"en"`, `DeepPartial`\<`PayrollWireInstructions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 #### Remarks
 
@@ -452,17 +452,17 @@ Props for [PayrollOverview](#payrolloverview).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company that owns the payroll. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `payrollId` | `string` | Identifier of the payroll being reviewed. The payroll must already be calculated. |
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | Identifier of the company that owns the payroll. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](../index.md#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payrollId` | `string` | Identifier of the payroll being reviewed. The payroll must already be calculated. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
 #### Remarks
@@ -503,14 +503,14 @@ Props for [PayrollReceipts](#payrollreceipts).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `payrollId` | `string` | Identifier of the payroll whose receipt should be displayed. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollReceipts`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payrollId` | `string` | Identifier of the payroll whose receipt should be displayed. |
 | `withReimbursements?` | `boolean` | Whether to include reimbursement amounts in the breakdown and employee tables. Defaults to `true`. |
 
 #### Example
@@ -571,17 +571,17 @@ Props for the [TransitionCreation](#transitioncreation) component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
 | `companyId` | `string` | The associated company identifier. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `endDate` | `string` | The end date of the transition pay period (YYYY-MM-DD). |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payScheduleUuid` | `string` | The UUID of the pay schedule this transition is associated with. |
 | `startDate` | `string` | The start date of the transition pay period (YYYY-MM-DD). |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollTransitionCreation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 #### Remarks
 
@@ -723,16 +723,16 @@ Props for [PayrollConfiguration](#payrollconfiguration).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `payrollId` | `string` | The associated payroll identifier. |
 | `alerts?` | `ReactNode` | Optional alert components to render above the configuration content. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollConfiguration`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `payrollId` | `string` | The associated payroll identifier. |
 | `withReimbursements?` | `boolean` | Whether to show the reimbursements column in the compensation table. Defaults to `true`. |
 
 ***
@@ -751,16 +751,16 @@ Props for [PayrollEditEmployee](#payrolleditemployee).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
 | `companyId` | `string` | The associated company identifier. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId` | `string` | The associated employee identifier. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollId` | `string` | The associated payroll identifier. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollEditEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields. Defaults to `true`. |
 
 ***
@@ -811,10 +811,10 @@ Flow context shape carried through the transition payroll state machine.
 | ------ | ------ | ------ |
 | `companyId` | `string` | Company the transition payroll belongs to. |
 | `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
-| `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
-| `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
+| `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
+| `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 
 ## Type Aliases
 
@@ -867,11 +867,11 @@ An alert banner rendered above payroll content in [PayrollOverview](#payrollover
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `title` | `string` | Short heading text displayed in the alert. |
+| `type` | `"error"` \| `"info"` \| `"success"` | Visual severity of the alert. |
 | `alertKey?` | `string` | Stable key used to track alert identity across renders (e.g. for animations or dedup). |
 | `content?` | `ReactNode` | Optional body content rendered below the title. |
 | `onDismiss?` | () => `void` | Called when the user dismisses the alert. When omitted, the alert is not dismissible. |
-| `title` | `string` | Short heading text displayed in the alert. |
-| `type` | `"error"` \| `"info"` \| `"success"` | Visual severity of the alert. |
 
 ***
 
