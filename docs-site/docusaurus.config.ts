@@ -127,15 +127,6 @@ const config: Config = {
           position: 'left',
           label: 'Docs',
         },
-        ...(hasVersions
-          ? [
-              {
-                type: 'docsVersionDropdown' as const,
-                position: 'right' as const,
-                dropdownActiveClassDisabled: true,
-              },
-            ]
-          : []),
         {
           href: 'https://github.com/Gusto/embedded-react-sdk',
           label: 'GitHub',

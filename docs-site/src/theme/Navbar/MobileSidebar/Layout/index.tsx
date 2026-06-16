@@ -41,6 +41,14 @@ export default function NavbarMobileSidebarLayout({ header, primaryMenu }: Props
         <NavbarMobileSidebarPanel inert={false}>{primaryMenu}</NavbarMobileSidebarPanel>
       </div>
       <div className={styles.mobileSidebarFooter}>
+        <a
+          href="https://github.com/Gusto/embedded-react-sdk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="navbar__link navbarGithub"
+        >
+          GitHub
+        </a>
         <NavbarColorModeToggle />
       </div>
     </div>
