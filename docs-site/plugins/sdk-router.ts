@@ -64,7 +64,7 @@ const STANDALONE_PAGES: Record<
       'components/Common/HorizontalFieldLayout',
       'contexts/ComponentAdapter',
     ],
-    displayName: 'Component Adapters',
+    displayName: 'Component Inventory',
     sidebarPosition: 3,
   },
   utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
