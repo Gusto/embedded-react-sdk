@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/sdk-router.ts.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Component Adapters
-description: Component Adapters API reference.
+title: Component Inventory
+description: Component Inventory API reference.
 sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Component Adapters
+# Component Inventory
 
 ## Interfaces
 
