@@ -19,10 +19,10 @@ export interface ViewHolidayScheduleProps extends BaseComponentInterface {
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `TIME_OFF_VIEW_HOLIDAY_EMPLOYEES` | Fired when user switches to the employees tab | — |
- * | `TIME_OFF_HOLIDAY_ADD_EMPLOYEES` | Fired when user clicks to add employees | — |
- * | `TIME_OFF_EDIT_HOLIDAY_POLICY` | Fired when user clicks to edit holidays | — |
- * | `TIME_OFF_BACK_TO_LIST` | Fired when user navigates back to policy list | — |
+ * | `timeOff/viewHolidayEmployees` | Fired when user switches to the employees tab | — |
+ * | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |
+ * | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
+ * | `timeOff/backToList` | Fired when user navigates back to policy list | — |
  *
  * @param props - See {@link ViewHolidayScheduleProps}.
  * @returns The holiday schedule view.

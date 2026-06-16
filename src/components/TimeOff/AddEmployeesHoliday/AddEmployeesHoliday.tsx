@@ -17,7 +17,7 @@ export interface AddEmployeesHolidayProps extends BaseComponentInterface {
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |
+ * | `timeOff/holidayAddEmployees/done` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |
  * | `CANCEL` | The user cancels | — |
  *
  * @param props - See {@link AddEmployeesHolidayProps}.

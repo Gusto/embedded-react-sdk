@@ -42,8 +42,8 @@ export interface PolicyConfigurationFormProps extends BaseComponentInterface<'Co
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `time-off/policy-details/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
- * | `cancel` | Fired when the user clicks the cancel button | — |
+ * | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
+ * | `CANCEL` | Fired when the user clicks the cancel button | — |
  *
  * @param props - See {@link PolicyConfigurationFormProps}.
  * @returns The rendered policy configuration form.
