@@ -46,7 +46,6 @@
     "docs": "npm --prefix docs-site start",
     "docs:build": "npm --prefix docs-site run build",
     "docs:clear": "npm --prefix docs-site run clear",
-    "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:install": "npm --prefix docs-site install",
     "docs:api:generate": "npm --prefix docs-site run typedoc",
     "docs:lint": "npx tsx ./build/lintDocsFrontmatter.ts",

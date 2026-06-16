@@ -29,7 +29,7 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
 - [Integration Guide](docs/integration-guide/integration-guide.md)
   - [Versioning](docs/integration-guide/versioning.md)
   - [Event Handling](docs/integration-guide/event-handling.md)
-  - [Event Types](docs/integration-guide/event-types.md)
+  - [Event Types](docs/api/events.md)
   - [Error Handling](docs/integration-guide/error-handling.md)
   - [Composition](docs/integration-guide/composition.md)
   - [Providing your own data](docs/integration-guide/providing-your-own-data.md)
