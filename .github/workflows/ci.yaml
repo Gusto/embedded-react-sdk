@@ -237,7 +237,6 @@ jobs:
     # by the org IP allow list and cannot push back to the repository.
     runs-on:
       group: gusto-ubuntu-default
-    environment: ci-tasks
     permissions:
       contents: write
     steps:
@@ -245,8 +244,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ secrets.CI_TASKS_ID }}
-          private-key: ${{ secrets.CI_TASKS_SECRET }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
 
       - uses: actions/checkout@v6
         with:
