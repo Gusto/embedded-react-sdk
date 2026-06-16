@@ -18,14 +18,18 @@ export function EmptyData({ title, description, children, icon }: EmptyDataProps
     <div className={styles.emptyData} data-testid="emptydata">
       <Flex flexDirection="column" alignItems="center" gap={16}>
         {icon && <span className={styles.iconSlot}>{icon}</span>}
-        <Flex flexDirection="column" alignItems="center" gap={4}>
-          {title && <Text weight="medium">{title}</Text>}
+        <div className={styles.textContent}>
+          {title && (
+            <Text weight="medium" textAlign="center">
+              {title}
+            </Text>
+          )}
           {description && (
-            <Text size="sm" variant="supporting">
+            <Text size="sm" variant="supporting" textAlign="center">
               {description}
             </Text>
           )}
-        </Flex>
+        </div>
         {children && children}
       </Flex>
     </div>

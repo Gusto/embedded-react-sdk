@@ -6,6 +6,14 @@
   width: 100%;
 }
 
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+  align-self: stretch;
+  text-align: center;
+}
+
 .iconSlot {
   display: flex;
   align-items: center;
