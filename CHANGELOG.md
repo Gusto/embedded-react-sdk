@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.48.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.0...v0.48.1) (2026-06-16)
+
+### Fixes
+
+- `Form` no longer enables native browser validation by default, so field-level validation and error messaging render consistently across browsers ([#2168](https://github.com/Gusto/embedded-react-sdk/issues/2168))
+- `EmptyData` no longer falls back to a magnifying-glass illustration when none is provided ([#2169](https://github.com/Gusto/embedded-react-sdk/issues/2169))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@playwright/test`, `@storybook/addon-a11y`, `@storybook/addon-docs`, `typescript-eslint`) and override transitive dependencies (`esbuild`, `js-yaml`, `markdown-it`, `uuid`, `@babel/core`) to clear security advisories ([#2155](https://github.com/Gusto/embedded-react-sdk/issues/2155), [#2152](https://github.com/Gusto/embedded-react-sdk/issues/2152), [#2154](https://github.com/Gusto/embedded-react-sdk/issues/2154), [#2153](https://github.com/Gusto/embedded-react-sdk/issues/2153), [#2156](https://github.com/Gusto/embedded-react-sdk/issues/2156), [#2157](https://github.com/Gusto/embedded-react-sdk/issues/2157), [#2159](https://github.com/Gusto/embedded-react-sdk/issues/2159), [#2162](https://github.com/Gusto/embedded-react-sdk/issues/2162), [#2163](https://github.com/Gusto/embedded-react-sdk/issues/2163), [#2166](https://github.com/Gusto/embedded-react-sdk/issues/2166))
+
 ## [0.48.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.47.1...v0.48.0) (2026-06-15)
 
 ### Breaking Changes

@@ -1,11 +1,7 @@
-import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
 import type { PrototypeComponent } from '../../prototypeTypes'
-import {
-  EmployeeList,
-  type EmployeeListTab,
-} from '../../../components/employee/management/EmployeeList/EmployeeList'
+import { EmployeeListDemo } from '../../../components/employee/management/EmployeeList/EmployeeListStates'
 import { RehireEmployeeForm } from '../../../components/employee/management/RehireEmployeeForm/RehireEmployeeForm'
 
 function buildEmployee(overrides: Partial<Employee>): Employee {
@@ -170,24 +166,6 @@ const workLocations: Location[] = [
   },
 ]
 
-function renderEmployeeList(employees: Employee[], initialTab: EmployeeListTab) {
-  function EmployeeListDemo() {
-    const [tab, setTab] = useState<EmployeeListTab>(initialTab)
-    return (
-      <EmployeeList
-        employees={employees}
-        selectedTab={tab}
-        onSelectTab={setTab}
-        onAddEmployee={() => {}}
-        onEditEmployee={() => {}}
-        onDismissEmployee={() => {}}
-        onRehireEmployee={() => {}}
-      />
-    )
-  }
-  return EmployeeListDemo
-}
-
 export const components: PrototypeComponent[] = [
   {
     slug: 'employee-list',
@@ -198,25 +176,25 @@ export const components: PrototypeComponent[] = [
         slug: 'active-populated',
         name: 'Active — populated',
         description: 'Three active employees with primary jobs.',
-        render: renderEmployeeList(activeEmployees, 'active'),
+        render: () => <EmployeeListDemo employees={activeEmployees} initialTab="active" />,
       },
       {
         slug: 'onboarding',
         name: 'Onboarding',
         description: 'Two employees mid-onboarding with status badges.',
-        render: renderEmployeeList(onboardingEmployees, 'onboarding'),
+        render: () => <EmployeeListDemo employees={onboardingEmployees} initialTab="onboarding" />,
       },
       {
         slug: 'dismissed',
         name: 'Dismissed',
         description: 'Dismissed employees with rehire action available.',
-        render: renderEmployeeList(dismissedEmployees, 'dismissed'),
+        render: () => <EmployeeListDemo employees={dismissedEmployees} initialTab="dismissed" />,
       },
       {
         slug: 'empty',
         name: 'Empty',
         description: 'No employees on the active tab.',
-        render: renderEmployeeList([], 'active'),
+        render: () => <EmployeeListDemo employees={[]} initialTab="active" />,
       },
     ],
   },

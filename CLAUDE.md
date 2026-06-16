@@ -12,6 +12,8 @@ npm run e2e:serve      # Start E2E test app
 npm run test:e2e       # Run E2E tests (requires gws-flows + ZenPayroll running)
 npm run dev:setup      # Link SDK into gws-flows for local development
 npm run i18n:generate  # Generate translation types
+npm run derive         # Regenerate all derived files (runs build first; standalone)
+                       # Prerequisite: cd docs-site && npm ci (if docs-site deps not yet installed)
 ```
 
 ## SDK Dev App
@@ -24,7 +26,7 @@ npm run sdk-app                # Dev build with HMR
 
 Or for a production SDK build:
 
-```
+```bash
 npm run sdk-app-prod           # Production build (uses built dist/)
 ```
 
@@ -64,7 +66,7 @@ Use Field components from `src/components/Common/Fields/` inside `FormProvider`.
 
 ### Component Organization
 
-```
+```text
 src/components/
 ├── Common/         # Shared UI primitives and Field components
 │   ├── Fields/     # Form-connected Field components (use for forms)
@@ -102,7 +104,7 @@ Implications when writing SDK code:
 
 ### Provider Stack
 
-```
+```text
 GustoProvider → ComponentsProvider → ThemeProvider → LocaleProvider / I18nextProvider → ApiProvider → {children}
 ```
 
@@ -136,7 +138,7 @@ Durable conventions that apply SDK-wide to any component or feature:
 
 Three-repo architecture with sibling directories:
 
-```
+```text
 ~/workspace/
 ├── zenpayroll/          # Core Rails app
 ├── gws-flows/           # Rails API proxy for local SDK testing

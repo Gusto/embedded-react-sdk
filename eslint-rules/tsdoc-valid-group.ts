@@ -1,9 +1,9 @@
 import { ESLintUtils } from '@typescript-eslint/utils'
 import type { TSESTree } from '@typescript-eslint/utils'
 import { getTSDocComment } from './utils'
-import { COMPONENT_GROUPS, HOOK_GROUPS } from '../docs-site/typedoc-utils.mjs'
+import { COMPONENT_GROUPS, HOOK_GROUPS, VARIABLE_GROUPS } from '../docs-site/typedoc-utils.mjs'
 
-const VALID_GROUPS = new Set([...COMPONENT_GROUPS, ...HOOK_GROUPS])
+const VALID_GROUPS = new Set([...COMPONENT_GROUPS, ...HOOK_GROUPS, ...VARIABLE_GROUPS])
 
 interface GroupMatch {
   value: string

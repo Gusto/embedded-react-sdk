@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.48.0",
+  "version": "0.48.1",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -33,6 +33,7 @@
   "scripts": {
     "build": "npm run build:clean && npm run i18n:generate && vite build",
     "api-report:derive": "api-extractor run --local --config .reports/config/api-extractor.json",
+    "derive": "npm run build && npm run endpoints:derive && npm run api-report:derive && npm run docs:api:generate",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",

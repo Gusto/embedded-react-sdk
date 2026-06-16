@@ -37,9 +37,42 @@ import {
  *   Employee/hooks.md                         ← all Employee hooks consolidated on one page
  *   Company/hooks.md                          ← all Company hooks consolidated on one page
  *   Payroll/index.md                          ← domain-less namespace (no parent domain prefix)
+ *   theme-variables.md                        ← ThemeProvider exports (GustoSDKTheme, createTheme, …)
+ *   component-adapter.md                      ← ComponentAdapter exports (AlertProps, …)
+ *   utilities.md                              ← partner hook utilities (composeErrorHandler, …)
  *   index.md#reflectionname                  ← all unmapped top-level exports (anchors on the
  *                                              project index page, which renders them inline)
  */
+
+// Maps an output page path to its display name and the list of source-path substrings
+// whose reflections are routed to that page instead of becoming anchors on index.md.
+const STANDALONE_PAGES: Record<
+  string,
+  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
+> = {
+  'theme-variables': {
+    sources: ['contexts/ThemeProvider'],
+    displayName: 'Theme Variables',
+    sidebarPosition: 2,
+  },
+  'component-adapter': {
+    sources: [
+      'components/Common/UI',
+      'components/Common/PaginationControl',
+      'components/Common/PayrollLoading',
+      'contexts/ComponentAdapter',
+    ],
+    displayName: 'Component Adapters',
+    sidebarPosition: 3,
+  },
+  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
+  events: {
+    sources: ['shared/constants'],
+    groups: ['Events'],
+    displayName: 'Events',
+    sidebarPosition: 5,
+  },
+}
 
 // Maps each namespace to its output directory prefix.
 // Journey namespaces nest under their domain; deprecated namespaces nest one level deeper
@@ -100,6 +133,28 @@ export function hookDirFromSources(reflection: Reflection): string | null {
  */
 export function isHookSourceFile(reflection: Reflection): boolean {
   return hookDirFromSources(reflection) !== null
+}
+
+/**
+ * Return the standalone page key for a project-level reflection, based on its
+ * source file path matching a key in STANDALONE_PAGES. Returns null when no
+ * key matches.
+ */
+export function standalonePageFromSources(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  const fp = source.fullFileName ?? source.fileName ?? ''
+  for (const [page, { sources, groups }] of Object.entries(STANDALONE_PAGES)) {
+    if (!sources.some(pattern => fp.includes(pattern))) continue
+    if (groups) {
+      const inGroup = (reflection as DeclarationReflection).comment?.blockTags.some(
+        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+      )
+      if (!inGroup) continue
+    }
+    return page
+  }
+  return null
 }
 
 /**
@@ -167,10 +222,12 @@ export function load(app: MarkdownApplication): void {
   // We set page.frontmatter in BEGIN (so other plugins can read/override it),
   // then serialize to YAML and prepend to page.contents in END (after rendering).
   app.renderer.on(MarkdownPageEvent.BEGIN, (page: MarkdownPageEvent) => {
+    const sidebarPosition = standaloneSidebarPosition(page.url)
     page.frontmatter = {
       title: pageTitle(page),
       description: pageDescription(page),
       custom_edit_url: null,
+      ...(sidebarPosition !== undefined && { sidebar_position: sidebarPosition }),
       ...page.frontmatter,
     }
   })
@@ -398,6 +455,13 @@ function getReflectionDescription(
   const comment = reflection.signatures?.[0]?.comment ?? reflection.comment
   if (!comment) return ''
   return context.helpers.getDescriptionForComment(comment) ?? ''
+}
+
+/** sidebar_position for standalone pages and the project index, or undefined for all others. */
+function standaloneSidebarPosition(url: string): number | undefined {
+  if (url === 'index.md') return 1
+  const key = url.replace(/\.md$/, '')
+  return STANDALONE_PAGES[key]?.sidebarPosition
 }
 
 /**
@@ -693,6 +757,7 @@ const SYNTHETIC_GROUP_ORDER = [
   'Data Hooks',
   'Utility Hooks',
   'Hooks',
+  'Events',
   'Functions',
   'Variables',
   'Interfaces',
@@ -747,6 +812,7 @@ function groupSyntheticMembers(
   }
 
   // Within each hook-named group, sort the primary hook function to the top.
+  // Within all other groups, sort alphabetically by name.
   for (const [title, groupMembers] of byTitle) {
     if (/^use[A-Z]/.test(title)) {
       groupMembers.sort((a, b) => {
@@ -754,6 +820,8 @@ function groupSyntheticMembers(
         if (b.name === title) return 1
         return 0
       })
+    } else {
+      groupMembers.sort((a, b) => a.name.localeCompare(b.name))
     }
   }
 
@@ -773,6 +841,10 @@ export class SDKRouter extends MemberRouter {
   // domain hooks page and must be skipped when buildChildPages encounters them.
   private readonly handledHooks = new Set<DeclarationReflection>()
 
+  // Populated at the start of buildPages; members here get a standalone page
+  // and must be skipped when buildChildPages would otherwise anchor them on index.md.
+  private readonly handledStandalone = new Set<DeclarationReflection>()
+
   // Keyed by domain name; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
@@ -789,34 +861,52 @@ export class SDKRouter extends MemberRouter {
     // each hooks-page member under its hook's name rather than a kind section.
     const hookGroupMap = new Map<DeclarationReflection, string>()
 
+    const standaloneGroups = new Map<string, DeclarationReflection[]>()
+
     for (const child of project.children ?? []) {
       if (child.kind === ReflectionKind.Namespace) continue
+
+      // Standalone pages take priority: check them before the hook-file heuristic so
+      // that types from files named useX.ts (e.g. ComponentsContextType from
+      // useComponentContext.ts) are routed to their designated page rather than being
+      // caught by isHookSourceFile and silently skipped.
+      const page = standalonePageFromSources(child)
+      if (page) {
+        const bucket = standaloneGroups.get(page) ?? []
+        bucket.push(child)
+        standaloneGroups.set(page, bucket)
+        this.handledStandalone.add(child)
+        continue
+      }
 
       // Route to the domain hooks page only for hooks (use[A-Z] functions) and
       // companion exports from hook files (useCamelCase.ts). Other domain exports
       // fall through to the project index as anchors.
       const isHookFn = child.kind === ReflectionKind.Function && /^use[A-Z]/.test(child.name)
-      if (!isHookFn && !isHookSourceFile(child)) continue
+      if (isHookFn || isHookSourceFile(child)) {
+        const domain = domainFromSources(child)
+        if (domain) {
+          const bucket = hooksByDomain.get(domain) ?? []
+          bucket.push(child)
+          hooksByDomain.set(domain, bucket)
+          this.handledHooks.add(child)
 
-      const domain = domainFromSources(child)
-      if (domain) {
-        const bucket = hooksByDomain.get(domain) ?? []
-        bucket.push(child)
-        hooksByDomain.set(domain, bucket)
-        this.handledHooks.add(child)
-
-        const hookDir = hookDirFromSources(child)
-        if (hookDir) hookGroupMap.set(child, hookDir)
+          const hookDir = hookDirFromSources(child)
+          if (hookDir) hookGroupMap.set(child, hookDir)
+        }
+        continue
       }
     }
 
-    // Remove reflections routed to synthetic domain pages from the project's
-    // groups so they don't also render inline on the project index page.
-    // GroupPlugin populates these groups before buildPages runs, so we strip
-    // the handled members here rather than in a converter event.
+    // Remove reflections routed to synthetic pages from the project's groups so
+    // they don't also render inline on the project index page. GroupPlugin
+    // populates these groups before buildPages runs, so we strip handled members
+    // here rather than in a converter event.
     for (const group of project.groups ?? []) {
       group.children = group.children.filter(
-        c => !this.handledHooks.has(c as DeclarationReflection),
+        c =>
+          !this.handledHooks.has(c as DeclarationReflection) &&
+          !this.handledStandalone.has(c as DeclarationReflection),
       )
     }
     if (project.groups) {
@@ -835,6 +925,14 @@ export class SDKRouter extends MemberRouter {
       hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
       this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
       this.hooksNsByDomain.set(domain, hooksNs)
+    }
+
+    for (const [page, members] of standaloneGroups) {
+      const { displayName } = STANDALONE_PAGES[page]!
+      const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
+      ns.children = members
+      ns.groups = groupSyntheticMembers(members, ns)
+      this.buildSyntheticPage(page, ns, members, pages)
     }
 
     for (const [domain, nsNames] of Object.entries(DOMAIN_HUBS)) {
@@ -863,8 +961,11 @@ export class SDKRouter extends MemberRouter {
    * - Other project-level reflection: anchor onto the project's index page.
    */
   override buildChildPages(reflection: Reflection, outPages: PageDefinition[]): void {
-    // Domain hooks are handled in buildPages; skip them here.
+    // Domain hooks and standalone page members are handled in buildPages; skip them here.
     if (reflection instanceof DeclarationReflection && this.handledHooks.has(reflection)) {
+      return
+    }
+    if (reflection instanceof DeclarationReflection && this.handledStandalone.has(reflection)) {
       return
     }
 
