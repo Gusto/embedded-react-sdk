@@ -79,21 +79,27 @@ const ONBOARDING_STATUS_LABELS: Record<string, string> = {
   self_onboarding_awaiting_admin_review: 'Self-onboarding: Admin review',
 }
 
-function usePendingRehireEffectiveDate(employeeId: string): string | null {
-  const { data } = useEmployeeEmploymentsGetRehire(
+function usePendingRehire(employeeId: string): {
+  effectiveDate: string | null
+  isPending: boolean
+} {
+  const { data, isPending } = useEmployeeEmploymentsGetRehire(
     { employeeId },
     { throwOnError: () => false, retry: false },
   )
   const effectiveDate = data?.rehire?.effectiveDate
-  if (!effectiveDate) return null
+  if (!effectiveDate) return { effectiveDate: null, isPending }
   const effective = new Date(`${effectiveDate}T00:00:00`)
-  if (Number.isNaN(effective.getTime()) || effective.getTime() <= Date.now()) return null
-  return effectiveDate
+  if (Number.isNaN(effective.getTime()) || effective.getTime() <= Date.now()) {
+    return { effectiveDate: null, isPending }
+  }
+  return { effectiveDate, isPending }
 }
 
 function PendingRehireBadge({ employeeId }: { employeeId: string }) {
   const Components = useComponentContext()
-  const effectiveDate = usePendingRehireEffectiveDate(employeeId)
+  const { effectiveDate, isPending } = usePendingRehire(employeeId)
+  if (isPending) return <Skeleton width={120} height={16} />
   if (!effectiveDate) return null
   return <Components.Badge status="info">Rehire {formatShortDate(effectiveDate)}</Components.Badge>
 }
@@ -111,7 +117,7 @@ function DismissedRowMenu({
   onEditRehire?: (employee: Employee) => void
   onCancelRehire?: (employee: Employee) => void
 }) {
-  const hasPendingRehire = usePendingRehireEffectiveDate(employee.uuid) !== null
+  const hasPendingRehire = usePendingRehire(employee.uuid).effectiveDate !== null
 
   const items: Array<{ label: string; onClick: () => void; icon?: React.ReactNode }> = []
 
