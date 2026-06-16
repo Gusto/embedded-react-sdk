@@ -31,6 +31,7 @@ const NAMESPACES: Record<string, string> = {
   Contractor: 'src/components/Contractor/index.ts',
   Payroll: 'src/components/Payroll/index.ts',
   InformationRequests: 'src/components/InformationRequests/index.ts',
+  TimeOff: 'src/components/TimeOff/index.ts',
 }
 
 interface ComponentData {
