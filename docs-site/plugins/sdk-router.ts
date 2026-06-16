@@ -55,7 +55,7 @@ const STANDALONE_PAGES: Record<
     displayName: 'Theme Variables',
     sidebarPosition: 2,
   },
-  'component-adapter': {
+  'component-inventory': {
     sources: [
       'components/Common/UI',
       'components/Common/FieldLayout',

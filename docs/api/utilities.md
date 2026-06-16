@@ -333,7 +333,7 @@ field attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-adapter.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
@@ -351,7 +351,7 @@ attributes (`label`, `description`).
 
 #### Extends
 
-- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`DatePickerProps`](component-adapter.md#datepickerprops), `"portalContainer"` \| `"minDate"` \| `"maxDate"`\>
+- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`DatePickerProps`](component-inventory.md#datepickerprops), `"portalContainer"` \| `"minDate"` \| `"maxDate"`\>
 
 #### Type Parameters
 
@@ -366,7 +366,7 @@ attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](component-adapter.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `maxDate?` | `Date` | Maximum selectable date. Dates after this will be disabled. |
 | `minDate?` | `Date` | Minimum selectable date. Dates before this will be disabled. |
@@ -571,7 +571,7 @@ attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](component-adapter.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
 | `format?` | `"percent"` \| `"currency"` \| `"decimal"` | Display format for the number value (e.g. `'currency'`). |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `max?` | `string` \| `number` | Maximum allowed numeric value. |
@@ -608,7 +608,7 @@ attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-adapter.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
@@ -627,7 +627,7 @@ attributes (`label`, `description`).
 
 #### Extends
 
-- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`SelectProps`](component-adapter.md#selectprops), `"portalContainer"`\>
+- [`BaseFieldProps`](#basefieldprops).`Pick`\<[`SelectProps`](component-inventory.md#selectprops), `"portalContainer"`\>
 
 #### Type Parameters
 
@@ -643,7 +643,7 @@ attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-adapter.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `placeholder?` | `string` | Placeholder text displayed when no option is selected. |
@@ -677,7 +677,7 @@ field attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](component-adapter.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
@@ -710,7 +710,7 @@ attributes (`label`, `description`).
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-adapter.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
 | `transform?` | (`value`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |

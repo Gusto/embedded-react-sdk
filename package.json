@@ -38,7 +38,6 @@
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
-    "adapter:docs:generate": "npx tsx ./build/generateAdapterPropDocs.ts",
     "theme:docs:generate": "npx tsx ./build/generateThemeDocs.ts",
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",

@@ -105,7 +105,6 @@ const sidebars: SidebarsConfig = {
         'component-adapter/how-the-component-adapter-works',
         'component-adapter/setting-up-your-component-adapter',
         'component-adapter/component-adapter-types',
-        'component-adapter/component-inventory',
         'component-adapter/component-adapter-faq',
       ],
     },

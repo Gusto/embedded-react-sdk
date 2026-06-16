@@ -3301,7 +3301,7 @@ Props for a `Field` rendered as a currency-formatted number input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 
 ***
 
@@ -3317,7 +3317,7 @@ Props for a `Field` rendered as a date picker.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../component-adapter.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../component-inventory.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
 
 ***
 
@@ -3415,7 +3415,7 @@ Props for a `Field` rendered as a decimal number input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 
 ***
 
@@ -3431,7 +3431,7 @@ Props for a `Field` rendered as a radio group.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../component-adapter.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../component-inventory.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
 
 ***
 
@@ -3447,7 +3447,7 @@ Props for a `Field` rendered as a select (dropdown).
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../component-adapter.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. |
 
 ***
@@ -3514,7 +3514,7 @@ Props for a `Field` rendered as a single-line text input.
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../component-adapter.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../component-inventory.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
 
 ***
@@ -5204,7 +5204,7 @@ Ready state of [useEmployeeList](#useemployeelist).
 | `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
-| `pagination` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
+| `pagination` | [`PaginationControlProps`](../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 | `status.isFetching` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
@@ -6146,7 +6146,7 @@ required by the hook; the rest are required.
 | ------ | ------ | ------ |
 | `label` | `string` | Label shown above the input. |
 | `description?` | `ReactNode` | Optional descriptive text rendered below the label. |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-adapter.md#numberinputprops)\> | Override the rendered number input component. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../component-inventory.md#numberinputprops)\> | Override the rendered number input component. |
 | `formHookResult?` | [`FormHookResult`](../utilities.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
 | `max?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `min?` | `string` \| `number` | Forwarded to the underlying number input. |
