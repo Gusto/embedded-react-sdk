@@ -248,6 +248,9 @@ jobs:
       - name: Lint markdown
         run: npm run docs:lint:markdown
 
+      - name: Spell check docs
+        run: npm run docs:lint:spell
+
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
