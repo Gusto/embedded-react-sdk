@@ -10,11 +10,21 @@ allowed-tools: [Bash, Read, Edit]
 
 You are setting up strict TSDoc linting for a `src/` directory and discovering all exported symbols that are missing documentation. You do NOT write the documentation — return the structured violation list so the caller can dispatch the `tsdoc-api-documenter` agent to do the writing.
 
-The target directory is provided in the user's message. Normalise it: strip any leading `./` or trailing `/`. If it doesn't start with `src/`, prepend `src/`.
+The target directory is provided in the user's message. Normalize it: strip any leading `./` or trailing `/`. If it doesn't start with `src/`, prepend `src/`.
 
 ---
 
-## Step 0 — Remove dead code with knip
+## Step 0 — Preflight: fix forgotten exports, then remove dead code
+
+### Step 0a — Fix existing ae-forgotten-export warnings for this domain
+
+Read `.reports/embedded-react-sdk.api.md` and grep for `ae-forgotten-export` warnings. For each warning, check whether the forgotten symbol is defined in a file under `<TARGET>`. If it is, find the nearest barrel file that already exports the referencing symbol and add the forgotten type there too.
+
+This must happen before knip runs. If a symbol has an ae-forgotten-export warning it is not yet in any barrel, so knip would see it as unexported and remove it — only for Phase 3 to need to add it back.
+
+If the report has no ae-forgotten-export warnings touching `<TARGET>`, skip this sub-step.
+
+### Step 0b — Remove dead code with knip
 
 Run knip scoped to the target directory so deleted exports don't appear as TSDoc violations:
 
@@ -22,7 +32,9 @@ Run knip scoped to the target directory so deleted exports don't appear as TSDoc
 bash .claude/scripts/knip-fix.sh '<TARGET>'
 ```
 
-After the script exits, run the build to surface any type errors introduced by the export removal:
+After the script exits, check whether it made any changes (modified or deleted files). If there are no changes, skip the build and proceed to Step 1 directly.
+
+If changes were made, run the build to surface any type errors introduced by the export removal:
 
 ```bash
 npm run build 2>&1
@@ -51,7 +63,7 @@ If `<TARGET>/**` appears literally (e.g. `'src/helpers/**'`), delete only that o
 **Case B — an ancestor glob covers the target.**
 If a parent-level glob (e.g. `'src/components/**'`) matches `<TARGET>` but `<TARGET>/**` is not listed, do NOT modify the existing block.
 
-Locate the block with the comment `/** Library: well-documented code allowlist. */` and add `'<TARGET>/**/\*.{ts,tsx}' `to its `files` array.
+Locate the block with the comment `/** Library: well-documented code allowlist. */` and add `'<TARGET>/**/\*.{ts,tsx}'` to its `files` array.
 
 ---
 
@@ -65,7 +77,7 @@ Collect every line containing rules that start with `tsdoc/` or `tsdoc-coverage/
 
 Return your output in this format:
 
-```
+```text
 **eslint.config.ts change:** <one line: what was removed or added>
 
 **Violations found:** N across M files

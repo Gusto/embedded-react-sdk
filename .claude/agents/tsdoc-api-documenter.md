@@ -92,7 +92,7 @@ Note: `XxxFormOutputs` type aliases (e.g. `CompensationFormOutputs`, `JobFormOut
 
 ### Tag order
 
-````
+````ts
 /**
  * Summary.
  *
@@ -120,7 +120,7 @@ Note: `XxxFormOutputs` type aliases (e.g. `CompensationFormOutputs`, `JobFormOut
 
 For exported **React components**, `@remarks` must include an events table listing every `onEvent` payload the component can emit:
 
-```
+```text
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `event/string/value` | What triggers it | {@link DataType} or — |
@@ -135,7 +135,7 @@ For the Data column, describe what the event carries in plain text, or use `—`
 - **`@typeParam T -`** — one clause naming what the type parameter represents. Don't restate the constraint already in the signature.
 - **`@param name -`** — one clause; don't restate the type. For complex params with discriminated unions, link the types directly: `{@link CreateProps} or {@link UpdateProps}`.
 - **`@returns`** — what the value is, not its type. For loading-state hooks describe both branches: `A {@link HookLoadingResult} while loading, or a {@link UseXxxReady} once ready.`
-- **`@example`** — skip for React components already documented in `docs/` — the docs page is the canonical example.
+- **`@example`** — skip for React components already documented in `docs/workflows-overview/` — the workflow docs page is the canonical example. Do not skip for hooks with a `docs/hooks/use*.md` file — carry that file's examples into TSDoc since the file is being deleted.
 - Do NOT restate the type signature in prose.
 - Do NOT use `@/` aliases or internal module paths anywhere — in examples, `@param` descriptions, or `@remarks`. Paths like `src/components/Common/TaxInputs/TaxInputs.tsx` are meaningless to consumers and go stale.
 - Do NOT speculate about the partner's app or workflow. Describe what it does and how to use it.
@@ -159,9 +159,10 @@ For the Data column, describe what the event carries in plain text, or use `—`
 
 1. Identify all exported symbols in scope. Prioritize: partner-facing hooks and components first, types and utilities second.
 2. Gather source material before writing anything:
-   - Check `docs/` for existing partner-facing prose. `docs/hooks/` in particular has detailed descriptions of headless hooks. This is the SDK-971 migration: adapt API-specific content from `docs/` directly into TSDoc so TypeDoc can replace those hand-written pages. Guide/narrative content (workflow overviews, integration patterns) stays in `docs/`.
+   - Check `docs/workflows-overview/` first for domain component and workflow context (props, events, behavior descriptions) — this is the primary prose reference for SDK domain components. `docs/hooks/` files are read-only reference material scheduled for deletion: read them to adapt prose for hooks, but do not create new files there. For integration utilities, check `docs/integration-guide/`. **Do not delete any `docs/` files** — file deletion is a separate cleanup step that happens after the TSDoc migration is complete.
+   - This is the SDK-971 migration: adapt API-specific content from `docs/` directly into TSDoc so TypeDoc can replace those hand-written pages. Guide/narrative content (workflow overviews, integration patterns) stays in `docs/`.
    - If `docs/` has nothing relevant **and** the symbol is a top-level concern — a flow component (e.g. `EmployeeOnboarding`, `PayrollFlow`), a major exported hook, or anything where `@remarks` and `@example` require product context beyond the implementation — check MCP servers (Jira, Confluence, Notion) for product documentation or design specs. Treat MCP content the same as `docs/` prose: adapt it, don't invent.
-   - Look specifically for **usage examples** in `docs/`. When migrating content from `docs/` to TSDoc (i.e., the `docs/` page will be deleted after this work), carry existing usage examples over into `@example` blocks — the `@example` note above about skipping for "React components already documented in `docs/`" does **not** apply in migration mode; the `docs/` example **is** the source material you're migrating.
+   - Look specifically for **usage examples** in `docs/hooks/`. When a `docs/hooks/use*.md` file exists for a hook being documented, carry its usage examples over into `@example` blocks — those files are being deleted and the examples must be preserved in TSDoc.
    - If docs are missing and MCP yields nothing useful for a complex symbol, stop and check in rather than guessing.
 3. **Generate skeletons in batch per file — each `tsdoc-stub` invocation is expensive, never call it more than once per file.**
 

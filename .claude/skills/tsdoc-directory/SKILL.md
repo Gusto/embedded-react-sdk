@@ -1,42 +1,30 @@
 ---
 name: tsdoc-directory
 description: >-
-  Fully document a src/ directory by orchestrating the tsdoc-backfill and
-  tsdoc-api-documenter agents. Use when asked to document a directory, expand
-  TSDoc coverage, or add a directory to the ESLint allowlist.
-argument-hint: '<src-relative path, e.g. src/helpers or src/components/Employee/Dashboard/hooks>'
+  Backfill TSDoc on existing exported symbols in a src/ domain directory by
+  orchestrating the tsdoc-backfill and tsdoc-api-documenter agents. Use when
+  asked to document a domain, expand TSDoc coverage, or add a directory to the
+  ESLint allowlist. Target one full domain at a time (e.g. src/components/Contractor).
+argument-hint: '<domain directory, e.g. src/components/Contractor or src/components/Employee>'
 ---
 
-# Document Directory
+# Backfill TSDoc for a Domain Directory
 
-Orchestrates two agents to fully document a `src/` directory:
+Orchestrates two agents to add TSDoc to all exported symbols in a `src/` domain directory:
 
 1. **`tsdoc-backfill`** — enables strict linting and discovers violations
 2. **`tsdoc-api-documenter`** — writes the TSDoc for each symbol
 
 ## Argument handling
 
-`$ARGUMENTS` is the target directory. Normalise it: strip leading `./` or trailing `/`. If it doesn't start with `src/`, prepend `src/`.
-
-## Phase 0 — Baseline build and API report
-
-Before doing anything else, run a clean build and derive the current API report:
-
-```bash
-npm run build && npm run api-report:derive 2>&1
-```
-
-This ensures the API report reflects the current state of the repo before any documentation changes are made. The diff
-in Phase 3 will then show only what this run changed.
-
-If the build fails, stop and report the error to the user — do not proceed.
+`$ARGUMENTS` is the target directory. Normalize it: strip leading `./` or trailing `/`. If it doesn't start with `src/`, prepend `src/`.
 
 ## Phase 1 — Setup and discovery (foreground)
 
 Spawn the `tsdoc-backfill` agent:
 
 - **description**: `"Set up TSDoc linting and discover violations in $TARGET"`
-- **prompt**: `"Analyse the directory $TARGET for TSDoc violations. Update eslint.config.ts to enable strict linting for this directory, run ESLint to find all violations, and return the structured violation list."`
+- **prompt**: `"Analyze the directory $TARGET for TSDoc violations. Update eslint.config.ts to enable strict linting for this directory, run ESLint to find all violations, and return the structured violation list."`
 
 Wait for it to complete. Capture the violation list and the eslint.config.ts change it reports.
 
@@ -68,51 +56,16 @@ For each batch, spawn `tsdoc-api-documenter` with **`run_in_background: true`**:
 - **description**: `"Document violations in $DIRECTORY (batch $BATCH_N of $BATCH_TOTAL)"`
 - **prompt**:
 
-````
-Document the following exported symbols in the embedded-react-sdk repo.
+```text
+Backfill TSDoc for the following exported symbols in the embedded-react-sdk repo.
 These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
+
+The primary prose reference for this domain is `docs/workflows-overview/` — check there
+for component props, events, and behavior descriptions before looking elsewhere.
 
 Violation list:
 <paste only the violations for this batch>
-
-Work through each file in order. For each file:
-
-1. Run tsdoc-stub **once** for the whole file using `--all-exports` (or `--symbols` if only a subset needs documenting) to generate all skeletons in a single call. Never call tsdoc-stub once per symbol — each invocation is expensive.
-2. Check docs/ for existing prose to adapt before filling in any prose (docs/hooks/ for hooks, docs/integration-guide/ for utilities). For top-level or complex symbols with nothing in docs/, check MCP (Jira, Confluence, Notion) for product context.
-3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
-4. After writing all symbols in a file, fix any ESLint errors in a single pass, then run ESLint once to confirm clean before moving to the next file.
-
-### @group tags for hooks
-
-Hooks and their companion exports (types, interfaces, enums from the same hook file) are consolidated onto a per-domain `hooks.md` page. TypeDoc auto-assigns groups by name convention, but you can override with an explicit `@group` tag.
-
-**Auto-assignment rules (no tag needed unless overriding):**
-- Hook name ends with `Form` → `Form Hooks`
-- All other hooks → `Hooks` (fallback)
-
-**When to add `@group` explicitly:**
-- A hook that fetches or derives data belongs in `Data Hooks` (e.g. `useEmployeeList`, `useCompanyDetails`)
-- A hook that builds field configs, utilities, or helpers belongs in `Utility Hooks` (e.g. `useStateFields`)
-- **Always** add `@group` for components — the router auto-assigns as a fallback, but the tag should be explicit in source:
-  - Inside a namespace, name ends with `Flow` → `@group Flow Components`
-  - Inside a namespace, all other components → `@group Block Components`
-  - Top-level (not in a namespace) → `@group Components`
-
-**Valid `@group` values for hooks:** `Form Hooks`, `Data Hooks`, `Utility Hooks`, `Hooks`
-**Valid `@group` values for components:** `Flow Components`, `Block Components`, `Components`
-
-Any other value is an ESLint error (`tsdoc-coverage/valid-group`).
-
-**To verify group placement after writing docs**, run TypeDoc and inspect the generated markdown — no Docusaurus server needed:
-
-```bash
-npm --prefix docs-site run typedoc
-# then open docs/api/{Domain}/hooks.md — groups appear as ## headings
-````
-
-Return a summary of what was documented and any symbols skipped with reasons. Check stderr output from tsdoc-stub calls and include any unresolved symbol warnings.
-
-````
+```
 
 ## Phase 3 — Final verification and report (on completion notification)
 
@@ -122,7 +75,7 @@ When the background agents complete, run in sequence:
 
 ```bash
 npx eslint '$TARGET' --fix 2>&1
-````
+```
 
 **Step 2 — Build and API report**
 
@@ -130,11 +83,13 @@ npx eslint '$TARGET' --fix 2>&1
 npm run build && npm run api-report:derive 2>&1
 ```
 
-If there are build errors, stop and report to the user. Otherwise, diff the report to see what changed:
+If there are build errors, stop and report to the user. Otherwise, diff the report to see what this run changed:
 
 ```bash
 git diff .reports/embedded-react-sdk.api.md
 ```
+
+(The API report is kept current on branch push, so this diff reflects only the changes made in this run.)
 
 **Step 3 — Fix forgotten exports**
 
@@ -148,7 +103,7 @@ Scan the diff for `ae-forgotten-export` warnings. For each one:
 
 Then relay the combined report to the user:
 
-```
+```text
 ## Documentation run: $TARGET
 
 **eslint.config.ts change:** <from Phase 1>

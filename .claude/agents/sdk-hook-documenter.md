@@ -1,10 +1,11 @@
 ---
 name: sdk-hook-documenter
 description: >-
-  Write partner-facing documentation for a new SDK form hook after a
-  migrate-sdk-component-to-hooks migration. Creates docs/hooks/use<Name>Form.md
-  and updates the inventory table in docs/hooks/hooks.md. Runs in the background
-  after migration is complete.
+  DEPRECATED — do not invoke. Previously wrote docs/hooks/use<Name>Form.md
+  files after a migrate-sdk-component-to-hooks migration. The docs/hooks/
+  hand-written pages are being deleted as part of the SDK-971 migration to
+  inline TSDoc. Use tsdoc-api-documenter or tsdoc-directory to write TSDoc
+  inline in source instead.
 model: opus
 color: green
 permissionMode: acceptEdits
