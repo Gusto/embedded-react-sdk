@@ -29,6 +29,7 @@ interface PreviewPresentationProps {
   paymentSpeed?: PaymentSpeed
 }
 
+/** @internal */
 export const PreviewPresentation = ({
   contractorPaymentGroup,
   contractors,

@@ -1,2 +1,1 @@
-export { ContractorProfile } from './ContractorProfile'
-export { ContractorProfileForm } from './ContractorProfileForm'
+export { ContractorProfile, type ContractorProfileProps } from './ContractorProfile'

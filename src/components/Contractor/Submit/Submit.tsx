@@ -15,11 +15,32 @@ import {
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+/**
+ * Props for {@link ContractorSubmit}.
+ *
+ * @public
+ */
 export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
+  /** UUID of the contractor being submitted. */
   contractorId: string
+  /** When true, adjusts the submission for the self-onboarding flow, surfacing the invite step before the contractor's onboarding status is finalized. */
   selfOnboarding?: boolean
 }
 
+/**
+ * Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |
+ * | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
+ * | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
+ *
+ * @param props - See {@link ContractorSubmitProps}.
+ * @returns The rendered submission step.
+ * @public
+ */
 export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
@@ -28,7 +49,7 @@ export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInt
   )
 }
 
-export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
+const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
   const { Alert, Box, BoxHeader, Button, Text, Heading, UnorderedList } = useComponentContext()

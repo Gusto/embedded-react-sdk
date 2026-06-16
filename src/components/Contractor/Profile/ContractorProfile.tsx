@@ -1,20 +1,23 @@
 import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import {
-  useContractorProfile,
-  ContractorType,
-  WageType,
-  type UseContractorProfileProps,
-} from './useContractorProfile'
+import { useContractorProfile, type UseContractorProfileProps } from './useContractorProfile'
 import { ContractorProfileForm } from './ContractorProfileForm'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import type { WithRequired } from '@/types/Helpers'
 
-interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+/**
+ * Props for {@link ContractorProfile}.
+ *
+ * @public
+ */
+export interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+  /** UUID of the company the contractor belongs to. */
   companyId: string
+  /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
   contractorId?: string
+  /** Initial values for the contractor profile form fields. */
   defaultValues?: UseContractorProfileProps['defaultValues']
 }
 
@@ -22,7 +25,25 @@ interface ContractorProfileConditionalProps {
   existingContractor?: Contractor
 }
 
-// Container component - calls hook and passes data to presentation component
+/**
+ * Form for creating or editing a contractor profile, supporting both individual and business contractor types.
+ *
+ * @remarks
+ * Renders different field sets depending on the contractor type (individual vs. business) and wage type
+ * (hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
+ * own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
+ * submit; otherwise it creates a new contractor under `companyId`.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
+ * | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
+ * | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
+ *
+ * @param props - See {@link ContractorProfileProps}.
+ * @returns The rendered contractor profile form.
+ * @public
+ */
 export function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface) {
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
@@ -67,10 +88,3 @@ function Root({
     />
   )
 }
-
-// Re-export types and enums for convenience
-export { ContractorType, WageType }
-export type { UseContractorProfileProps as ContractorProfileFormData }
-
-// Re-export the form component for convenience
-export { ContractorProfileForm } from './ContractorProfileForm'

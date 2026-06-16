@@ -27,6 +27,7 @@ interface PaymentSummaryPresentationProps {
   alerts?: InternalAlert[]
 }
 
+/** @internal */
 export const PaymentSummaryPresentation = ({
   contractorPaymentGroup,
   contractors,

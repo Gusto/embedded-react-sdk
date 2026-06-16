@@ -37,9 +37,41 @@ const PaymentMethodSchema = z.discriminatedUnion('type', [
   }),
 ])
 
-export type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
-export type PaymentMethodSchemaOutputs = z.output<typeof PaymentMethodSchema>
+type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
 
+/**
+ * Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method.
+ *
+ * Displays the current payment type, lets the user switch between direct deposit and check, and
+ * collects bank account details (account holder name, routing number, account number, and account
+ * type) when direct deposit is selected. Submitting creates the bank account if needed and then
+ * updates the contractor's payment method.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The created bank account returned by the API |
+ * | `contractor/paymentMethod/updated` | Fired after the payment method is updated | The updated payment method returned by the API |
+ * | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
+ *
+ * @param props - Component configuration; see {@link PaymentMethodProps}.
+ * @returns The rendered payment method form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function PaymentMethodStep() {
+ *   return (
+ *     <ContractorOnboarding.PaymentMethod
+ *       contractorId="contractor-uuid"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function PaymentMethod(props: PaymentMethodProps) {
   return (
     <BaseComponent {...props}>

@@ -7,10 +7,19 @@ import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
-interface PaymentSummaryProps {
+/**
+ * Props for {@link PaymentSummary}.
+ *
+ * @public
+ */
+export interface PaymentSummaryProps {
+  /** UUID of the contractor payment group to summarize. */
   paymentGroupId: string
+  /** UUID of the company that owns the payment group. */
   companyId: string
+  /** Callback invoked when a flow event occurs, e.g. when the user exits. */
   onEvent: (type: EventType, data?: unknown) => void
+  /** Optional alerts to display alongside the summary. */
   alerts?: InternalAlert[]
 }
 
@@ -34,6 +43,18 @@ const findWireInRequestUuid = (
   return undefined
 }
 
+/**
+ * Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/payments/exit` | User completes the payment flow. | — |
+ *
+ * @param props - Component props.
+ * @returns The rendered payment summary, or `null` when the payment group cannot be loaded.
+ * @public
+ */
 export const PaymentSummary = ({
   paymentGroupId,
   companyId,

@@ -7,11 +7,25 @@ import { PaymentStatementPresentation } from './PaymentStatementPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 
-interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payments.PaymentStatement'> {
+/**
+ * Props for {@link PaymentStatement}.
+ *
+ * @public
+ */
+export interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payments.PaymentStatement'> {
+  /** UUID of the contractor payment group the statement belongs to. */
   paymentGroupId: string
+  /** UUID of the contractor whose payment within the group is being displayed. */
   contractorUuid: string
 }
 
+/**
+ * Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments.
+ *
+ * @param props - See {@link PaymentStatementProps}.
+ * @returns The rendered payment statement.
+ * @public
+ */
 export function PaymentStatement(props: PaymentStatementProps) {
   return (
     <BaseComponent {...props}>
@@ -20,7 +34,7 @@ export function PaymentStatement(props: PaymentStatementProps) {
   )
 }
 
-export const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStatementProps) => {
+const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStatementProps) => {
   useComponentDictionary('Contractor.Payments.PaymentStatement', dictionary)
   const { t } = useTranslation('Contractor.Payments.PaymentStatement')
   // Fetching entire payment

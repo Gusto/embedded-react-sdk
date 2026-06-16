@@ -123,11 +123,27 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface {
     policyType: CreatableTimeOffPolicyType;
 }
 
-// Warning: (ae-forgotten-export) The symbol "AddressProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "Address" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddressProps"
 //
-// @public (undocumented)
+// @public
 function Address(props: AddressProps): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
+//
+// @public
+type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
+//
+// @public
+interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useAddress"
+    children?: ReactNode;
+    className?: string;
+    contractorId: string;
+    defaultValues?: AddressDefaultValues;
+}
 
 // @public
 export type AdjustForMinimumWageFieldProps = HookFieldProps<CheckboxHookFieldProps>;
@@ -624,8 +640,6 @@ interface CompensationCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
-//
 // @public
 type CompensationDefaultValues = RequireAtLeastOne<{
     rate?: Job['rate'];
@@ -1133,32 +1147,57 @@ export interface ConfirmWireDetailsProps {
     wireInId?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ContractorListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorListProps"
 //
-// @public (undocumented)
+// @public
 function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorList"
+//
+// @public
+interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+    companyId: string;
+    successMessage?: string;
+}
 
 declare namespace ContractorManagement {
     export {
         PaymentFlow,
+        PaymentFlowProps,
         PaymentsList,
+        PaymentsListProps,
         CreatePayment,
+        CreatePaymentProps,
         PaymentHistory,
+        PaymentHistoryProps,
         PaymentSummary,
-        PaymentStatement
+        PaymentSummaryProps,
+        PaymentStatement,
+        PaymentStatementProps,
+        InternalAlert
     }
 }
 
 declare namespace ContractorOnboarding {
     export {
         OnboardingFlow_3 as OnboardingFlow,
+        OnboardingFlowProps_3 as OnboardingFlowProps,
+        OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
         ContractorList,
+        ContractorListProps,
         ContractorProfile,
+        ContractorProfileProps,
+        ContractorProfileSchema,
+        UseContractorProfileProps,
+        ContractorProfileFormData,
         Address,
+        AddressProps,
+        AddressDefaultValues,
         PaymentMethod_3 as PaymentMethod,
         NewHireReport,
-        ContractorSubmit
+        NewHireReportProps,
+        ContractorSubmit,
+        ContractorSubmitProps
     }
 }
 
@@ -1173,20 +1212,62 @@ export const ContractorOnboardingStatus: {
     readonly ONBOARDING_COMPLETED: "onboarding_completed";
 };
 
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ContractorProfile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfileProps"
 //
-// @public (undocumented)
+// @public
 function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
+
+// @internal (undocumented)
+type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfile"
+//
+// @public
+interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+    companyId: string;
+    contractorId?: string;
+    // Warning: (ae-incompatible-release-tags) The symbol "defaultValues" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
+    // Warning: (ae-incompatible-release-tags) The symbol "defaultValues" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
+    defaultValues?: UseContractorProfileProps['defaultValues'];
+}
+
+// @internal (undocumented)
+const ContractorProfileSchema: z.ZodObject<{
+    selfOnboarding: z.ZodBoolean;
+    email: z.ZodOptional<z.ZodString>;
+    contractorType: z.ZodEnum<{
+        Business: "Business";
+        Individual: "Individual";
+    }>;
+    wageType: z.ZodEnum<{
+        Fixed: "Fixed";
+        Hourly: "Hourly";
+    }>;
+    startDate: z.ZodDate;
+    firstName: z.ZodOptional<z.ZodString>;
+    middleInitial: z.ZodOptional<z.ZodString>;
+    lastName: z.ZodOptional<z.ZodString>;
+    ssn: z.ZodOptional<z.ZodString>;
+    businessName: z.ZodOptional<z.ZodString>;
+    ein: z.ZodOptional<z.ZodString>;
+    hourlyRate: z.ZodOptional<z.ZodNumber>;
+}, z.core.$strip>;
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
 
-// Warning: (ae-forgotten-export) The symbol "ContractorSubmitProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "ContractorSubmit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmitProps"
 //
-// @public (undocumented)
+// @public
 function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmit"
+//
+// @public
+interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
+    contractorId: string;
+    selfOnboarding?: boolean;
+}
 
 // @public
 export type CountyEntry = {
@@ -1342,10 +1423,7 @@ stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoo
 stateWcClassCode: z.ZodString;
 }>;
 
-// Warning: (ae-forgotten-export) The symbol "CreatePaymentProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "CreatePayment" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 function CreatePayment(props: CreatePaymentProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
@@ -1358,6 +1436,13 @@ Check: "Check";
 "Direct Deposit": "Direct Deposit";
 }>;
 }>;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CreatePayment"
+//
+// @public
+interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
+    companyId: string;
+}
 
 // Warning: (ae-forgotten-export) The symbol "PayScheduleSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createPayScheduleSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2832,6 +2917,17 @@ declare namespace InformationRequests {
 // @public (undocumented)
 function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX;
 
+// @internal (undocumented)
+type InternalAlert = {
+    type: 'error' | 'info' | 'success';
+    title: string;
+    content?: ReactNode;
+    onDismiss?: () => void;
+    translationParams?: Record<string, unknown>;
+    onAction?: () => void;
+    actionLabel?: string;
+};
+
 // Warning: (ae-forgotten-export) The symbol "InviteSignatoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InviteSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3072,11 +3168,18 @@ export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequ
 // @public
 export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
-// Warning: (ae-forgotten-export) The symbol "NewHireReportProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "NewHireReport" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReportProps"
 //
-// @public (undocumented)
+// @public
 function NewHireReport(props: NewHireReportProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReport"
+//
+// @public
+interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireReport'> {
+    contractorId: string;
+    selfOnboarding?: boolean;
+}
 
 // Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -3368,11 +3471,22 @@ const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 // @public (undocumented)
 const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorList"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfile"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReport"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmit"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlowProps"
 //
-// @public (undocumented)
+// @public
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
+
+// @public
+type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
+    profile?: UseContractorProfileProps['defaultValues'];
+    address?: AddressDefaultValues;
+}>;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
 //
@@ -3382,6 +3496,14 @@ interface OnboardingFlowProps extends BaseComponentInterface {
     defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
     isSelfOnboardingEnabled?: boolean;
     withEmployeeI9?: boolean;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
+//
+// @public
+interface OnboardingFlowProps_3 extends BaseComponentInterface {
+    companyId: string;
+    defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues_2>;
 }
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
@@ -3441,17 +3563,27 @@ export const PAY_PERIODS: {
 // @public
 export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
 
-// Warning: (ae-forgotten-export) The symbol "PaymentFlowProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentFlowProps"
 //
-// @public (undocumented)
+// @public
 const PaymentFlow: (input: PaymentFlowProps) => JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentHistoryProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentHistory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentFlow"
 //
-// @public (undocumented)
+// @public
+interface PaymentFlowProps extends BaseComponentInterface {
+    companyId: string;
+}
+
+// @public
 function PaymentHistory(props: PaymentHistoryProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentHistory"
+//
+// @public
+interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.Payments.PaymentHistory'> {
+    paymentId: string;
+}
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
 //
@@ -3467,9 +3599,9 @@ function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
 function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentMethodProps_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
 //
-// @public (undocumented)
+// @public
 function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankFormProps"
@@ -3582,23 +3714,46 @@ export function PaymentPeriodField(props: PaymentPeriodFieldProps): JSX;
 // @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentsListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentsList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 function PaymentsList(props: PaymentsListProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentStatementProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentStatement" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentsList"
 //
-// @public (undocumented)
+// @public
+interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
+    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    alerts?: InternalAlert[];
+    companyId: string;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentStatementProps"
+//
+// @public
 function PaymentStatement(props: PaymentStatementProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "PaymentSummaryProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PaymentSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentStatement"
 //
-// @public (undocumented)
+// @public
+interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payments.PaymentStatement'> {
+    contractorUuid: string;
+    paymentGroupId: string;
+}
+
+// @public
 const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentSummary"
+//
+// @public
+interface PaymentSummaryProps {
+    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    // Warning: (ae-incompatible-release-tags) The symbol "alerts" is marked as @public, but its signature references "InternalAlert" which is marked as @internal
+    alerts?: InternalAlert[];
+    companyId: string;
+    onEvent: (type: EventType, data?: unknown) => void;
+    paymentGroupId: string;
+}
 
 // @public
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
@@ -5102,6 +5257,14 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
 
+// @internal (undocumented)
+interface UseContractorProfileProps {
+    companyId: string;
+    contractorId?: string;
+    defaultValues?: Partial<ContractorProfileFormData>;
+    existingContractor?: Contractor;
+}
+
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
@@ -5767,6 +5930,8 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
+// dist/components/Contractor/OnboardingFlow/OnboardingFlowComponents.d.ts:13:5 - (ae-incompatible-release-tags) The symbol "profile" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
+// dist/components/Contractor/OnboardingFlow/OnboardingFlowComponents.d.ts:13:5 - (ae-incompatible-release-tags) The symbol "profile" is marked as @public, but its signature references "UseContractorProfileProps" which is marked as @internal
 // dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

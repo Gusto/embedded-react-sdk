@@ -1,18 +1,19 @@
-import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
-import type { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup'
-import type { ContractorPaymentGroupTotals } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
 import type { ReactNode } from 'react'
 
-export type { ContractorPaymentGroup, ContractorPaymentForGroup, ContractorPaymentGroupTotals }
-
-export type ContractorPaymentGroupMinimal = Omit<ContractorPaymentGroup, 'contractorPayments'>
-
+/** @internal */
 export type InternalAlert = {
+  /** Visual severity of the alert. */
   type: 'error' | 'info' | 'success'
+  /** Translation key for the alert headline. */
   title: string
+  /** Optional body content rendered below the title. */
   content?: ReactNode
+  /** Called when the user dismisses the alert; omit to render a non-dismissible alert. */
   onDismiss?: () => void
+  /** Interpolation values passed to the i18n lookup for `title`. */
   translationParams?: Record<string, unknown>
+  /** Called when the user activates the alert's action button. */
   onAction?: () => void
+  /** Translation key for the action button label; required when `onAction` is set. */
   actionLabel?: string
 }
