@@ -24,7 +24,7 @@
     "MD040": true,
     "MD041": false,
     "MD046": { "style": "fenced" },
-    "MD060": false
+    "MD060": false,
   },
   "globs": ["docs/**/*.md", "docs-site/**/*.md", "docs-site/**/*.mdx"],
   "ignores": [
@@ -35,6 +35,6 @@
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
     "docs-site/versioned_docs/**",
-    "CHANGELOG.md"
-  ]
+    "CHANGELOG.md",
+  ],
 }
