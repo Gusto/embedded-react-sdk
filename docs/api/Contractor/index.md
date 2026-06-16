@@ -48,6 +48,3 @@ custom_edit_url: null
 | [PaymentStatement](ContractorManagement/blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [PaymentSummary](ContractorManagement/blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
 
-## Hooks
-
-See [Contractor Hooks](./hooks).

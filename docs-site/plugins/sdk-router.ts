@@ -543,8 +543,6 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       const description = getReflectionDescription(primaryHook, context)
       parts.push(`| [${group.title}](${url}) | ${description} |`)
     }
-  } else {
-    parts.push('## Hooks', '', `See [${model.name} Hooks](./hooks).`)
   }
 
   return parts.join('\n')

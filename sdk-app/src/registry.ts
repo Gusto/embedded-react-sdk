@@ -1,6 +1,7 @@
 import { ENTITY_REQUIREMENTS, ADDITIONAL_REQUIRED_PROPS } from './generated-registry-data'
 import * as Company from '@/components/Company'
-import * as Contractor from '@/components/Contractor'
+import * as ContractorOnboarding from '@/components/Contractor/exports/contractorOnboarding'
+import * as ContractorManagement from '@/components/Contractor/exports/contractorManagement'
 import * as EmployeeManagement from '@/components/Employee/exports/employeeManagement'
 import * as EmployeeOnboarding from '@/components/Employee/exports/employeeOnboarding'
 import * as Payroll from '@/components/Payroll'
@@ -26,7 +27,7 @@ export interface ComponentEntry {
 
 const namespaces: Record<Category, Record<string, unknown>> = {
   Company,
-  Contractor,
+  Contractor: { ...ContractorOnboarding, ...ContractorManagement },
   EmployeeManagement,
   EmployeeOnboarding,
   Payroll,

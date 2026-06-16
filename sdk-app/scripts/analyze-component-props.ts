@@ -24,14 +24,17 @@ const OUTPUT = resolve(import.meta.dirname, '../src/generated-registry-data.ts')
 
 const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request)Id$/
 
-const NAMESPACES: Record<string, string> = {
-  Company: 'src/components/Company/index.tsx',
-  EmployeeManagement: 'src/components/Employee/exports/employeeManagement.ts',
-  EmployeeOnboarding: 'src/components/Employee/exports/employeeOnboarding.ts',
-  Contractor: 'src/components/Contractor/index.ts',
-  Payroll: 'src/components/Payroll/index.ts',
-  InformationRequests: 'src/components/InformationRequests/index.ts',
-  TimeOff: 'src/components/TimeOff/index.ts',
+const NAMESPACES: Record<string, string[]> = {
+  Company: ['src/components/Company/index.tsx'],
+  EmployeeManagement: ['src/components/Employee/exports/employeeManagement.ts'],
+  EmployeeOnboarding: ['src/components/Employee/exports/employeeOnboarding.ts'],
+  Contractor: [
+    'src/components/Contractor/exports/contractorOnboarding.ts',
+    'src/components/Contractor/exports/contractorManagement.ts',
+  ],
+  Payroll: ['src/components/Payroll/index.ts'],
+  InformationRequests: ['src/components/InformationRequests/index.ts'],
+  TimeOff: ['src/components/TimeOff/index.ts'],
 }
 
 interface ComponentData {
@@ -86,67 +89,70 @@ function analyzeComponents(): Record<string, ComponentData> {
 
   const results: Record<string, ComponentData> = {}
 
-  for (const [namespace, indexPath] of Object.entries(NAMESPACES)) {
-    const fullPath = resolve(ROOT, indexPath)
-    const sourceFile = project.addSourceFileAtPath(fullPath)
+  for (const [namespace, indexPaths] of Object.entries(NAMESPACES)) {
+    for (const indexPath of indexPaths) {
+      const fullPath = resolve(ROOT, indexPath)
+      const sourceFile = project.addSourceFileAtPath(fullPath)
 
-    for (const exportDecl of sourceFile.getExportDeclarations()) {
-      for (const namedExport of exportDecl.getNamedExports()) {
-        const name = namedExport.getAliasNode()?.getText() ?? namedExport.getName()
-        const key = `${namespace}.${name}`
+      for (const exportDecl of sourceFile.getExportDeclarations()) {
+        for (const namedExport of exportDecl.getNamedExports()) {
+          const name = namedExport.getAliasNode()?.getText() ?? namedExport.getName()
+          const key = `${namespace}.${name}`
 
-        const symbol = namedExport.getNameNode().getSymbol()
-        if (!symbol) continue
+          const symbol = namedExport.getNameNode().getSymbol()
+          if (!symbol) continue
 
-        const aliasedSymbol = symbol.getAliasedSymbol()
-        const targetSymbol = aliasedSymbol || symbol
+          const aliasedSymbol = symbol.getAliasedSymbol()
+          const targetSymbol = aliasedSymbol || symbol
 
-        const declarations = targetSymbol.getDeclarations()
-        const funcDecl = declarations.find(
-          d => d.isKind(SyntaxKind.FunctionDeclaration) || d.isKind(SyntaxKind.VariableDeclaration),
-        )
+          const declarations = targetSymbol.getDeclarations()
+          const funcDecl = declarations.find(
+            d =>
+              d.isKind(SyntaxKind.FunctionDeclaration) || d.isKind(SyntaxKind.VariableDeclaration),
+          )
 
-        if (!funcDecl) continue
+          if (!funcDecl) continue
 
-        let propsType: Type | undefined
+          let propsType: Type | undefined
 
-        if (funcDecl.isKind(SyntaxKind.FunctionDeclaration)) {
-          const params = funcDecl.getParameters()
-          if (params.length > 0) {
-            propsType = params[0].getType()
-          }
-        } else if (funcDecl.isKind(SyntaxKind.VariableDeclaration)) {
-          const initializer = funcDecl.getInitializer()
-          if (
-            initializer &&
-            (initializer.isKind(SyntaxKind.ArrowFunction) ||
-              initializer.isKind(SyntaxKind.FunctionExpression))
-          ) {
-            const params = initializer.getParameters()
+          if (funcDecl.isKind(SyntaxKind.FunctionDeclaration)) {
+            const params = funcDecl.getParameters()
             if (params.length > 0) {
               propsType = params[0].getType()
             }
+          } else if (funcDecl.isKind(SyntaxKind.VariableDeclaration)) {
+            const initializer = funcDecl.getInitializer()
+            if (
+              initializer &&
+              (initializer.isKind(SyntaxKind.ArrowFunction) ||
+                initializer.isKind(SyntaxKind.FunctionExpression))
+            ) {
+              const params = initializer.getParameters()
+              if (params.length > 0) {
+                propsType = params[0].getType()
+              }
+            }
           }
-        }
 
-        if (!propsType) continue
+          if (!propsType) continue
 
-        const allRequired = getPropertyNames(propsType, true)
-        const entityIds: string[] = []
-        const additionalProps: string[] = []
+          const allRequired = getPropertyNames(propsType, true)
+          const entityIds: string[] = []
+          const additionalProps: string[] = []
 
-        for (const prop of allRequired) {
-          if (baseProps.has(prop)) continue
-          if (ENTITY_ID_PATTERN.test(prop)) {
-            entityIds.push(prop)
-          } else {
-            additionalProps.push(prop)
+          for (const prop of allRequired) {
+            if (baseProps.has(prop)) continue
+            if (ENTITY_ID_PATTERN.test(prop)) {
+              entityIds.push(prop)
+            } else {
+              additionalProps.push(prop)
+            }
           }
-        }
 
-        results[key] = {
-          requiredEntityIds: entityIds.length > 0 ? entityIds : ['companyId'],
-          additionalRequiredProps: additionalProps,
+          results[key] = {
+            requiredEntityIds: entityIds.length > 0 ? entityIds : ['companyId'],
+            additionalRequiredProps: additionalProps,
+          }
         }
       }
     }
