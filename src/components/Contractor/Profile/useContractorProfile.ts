@@ -26,12 +26,13 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { normalizeEin } from '@/helpers/federalEin'
 import { SDKInternalError } from '@/types/sdkError'
 
-// Re-export the API types for convenience
+/** @internal */
 export const WageType = ApiWageType
+/** @internal */
 export const ContractorType = ApiContractorType
 
-// Form schema definition - exported for use in stories and tests
-const ContractorProfileSchema = z.object({
+/** @internal */
+export const ContractorProfileSchema = z.object({
   // Self-onboarding toggle
   selfOnboarding: z.boolean(),
   email: z.string().email().optional(),
@@ -55,9 +56,14 @@ const ContractorProfileSchema = z.object({
   hourlyRate: z.number().min(0).optional(),
 })
 
+/**
+ * Form field values for the contractor profile form.
+ *
+ * @public
+ */
 export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
 
-// Create validation schema - exported for stories
+/** @internal */
 export const createContractorProfileValidationSchema = (
   t: (key: string) => string,
   hasSsn: boolean,
@@ -158,13 +164,19 @@ export const createContractorProfileValidationSchema = (
   )
 }
 
+/** @internal */
 export interface UseContractorProfileProps {
+  /** UUID of the company the contractor belongs to. */
   companyId: string
+  /** UUID of an existing contractor to edit. When omitted, the hook creates a new contractor. */
   contractorId?: string
+  /** Initial form values overlaid on top of the existing contractor (when provided). */
   defaultValues?: Partial<ContractorProfileFormData>
+  /** Existing contractor entity used to seed the form in edit mode. */
   existingContractor?: Contractor
 }
 
+/** @internal */
 export function useContractorProfile({
   companyId,
   contractorId,

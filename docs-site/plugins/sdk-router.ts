@@ -85,17 +85,15 @@ const NAMESPACE_PATHS: Record<string, string> = {
   EmployeeManagement: 'Employee/EmployeeManagement',
   CompanyOnboarding: 'Company/CompanyOnboarding',
   ContractorOnboarding: 'Contractor/ContractorOnboarding',
-  // Deprecated — nested under domain so the domain root belongs to the hub page
-  Employee: 'Employee/Employee',
-  Company: 'Company',
-  Contractor: 'Contractor',
+  ContractorManagement: 'Contractor/ContractorManagement',
 }
 
 // Maps each domain to the ordered list of namespaces shown on its generated hub page.
 // Deprecated namespaces should come last. When a domain graduates to a hand-authored
 // index page, remove it from this map and write Employee/index.md manually instead.
 const DOMAIN_HUBS: Record<string, string[]> = {
-  Employee: ['EmployeeOnboarding', 'EmployeeManagement', 'Employee'],
+  Employee: ['EmployeeOnboarding', 'EmployeeManagement'],
+  Contractor: ['ContractorOnboarding', 'ContractorManagement'],
 }
 
 /**
@@ -611,8 +609,6 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       const description = getReflectionDescription(primaryHook, context)
       parts.push(`| [${group.title}](${url}) | ${description} |`)
     }
-  } else {
-    parts.push('## Hooks', '', `See [${model.name} Hooks](./hooks).`)
   }
 
   return parts.join('\n')

@@ -17,13 +17,49 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { contractorEvents } from '@/shared/constants'
 
+/**
+ * Props for {@link Address}.
+ *
+ * @public
+ */
 export interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
+  /** The associated contractor identifier. */
   contractorId: string
+  /** Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. */
   defaultValues?: AddressDefaultValues
+  /** Custom composition slot. When provided, replaces the default Head, Form, and Actions layout — use the bundled subcomponents alongside {@link useAddress} to read form context. */
   children?: ReactNode
+  /** Optional class applied to the wrapping `<section>`. */
   className?: string
 }
 
+/**
+ * Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
+ * | `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
+ *
+ * @param props - See {@link AddressProps}.
+ * @returns The contractor address form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <ContractorOnboarding.Address
+ *       contractorId="contractor-uuid"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function Address(props: AddressProps) {
   return (
     <BaseComponent {...props}>
@@ -111,5 +147,3 @@ function Root({ contractorId, defaultValues, children, className, dictionary }: 
     </section>
   )
 }
-
-export default Address

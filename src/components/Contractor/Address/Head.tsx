@@ -3,6 +3,7 @@ import { useAddress } from './useAddress'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 
+/** @internal */
 export function Head() {
   const { t } = useTranslation('Contractor.Address')
   const { contractorType } = useAddress()

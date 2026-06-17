@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { BankAccountFormProps } from './types'
 import { Flex, RadioGroupField, TextInputField } from '@/components/Common'
 
+/** @internal */
 export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
   const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'bankAccountForm' })
 

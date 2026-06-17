@@ -5,7 +5,7 @@ import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
 import { NewHireReport } from '../NewHireReport/NewHireReport'
 import { ContractorSubmit } from '../Submit/Submit'
-import type { UseContractorProfileProps } from '../Profile/useContractorProfile'
+import type { ContractorProfileFormData } from '../Profile/useContractorProfile'
 import type { AddressDefaultValues } from '../Address/useAddress'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
@@ -15,22 +15,42 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Default pre-fill values for the contractor onboarding flow.
+ * At least one of `profile` or `address` must be provided.
+ *
+ * @public
+ */
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
-  profile?: UseContractorProfileProps['defaultValues']
+  profile?: Partial<ContractorProfileFormData>
   address?: AddressDefaultValues
 }>
+/**
+ * Props for {@link OnboardingFlow}.
+ *
+ * @public
+ */
 export interface OnboardingFlowProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** Default values for individual flow step components — `profile` and/or `address` sub-objects. */
   defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>
 }
+/** @internal */
 export interface OnboardingFlowContextInterface extends FlowContextInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** The contractor currently being onboarded; populated once the profile step creates or selects one. */
   contractorId?: string
+  /** Default values for individual flow step components. */
   defaultValues?: OnboardingFlowDefaultValues
+  /** True when the contractor will be self-onboarding; switches the flow to the shorter self-onboarding path. */
   selfOnboarding?: boolean
+  /** Success message to display on the contractor list when returning from a completed sub-flow. */
   successMessage?: string
 }
 
+/** @internal */
 export function ContractorListContextual() {
   const { companyId, onEvent, successMessage } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -42,6 +62,7 @@ export function ContractorListContextual() {
   )
 }
 
+/** @internal */
 export function ProfileContextual() {
   const { companyId, onEvent, contractorId, defaultValues } =
     useFlow<OnboardingFlowContextInterface>()
@@ -55,6 +76,7 @@ export function ProfileContextual() {
   )
 }
 
+/** @internal */
 export function AddressContextual() {
   const { onEvent, contractorId, defaultValues } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -65,10 +87,12 @@ export function AddressContextual() {
     />
   )
 }
+/** @internal */
 export function PaymentMethodContextual() {
   const { onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()
   return <PaymentMethod onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
 }
+/** @internal */
 export function NewHireReportContextual() {
   const { onEvent, contractorId, selfOnboarding } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -79,6 +103,7 @@ export function NewHireReportContextual() {
     />
   )
 }
+/** @internal */
 export function SubmitContextual() {
   const { onEvent, contractorId, selfOnboarding } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -90,6 +115,7 @@ export function SubmitContextual() {
   )
 }
 
+/** @internal */
 export function ProgressBarCta() {
   const { onEvent } = useFlow<OnboardingFlowContextInterface>()
   const { Button } = useComponentContext()
