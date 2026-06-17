@@ -613,45 +613,6 @@ const hooks: SDKHooks = {
 | <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | `BeforeCreateRequestHook`[] | Hooks executed before creating a Request object |
 | <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | `BeforeRequestHook`[] | Hooks executed after Request creation but before sending |
 
-***
-
-<a id="sharedfieldlayoutprops"></a>
-
-### SharedFieldLayoutProps
-
-Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
-so each control exposes a consistent surface for labeling, helper text, and validation messaging.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Extended by
-
-- [`TextInputProps`](component-adapter.md#textinputprops)
-- [`SelectProps`](component-adapter.md#selectprops)
-- [`NumberInputProps`](component-adapter.md#numberinputprops)
-- [`DatePickerProps`](component-adapter.md#datepickerprops)
-- [`RadioGroupProps`](component-adapter.md#radiogroupprops)
-- [`CheckboxGroupProps`](component-adapter.md#checkboxgroupprops)
-- [`ComboBoxProps`](component-adapter.md#comboboxprops)
-- [`MultiSelectComboBoxProps`](component-adapter.md#multiselectcomboboxprops)
-- [`TextAreaProps`](component-adapter.md#textareaprops)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-sharedfieldlayoutpropsdescription"></a> `description?` | `ReactNode` | Optional description text for the field |
-| <a id="property-sharedfieldlayoutpropserrormessage"></a> `errorMessage?` | `string` | Error message to display when the field is invalid |
-| <a id="property-sharedfieldlayoutpropsisrequired"></a> `isRequired?` | `boolean` | Indicates if the field is required |
-| <a id="property-sharedfieldlayoutpropslabel"></a> `label` | `ReactNode` | Label text for the field |
-| <a id="property-sharedfieldlayoutpropsshouldvisuallyhidelabel"></a> `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
-
 ## Type Aliases
 
 <a id="confirmwiredetailscomponenttype"></a>
@@ -684,18 +645,3 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 > **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
 
 High-level classification of where an [SDKError](#sdkerror) originated.
-
-***
-
-<a id="sharedhorizontalfieldlayoutprops"></a>
-
-### SharedHorizontalFieldLayoutProps
-
-> **SharedHorizontalFieldLayoutProps** = [`SharedFieldLayoutProps`](#sharedfieldlayoutprops)
-
-Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
-Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.

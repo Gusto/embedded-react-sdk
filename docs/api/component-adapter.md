@@ -14,6 +14,180 @@ custom_edit_url: null
 
 ## Interfaces
 
+<a id="componentscontexttype"></a>
+
+### ComponentsContextType
+
+Full map of UI components used by the SDK. Every property is a React component that the
+SDK renders internally — override any of them to substitute your own design system.
+
+Pass a `Partial<ComponentsContextType>` to [GustoProvider](index.md#gustoprovider) via the `components` prop to
+replace specific components while keeping SDK defaults for the rest.
+
+To take full control of every UI component (and eliminate the React Aria dependency),
+pass a complete [ComponentsContextType](#componentscontexttype) to [GustoProviderCustomUIAdapter](index.md#gustoprovidercustomuiadapter) instead.
+All properties are then required except `PaginationControl` and `PayrollLoading`,
+which fall back to built-in SDK implementations when omitted.
+
+#### Examples
+
+**Partial override with GustoProvider**
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+
+function App() {
+  return (
+    <GustoProvider
+      config={{ baseUrl: '/api/gusto/' }}
+      components={{
+        Button: MyButton,
+        TextInput: MyTextInput,
+      }}
+    >
+      <EmployeeOnboardingFlow companyId="company_123" />
+    </GustoProvider>
+  )
+}
+```
+
+**Full replacement with GustoProviderCustomUIAdapter**
+
+```tsx
+import { GustoProviderCustomUIAdapter, type ComponentsContextType } from '@gusto/embedded-react-sdk'
+
+const myComponents: ComponentsContextType = {
+  Alert: props => <MyAlert {...props} />,
+  Button: props => <MyButton {...props} />,
+  // ... all required components
+}
+
+function App() {
+  return (
+    <GustoProviderCustomUIAdapter
+      config={{ baseUrl: '/api/gusto/' }}
+      components={myComponents}
+    >
+      <EmployeeOnboardingFlow companyId="company_123" />
+    </GustoProviderCustomUIAdapter>
+  )
+}
+```
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Alert` | `FunctionComponent`\<[`AlertProps`](#alertprops)\> | Status message with an optional dismiss action; used for errors, warnings, success, and info. |
+| `Badge` | `FunctionComponent`\<[`BadgeProps`](#badgeprops)\> | Small inline label for status, counts, or tags; optionally dismissible. |
+| `Banner` | `FunctionComponent`\<[`BannerProps`](#bannerprops)\> | Full-width notification banner for prominent warnings and errors. |
+| `Box` | `FunctionComponent`\<[`BoxProps`](#boxprops)\> | Sectioned layout container with distinct header, body, and footer areas. |
+| `BoxHeader` | `FunctionComponent`\<[`BoxHeaderProps`](#boxheaderprops)\> | Header section of a Box with a title, optional description, and optional inline action. |
+| `Breadcrumbs` | `FunctionComponent`\<[`BreadcrumbsProps`](#breadcrumbsprops)\> | Navigation breadcrumb trail showing the user's position in a multi-step flow. |
+| `Button` | `FunctionComponent`\<[`ButtonProps`](#buttonprops)\> | HTML `<button>` with primary, secondary, tertiary, and error variants. |
+| `ButtonIcon` | `FunctionComponent`\<[`ButtonIconProps`](#buttoniconprops)\> | Icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies. |
+| `CalendarPreview` | `FunctionComponent`\<[`CalendarPreviewProps`](#calendarpreviewprops)\> | Read-only calendar for visualizing a date range with optional highlighted dates. |
+| `Card` | `FunctionComponent`\<[`CardProps`](#cardprops)\> | Content container with an optional overflow menu and a leading action slot. |
+| `Checkbox` | `FunctionComponent`\<[`CheckboxProps`](#checkboxprops)\> | Form field wrapping a single `<input type="checkbox" />`. |
+| `CheckboxGroup` | `FunctionComponent`\<[`CheckboxGroupProps`](#checkboxgroupprops)\> | Form field grouping `<input type="checkbox" />` elements for multi-option selection. |
+| `ComboBox` | `FunctionComponent`\<[`ComboBoxProps`](#comboboxprops)\> | Form field wrapping a typeahead `<input />` for single-option selection. |
+| `DatePicker` | `FunctionComponent`\<[`DatePickerProps`](#datepickerprops)\> | Form field wrapping an `<input type="date" />` with a calendar picker popover. |
+| `DateRangePicker` | `FunctionComponent`\<[`DateRangePickerProps`](#daterangepickerprops)\> | Form field wrapping paired `<input type="date" />` elements for a date range. |
+| `DescriptionList` | `FunctionComponent`\<[`DescriptionListProps`](#descriptionlistprops)\> | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
+| `Dialog` | `FunctionComponent`\<[`DialogProps`](#dialogprops)\> | Modal confirmation dialog with a primary action and a cancel action. |
+| `FileInput` | `FunctionComponent`\<[`FileInputProps`](#fileinputprops)\> | Form field wrapping an `<input type="file" />`. |
+| `Heading` | `FunctionComponent`\<[`HeadingProps`](#headingprops)\> | HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. |
+| `Link` | `FunctionComponent`\<[`LinkProps`](#linkprops)\> | HTML `<a>` for inline navigation. |
+| `LoadingSpinner` | `FunctionComponent`\<[`LoadingSpinnerProps`](#loadingspinnerprops)\> | Spinner shown while data or an action is pending. |
+| `Menu` | `FunctionComponent`\<[`MenuProps`](#menuprops)\> | Popover menu of actions anchored to a trigger element. |
+| `Modal` | `FunctionComponent`\<[`ModalProps`](#modalprops)\> | Overlay modal with customizable body content and footer. |
+| `MultiSelectComboBox` | `FunctionComponent`\<[`MultiSelectComboBoxProps`](#multiselectcomboboxprops)\> | Form field wrapping a typeahead `<input />` for multi-option selection. |
+| `NumberInput` | `FunctionComponent`\<[`NumberInputProps`](#numberinputprops)\> | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
+| `OrderedList` | `FunctionComponent`\<[`OrderedListProps`](#orderedlistprops)\> | HTML `<ol>` for a numbered list of items. |
+| `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
+| `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
+| `ProgressBar` | `FunctionComponent`\<[`ProgressBarProps`](#progressbarprops)\> | Step-based progress indicator for multi-step flows. |
+| `Radio` | `FunctionComponent`\<[`RadioProps`](#radioprops)\> | Form field wrapping a single `<input type="radio" />`. |
+| `RadioGroup` | `FunctionComponent`\<[`RadioGroupProps`](#radiogroupprops)\> | Form field grouping `<input type="radio" />` elements for single-option selection. |
+| `Select` | `FunctionComponent`\<[`SelectProps`](#selectprops)\> | Form field wrapping a single-select dropdown. |
+| `Switch` | `FunctionComponent`\<[`SwitchProps`](#switchprops)\> | Form field wrapping an `<input type="checkbox" />` styled as a toggle. |
+| `Table` | `FunctionComponent`\<[`TableProps`](#tableprops)\> | Tabular data display with headers, rows, optional footer, and empty state. |
+| `Tabs` | `FunctionComponent`\<[`TabsProps`](#tabsprops)\> | Tabbed navigation with associated content panels. |
+| `Text` | `FunctionComponent`\<[`TextProps`](#textprops)\> | Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. |
+| `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
+| `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
+| `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+
+***
+
+<a id="sharedfieldlayoutprops"></a>
+
+### SharedFieldLayoutProps
+
+Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
+
+#### Remarks
+
+Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
+so each control exposes a consistent surface for labeling, helper text, and validation messaging.
+
+#### Extends
+
+- `DataAttributes`
+
+#### Extended by
+
+- [`TextInputProps`](#textinputprops)
+- [`SelectProps`](#selectprops)
+- [`NumberInputProps`](#numberinputprops)
+- [`DatePickerProps`](#datepickerprops)
+- [`RadioGroupProps`](#radiogroupprops)
+- [`CheckboxGroupProps`](#checkboxgroupprops)
+- [`ComboBoxProps`](#comboboxprops)
+- [`MultiSelectComboBoxProps`](#multiselectcomboboxprops)
+- [`TextAreaProps`](#textareaprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the field |
+| `errorMessage?` | `string` | Error message to display when the field is invalid |
+| `isRequired?` | `boolean` | Indicates if the field is required |
+| `label` | `ReactNode` | Label text for the field |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
+
+***
+
+<a id="sharedhorizontalfieldlayoutprops"></a>
+
+### SharedHorizontalFieldLayoutProps
+
+Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
+
+#### Remarks
+
+Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
+Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.
+
+#### Extended by
+
+- [`CheckboxProps`](#checkboxprops)
+- [`SwitchProps`](#switchprops)
+- [`RadioProps`](#radioprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the field |
+| `errorMessage?` | `string` | Error message to display when the field is invalid |
+| `isRequired?` | `boolean` | Indicates if the field is required |
+| `label` | `ReactNode` | Label text for the field |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
+
+## Component Props
+
 <a id="alertprops"></a>
 
 ### AlertProps
@@ -131,11 +305,40 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `aria-label?` | `string` | `'Breadcrumbs'` | Accessibility label for the breadcrumbs |
-| `breadcrumbs` | `Breadcrumb`[] | `undefined` | Array of breadcrumbs |
+| `breadcrumbs` | [`Breadcrumb`](#breadcrumb)[] | `undefined` | Array of breadcrumbs |
 | `className?` | `string` | `undefined` | Additional CSS class name for the breadcrumbs container |
 | `currentBreadcrumbId?` | `string` | `undefined` | Current breadcrumb id |
 | `isSmallContainer?` | `boolean` | `false` | Passed to the breadcrumbs when the container size is small (640px and below) At this size, the breadcrumb typically does not have sufficient size to render completely. In our implementation, we switch to a condensed mobile version of the breadcrumbs |
 | `onClick?` | (`id`) => `void` | `undefined` | Event handler for breadcrumb navigation |
+
+***
+
+<a id="buttoniconprops"></a>
+
+### ButtonIconProps
+
+Props your `ButtonIcon` implementation must accept from the component adapter.
+Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
+
+#### Extends
+
+- [`ButtonProps`](#buttonprops)
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label` | `string` | `undefined` | Required aria-label for icon buttons to ensure accessibility |
+| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
+| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
+| `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
+| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
 
@@ -149,6 +352,10 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 #### Extends
 
 - `Pick`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `"name"` \| `"id"` \| `"className"` \| `"type"` \| `"onClick"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"form"` \| `"title"` \| `"tabIndex"`\>
+
+#### Extended by
+
+- [`ButtonIconProps`](#buttoniconprops)
 
 #### Properties
 
@@ -165,6 +372,25 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 | `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
 | `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
+
+***
+
+<a id="calendarpreviewprops"></a>
+
+### CalendarPreviewProps
+
+Props your `CalendarPreview` implementation must accept from the component adapter.
+Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `dateRange` | `object` | Date range to display in the calendar preview |
+| `dateRange.end` | `Date` | End date of the range |
+| `dateRange.label` | `string` | Label text for the date range |
+| `dateRange.start` | `Date` | Start date of the range |
+| `highlightDates?` | `object`[] | Array of dates to highlight with custom colors and labels |
 
 ***
 
@@ -186,23 +412,6 @@ Renders a content container with an optional overflow menu and a leading action 
 
 ***
 
-<a id="checkboxgroupoption"></a>
-
-### CheckboxGroupOption
-
-Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
-| `label` | `ReactNode` | Label text or content for the checkbox option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="checkboxgroupprops"></a>
 
 ### CheckboxGroupProps
@@ -212,7 +421,7 @@ Renders a form field wrapping multiple `<input type="checkbox" />` elements with
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`FieldsetHTMLAttributes`\<`HTMLFieldSetElement`\>, `"className"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`FieldsetHTMLAttributes`\<`HTMLFieldSetElement`\>, `"className"`\>
 
 #### Properties
 
@@ -241,7 +450,7 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"`\>
 
 #### Properties
 
@@ -261,21 +470,6 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 
 ***
 
-<a id="comboboxoption"></a>
-
-### ComboBoxOption
-
-Option entry for the ComboBox dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="comboboxprops"></a>
 
 ### ComboBoxProps
@@ -289,7 +483,7 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"`\>
 
 #### Properties
 
@@ -312,112 +506,6 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 
 ***
 
-<a id="componentscontexttype"></a>
-
-### ComponentsContextType
-
-Full map of UI components used by the SDK. Every property is a React component that the
-SDK renders internally — override any of them to substitute your own design system.
-
-Pass a `Partial<ComponentsContextType>` to `GustoProvider` via the `components` prop to
-replace specific components while keeping SDK defaults for the rest.
-
-To take full control of every UI component (and eliminate the React Aria dependency),
-pass a complete `ComponentsContextType` to `GustoProviderCustomUIAdapter` instead.
-All properties are then required except `PaginationControl` and `PayrollLoading`,
-which fall back to built-in SDK implementations when omitted.
-
-#### Examples
-
-**Partial override with GustoProvider**
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function App() {
-  return (
-    <GustoProvider
-      config={{ baseUrl: '/api/gusto/' }}
-      components={{
-        Button: MyButton,
-        TextInput: MyTextInput,
-      }}
-    >
-      <EmployeeOnboardingFlow companyId="company_123" />
-    </GustoProvider>
-  )
-}
-```
-
-**Full replacement with GustoProviderCustomUIAdapter**
-
-```tsx
-import { GustoProviderCustomUIAdapter, type ComponentsContextType } from '@gusto/embedded-react-sdk'
-
-const myComponents: ComponentsContextType = {
-  Alert: props => <MyAlert {...props} />,
-  Button: props => <MyButton {...props} />,
-  // ... all required components
-}
-
-function App() {
-  return (
-    <GustoProviderCustomUIAdapter
-      config={{ baseUrl: '/api/gusto/' }}
-      components={myComponents}
-    >
-      <EmployeeOnboardingFlow companyId="company_123" />
-    </GustoProviderCustomUIAdapter>
-  )
-}
-```
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Alert` | (`props`) => `Element` \| `null` | Status message with an optional dismiss action; used for errors, warnings, success, and info. |
-| `Badge` | (`props`) => `Element` \| `null` | Small inline label for status, counts, or tags; optionally dismissible. |
-| `Banner` | (`props`) => `Element` \| `null` | Full-width notification banner for prominent warnings and errors. |
-| `Box` | (`props`) => `Element` \| `null` | Sectioned layout container with distinct header, body, and footer areas. |
-| `BoxHeader` | (`props`) => `Element` \| `null` | Header section of a Box with a title, optional description, and optional inline action. |
-| `Breadcrumbs` | (`props`) => `Element` \| `null` | Navigation breadcrumb trail showing the user's position in a multi-step flow. |
-| `Button` | (`props`) => `Element` \| `null` | HTML `<button>` with primary, secondary, tertiary, and error variants. |
-| `ButtonIcon` | (`props`) => `Element` \| `null` | Icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies. |
-| `CalendarPreview` | (`props`) => `Element` \| `null` | Read-only calendar for visualizing a date range with optional highlighted dates. |
-| `Card` | (`props`) => `Element` \| `null` | Content container with an optional overflow menu and a leading action slot. |
-| `Checkbox` | (`props`) => `Element` \| `null` | Form field wrapping a single `<input type="checkbox" />`. |
-| `CheckboxGroup` | (`props`) => `Element` \| `null` | Form field grouping `<input type="checkbox" />` elements for multi-option selection. |
-| `ComboBox` | (`props`) => `Element` \| `null` | Form field wrapping a typeahead `<input />` for single-option selection. |
-| `DatePicker` | (`props`) => `Element` \| `null` | Form field wrapping an `<input type="date" />` with a calendar picker popover. |
-| `DateRangePicker` | (`props`) => `Element` \| `null` | Form field wrapping paired `<input type="date" />` elements for a date range. |
-| `DescriptionList` | (`props`) => `Element` \| `null` | HTML `<dl>` of term/description pairs in stacked or horizontal layout. |
-| `Dialog` | (`props`) => `Element` \| `null` | Modal confirmation dialog with a primary action and a cancel action. |
-| `FileInput` | (`props`) => `Element` \| `null` | Form field wrapping an `<input type="file" />`. |
-| `Heading` | (`props`) => `Element` \| `null` | HTML `<h1>`–`<h6>` with visual style controlled independently from semantic level. |
-| `Link` | (`props`) => `Element` \| `null` | HTML `<a>` for inline navigation. |
-| `LoadingSpinner` | (`props`) => `Element` \| `null` | Spinner shown while data or an action is pending. |
-| `Menu` | (`props`) => `Element` \| `null` | Popover menu of actions anchored to a trigger element. |
-| `Modal` | (`props`) => `Element` \| `null` | Overlay modal with customizable body content and footer. |
-| `MultiSelectComboBox` | (`props`) => `Element` \| `null` | Form field wrapping a typeahead `<input />` for multi-option selection. |
-| `NumberInput` | (`props`) => `Element` \| `null` | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
-| `OrderedList` | (`props`) => `Element` \| `null` | HTML `<ol>` for a numbered list of items. |
-| `PaginationControl?` | (`props`) => `Element` \| `null` | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
-| `PayrollLoading?` | (`props`) => `Element` \| `null` | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
-| `ProgressBar` | (`props`) => `Element` \| `null` | Step-based progress indicator for multi-step flows. |
-| `Radio` | (`props`) => `Element` \| `null` | Form field wrapping a single `<input type="radio" />`. |
-| `RadioGroup` | (`props`) => `Element` \| `null` | Form field grouping `<input type="radio" />` elements for single-option selection. |
-| `Select` | (`props`) => `Element` \| `null` | Form field wrapping a single-select dropdown. |
-| `Switch` | (`props`) => `Element` \| `null` | Form field wrapping an `<input type="checkbox" />` styled as a toggle. |
-| `Table` | (`props`) => `Element` \| `null` | Tabular data display with headers, rows, optional footer, and empty state. |
-| `Tabs` | (`props`) => `Element` \| `null` | Tabbed navigation with associated content panels. |
-| `Text` | (`props`) => `Element` \| `null` | Body text element rendered as `<p>`, `<span>`, `<div>`, or `<pre>`. |
-| `TextArea` | (`props`) => `Element` \| `null` | Form field wrapping a `<textarea>`. |
-| `TextInput` | (`props`) => `Element` \| `null` | Form field wrapping an `<input />`. |
-| `UnorderedList` | (`props`) => `Element` \| `null` | HTML `<ul>` for an unordered list of items. |
-
-***
-
 <a id="datepickerprops"></a>
 
 ### DatePickerProps
@@ -427,7 +515,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"`\>
 
 #### Properties
 
@@ -449,21 +537,6 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `Date` \| `null` | Currently selected date value |
-
-***
-
-<a id="daterange"></a>
-
-### DateRange
-
-Inclusive start/end pair representing a selected date range.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `end` | `Date` | Last date in the range, inclusive. |
-| `start` | `Date` | First date in the range, inclusive. |
 
 ***
 
@@ -501,7 +574,7 @@ Renders an HTML `<dl>` of term/description pairs in either a stacked or horizont
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `className?` | `string` | `undefined` | Additional class name applied to the root `<dl>`. |
-| `items` | `DescriptionListItem`[] | `undefined` | Term/description pairs to render in order. |
+| `items` | [`DescriptionListItem`](#descriptionlistitem)[] | `undefined` | Term/description pairs to render in order. |
 | `layout?` | `"stacked"` \| `"horizontal"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
 | `showSeparators?` | `boolean` | `true` | Whether to render dividers between rows. Defaults to `true`. |
 
@@ -540,7 +613,7 @@ Renders a form field wrapping an `<input type="file" />` with a label, descripti
 
 #### Extends
 
-- `Omit`\<[`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops), `"shouldVisuallyHideLabel"`\>
+- `Omit`\<[`SharedFieldLayoutProps`](#sharedfieldlayoutprops), `"shouldVisuallyHideLabel"`\>
 
 #### Properties
 
@@ -584,6 +657,28 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 
 ***
 
+<a id="linkprops"></a>
+
+### LinkProps
+
+Props your `Link` implementation must accept from the component adapter.
+Renders an HTML anchor (`<a>`) for inline navigation.
+
+#### Extends
+
+- `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `aria-describedby?` | `string` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `children?` | `ReactNode` | Content to be displayed inside the link |
+
+***
+
 <a id="loadingspinnerprops"></a>
 
 ### LoadingSpinnerProps
@@ -602,29 +697,6 @@ Renders a spinner indicating that content is loading.
 | `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
 | `size?` | `"sm"` \| `"lg"` | `'lg'` | Size of the spinner |
 | `style?` | `"inline"` \| `"block"` | `'block'` | Display style of the spinner |
-
-***
-
-<a id="menuitem"></a>
-
-### MenuItem
-
-Action entry your `Menu` implementation must accept for each entry in its `items` array
-from the component adapter.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `href?` | `string` | Optional URL to navigate to when clicked |
-| `icon?` | `ReactNode` | Optional icon to display before the label |
-| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
-| `label` | `string` | Text label for the menu item |
-| `onClick` | () => `void` | Callback function when the menu item is clicked |
 
 ***
 
@@ -673,21 +745,6 @@ Renders a modal overlay with body and footer content.
 
 ***
 
-<a id="multiselectcomboboxoption"></a>
-
-### MultiSelectComboBoxOption
-
-Option entry for a `MultiSelectComboBox` dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="multiselectcomboboxprops"></a>
 
 ### MultiSelectComboBoxProps
@@ -701,7 +758,7 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"`\>
 
 #### Properties
 
@@ -732,7 +789,7 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"min"` \| `"max"` \| `"name"` \| `"id"` \| `"placeholder"` \| `"className"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"min"` \| `"max"` \| `"name"` \| `"id"` \| `"placeholder"` \| `"className"`\>
 
 #### Properties
 
@@ -754,6 +811,53 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 | `onChange?` | (`value`) => `void` | Callback when number input value changes |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `number` | Current value of the number input |
+
+***
+
+<a id="orderedlistprops"></a>
+
+### OrderedListProps
+
+Props your `OrderedList` implementation must accept from the component adapter.
+Renders an ordered (numbered) list of items.
+
+#### Extends
+
+- [`BaseListProps`](#baselistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
+
+***
+
+<a id="paginationcontrolprops"></a>
+
+### PaginationControlProps
+
+Props your `PaginationControl` implementation must accept from the component adapter.
+Renders pagination controls for navigating between pages of results.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `currentPage` | `number` | The currently active page (1-based). |
+| `handleFirstPage` | () => `void` | Navigate to the first page. |
+| `handleItemsPerPageChange` | (`n`) => `void` | Called when the user changes the number of items displayed per page. |
+| `handleLastPage` | () => `void` | Navigate to the last page. |
+| `handleNextPage` | () => `void` | Navigate to the next page. |
+| `handlePreviousPage` | () => `void` | Navigate to the previous page. |
+| `isFetching?` | `boolean` | Whether a page fetch is in progress. |
+| `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
+| `totalCount?` | `number` | Total number of items across all pages. |
+| `totalPages` | `number` | Total number of pages. |
 
 ***
 
@@ -792,23 +896,6 @@ Renders a step-based progress indicator for multi-step flows.
 
 ***
 
-<a id="radiogroupoption"></a>
-
-### RadioGroupOption
-
-Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the radio option |
-| `isDisabled?` | `boolean` | Disables this specific radio option |
-| `label` | `ReactNode` | Label text or content for the radio option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="radiogroupprops"></a>
 
 ### RadioGroupProps
@@ -818,7 +905,7 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`FieldsetHTMLAttributes`\<`HTMLFieldSetElement`\>, `"className"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`FieldsetHTMLAttributes`\<`HTMLFieldSetElement`\>, `"className"`\>
 
 #### Properties
 
@@ -848,7 +935,7 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"` \| `"onBlur"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"className"` \| `"onBlur"`\>
 
 #### Properties
 
@@ -867,21 +954,6 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 
 ***
 
-<a id="selectoption"></a>
-
-### SelectOption
-
-Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
 <a id="selectprops"></a>
 
 ### SelectProps
@@ -891,7 +963,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`SelectHTMLAttributes`\<`HTMLSelectElement`\>, `"id"` \| `"name"` \| `"className"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`SelectHTMLAttributes`\<`HTMLSelectElement`\>, `"id"` \| `"name"` \| `"className"`\>
 
 #### Properties
 
@@ -923,7 +995,7 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 
 #### Extends
 
-- [`SharedHorizontalFieldLayoutProps`](index.md#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"`\>.`Pick`\<`AriaAttributes`, `"aria-controls"`\>
+- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"`\>.`Pick`\<`AriaAttributes`, `"aria-controls"`\>
 
 #### Properties
 
@@ -942,21 +1014,6 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 | `onChange?` | (`checked`) => `void` | `undefined` | Callback when switch state changes |
 | `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `boolean` | `undefined` | Current checked state of the switch |
-
-***
-
-<a id="tabledata"></a>
-
-### TableData
-
-Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to be displayed in the table cell |
-| `key` | `string` | Unique identifier for the table cell |
 
 ***
 
@@ -987,21 +1044,6 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 ***
 
-<a id="tablerow"></a>
-
-### TableRow
-
-Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
-| `key` | `string` | Unique identifier for the table row |
-
-***
-
 <a id="tabsprops"></a>
 
 ### TabsProps
@@ -1018,7 +1060,7 @@ Renders tabbed navigation with associated content panels.
 | `className?` | `string` | Additional CSS class name |
 | `onSelectionChange` | (`id`) => `void` | Callback when tab selection changes |
 | `selectedId?` | `string` | Currently selected tab id |
-| `tabs` | `TabProps`[] | Array of tab configuration objects |
+| `tabs` | [`TabProps`](#tabprops)[] | Array of tab configuration objects |
 
 ***
 
@@ -1031,7 +1073,7 @@ Renders a form field wrapping a `<textarea>` with a label, description, and erro
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`TextareaHTMLAttributes`\<`HTMLTextAreaElement`\>, `"name"` \| `"id"` \| `"placeholder"` \| `"className"` \| `"cols"`\>.`Pick`\<`TextareaHTMLAttributes`\<`HTMLTextAreaElement`\>, `"aria-describedby"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`TextareaHTMLAttributes`\<`HTMLTextAreaElement`\>, `"name"` \| `"id"` \| `"placeholder"` \| `"className"` \| `"cols"`\>.`Pick`\<`TextareaHTMLAttributes`\<`HTMLTextAreaElement`\>, `"aria-describedby"`\>
 
 #### Properties
 
@@ -1062,7 +1104,7 @@ Renders a form field wrapping an `<input />` with a label, description, error me
 
 #### Extends
 
-- [`SharedFieldLayoutProps`](index.md#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"placeholder"` \| `"className"` \| `"type"` \| `"min"` \| `"max"` \| `"maxLength"`\>.`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"aria-describedby"` \| `"aria-labelledby"`\>
+- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops).`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"name"` \| `"id"` \| `"placeholder"` \| `"className"` \| `"type"` \| `"min"` \| `"max"` \| `"maxLength"`\>.`Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"aria-describedby"` \| `"aria-labelledby"`\>
 
 #### Properties
 
@@ -1108,97 +1150,167 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 | `variant?` | `"supporting"` \| `"leading"` | `undefined` | Visual style variant of the text |
 | `weight?` | `"bold"` \| `"medium"` \| `"regular"` \| `"semibold"` | `undefined` | Font weight of the text |
 
-## Type Aliases
-
-<a id="buttoniconprops"></a>
-
-### ButtonIconProps
-
-> **ButtonIconProps** = [`ButtonProps`](#buttonprops) & `object`
-
-Props your `ButtonIcon` implementation must accept from the component adapter.
-Renders an icon-only `<button>`; requires `aria-label` since there is no visible text for assistive technologies.
-
-#### Type Declaration
-
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `aria-label` | `string` | Required aria-label for icon buttons to ensure accessibility |
-
 ***
 
-<a id="calendarpreviewprops"></a>
+<a id="unorderedlistprops"></a>
 
-### CalendarPreviewProps
+### UnorderedListProps
 
-> **CalendarPreviewProps** = `object`
+Props your `UnorderedList` implementation must accept from the component adapter.
+Renders an unordered (bulleted) list of items.
 
-Props your `CalendarPreview` implementation must accept from the component adapter.
-Renders a read-only calendar display for visualizing a date range with optional highlighted dates.
+#### Extends
+
+- [`BaseListProps`](#baselistprops)
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `dateRange` | `object` | Date range to display in the calendar preview |
-| `dateRange.end` | `Date` | End date of the range |
-| `dateRange.label` | `string` | Label text for the date range |
-| `dateRange.start` | `Date` | Start date of the range |
-| `highlightDates?` | `object`[] | Array of dates to highlight with custom colors and labels |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
 
-***
+## Utility Types
 
-<a id="linkprops"></a>
+<a id="baselistprops"></a>
 
-### LinkProps
+### BaseListProps
 
-> **LinkProps** = `Pick`\<`AnchorHTMLAttributes`\<`HTMLAnchorElement`\>, `"href"` \| `"target"` \| `"rel"` \| `"download"` \| `"className"` \| `"id"` \| `"onKeyDown"` \| `"onKeyUp"` \| `"aria-label"` \| `"aria-labelledby"` \| `"aria-describedby"` \| `"title"`\> & `object`
+Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
 
-Props your `Link` implementation must accept from the component adapter.
-Renders an HTML anchor (`<a>`) for inline navigation.
+#### Extended by
 
-#### Type Declaration
-
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `children?` | `ReactNode` | Content to be displayed inside the link |
-
-***
-
-<a id="orderedlistprops"></a>
-
-### OrderedListProps
-
-> **OrderedListProps** = `BaseListProps`
-
-Props your `OrderedList` implementation must accept from the component adapter.
-Renders an ordered (numbered) list of items.
-
-***
-
-<a id="paginationcontrolprops"></a>
-
-### PaginationControlProps
-
-> **PaginationControlProps** = `object`
-
-Props your `PaginationControl` implementation must accept from the component adapter.
-Renders pagination controls for navigating between pages of results.
+- [`OrderedListProps`](#orderedlistprops)
+- [`UnorderedListProps`](#unorderedlistprops)
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `currentPage` | `number` | The currently active page (1-based). |
-| `handleFirstPage` | () => `void` | Navigate to the first page. |
-| `handleItemsPerPageChange` | (`n`) => `void` | Called when the user changes the number of items displayed per page. |
-| `handleLastPage` | () => `void` | Navigate to the last page. |
-| `handleNextPage` | () => `void` | Navigate to the next page. |
-| `handlePreviousPage` | () => `void` | Navigate to the previous page. |
-| `isFetching?` | `boolean` | Whether a page fetch is in progress. |
-| `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
-| `totalCount?` | `number` | Total number of items across all pages. |
-| `totalPages` | `number` | Total number of pages. |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+| `items` | `ReactNode`[] | The list items to render |
+
+***
+
+<a id="breadcrumb"></a>
+
+### Breadcrumb
+
+Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+
+***
+
+<a id="checkboxgroupoption"></a>
+
+### CheckboxGroupOption
+
+Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
+| `label` | `ReactNode` | Label text or content for the checkbox option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="comboboxoption"></a>
+
+### ComboBoxOption
+
+Option entry for the ComboBox dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="daterange"></a>
+
+### DateRange
+
+Inclusive start/end pair representing a selected date range.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `end` | `Date` | Last date in the range, inclusive. |
+| `start` | `Date` | First date in the range, inclusive. |
+
+***
+
+<a id="descriptionlistitem"></a>
+
+### DescriptionListItem
+
+Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
+| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
+
+***
+
+<a id="menuitem"></a>
+
+### MenuItem
+
+Action entry your `Menu` implementation must accept for each entry in its `items` array
+from the component adapter.
+
+#### Extends
+
+- `DataAttributes`
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `href?` | `string` | Optional URL to navigate to when clicked |
+| `icon?` | `ReactNode` | Optional icon to display before the label |
+| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
+| `label` | `string` | Text label for the menu item |
+| `onClick` | () => `void` | Callback function when the menu item is clicked |
+
+***
+
+<a id="multiselectcomboboxoption"></a>
+
+### MultiSelectComboBoxOption
+
+Option entry for a `MultiSelectComboBox` dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
 
 ***
 
@@ -1210,11 +1322,79 @@ Renders pagination controls for navigating between pages of results.
 
 ***
 
-<a id="unorderedlistprops"></a>
+<a id="radiogroupoption"></a>
 
-### UnorderedListProps
+### RadioGroupOption
 
-> **UnorderedListProps** = `BaseListProps`
+Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
 
-Props your `UnorderedList` implementation must accept from the component adapter.
-Renders an unordered (bulleted) list of items.
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional description text for the radio option |
+| `isDisabled?` | `boolean` | Disables this specific radio option |
+| `label` | `ReactNode` | Label text or content for the radio option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="selectoption"></a>
+
+### SelectOption
+
+Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="tabledata"></a>
+
+### TableData
+
+Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to be displayed in the table cell |
+| `key` | `string` | Unique identifier for the table cell |
+
+***
+
+<a id="tablerow"></a>
+
+### TableRow
+
+Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
+| `key` | `string` | Unique identifier for the table row |
+
+***
+
+<a id="tabprops"></a>
+
+### TabProps
+
+Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to display in the tab panel |
+| `id` | `string` | Unique identifier for the tab |
+| `isDisabled?` | `boolean` | Whether the tab is disabled |
+| `label` | `ReactNode` | Label to display in the tab button |
