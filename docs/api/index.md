@@ -18,6 +18,7 @@ custom_edit_url: null
 | ------ | ------ |
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
 | [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
+| [InformationRequests](InformationRequests/flows.md) | - |
 | [Payroll](Payroll/flows.md) | - |
 | [TimeOff](TimeOff/flows.md) | - |
 
