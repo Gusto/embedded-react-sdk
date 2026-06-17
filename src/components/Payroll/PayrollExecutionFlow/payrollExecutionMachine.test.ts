@@ -18,7 +18,7 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
       header: {
-        type: 'breadcrumbs' as const,
+        indicator: 'breadcrumbs' as const,
         breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
         currentBreadcrumbId: initialState,
       },
@@ -71,7 +71,7 @@ describe('payrollExecutionMachine', () => {
           companyId: 'test-company',
           payrollUuid: 'payroll-123',
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
             currentBreadcrumbId: 'configuration' as const,
           },
@@ -147,9 +147,9 @@ describe('payrollExecutionMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_RECEIPT_GET)
 
       expect(service.machine.current).toBe('receipts')
-      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(service.context.header?.indicator).toBe('breadcrumbs')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('receipts')
@@ -228,7 +228,7 @@ describe('payrollExecutionMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
 
       const allBreadcrumbs =
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? (service.context.header.breadcrumbs ?? {})
           : {}
       for (const trail of Object.values(allBreadcrumbs)) {

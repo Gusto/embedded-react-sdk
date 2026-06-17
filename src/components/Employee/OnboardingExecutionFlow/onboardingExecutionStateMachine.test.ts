@@ -7,7 +7,7 @@ import { CompensationContextual } from '@/components/Employee/Compensation'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
+import type { BackConfig } from '@/components/Flow/useFlow'
 
 type State = keyof typeof onboardingExecutionMachine
 
@@ -34,25 +34,29 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
   ;(service.send as SendFunction<string>)({ type, payload })
 }
 
-const stepLabelHeader = (stepKey: string) => ({
-  type: 'minimal',
-  back: {
-    labelKey: stepKey,
-    namespace: 'Employee.OnboardingExecutionFlow',
-    event: componentEvents.EMPLOYEE_ONBOARDING_BACK,
-  },
+const stepHeader = (currentStep: number, totalSteps: number, backLabelKey?: string) => ({
+  indicator: 'progress',
+  currentStep,
+  totalSteps,
+  ...(backLabelKey && {
+    back: {
+      labelKey: backLabelKey,
+      namespace: 'Employee.OnboardingExecutionFlow',
+      event: componentEvents.EMPLOYEE_ONBOARDING_BACK,
+    },
+  }),
 })
 
 describe('onboardingExecutionMachine back navigation', () => {
   describe('header configuration', () => {
-    it('starts with no header on employeeProfile', () => {
+    it('starts with no header on employeeProfile (test-only initial context bypasses production initial header builder)', () => {
       const service = createService('employeeProfile')
 
       expect(service.machine.current).toBe('employeeProfile')
       expect(service.context.header).toBeNull()
     })
 
-    it('labels the compensation back button with the previous step (employeeProfile)', () => {
+    it('builds a step 2 of 6 progress header on compensation labeled with employeeProfile', () => {
       const service = createService('employeeProfile')
 
       send(service, componentEvents.EMPLOYEE_PROFILE_DONE, {
@@ -62,10 +66,10 @@ describe('onboardingExecutionMachine back navigation', () => {
       })
 
       expect(service.machine.current).toBe('compensation')
-      expect(service.context.header).toMatchObject(stepLabelHeader('employeeProfile'))
+      expect(service.context.header).toEqual(stepHeader(2, 6, 'employeeProfile'))
     })
 
-    it('labels the federalTaxes back button with the previous step (compensation)', () => {
+    it('builds a step 3 of 6 progress header on federalTaxes labeled with compensation', () => {
       const service = createService('compensation', {
         onboardingStatus: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
       })
@@ -73,10 +77,10 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_COMPENSATION_DONE)
 
       expect(service.machine.current).toBe('federalTaxes')
-      expect(service.context.header).toMatchObject(stepLabelHeader('compensation'))
+      expect(service.context.header).toEqual(stepHeader(3, 6, 'compensation'))
     })
 
-    it('labels the stateTaxes back button with the previous step (federalTaxes)', () => {
+    it('builds a step 4 of 6 progress header on stateTaxes labeled with federalTaxes', () => {
       const service = createService('federalTaxes', {
         onboardingStatus: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
       })
@@ -84,10 +88,10 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
 
       expect(service.machine.current).toBe('stateTaxes')
-      expect(service.context.header).toMatchObject(stepLabelHeader('federalTaxes'))
+      expect(service.context.header).toEqual(stepHeader(4, 6, 'federalTaxes'))
     })
 
-    it('labels the paymentMethod back button with the previous step (stateTaxes)', () => {
+    it('builds a step 5 of 6 progress header on paymentMethod labeled with stateTaxes', () => {
       const service = createService('stateTaxes', {
         onboardingStatus: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
       })
@@ -95,19 +99,19 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_STATE_TAXES_DONE)
 
       expect(service.machine.current).toBe('paymentMethod')
-      expect(service.context.header).toMatchObject(stepLabelHeader('stateTaxes'))
+      expect(service.context.header).toEqual(stepHeader(5, 6, 'stateTaxes'))
     })
 
-    it('labels the deductions back button with paymentMethod in the non-self-onboarding path', () => {
+    it('builds a step 6 of 6 progress header on deductions labeled with paymentMethod (non-self path)', () => {
       const service = createService('paymentMethod')
 
       send(service, componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE)
 
       expect(service.machine.current).toBe('deductions')
-      expect(service.context.header).toMatchObject(stepLabelHeader('paymentMethod'))
+      expect(service.context.header).toEqual(stepHeader(6, 6, 'paymentMethod'))
     })
 
-    it('labels the deductions back button with compensation in the self-onboarding path', () => {
+    it('builds a step 3 of 3 progress header on deductions labeled with compensation (self-onboarding path)', () => {
       const service = createService('compensation', {
         onboardingStatus: EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
       })
@@ -115,16 +119,16 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_COMPENSATION_DONE)
 
       expect(service.machine.current).toBe('deductions')
-      expect(service.context.header).toMatchObject(stepLabelHeader('compensation'))
+      expect(service.context.header).toEqual(stepHeader(3, 3, 'compensation'))
     })
 
-    it('labels the employeeDocuments back button with the previous step (deductions)', () => {
+    it('builds a step 7 of 7 progress header on employeeDocuments labeled with deductions', () => {
       const service = createService('deductions', { withEmployeeI9: true })
 
       send(service, componentEvents.EMPLOYEE_DEDUCTION_DONE)
 
       expect(service.machine.current).toBe('employeeDocuments')
-      expect(service.context.header).toMatchObject(stepLabelHeader('deductions'))
+      expect(service.context.header).toEqual(stepHeader(7, 7, 'deductions'))
     })
 
     it('clears the header on the summary state', () => {
@@ -138,14 +142,14 @@ describe('onboardingExecutionMachine back navigation', () => {
   })
 
   describe('back transitions', () => {
-    it('returns to employeeProfile from compensation and clears the header', () => {
+    it('returns to employeeProfile from compensation and renders a step 1 progress header', () => {
       const service = createService('compensation')
 
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('employeeProfile')
       expect(service.context.component).toBe(ProfileContextual)
-      expect(service.context.header).toBeNull()
+      expect(service.context.header).toEqual(stepHeader(1, 6))
     })
 
     it('returns to compensation from federalTaxes and relabels for employeeProfile', () => {
@@ -155,7 +159,7 @@ describe('onboardingExecutionMachine back navigation', () => {
 
       expect(service.machine.current).toBe('compensation')
       expect(service.context.component).toBe(CompensationContextual)
-      expect(service.context.header).toMatchObject(stepLabelHeader('employeeProfile'))
+      expect(service.context.header).toEqual(stepHeader(2, 6, 'employeeProfile'))
     })
 
     it('returns to federalTaxes from stateTaxes and relabels for compensation', () => {
@@ -164,7 +168,7 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('federalTaxes')
-      expect(service.context.header).toMatchObject(stepLabelHeader('compensation'))
+      expect(service.context.header).toEqual(stepHeader(3, 6, 'compensation'))
     })
 
     it('returns to stateTaxes from paymentMethod and relabels for federalTaxes', () => {
@@ -173,7 +177,7 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('stateTaxes')
-      expect(service.context.header).toMatchObject(stepLabelHeader('federalTaxes'))
+      expect(service.context.header).toEqual(stepHeader(4, 6, 'federalTaxes'))
     })
 
     it('returns to deductions from employeeDocuments and relabels for paymentMethod (non-self)', () => {
@@ -184,7 +188,7 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('deductions')
-      expect(service.context.header).toMatchObject(stepLabelHeader('paymentMethod'))
+      expect(service.context.header).toEqual(stepHeader(6, 6, 'paymentMethod'))
     })
 
     it('returns to deductions from employeeDocuments and relabels for compensation (self)', () => {
@@ -195,7 +199,7 @@ describe('onboardingExecutionMachine back navigation', () => {
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('deductions')
-      expect(service.context.header).toMatchObject(stepLabelHeader('compensation'))
+      expect(service.context.header).toEqual(stepHeader(3, 3, 'compensation'))
     })
 
     it('returns to paymentMethod from deductions when not self-onboarding and relabels for stateTaxes', () => {
@@ -207,7 +211,7 @@ describe('onboardingExecutionMachine back navigation', () => {
 
       expect(service.machine.current).toBe('paymentMethod')
       expect(service.context.component).toBe(PaymentMethodContextual)
-      expect(service.context.header).toMatchObject(stepLabelHeader('stateTaxes'))
+      expect(service.context.header).toEqual(stepHeader(5, 6, 'stateTaxes'))
     })
 
     it('returns to compensation from deductions when self-onboarding and relabels for employeeProfile', () => {
@@ -219,7 +223,7 @@ describe('onboardingExecutionMachine back navigation', () => {
 
       expect(service.machine.current).toBe('compensation')
       expect(service.context.component).toBe(CompensationContextual)
-      expect(service.context.header).toMatchObject(stepLabelHeader('employeeProfile'))
+      expect(service.context.header).toEqual(stepHeader(2, 3, 'employeeProfile'))
     })
 
     it('does not transition out of summary on back (no back edge defined)', () => {
@@ -244,43 +248,34 @@ describe('onboardingExecutionMachine back navigation', () => {
     })
   })
 
-  describe('initialHeader (nested usage)', () => {
-    const backToListHeader: FlowHeaderConfig = {
-      type: 'minimal',
-      back: {
-        labelKey: 'backToListCta',
-        namespace: 'Employee.EmployeeList',
-        event: componentEvents.EMPLOYEES_LIST,
-      },
+  describe('initialBack (nested usage)', () => {
+    const backToListConfig: BackConfig = {
+      labelKey: 'backToListCta',
+      namespace: 'Employee.EmployeeList',
+      event: componentEvents.EMPLOYEES_LIST,
     }
 
-    it('uses the supplied initialHeader as the first-step header', () => {
-      const service = createService('employeeProfile', {
-        header: backToListHeader,
-        initialHeader: backToListHeader,
-      })
-
-      expect(service.context.header).toEqual(backToListHeader)
-    })
-
-    it('restores initialHeader when navigating back from compensation to employeeProfile', () => {
+    it('preserves the initialBack affordance on the step 1 header restored when navigating back to employeeProfile', () => {
       const service = createService('compensation', {
-        initialHeader: backToListHeader,
+        initialBack: backToListConfig,
       })
 
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('employeeProfile')
-      expect(service.context.header).toEqual(backToListHeader)
+      expect(service.context.header).toEqual({
+        ...stepHeader(1, 6),
+        back: backToListConfig,
+      })
     })
 
-    it('falls back to null on first-step when no initialHeader is supplied', () => {
+    it('renders a step 1 progress header with no back affordance when no initialBack is supplied', () => {
       const service = createService('compensation')
 
       send(service, componentEvents.EMPLOYEE_ONBOARDING_BACK)
 
       expect(service.machine.current).toBe('employeeProfile')
-      expect(service.context.header).toBeNull()
+      expect(service.context.header).toEqual(stepHeader(1, 6))
     })
   })
 })

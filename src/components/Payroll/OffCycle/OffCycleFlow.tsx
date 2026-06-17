@@ -27,7 +27,7 @@ export function OffCycleFlow({
           payrollType,
           withReimbursements,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
             currentBreadcrumbId: 'createOffCyclePayroll',
           },

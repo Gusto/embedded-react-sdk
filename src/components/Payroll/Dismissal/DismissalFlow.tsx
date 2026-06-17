@@ -29,7 +29,7 @@ export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: Dis
         employeeId,
         payrollUuid: payrollId,
         header: {
-          type: 'breadcrumbs' as const,
+          indicator: 'breadcrumbs' as const,
           breadcrumbs: buildBreadcrumbs(dismissalBreadcrumbsNodes),
           currentBreadcrumbId: shouldAutoAdvance ? undefined : 'payPeriodSelection',
         },

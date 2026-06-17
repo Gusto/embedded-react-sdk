@@ -16,50 +16,49 @@ interface CtaConfig {
 }
 
 /**
- * Discriminated union describing the chrome rendered above the active flow component.
+ * Configuration for the optional back affordance rendered above the active flow component.
  *
  * @remarks
- * Each variant declares only the data it needs:
- *
- * - `minimal` — back button. Optional `cta` for an extra control next to it.
- * - `progress` — step indicator. Requires `currentStep` / `totalSteps`, plus optional `cta`.
- * - `breadcrumbs` — breadcrumb trail. Optional `currentBreadcrumbId` / `breadcrumbs` (typically
- *   populated via `buildBreadcrumbs` + `updateBreadcrumbs`), plus optional `cta`.
- *
- * `cta` carries the same meaning across every variant: an optional component rendered as part
- * of the header chrome.
+ * Routes the back click to a flow-specific event (use a dedicated `*_BACK` event constant
+ * per flow rather than `CANCEL`, which bubbles to parent flows).
  *
  * @internal
  */
-export type FlowHeaderConfig =
+export interface BackConfig {
+  labelKey: string
+  namespace: keyof CustomTypeOptions['resources']
+  event: EventType
+}
+
+/**
+ * Configuration for the chrome rendered above the active flow component.
+ *
+ * @remarks
+ * Three independent axes — none are mutually exclusive:
+ *
+ * - `back` — optional back affordance. Renders a destination-labeled back button above the
+ *   indicator row. Omit to hide.
+ * - `cta` — optional component (e.g. "Save and exit") composed alongside the indicator.
+ * - `indicator` — progress indicator variant:
+ *   - `none` — no indicator (use when `back` and/or `cta` are the only chrome).
+ *   - `progress` — step indicator. Requires `currentStep` / `totalSteps`.
+ *   - `breadcrumbs` — breadcrumb trail. Optional `currentBreadcrumbId` / `breadcrumbs`
+ *     (typically populated via `buildBreadcrumbs` + `updateBreadcrumbs`).
+ *
+ * @internal
+ */
+export type FlowHeaderConfig = {
+  back?: BackConfig
+  cta?: React.ComponentType
+} & (
+  | { indicator: 'none' }
+  | { indicator: 'progress'; currentStep: number; totalSteps: number }
   | {
-      type: 'minimal'
-      /**
-       * Optional override for the default back button (defaults to
-       * `t('back')` + `componentEvents.CANCEL`). Provide both `label` and
-       * `event` to render a flow-specific affordance — e.g. "Back to
-       * employees" routed to a dedicated state-machine transition so nested
-       * flows don't intercept it as a generic cancel.
-       */
-      back?: {
-        labelKey: string
-        namespace: keyof CustomTypeOptions['resources']
-        event: EventType
-      }
-      cta?: React.ComponentType
-    }
-  | {
-      type: 'progress'
-      currentStep: number
-      totalSteps: number
-      cta?: React.ComponentType
-    }
-  | {
-      type: 'breadcrumbs'
+      indicator: 'breadcrumbs'
       currentBreadcrumbId?: string
       breadcrumbs?: BreadcrumbTrail
-      cta?: React.ComponentType
     }
+)
 
 /**
  * Builds a `(labelKey) => FlowHeaderConfig` factory bound to a flow-specific
@@ -92,7 +91,7 @@ export function createBackHeaderFactory({
   event: EventType
 }): (labelKey: string) => FlowHeaderConfig {
   return (labelKey: string) => ({
-    type: 'minimal',
+    indicator: 'none',
     back: { labelKey, namespace, event },
   })
 }

@@ -17,7 +17,7 @@ function createTestMachine() {
       endDate: '2025-08-27',
       payScheduleUuid: 'schedule-uuid-1',
       header: {
-        type: 'breadcrumbs' as const,
+        indicator: 'breadcrumbs' as const,
         breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
         currentBreadcrumbId: 'createTransitionPayroll',
       },
@@ -50,7 +50,7 @@ describe('transitionStateMachine', () => {
       expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBeUndefined()
@@ -89,9 +89,9 @@ describe('transitionStateMachine', () => {
 
       expect(service.machine.current).toBe('createTransitionPayroll')
       expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(service.context.header?.indicator).toBe('breadcrumbs')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('createTransitionPayroll')

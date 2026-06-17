@@ -25,6 +25,12 @@ const renderWithFlow = (overrides: Partial<FlowContextInterface>) => {
   }
 }
 
+const backConfig = {
+  labelKey: 'back',
+  namespace: 'common' as const,
+  event: componentEvents.CANCEL,
+}
+
 describe('FlowHeader', () => {
   describe('absent chrome', () => {
     const expectNoHeaderChrome = () => {
@@ -46,21 +52,26 @@ describe('FlowHeader', () => {
     it('renders nothing when there is no active component, even if header is set', () => {
       renderWithFlow({
         component: null,
-        header: { type: 'minimal' },
+        header: { indicator: 'none', back: backConfig },
       })
+      expectNoHeaderChrome()
+    })
+
+    it('renders nothing when indicator is none with no back and no cta', () => {
+      renderWithFlow({ header: { indicator: 'none' } })
       expectNoHeaderChrome()
     })
   })
 
-  describe('minimal header', () => {
-    it('renders a Back button', () => {
-      renderWithFlow({ header: { type: 'minimal' } })
+  describe('back affordance', () => {
+    it('renders a back button labeled from the configured translation', () => {
+      renderWithFlow({ header: { indicator: 'none', back: backConfig } })
       expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
     })
 
-    it('emits a CANCEL event when the Back button is clicked', async () => {
+    it('emits the configured back event when clicked', async () => {
       const user = userEvent.setup()
-      const { onEvent } = renderWithFlow({ header: { type: 'minimal' } })
+      const { onEvent } = renderWithFlow({ header: { indicator: 'none', back: backConfig } })
 
       await user.click(screen.getByRole('button', { name: 'Back' }))
 
@@ -68,24 +79,55 @@ describe('FlowHeader', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL, undefined)
     })
 
-    it('renders the optional cta alongside the Back button', () => {
+    it('renders the back button alongside a progress indicator', () => {
+      renderWithFlow({
+        header: { indicator: 'progress', currentStep: 2, totalSteps: 5, back: backConfig },
+      })
+
+      expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
+      expect(screen.getByRole('progressbar')).toBeInTheDocument()
+    })
+
+    it('renders the back button alongside breadcrumbs', () => {
+      const breadcrumbs: BreadcrumbTrail = {
+        'step-one': [{ id: 'step-one', label: 'Step One' }],
+      }
+      renderWithFlow({
+        header: {
+          indicator: 'breadcrumbs',
+          currentBreadcrumbId: 'step-one',
+          breadcrumbs,
+          back: backConfig,
+        },
+      })
+
+      expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
+      expect(screen.getByText('Step One')).toBeInTheDocument()
+    })
+  })
+
+  describe('none indicator', () => {
+    it('renders the optional cta alongside the back button', () => {
       const Cta = () => <button type="button">Save and exit</button>
-      renderWithFlow({ header: { type: 'minimal', cta: Cta } })
+      renderWithFlow({ header: { indicator: 'none', back: backConfig, cta: Cta } })
 
       expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Save and exit' })).toBeInTheDocument()
     })
 
-    it('does not render a cta when none is provided', () => {
-      renderWithFlow({ header: { type: 'minimal' } })
-      expect(screen.getAllByRole('button')).toHaveLength(1)
+    it('renders only the cta when back is absent', () => {
+      const Cta = () => <button type="button">Save and exit</button>
+      renderWithFlow({ header: { indicator: 'none', cta: Cta } })
+
+      expect(screen.getByRole('button', { name: 'Save and exit' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument()
     })
   })
 
-  describe('progress header', () => {
+  describe('progress indicator', () => {
     it('renders a progress bar with the correct step values', () => {
       renderWithFlow({
-        header: { type: 'progress', currentStep: 2, totalSteps: 5 },
+        header: { indicator: 'progress', currentStep: 2, totalSteps: 5 },
       })
 
       const progressBar = screen.getByRole('progressbar')
@@ -94,9 +136,9 @@ describe('FlowHeader', () => {
       expect(progressBar).toHaveAttribute('max', '5')
     })
 
-    it('does not render a Back button', () => {
+    it('does not render a back button when back is omitted', () => {
       renderWithFlow({
-        header: { type: 'progress', currentStep: 1, totalSteps: 3 },
+        header: { indicator: 'progress', currentStep: 1, totalSteps: 3 },
       })
       expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument()
     })
@@ -104,14 +146,14 @@ describe('FlowHeader', () => {
     it('renders the optional cta', () => {
       const Cta = () => <button type="button">Save and exit</button>
       renderWithFlow({
-        header: { type: 'progress', currentStep: 1, totalSteps: 3, cta: Cta },
+        header: { indicator: 'progress', currentStep: 1, totalSteps: 3, cta: Cta },
       })
 
       expect(screen.getByRole('button', { name: 'Save and exit' })).toBeInTheDocument()
     })
   })
 
-  describe('breadcrumbs header', () => {
+  describe('breadcrumbs indicator', () => {
     const breadcrumbs: BreadcrumbTrail = {
       'step-one': [
         { id: 'step-one', label: 'Step One' },
@@ -122,7 +164,7 @@ describe('FlowHeader', () => {
     it('renders the breadcrumbs trail when currentBreadcrumbId is set', () => {
       renderWithFlow({
         header: {
-          type: 'breadcrumbs',
+          indicator: 'breadcrumbs',
           currentBreadcrumbId: 'step-one',
           breadcrumbs,
         },
@@ -132,10 +174,10 @@ describe('FlowHeader', () => {
       expect(screen.getByText('Step Two')).toBeInTheDocument()
     })
 
-    it('renders nothing when currentBreadcrumbId is not set', () => {
+    it('renders nothing when currentBreadcrumbId is not set and no back is configured', () => {
       renderWithFlow({
         header: {
-          type: 'breadcrumbs',
+          indicator: 'breadcrumbs',
           breadcrumbs,
         },
       })
@@ -148,7 +190,7 @@ describe('FlowHeader', () => {
     it('renders an empty trail when the currentBreadcrumbId has no entry', () => {
       renderWithFlow({
         header: {
-          type: 'breadcrumbs',
+          indicator: 'breadcrumbs',
           currentBreadcrumbId: 'unknown-id',
           breadcrumbs,
         },
@@ -162,7 +204,7 @@ describe('FlowHeader', () => {
       const Cta = () => <button type="button">Save and exit</button>
       renderWithFlow({
         header: {
-          type: 'breadcrumbs',
+          indicator: 'breadcrumbs',
           currentBreadcrumbId: 'step-one',
           breadcrumbs,
           cta: Cta,

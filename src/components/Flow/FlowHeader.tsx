@@ -5,25 +5,26 @@ import type { BreadcrumbTrail } from '../Common/FlowBreadcrumbs/FlowBreadcrumbsT
 import { Flex } from '../Common/Flex'
 import { FlexItem } from '../Common'
 import { useFlow } from './useFlow'
-import { componentEvents, type EventType } from '@/shared/constants'
+import { type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 /**
- * Renders the chrome above the active flow component (back affordance, progress bar, breadcrumbs).
+ * Renders the chrome above the active flow component.
  *
  * @remarks
- * Reads the discriminated `header` value from {@link FlowContext} and dispatches to the matching
- * internal renderer:
+ * Reads the `header` value from {@link FlowContext} and composes three independent pieces:
  *
- * - `header.type === 'minimal'` — back button and optional CTA.
- * - `header.type === 'progress'` — step indicator with `currentStep` / `totalSteps`.
- * - `header.type === 'breadcrumbs'` — breadcrumb trail; renders nothing while
- *   `currentBreadcrumbId` is absent so passive states (e.g. landing screens) don't reset the bar.
+ * - `back` — if set, a destination-labeled back button rendered above the indicator row.
+ * - `indicator` — `'progress'` renders a step indicator; `'breadcrumbs'` renders a trail
+ *   (and is suppressed while `currentBreadcrumbId` is absent so passive landing states
+ *   don't reset the bar); `'none'` renders no indicator.
+ * - `cta` — optional component composed alongside the indicator. For `progress`, the CTA
+ *   is embedded inside the progress bar component; otherwise it sits next to the back
+ *   button (when `indicator` is `'none'`) or breadcrumbs trail.
  *
- * When no `header` is configured, or there is no active `component` in context, nothing is
- * rendered. To add a new chrome variant: extend {@link FlowHeaderConfig}, add a renderer below,
- * and add a branch here.
+ * Returns `null` when there is no active `component`, no `header`, or the `header` would
+ * produce no visible chrome (e.g. `{ indicator: 'none' }` with no `back` and no `cta`).
  *
  * @returns A header element above the active flow component, or `null` when no header should show.
  * @internal
@@ -33,69 +34,45 @@ export function FlowHeader() {
 
   if (!header || !component) return null
 
-  switch (header.type) {
-    case 'minimal':
-      return <MinimalHeader back={header.back} cta={header.cta} />
-    case 'progress':
-      return (
-        <ProgressHeader
+  const { back, cta: Cta, indicator } = header
+
+  if (indicator === 'progress') {
+    return (
+      <>
+        {back && <BackRow back={back} />}
+        <ProgressIndicator
           currentStep={header.currentStep}
           totalSteps={header.totalSteps}
-          cta={header.cta}
+          cta={Cta}
         />
-      )
-    case 'breadcrumbs':
-      // The breadcrumb trail is intentionally persisted across "passive"
-      // states (e.g. landing screens) so that subsequent transitions can
-      // pick up where they left off without rebuilding it. We render the
-      // bar only when there's an active breadcrumb to show; otherwise
-      // we treat the flow as "no chrome" for this state.
-      if (!header.currentBreadcrumbId) return null
-      return (
-        <BreadcrumbsHeader
-          currentBreadcrumbId={header.currentBreadcrumbId}
-          breadcrumbs={header.breadcrumbs}
-          cta={header.cta}
-        />
-      )
+      </>
+    )
   }
-}
 
-function MinimalHeader({
-  back,
-  cta: Cta,
-}: {
-  back?: {
-    labelKey: string
-    namespace: keyof CustomTypeOptions['resources']
-    event: EventType
+  if (indicator === 'breadcrumbs') {
+    return (
+      <>
+        {back && <BackRow back={back} />}
+        {header.currentBreadcrumbId && (
+          <BreadcrumbsIndicator
+            currentBreadcrumbId={header.currentBreadcrumbId}
+            breadcrumbs={header.breadcrumbs}
+            cta={Cta}
+          />
+        )}
+      </>
+    )
   }
-  cta?: React.ComponentType
-}) {
-  const { onEvent } = useFlow()
-  const Components = useComponentContext()
-  // Pass the namespace per-call via the `ns` option rather than binding it via
-  // `useTranslation(ns)`. The hook caches the namespace on first render and
-  // does not re-bind when the `back.namespace` prop changes between steps,
-  // which leaves `t(key)` resolving against a stale namespace and returning
-  // the key literal.
-  const { t } = useTranslation()
-  const label = back ? t(back.labelKey as never, { ns: back.namespace }) : t('back')
-  const event = back?.event ?? componentEvents.CANCEL
+
+  if (!back && !Cta) return null
 
   return (
     <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-      <FlexItem>
-        <Components.Button
-          variant="secondary"
-          icon={<CaretLeftIcon aria-hidden="true" />}
-          onClick={() => {
-            onEvent(event, undefined)
-          }}
-        >
-          {label}
-        </Components.Button>
-      </FlexItem>
+      {back && (
+        <FlexItem>
+          <BackButton back={back} />
+        </FlexItem>
+      )}
       {Cta && (
         <FlexItem>
           <Cta />
@@ -105,7 +82,57 @@ function MinimalHeader({
   )
 }
 
-function ProgressHeader({
+function BackRow({
+  back,
+}: {
+  back: {
+    labelKey: string
+    namespace: keyof CustomTypeOptions['resources']
+    event: EventType
+  }
+}) {
+  return (
+    <Flex flexDirection="row" alignItems="center">
+      <FlexItem>
+        <BackButton back={back} />
+      </FlexItem>
+    </Flex>
+  )
+}
+
+function BackButton({
+  back,
+}: {
+  back: {
+    labelKey: string
+    namespace: keyof CustomTypeOptions['resources']
+    event: EventType
+  }
+}) {
+  const { onEvent } = useFlow()
+  const Components = useComponentContext()
+  // Pass the namespace per-call via the `ns` option rather than binding it via
+  // `useTranslation(ns)`. The hook caches the namespace on first render and
+  // does not re-bind when the `back.namespace` prop changes between steps,
+  // which leaves `t(key)` resolving against a stale namespace and returning
+  // the key literal.
+  const { t } = useTranslation()
+  const label = t(back.labelKey as never, { ns: back.namespace })
+
+  return (
+    <Components.Button
+      variant="secondary"
+      icon={<CaretLeftIcon aria-hidden="true" />}
+      onClick={() => {
+        onEvent(back.event, undefined)
+      }}
+    >
+      {label}
+    </Components.Button>
+  )
+}
+
+function ProgressIndicator({
   currentStep,
   totalSteps,
   cta: Cta,
@@ -127,12 +154,12 @@ function ProgressHeader({
   )
 }
 
-function BreadcrumbsHeader({
+function BreadcrumbsIndicator({
   currentBreadcrumbId,
   breadcrumbs = {},
   cta: Cta,
 }: {
-  currentBreadcrumbId?: string
+  currentBreadcrumbId: string
   breadcrumbs?: BreadcrumbTrail
   cta?: React.ComponentType
 }) {
@@ -142,7 +169,7 @@ function BreadcrumbsHeader({
     <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
       <FlexItem flexGrow={1}>
         <FlowBreadcrumbs
-          breadcrumbs={currentBreadcrumbId ? (breadcrumbs[currentBreadcrumbId] ?? []) : []}
+          breadcrumbs={breadcrumbs[currentBreadcrumbId] ?? []}
           currentBreadcrumbId={currentBreadcrumbId}
           onEvent={onEvent}
         />

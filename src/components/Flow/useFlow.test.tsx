@@ -18,7 +18,7 @@ describe('useFlow', () => {
     const value: FlowContextInterface = {
       component: TestComponent,
       onEvent,
-      header: { type: 'minimal' },
+      header: { indicator: 'none' },
     }
 
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -30,7 +30,7 @@ describe('useFlow', () => {
     expect(result.current).toBe(value)
     expect(result.current.component).toBe(TestComponent)
     expect(result.current.onEvent).toBe(onEvent)
-    expect(result.current.header).toEqual({ type: 'minimal' })
+    expect(result.current.header).toEqual({ indicator: 'none' })
   })
 
   it('preserves discriminated header variants in the returned context', () => {
@@ -39,7 +39,7 @@ describe('useFlow', () => {
       component: () => null,
       onEvent,
       header: {
-        type: 'breadcrumbs',
+        indicator: 'breadcrumbs',
         currentBreadcrumbId: 'step-1',
         breadcrumbs: { 'step-1': [{ id: 'step-1', label: 'Step One' }] },
       },
@@ -52,7 +52,7 @@ describe('useFlow', () => {
     const { result } = renderHook(() => useFlow(), { wrapper })
 
     expect(result.current.header).toMatchObject({
-      type: 'breadcrumbs',
+      indicator: 'breadcrumbs',
       currentBreadcrumbId: 'step-1',
     })
   })

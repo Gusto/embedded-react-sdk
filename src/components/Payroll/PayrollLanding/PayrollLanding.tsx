@@ -51,7 +51,7 @@ export function PayrollLandingFlow({
           withReimbursements,
           ConfirmWireDetailsComponent,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(payrollLandingBreadcrumbNodes),
           },
           showPayrollCancelledAlert,

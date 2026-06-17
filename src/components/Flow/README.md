@@ -1,20 +1,20 @@
 # Flow chrome conventions
 
-This folder hosts the generic state-machine flow plumbing (`Flow`, `FlowHeader`, `FlowContext`) and one factory for the most common header variant.
+This folder hosts the generic state-machine flow plumbing (`Flow`, `FlowHeader`, `FlowContext`) and one factory for the most common header configuration.
 
-## Picking a header variant
+## Composing a header
 
-`FlowHeaderConfig` (in [`useFlow.ts`](./useFlow.ts)) is a discriminated union with three variants:
+`FlowHeaderConfig` (in [`useFlow.ts`](./useFlow.ts)) is three independent pieces. None are mutually exclusive — combine them freely:
 
-| `type`        | When to use                                                                                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `minimal`     | Linear flow, one step at a time, optional back affordance. Best for onboarding-style flows where forward progression is the dominant motion and back is a recovery affordance. |
-| `progress`    | Linear flow where you want to emphasize "how much is left." A step indicator with no inline back button. Pair with `cta` for a "Save and exit" or similar.                     |
-| `breadcrumbs` | Multi-entry-point or non-linear flow where the user should be able to see and jump between sibling steps. Used by payroll/termination-style flows.                             |
+| Field       | What it adds                                                                                                                                                               |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `back`      | Destination-labeled back button rendered above the indicator. Omit to hide.                                                                                                |
+| `cta`       | Optional component composed alongside the indicator (e.g. "Save and exit").                                                                                                |
+| `indicator` | Progress indicator: `'none'` (no indicator — use when `back`/`cta` are the only chrome), `'progress'` (step indicator), `'breadcrumbs'` (trail; used by non-linear flows). |
 
-If a flow has irreversible side effects on forward progression (creating a draft, charging a card, etc.), prefer `breadcrumbs` — back navigation in those flows needs an explicit user choice, not a sneaky-feeling arrow.
+Reach for `'breadcrumbs'` when the flow has irreversible side effects on forward progression (creating a draft, charging a card, etc.) — back navigation in those flows needs an explicit user choice, not a sneaky-feeling arrow.
 
-## Adding a destination-labeled back button (the `minimal` pattern)
+## Adding a destination-labeled back button
 
 Used by `Employee/OnboardingExecutionFlow`. Each step's header names the step the user will return to (e.g. on Compensation the button reads "Basic details"). The pattern:
 
@@ -82,4 +82,4 @@ See `OnboardingExecutionFlow.tsx` + `onboardingExecutionStateMachine.ts` for a w
 
 `react-i18next`'s `useTranslation(ns)` caches the namespace on the hook's first render and does not re-bind when the argument changes between renders. If a header switches between different namespaces across renders (e.g. `Employee.EmployeeList` on step one, then `Employee.OnboardingExecutionFlow` on step two), the second render's `t(key)` will resolve against the first render's namespace and return the literal key.
 
-`FlowHeader` handles this by calling `useTranslation()` once and using the per-call `t(key, { ns })` form. New header variants that need to read translations should do the same.
+`FlowHeader` handles this by calling `useTranslation()` once and using the per-call `t(key, { ns })` form. New chrome that needs to read translations should do the same.

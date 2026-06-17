@@ -38,7 +38,7 @@ export function TransitionFlow({
           payScheduleUuid,
           payrollUuid,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
             currentBreadcrumbId: hasExistingPayroll ? undefined : 'createTransitionPayroll',
           },

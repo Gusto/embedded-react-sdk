@@ -17,7 +17,7 @@ function createTestMachine(initialState: TerminationState = 'form') {
       companyId: 'company-123',
       employeeId: 'employee-123',
       header: {
-        type: 'breadcrumbs' as const,
+        indicator: 'breadcrumbs' as const,
         breadcrumbs: buildBreadcrumbs(terminationBreadcrumbNodes),
         currentBreadcrumbId: initialState,
       },
@@ -37,7 +37,7 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 
 function currentBreadcrumb(service: ReturnType<typeof createService>) {
   const header = service.context.header
-  return header?.type === 'breadcrumbs' ? header.currentBreadcrumbId : undefined
+  return header?.indicator === 'breadcrumbs' ? header.currentBreadcrumbId : undefined
 }
 
 function toSummary(service: ReturnType<typeof createService>) {

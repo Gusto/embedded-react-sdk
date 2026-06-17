@@ -16,7 +16,7 @@ type EventPayloads = {
 }
 
 const backToListHeader: FlowHeaderConfig = {
-  type: 'minimal',
+  indicator: 'none',
   back: {
     labelKey: 'backToListCta',
     namespace: 'Employee.ManagementEmployeeList',

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import {
   onboardingExecutionMachine,
   INITIAL_COMPONENT_MAP,
+  stepHeader,
   type OnboardingExecutionInitialState,
 } from './onboardingExecutionStateMachine'
 import {
@@ -40,9 +41,10 @@ export interface OnboardingExecutionFlowProps {
   /** When true, enables the Employee Documents step in the flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. */
   withEmployeeI9?: boolean
   /**
-   * Optional header shown above the initial step. When supplied, the back
-   * affordance is preserved if the user navigates back to step one from a
-   * later step. Use this to expose an "exit" path when the flow is rendered
+   * Optional header shown above the initial step. Only the `back` affordance
+   * is read — the indicator is always the execution-flow progress bar. The
+   * back affordance is preserved if the user navigates back to step one from
+   * a later step. Use this to expose an "exit" path when the flow is rendered
    * inside a parent flow (e.g. back to an employee list).
    */
   initialBackHeader?: FlowHeaderConfig
@@ -95,19 +97,25 @@ export function OnboardingExecutionFlow({
       createMachine(
         initialState,
         onboardingExecutionMachine,
-        (initialContext: OnboardingContextInterface) => ({
-          ...initialContext,
-          component: INITIAL_COMPONENT_MAP[initialState],
-          header: initialBackHeader ?? null,
-          initialHeader: initialBackHeader ?? null,
-          companyId,
-          employeeId: initialEmployeeId,
-          onboardingStatus: initialOnboardingStatus,
-          defaultValues,
-          isAdmin,
-          isSelfOnboardingEnabled,
-          withEmployeeI9,
-        }),
+        (initialContext: OnboardingContextInterface) => {
+          const initialBack = initialBackHeader?.back ?? null
+          const baseContext: OnboardingContextInterface = {
+            ...initialContext,
+            component: INITIAL_COMPONENT_MAP[initialState],
+            companyId,
+            employeeId: initialEmployeeId,
+            onboardingStatus: initialOnboardingStatus,
+            defaultValues,
+            isAdmin,
+            isSelfOnboardingEnabled,
+            withEmployeeI9,
+            initialBack,
+          }
+          return {
+            ...baseContext,
+            header: stepHeader(baseContext, initialState, initialBack),
+          }
+        },
       ),
     [
       companyId,

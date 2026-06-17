@@ -26,7 +26,7 @@ export const PayrollFlow = ({
           component: PayrollLandingContextual,
           companyId,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
             cta: SaveAndExitCta,
           },

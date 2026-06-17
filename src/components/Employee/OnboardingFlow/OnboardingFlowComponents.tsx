@@ -6,7 +6,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 
 const backToEmployeeListHeader: FlowHeaderConfig = {
-  type: 'minimal',
+  indicator: 'none',
   back: {
     labelKey: 'backToListCta',
     namespace: 'Employee.EmployeeList',

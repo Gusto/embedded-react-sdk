@@ -16,7 +16,7 @@ import { EmployeeDocumentsContextual } from '@/components/Employee/Documents/onb
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile/onboarding/Profile'
 import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
-import { createBackHeaderFactory } from '@/components/Flow/useFlow'
+import type { BackConfig, FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_PROFILE_DONE]: {
@@ -26,24 +26,17 @@ type EventPayloads = {
   }
 }
 
-const backHeaderTo = createBackHeaderFactory({
-  namespace: 'Employee.OnboardingExecutionFlow',
-  event: componentEvents.EMPLOYEE_ONBOARDING_BACK,
-})
+type StepKey =
+  | 'employeeProfile'
+  | 'compensation'
+  | 'federalTaxes'
+  | 'stateTaxes'
+  | 'paymentMethod'
+  | 'deductions'
+  | 'employeeDocuments'
 
-const backToProfileHeader = backHeaderTo('employeeProfile')
-const backToCompensationHeader = backHeaderTo('compensation')
-const backToFederalTaxesHeader = backHeaderTo('federalTaxes')
-const backToStateTaxesHeader = backHeaderTo('stateTaxes')
-const backToPaymentMethodHeader = backHeaderTo('paymentMethod')
-const backToDeductionsHeader = backHeaderTo('deductions')
-
-const createReducer = (props: Partial<OnboardingContextInterface>) => {
-  return (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
-    ...ctx,
-    ...props,
-  })
-}
+const STEP_LABEL_NAMESPACE = 'Employee.OnboardingExecutionFlow' as const
+const BACK_EVENT = componentEvents.EMPLOYEE_ONBOARDING_BACK
 
 const employeeDocumentsConfigCompletedStatuses: Set<
   (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
@@ -70,6 +63,60 @@ const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
       )
     : true
 
+const isSelfOnboarding = (ctx: OnboardingContextInterface) => !selfOnboardingGuard(ctx)
+
+/** @internal */
+export const getTotalSteps = (ctx: OnboardingContextInterface): number => {
+  const baseSteps = isSelfOnboarding(ctx) ? 3 : 6
+  return baseSteps + (employeeDocumentsGuard(ctx) ? 1 : 0)
+}
+
+const getStepNumber = (state: StepKey, ctx: OnboardingContextInterface): number => {
+  switch (state) {
+    case 'employeeProfile':
+      return 1
+    case 'compensation':
+      return 2
+    case 'federalTaxes':
+      return 3
+    case 'stateTaxes':
+      return 4
+    case 'paymentMethod':
+      return 5
+    case 'deductions':
+      return isSelfOnboarding(ctx) ? 3 : 6
+    case 'employeeDocuments':
+      return isSelfOnboarding(ctx) ? 4 : 7
+  }
+}
+
+const backTo = (labelKey: string): BackConfig => ({
+  labelKey,
+  namespace: STEP_LABEL_NAMESPACE,
+  event: BACK_EVENT,
+})
+
+/** @internal */
+export const stepHeader = (
+  ctx: OnboardingContextInterface,
+  step: StepKey,
+  back?: BackConfig | null,
+): FlowHeaderConfig => ({
+  indicator: 'progress',
+  currentStep: getStepNumber(step, ctx),
+  totalSteps: getTotalSteps(ctx),
+  ...(back && { back }),
+})
+
+const advance = (step: StepKey, component: React.ComponentType, backLabelKey: string) =>
+  reduce(
+    (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+      ...ctx,
+      component,
+      header: stepHeader(ctx, step, backTo(backLabelKey)),
+    }),
+  )
+
 /** @internal */
 export const onboardingExecutionMachine = {
   employeeProfile: state<MachineTransition>(
@@ -80,14 +127,19 @@ export const onboardingExecutionMachine = {
         (
           ctx: OnboardingContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
-        ): OnboardingContextInterface => ({
-          ...ctx,
-          component: CompensationContextual,
-          header: backToProfileHeader,
-          employeeId: ev.payload.uuid,
-          onboardingStatus: ev.payload.onboardingStatus,
-          startDate: ev.payload.startDate,
-        }),
+        ): OnboardingContextInterface => {
+          const updatedCtx = {
+            ...ctx,
+            employeeId: ev.payload.uuid,
+            onboardingStatus: ev.payload.onboardingStatus,
+            startDate: ev.payload.startDate,
+          }
+          return {
+            ...updatedCtx,
+            component: CompensationContextual,
+            header: stepHeader(updatedCtx, 'compensation', backTo('employeeProfile')),
+          }
+        },
       ),
     ),
   ),
@@ -95,15 +147,13 @@ export const onboardingExecutionMachine = {
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'federalTaxes',
-      reduce(
-        createReducer({ component: FederalTaxesContextual, header: backToCompensationHeader }),
-      ),
+      advance('federalTaxes', FederalTaxesContextual, 'compensation'),
       guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'deductions',
-      reduce(createReducer({ component: DeductionsContextual, header: backToCompensationHeader })),
+      advance('deductions', DeductionsContextual, 'compensation'),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
@@ -112,7 +162,7 @@ export const onboardingExecutionMachine = {
         (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
           ...ctx,
           component: ProfileContextual,
-          header: ctx.initialHeader ?? null,
+          header: stepHeader(ctx, 'employeeProfile', ctx.initialBack),
         }),
       ),
     ),
@@ -121,84 +171,92 @@ export const onboardingExecutionMachine = {
     transition(
       componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
       'stateTaxes',
-      reduce(createReducer({ component: StateTaxesContextual, header: backToFederalTaxesHeader })),
+      advance('stateTaxes', StateTaxesContextual, 'federalTaxes'),
       guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'compensation',
-      reduce(createReducer({ component: CompensationContextual, header: backToProfileHeader })),
+      advance('compensation', CompensationContextual, 'employeeProfile'),
     ),
   ),
   stateTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_STATE_TAXES_DONE,
       'paymentMethod',
-      reduce(createReducer({ component: PaymentMethodContextual, header: backToStateTaxesHeader })),
+      advance('paymentMethod', PaymentMethodContextual, 'stateTaxes'),
       guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'federalTaxes',
-      reduce(
-        createReducer({ component: FederalTaxesContextual, header: backToCompensationHeader }),
-      ),
+      advance('federalTaxes', FederalTaxesContextual, 'compensation'),
     ),
   ),
   paymentMethod: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
       'deductions',
-      reduce(createReducer({ component: DeductionsContextual, header: backToPaymentMethodHeader })),
+      advance('deductions', DeductionsContextual, 'paymentMethod'),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'stateTaxes',
-      reduce(createReducer({ component: StateTaxesContextual, header: backToFederalTaxesHeader })),
+      advance('stateTaxes', StateTaxesContextual, 'federalTaxes'),
     ),
   ),
   deductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'employeeDocuments',
-      reduce(
-        createReducer({ component: EmployeeDocumentsContextual, header: backToDeductionsHeader }),
-      ),
+      advance('employeeDocuments', EmployeeDocumentsContextual, 'deductions'),
       guard(employeeDocumentsGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
-      reduce(createReducer({ component: OnboardingSummaryContextual, header: null })),
+      reduce(
+        (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+          ...ctx,
+          component: OnboardingSummaryContextual,
+          header: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'compensation',
-      reduce(createReducer({ component: CompensationContextual, header: backToProfileHeader })),
+      advance('compensation', CompensationContextual, 'employeeProfile'),
       guard((ctx: OnboardingContextInterface) => !selfOnboardingGuard(ctx)),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'paymentMethod',
-      reduce(createReducer({ component: PaymentMethodContextual, header: backToStateTaxesHeader })),
+      advance('paymentMethod', PaymentMethodContextual, 'stateTaxes'),
     ),
   ),
   employeeDocuments: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DOCUMENTS_DONE,
       'summary',
-      reduce(createReducer({ component: OnboardingSummaryContextual, header: null })),
+      reduce(
+        (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+          ...ctx,
+          component: OnboardingSummaryContextual,
+          header: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'deductions',
-      reduce(createReducer({ component: DeductionsContextual, header: backToCompensationHeader })),
+      advance('deductions', DeductionsContextual, 'compensation'),
       guard((ctx: OnboardingContextInterface) => !selfOnboardingGuard(ctx)),
     ),
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_BACK,
       'deductions',
-      reduce(createReducer({ component: DeductionsContextual, header: backToPaymentMethodHeader })),
+      advance('deductions', DeductionsContextual, 'paymentMethod'),
     ),
   ),
   summary: state<MachineTransition>(),
