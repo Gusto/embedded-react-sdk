@@ -17,7 +17,7 @@ export interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
   balance: number | null
 }
 
-/** @internal */
+/** @public */
 export type RateBasedAccrualMethod =
   | 'perPayPeriod'
   | 'perCalendarYear'
@@ -30,7 +30,7 @@ export type RateBasedAccrualMethod =
 /** @internal */
 export type AccrualMethodKey = 'unlimited' | RateBasedAccrualMethod
 
-/** @internal */
+/** @public */
 export type PolicyTypeKey = 'vacation' | 'sick'
 
 /**

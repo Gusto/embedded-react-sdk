@@ -31,7 +31,10 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   data: T[]
   /** Accessible label for the underlying data view; defaults to a localized table label. */
   label?: string
-  /** Additional columns appended after the name and job title columns. */
+  /**
+   * Additional columns appended after the name and job title columns.
+   * @internal
+   */
   additionalColumns?: useDataViewProp<T>['columns']
   /** When true, omits the job title column. */
   hideJobTitle?: boolean
@@ -47,7 +50,10 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   /** When true, hides the search input entirely. */
   hideSearch?: boolean
 
-  /** Selection behavior for the table (e.g. single or multi-select). */
+  /**
+   * Selection behavior for the table (e.g. single or multi-select).
+   * @internal
+   */
   selectionMode?: SelectionMode
   /** Called when an individual row is selected or deselected. */
   onSelect?: (item: T, checked: boolean) => void
@@ -71,6 +77,9 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   /** Renders a custom empty state when a search returns no results; falls back to a localized default. */
   emptySearchState?: () => ReactNode
 
-  /** Footer content rendered below the rows. */
+  /**
+   * Footer content rendered below the rows.
+   * @internal
+   */
   footer?: useDataViewProp<T>['footer']
 }

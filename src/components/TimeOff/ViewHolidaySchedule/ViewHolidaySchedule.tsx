@@ -19,7 +19,6 @@ export interface ViewHolidayScheduleProps extends BaseComponentInterface {
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `timeOff/viewHolidayEmployees` | Fired when user switches to the employees tab | — |
  * | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |
  * | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
  * | `timeOff/backToList` | Fired when user navigates back to policy list | — |

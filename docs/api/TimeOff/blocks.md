@@ -415,7 +415,6 @@ edit the holiday selection, or remove employees.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/holidayAddEmployees` | User clicks to add employees | — |
-| `timeOff/viewHolidaySchedule` | User switches to the schedule tab | — |
 | `timeOff/editHolidayPolicy` | User clicks to edit holidays | — |
 | `timeOff/backToList` | User navigates back to the policy list | — |
 
@@ -485,7 +484,6 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `timeOff/viewHolidayEmployees` | Fired when user switches to the employees tab | — |
 | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |
 | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
 | `timeOff/backToList` | Fired when user navigates back to policy list | — |
@@ -532,11 +530,9 @@ Props for the shared employee table rendered inside time-off and holiday policy 
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `additionalColumns?` | `DataViewColumn`\<`T`\>[] | Additional columns appended after the name and job title columns. |
 | `data` | `T`[] | Employee rows to render. |
 | `emptySearchState?` | () => `ReactNode` | Renders a custom empty state when a search returns no results; falls back to a localized default. |
 | `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
-| `footer?` | () => `Partial`\<`Record`\<`FooterKeys`\<`T`\>, `React.ReactNode`\>\> | Footer content rendered below the rows. |
 | `getIsItemSelected?` | (`item`) => `boolean` | Returns whether the given item is currently selected. |
 | `hideJobTitle?` | `boolean` | When true, omits the job title column. |
 | `hideSearch?` | `boolean` | When true, hides the search input entirely. |
@@ -551,7 +547,6 @@ Props for the shared employee table rendered inside time-off and holiday policy 
 | `pagination?` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
 | `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
 | `searchValue` | `string` | Current value of the search input. |
-| `selectionMode?` | `SelectionMode` | Selection behavior for the table (e.g. single or multi-select). |
 
 ***
 
@@ -707,10 +702,10 @@ Policy details for a rate-based accruing time-off policy.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `accrualMethod` | `RateBasedAccrualMethod` | The method by which time off accrues. |
+| `accrualMethod` | [`RateBasedAccrualMethod`](#ratebasedaccrualmethod) | The method by which time off accrues. |
 | `accrualRate` | `number` | Hours accrued per accrual period. |
 | `accrualRateUnit?` | `number` | Divisor used to compute the per-unit accrual rate, if applicable. |
-| `policyType` | `PolicyTypeKey` | Whether the policy covers vacation or sick time. |
+| `policyType` | [`PolicyTypeKey`](#policytypekey) | Whether the policy covers vacation or sick time. |
 | `resetDate?` | `string` | ISO date string for the annual balance reset, if applicable. |
 
 ***
@@ -792,7 +787,7 @@ Policy details for an unlimited (no-accrual) time-off policy.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `accrualMethod` | `"unlimited"` | Accrual method discriminant — always `'unlimited'` for this variant. |
-| `policyType` | `PolicyTypeKey` | Whether the policy covers vacation or sick time. |
+| `policyType` | [`PolicyTypeKey`](#policytypekey) | Whether the policy covers vacation or sick time. |
 
 ## Type Aliases
 
@@ -870,6 +865,22 @@ Accrual method category for a time off policy. Determines which settings fields 
 > **PolicyType** = `"sick"` \| `"vacation"` \| `"holiday"`
 
 Identifier for the kind of time-off policy a company can configure.
+
+***
+
+<a id="policytypekey"></a>
+
+### PolicyTypeKey
+
+> **PolicyTypeKey** = `"vacation"` \| `"sick"`
+
+***
+
+<a id="ratebasedaccrualmethod"></a>
+
+### RateBasedAccrualMethod
+
+> **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
 
 ***
 

@@ -2233,10 +2233,13 @@ interface EmployeeTableItem {
 // @public
 interface EmployeeTableProps<T extends EmployeeTableItem> {
     // Warning: (ae-forgotten-export) The symbol "useDataViewProp" needs to be exported by the entry point index.d.ts
+    //
+    // @internal
     additionalColumns?: useDataViewProp<T>['columns'];
     data: T[];
     emptySearchState?: () => ReactNode;
     emptyState?: () => ReactNode;
+    // @internal
     footer?: useDataViewProp<T>['footer'];
     getIsItemSelected?: (item: T) => boolean;
     hideJobTitle?: boolean;
@@ -2253,6 +2256,8 @@ interface EmployeeTableProps<T extends EmployeeTableItem> {
     searchPlaceholder?: string;
     searchValue: string;
     // Warning: (ae-forgotten-export) The symbol "SelectionMode_2" needs to be exported by the entry point index.d.ts
+    //
+    // @internal
     selectionMode?: SelectionMode_2;
 }
 
@@ -3971,7 +3976,7 @@ interface PolicySettingsProps extends BaseComponentInterface {
 // @public
 type PolicyType = 'sick' | 'vacation' | 'holiday';
 
-// @internal (undocumented)
+// @public (undocumented)
 type PolicyTypeKey = 'vacation' | 'sick';
 
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyTypeSelectorProps"
@@ -4157,18 +4162,14 @@ export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<RadioGroupProps>;
 };
 
-// @internal (undocumented)
+// @public (undocumented)
 type RateBasedAccrualMethod = 'perPayPeriod' | 'perCalendarYear' | 'perAnniversaryYear' | 'perHourWorked' | 'perHourWorkedNoOvertime' | 'perHourPaid' | 'perHourPaidNoOvertime';
 
 // @public
 interface RateBasedPolicyDetails {
-    // Warning: (ae-incompatible-release-tags) The symbol "accrualMethod" is marked as @public, but its signature references "RateBasedAccrualMethod" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "accrualMethod" is marked as @public, but its signature references "RateBasedAccrualMethod" which is marked as @internal
     accrualMethod: RateBasedAccrualMethod;
     accrualRate: number;
     accrualRateUnit?: number;
-    // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
     policyType: PolicyTypeKey;
     resetDate?: string;
 }
@@ -5087,8 +5088,6 @@ export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMeth
 // @public
 interface UnlimitedPolicyDetails {
     accrualMethod: 'unlimited';
-    // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
-    // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
     policyType: PolicyTypeKey;
 }
 
