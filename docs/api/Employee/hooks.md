@@ -4522,6 +4522,47 @@ before rendering.
 
 ***
 
+<a id="joboptionalfieldstorequire"></a>
+
+### JobOptionalFieldsToRequire
+
+Override which fields are required on a given submission mode of [useJobForm](#usejobform).
+
+#### Remarks
+
+Each mode key lists the fields that are optional by default for that mode
+but should be promoted to required. `stateWcClassCode` is automatically
+required when `stateWcCovered` is `true` and is not configurable here.
+
+| Field | Required on create | Required on update | Configurable? |
+| ----- | ------------------ | ------------------ | ------------- |
+| `title` | Yes | No | Yes (on update) |
+| `hireDate` | Yes | No | Yes (on update) |
+| `twoPercentShareholder` | No | No | Yes (either mode) |
+| `stateWcCovered` | No | No | Yes (either mode) |
+| `stateWcClassCode` | When WC is covered | When WC is covered | No (auto) |
+
+#### Example
+
+```tsx
+const job = useJobForm({
+  employeeId,
+  jobId,
+  optionalFieldsToRequire: {
+    update: ['title', 'hireDate'],
+  },
+})
+```
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `create?` | (`"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields to require in create mode |
+| `update?` | (`"title"` \| `"hireDate"` \| `"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields to require in update mode |
+
+***
+
 <a id="jobsubmitoptions"></a>
 
 ### JobSubmitOptions
@@ -4662,42 +4703,6 @@ Validated submission shape produced by the [useJobForm](#usejobform) schema.
 
 Identical to [JobFormData](#jobformdata) — exposed as a separate alias so the input
 vs. output sides of the schema remain distinguishable in advanced usages.
-
-***
-
-<a id="joboptionalfieldstorequire"></a>
-
-### JobOptionalFieldsToRequire
-
-> **JobOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
-
-Override which fields are required on a given submission mode of [useJobForm](#usejobform).
-
-#### Remarks
-
-Each mode key lists the fields that are optional by default for that mode
-but should be promoted to required. `stateWcClassCode` is automatically
-required when `stateWcCovered` is `true` and is not configurable here.
-
-| Field | Required on create | Required on update | Configurable? |
-| ----- | ------------------ | ------------------ | ------------- |
-| `title` | Yes | No | Yes (on update) |
-| `hireDate` | Yes | No | Yes (on update) |
-| `twoPercentShareholder` | No | No | Yes (either mode) |
-| `stateWcCovered` | No | No | Yes (either mode) |
-| `stateWcClassCode` | When WC is covered | When WC is covered | No (auto) |
-
-#### Example
-
-```tsx
-const job = useJobForm({
-  employeeId,
-  jobId,
-  optionalFieldsToRequire: {
-    update: ['title', 'hireDate'],
-  },
-})
-```
 
 ***
 

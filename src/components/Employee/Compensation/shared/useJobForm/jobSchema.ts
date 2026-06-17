@@ -107,6 +107,7 @@ const requiredFieldsConfig = {
  * | `stateWcClassCode` | When WC is covered | When WC is covered | No (auto) |
  *
  * @public
+ * @interface
  *
  * @example
  * ```tsx
