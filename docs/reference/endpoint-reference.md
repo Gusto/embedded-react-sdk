@@ -59,7 +59,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 |  | GET | `/v1/companies/:companyUuid/wire_in_requests` |
 | **Payroll.PayrollOverview** | GET | `/v1/companies/:companyId/bank_accounts` |
-|  | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/cancel` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/submit` |
