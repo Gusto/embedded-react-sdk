@@ -579,18 +579,8 @@ declare namespace CompanyOnboarding {
     }
 }
 
-// Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function Compensation_2(props: CompensationProps): JSX;
-
-// @public (undocumented)
-namespace Compensation_2 {
-    var // (undocumented)
-    JobsList: JobsList;
-    var // (undocumented)
-    EditCompensation: EditCompensation;
-}
 
 // @public
 function Compensation_3(input: CompensationProps_2 & BaseComponentInterface<'Employee.Management.Compensation'>): JSX;
@@ -2690,18 +2680,8 @@ type IndustryProps<T> = Pick<BaseComponentInterface<'Company.Industry'>, 'onEven
     companyId: string;
 };
 
-// Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 function InformationRequestForm(props: InformationRequestFormProps): JSX;
-
-// @public (undocumented)
-namespace InformationRequestForm {
-    var // (undocumented)
-    Footer: (input: {
-        onEvent: OnEventType<EventType, unknown>;
-    }) => JSX;
-}
 
 // @public
 interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {

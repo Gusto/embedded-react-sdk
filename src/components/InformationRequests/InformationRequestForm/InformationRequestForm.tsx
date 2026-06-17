@@ -290,7 +290,12 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
   )
 }
 
-const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
+/** @internal */
+export const InformationRequestFormFooter = ({
+  onEvent,
+}: {
+  onEvent: OnEventType<EventType, unknown>
+}) => {
   useI18n('InformationRequests.InformationRequestForm')
   const { t } = useTranslation('InformationRequests.InformationRequestForm')
   const { Button } = useComponentContext()
@@ -339,5 +344,3 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
     </Flex>
   )
 }
-
-InformationRequestForm.Footer = Footer

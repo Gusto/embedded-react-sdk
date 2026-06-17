@@ -5,6 +5,7 @@ import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import type { CommonComponentInterface } from '@/components/Base'
 import type { EventType } from '@/types/Helpers'
 import type { OnEventType } from '@/components/Base/useBase'
+import { InformationRequestFormFooter } from './InformationRequestForm/InformationRequestForm'
 
 /** @internal */
 export interface InformationRequestsContextInterface extends FlowContextInterface {
@@ -32,4 +33,4 @@ export function InformationRequestFormContextual() {
   )
 }
 
-InformationRequestFormContextual.Footer = InformationRequestForm.Footer
+InformationRequestFormContextual.Footer = InformationRequestFormFooter
