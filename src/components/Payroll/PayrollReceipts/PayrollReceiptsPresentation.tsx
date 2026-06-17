@@ -10,7 +10,7 @@ import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { formatNumberAsCurrency, formatPhoneNumber } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
@@ -157,7 +157,8 @@ export const PayrollReceiptsPresentation = ({
             className={classNames(styles.address, isMobile && styles.textMobile)}
           >
             {receiptData.licensee &&
-              `${receiptData.licensee.address || ''}, ${receiptData.licensee.city || ''}, ${receiptData.licensee.state || ''} ${receiptData.licensee.postalCode || ''}`}
+              `${receiptData.licensee.address || ''}, ${receiptData.licensee.city || ''}, ${receiptData.licensee.state || ''} ${receiptData.licensee.postalCode || ''}`}{' '}
+            | {formatPhoneNumber(receiptData.licensee?.phoneNumber)}
           </Text>
         </Flex>
       </Flex>
