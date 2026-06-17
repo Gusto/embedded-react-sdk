@@ -20,6 +20,7 @@ interface PayrollReceiptsPresentationProps {
   withReimbursements?: boolean
 }
 
+/** @internal */
 export const PayrollReceiptsPresentation = ({
   receiptData,
   withReimbursements = true,

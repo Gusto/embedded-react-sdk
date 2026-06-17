@@ -804,6 +804,61 @@
         "employeeId"
       ]
     },
+    "EmployeeOnboarding.DocumentList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
+    "EmployeeOnboarding.SignatureForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/forms/:formId/sign"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
+    },
+    "EmployeeOnboarding.I9SignatureForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/forms/:formId/sign"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
+    },
     "EmployeeOnboarding.EmployeeDocuments": {
       "endpoints": [
         {

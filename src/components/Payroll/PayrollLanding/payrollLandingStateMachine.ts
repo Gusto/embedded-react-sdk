@@ -29,6 +29,7 @@ type EventPayloads = {
   [componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED]: undefined
 }
 
+/** @internal */
 export const payrollLandingBreadcrumbNodes: BreadcrumbNodes = {
   tabs: {
     parent: null,
@@ -99,6 +100,7 @@ const returnToTabs = (
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PayrollLandingFlowContextInterface>()
 
+/** @internal */
 export const payrollLandingMachine = {
   tabs: state<MachineTransition>(
     transition(

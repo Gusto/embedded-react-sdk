@@ -24,10 +24,35 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
+/**
+ * Props for the {@link PolicyList} component.
+ *
+ * @public
+ */
 export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicies'> {
+  /** The associated company identifier. */
   companyId: string
 }
 
+/**
+ * Displays all active time off policies (sick, vacation, and holiday) for a company.
+ *
+ * Each row shows the policy name and the enrolled-employee count. Incomplete policies surface a
+ * finish-setup action. Sick and vacation policies are deactivated via the time-off policies API;
+ * the holiday pay policy (if one exists) is merged into the same list and is deleted via the
+ * holiday pay policy API. Both flows go through a confirmation dialog and show a success alert.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `timeOff/createPolicy` | The user clicked the create-policy action. | — |
+ * | `timeOff/viewPolicy` | The user opened an existing policy or clicked finish-setup on an incomplete one. | `{ policyId: string, policyType: string }` |
+ * | `timeOff/deletePolicy/done` | A policy was successfully deleted. | `{ policyId: string }` |
+ *
+ * @param props - {@link PolicyListProps}
+ * @returns The rendered policy list.
+ * @public
+ */
 export function PolicyList({ FallbackComponent, ...props }: PolicyListProps) {
   return (
     <BaseBoundaries

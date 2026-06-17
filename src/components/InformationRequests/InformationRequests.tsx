@@ -21,21 +21,48 @@ interface SubmissionAlertState {
   alerts: SubmissionAlert[]
 }
 
+/**
+ * Props for {@link InformationRequestsFlow}.
+ *
+ * @public
+ */
 export interface InformationRequestsFlowProps extends Omit<
   BaseComponentInterface<'InformationRequests'>,
   'onEvent'
 > {
+  /** The associated company identifier. */
   companyId: string
   /**
-   * When true (default), the submission success alert is rendered at the top of this component.
-   * Set to false when embedding in a parent (e.g. PayrollBlockerList) that renders the alert elsewhere.
+   * When `true` (default), the submission success alert is rendered at the top of this component.
+   * Set to `false` when embedding in a parent that renders the alert elsewhere.
    */
   withAlert?: boolean
+  /** Callback invoked when the flow or its subcomponents emit an event. */
   onEvent?: BaseComponentInterface['onEvent']
 }
 
 const ALERT_TYPE = 'informationRequestResponded' as const
 
+/**
+ * Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+ *
+ * @remarks
+ * Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
+ * On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
+ *
+ * Information requests can also block payroll processing; in that case they are surfaced inline within
+ * `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
+ * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
+ * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
+ *
+ * @param props - See {@link InformationRequestsFlowProps}.
+ * @returns The information requests flow surface.
+ * @public
+ */
 export function InformationRequestsFlow({
   companyId,
   dictionary,

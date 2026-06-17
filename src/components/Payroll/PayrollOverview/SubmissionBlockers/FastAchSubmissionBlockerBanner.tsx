@@ -18,6 +18,7 @@ interface FastAchSubmissionBlockerBannerProps {
   paymentSpeed?: PaymentSpeed
 }
 
+/** @internal */
 export const FastAchSubmissionBlockerBanner = ({
   blocker,
   selectedValue,

@@ -29,10 +29,35 @@ import EditIcon from '@/assets/icons/edit-02.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
+/**
+ * Props for {@link TimeOffPolicyDetail}.
+ *
+ * @public
+ */
 export interface TimeOffPolicyDetailProps extends BaseComponentInterface {
+  /** UUID of the time-off policy to display. */
   policyId: string
 }
 
+/**
+ * Detail view for a sick or vacation time-off policy.
+ *
+ * @remarks
+ * Loads the policy and its enrolled employees, then renders the tabbed detail view with
+ * actions for editing the policy, adding or removing employees, and adjusting individual
+ * balances. Editable actions are only shown for sick and vacation policies.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `timeOff/addEmployeesToPolicy` | The add-employees action was clicked. | `{ policyId: string }` |
+ * | `timeOff/backToList` | The back navigation was clicked. | — |
+ * | `timeOff/changeSettings` | The change-settings action was clicked. | `{ policyId: string }` |
+ * | `timeOff/editPolicy` | The edit-policy action was clicked. | `{ policyId: string }` |
+ *
+ * @param props - The policy id and standard base component props (`onEvent`, `dictionary`, etc.).
+ * @returns The rendered detail view.
+ * @public
+ */
 export function TimeOffPolicyDetail(props: TimeOffPolicyDetailProps) {
   return (
     <BaseComponent {...props}>

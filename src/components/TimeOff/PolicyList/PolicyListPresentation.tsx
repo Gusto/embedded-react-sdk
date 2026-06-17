@@ -14,6 +14,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { isEditableTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'
 
+/** @internal */
 export function PolicyListPresentation({
   policies,
   onCreatePolicy,

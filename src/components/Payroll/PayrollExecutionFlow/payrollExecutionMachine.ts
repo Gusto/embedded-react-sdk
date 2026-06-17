@@ -46,6 +46,7 @@ const breadcrumbNavigateTransition =
 
 type BreadcrumbNodeKeys = 'configuration' | 'overview' | 'editEmployee' | 'receipts' | 'blockers'
 
+/** @internal */
 export const getPayrollExecutionBreadcrumbsNodes = (
   isDismissal: boolean = false,
 ): BreadcrumbNodes => {
@@ -265,6 +266,7 @@ const employeeCancelledTransition = transition(
   ),
 )
 
+/** @internal */
 export const payrollExecutionMachine = {
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),

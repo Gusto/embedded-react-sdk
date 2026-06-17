@@ -11,6 +11,7 @@ interface PolicyTypeSelectorFormData {
   policyType: PolicyType
 }
 
+/** @internal */
 export function PolicyTypeSelectorPresentation({
   onContinue,
   onCancel,

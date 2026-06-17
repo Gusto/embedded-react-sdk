@@ -7,6 +7,7 @@ import type {
 } from './payrollStatusConfig'
 import { STATUS_CONFIG } from './payrollStatusConfig'
 
+/** @internal */
 export const getPayrollStatusBadges = (
   payroll: PayrollInput,
   wireInRequest?: WireInRequestInput,
@@ -28,6 +29,7 @@ export const getPayrollStatusBadges = (
   return { badges }
 }
 
+/** @internal */
 export const usePayrollStatusBadges = (
   payroll: PayrollInput,
   wireInRequest?: WireInRequestInput,

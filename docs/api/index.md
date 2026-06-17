@@ -20,7 +20,9 @@ custom_edit_url: null
 | [ContractorOnboarding](Contractor/ContractorOnboarding/flows.md) | - |
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
 | [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
-| [Payroll](Payroll/index.md) | - |
+| [InformationRequests](InformationRequests/flows.md) | - |
+| [Payroll](Payroll/flows.md) | - |
+| [TimeOff](TimeOff/flows.md) | - |
 
 ## Components
 
@@ -203,6 +205,22 @@ The configured provider tree wrapping `children`.
 
 ***
 
+<a id="i9_form_name"></a>
+
+### I9\_FORM\_NAME
+
+> `const` **I9\_FORM\_NAME**: `"US_I-9"` = `'US_I-9'`
+
+The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
+
+#### Remarks
+
+`DocumentList` emits `employee/forms/view` with `{ uuid, name }`. Compare `name` against this
+constant to decide whether to route a form to `I9SignatureForm` (when it matches) or the standard
+`SignatureForm`.
+
+***
+
 <a id="pay_periods"></a>
 
 ### PAY\_PERIODS
@@ -237,6 +255,22 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 | <a id="property-apiconfigheaders"></a> `headers?` | `HeadersInit` | Extra headers applied to every API request. Combined with any headers your proxy adds. |
 | <a id="property-apiconfighooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Request interceptor hooks. Use these to inspect, modify, or react to requests and responses. See [SDKHooks](#sdkhooks). |
 | <a id="property-apiconfigobservability"></a> `observability?` | [`ObservabilityHook`](#observabilityhook) | Observability hook for surfacing errors and metrics from the SDK to your monitoring stack. See [ObservabilityHook](#observabilityhook). |
+
+***
+
+<a id="confirmwiredetailsprops"></a>
+
+### ConfirmWireDetailsProps
+
+Props for the ConfirmWireDetails component.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-confirmwiredetailspropscompanyid"></a> `companyId` | `string` | The associated company identifier. |
+| <a id="property-confirmwiredetailspropsonevent"></a> `onEvent?` | `OnEventType`\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked with wire-confirmation lifecycle events. See the events table on ConfirmWireDetails. |
+| <a id="property-confirmwiredetailspropswireinid"></a> `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
 ***
 
@@ -582,46 +616,20 @@ const hooks: SDKHooks = {
 | <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | `BeforeCreateRequestHook`[] | Hooks executed before creating a Request object |
 | <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | `BeforeRequestHook`[] | Hooks executed after Request creation but before sending |
 
-***
-
-<a id="sharedfieldlayoutprops"></a>
-
-### SharedFieldLayoutProps
-
-Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
-so each control exposes a consistent surface for labeling, helper text, and validation messaging.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Extended by
-
-- [`TextInputProps`](component-adapter.md#textinputprops)
-- [`SelectProps`](component-adapter.md#selectprops)
-- [`NumberInputProps`](component-adapter.md#numberinputprops)
-- [`DatePickerProps`](component-adapter.md#datepickerprops)
-- [`RadioGroupProps`](component-adapter.md#radiogroupprops)
-- [`CheckboxGroupProps`](component-adapter.md#checkboxgroupprops)
-- [`ComboBoxProps`](component-adapter.md#comboboxprops)
-- [`MultiSelectComboBoxProps`](component-adapter.md#multiselectcomboboxprops)
-- [`TextAreaProps`](component-adapter.md#textareaprops)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-sharedfieldlayoutpropsdescription"></a> `description?` | `ReactNode` | Optional description text for the field |
-| <a id="property-sharedfieldlayoutpropserrormessage"></a> `errorMessage?` | `string` | Error message to display when the field is invalid |
-| <a id="property-sharedfieldlayoutpropsisrequired"></a> `isRequired?` | `boolean` | Indicates if the field is required |
-| <a id="property-sharedfieldlayoutpropslabel"></a> `label` | `ReactNode` | Label text for the field |
-| <a id="property-sharedfieldlayoutpropsshouldvisuallyhidelabel"></a> `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
-
 ## Type Aliases
+
+<a id="confirmwiredetailscomponenttype"></a>
+
+### ConfirmWireDetailsComponentType
+
+> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
+
+Component type matching the ConfirmWireDetails signature.
+
+Use this when supplying a custom wire-confirmation UI to a payroll flow via a
+`ConfirmWireDetailsComponent` prop.
+
+***
 
 <a id="observabilitymetricunit"></a>
 
@@ -640,18 +648,3 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 > **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
 
 High-level classification of where an [SDKError](#sdkerror) originated.
-
-***
-
-<a id="sharedhorizontalfieldlayoutprops"></a>
-
-### SharedHorizontalFieldLayoutProps
-
-> **SharedHorizontalFieldLayoutProps** = [`SharedFieldLayoutProps`](#sharedfieldlayoutprops)
-
-Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
-Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.

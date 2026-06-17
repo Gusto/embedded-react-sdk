@@ -1,3 +1,3 @@
-export { InformationRequestsFlow } from './InformationRequests'
-export { InformationRequestList } from './InformationRequestList'
-export { InformationRequestForm } from './InformationRequestForm'
+export { InformationRequestsFlow, type InformationRequestsFlowProps } from './InformationRequests'
+export { InformationRequestList, type InformationRequestListProps } from './InformationRequestList'
+export { InformationRequestForm, type InformationRequestFormProps } from './InformationRequestForm'

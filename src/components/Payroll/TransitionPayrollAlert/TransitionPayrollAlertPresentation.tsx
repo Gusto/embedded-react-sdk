@@ -6,9 +6,13 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
+/** @internal */
 export interface TransitionPayPeriodGroup {
+  /** UUID of the pay schedule these transition pay periods belong to. */
   payScheduleUuid: string
+  /** Display name of the pay schedule, shown when multiple groups are rendered. */
   payScheduleName: string
+  /** Unprocessed transition pay periods for this pay schedule. */
   payPeriods: PayPeriod[]
 }
 
@@ -21,6 +25,7 @@ interface TransitionPayrollAlertPresentationProps {
   skippingPayPeriod: PayPeriod | null
 }
 
+/** @internal */
 export function TransitionPayrollAlertPresentation({
   groupedPayPeriods,
   onRunPayroll,

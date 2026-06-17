@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { FunctionComponent } from 'react'
 import type { ComponentsContextType } from './useComponentContext'
 import { defaultComponents } from './adapters/defaultComponentAdapter'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
@@ -42,7 +42,7 @@ import { DescriptionListDefaults } from '@/components/Common/UI/DescriptionList/
 
 /** @internal */
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
-  return (customComponent: (props: TProps) => React.ReactElement | null) => {
+  return (customComponent: FunctionComponent<TProps>) => {
     const wrappedComponent = (props: TProps) => {
       const propsWithDefaults = applyMissingDefaults(props, defaults)
       return customComponent(propsWithDefaults)
