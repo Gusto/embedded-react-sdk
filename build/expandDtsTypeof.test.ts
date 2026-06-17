@@ -89,6 +89,42 @@ export type FormData = { [K in keyof typeof validators]: (typeof validators)[K] 
     expect(text).toContain('active: boolean')
   })
 
+  it('preserves JSDoc property comments when expanding a mapped type', () => {
+    const { sf, checker } = setup(
+      'mapped-with-jsdoc.d.ts',
+      `
+declare const validators: {
+  /** The job title. */
+  title: string;
+  /** Whether active. */
+  active: boolean;
+};
+export type FormData = { [K in keyof typeof validators]: (typeof validators)[K] };
+    `,
+    )
+    expect(processSourceFile(sf, checker)).toBe(true)
+    const text = sf.getText()
+    expect(text).toContain('/** The job title. */')
+    expect(text).toContain('/** Whether active. */')
+    expect(text).toContain('title: string')
+    expect(text).toContain('active: boolean')
+  })
+
+  it('does not add spurious comments when the const has no property JSDoc', () => {
+    const { sf, checker } = setup(
+      'mapped-no-jsdoc.d.ts',
+      `
+declare const validators: { title: string; active: boolean; };
+export type FormData = { [K in keyof typeof validators]: (typeof validators)[K] };
+    `,
+    )
+    expect(processSourceFile(sf, checker)).toBe(true)
+    const text = sf.getText()
+    expect(text).not.toContain('/**')
+    expect(text).toContain('title: string')
+    expect(text).toContain('active: boolean')
+  })
+
   it('returns true only for the file that changed', () => {
     const { sf, checker } = setup(
       'unchanged.d.ts',
@@ -307,10 +343,15 @@ import { OptionalFieldsToRequire } from '../../../../../partner-hook-utils/form/
 export declare const JobErrorCodes: { readonly REQUIRED: "REQUIRED"; };
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes];
 declare const fieldValidators: {
+    /** The employee's job title (e.g. \`"Software Engineer"\`). */
     title: z.ZodString;
+    /** The employee's hire date as an ISO 8601 string (\`YYYY-MM-DD\`), or \`null\` if unknown. */
     hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
+    /** Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. */
     twoPercentShareholder: z.ZodBoolean;
+    /** Whether the employee is covered under Washington state workers' compensation insurance. */
     stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
+    /** Washington state workers' compensation risk-class code. Required when \`stateWcCovered\` is \`true\`. */
     stateWcClassCode: z.ZodString;
 };
 export type JobFormData = {
@@ -374,6 +415,25 @@ describe('processSourceFile — jobSchema before/after', () => {
     expect(text).toContain('stateWcClassCode: string')
     expect(text).not.toContain('typeof fieldValidators')
     expect(text).not.toContain('declare const fieldValidators')
+  })
+
+  it('preserves JSDoc property comments from fieldValidators in expanded JobFormData', () => {
+    const { sf, checker } = setupJobSchema()
+    processSourceFile(sf, checker)
+    const text = sf.getText()
+    expect(text).toContain('/** The employee\'s job title (e.g. `"Software Engineer"`). */')
+    expect(text).toContain(
+      "/** The employee's hire date as an ISO 8601 string (`YYYY-MM-DD`), or `null` if unknown. */",
+    )
+    expect(text).toContain(
+      '/** Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. */',
+    )
+    expect(text).toContain(
+      "/** Whether the employee is covered under Washington state workers' compensation insurance. */",
+    )
+    expect(text).toContain(
+      "/** Washington state workers' compensation risk-class code. Required when `stateWcCovered` is `true`. */",
+    )
   })
 
   it('expands JobOptionalFieldsToRequire to concrete per-mode arrays', () => {

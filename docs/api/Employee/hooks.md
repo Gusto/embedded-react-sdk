@@ -5276,10 +5276,10 @@ always null-check before rendering.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `ConfirmSignature` | (`props`) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
-| `Preparer1` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
-| `Preparer2` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
-| `Preparer3` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
-| `Preparer4` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
+| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
+| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
+| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
+| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
 | `Signature` | (`props`) => `Element` | Text input for the employee's typed signature; always present. |
 | `UsedPreparer` | ((`props`) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
@@ -5344,7 +5344,7 @@ Props accepted by the confirmation checkbox preparer field of [useSignEmployeeFo
 
 ### PreparerFieldGroup
 
-> **PreparerFieldGroup** = *typeof* `preparer1Fields`
+> **PreparerFieldGroup** = `object`
 
 Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
 
@@ -5353,6 +5353,20 @@ Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#u
 Each preparer (1–4) exposes the same nine sub-fields covering name,
 address, signature, and consent. Render the sub-fields directly on the
 group, e.g. `<Fields.Preparer1.FirstName />`.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `City` | (`props`) => `JSX.Element` | Preparer's city. |
+| `ConfirmSignature` | (`props`) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
+| `FirstName` | (`props`) => `JSX.Element` | Preparer's first name. |
+| `LastName` | (`props`) => `JSX.Element` | Preparer's last name. |
+| `Signature` | (`props`) => `JSX.Element` | Preparer's typed signature. |
+| `State` | (`props`) => `JSX.Element` | Preparer's state. |
+| `Street1` | (`props`) => `JSX.Element` | Preparer's street address line 1. |
+| `Street2` | (`props`) => `JSX.Element` | Preparer's street address line 2. |
+| `Zip` | (`props`) => `JSX.Element` | Preparer's ZIP code. |
 
 ***
 

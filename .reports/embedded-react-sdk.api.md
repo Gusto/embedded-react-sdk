@@ -674,7 +674,15 @@ export type CompensationFieldsMetadata = UseCompensationFormReady['form']['field
 export function CompensationFlsaStatusField(props: FlsaStatusFieldProps): JSX;
 
 // @public
-export type CompensationFormData = { title: string; flsaStatus: "Exempt" | "Salaried Nonexempt" | "Nonexempt" | "Owner" | "Commission Only Exempt" | "Commission Only Nonexempt" | undefined; paymentUnit: "Hour" | "Week" | "Month" | "Year" | "Paycheck"; rate: number; effectiveDate: string | null; adjustForMinimumWage: boolean; minimumWageId: string; };
+export type CompensationFormData = {
+    title: string
+    flsaStatus: "Exempt" | "Salaried Nonexempt" | "Nonexempt" | "Owner" | "Commission Only Exempt" | "Commission Only Nonexempt" | undefined
+    paymentUnit: "Hour" | "Week" | "Month" | "Year" | "Paycheck"
+    rate: number
+    effectiveDate: string | null
+    adjustForMinimumWage: boolean
+    minimumWageId: string
+};
 
 // @public
 export interface CompensationFormFields {
@@ -2803,7 +2811,13 @@ export const JobErrorCodes: {
 export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata'];
 
 // @public
-export type JobFormData = { title: string; hireDate: string | null; twoPercentShareholder: boolean; stateWcCovered: boolean; stateWcClassCode: string; };
+export type JobFormData = {
+    title: string
+    hireDate: string | null
+    twoPercentShareholder: boolean
+    stateWcCovered: boolean
+    stateWcClassCode: string
+};
 
 // @public
 export interface JobFormFields {

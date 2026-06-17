@@ -16,7 +16,7 @@
  * Run: npx tsx build/expandDtsTypeof.ts
  * Integrated via the `derive` script, after build, before api-report:derive.
  */
-import { Project, ts, type SourceFile, type VariableStatement } from 'ts-morph'
+import { Node, Project, ts, type SourceFile, type VariableStatement } from 'ts-morph'
 import { join, dirname, relative } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -39,6 +39,50 @@ function truncate(text: string, max = 80): string {
   return text.length > max ? text.slice(0, max) + '…' : text
 }
 
+// Returns the name of the single unexported const referenced via `typeof` in
+// the type node text, or undefined if zero or multiple consts are referenced.
+function findSingleReferencedConst(
+  typeNodeText: string,
+  unexportedVarNames: Set<string>,
+): string | undefined {
+  let found: string | undefined
+  for (const name of unexportedVarNames) {
+    if (new RegExp(`\\btypeof\\s+${name}\\b`).test(typeNodeText)) {
+      if (found !== undefined) return undefined
+      found = name
+    }
+  }
+  return found
+}
+
+// Builds a multi-line object type text with JSDoc prepended to each property
+// whose name appears in propJsDocs. Returns null if the type has no properties.
+function buildTypeWithPropertyJsDocs(
+  rawType: ts.Type,
+  contextNode: ts.Node,
+  checker: ts.TypeChecker,
+  propJsDocs: Map<string, string>,
+): string | null {
+  const props = rawType.getProperties()
+  if (props.length === 0) return null
+
+  const lines: string[] = ['{']
+  for (const prop of props) {
+    const isOptional = (prop.flags & ts.SymbolFlags.Optional) !== 0
+    const propType = checker.getTypeOfSymbolAtLocation(prop, contextNode)
+    const propTypeText = checker.typeToString(
+      propType,
+      contextNode,
+      ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.InTypeAlias,
+    )
+    const jsdoc = propJsDocs.get(prop.getName())
+    if (jsdoc) lines.push(`  ${jsdoc}`)
+    lines.push(`  ${prop.getName()}${isOptional ? '?' : ''}: ${propTypeText}`)
+  }
+  lines.push('}')
+  return lines.join('\n')
+}
+
 export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecker): boolean {
   // Collect names of unexported variable declarations in this file.
   // These are the `declare const fieldValidators: {...}` statements that
@@ -52,6 +96,28 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
   }
 
   if (unexportedVarNames.size === 0) return false
+
+  // For each unexported const with a TypeLiteralNode type, collect JSDoc for
+  // each property so we can re-attach them after expansion.
+  // Map: constName → (propName → jsdoc text e.g. "/** The title. */")
+  const constPropJsDocs = new Map<string, Map<string, string>>()
+  for (const stmt of sourceFile.getVariableStatements()) {
+    if (stmt.hasExportKeyword()) continue
+    for (const decl of stmt.getDeclarations()) {
+      const constName = decl.getName()
+      if (!unexportedVarNames.has(constName)) continue
+      const typeNode = decl.getTypeNode()
+      if (!typeNode || !Node.isTypeLiteral(typeNode)) continue
+      const propMap = new Map<string, string>()
+      for (const member of typeNode.getMembers()) {
+        if (!Node.isPropertySignature(member)) continue
+        const jsDocs = member.getJsDocs()
+        if (jsDocs.length === 0) continue
+        propMap.set(member.getName(), jsDocs[0]!.getText().trim())
+      }
+      if (propMap.size > 0) constPropJsDocs.set(constName, propMap)
+    }
+  }
 
   const unexportedTypeofPattern = buildTypeofPattern(unexportedVarNames)
 
@@ -126,7 +192,24 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
       continue
     }
 
-    expansions.push({ typeAlias, resolvedText })
+    // If the resolved type is an object type and we have property JSDoc for
+    // the referenced const, build a multi-line type with the comments preserved.
+    let finalResolvedText = resolvedText
+    if (resolvedText.startsWith('{')) {
+      const referencedConst = findSingleReferencedConst(typeNode.getText(), unexportedVarNames)
+      const propJsDocs = referencedConst ? constPropJsDocs.get(referencedConst) : undefined
+      if (propJsDocs) {
+        const enhanced = buildTypeWithPropertyJsDocs(
+          rawType,
+          typeAlias.compilerNode,
+          checker,
+          propJsDocs,
+        )
+        if (enhanced) finalResolvedText = enhanced
+      }
+    }
+
+    expansions.push({ typeAlias, resolvedText: finalResolvedText })
   }
 
   let fileModified = false
