@@ -289,6 +289,30 @@ use the standalone `LocationForm` component directly.
 
 ***
 
+<a id="locationslist"></a>
+
+### LocationsList
+
+Displays the list of work locations for a company.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `LocationsListProps` | Component props including the `companyId` whose locations should be listed. |
+
+#### Remarks
+
+Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `company/location/add` | A user chose to add a new location | — |
+| `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
+| `company/location/done` | The user chose to proceed to the next step | — |
+
+***
+
 <a id="onboardingoverview"></a>
 
 ### OnboardingOverview

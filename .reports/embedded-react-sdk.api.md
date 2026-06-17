@@ -569,6 +569,7 @@ declare namespace CompanyOnboarding {
         BankAccount,
         Locations,
         LocationForm,
+        LocationsList,
         PaySchedule,
         PayScheduleProps,
         PayScheduleDefaultValues,
@@ -3098,6 +3099,11 @@ function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
 //
 // @public
 function Locations(input: LocationsProps): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "LocationsListProps" needs to be exported by the entry point index.d.ts
+//
+// @public
+function LocationsList(props: LocationsListProps): JSX;
 
 // @public
 function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
