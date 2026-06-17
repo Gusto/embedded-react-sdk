@@ -1,7 +1,6 @@
 import { type Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { useDeductionsList } from '../shared/useDeductionsList'
 import { DeductionsForm } from '../shared/DeductionsForm'
-import { IncludeDeductions } from './IncludeDeductions/IncludeDeductions'
 import { DeductionsList } from './DeductionsList/DeductionsList'
 import { useOnboardingDeductionsFormDictionary } from './useFormDictionary'
 import { BaseLayout } from '@/components/Base/Base'
@@ -11,8 +10,6 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 
 /** @internal */
 export type EventPayloads = {
-  [componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES]: undefined
-  [componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_NO]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_ADD]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_DEDUCTION_CANCEL]: undefined
@@ -29,31 +26,6 @@ export interface DeductionsContextInterface extends FlowContextInterface {
   employeeId: string
   /** Set by the EDIT transition; consumed by the form-mode contextual. */
   editingDeductionId?: string
-}
-
-/** @internal */
-export function IncludeDeductionsContextual() {
-  const { onEvent } = useFlow<DeductionsContextInterface>()
-
-  const onAdd = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES)
-  }
-  const onContinue = () => {
-    // The outer onboarding flow advances on DONE; partners also receive
-    // INCLUDE_NO so analytics can distinguish the empty-state confirmation.
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_NO)
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_DONE)
-  }
-
-  // BaseLayout's inner FadeIn (width: 100%) is the canonical "page" container
-  // for content rendered inside <Flow>. Without it the outer row-direction
-  // Flex in Flow collapses to the intrinsic content width of its single
-  // child, producing the "squashed" layout for narrow content.
-  return (
-    <BaseLayout>
-      <IncludeDeductions onAdd={onAdd} onContinue={onContinue} />
-    </BaseLayout>
-  )
 }
 
 /** @internal */
