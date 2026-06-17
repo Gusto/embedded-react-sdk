@@ -41,8 +41,6 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_EDIT: 'employee/deductions/edit',
   EMPLOYEE_DEDUCTION_CANCEL: 'employee/deductions/cancel',
   EMPLOYEE_DEDUCTION_CANCEL_EMPTY: 'employee/deductions/cancelEmpty',
-  EMPLOYEE_DEDUCTION_INCLUDE_YES: 'employee/deductions/include/yes',
-  EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
   EMPLOYEE_COMPENSATION_CREATED: 'employee/compensations/created',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',

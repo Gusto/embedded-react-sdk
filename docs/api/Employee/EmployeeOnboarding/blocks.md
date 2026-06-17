@@ -97,12 +97,10 @@ Props for [Deductions](#deductions).
 
 #### Remarks
 
-On first mount, routes between an "include deductions?" prompt (when the employee has no active deductions) and a list view of existing deductions. From there, users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
+Renders the employee's current deductions as a list, with an empty state when none exist. Users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/deductions/include/yes` | Fired when the user chooses to add deductions from the include prompt | — |
-| `employee/deductions/include/no` | Fired when the user chooses to skip deductions from the include prompt | — |
 | `employee/deductions/add` | Fired when the user opens the form to add a new deduction | — |
 | `employee/deductions/edit` | Fired when the user opens the form to edit an existing deduction | The matching `Garnishment` |
 | `employee/deductions/created` | Fired after a new deduction is saved | The created `Garnishment` |

@@ -1011,8 +1011,6 @@ export const componentEvents: {
     readonly EMPLOYEE_DEDUCTION_EDIT: "employee/deductions/edit";
     readonly EMPLOYEE_DEDUCTION_CANCEL: "employee/deductions/cancel";
     readonly EMPLOYEE_DEDUCTION_CANCEL_EMPTY: "employee/deductions/cancelEmpty";
-    readonly EMPLOYEE_DEDUCTION_INCLUDE_YES: "employee/deductions/include/yes";
-    readonly EMPLOYEE_DEDUCTION_INCLUDE_NO: "employee/deductions/include/no";
     readonly EMPLOYEE_COMPENSATION_CREATE: "employee/compensations/create";
     readonly EMPLOYEE_COMPENSATION_CREATED: "employee/compensations/created";
     readonly EMPLOYEE_COMPENSATION_UPDATED: "employee/compensations/updated";
