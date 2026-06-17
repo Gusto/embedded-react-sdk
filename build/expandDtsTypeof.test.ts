@@ -1,6 +1,5 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'fs'
 import { Project } from 'ts-morph'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -352,21 +351,33 @@ export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof required
 export {};
 `
 
+// Minimal declaration for the types the jobSchema fixture imports.
+// Inlined so the test runs without a prior build (no dist/ required).
+// Keep in sync with the OptionalOnCreate/OptionalOnUpdate/OptionalFieldsToRequire
+// definitions in src/partner-hook-utils/form/buildFormSchema.ts.
+const BUILD_FORM_SCHEMA_DTS = `
+type OptionalOnCreate<TConfig> = \`\${{
+  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never;
+}[keyof TConfig & string]}\`;
+type OptionalOnUpdate<TConfig> = \`\${{
+  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never;
+}[keyof TConfig & string]}\`;
+export type OptionalFieldsToRequire<TConfig> = {
+  create?: Array<OptionalOnCreate<TConfig>>;
+  update?: Array<OptionalOnUpdate<TConfig>>;
+};
+`
+
 function setupJobSchema() {
   const project = new Project({
     tsConfigFilePath: join(ROOT, 'tsconfig.json'),
     skipAddingFilesFromTsConfig: true,
   })
-  // Load the real buildFormSchema so OptionalFieldsToRequire resolves.
   // Placed at dist/__test_fixtures__/partner-hook-utils/form/buildFormSchema.d.ts
   // so the '../../../../../partner-hook-utils/…' import in the fixture resolves correctly.
-  const buildFormSchemaContent = readFileSync(
-    join(ROOT, 'dist/partner-hook-utils/form/buildFormSchema.d.ts'),
-    'utf-8',
-  )
   project.createSourceFile(
     join(FIXTURE_DIR, 'partner-hook-utils/form/buildFormSchema.d.ts'),
-    buildFormSchemaContent,
+    BUILD_FORM_SCHEMA_DTS,
     { overwrite: true },
   )
   const sf = project.createSourceFile(
