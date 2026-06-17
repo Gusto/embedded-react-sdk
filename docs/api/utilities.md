@@ -648,7 +648,7 @@ attributes (`label`, `description`).
 | `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
-| `placeholder?` | `string` | Placeholder text displayed when no option is selected. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 

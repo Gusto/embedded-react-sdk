@@ -979,7 +979,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`) => `void` | Callback when selection changes |
 | `options` | [`SelectOption`](#selectoption)[] | Array of options to display in the select dropdown |
-| `placeholder?` | `string` | Placeholder text when no option is selected |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
