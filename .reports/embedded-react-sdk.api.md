@@ -930,6 +930,7 @@ export const componentEvents: {
     readonly EMPLOYEE_DELETED: "employee/deleted";
     readonly EMPLOYEE_DISMISS: "employee/dismiss";
     readonly EMPLOYEE_ONBOARDING_DONE: "employee/onboarding/done";
+    readonly EMPLOYEE_ONBOARDING_BACK: "employee/onboarding/back";
     readonly EMPLOYEE_PROFILE_DONE: "employee/profile/done";
     readonly EMPLOYEE_HOME_ADDRESS_CREATED: "employee/addresses/home/created";
     readonly EMPLOYEE_HOME_ADDRESS_UPDATED: "employee/addresses/home/updated";
@@ -3333,6 +3334,8 @@ function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX;
 interface OnboardingExecutionFlowProps {
     companyId: string;
     defaultValues?: OnboardingDefaultValues;
+    // Warning: (ae-forgotten-export) The symbol "FlowHeaderConfig" needs to be exported by the entry point index.d.ts
+    initialBackHeader?: FlowHeaderConfig;
     initialEmployeeId?: string;
     initialOnboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus];
     initialState?: OnboardingExecutionInitialState;
