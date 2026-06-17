@@ -54,7 +54,17 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
   if (unexportedVarNames.size === 0) return false
 
   const unexportedTypeofPattern = buildTypeofPattern(unexportedVarNames)
-  let fileModified = false
+
+  // Two-pass approach: resolve all types first (using the original checker
+  // against the unmodified AST), then apply mutations. Mutating mid-loop via
+  // typeAlias.setType() causes ts-morph to reparse the source file, making
+  // subsequent compilerNodes come from a new program while the checker still
+  // belongs to the original — a mismatch that degrades typeof references to any.
+  type Expansion = {
+    typeAlias: ReturnType<typeof sourceFile.getTypeAliases>[number]
+    resolvedText: string
+  }
+  const expansions: Expansion[] = []
 
   for (const typeAlias of sourceFile.getTypeAliases()) {
     if (!typeAlias.isExported()) continue
@@ -74,9 +84,11 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     let rawType: ts.Type
     try {
       rawType = checker.getTypeFromTypeNode(typeNode.compilerNode)
-    } catch {
+    } catch (e) {
       console.warn(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} — type resolution threw, skipping`,
+        `\n  typeNode: ${truncate(typeNode.getText(), 200)}`,
+        `\n  error: ${e instanceof Error ? e.message : String(e)}`,
       )
       continue
     }
@@ -90,6 +102,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     if (resolvedText === typeAlias.getName()) {
       console.warn(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} resolved to its own alias name — skipping`,
+        `\n  typeNode: ${truncate(typeNode.getText(), 200)}`,
       )
       continue
     }
@@ -97,6 +110,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     if (unexportedTypeofPattern.test(resolvedText)) {
       console.warn(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} resolved type still contains unexported typeof — skipping`,
+        `\n  resolved: ${truncate(resolvedText, 200)}`,
       )
       continue
     }
@@ -107,10 +121,16 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     if (/\bany\b/.test(resolvedText)) {
       console.warn(
         `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} resolved to a type containing \`any\` — skipping`,
+        `\n  resolved: ${truncate(resolvedText, 200)}`,
       )
       continue
     }
 
+    expansions.push({ typeAlias, resolvedText })
+  }
+
+  let fileModified = false
+  for (const { typeAlias, resolvedText } of expansions) {
     typeAlias.setType(resolvedText)
     fileModified = true
     console.log(

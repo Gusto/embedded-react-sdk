@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'fs'
 import { Project } from 'ts-morph'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -289,5 +290,99 @@ export type OptionalFields = OptionalFieldsToRequire<typeof requiredFieldsConfig
     `,
     )
     expect(() => processSourceFile(sf, checker)).not.toThrow()
+  })
+})
+
+// ── jobSchema before/after integration ──────────────────────────────────────
+// Uses the real buildFormSchema.d.ts alongside the fixture so the
+// OptionalFieldsToRequire import resolves in the same way it does during build.
+// The fixture is placed at the same directory depth as the real file so the
+// relative import path (../../../../../partner-hook-utils/…) resolves naturally.
+
+const JOB_SCHEMA_FIXTURE_PATH = 'components/Employee/Compensation/shared/useJobForm/jobSchema.d.ts'
+
+const JOB_SCHEMA_BEFORE = `\
+import { z } from 'zod';
+import { OptionalFieldsToRequire } from '../../../../../partner-hook-utils/form/buildFormSchema';
+export declare const JobErrorCodes: { readonly REQUIRED: "REQUIRED"; };
+export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes];
+declare const fieldValidators: {
+    title: z.ZodString;
+    hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
+    twoPercentShareholder: z.ZodBoolean;
+    stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
+    stateWcClassCode: z.ZodString;
+};
+export type JobFormData = {
+    [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>;
+};
+export type JobFormOutputs = JobFormData;
+declare const requiredFieldsConfig: {
+    title: "create";
+    hireDate: "create";
+    twoPercentShareholder: "never";
+    stateWcCovered: "never";
+    stateWcClassCode: (data: {
+        title: string;
+        hireDate: string | null;
+        twoPercentShareholder: boolean;
+        stateWcCovered: boolean;
+        stateWcClassCode: string;
+    }) => boolean;
+};
+export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>;
+export {};
+`
+
+function setupJobSchema() {
+  const project = new Project({
+    tsConfigFilePath: join(ROOT, 'tsconfig.json'),
+    skipAddingFilesFromTsConfig: true,
+  })
+  // Load the real buildFormSchema so OptionalFieldsToRequire resolves.
+  // Placed at dist/__test_fixtures__/partner-hook-utils/form/buildFormSchema.d.ts
+  // so the '../../../../../partner-hook-utils/…' import in the fixture resolves correctly.
+  const buildFormSchemaContent = readFileSync(
+    join(ROOT, 'dist/partner-hook-utils/form/buildFormSchema.d.ts'),
+    'utf-8',
+  )
+  project.createSourceFile(
+    join(FIXTURE_DIR, 'partner-hook-utils/form/buildFormSchema.d.ts'),
+    buildFormSchemaContent,
+    { overwrite: true },
+  )
+  const sf = project.createSourceFile(
+    join(FIXTURE_DIR, JOB_SCHEMA_FIXTURE_PATH),
+    JOB_SCHEMA_BEFORE,
+    {
+      overwrite: true,
+    },
+  )
+  const checker = project.getTypeChecker().compilerObject
+  return { sf, checker }
+}
+
+describe('processSourceFile — jobSchema before/after', () => {
+  it('expands JobFormData to concrete properties', () => {
+    const { sf, checker } = setupJobSchema()
+    expect(processSourceFile(sf, checker)).toBe(true)
+    const text = sf.getText()
+    expect(text).toContain('title: string')
+    expect(text).toContain('hireDate: string | null')
+    expect(text).toContain('twoPercentShareholder: boolean')
+    expect(text).toContain('stateWcCovered: boolean')
+    expect(text).toContain('stateWcClassCode: string')
+    expect(text).not.toContain('typeof fieldValidators')
+    expect(text).not.toContain('declare const fieldValidators')
+  })
+
+  it('expands JobOptionalFieldsToRequire to concrete per-mode arrays', () => {
+    const { sf, checker } = setupJobSchema()
+    processSourceFile(sf, checker)
+    const text = sf.getText()
+    expect(text).toContain('"twoPercentShareholder" | "stateWcCovered"')
+    expect(text).toContain('"title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered"')
+    expect(text).not.toContain('typeof requiredFieldsConfig')
+    expect(text).not.toContain('declare const requiredFieldsConfig')
   })
 })
