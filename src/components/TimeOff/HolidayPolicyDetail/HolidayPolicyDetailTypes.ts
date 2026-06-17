@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { HolidayItem } from '../HolidaySelectionForm/HolidaySelectionFormTypes'
 import type {
   EmployeeTableItem,
-  EmployeeTableProps,
+  PolicyDetailEmployeeTableData,
 } from '../shared/EmployeeTable/EmployeeTableTypes'
 import type { RemoveDialogState } from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 
@@ -44,18 +44,7 @@ export interface HolidayPolicyDetailPresentationProps {
   onTabChange: (id: string) => void
 
   /** Employee table data and handlers for the employees tab. */
-  employees: Pick<
-    EmployeeTableProps<HolidayPolicyDetailEmployee>,
-    | 'data'
-    | 'searchValue'
-    | 'onSearchChange'
-    | 'onSearchClear'
-    | 'searchPlaceholder'
-    | 'itemMenu'
-    | 'pagination'
-    | 'isFetching'
-    | 'emptyState'
-  >
+  employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>
 
   /** Called when the user triggers the add-employee action from the empty state. */
   onAddEmployee?: () => void

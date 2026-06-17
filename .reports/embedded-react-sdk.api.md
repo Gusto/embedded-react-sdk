@@ -2228,39 +2228,6 @@ interface EmployeeTableItem {
     uuid: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeTableItem"
-//
-// @public
-interface EmployeeTableProps<T extends EmployeeTableItem> {
-    // Warning: (ae-forgotten-export) The symbol "useDataViewProp" needs to be exported by the entry point index.d.ts
-    //
-    // @internal
-    additionalColumns?: useDataViewProp<T>['columns'];
-    data: T[];
-    emptySearchState?: () => ReactNode;
-    emptyState?: () => ReactNode;
-    // @internal
-    footer?: useDataViewProp<T>['footer'];
-    getIsItemSelected?: (item: T) => boolean;
-    hideJobTitle?: boolean;
-    hideSearch?: boolean;
-    hideSelectAll?: boolean;
-    isFetching?: boolean;
-    itemMenu?: (item: T) => ReactNode;
-    label?: string;
-    onSearchChange: (value: string) => void;
-    onSearchClear: () => void;
-    onSelect?: (item: T, checked: boolean) => void;
-    onSelectAll?: (checked: boolean, visibleItems: T[]) => void;
-    pagination?: PaginationControlProps;
-    searchPlaceholder?: string;
-    searchValue: string;
-    // Warning: (ae-forgotten-export) The symbol "SelectionMode_2" needs to be exported by the entry point index.d.ts
-    //
-    // @internal
-    selectionMode?: SelectionMode_2;
-}
-
 // @public
 export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 
@@ -2658,7 +2625,7 @@ interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
 interface HolidayPolicyDetailPresentationProps {
     actions?: ReactNode[];
     backLabel: string;
-    employees: Pick<EmployeeTableProps<HolidayPolicyDetailEmployee>, 'data' | 'searchValue' | 'onSearchChange' | 'onSearchClear' | 'searchPlaceholder' | 'itemMenu' | 'pagination' | 'isFetching' | 'emptyState'>;
+    employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>;
     holidays: HolidayItem[];
     onAddEmployee?: () => void;
     onBack: () => void;
@@ -3897,6 +3864,22 @@ interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.T
     policyType: 'sick' | 'vacation';
 }
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentationBaseProps"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeTableItem"
+//
+// @public
+interface PolicyDetailEmployeeTableData<T extends EmployeeTableItem> {
+    data: T[];
+    emptyState?: () => ReactNode;
+    isFetching?: boolean;
+    itemMenu?: (item: T) => ReactNode;
+    onSearchChange: (value: string) => void;
+    onSearchClear: () => void;
+    pagination?: PaginationControlProps;
+    searchPlaceholder?: string;
+    searchValue: string;
+}
+
 // @public
 type PolicyDetails = UnlimitedPolicyDetails | RateBasedPolicyDetails;
 
@@ -4910,7 +4893,7 @@ declare namespace TimeOff {
         HolidayPolicyDetailPresentationProps,
         HolidayPolicyDetailEmployee,
         EmployeeTableItem,
-        EmployeeTableProps,
+        PolicyDetailEmployeeTableData,
         RemoveDialogState,
         TimeOffPolicyDetail,
         TimeOffPolicyDetailProps,
@@ -4962,7 +4945,7 @@ function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationP
 interface TimeOffPolicyDetailPresentationBaseProps {
     actions?: ReactNode[];
     backLabel: string;
-    employees: Pick<EmployeeTableProps<TimeOffPolicyDetailEmployee>, 'data' | 'searchValue' | 'onSearchChange' | 'onSearchClear' | 'searchPlaceholder' | 'itemMenu' | 'pagination' | 'isFetching' | 'emptyState'>;
+    employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>;
     onAddEmployee?: () => void;
     onBack: () => void;
     onDismissAlert?: () => void;

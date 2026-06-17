@@ -39,7 +39,7 @@ export type {
 } from './HolidayPolicyDetail'
 export type {
   EmployeeTableItem,
-  EmployeeTableProps,
+  PolicyDetailEmployeeTableData,
 } from './shared/EmployeeTable/EmployeeTableTypes'
 export type { RemoveDialogState } from './shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 export { TimeOffPolicyDetail } from './TimeOffPolicyDetail/TimeOffPolicyDetail'

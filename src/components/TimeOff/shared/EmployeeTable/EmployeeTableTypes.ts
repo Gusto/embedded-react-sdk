@@ -21,20 +21,47 @@ export interface EmployeeTableItem {
 }
 
 /**
- * Props for the shared employee table rendered inside time-off and holiday policy detail views.
+ * Employee table data and callbacks for a policy detail view.
+ *
+ * Pass this as the `employees` prop to {@link TimeOffPolicyDetailPresentationBaseProps}
+ * or `HolidayPolicyDetailPresentationProps`.
  *
  * @typeParam T - The employee row shape, which must extend {@link EmployeeTableItem}.
  * @public
+ */
+export interface PolicyDetailEmployeeTableData<T extends EmployeeTableItem> {
+  /** Employee rows to render. */
+  data: T[]
+  /** Current value of the search input. */
+  searchValue: string
+  /** Called when the search input value changes. */
+  onSearchChange: (value: string) => void
+  /** Called when the search input is cleared. */
+  onSearchClear: () => void
+  /** Placeholder text for the search input; defaults to a localized placeholder. */
+  searchPlaceholder?: string
+  /** Renders a row-level menu (e.g. a kebab menu) for the given item. */
+  itemMenu?: (item: T) => ReactNode
+  /** Pagination control props passed through to the underlying data view. */
+  pagination?: PaginationControlProps
+  /** When true, renders the loading state instead of the rows. */
+  isFetching?: boolean
+  /** Renders a custom empty state when `data` is empty and there is no active search. */
+  emptyState?: () => ReactNode
+}
+
+/**
+ * Props for the shared employee table rendered inside time-off and holiday policy detail views.
+ *
+ * @typeParam T - The employee row shape, which must extend {@link EmployeeTableItem}.
+ * @internal
  */
 export interface EmployeeTableProps<T extends EmployeeTableItem> {
   /** Employee rows to render. */
   data: T[]
   /** Accessible label for the underlying data view; defaults to a localized table label. */
   label?: string
-  /**
-   * Additional columns appended after the name and job title columns.
-   * @internal
-   */
+  /** Additional columns appended after the name and job title columns. */
   additionalColumns?: useDataViewProp<T>['columns']
   /** When true, omits the job title column. */
   hideJobTitle?: boolean
@@ -50,10 +77,7 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   /** When true, hides the search input entirely. */
   hideSearch?: boolean
 
-  /**
-   * Selection behavior for the table (e.g. single or multi-select).
-   * @internal
-   */
+  /** Selection behavior for the table (e.g. single or multi-select). */
   selectionMode?: SelectionMode
   /** Called when an individual row is selected or deselected. */
   onSelect?: (item: T, checked: boolean) => void
@@ -77,9 +101,6 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   /** Renders a custom empty state when a search returns no results; falls back to a localized default. */
   emptySearchState?: () => ReactNode
 
-  /**
-   * Footer content rendered below the rows.
-   * @internal
-   */
+  /** Footer content rendered below the rows. */
   footer?: useDataViewProp<T>['footer']
 }

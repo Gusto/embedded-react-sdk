@@ -514,42 +514,6 @@ Extend this interface to add fields specific to a given policy detail view.
 
 ***
 
-<a id="employeetableprops"></a>
-
-### EmployeeTableProps
-
-Props for the shared employee table rendered inside time-off and holiday policy detail views.
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `T` *extends* [`EmployeeTableItem`](#employeetableitem) | The employee row shape, which must extend [EmployeeTableItem](#employeetableitem). |
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | `T`[] | Employee rows to render. |
-| `emptySearchState?` | () => `ReactNode` | Renders a custom empty state when a search returns no results; falls back to a localized default. |
-| `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
-| `getIsItemSelected?` | (`item`) => `boolean` | Returns whether the given item is currently selected. |
-| `hideJobTitle?` | `boolean` | When true, omits the job title column. |
-| `hideSearch?` | `boolean` | When true, hides the search input entirely. |
-| `hideSelectAll?` | `boolean` | When true, hides the select-all checkbox even if selection is enabled. |
-| `isFetching?` | `boolean` | When true, renders the loading state instead of the rows. |
-| `itemMenu?` | (`item`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
-| `label?` | `string` | Accessible label for the underlying data view; defaults to a localized table label. |
-| `onSearchChange` | (`value`) => `void` | Called when the search input value changes. |
-| `onSearchClear` | () => `void` | Called when the search input is cleared. |
-| `onSelect?` | (`item`, `checked`) => `void` | Called when an individual row is selected or deselected. |
-| `onSelectAll?` | (`checked`, `visibleItems`) => `void` | Called when the select-all checkbox is toggled; receives the items currently visible. |
-| `pagination?` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
-| `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
-| `searchValue` | `string` | Current value of the search input. |
-
-***
-
 <a id="holidayitem"></a>
 
 ### HolidayItem
@@ -602,7 +566,7 @@ and an optional success alert.
 | ------ | ------ | ------ |
 | `actions?` | `ReactNode`[] | Action buttons displayed in the header (e.g. add employees, edit policy). |
 | `backLabel` | `string` | Label for the back navigation link. |
-| `employees` | `Pick`\<[`EmployeeTableProps`](#employeetableprops)\<[`HolidayPolicyDetailEmployee`](#holidaypolicydetailemployee)\>, `"data"` \| `"searchValue"` \| `"onSearchChange"` \| `"onSearchClear"` \| `"searchPlaceholder"` \| `"itemMenu"` \| `"pagination"` \| `"isFetching"` \| `"emptyState"`\> | Employee table data and handlers for the employees tab. |
+| `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`HolidayPolicyDetailEmployee`](#holidaypolicydetailemployee)\> | Employee table data and handlers for the employees tab. |
 | `holidays` | [`HolidayItem`](#holidayitem)[] | Selected holidays shown in the holidays tab. |
 | `onAddEmployee?` | () => `void` | Called when the user triggers the add-employee action from the empty state. |
 | `onBack` | () => `void` | Called when the user clicks the back navigation. |
@@ -649,6 +613,37 @@ the selected `accrualMethod`:
 | `resetDateType?` | [`ResetDateType`](#resetdatetype) | Whether balances reset on anniversary or on a fixed calendar date. |
 | `resetDay?` | `number` | Reset day of month when `resetDateType` is `per_calendar_year`. |
 | `resetMonth?` | `number` | Reset month (1–12) when `resetDateType` is `per_calendar_year`. |
+
+***
+
+<a id="policydetailemployeetabledata"></a>
+
+### PolicyDetailEmployeeTableData
+
+Employee table data and callbacks for a policy detail view.
+
+Pass this as the `employees` prop to [TimeOffPolicyDetailPresentationBaseProps](#timeoffpolicydetailpresentationbaseprops)
+or `HolidayPolicyDetailPresentationProps`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` *extends* [`EmployeeTableItem`](#employeetableitem) | The employee row shape, which must extend [EmployeeTableItem](#employeetableitem). |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | `T`[] | Employee rows to render. |
+| `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
+| `isFetching?` | `boolean` | When true, renders the loading state instead of the rows. |
+| `itemMenu?` | (`item`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
+| `onSearchChange` | (`value`) => `void` | Called when the search input value changes. |
+| `onSearchClear` | () => `void` | Called when the search input is cleared. |
+| `pagination?` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
+| `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
+| `searchValue` | `string` | Current value of the search input. |
 
 ***
 
@@ -763,7 +758,7 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | ------ | ------ | ------ |
 | `actions?` | `ReactNode`[] | Optional action buttons rendered in the header. |
 | `backLabel` | `string` | Label for the back navigation link. |
-| `employees` | `Pick`\<[`EmployeeTableProps`](#employeetableprops)\<[`TimeOffPolicyDetailEmployee`](#timeoffpolicydetailemployee)\>, `"data"` \| `"searchValue"` \| `"onSearchChange"` \| `"onSearchClear"` \| `"searchPlaceholder"` \| `"itemMenu"` \| `"pagination"` \| `"isFetching"` \| `"emptyState"`\> | Employee table data and callbacks. |
+| `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`TimeOffPolicyDetailEmployee`](#timeoffpolicydetailemployee)\> | Employee table data and callbacks. |
 | `onAddEmployee?` | () => `void` | Called when the add-employee action is clicked. |
 | `onBack` | () => `void` | Called when the back navigation is clicked. |
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |

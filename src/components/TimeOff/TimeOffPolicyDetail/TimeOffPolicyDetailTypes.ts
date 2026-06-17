@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type {
   EmployeeTableItem,
-  EmployeeTableProps,
+  PolicyDetailEmployeeTableData,
 } from '../shared/EmployeeTable/EmployeeTableTypes'
 import type { RemoveDialogState } from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 
@@ -116,18 +116,7 @@ export interface TimeOffPolicyDetailPresentationBaseProps {
   onTabChange: (id: string) => void
 
   /** Employee table data and callbacks. */
-  employees: Pick<
-    EmployeeTableProps<TimeOffPolicyDetailEmployee>,
-    | 'data'
-    | 'searchValue'
-    | 'onSearchChange'
-    | 'onSearchClear'
-    | 'searchPlaceholder'
-    | 'itemMenu'
-    | 'pagination'
-    | 'isFetching'
-    | 'emptyState'
-  >
+  employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>
 
   /** Called when the add-employee action is clicked. */
   onAddEmployee?: () => void
