@@ -44,7 +44,7 @@ Props for [InformationRequestForm](#informationrequestform).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../index.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
 | `requestId` | `string` | The identifier of the information request to respond to. |
 
 ### Remarks
@@ -79,7 +79,7 @@ Props for [InformationRequestList](#informationrequestlist).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`InformationRequestsInformationRequestList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-| `onEvent` | `OnEventType`\<[`EventType`](../index.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
 
 ### Remarks
 
