@@ -35,6 +35,7 @@ type PayrollFlowEventPayloads = {
   }
 }
 
+/** @internal */
 export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   landing: {
     parent: null,
@@ -157,6 +158,7 @@ const processedToSubmittedOverviewTransition = transition(
   ),
 )
 
+/** @internal */
 export const payrollFlowMachine = {
   landing: state<MachineTransition>(
     transition(

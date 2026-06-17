@@ -16,6 +16,9 @@ interface PayrollBlockerAlertsProps {
   viewBlockersLabel?: string
 }
 
+/**
+ * @internal
+ */
 export function PayrollBlockerAlerts({
   blockers,
   onViewBlockersClick,

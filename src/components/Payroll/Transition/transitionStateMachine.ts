@@ -9,6 +9,7 @@ import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 
+/** @internal */
 export const transitionBreadcrumbsNodes: BreadcrumbNodes = {
   createTransitionPayroll: {
     parent: null,
@@ -43,6 +44,7 @@ const creationBreadcrumbTransition = transition(
   reduce(toCreationReducer),
 )
 
+/** @internal */
 export const transitionMachine = {
   createTransitionPayroll: state<MachineTransition>(
     transition(

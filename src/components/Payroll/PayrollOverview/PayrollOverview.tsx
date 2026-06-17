@@ -39,11 +39,21 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex } from '@/components/Common'
 
-interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
+/**
+ * Props for {@link PayrollOverview}.
+ *
+ * @public
+ */
+export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
+  /** Identifier of the company that owns the payroll. */
   companyId: string
+  /** Identifier of the payroll being reviewed. The payroll must already be calculated. */
   payrollId: string
+  /** Alert banners to display above the payroll summary. */
   alerts?: PayrollFlowAlert[]
+  /** Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Custom component to replace the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
@@ -74,6 +84,34 @@ const findWireInRequestUuid = (
   return wireUnblockOption?.metadata.wireInRequestUuid
 }
 
+/**
+ * Final review screen for a calculated payroll before submission, with submit, cancel,
+ * and edit controls. After submission, tracks processing status and surfaces the receipt
+ * and per-employee paystub downloads once complete.
+ *
+ * @remarks
+ * The payroll referenced by `payrollId` must already be calculated; rendering with an
+ * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+ * wire-in funding) are surfaced inline and the submit action stays disabled until each
+ * blocker has a selected unblock option. While the payroll is processing, the component
+ * polls until success or failure and emits the corresponding event.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/edit` | User chose to edit the payroll before submitting | — |
+ * | `runPayroll/submitting` | Submit request was sent to the API | — |
+ * | `runPayroll/submitted` | Payroll was successfully submitted | Submit payroll response |
+ * | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
+ * | `runPayroll/processingFailed` | Payroll processing failed | — |
+ * | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
+ * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
+ * | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
+ * | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+ *
+ * @param props - See {@link PayrollOverviewProps}.
+ * @returns The payroll overview surface.
+ * @public
+ */
 export function PayrollOverview(props: PayrollOverviewProps) {
   return (
     <BaseComponent {...props}>
@@ -82,7 +120,7 @@ export function PayrollOverview(props: PayrollOverviewProps) {
   )
 }
 
-export const Root = ({
+const Root = ({
   companyId,
   payrollId,
   dictionary,

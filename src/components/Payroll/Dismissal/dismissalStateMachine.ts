@@ -19,6 +19,7 @@ function toPayPeriodSelectionReducer(
   }
 }
 
+/** @internal */
 export const dismissalBreadcrumbsNodes: BreadcrumbNodes = {
   payPeriodSelection: {
     parent: null,
@@ -41,6 +42,7 @@ const payPeriodSelectionBreadcrumbTransition = transition(
   reduce(toPayPeriodSelectionReducer),
 )
 
+/** @internal */
 export const dismissalMachine = {
   payPeriodSelection: state<MachineTransition>(
     transition(

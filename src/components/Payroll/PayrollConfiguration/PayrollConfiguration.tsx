@@ -36,13 +36,43 @@ const isCalculatedStatus = (
   (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
     processingRequest == null)
 
-interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
+/**
+ * Props for {@link PayrollConfiguration}.
+ *
+ * @public
+ */
+export interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
+  /** The associated company identifier. */
   companyId: string
+  /** The associated payroll identifier. */
   payrollId: string
+  /** Optional alert components to render above the configuration content. */
   alerts?: ReactNode
+  /** Whether to show the reimbursements column in the compensation table. Defaults to `true`. */
   withReimbursements?: boolean
 }
 
+/**
+ * Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll.
+ *
+ * @remarks
+ * Emits the following events:
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |
+ * | `runPayroll/employee/skip` | An employee is skipped or unskipped for this payroll | `{ employeeId }` |
+ * | `runPayroll/employee/saved` | Employee compensation changes are persisted | `{ payrollPrepared }` |
+ * | `runPayroll/calculated` | Payroll calculation completes successfully | `{ payrollId, alert, payPeriod }` |
+ * | `runPayroll/processingFailed` | Payroll calculation fails or times out | — |
+ * | `runPayroll/blockers/viewAll` | The "view all blockers" affordance is selected | — |
+ * | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
+ * | `runPayroll/grossUp/calculated` | A gross-up amount is calculated from a target net pay | `{ grossUp, netPay, employeeUuid }` |
+ *
+ * @param props - See {@link PayrollConfigurationProps}.
+ * @returns The payroll configuration screen.
+ * @public
+ */
 export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
@@ -51,7 +81,7 @@ export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComp
   )
 }
 
-export const Root = ({
+const Root = ({
   onEvent,
   companyId,
   payrollId,
