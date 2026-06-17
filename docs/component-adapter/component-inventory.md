@@ -148,6 +148,7 @@ description: Complete catalog of customizable UI components in the Component Ada
 
 | Prop                 | Type                                                | Required | Description                                                           |
 | -------------------- | --------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **aria-label**       | `string`                                            | Yes      | Required aria-label for icon buttons to ensure accessibility          |
 | **buttonRef**        | `Ref<HTMLButtonElement \| null>`                    | No       | React ref for the button element                                      |
 | **variant**          | `"error" \| "primary" \| "secondary" \| "tertiary"` | No       | Visual style variant of the button                                    |
 | **isLoading**        | `boolean`                                           | No       | Shows a loading spinner and disables the button                       |
@@ -158,16 +159,15 @@ description: Complete catalog of customizable UI components in the Component Ada
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |
 | **className**        | `string`                                            | No       | -                                                                     |
 | **id**               | `string`                                            | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **aria-label**       | `string`                                            | No       | Defines a string value that labels the current element.               |
-| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
-| **title**            | `string`                                            | No       | -                                                                     |
 | **name**             | `string`                                            | No       | -                                                                     |
 | **type**             | `"submit" \| "reset" \| "button"`                   | No       | -                                                                     |
 | **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`        | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
 | **form**             | `string`                                            | No       | -                                                                     |
+| **title**            | `string`                                            | No       | -                                                                     |
 | **tabIndex**         | `number`                                            | No       | -                                                                     |
 
 ## ButtonProps
@@ -184,16 +184,16 @@ description: Complete catalog of customizable UI components in the Component Ada
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |
 | **className**        | `string`                                            | No       | -                                                                     |
 | **id**               | `string`                                            | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
 | **aria-label**       | `string`                                            | No       | Defines a string value that labels the current element.               |
-| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
-| **title**            | `string`                                            | No       | -                                                                     |
 | **name**             | `string`                                            | No       | -                                                                     |
 | **type**             | `"submit" \| "reset" \| "button"`                   | No       | -                                                                     |
 | **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`        | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
 | **form**             | `string`                                            | No       | -                                                                     |
+| **title**            | `string`                                            | No       | -                                                                     |
 | **tabIndex**         | `number`                                            | No       | -                                                                     |
 
 ## CalendarPreviewProps
@@ -395,19 +395,19 @@ description: Complete catalog of customizable UI components in the Component Ada
 
 | Prop                 | Type                                                   | Required | Description                                                           |
 | -------------------- | ------------------------------------------------------ | -------- | --------------------------------------------------------------------- |
+| **children**         | `React.ReactNode`                                      | No       | Content to be displayed inside the link                               |
+| **className**        | `string`                                               | No       | -                                                                     |
+| **id**               | `string`                                               | No       | -                                                                     |
+| **aria-label**       | `string`                                               | No       | Defines a string value that labels the current element.               |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                               | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                               | No       | Identifies the element (or elements) that describes the object.       |
+| **title**            | `string`                                               | No       | -                                                                     |
 | **href**             | `string`                                               | No       | -                                                                     |
 | **target**           | `"_self" \| "_blank" \| "_parent" \| "_top" \| string` | No       | -                                                                     |
 | **rel**              | `string`                                               | No       | -                                                                     |
 | **download**         | `any`                                                  | No       | -                                                                     |
-| **className**        | `string`                                               | No       | -                                                                     |
-| **id**               | `string`                                               | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
-| **aria-label**       | `string`                                               | No       | Defines a string value that labels the current element.               |
-| **aria-labelledby**  | `string`                                               | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                               | No       | Identifies the element (or elements) that describes the object.       |
-| **title**            | `string`                                               | No       | -                                                                     |
-| **children**         | `React.ReactNode`                                      | No       | Content to be displayed inside the link                               |
 
 ## LoadingSpinnerProps
 
@@ -510,22 +510,28 @@ description: Complete catalog of customizable UI components in the Component Ada
 
 ## OrderedListProps
 
-The props for this component are defined in [BaseListProps](#baselistprops).
+| Prop                 | Type                | Required | Description                               |
+| -------------------- | ------------------- | -------- | ----------------------------------------- |
+| **items**            | `React.ReactNode[]` | Yes      | The list items to render                  |
+| **className**        | `string`            | No       | Optional custom class name                |
+| **aria-label**       | `string`            | No       | Accessibility label for the list          |
+| **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
+| **aria-describedby** | `string`            | No       | ID of an element that describes this list |
 
 ## PaginationControlProps
 
-| Prop                         | Type                                                             | Required | Description |
-| ---------------------------- | ---------------------------------------------------------------- | -------- | ----------- |
-| **handleFirstPage**          | `() => void`                                                     | Yes      | -           |
-| **handlePreviousPage**       | `() => void`                                                     | Yes      | -           |
-| **handleNextPage**           | `() => void`                                                     | Yes      | -           |
-| **handleLastPage**           | `() => void`                                                     | Yes      | -           |
-| **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | -           |
-| **currentPage**              | `number`                                                         | Yes      | -           |
-| **totalPages**               | `number`                                                         | Yes      | -           |
-| **totalCount**               | `number`                                                         | No       | -           |
-| **itemsPerPage**             | `5 \| 10 \| 25 \| 50`                                            | No       | -           |
-| **isFetching**               | `boolean`                                                        | No       | -           |
+| Prop                         | Type                                                             | Required | Description                                                          |
+| ---------------------------- | ---------------------------------------------------------------- | -------- | -------------------------------------------------------------------- |
+| **handleFirstPage**          | `() => void`                                                     | Yes      | Navigate to the first page.                                          |
+| **handlePreviousPage**       | `() => void`                                                     | Yes      | Navigate to the previous page.                                       |
+| **handleNextPage**           | `() => void`                                                     | Yes      | Navigate to the next page.                                           |
+| **handleLastPage**           | `() => void`                                                     | Yes      | Navigate to the last page.                                           |
+| **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | Called when the user changes the number of items displayed per page. |
+| **currentPage**              | `number`                                                         | Yes      | The currently active page (1-based).                                 |
+| **totalPages**               | `number`                                                         | Yes      | Total number of pages.                                               |
+| **totalCount**               | `number`                                                         | No       | Total number of items across all pages.                              |
+| **itemsPerPage**             | `5 \| 10 \| 25 \| 50`                                            | No       | Number of items shown per page.                                      |
+| **isFetching**               | `boolean`                                                        | No       | Whether a page fetch is in progress.                                 |
 
 ### PaginationItemsPerPage
 
@@ -535,10 +541,10 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
 ## PayrollLoadingProps
 
-| Prop            | Type              | Required | Description |
-| --------------- | ----------------- | -------- | ----------- |
-| **title**       | `React.ReactNode` | Yes      | -           |
-| **description** | `React.ReactNode` | No       | -           |
+| Prop            | Type              | Required | Description                                             |
+| --------------- | ----------------- | -------- | ------------------------------------------------------- |
+| **title**       | `React.ReactNode` | Yes      | The heading text displayed above the loading animation. |
+| **description** | `React.ReactNode` | No       | Optional supporting text displayed below the title.     |
 
 ## ProgressBarProps
 
@@ -762,4 +768,10 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
 ## UnorderedListProps
 
-The props for this component are defined in [BaseListProps](#baselistprops).
+| Prop                 | Type                | Required | Description                               |
+| -------------------- | ------------------- | -------- | ----------------------------------------- |
+| **items**            | `React.ReactNode[]` | Yes      | The list items to render                  |
+| **className**        | `string`            | No       | Optional custom class name                |
+| **aria-label**       | `string`            | No       | Accessibility label for the list          |
+| **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
+| **aria-describedby** | `string`            | No       | ID of an element that describes this list |

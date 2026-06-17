@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a loading state during payroll calculation.
  *
  * @public
+ * @group Component Props
  */
 export interface PayrollLoadingProps {
   /** The heading text displayed above the loading animation. */

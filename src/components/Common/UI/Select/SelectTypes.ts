@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
  *
  * @public
+ * @group Utility Types
  */
 export interface SelectOption {
   /**
@@ -22,6 +23,7 @@ export interface SelectOption {
  * Renders a form field wrapping a single-select dropdown with a label, description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface SelectProps
   extends

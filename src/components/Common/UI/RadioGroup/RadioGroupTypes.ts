@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
  *
  * @public
+ * @group Utility Types
  */
 export interface RadioGroupOption {
   /**
@@ -30,6 +31,7 @@ export interface RadioGroupOption {
  * Renders a form field wrapping multiple `<input type="radio" />` elements with a label, optional description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface RadioGroupProps
   extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
