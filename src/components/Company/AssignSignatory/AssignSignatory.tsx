@@ -11,12 +11,44 @@ import { Flex } from '@/components/Common'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
-interface AssignSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
+/**
+ * Props for {@link AssignSignatory}.
+ *
+ * @public
+ */
+export interface AssignSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
+  /** Identifier of the company the signatory is being assigned to. */
   companyId: string
+  /**
+   * Identifier of an existing signatory. When set and matching the current signatory,
+   * the create form pre-populates with their information for editing.
+   */
   signatoryId?: string
+  /**
+   * Default values for the underlying create and invite forms. Provide a `create` object,
+   * an `invite` object, or both — see {@link AssignSignatoryDefaultValues}.
+   */
   defaultValues?: AssignSignatoryDefaultValues
 }
 
+/**
+ * Lets a user either create a new signatory with full details or invite someone else to become the signatory.
+ *
+ * @remarks
+ * For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/signatory/assignSignatory/modeUpdated` | The user switched between create and invite modes | The selected mode string (`'createSignatory'` or `'inviteSignatory'`) |
+ * | `company/signatory/assignSignatory/done` | The signatory assignment process completed | — |
+ * | `company/signatory/created` | A new signatory was created (create mode) | Response from the create signatory API request |
+ * | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
+ * | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
+ *
+ * @param props - {@link AssignSignatoryProps}.
+ * @returns The rendered signatory assignment surface.
+ * @public
+ */
 export function AssignSignatory(props: AssignSignatoryProps) {
   return (
     <BaseComponent {...props}>

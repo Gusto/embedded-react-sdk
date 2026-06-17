@@ -6,18 +6,24 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type EventPayloads = {
   [componentEvents.COMPANY_BANK_ACCOUNT_CREATED]: CompanyBankAccount
   [componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED]: CompanyBankAccount
   [componentEvents.COMPANY_BANK_ACCOUNT_CHANGE]: undefined
 }
 
+/** @internal */
 export interface BankAccountContextInterface extends FlowContextInterface {
+  /** Identifier of the company whose bank account is being managed. */
   companyId: string
+  /** Currently configured bank account, or `null` when none is on file. */
   bankAccount: CompanyBankAccount | null
+  /** Whether the list view should surface a success banner after verification. */
   showVerifiedMessage?: boolean
 }
 
+/** @internal */
 export function BankAccountListContextual() {
   const { companyId, showVerifiedMessage, onEvent } = useFlow<BankAccountContextInterface>()
   return (
@@ -28,6 +34,7 @@ export function BankAccountListContextual() {
     />
   )
 }
+/** @internal */
 export function BankAccountFormContextual() {
   const { companyId, onEvent, bankAccount } = useFlow<BankAccountContextInterface>()
   return (
@@ -38,6 +45,7 @@ export function BankAccountFormContextual() {
     />
   )
 }
+/** @internal */
 export function BankAccountVerifyContextual() {
   const { bankAccount, companyId, onEvent } = useFlow<BankAccountContextInterface>()
   if (!bankAccount) return null

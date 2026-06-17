@@ -8,6 +8,12 @@ import { componentEvents } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
+/**
+ * Props for the {@link Industry} component.
+ *
+ * @typeParam T - The HTML element type that `className` and `children` are typed against.
+ * @public
+ */
 export type IndustryProps<T> = Pick<
   BaseComponentInterface<'Company.Industry'>,
   'onEvent' | 'dictionary'
@@ -49,6 +55,21 @@ function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T
   )
 }
 
+/**
+ * Selects and saves the company's industry classification (NAICS code).
+ *
+ * Presents a searchable list of industry options and persists the selection for the given company.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+ *
+ * @typeParam T - The HTML element type that `className` and `children` are typed against.
+ * @param props - {@link IndustryProps} including `companyId` and event handlers.
+ * @returns The rendered industry selector.
+ * @public
+ */
 export function Industry<T>(props: IndustryProps<T>) {
   useI18n('Company.Industry')
 

@@ -3,6 +3,7 @@ import { useBankAccountVerify } from './context'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Actions() {
   const { t } = useTranslation('Company.BankAccount')
   const { isPending, handleCancel } = useBankAccountVerify()

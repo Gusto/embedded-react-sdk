@@ -12,20 +12,50 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { Flow } from '@/components/Flow/Flow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
-type PayScheduleDefaultFields = {
+/** @public */
+export type PayScheduleDefaultFields = {
   [K in keyof Pick<
     PayScheduleFormData,
     'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
   >]: NonNullable<PayScheduleFormData[K]>
 }
 
+/**
+ * Default values for the {@link PaySchedule} form fields. Server data for an existing pay schedule
+ * takes precedence over these defaults when editing.
+ *
+ * @public
+ */
 export type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>
 
-interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
+/**
+ * Props for the {@link PaySchedule} component.
+ *
+ * @public
+ */
+export interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
+  /** Identifier of the company whose pay schedules are managed. */
   companyId: string
+  /** Default values used to pre-fill the create form. Ignored fields not listed in {@link PayScheduleDefaultValues}. */
   defaultValues?: PayScheduleDefaultValues
 }
 
+/**
+ * Manages a company's pay schedules, including listing existing schedules and creating or editing one.
+ *
+ * @remarks
+ * Renders the schedule list when at least one pay schedule exists and the create form otherwise.
+ * Emits the following events through `onEvent`:
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
+ * | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
+ *
+ * @param props - {@link PayScheduleProps} plus the standard base component props.
+ * @returns The pay schedule list or form depending on whether any schedules exist.
+ * @public
+ */
 export const PaySchedule = ({
   companyId,
   defaultValues,

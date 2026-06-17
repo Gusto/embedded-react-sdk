@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function AccountView() {
   const { bankAccount } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')

@@ -7,6 +7,7 @@ interface ActionsProps {
   continueCtaLabel?: string
 }
 
+/** @internal */
 export function Actions({ continueCtaLabel }: ActionsProps) {
   const { t } = useTranslation('Company.DocumentList')
   const { handleContinue } = useDocumentList()
