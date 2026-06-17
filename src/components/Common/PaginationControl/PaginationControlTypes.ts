@@ -1,4 +1,7 @@
-/** @public */
+/**
+ * @public
+ * @group Utility Types
+ */
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
 /**
@@ -6,8 +9,9 @@ export type PaginationItemsPerPage = 5 | 10 | 25 | 50
  * Renders pagination controls for navigating between pages of results.
  *
  * @public
+ * @group Component Props
  */
-export type PaginationControlProps = {
+export interface PaginationControlProps {
   /** Navigate to the first page. */
   handleFirstPage: () => void
   /** Navigate to the previous page. */

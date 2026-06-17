@@ -3,11 +3,7 @@ import type { AuthorizationStatus } from '@gusto/embedded-api-v-2025-11-15/model
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationGetAuthorization'
 import { useSignEmployeeForm, type PreparerFieldGroup } from '../../../shared/useSignEmployeeForm'
 import styles from './I9SignatureForm.module.scss'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
@@ -18,13 +14,37 @@ import { Form } from '@/components/Common/Form'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface I9SignatureFormProps extends CommonComponentInterface {
+/**
+ * Props for {@link I9SignatureForm}.
+ *
+ * @public
+ */
+export interface I9SignatureFormProps extends BaseComponentInterface {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The identifier of the I-9 form to sign. */
   formId: string
 }
 
-/** @internal */
-export function I9SignatureForm(props: I9SignatureFormProps & BaseComponentInterface) {
+/**
+ * Presents the employee's I-9 form for review and signature.
+ *
+ * @remarks
+ * Renders the I-9 PDF, surfaces the current employment-eligibility status, and
+ * collects the employee's signature along with any preparer or translator
+ * details. On successful submission the signed form is emitted.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/forms/sign` | Fired after the I-9 is successfully signed | {@link Form} |
+ * | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
+ * | `cancel` | Fired when the user cancels signing and returns to the document list | — |
+ *
+ * @param props - See {@link I9SignatureFormProps}.
+ * @returns The employee I-9 signature form.
+ * @public
+ */
+export function I9SignatureForm(props: I9SignatureFormProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props} />

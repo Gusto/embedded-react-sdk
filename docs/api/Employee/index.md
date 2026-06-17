@@ -27,17 +27,20 @@ custom_edit_url: null
 | --------- | ----------- |
 | [Compensation](EmployeeOnboarding/blocks.md#compensation) | Onboarding step for collecting an employee's role and compensation details. |
 | [Deductions](EmployeeOnboarding/blocks.md#deductions) | Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments. |
+| [DocumentList](EmployeeOnboarding/blocks.md#documentlist) | Lists the employee's documents pending signature. |
 | [DocumentSigner](EmployeeOnboarding/blocks.md#documentsigner) | Onboarding step for signing employee documents. |
 | [EditCompensation](EmployeeOnboarding/blocks.md#editcompensation) | Renders a form for creating or editing one of an employee's jobs together with its compensation. |
 | [EmployeeDocuments](EmployeeOnboarding/blocks.md#employeedocuments) | Onboarding step for selecting which documents the employee must complete. |
 | [EmployeeList](EmployeeOnboarding/blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
 | [EmploymentEligibility](EmployeeOnboarding/blocks.md#employmenteligibility) | Captures the employee's I-9 employment eligibility (Section 1) before signing. |
 | [FederalTaxes](EmployeeOnboarding/blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [I9SignatureForm](EmployeeOnboarding/blocks.md#i9signatureform) | Presents the employee's I-9 form for review and signature. |
 | [JobsList](EmployeeOnboarding/blocks.md#jobslist) |  |
 | [Landing](EmployeeOnboarding/blocks.md#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
 | [OnboardingSummary](EmployeeOnboarding/blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
 | [PaymentMethod](EmployeeOnboarding/blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |
 | [Profile](EmployeeOnboarding/blocks.md#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
+| [SignatureForm](EmployeeOnboarding/blocks.md#signatureform) | Presents a single employee document for review and signature. |
 | [StateTaxes](EmployeeOnboarding/blocks.md#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
 
 ## [EmployeeManagement](EmployeeManagement/flows.md)
