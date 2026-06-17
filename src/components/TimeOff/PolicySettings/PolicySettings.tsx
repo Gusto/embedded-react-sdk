@@ -13,11 +13,33 @@ import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
+/**
+ * Props for {@link PolicySettings}.
+ *
+ * @public
+ */
 export interface PolicySettingsProps extends BaseComponentInterface {
+  /** UUID of the time off policy being configured. */
   policyId: string
+  /** Whether the form is being used to create a new policy or edit an existing one. Defaults to create. */
   mode?: 'create' | 'edit'
 }
 
+/**
+ * Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual.
+ *
+ * @remarks
+ * Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |
+ * | `timeOff/policySettings/back` | Fired when the user navigates back | — |
+ *
+ * @param props - {@link PolicySettingsProps}
+ * @returns The rendered policy settings form.
+ * @public
+ */
 export function PolicySettings(props: PolicySettingsProps) {
   return (
     <BaseComponent {...props}>

@@ -14,6 +14,7 @@ interface PayrollStatusBadgesProps {
   wireInRequest?: WireInRequestInput
 }
 
+/** @internal */
 export const PayrollStatusBadges = ({ payroll, wireInRequest }: PayrollStatusBadgesProps) => {
   const { Badge } = useComponentContext()
   useI18n('Payroll.Common')

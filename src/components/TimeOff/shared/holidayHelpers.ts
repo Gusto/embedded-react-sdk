@@ -14,6 +14,7 @@ interface FederalHolidayDef {
 const MONDAY = 1
 const THURSDAY = 4
 
+/** @internal */
 export const FEDERAL_HOLIDAYS: FederalHolidayDef[] = [
   { key: 'newYearsDay', dateRule: { type: 'fixed', month: 0, day: 1 } },
   { key: 'mlkDay', dateRule: { type: 'nthWeekday', month: 0, weekday: MONDAY, nth: 3 } },
@@ -28,6 +29,7 @@ export const FEDERAL_HOLIDAYS: FederalHolidayDef[] = [
   { key: 'christmasDay', dateRule: { type: 'fixed', month: 11, day: 25 } },
 ]
 
+/** @internal */
 export const FEDERAL_HOLIDAY_KEYS = FEDERAL_HOLIDAYS.map(h => h.key)
 
 function getNthWeekdayOfMonth(year: number, month: number, weekday: number, nth: number): Date {
@@ -56,6 +58,7 @@ function computeDate(rule: HolidayDateRule, year: number): Date {
   }
 }
 
+/** @internal */
 export function getNextObservationDate(holidayKey: string, referenceDate: Date = new Date()): Date {
   const holiday = FEDERAL_HOLIDAYS.find(h => h.key === holidayKey)
   if (!holiday) {
@@ -113,6 +116,7 @@ const HOLIDAY_DATE_KEYS = {
   christmasDay: 'holidays.christmasDay.observedDate',
 } as const
 
+/** @internal */
 export function getDefaultHolidayItems(
   t: TFunction<'Company.TimeOff.HolidayPolicy'>,
   referenceDate?: Date,
@@ -132,6 +136,7 @@ interface FederalHolidaySelection {
 
 type FederalHolidaysPayload = Record<string, FederalHolidaySelection>
 
+/** @internal */
 export function buildFederalHolidaysPayload(selectedKeys: Set<string>): FederalHolidaysPayload {
   const payload: FederalHolidaysPayload = {}
   for (const holiday of FEDERAL_HOLIDAYS) {

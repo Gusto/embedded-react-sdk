@@ -13,6 +13,20 @@ import { useI18n } from '@/i18n'
 
 const DETAILS_TAB_ID = 'details'
 
+/**
+ * Presentational detail view for sick and vacation time-off policies.
+ *
+ * @remarks
+ * Displays policy configuration and accrual settings in a tabbed interface alongside the
+ * list of enrolled employees. Provides actions for editing the policy, changing settings,
+ * adding employees, removing employees, and editing individual employee balances. This
+ * component is fully controlled — pass in the data, selected tab, and dialog state and wire
+ * up the callbacks. The corresponding container component is {@link TimeOffPolicyDetail}.
+ *
+ * @param input - See {@link TimeOffPolicyDetailPresentationProps}.
+ * @returns The rendered detail view.
+ * @public
+ */
 export function TimeOffPolicyDetailPresentation({
   title,
   subtitle,

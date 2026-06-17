@@ -19,7 +19,8 @@ custom_edit_url: null
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
 | [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
 | [InformationRequests](InformationRequests/flows.md) | - |
-| [Payroll](Payroll/index.md) | - |
+| [Payroll](Payroll/flows.md) | - |
+| [TimeOff](TimeOff/flows.md) | - |
 
 ## Components
 
@@ -236,6 +237,22 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 | <a id="property-apiconfigheaders"></a> `headers?` | `HeadersInit` | Extra headers applied to every API request. Combined with any headers your proxy adds. |
 | <a id="property-apiconfighooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Request interceptor hooks. Use these to inspect, modify, or react to requests and responses. See [SDKHooks](#sdkhooks). |
 | <a id="property-apiconfigobservability"></a> `observability?` | [`ObservabilityHook`](#observabilityhook) | Observability hook for surfacing errors and metrics from the SDK to your monitoring stack. See [ObservabilityHook](#observabilityhook). |
+
+***
+
+<a id="confirmwiredetailsprops"></a>
+
+### ConfirmWireDetailsProps
+
+Props for the ConfirmWireDetails component.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-confirmwiredetailspropscompanyid"></a> `companyId` | `string` | The associated company identifier. |
+| <a id="property-confirmwiredetailspropsonevent"></a> `onEvent?` | `OnEventType`\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked with wire-confirmation lifecycle events. See the events table on ConfirmWireDetails. |
+| <a id="property-confirmwiredetailspropswireinid"></a> `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
 ***
 
@@ -621,6 +638,19 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 | <a id="property-sharedfieldlayoutpropsshouldvisuallyhidelabel"></a> `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
 ## Type Aliases
+
+<a id="confirmwiredetailscomponenttype"></a>
+
+### ConfirmWireDetailsComponentType
+
+> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
+
+Component type matching the ConfirmWireDetails signature.
+
+Use this when supplying a custom wire-confirmation UI to a payroll flow via a
+`ConfirmWireDetailsComponent` prop.
+
+***
 
 <a id="observabilitymetricunit"></a>
 

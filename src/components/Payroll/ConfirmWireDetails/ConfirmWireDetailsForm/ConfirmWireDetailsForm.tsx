@@ -28,14 +28,14 @@ interface ConfirmWireDetailsFormProps extends BaseComponentInterface<'Payroll.Co
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
 
-export const ConfirmWireDetailsFormSchema = z.object({
+const ConfirmWireDetailsFormSchema = z.object({
   amountSent: z.number().positive(),
   dateSent: z.date(),
   bankName: z.string().min(1),
   additionalNotes: z.string().optional(),
 })
 
-export type ConfirmWireDetailsFormValues = z.infer<typeof ConfirmWireDetailsFormSchema>
+type ConfirmWireDetailsFormValues = z.infer<typeof ConfirmWireDetailsFormSchema>
 
 const CONFIRM_WIRE_FORM_ID = 'confirm-wire-details-form'
 
@@ -50,6 +50,7 @@ const transformFormDataToPayload = (
   }
 }
 
+/** @internal */
 export function ConfirmWireDetailsForm(props: ConfirmWireDetailsFormProps) {
   return (
     <BaseComponent {...props}>

@@ -69,6 +69,7 @@ const getPayrollConfigurationTitle = (
   return { startDate: '', endDate: '' }
 }
 
+/** @internal */
 export const PayrollConfigurationPresentation = ({
   employeeCompensations,
   employeeDetails,
