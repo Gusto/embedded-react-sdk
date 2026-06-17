@@ -5,8 +5,9 @@ import type { AnchorHTMLAttributes, ReactNode } from 'react'
  * Renders an HTML anchor (`<a>`) for inline navigation.
  *
  * @public
+ * @group Component Props
  */
-export type LinkProps = Pick<
+export interface LinkProps extends Pick<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   /**
    * URL that the link points to
@@ -56,7 +57,7 @@ export type LinkProps = Pick<
    * Title text shown on hover
    */
   | 'title'
-> & {
+> {
   /**
    * Content to be displayed inside the link
    */

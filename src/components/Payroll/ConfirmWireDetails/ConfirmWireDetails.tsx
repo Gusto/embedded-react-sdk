@@ -13,13 +13,45 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 
-interface ConfirmWireDetailsInternalProps
-  extends Omit<BaseComponentInterface, 'onEvent'>, ConfirmWireDetailsProps {}
-
+/**
+ * Wire transfer confirmation workflow for payroll funding.
+ *
+ * Displays a banner when wire transfers are awaiting funds and walks the user
+ * through viewing wire instructions and confirming transfer details via a modal.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `payroll/wire/startTransfer` | User initiates the wire transfer flow | — |
+ * | `payroll/wire/instructions/select` | User selects a wire-in request from the instructions screen | `{ selectedWireInId: string }` |
+ * | `payroll/wire/instructions/done` | User completes viewing wire instructions | `{ selectedWireInId: string }` |
+ * | `payroll/wire/instructions/cancel` | User cancels viewing wire instructions | — |
+ * | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
+ * | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
+ *
+ * @param props - {@link ConfirmWireDetailsProps} plus base component props.
+ * @returns The wire confirmation banner and modal flow.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <Payroll.ConfirmWireDetails
+ *       companyId="your-company-id"
+ *       wireInId="your-wire-in-id"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function ConfirmWireDetails({
   onEvent = () => {},
   ...props
-}: ConfirmWireDetailsInternalProps) {
+}: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps) {
   return (
     <BaseComponent {...props} onEvent={onEvent}>
       <Root {...props} onEvent={onEvent} />
@@ -27,7 +59,11 @@ export function ConfirmWireDetails({
   )
 }
 
-function Root({ companyId, wireInId, onEvent = () => {} }: ConfirmWireDetailsInternalProps) {
+function Root({
+  companyId,
+  wireInId,
+  onEvent = () => {},
+}: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)

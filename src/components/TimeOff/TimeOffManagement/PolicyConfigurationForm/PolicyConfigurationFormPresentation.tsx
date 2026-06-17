@@ -24,6 +24,7 @@ import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useI18n } from '@/i18n'
 import { getDaysInMonth } from '@/helpers/dateFormatting'
 
+/** @internal */
 export function PolicyConfigurationFormPresentation({
   onContinue,
   onCancel,

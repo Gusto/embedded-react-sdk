@@ -8,6 +8,7 @@ import { DataView, Flex, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPresentationProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')

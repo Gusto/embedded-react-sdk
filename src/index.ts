@@ -7,6 +7,7 @@ export {
   ContractorOnboardingStatus,
   ContractorSelfOnboardingStatuses,
   PAY_PERIODS,
+  I9_FORM_NAME,
 } from '@/shared/constants'
 export type { EventType } from '@/shared/constants'
 export type {

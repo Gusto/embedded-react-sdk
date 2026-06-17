@@ -3,6 +3,7 @@ import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export function OffCycleFlowContextual() {
   const { companyId, onEvent, withReimbursements } = useFlow<PayrollFlowContextInterface>()
   return (

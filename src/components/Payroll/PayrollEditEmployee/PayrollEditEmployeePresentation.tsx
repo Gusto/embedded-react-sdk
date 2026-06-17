@@ -68,7 +68,7 @@ const ReimbursementFormSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
-export const PayrollEditEmployeeFormSchema = z.object({
+const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
@@ -77,6 +77,7 @@ export const PayrollEditEmployeeFormSchema = z.object({
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
+/** @internal */
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
 
 const buildCompensationFromFormData = (
@@ -185,6 +186,7 @@ const buildCompensationFromFormData = (
   return updatedCompensation
 }
 
+/** @internal */
 export const PayrollEditEmployeePresentation = ({
   onSave,
   onCancel,

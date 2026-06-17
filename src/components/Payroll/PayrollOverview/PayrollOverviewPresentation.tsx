@@ -70,6 +70,7 @@ const getPayrollOverviewTitle = (
   return { startDate: '', endDate: '' }
 }
 
+/** @internal */
 export const PayrollOverviewPresentation = ({
   onEdit,
   onSubmit,

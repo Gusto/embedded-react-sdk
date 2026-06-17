@@ -13,6 +13,13 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { Flex, DatePickerField, RadioGroupField } from '@/components/Common'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
+/**
+ * Presentational layout for the transition payroll creation form.
+ *
+ * @param props - {@link TransitionCreationPresentationProps}.
+ * @returns The transition payroll creation form layout.
+ * @internal
+ */
 export function TransitionCreationPresentation({
   startDate,
   endDate,

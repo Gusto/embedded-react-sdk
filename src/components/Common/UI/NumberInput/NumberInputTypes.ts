@@ -7,6 +7,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping a numeric `<input />` for currency, decimal, or percent values, with optional start/end adornments.
  *
  * @public
+ * @group Component Props
  */
 export interface NumberInputProps
   extends

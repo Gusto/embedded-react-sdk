@@ -17,6 +17,7 @@ function getFutureEndDate(): string {
   return date.toISOString().split('T')[0]!
 }
 
+/** @internal */
 export function TransitionFlowContextual() {
   const { companyId, transitionStartDate, transitionEndDate, transitionPayScheduleUuid, onEvent } =
     useFlow<PayrollFlowContextInterface>()

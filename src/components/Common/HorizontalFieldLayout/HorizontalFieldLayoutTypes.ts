@@ -11,6 +11,7 @@ import type {
  * Alias of {@link SharedFieldLayoutProps} — exposed as a distinct name to mirror the horizontal layout used by these controls.
  *
  * @public
+ * @interface
  */
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps
 

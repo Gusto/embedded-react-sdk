@@ -1,5 +1,10 @@
 import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 
+/**
+ * Enum-like map of payroll categories combining `Regular`, `External`, and every off-cycle reason.
+ *
+ * @internal
+ */
 export const PayrollCategory = {
   Regular: 'Regular',
   External: 'External',
@@ -15,10 +20,22 @@ export const PayrollCategory = {
   DisabilityInsurance: OffCycleReasonType.DisabilityInsuranceDistribution,
 } as const
 
+/**
+ * Union of payroll category string values from {@link PayrollCategory}.
+ *
+ * @internal
+ */
 export type PayrollCategory = (typeof PayrollCategory)[keyof typeof PayrollCategory]
 
 const VALID_PAYROLL_CATEGORIES = new Set<string>(Object.values(PayrollCategory))
 
+/**
+ * Derives a {@link PayrollCategory} from a payroll's `external`, `offCycle`, and `offCycleReason` flags.
+ *
+ * @param payroll - The payroll whose category to derive.
+ * @returns The matching category, falling back to `Regular` when nothing else applies.
+ * @internal
+ */
 export function derivePayrollCategory(payroll: {
   offCycle?: boolean
   offCycleReason?: string | null
@@ -35,6 +52,13 @@ export function derivePayrollCategory(payroll: {
   return PayrollCategory.Regular
 }
 
+/**
+ * Returns whether a payroll category represents an off-cycle payroll.
+ *
+ * @param category - The payroll category to check.
+ * @returns `true` for any category other than `Regular` or `External`.
+ * @internal
+ */
 export function isOffCyclePayroll(category: PayrollCategory): boolean {
   return category !== PayrollCategory.Regular && category !== PayrollCategory.External
 }
