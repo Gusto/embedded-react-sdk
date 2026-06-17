@@ -37,11 +37,16 @@ export const JobErrorCodes = {
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes]
 
 const fieldValidators = {
+  /** The employee's job title (e.g. `"Software Engineer"`). */
   title: z.string(),
+  /** The employee's hire date as an ISO 8601 string (`YYYY-MM-DD`), or `null` if unknown. */
   hireDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  /** Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. */
   twoPercentShareholder: z.boolean(),
   // Radio group delivers 'true'/'false' strings; coerceStringBoolean converts to boolean.
+  /** Whether the employee is covered under Washington state workers' compensation insurance. */
   stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
+  /** Washington state workers' compensation risk-class code. Required when `stateWcCovered` is `true`. */
   stateWcClassCode: z.string(),
 }
 
@@ -56,6 +61,7 @@ const fieldValidators = {
  * input (the schema preprocessor coerces them).
  *
  * @public
+ * @interface
  */
 export type JobFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

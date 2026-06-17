@@ -4470,6 +4470,32 @@ function JobForm({ employeeId }: { employeeId: string }) {
 
 ***
 
+<a id="jobformdata"></a>
+
+### JobFormData
+
+Shape of the form values managed by [useJobForm](#usejobform).
+
+#### Remarks
+
+Accepted as `defaultValues` on `useJobForm` and returned by
+`form.getFormSubmissionValues()` once the form has validated. `hireDate` is
+an ISO date string (`YYYY-MM-DD`) or `null`; `stateWcCovered` is a boolean
+even though the radio group surfaces `'true'` / `'false'` strings during
+input (the schema preprocessor coerces them).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `hireDate` | `string` \| `null` | The employee's hire date as an ISO 8601 string (`YYYY-MM-DD`), or `null` if unknown. |
+| `stateWcClassCode` | `string` | Washington state workers' compensation risk-class code. Required when `stateWcCovered` is `true`. |
+| `stateWcCovered` | `boolean` | Whether the employee is covered under Washington state workers' compensation insurance. |
+| `title` | `string` | The employee's job title (e.g. `"Software Engineer"`). |
+| `twoPercentShareholder` | `boolean` | Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. |
+
+***
+
 <a id="jobformfields"></a>
 
 ### JobFormFields
@@ -4621,24 +4647,6 @@ Shape of the per-field metadata exposed at `useJobForm().form.fieldsMetadata`.
 Maps each field name in [JobFormData](#jobformdata) to its presentation metadata —
 including the registered `name`, whether the field is required or disabled,
 and (for select-like fields) the option list.
-
-***
-
-<a id="jobformdata"></a>
-
-### JobFormData
-
-> **JobFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the form values managed by [useJobForm](#usejobform).
-
-#### Remarks
-
-Accepted as `defaultValues` on `useJobForm` and returned by
-`form.getFormSubmissionValues()` once the form has validated. `hireDate` is
-an ISO date string (`YYYY-MM-DD`) or `null`; `stateWcCovered` is a boolean
-even though the radio group surfaces `'true'` / `'false'` strings during
-input (the schema preprocessor coerces them).
 
 ***
 
