@@ -6,7 +6,7 @@ import type {
   SelectEmployeesPresentationProps,
 } from './SelectEmployeesPresentationTypes'
 import styles from './SelectEmployeesPresentation.module.scss'
-import { ActionsLayout, Flex } from '@/components/Common'
+import { ActionsLayout, Flex, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -58,13 +58,7 @@ export function SelectEmployeesPresentation({
         getIsItemSelected={item => selectedUuids.has(item.uuid)}
         isFetching={isFetching}
         pagination={pagination}
-        emptyState={() => (
-          <Flex flexDirection="column" alignItems="center" gap={8}>
-            <Text size="sm" textAlign="center">
-              {t('emptyState')}
-            </Text>
-          </Flex>
-        )}
+        emptyState={() => <EmptyData title={t('emptyState')} />}
         additionalColumns={[
           {
             key: 'department' as keyof EmployeeItem,
