@@ -570,6 +570,7 @@ declare namespace CompanyOnboarding {
         Locations,
         LocationForm,
         LocationsList,
+        LocationsListProps,
         PaySchedule,
         PayScheduleProps,
         PayScheduleDefaultValues,
@@ -3100,10 +3101,15 @@ function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
 // @public
 function Locations(input: LocationsProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "LocationsListProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function LocationsList(props: LocationsListProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationsList"
+//
+// @public
+interface LocationsListProps extends BaseComponentInterface {
+    companyId: string;
+}
 
 // @public
 function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;

@@ -8,7 +8,7 @@ export { Industry, type IndustryProps } from '../Industry'
 export { BankAccount } from '../BankAccount/BankAccount'
 export { Locations } from '../Locations/Locations'
 export { LocationForm } from '../Locations/LocationForm'
-export { LocationsList } from '../Locations/LocationsList'
+export { LocationsList, type LocationsListProps } from '../Locations/LocationsList'
 export {
   PaySchedule,
   type PayScheduleProps,
