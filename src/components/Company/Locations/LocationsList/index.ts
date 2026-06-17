@@ -1,1 +1,1 @@
-export { LocationsList } from './LocationsList'
+export { LocationsList, type LocationsListProps } from './LocationsList'

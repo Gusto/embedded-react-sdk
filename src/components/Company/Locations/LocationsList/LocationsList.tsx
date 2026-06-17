@@ -10,7 +10,12 @@ import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
-interface LocationsListProps extends BaseComponentInterface {
+/**
+ * Props for the {@link LocationsList} component.
+ *
+ * @public
+ */
+export interface LocationsListProps extends BaseComponentInterface {
   /** The associated company identifier. */
   companyId: string
 }
