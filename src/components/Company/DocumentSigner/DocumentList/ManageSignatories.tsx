@@ -11,6 +11,7 @@ function isValidSignatoryTitle(
   return !!title && title in SIGNATORY_TITLES
 }
 
+/** @internal */
 export function ManageSignatories() {
   const { t } = useTranslation('Company.DocumentList')
   const { isSelfSignatory, signatory, handleChangeSignatory } = useDocumentList()

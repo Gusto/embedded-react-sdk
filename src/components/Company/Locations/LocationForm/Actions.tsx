@@ -3,6 +3,7 @@ import { useLocationsForm } from './useLocationForm'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export const Actions = () => {
   const { t } = useTranslation('Company.Locations')
   const { handleCancel, isPending } = useLocationsForm()

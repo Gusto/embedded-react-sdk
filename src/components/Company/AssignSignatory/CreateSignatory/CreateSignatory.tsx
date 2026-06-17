@@ -26,12 +26,34 @@ import { companyEvents } from '@/shared/constants'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
-interface CreateSignatoryProps extends CommonComponentInterface {
+/**
+ * Props for {@link CreateSignatory}.
+ *
+ * @public
+ */
+export interface CreateSignatoryProps extends CommonComponentInterface {
+  /** Identifier of the company the signatory belongs to. */
   companyId: string
+  /** Identifier of an existing signatory. When provided and matching an existing signatory on the company, the form pre-populates with their information for editing. */
   signatoryId?: string
+  /** Initial values for the form fields. Ignored for fields where a value is already available from the signatory record. */
   defaultValues?: CreateSignatoryDefaultValues
 }
 
+/**
+ * Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/signatory/created` | A new signatory was created successfully | The created signatory record |
+ * | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
+ * | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
+ *
+ * @param props - See {@link CreateSignatoryProps}.
+ * @returns The create signatory form.
+ * @public
+ */
 export function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

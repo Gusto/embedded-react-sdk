@@ -6,6 +6,7 @@ export type {
   UsePayScheduleFormReady,
   PayScheduleFieldsMetadata,
   PayScheduleFormFields,
+  PayScheduleFields,
 } from './usePayScheduleForm'
 export {
   createPayScheduleSchema,
@@ -26,4 +27,13 @@ export type {
   AnchorEndOfPayPeriodFieldProps,
   Day1FieldProps,
   Day2FieldProps,
+} from './fields'
+export {
+  CustomNameField,
+  FrequencyField,
+  CustomTwicePerMonthField,
+  AnchorPayDateField,
+  AnchorEndOfPayPeriodField,
+  Day1Field,
+  Day2Field,
 } from './fields'

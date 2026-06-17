@@ -16,6 +16,7 @@ interface PayScheduleFormProps extends UsePayScheduleFormProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function PayScheduleForm({ onEvent, ...hookProps }: PayScheduleFormProps) {
   return (
     <BaseBoundaries componentName="Company.PayScheduleForm">

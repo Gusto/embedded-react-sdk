@@ -4,5 +4,7 @@
 // the pipe replaced to round-trip through RHF state without losing values.
 const PIPE_PLACEHOLDER = '__PIPE__'
 
+/** @internal */
 export const toRhfKey = (key: string): string => key.replaceAll('|', PIPE_PLACEHOLDER)
+/** @internal */
 export const fromRhfKey = (key: string): string => key.replaceAll(PIPE_PLACEHOLDER, '|')

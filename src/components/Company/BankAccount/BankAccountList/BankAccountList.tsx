@@ -15,6 +15,7 @@ interface BankAccountListProps extends CommonComponentInterface {
   showVerifiedMessage?: boolean
 }
 
+/** @internal */
 export function BankAccountList(props: BankAccountListProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

@@ -21,11 +21,34 @@ import {
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface InviteSignatoryProps extends CommonComponentInterface {
+/**
+ * Props for the {@link InviteSignatory} component.
+ *
+ * @public
+ */
+export interface InviteSignatoryProps extends CommonComponentInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** Default values to pre-populate the invite form fields. */
   defaultValues?: InviteSignatoryDefaultValues
 }
 
+/**
+ * Standalone form for inviting someone else to become the company signatory.
+ *
+ * @remarks
+ * The invited person receives an email to complete their signatory information. Use this when
+ * you want to provide only the invite flow without the create option.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
+ * | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
+ *
+ * @param props - {@link InviteSignatoryProps} plus base component props such as `onEvent`.
+ * @returns The rendered invite signatory form.
+ * @public
+ */
 export function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

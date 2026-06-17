@@ -245,6 +245,8 @@ parsed values (or `undefined` if invalid).
 - [`UseEmployeeStateTaxesFormReady`](Employee/hooks.md#useemployeestatetaxesformready)
 - [`UseFederalTaxesFormReady`](Employee/hooks.md#usefederaltaxesformready)
 - [`UseSignEmployeeFormReady`](Employee/hooks.md#usesignemployeeformready)
+- [`UsePayScheduleFormReady`](Company/hooks.md#usepayscheduleformready)
+- [`UseSignCompanyFormReady`](Company/hooks.md#usesigncompanyformready)
 
 #### Type Parameters
 
