@@ -1,30 +1,22 @@
 /**
- * Post-build script: expands `typeof <unexported-const>` references in
+ * Post-build transform: expands `typeof <unexported-const>` references in
  * exported type aliases within generated .d.ts files, replacing them with
  * the TypeScript-resolved concrete types.
  *
  * Background: TypeScript preserves `typeof <const>` in declaration files
  * rather than expanding mapped types. API Extractor flags these as
  * ae-forgotten-export because the referenced constant isn't exported from
- * the package entry point. This script resolves each such type alias to its
- * concrete form and removes the now-orphaned `declare const` statements.
+ * the package entry point. This transform resolves each such type alias to
+ * its concrete form and removes the now-orphaned `declare const` statements.
+ *
+ * Invoked automatically by `expandDtsTypeofPlugin` during `vite build`.
  *
  * Safety: the .reports/embedded-react-sdk.api.md file is tracked in source
- * control and regenerated in CI. Any incorrect output from this script will
- * appear as an unexpected diff in that report.
- *
- * Run: npx tsx build/expandDtsTypeof.ts
- * Integrated via the `derive` script, after build, before api-report:derive.
+ * control and regenerated in CI. Any incorrect output will appear as an
+ * unexpected diff in that report.
  */
-import { Node, Project, ts, type SourceFile, type VariableStatement } from 'ts-morph'
-import { join, dirname, relative } from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const ROOT = join(__dirname, '..')
-const DIST_DIR = join(ROOT, 'dist')
+import { Node, ts, type SourceFile, type VariableStatement } from 'ts-morph'
+import { relative } from 'path'
 
 function buildTypeofPattern(names: Set<string>): RegExp {
   const escaped = [...names].map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -32,7 +24,7 @@ function buildTypeofPattern(names: Set<string>): RegExp {
 }
 
 function rel(filePath: string): string {
-  return relative(ROOT, filePath)
+  return relative(process.cwd(), filePath)
 }
 
 function truncate(text: string, max = 80): string {
@@ -83,7 +75,7 @@ function buildTypeWithPropertyJsDocs(
   return lines.join('\n')
 }
 
-export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecker): boolean {
+export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecker): string | null {
   // Collect names of unexported variable declarations in this file.
   // These are the `declare const fieldValidators: {...}` statements that
   // appear alongside exported type aliases referencing them via `typeof`.
@@ -95,7 +87,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     }
   }
 
-  if (unexportedVarNames.size === 0) return false
+  if (unexportedVarNames.size === 0) return null
 
   // For each unexported const with a TypeLiteralNode type, collect JSDoc for
   // each property so we can re-attach them after expansion.
@@ -212,16 +204,14 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     expansions.push({ typeAlias, resolvedText: finalResolvedText })
   }
 
-  let fileModified = false
+  if (expansions.length === 0) return null
+
   for (const { typeAlias, resolvedText } of expansions) {
     typeAlias.setType(resolvedText)
-    fileModified = true
     console.log(
       `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: ${typeAlias.getName()} → ${truncate(resolvedText)}`,
     )
   }
-
-  if (!fileModified) return false
 
   // After type alias expansion, remove any unexported variable declarations
   // that are no longer referenced anywhere in the file.
@@ -243,32 +233,5 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     )
   }
 
-  return true
+  return sourceFile.getFullText()
 }
-
-function main() {
-  // Use the project tsconfig for correct moduleResolution/target settings,
-  // but load only the generated dist .d.ts files — not the source tree.
-  const project = new Project({
-    tsConfigFilePath: join(ROOT, 'tsconfig.json'),
-    skipAddingFilesFromTsConfig: true,
-  })
-  project.addSourceFilesAtPaths(`${DIST_DIR}/**/*.d.ts`)
-
-  // Access the raw TypeScript type checker for getTypeFromTypeNode, which
-  // bypasses the alias wrapper and gives us the concrete resolved type.
-  const checker = project.getTypeChecker().compilerObject
-
-  let totalModified = 0
-  for (const sourceFile of project.getSourceFiles()) {
-    const modified = processSourceFile(sourceFile, checker)
-    if (modified) {
-      sourceFile.saveSync()
-      totalModified++
-    }
-  }
-
-  console.log(`\n[expand-dts-typeof] Done. Modified ${totalModified} file(s).`)
-}
-
-main()
