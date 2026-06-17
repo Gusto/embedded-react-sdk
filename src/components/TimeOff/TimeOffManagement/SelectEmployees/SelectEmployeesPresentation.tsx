@@ -12,6 +12,7 @@ import { useI18n } from '@/i18n'
 
 const isNumericInput = (value: string) => /^\d*\.?\d*$/.test(value)
 
+/** @internal */
 export function SelectEmployeesPresentation({
   employees,
   selectedUuids,

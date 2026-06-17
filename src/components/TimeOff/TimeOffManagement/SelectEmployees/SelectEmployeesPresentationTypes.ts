@@ -1,6 +1,7 @@
 import type { PaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/paidtimeoff'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+/** @internal */
 export interface EmployeeItem {
   uuid: string
   firstName?: string | null
@@ -11,6 +12,7 @@ export interface EmployeeItem {
   eligiblePaidTimeOff?: PaidTimeOff[]
 }
 
+/** @internal */
 export interface SelectEmployeesPresentationProps {
   employees: EmployeeItem[]
   selectedUuids: Set<string>

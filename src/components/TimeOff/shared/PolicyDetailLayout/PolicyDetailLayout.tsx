@@ -9,6 +9,7 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 const EMPLOYEES_TAB_ID = 'employees'
 
+/** @internal */
 export function PolicyDetailLayout<T extends EmployeeTableItem>({
   title,
   subtitle,
