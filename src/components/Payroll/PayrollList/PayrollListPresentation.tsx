@@ -74,6 +74,7 @@ interface PayrollListPresentationProps {
   hasUnprocessedTransitions?: boolean
 }
 
+/** @internal */
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,

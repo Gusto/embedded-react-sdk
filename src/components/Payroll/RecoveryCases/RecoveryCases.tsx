@@ -9,7 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { FlowContext } from '@/components/Flow/useFlow'
 import { recoveryCasesEvents, type EventType } from '@/shared/constants'
 
-export interface RecoveryCasesProps {
+interface RecoveryCasesProps {
   companyId: string
   onEvent?: BaseComponentInterface['onEvent']
 }
@@ -17,6 +17,26 @@ export interface RecoveryCasesProps {
 interface RecoveryCasesInternalProps
   extends Omit<BaseComponentInterface, 'onEvent'>, RecoveryCasesProps {}
 
+/**
+ * Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them.
+ *
+ * @remarks
+ * Recovery cases are issues that surface after a payroll has been submitted
+ * (for example, a returned ACH transfer) and must be resolved before subsequent
+ * payrolls can run cleanly. This component is also embedded inside
+ * {@link PayrollBlockerList}, but can be used standalone when you want a
+ * dedicated recovery cases surface.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
+ * | `recoveryCase/resubmit/done` | User successfully resubmits a recovery case | Resubmit result payload |
+ * | `recoveryCase/resubmit/cancel` | User cancels the resubmit modal | — |
+ *
+ * @param props - Accepts `companyId` (required) and an optional `onEvent` handler.
+ * @returns The recovery cases list with an embedded resubmit modal.
+ * @public
+ */
 export function RecoveryCases({ onEvent = () => {}, ...props }: RecoveryCasesInternalProps) {
   return (
     <BaseComponent {...props} onEvent={onEvent}>

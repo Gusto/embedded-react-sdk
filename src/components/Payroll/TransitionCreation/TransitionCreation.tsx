@@ -22,6 +22,26 @@ import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
 
+/**
+ * Creation form for transition payrolls covering the gap between an old and new pay schedule.
+ *
+ * Displays the transition pay period and pay schedule information, and collects a check
+ * date, deduction preference, and tax withholding configuration before submitting the
+ * resulting off-cycle payroll for execution.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `transition/created` | The transition payroll has been created | `{ payrollUuid: string }` |
+ *
+ * The check date must be at least the company's ACH lead time (typically two business
+ * days) from today. Deductions default to included and tax withholding defaults to the
+ * regular rate with an every-other-week pay period.
+ *
+ * @param props - {@link TransitionCreationProps} plus base component props.
+ * @returns The transition payroll creation form.
+ * @public
+ */
 export function TransitionCreation(props: TransitionCreationProps) {
   return (
     <BaseComponent {...props}>

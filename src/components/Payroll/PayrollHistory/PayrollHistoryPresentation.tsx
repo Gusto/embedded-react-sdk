@@ -31,6 +31,7 @@ interface PayrollHistoryPresentationProps {
   dateRangeFilter: UseDateRangeFilterResult
 }
 
+/** @internal */
 export const PayrollHistoryPresentation = ({
   payrollHistory,
   wireInRequests,

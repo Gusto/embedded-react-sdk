@@ -10,6 +10,44 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
+/**
+ * Guided workflow for selecting and running a company's payroll end to end.
+ *
+ * @remarks
+ * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/selected` | A payroll is selected to run | `{ payrollId: string }` |
+ * | `payroll/review` | A calculated payroll is opened for review | `{ payrollId: string }` |
+ * | `runPayroll/calculated` | Payroll calculations complete | — |
+ * | `runPayroll/edit` | The user returns to configuration to make changes | — |
+ * | `runPayroll/employee/edited` | An employee row is opened for editing | `{ employeeId: string }` |
+ * | `runPayroll/employee/saved` | Employee payroll changes are saved | `{ payrollPrepared: object, employee: object }` |
+ * | `runPayroll/employee/cancelled` | Employee editing is cancelled | — |
+ * | `runPayroll/submitted` | Payroll is successfully submitted | Response from the submit payroll endpoint |
+ * | `runPayroll/processed` | Payroll processing completes | — |
+ * | `runPayroll/processingFailed` | Payroll processing fails | Error details |
+ * | `runPayroll/cancelled` | A submitted payroll is cancelled | `{ payrollId: string, result: object }` |
+ * | `runPayroll/summary/viewed` | The summary screen is opened | `{ payrollId: string }` |
+ * | `runPayroll/receipt/viewed` | The receipt screen is opened | `{ payrollId: string }` |
+ * | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
+ * | `transition/runPayroll` | The user starts a pending transition payroll | — |
+ * | `payroll/saveAndExit` | The user clicks Save and Exit | — |
+ *
+ * @param props - {@link PayrollFlowProps} with the company, optional reimbursements toggle, optional wire-details override, and event handler.
+ * @returns The composed payroll flow.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function RunPayrollPage() {
+ *   return <Payroll.PayrollFlow companyId="company-uuid" onEvent={() => {}} />
+ * }
+ * ```
+ */
 export const PayrollFlow = ({
   companyId,
   onEvent,

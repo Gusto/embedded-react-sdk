@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { addBusinessDays } from '@/helpers/dateFormatting'
 
-export const DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS = 2
+const DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS = 2
 
+/** @internal */
 export function useOffCyclePayPeriodDateValidation(
   paymentSpeedDays = DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS,
 ) {
