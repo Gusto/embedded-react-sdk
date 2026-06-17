@@ -150,6 +150,7 @@ export const PaymentsListPresentation = ({
             options={dateRangeOptions}
             isRequired
             label={t('startDate')}
+            placeholder=""
             shouldVisuallyHideLabel
           />
           <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>

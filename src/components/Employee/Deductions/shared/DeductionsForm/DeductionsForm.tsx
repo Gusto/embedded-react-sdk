@@ -130,6 +130,7 @@ export function DeductionsForm({
               {variant?.kind === 'garnishment' && (
                 <Components.Select
                   label={t('garnishmentTypeLabel')}
+                  placeholder=""
                   options={garnishmentTypeOptions}
                   value={variant.type}
                   onChange={handleSelectGarnishmentType}

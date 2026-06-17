@@ -54,6 +54,7 @@ export function ChildSupportFormView({
             <Flex flexDirection="column" gap={20}>
               <Fields.State
                 label={t('childSupport.agencyLabel')}
+                placeholder={t('childSupport.agencyPlaceholder')}
                 description={t('childSupport.agencyDescription')}
                 getOptionLabel={(entry: StateFieldEntry) => entry.name}
                 validationMessages={{ REQUIRED: t('childSupport.agencyRequired') }}
@@ -71,6 +72,7 @@ export function ChildSupportFormView({
                   {Fields.FipsCode && (
                     <Fields.FipsCode
                       label={t('childSupport.countyLabel')}
+                      placeholder={t('childSupport.countyPlaceholder')}
                       description={t('childSupport.countyDescription')}
                       getOptionLabel={(entry: CountyEntry) =>
                         entry.county ?? t('childSupport.allCounties')
@@ -124,6 +126,7 @@ export function ChildSupportFormView({
                   />
                   <Fields.PaymentPeriod
                     label={t('childSupport.paymentPeriodLabel')}
+                    placeholder={t('childSupport.paymentPeriodPlaceholder')}
                     description={t('childSupport.paymentPeriodDescription')}
                     getOptionLabel={(value: PaymentPeriod) => paymentPeriodLabel(t, value)}
                     validationMessages={{ REQUIRED: t('childSupport.paymentPeriodRequired') }}

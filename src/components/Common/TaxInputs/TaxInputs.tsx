@@ -66,6 +66,7 @@ export function QuestionInput({
 
 /** @internal */
 export function SelectInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
+  const { t } = useTranslation('common')
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
@@ -81,6 +82,7 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
       defaultValue={value}
       label={label as string}
       description={description}
+      placeholder={t('selectPlaceholder')}
       isDisabled={
         key.includes('fileNewHireReport') ? (value === undefined ? false : true) : isDisabled
       }
@@ -227,6 +229,7 @@ export function DateField({
 /** @internal */
 export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) {
   const { locale } = useLocale()
+  const { t } = useTranslation('common')
 
   if (requirement) {
     const { key, metadata, label, description } = requirement
@@ -239,6 +242,7 @@ export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) 
           name={key || ''}
           label={label || ''}
           description={description}
+          placeholder={t('selectPlaceholder')}
           options={
             validation.rates?.map(rate => ({
               value: rate,

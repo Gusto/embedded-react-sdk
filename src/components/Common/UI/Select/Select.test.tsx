@@ -15,6 +15,7 @@ const defaultProps = {
     { label: 'Option 1', value: '1' },
     { label: 'Option 2', value: '2' },
   ],
+  placeholder: 'Choose an option',
   onChange: vi.fn(),
   onBlur: vi.fn(),
 }
@@ -142,21 +143,32 @@ describe('Select Component', () => {
     const testCases = [
       {
         name: 'basic select',
-        props: { label: 'Choose an option', options: mockOptions },
+        props: { label: 'Choose an option', options: mockOptions, placeholder: 'Pick one' },
       },
       {
         name: 'disabled select',
-        props: { label: 'Disabled select', options: mockOptions, isDisabled: true },
+        props: {
+          label: 'Disabled select',
+          options: mockOptions,
+          placeholder: 'Pick one',
+          isDisabled: true,
+        },
       },
       {
         name: 'required select',
-        props: { label: 'Required select', options: mockOptions, isRequired: true },
+        props: {
+          label: 'Required select',
+          options: mockOptions,
+          placeholder: 'Pick one',
+          isRequired: true,
+        },
       },
       {
         name: 'select with error',
         props: {
           label: 'Select with error',
           options: mockOptions,
+          placeholder: 'Pick one',
           isInvalid: true,
           errorMessage: 'Please select an option',
         },
@@ -166,6 +178,7 @@ describe('Select Component', () => {
         props: {
           label: 'Select with help',
           options: mockOptions,
+          placeholder: 'Pick one',
           description: 'Choose the best option for your needs',
         },
       },
@@ -181,7 +194,7 @@ describe('Select Component', () => {
 
     it('should not have accessibility violations when the listbox is open', async () => {
       const { container } = renderWithProviders(
-        <Select label="Choose an option" options={mockOptions} />,
+        <Select label="Choose an option" placeholder="Pick one" options={mockOptions} />,
       )
       const button = screen.getByRole('button')
 

@@ -170,6 +170,7 @@ export const AllFieldsDemo = () => {
             label="Priority"
             name="priority"
             options={priorities}
+            placeholder="Select priority"
             description="Shipping priority level"
           />
         </Grid>

@@ -68,6 +68,7 @@ export function ManagementCompensationFormBody({
           <>
             <CompFields.FlsaStatus
               label={t('employeeClassification')}
+              placeholder={t('flsaStatusPlaceholder')}
               description={
                 <Trans
                   t={t}
@@ -155,6 +156,7 @@ export function ManagementCompensationFormBody({
         {CompFields.PaymentUnit && (
           <CompFields.PaymentUnit
             label={t('wageFrequencyLabel')}
+            placeholder={t('paymentUnitPlaceholder')}
             description={t('paymentUnitDescription')}
             validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
             getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
@@ -185,6 +187,7 @@ export function ManagementCompensationFormBody({
         {CompFields.MinimumWageId && (
           <CompFields.MinimumWageId
             label={t('minimumWageLabel')}
+            placeholder={t('minimumWagePlaceholder')}
             description={t('minimumWageDescription')}
             validationMessages={{ REQUIRED: t('validations.minimumWage') }}
             getOptionLabel={(wage: MinimumWage) =>

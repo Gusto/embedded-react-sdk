@@ -272,6 +272,7 @@ export interface CompanyPaySchedule{
 "name":string;
 "payfrequency":string;
 "frequency":string;
+"frequencyPlaceholder":string;
 "deadline":string;
 "frequencyOptions":string;
 "firstPayDate":string;
@@ -1385,6 +1386,9 @@ export interface EmployeeCompensation{
 };
 };
 "employeeClassification":string;
+"flsaStatusPlaceholder":string;
+"paymentUnitPlaceholder":string;
+"minimumWagePlaceholder":string;
 "flsaStatusLabels":{
 "Commission Only Exempt":string;
 "Commission Only Nonexempt":string;
@@ -1613,10 +1617,12 @@ export interface EmployeeDeductionsForm{
 };
 "childSupport":{
 "agencyLabel":string;
+"agencyPlaceholder":string;
 "agencyDescription":string;
 "agencyRequired":string;
 "manualPaymentRequired":string;
 "countyLabel":string;
+"countyPlaceholder":string;
 "countyDescription":string;
 "allCounties":string;
 "countyRequired":string;
@@ -1635,6 +1641,7 @@ export interface EmployeeDeductionsForm{
 "amountNonNegative":string;
 "percentOutOfRange":string;
 "paymentPeriodLabel":string;
+"paymentPeriodPlaceholder":string;
 "paymentPeriodDescription":string;
 "paymentPeriodRequired":string;
 "paymentPeriod":{
@@ -2013,6 +2020,9 @@ export interface EmployeeManagementCompensation{
 "effectiveDate":string;
 "twoPercentStakeholderLabel":string;
 "employeeClassification":string;
+"flsaStatusPlaceholder":string;
+"paymentUnitPlaceholder":string;
+"minimumWagePlaceholder":string;
 "classificationLink":string;
 "wageLabel":string;
 "wageFrequencyLabel":string;
@@ -2298,6 +2308,7 @@ export interface EmployeeManagementHomeAddress{
 "street2":string;
 "city":string;
 "state":string;
+"statePlaceholder":string;
 "zip":string;
 "noCurrentAddress":string;
 "courtesyWithholdingLabel":string;
@@ -3830,6 +3841,7 @@ export interface common{
 "multipleErrorsEncountered":string;
 };
 "optionalLabel":string;
+"selectPlaceholder":string;
 "progressBarLabel":string;
 "back":string;
 "errors":{
