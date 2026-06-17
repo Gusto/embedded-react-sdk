@@ -307,6 +307,7 @@ function AdminProfileReady({
               <WorkAddressFields.Location
                 label={t('workAddress')}
                 description={t('workAddressDescription')}
+                placeholder={t('workAddressPlaceholder')}
                 validationMessages={{ REQUIRED: t('validations.location', { ns: 'common' }) }}
               />
             </SDKFormProvider>

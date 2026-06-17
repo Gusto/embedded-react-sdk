@@ -63,6 +63,7 @@ export function Form() {
         name="taxPayerType"
         label={t('taxpayerTypeLabel')}
         description={t('taxpayerTypeDescription')}
+        placeholder={t('taxpayerTypePlaceholder')}
         options={taxPayerTypeOptions}
         isRequired
       />
@@ -84,6 +85,7 @@ export function Form() {
             }}
           />
         }
+        placeholder={t('federalFilingFormPlaceholder')}
         options={filingFormOptions}
         isRequired
       />

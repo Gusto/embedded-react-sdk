@@ -30,6 +30,7 @@ export interface CompanyAssignSignatory{
 "birthday":string;
 "titleSelect":{
 "label":string;
+"placeholder":string;
 };
 };
 "address":{
@@ -137,8 +138,10 @@ export interface CompanyFederalTaxes{
 "federalEinDescription":string;
 "taxpayerTypeLabel":string;
 "taxpayerTypeDescription":string;
+"taxpayerTypePlaceholder":string;
 "federalFilingFormLabel":string;
 "federalFilingFormDescription":string;
+"federalFilingFormPlaceholder":string;
 "legalEntityNameLabel":string;
 "legalEntityNameDescription":string;
 "legalEntityNameError":string;
@@ -935,6 +938,7 @@ export interface ContractorNewHireReport{
 "yesOption":string;
 "noOption":string;
 "stateSelectionLabel":string;
+"statePlaceholder":string;
 "submitCta":string;
 "validations":{
 "state":string;
@@ -3104,6 +3108,7 @@ export interface PayrollOffCycleTaxWithholding{
 "title":string;
 "subtitle":string;
 "rateLabel":string;
+"ratePlaceholder":string;
 "rateDescription":string;
 };
 "supplementalSection":{
