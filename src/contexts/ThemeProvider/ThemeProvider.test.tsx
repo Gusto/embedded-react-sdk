@@ -125,9 +125,7 @@ describe('<ThemeProvider />', () => {
         </NonceContext.Provider>,
       )
 
-      const styleTag = document.head.querySelector<HTMLStyleElement>(
-        'style[data-testid="GSDK"]',
-      )
+      const styleTag = document.head.querySelector<HTMLStyleElement>('style[data-testid="GSDK"]')
       expect(styleTag?.nonce).toBe('csp-test-nonce')
     })
 
@@ -138,9 +136,7 @@ describe('<ThemeProvider />', () => {
         </ThemeProvider>,
       )
 
-      const styleTag = document.head.querySelector<HTMLStyleElement>(
-        'style[data-testid="GSDK"]',
-      )
+      const styleTag = document.head.querySelector<HTMLStyleElement>('style[data-testid="GSDK"]')
       expect(styleTag?.nonce).toBe('')
     })
   })

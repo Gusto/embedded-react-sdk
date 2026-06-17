@@ -17,6 +17,7 @@ export const NonceContext = createContext<string | undefined>(undefined)
  * `el.nonce = useNonce()`) before appending it to the document.
  *
  * @returns The active nonce, or `undefined` when {@link GustoProvider} was not given a `nonce`.
+ * @public
  *
  * @example
  * ```tsx
@@ -34,7 +35,5 @@ export const NonceContext = createContext<string | undefined>(undefined)
  *   return null
  * }
  * ```
- *
- * @public
  */
 export const useNonce = (): string | undefined => useContext(NonceContext)

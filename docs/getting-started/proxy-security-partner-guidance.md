@@ -113,7 +113,7 @@ function InjectedStyles({ css }: { css: string }) {
 
 ### Minimum policy
 
-```
+```http
 Content-Security-Policy:
   style-src 'self' 'nonce-XYZ';
   style-src-attr 'unsafe-inline';
