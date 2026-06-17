@@ -30,12 +30,22 @@ export interface PayrollFlowProps extends BaseComponentInterface {
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
-/** @internal */
+/**
+ * An alert banner rendered above payroll content in {@link PayrollOverview} and
+ * {@link PayrollConfiguration}.
+ *
+ * @public
+ */
 export type PayrollFlowAlert = {
+  /** Visual severity of the alert. */
   type: 'error' | 'info' | 'success'
+  /** Short heading text displayed in the alert. */
   title: string
+  /** Optional body content rendered below the title. */
   content?: ReactNode
+  /** Called when the user dismisses the alert. When omitted, the alert is not dismissible. */
   onDismiss?: () => void
+  /** Stable key used to track alert identity across renders (e.g. for animations or dedup). */
   alertKey?: string
 }
 

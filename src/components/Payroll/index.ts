@@ -46,7 +46,7 @@ export type { OffCycleCreationProps, OffCycleCreationFormData } from './OffCycle
 export { OffCycleFlow } from './OffCycle'
 export type { OffCycleFlowContextInterface, OffCycleFlowProps } from './OffCycle'
 export { DismissalFlow } from './Dismissal'
-export type { DismissalFlowProps, DismissalFlowContextInterface } from './Dismissal'
+export type { DismissalFlowProps } from './Dismissal'
 export { DismissalPayPeriodSelection } from './Dismissal'
 export type { DismissalPayPeriodSelectionProps } from './Dismissal'
 export { TransitionFlow } from './Transition'
