@@ -4,6 +4,7 @@ import { InformationRequestFormContextual } from './InformationRequestsComponent
 import { informationRequestEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export type EventPayloads = {
   [informationRequestEvents.INFORMATION_REQUEST_RESPOND]: {
     requestId: string
@@ -12,6 +13,7 @@ export type EventPayloads = {
   [informationRequestEvents.INFORMATION_REQUEST_FORM_DONE]: undefined
 }
 
+/** @internal */
 export const informationRequestsMachine = {
   list: state<MachineTransition>(
     transition(

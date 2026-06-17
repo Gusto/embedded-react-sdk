@@ -1,1 +1,1 @@
-export { InformationRequestForm } from './InformationRequestForm'
+export { InformationRequestForm, type InformationRequestFormProps } from './InformationRequestForm'

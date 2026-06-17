@@ -41,12 +41,47 @@ const InformationRequestFormSchema = z.record(
 
 type InformationRequestFormValues = z.infer<typeof InformationRequestFormSchema>
 
-interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
+/**
+ * Props for {@link InformationRequestForm}.
+ *
+ * @public
+ */
+export interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
+  /** The associated company identifier. */
   companyId: string
+  /** The identifier of the information request to respond to. */
   requestId: string
+  /** Event handler invoked when the form is submitted or cancelled. See the events table in {@link InformationRequestForm}. */
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Dynamic response form for a single information request.
+ *
+ * Renders supported question types (text and document upload) based on the request's
+ * `requiredQuestions` payload and submits responses to the Submit information request
+ * endpoint. Use this component directly when you have built your own list or routing
+ * surface and need to host the form — typically inside a modal or page you control.
+ *
+ * Requests with unsupported response types (e.g. `persona`-driven identity verification)
+ * display a guidance message instead of the form; in those cases the user must complete
+ * the request through your own integration with the underlying provider.
+ *
+ * Text inputs accept up to 5,000 characters. Document uploads are restricted to JPEG,
+ * PNG, or PDF.
+ *
+ * @remarks
+ * Events emitted via `onEvent`:
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
+ * | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
+ *
+ * @param props - See {@link InformationRequestFormProps}.
+ * @returns The rendered information request response form.
+ * @public
+ */
 export function InformationRequestForm(props: InformationRequestFormProps) {
   return (
     <BaseComponent {...props}>

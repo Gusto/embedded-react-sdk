@@ -6,6 +6,7 @@ import type { CommonComponentInterface } from '@/components/Base'
 import type { EventType } from '@/types/Helpers'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/** @internal */
 export interface InformationRequestsContextInterface extends FlowContextInterface {
   companyId: string
   selectedRequestId?: string
@@ -18,6 +19,7 @@ export interface InformationRequestsContextInterface extends FlowContextInterfac
     | null
 }
 
+/** @internal */
 export function InformationRequestFormContextual() {
   const { companyId, selectedRequestId, onEvent } = useFlow<InformationRequestsContextInterface>()
 

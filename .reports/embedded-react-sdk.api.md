@@ -2797,11 +2797,10 @@ export interface HookSubmitResult<T> {
 // @public (undocumented)
 function Industry<T>(props: IndustryProps<T>): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "InformationRequestFormProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestFormProps"
 //
-// @public (undocumented)
+// @public
 function InformationRequestForm(props: InformationRequestFormProps): JSX;
 
 // @public (undocumented)
@@ -2812,25 +2811,54 @@ namespace InformationRequestForm {
     }) => JSX;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InformationRequestListProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "InformationRequestList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestForm"
 //
-// @public (undocumented)
+// @public
+interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
+    companyId: string;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestForm"
+    onEvent: OnEventType<EventType, unknown>;
+    requestId: string;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestListProps"
+//
+// @public
 function InformationRequestList(props: InformationRequestListProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestList"
+//
+// @public
+interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
+    companyId: string;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestList"
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 declare namespace InformationRequests {
     export {
         InformationRequestsFlow,
+        InformationRequestsFlowProps,
         InformationRequestList,
-        InformationRequestForm
+        InformationRequestListProps,
+        InformationRequestForm,
+        InformationRequestFormProps
     }
 }
 
-// Warning: (ae-forgotten-export) The symbol "InformationRequestsFlowProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "InformationRequestsFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestsFlowProps"
 //
-// @public (undocumented)
+// @public
 function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestsFlow"
+//
+// @public
+interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'InformationRequests'>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+    withAlert?: boolean;
+}
 
 // Warning: (ae-forgotten-export) The symbol "InviteSignatoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InviteSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

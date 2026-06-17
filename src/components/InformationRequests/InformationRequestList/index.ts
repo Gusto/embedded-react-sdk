@@ -1,1 +1,1 @@
-export { InformationRequestList } from './InformationRequestList'
+export { InformationRequestList, type InformationRequestListProps } from './InformationRequestList'
