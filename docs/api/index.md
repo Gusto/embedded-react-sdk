@@ -202,6 +202,22 @@ The configured provider tree wrapping `children`.
 
 ***
 
+<a id="i9_form_name"></a>
+
+### I9\_FORM\_NAME
+
+> `const` **I9\_FORM\_NAME**: `"US_I-9"` = `'US_I-9'`
+
+The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
+
+#### Remarks
+
+`DocumentList` emits `employee/forms/view` with `{ uuid, name }`. Compare `name` against this
+constant to decide whether to route a form to `I9SignatureForm` (when it matches) or the standard
+`SignatureForm`.
+
+***
+
 <a id="pay_periods"></a>
 
 ### PAY\_PERIODS

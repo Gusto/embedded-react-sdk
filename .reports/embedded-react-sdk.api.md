@@ -524,8 +524,8 @@ declare namespace CompanyOnboarding {
         OnboardingFlow_2 as OnboardingFlow,
         OnboardingOverview,
         DocumentSigner_2 as DocumentSigner,
-        DocumentList,
-        SignatureForm,
+        DocumentList_2 as DocumentList,
+        SignatureForm_2 as SignatureForm,
         Industry,
         BankAccount,
         Locations,
@@ -1795,11 +1795,23 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
     payrollId?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "DocumentListProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentListProps"
+//
+// @public
+function DocumentList(props: DocumentListProps): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "DocumentListProps_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DocumentList(props: DocumentListProps): JSX;
+function DocumentList_2(props: DocumentListProps_2): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentList"
+//
+// @public
+interface DocumentListProps extends BaseComponentInterface {
+    employeeId: string;
+}
 
 // @internal
 function DocumentManager(props: DocumentManagerProps & BaseComponentInterface): JSX;
@@ -2087,6 +2099,12 @@ declare namespace EmployeeOnboarding {
         DocumentSignerProps,
         EmploymentEligibility,
         EmploymentEligibilityProps,
+        DocumentList,
+        DocumentListProps,
+        SignatureForm,
+        SignatureFormProps,
+        I9SignatureForm,
+        I9SignatureFormProps,
         EmployeeDocuments,
         EmployeeDocumentsProps,
         Profile,
@@ -2755,6 +2773,23 @@ export interface HookLoadingResult {
 export interface HookSubmitResult<T> {
     data: T;
     mode: 'create' | 'update';
+}
+
+// @public
+export const I9_FORM_NAME = "US_I-9";
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "I9SignatureFormProps"
+//
+// @public
+function I9SignatureForm(props: I9SignatureFormProps): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "I9SignatureForm"
+//
+// @public
+interface I9SignatureFormProps extends BaseComponentInterface {
+    employeeId: string;
+    formId: string;
 }
 
 // Warning: (ae-forgotten-export) The symbol "IndustryProps" needs to be exported by the entry point index.d.ts
@@ -4369,11 +4404,25 @@ export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
 // @public (undocumented)
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "SignatureFormProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureFormProps"
+//
+// @public
+function SignatureForm(props: SignatureFormProps): JSX;
+
+// Warning: (ae-forgotten-export) The symbol "SignatureFormProps_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SignatureForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function SignatureForm(props: SignatureFormProps): JSX;
+function SignatureForm_2(props: SignatureFormProps_2): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureForm"
+//
+// @public
+interface SignatureFormProps extends BaseComponentInterface {
+    employeeId: string;
+    formId: string;
+}
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_14" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SignCompanyFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

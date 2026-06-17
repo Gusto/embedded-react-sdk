@@ -158,6 +158,14 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **EmployeeOnboarding.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+| **EmployeeOnboarding.DocumentList** | GET | `/v1/employees/:employeeId/forms` |
+| **EmployeeOnboarding.SignatureForm** | GET | `/v1/employees/:employeeId/forms/:formId` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
+|  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
+| **EmployeeOnboarding.I9SignatureForm** | GET | `/v1/employees/:employeeId/forms/:formId` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
+|  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
+|  | GET | `/v1/employees/:employeeId/i9_authorization` |
 | **EmployeeOnboarding.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **EmployeeOnboarding.Profile** | POST | `/v1/companies/:companyId/employees` |
