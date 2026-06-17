@@ -198,6 +198,7 @@ export default [
       'src/components/Employee/**/*.{ts,tsx}',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/components/Payroll/**/*.{ts,tsx}',
+      'src/components/TimeOff/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
       'src/contexts/ComponentAdapter/**/*.{ts,tsx}',
       'src/contexts/GustoProvider/**/*.{ts,tsx}',

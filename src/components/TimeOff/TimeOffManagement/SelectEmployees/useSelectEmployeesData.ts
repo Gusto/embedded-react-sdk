@@ -16,6 +16,7 @@ const SERVER_MAX_PER_PAGE = 100
 // `POST /time_off_policies/:uuid/add_employees` as "ineligible" with no
 // per-uuid reason in the response. We can detect this from the employees
 // list response, so we drop them client-side to prevent the error.
+/** @internal */
 export function isStartedByToday(hireDate: string | undefined): boolean {
   if (!hireDate) return false
   const today = new Date().toISOString().slice(0, 10)
@@ -24,12 +25,14 @@ export function isStartedByToday(hireDate: string | undefined): boolean {
 
 // Single source of truth for the search predicate so the client-pagination
 // hook and the select-all handler agree on what's "in scope" for a query.
+/** @internal */
 export function matchesEmployeeSearch(employee: EmployeeItem, query: string): boolean {
   return `${employee.firstName ?? ''} ${employee.lastName ?? ''} ${employee.department ?? ''}`
     .toLowerCase()
     .includes(query.toLowerCase())
 }
 
+/** @internal */
 export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<string>) {
   const gustoClient = useGustoEmbeddedContext()
   const [selectedUuids, setSelectedUuids] = useState<Set<string>>(() => new Set())

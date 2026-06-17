@@ -22,6 +22,20 @@ const PolicySettingsSchema = z.object({
   paidOutOnTermination: z.boolean(),
 })
 
+/**
+ * Presentation-only form for configuring time off policy limits and rules.
+ *
+ * @remarks
+ * Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use {@link PolicySettings}.
+ *
+ * The fields shown depend on `accrualMethod`:
+ * - Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
+ * - Balance maximum, carry-over limit, and paid-out-on-termination are always shown
+ *
+ * @param props - {@link PolicySettingsPresentationProps}
+ * @returns The rendered policy settings form.
+ * @public
+ */
 export function PolicySettingsPresentation({
   accrualMethod,
   onContinue,

@@ -90,36 +90,38 @@ export function AccountTypeField(props: AccountTypeFieldProps): JSX;
 // @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
 
-// Warning: (ae-missing-release-tag) "AddEmployeesHoliday" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationFormData"
 //
-// @public (undocumented)
+// @public
+type AccrualMethod = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
+
+// @public
+type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesHolidayProps"
+//
+// @public
 function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "BaseComponentInterface" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "AddEmployeesHolidayProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesHoliday"
 //
-// @public (undocumented)
+// @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "AddEmployeesToPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesToPolicyProps"
 //
-// @public (undocumented)
+// @public
 function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
 
-// Warning: (ae-missing-release-tag) "AddEmployeesToPolicyProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesToPolicy"
 //
-// @public (undocumented)
+// @public
 interface AddEmployeesToPolicyProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
-    // (undocumented)
     policyId: string;
-    // Warning: (ae-forgotten-export) The symbol "CreatableTimeOffPolicyType" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     policyType: CreatableTimeOffPolicyType;
 }
 
@@ -1191,6 +1193,9 @@ export function CourtesyWithholdingField(props: CourtesyWithholdingFieldProps): 
 // @public
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
+// @public
+type CreatableTimeOffPolicyType = Extract<PolicyType_2, 'sick' | 'vacation'>;
+
 // Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createBankFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
@@ -2188,6 +2193,14 @@ export interface EmployeeStateTaxesSchemaOptions {
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
 // @public
+interface EmployeeTableItem {
+    firstName?: string | null;
+    jobTitle?: string | null;
+    lastName?: string | null;
+    uuid: string;
+}
+
+// @public
 export type EmployeeType = 'active' | 'onboarding' | 'terminated';
 
 // @public
@@ -2567,65 +2580,46 @@ export function HireDateField(props: HireDateFieldProps): JSX;
 // @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "EmployeeTableItem" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "HolidayPolicyDetailEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
-    // (undocumented)
+// @public
+interface HolidayItem {
+    name: string;
+    nextObservation: string;
+    observedDate: string;
     uuid: string;
 }
 
-// Warning: (ae-missing-release-tag) "HolidayPolicyDetailPresentationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
+interface HolidayPolicyDetailEmployee extends EmployeeTableItem {
+    uuid: string;
+}
+
+// @public
 interface HolidayPolicyDetailPresentationProps {
-    // (undocumented)
     actions?: ReactNode[];
-    // (undocumented)
     backLabel: string;
-    // Warning: (ae-forgotten-export) The symbol "EmployeeTableProps" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    employees: Pick<EmployeeTableProps<HolidayPolicyDetailEmployee>, 'data' | 'searchValue' | 'onSearchChange' | 'onSearchClear' | 'searchPlaceholder' | 'itemMenu' | 'pagination' | 'isFetching' | 'emptyState'>;
-    // Warning: (ae-forgotten-export) The symbol "HolidayItem" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    employees: PolicyDetailEmployeeTableData<HolidayPolicyDetailEmployee>;
     holidays: HolidayItem[];
-    // (undocumented)
     onAddEmployee?: () => void;
-    // (undocumented)
     onBack: () => void;
-    // (undocumented)
     onDismissAlert?: () => void;
-    // (undocumented)
     onTabChange: (id: string) => void;
-    // Warning: (ae-forgotten-export) The symbol "RemoveDialogState" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     removeDialog: RemoveDialogState;
-    // (undocumented)
     selectedTabId: string;
-    // (undocumented)
     subtitle?: string;
-    // (undocumented)
     successAlert?: string;
-    // (undocumented)
     title: string;
 }
 
-// Warning: (ae-missing-release-tag) "HolidaySelectionForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HolidaySelectionFormProps"
 //
-// @public (undocumented)
+// @public
 function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX;
 
-// Warning: (ae-missing-release-tag) "HolidaySelectionFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HolidaySelectionForm"
 //
-// @public (undocumented)
+// @public
 interface HolidaySelectionFormProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
-    // (undocumented)
     mode?: 'create' | 'edit';
 }
 
@@ -3863,121 +3857,145 @@ interface PaystubsCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-missing-release-tag) "PolicyConfigurationForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationFormProps"
 //
-// @public (undocumented)
+// @public
 function PolicyConfigurationForm(props: PolicyConfigurationFormProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PolicyConfigurationFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationForm"
 //
-// @public (undocumented)
+// @public
+interface PolicyConfigurationFormData {
+    accrualMethod: AccrualMethod;
+    accrualMethodFixed?: AccrualMethodFixed;
+    accrualRate?: number;
+    accrualRateUnit?: number;
+    allPaidHours?: boolean;
+    includeOvertime?: boolean;
+    name: string;
+    resetDateType?: ResetDateType;
+    resetDay?: number;
+    resetMonth?: number;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationForm"
+//
+// @public
 interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
-    // (undocumented)
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "PolicyConfigurationFormData" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     defaultValues?: Partial<PolicyConfigurationFormData>;
-    // (undocumented)
     policyId?: string;
-    // (undocumented)
     policyType: 'sick' | 'vacation';
 }
 
-// Warning: (ae-forgotten-export) The symbol "UnlimitedPolicyDetails" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "RateBasedPolicyDetails" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "PolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentationBaseProps"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeTableItem"
 //
-// @public (undocumented)
+// @public
+interface PolicyDetailEmployeeTableData<T extends EmployeeTableItem> {
+    data: T[];
+    emptyState?: () => ReactNode;
+    isFetching?: boolean;
+    itemMenu?: (item: T) => ReactNode;
+    onSearchChange: (value: string) => void;
+    onSearchClear: () => void;
+    pagination?: PaginationControlProps;
+    searchPlaceholder?: string;
+    searchValue: string;
+}
+
+// @public
 type PolicyDetails = UnlimitedPolicyDetails | RateBasedPolicyDetails;
 
-// Warning: (ae-missing-release-tag) "PolicyList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyListProps"
 //
-// @public (undocumented)
+// @public
 function PolicyList(input: PolicyListProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PolicyListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyList"
 //
-// @public (undocumented)
+// @public
 interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicies'> {
-    // (undocumented)
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "PolicySettings" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsProps"
 //
-// @public (undocumented)
+// @public
 function PolicySettings(props: PolicySettingsProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PolicySettingsDisplay" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
+type PolicySettingsAccrualMethod = 'hours_worked' | 'fixed_per_pay_period' | 'fixed_all_at_once';
+
+// @public
 interface PolicySettingsDisplay {
-    // (undocumented)
     accrualWaitingPeriodDays: number | null;
-    // (undocumented)
     carryoverLimitHours: number | null;
-    // (undocumented)
     maxAccrualHoursPerYear: number | null;
-    // (undocumented)
     maxHours: number | null;
-    // (undocumented)
     paidOutOnTermination: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "PolicySettingsPresentation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// @public
+interface PolicySettingsFormData {
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
+    accrualMaximum?: number;
+    accrualMaximumEnabled: boolean;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
+    balanceMaximum?: number;
+    balanceMaximumEnabled: boolean;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
+    carryOverLimit?: number;
+    carryOverLimitEnabled: boolean;
+    paidOutOnTermination: boolean;
+    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
+    waitingPeriod?: number;
+    waitingPeriodEnabled: boolean;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettings"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsPresentationProps"
 //
-// @public (undocumented)
+// @public
 function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PolicySettingsPresentationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsPresentation"
 //
-// @public (undocumented)
+// @public
 interface PolicySettingsPresentationProps {
-    // Warning: (ae-forgotten-export) The symbol "PolicySettingsAccrualMethod" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     accrualMethod: PolicySettingsAccrualMethod;
-    // (undocumented)
     defaultValues?: Partial<PolicySettingsFormData>;
-    // (undocumented)
     editingPolicyName?: string;
-    // (undocumented)
     isPending?: boolean;
-    // (undocumented)
     mode?: 'create' | 'edit';
-    // (undocumented)
     onBack: () => void;
-    // Warning: (ae-forgotten-export) The symbol "PolicySettingsFormData" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     onContinue: (data: PolicySettingsFormData) => void;
 }
 
-// Warning: (ae-missing-release-tag) "PolicySettingsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettings"
 //
-// @public (undocumented)
+// @public
 interface PolicySettingsProps extends BaseComponentInterface {
-    // (undocumented)
     mode?: 'create' | 'edit';
-    // (undocumented)
     policyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "PolicyTypeSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
+// @public
+type PolicyType = 'sick' | 'vacation' | 'holiday';
+
 // @public (undocumented)
+type PolicyTypeKey = 'vacation' | 'sick';
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyTypeSelectorProps"
+//
+// @public
 function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX;
 
-// Warning: (ae-missing-release-tag) "PolicyTypeSelectorProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyTypeSelector"
 //
-// @public (undocumented)
+// @public
 interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
-    // (undocumented)
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "PolicyType" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     defaultPolicyType?: PolicyType;
 }
 
@@ -4151,6 +4169,18 @@ export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<RadioGroupProps>;
 };
 
+// @public (undocumented)
+type RateBasedAccrualMethod = 'perPayPeriod' | 'perCalendarYear' | 'perAnniversaryYear' | 'perHourWorked' | 'perHourWorkedNoOvertime' | 'perHourPaid' | 'perHourPaidNoOvertime';
+
+// @public
+interface RateBasedPolicyDetails {
+    accrualMethod: RateBasedAccrualMethod;
+    accrualRate: number;
+    accrualRateUnit?: number;
+    policyType: PolicyTypeKey;
+    resetDate?: string;
+}
+
 // @public
 export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>;
 
@@ -4174,6 +4204,18 @@ export function RemittanceNumberField(props: RemittanceNumberFieldProps): JSX;
 
 // @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
+
+// @public
+interface RemoveDialogState {
+    employeeName: string;
+    isOpen: boolean;
+    isPending: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+}
+
+// @public
+type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
 
 // @public
 export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
@@ -4841,16 +4883,25 @@ declare namespace TimeOff {
         PolicyListProps,
         PolicyTypeSelector,
         PolicyTypeSelectorProps,
+        PolicyType,
         PolicyConfigurationForm,
         PolicyConfigurationFormProps,
+        PolicyConfigurationFormData,
+        AccrualMethod,
+        AccrualMethodFixed,
+        ResetDateType,
         PolicySettings,
         PolicySettingsProps,
         PolicySettingsPresentation,
         PolicySettingsPresentationProps,
+        PolicySettingsAccrualMethod,
+        PolicySettingsFormData,
         AddEmployeesToPolicy,
         AddEmployeesToPolicyProps,
+        CreatableTimeOffPolicyType,
         HolidaySelectionForm,
         HolidaySelectionFormProps,
+        HolidayItem,
         AddEmployeesHoliday,
         AddEmployeesHolidayProps,
         ViewHolidayEmployees,
@@ -4861,55 +4912,76 @@ declare namespace TimeOff {
         ViewHolidayScheduleProps,
         HolidayPolicyDetailPresentationProps,
         HolidayPolicyDetailEmployee,
+        EmployeeTableItem,
+        PolicyDetailEmployeeTableData,
+        RemoveDialogState,
         TimeOffPolicyDetail,
         TimeOffPolicyDetailProps,
         TimeOffPolicyDetailPresentation,
         TimeOffPolicyDetailPresentationProps,
+        TimeOffPolicyDetailPresentationBaseProps,
         TimeOffPolicyDetailEmployee,
         PolicyDetails,
+        UnlimitedPolicyDetails,
+        RateBasedPolicyDetails,
+        RateBasedAccrualMethod,
         PolicySettingsDisplay,
+        PolicyTypeKey,
         TimeOffFlow,
         TimeOffFlowProps
     }
 }
 
-// Warning: (ae-missing-release-tag) "TimeOffFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffFlowProps"
 //
-// @public (undocumented)
+// @public
 const TimeOffFlow: (input: TimeOffFlowProps) => JSX;
 
-// Warning: (ae-missing-release-tag) "TimeOffFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffFlow"
 //
-// @public (undocumented)
+// @public
 interface TimeOffFlowProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetail" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 function TimeOffPolicyDetail(props: TimeOffPolicyDetailProps): JSX;
 
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
-    // (undocumented)
     balance: number | null;
-    // (undocumented)
     uuid: string;
 }
 
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailPresentation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetail"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentationProps"
 //
-// @public (undocumented)
+// @public
 function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "TimeOffPolicyDetailPresentationBaseProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailPresentationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentation"
 //
-// @public (undocumented)
+// @public
+interface TimeOffPolicyDetailPresentationBaseProps {
+    actions?: ReactNode[];
+    backLabel: string;
+    employees: PolicyDetailEmployeeTableData<TimeOffPolicyDetailEmployee>;
+    onAddEmployee?: () => void;
+    onBack: () => void;
+    onDismissAlert?: () => void;
+    onTabChange: (id: string) => void;
+    removeDialog: RemoveDialogState;
+    selectedTabId: string;
+    subtitle?: string;
+    successAlert?: string;
+    title: string;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentation"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyDetails"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsDisplay"
+//
+// @public
 type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseProps & ({
     policyDetails: UnlimitedPolicyDetails;
     policySettings?: never;
@@ -4920,11 +4992,10 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
     onChangeSettings?: () => void;
 });
 
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetail"
 //
-// @public (undocumented)
+// @public
 interface TimeOffPolicyDetailProps extends BaseComponentInterface {
-    // (undocumented)
     policyId: string;
 }
 
@@ -4997,6 +5068,12 @@ export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldPr
 
 // @public
 export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMethodFormRequiredValidation, PaymentMethodType>>;
+
+// @public
+interface UnlimitedPolicyDetails {
+    accrualMethod: 'unlimited';
+    policyType: PolicyTypeKey;
+}
 
 // @public
 export type UnorderedListProps = BaseListProps;
@@ -5599,44 +5676,40 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
 // @public
 export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode extends string = never> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>;
 
-// Warning: (ae-missing-release-tag) "ViewHolidayEmployees" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayEmployeesProps"
 //
-// @public (undocumented)
+// @public
 function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
 
-// Warning: (ae-missing-release-tag) "ViewHolidayEmployeesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayEmployees"
 //
-// @public (undocumented)
+// @public
 interface ViewHolidayEmployeesProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
 }
 
-// Warning: (ae-missing-release-tag) "ViewHolidayPolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayPolicyDetailsProps"
 //
-// @public (undocumented)
+// @public
 function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX;
 
-// Warning: (ae-missing-release-tag) "ViewHolidayPolicyDetailsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayPolicyDetails"
 //
-// @public (undocumented)
+// @public
 interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
-    // (undocumented)
     defaultTab?: 'holidays' | 'employees';
 }
 
-// Warning: (ae-missing-release-tag) "ViewHolidaySchedule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayScheduleProps"
 //
-// @public (undocumented)
+// @public
 function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 
-// Warning: (ae-missing-release-tag) "ViewHolidayScheduleProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidaySchedule"
 //
-// @public (undocumented)
+// @public
 interface ViewHolidayScheduleProps extends BaseComponentInterface {
-    // (undocumented)
     companyId: string;
 }
 
