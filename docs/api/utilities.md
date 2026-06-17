@@ -14,6 +14,182 @@ custom_edit_url: null
 
 ## Components
 
+<a id="checkboxhookfield"></a>
+
+### CheckboxHookField
+
+Checkbox field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TErrorCode` *extends* `string` | Validation error code keys mapped via `validationMessages`. |
+
+#### CheckboxHookFieldProps
+
+<a id="checkboxhookfieldprops"></a>
+
+Props accepted by a checkbox field surfaced through a form hook.
+Exposes `validationMessages` for custom error text alongside the shared base
+field attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-adapter.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Field metadata (required state, disabled state) is resolved automatically from the
+hook result. Validation errors are surfaced in the same order as the built-in fields:
+client-side Zod errors first, then server-side errors.
+
+***
+
+<a id="datepickerhookfield"></a>
+
+### DatePickerHookField
+
+Date picker field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TErrorCode` *extends* `string` | Validation error code keys mapped via `validationMessages`. |
+
+#### DatePickerHookFieldProps
+
+<a id="datepickerhookfieldprops"></a>
+
+Props accepted by a date picker field surfaced through a form hook.
+Exposes `minDate` and `maxDate` bounds (override server-provided constraints when
+supplied), `portalContainer` for correct stacking inside modals, and
+`validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](component-adapter.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `label` | `string` | Visible label rendered above the field. |
+| `maxDate?` | `Date` | Maximum selectable date. Dates after this will be disabled. |
+| `minDate?` | `Date` | Minimum selectable date. Dates before this will be disabled. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the calendar popover stacks correctly. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+`minDate` and `maxDate` override any server-provided constraints on the field; when
+omitted, the hook's field metadata constraints apply.
+
+***
+
+<a id="numberinputhookfield"></a>
+
+### NumberInputHookField
+
+Number input field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TErrorCode` *extends* `string` | Validation error code keys mapped via `validationMessages`. |
+
+#### NumberInputHookFieldProps
+
+<a id="numberinputhookfieldprops"></a>
+
+Props accepted by a number input field surfaced through a form hook.
+Exposes numeric constraints (`min`, `max`), display `format`, `placeholder` text,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](component-adapter.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `format?` | `"percent"` \| `"currency"` \| `"decimal"` | Display format for the number value (e.g. `'currency'`). |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `label` | `string` | Visible label rendered above the field. |
+| `max?` | `string` \| `number` | Maximum allowed numeric value. |
+| `min?` | `string` \| `number` | Minimum allowed numeric value. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Field metadata (required state, disabled state) is resolved automatically from the
+hook result. Validation errors are surfaced in the same order as the built-in fields:
+client-side Zod errors first, then server-side errors.
+
+***
+
+<a id="radiogrouphookfield"></a>
+
+### RadioGroupHookField
+
+Radio group field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | - | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
+
+#### RadioGroupHookFieldProps
+
+<a id="radiogrouphookfieldprops"></a>
+
+Props accepted by a radio group field surfaced through a form hook.
+Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-adapter.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Options are read from the hook's field metadata. Supply `getOptionLabel` to derive
+display labels from the raw entries returned by the hook instead of using the
+hook-provided labels.
+
+***
+
 <a id="sdkformprovider"></a>
 
 ### SDKFormProvider
@@ -55,6 +231,200 @@ return (
     </form>
   </SDKFormProvider>
 )
+```
+
+***
+
+<a id="selecthookfield"></a>
+
+### SelectHookField
+
+Select field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | - | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
+
+#### SelectHookFieldProps
+
+<a id="selecthookfieldprops"></a>
+
+Props accepted by a select field surfaced through a form hook.
+Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+`placeholder` text, `portalContainer` for correct stacking inside modals,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-adapter.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder?` | `string` | Placeholder text displayed when no option is selected. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Options are read from the hook's field metadata. Supply `getOptionLabel` to derive
+display labels from the raw entries returned by the hook instead of using the
+hook-provided labels.
+
+***
+
+<a id="switchhookfield"></a>
+
+### SwitchHookField
+
+Toggle switch field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TErrorCode` *extends* `string` | Validation error code keys mapped via `validationMessages`. |
+
+#### SwitchHookFieldProps
+
+<a id="switchhookfieldprops"></a>
+
+Props accepted by a toggle switch field surfaced through a form hook.
+Exposes `validationMessages` for custom error text alongside the shared base
+field attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](component-adapter.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Field metadata (required state, disabled state) is resolved automatically from the
+hook result. Validation errors are surfaced in the same order as the built-in fields:
+client-side Zod errors first, then server-side errors.
+
+***
+
+<a id="textinputhookfield"></a>
+
+### TextInputHookField
+
+Text input field connected to a partner form hook result via `useHookFieldResolution`.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | - | Required validation error code keys mapped via `validationMessages`. |
+| `TOptionalErrorCode` *extends* `string` | `never` | Optional validation error code keys mapped via `validationMessages`. |
+
+#### TextInputHookFieldProps
+
+<a id="textinputhookfieldprops"></a>
+
+Props accepted by a text input field surfaced through a form hook.
+Exposes a `transform` function for preprocessing raw input, `placeholder` text,
+and `validationMessages` for custom error text alongside the shared base field
+attributes (`label`, `description`).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-adapter.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
+| `transform?` | (`value`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code. |
+
+#### Remarks
+
+Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+omit it to read from the nearest [SDKFormProvider](#sdkformprovider).
+
+Field metadata (required state, disabled state) is resolved automatically from the
+hook result. Validation errors are surfaced in the same order as the built-in fields:
+client-side Zod errors first, then server-side errors.
+
+## Hooks
+
+<a id="usefielderrormessage"></a>
+
+### useFieldErrorMessage()
+
+> **useFieldErrorMessage**\<`TErrorCode`\>(`fieldName`, `validationMessages?`): `string` \| `undefined`
+
+Resolves the display string for a field's current error from either client-side validation or server-side `SDKError`s.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TErrorCode` *extends* `string` | Error codes the field can produce; each key in `validationMessages` maps a code to its display string. |
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `fieldName` | `string` | Name of the field as registered with react-hook-form. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Map of validation error codes to display strings. When omitted, only server-side errors are returned. |
+
+#### Returns
+
+`string` \| `undefined`
+
+The display message for the field's current error, or `undefined` when the field is valid.
+
+#### Remarks
+
+Use inside a custom field component rendered under a form hook's
+provider to surface the same error message the built-in `Fields` would
+render. Looks up the field's error in this order:
+
+1. The react-hook-form error for `fieldName`. If its message matches a
+   key in `validationMessages`, returns that mapped string.
+2. Any matching field-level error attached to a server-side error
+   available on the form provider.
+3. `undefined` when no error applies.
+
+Must be called from a component rendered inside the form hook's
+`FormProvider`.
+
+#### Example
+
+```tsx
+function StreetAddressField() {
+  const errorMessage = useFieldErrorMessage('street1', {
+    REQUIRED: 'Street address is required',
+  })
+  return (
+    <label>
+      Street
+      <input name="street1" aria-invalid={errorMessage ? true : undefined} />
+      {errorMessage ? <span role="alert">{errorMessage}</span> : null}
+    </label>
+  )
+}
 ```
 
 ## Functions
@@ -184,6 +554,53 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 )
 
 return <form onSubmit={handleSubmit}>...</form>
+```
+
+***
+
+<a id="withoptions"></a>
+
+### withOptions()
+
+> **withOptions**\<`TEntry`\>(`base`, `options`, `entries?`): [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`TEntry`\>
+
+Extends a [FieldMetadata](#fieldmetadata) entry with the option list used to render a select-like field.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TEntry` | `unknown` | Shape of the underlying records that produced `options`. |
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `base` | [`FieldMetadata`](#fieldmetadata) | The existing field metadata entry to extend. |
+| `options` | `object`[] | Display options as `label`/`value` pairs to render in the field. |
+| `entries?` | readonly `TEntry`[] | Optional raw records the options were derived from, exposed alongside `options` for callers that need additional attributes. |
+
+#### Returns
+
+[`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`TEntry`\>
+
+A [FieldMetadataWithOptions](#fieldmetadatawithoptions) carrying the original metadata plus `options` and, when supplied, `entries`.
+
+#### Remarks
+
+Use when building the `fieldsMetadata` returned by a custom form hook to
+attach `label`/`value` pairs (and optionally the raw underlying records) to
+a field's metadata entry. Hook field components for select-like inputs read
+`options` and, when present, `entries` off the resulting
+[FieldMetadataWithOptions](#fieldmetadatawithoptions).
+
+#### Example
+
+```ts
+const typeOptions = PAYMENT_METHOD_TYPES.map(value => ({ value, label: value }))
+const fieldsMetadata = {
+  type: withOptions(baseMetadata.type, typeOptions, [...PAYMENT_METHOD_TYPES]),
+}
 ```
 
 ## Interfaces

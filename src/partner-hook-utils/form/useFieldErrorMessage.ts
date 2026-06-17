@@ -24,7 +24,7 @@ import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
  * @param fieldName - Name of the field as registered with react-hook-form.
  * @param validationMessages - Map of validation error codes to display strings. When omitted, only server-side errors are returned.
  * @returns The display message for the field's current error, or `undefined` when the field is valid.
- * @internal
+ * @public
  *
  * @example
  * ```tsx

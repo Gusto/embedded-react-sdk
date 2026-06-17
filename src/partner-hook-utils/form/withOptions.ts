@@ -15,7 +15,7 @@ import type { FieldMetadata, FieldMetadataWithOptions } from '../types'
  * @param options - Display options as `label`/`value` pairs to render in the field.
  * @param entries - Optional raw records the options were derived from, exposed alongside `options` for callers that need additional attributes.
  * @returns A {@link FieldMetadataWithOptions} carrying the original metadata plus `options` and, when supplied, `entries`.
- * @internal
+ * @public
  *
  * @example
  * ```ts

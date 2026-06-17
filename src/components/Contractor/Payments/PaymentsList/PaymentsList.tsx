@@ -21,7 +21,7 @@ export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Pa
    * @internal
    * Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation).
    */
-  alerts?: InternalAlert[]
+  _alerts?: InternalAlert[]
 }
 
 /**
@@ -63,7 +63,7 @@ const calculateDateRange = (months: number = 3) => {
   }
 }
 
-const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
+const Root = ({ companyId, dictionary, onEvent, _alerts }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
@@ -145,8 +145,8 @@ const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => 
   }
 
   const allAlerts = useMemo(() => {
-    return [...rfiAlerts, ...(alerts || [])]
-  }, [rfiAlerts, alerts])
+    return [...rfiAlerts, ...(_alerts || [])]
+  }, [rfiAlerts, _alerts])
 
   return (
     <PaymentsListPresentation

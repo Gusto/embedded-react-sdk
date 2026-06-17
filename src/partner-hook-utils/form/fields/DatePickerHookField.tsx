@@ -33,10 +33,18 @@ export interface DatePickerHookFieldProps<TErrorCode extends string = never>
 /**
  * Date picker field connected to a partner form hook result via `useHookFieldResolution`.
  *
+ * @remarks
+ * Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+ * hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+ * omit it to read from the nearest {@link SDKFormProvider}.
+ *
+ * `minDate` and `maxDate` override any server-provided constraints on the field; when
+ * omitted, the hook's field metadata constraints apply.
+ *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @param props - Field configuration including `name`, `formHookResult`, label content, and optional date bounds.
  * @returns The rendered date picker field wrapped in the field element registry.
- * @internal
+ * @public
  */
 export function DatePickerHookField<TErrorCode extends string>({
   name,

@@ -33,7 +33,7 @@ export interface PaymentFlowContextInterface extends FlowContextInterface {
 /** @internal */
 export function PaymentListContextual() {
   const { companyId, onEvent, alerts } = useFlow<PaymentFlowContextInterface>()
-  return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} alerts={alerts} />
+  return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} _alerts={alerts} />
 }
 
 /** @internal */

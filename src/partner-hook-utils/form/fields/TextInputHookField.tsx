@@ -36,11 +36,20 @@ export interface TextInputHookFieldProps<
 /**
  * Text input field connected to a partner form hook result via `useHookFieldResolution`.
  *
+ * @remarks
+ * Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+ * hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+ * omit it to read from the nearest {@link SDKFormProvider}.
+ *
+ * Field metadata (required state, disabled state) is resolved automatically from the
+ * hook result. Validation errors are surfaced in the same order as the built-in fields:
+ * client-side Zod errors first, then server-side errors.
+ *
  * @typeParam TErrorCode - Required validation error code keys mapped via `validationMessages`.
  * @typeParam TOptionalErrorCode - Optional validation error code keys mapped via `validationMessages`.
  * @param props - Field configuration including `name`, `formHookResult`, `transform`, `placeholder`, and label content.
  * @returns The rendered text input field wrapped in the field element registry.
- * @internal
+ * @public
  */
 export function TextInputHookField<
   TErrorCode extends string,

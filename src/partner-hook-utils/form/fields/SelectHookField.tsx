@@ -38,11 +38,20 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
 /**
  * Select field connected to a partner form hook result via `useHookFieldResolution`.
  *
+ * @remarks
+ * Use inside a form hook's `FormProvider` when you need a custom layout instead of the
+ * hook's pre-built `Fields`. Connect to a specific hook result via `formHookResult`, or
+ * omit it to read from the nearest {@link SDKFormProvider}.
+ *
+ * Options are read from the hook's field metadata. Supply `getOptionLabel` to derive
+ * display labels from the raw entries returned by the hook instead of using the
+ * hook-provided labels.
+ *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
  * @param props - Field configuration including `name`, `formHookResult`, and an optional `getOptionLabel`.
  * @returns The rendered select field wrapped in the field element registry.
- * @internal
+ * @public
  */
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   name,

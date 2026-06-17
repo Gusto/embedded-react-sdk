@@ -19,7 +19,6 @@ import { ButtonHTMLAttributes } from 'react';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
-import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
@@ -29,7 +28,6 @@ import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/comp
 import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus';
 import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod';
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
-import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
 import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
 import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
@@ -430,9 +428,7 @@ export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<Fieldse
     value?: string[];
 }
 
-// Warning: (ae-internal-missing-underscore) The name "CheckboxHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function CheckboxHookField<TErrorCode extends string>(input: CheckboxHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -517,12 +513,6 @@ export function CityField(props: CityFieldProps): JSX;
 
 // @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
-
-// Warning: (ae-forgotten-export) The symbol "QueryWithError" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "collectErrors" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function collectErrors(queries: QueryWithError[], submitError: SDKError | null): SDKError[];
 
 // @public
 export interface ComboBoxOption {
@@ -714,17 +704,6 @@ export function CompensationRateField(props: RateFieldProps): JSX;
 
 // @public
 export type CompensationRequiredValidation = typeof CompensationErrorCodes.REQUIRED;
-
-// Warning: (ae-internal-missing-underscore) The name "CompensationSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CompensationSchemaOptions {
-    hireDate?: string | null;
-    minEffectiveDate?: string | null;
-    mode?: 'create' | 'update';
-    optionalFieldsToRequire?: CompensationOptionalFieldsToRequire;
-    withEffectiveDateField?: boolean;
-}
 
 // @public
 export interface CompensationSubmitOptions {
@@ -1196,185 +1175,13 @@ export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProp
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType_2, 'sick' | 'vacation'>;
 
-// Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createBankFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createBankFormSchema(options?: BankFormSchemaOptions): BuildFormSchemaResult<    {
-name: z.ZodString;
-routingNumber: z.ZodString;
-accountNumber: z.ZodString;
-accountType: z.ZodEnum<{
-Checking: "Checking";
-Savings: "Savings";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "ChildSupportGarnishmentFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createChildSupportGarnishmentFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createChildSupportGarnishmentFormSchema(input?: ChildSupportGarnishmentFormSchemaOptions): BuildFormSchemaResult<    {
-state: z.ZodString;
-fipsCode: z.ZodString;
-caseNumber: z.ZodString;
-orderNumber: z.ZodString;
-remittanceNumber: z.ZodString;
-payPeriodMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-paymentPeriod: z.ZodEnum<{
-readonly EveryWeek: "Every week";
-readonly EveryOtherWeek: "Every other week";
-readonly TwicePerMonth: "Twice per month";
-readonly Monthly: "Monthly";
-}>;
-}>;
-
-// Warning: (ae-internal-missing-underscore) The name "createCompensationSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createCompensationSchema(options?: CompensationSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-flsaStatus: z.ZodOptional<z.ZodEnum<{
-Exempt: "Exempt";
-"Salaried Nonexempt": "Salaried Nonexempt";
-Nonexempt: "Nonexempt";
-Owner: "Owner";
-"Commission Only Exempt": "Commission Only Exempt";
-"Commission Only Nonexempt": "Commission Only Nonexempt";
-}>>;
-paymentUnit: z.ZodEnum<{
-Hour: "Hour";
-Week: "Week";
-Month: "Month";
-Year: "Year";
-Paycheck: "Paycheck";
-}>;
-rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-adjustForMinimumWage: z.ZodBoolean;
-minimumWageId: z.ZodString;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createDeductionFormSchema(options: DeductionFormSchemaOptions): BuildFormSchemaResult<    {
-description: z.ZodString;
-recurring: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-deductAsPercentage: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-totalAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-annualMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-garnishmentType: z.ZodEnum<{
-readonly ChildSupport: "child_support";
-readonly FederalTaxLien: "federal_tax_lien";
-readonly StateTaxLien: "state_tax_lien";
-readonly StudentLoan: "student_loan";
-readonly CreditorGarnishment: "creditor_garnishment";
-readonly FederalLoan: "federal_loan";
-readonly OtherGarnishment: "other_garnishment";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeDetailsSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeDetailsSchema(options?: EmployeeDetailsSchemaOptions): BuildFormSchemaResult<    {
-firstName: z.ZodString;
-middleInitial: z.ZodString;
-lastName: z.ZodString;
-email: z.ZodEmail;
-dateOfBirth: z.ZodISODate;
-ssn: z.ZodString;
-selfOnboarding: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeStateTaxesSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeStateTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
-
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createFederalTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createFederalTaxesSchema(options?: FederalTaxesSchemaOptions): BuildFormSchemaResult<    {
-filingStatus: z.ZodString;
-twoJobs: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-dependentsAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-otherIncome: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-deductions: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-extraWithholding: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "HomeAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createHomeAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createHomeAddressSchema(options?: HomeAddressSchemaOptions): BuildFormSchemaResult<    {
-street1: z.ZodString;
-street2: z.ZodString;
-city: z.ZodString;
-state: z.ZodString;
-zip: z.ZodString;
-courtesyWithholding: z.ZodBoolean;
-effectiveDate: z.ZodISODate;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "JobSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createJobSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createJobSchema(options?: JobSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-twoPercentShareholder: z.ZodBoolean;
-stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-stateWcClassCode: z.ZodString;
-}>;
-
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPaymentMethodFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPaymentMethodFormSchema(options?: PaymentMethodFormSchemaOptions): BuildFormSchemaResult<    {
-type: z.ZodEnum<{
-Check: "Check";
-"Direct Deposit": "Direct Deposit";
-}>;
-}>;
 
 // @public
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
     companyId: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "PayScheduleSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPayScheduleSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPayScheduleSchema(options?: PayScheduleSchemaOptions): BuildFormSchemaResult<    {
-customName: z.ZodString;
-frequency: z.ZodEnum<{
-"Every week": "Every week";
-"Every other week": "Every other week";
-"Twice per month": "Twice per month";
-Monthly: "Monthly";
-}>;
-customTwicePerMonth: z.ZodString;
-anchorPayDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-anchorEndOfPayPeriod: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-day1: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
 
 // @public
 function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX;
@@ -1390,99 +1197,6 @@ interface CreateSignatoryProps extends CommonComponentInterface {
     defaultValues?: CreateSignatoryDefaultValues;
     signatoryId?: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "SignCompanyFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignCompanyFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignCompanyFormSchema(options?: SignCompanyFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SignEmployeeFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignEmployeeFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignEmployeeFormSchema(options?: SignEmployeeFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-usedPreparer: z.ZodEnum<{
-yes: "yes";
-no: "no";
-}>;
-preparerFirstName: z.ZodString;
-preparerLastName: z.ZodString;
-preparerStreet1: z.ZodString;
-preparerStreet2: z.ZodString;
-preparerCity: z.ZodString;
-preparerState: z.ZodString;
-preparerZip: z.ZodString;
-preparerSignature: z.ZodString;
-preparerAgree: z.ZodBoolean;
-preparer2FirstName: z.ZodString;
-preparer2LastName: z.ZodString;
-preparer2Street1: z.ZodString;
-preparer2Street2: z.ZodString;
-preparer2City: z.ZodString;
-preparer2State: z.ZodString;
-preparer2Zip: z.ZodString;
-preparer2Signature: z.ZodString;
-preparer2Agree: z.ZodBoolean;
-preparer3FirstName: z.ZodString;
-preparer3LastName: z.ZodString;
-preparer3Street1: z.ZodString;
-preparer3Street2: z.ZodString;
-preparer3City: z.ZodString;
-preparer3State: z.ZodString;
-preparer3Zip: z.ZodString;
-preparer3Signature: z.ZodString;
-preparer3Agree: z.ZodBoolean;
-preparer4FirstName: z.ZodString;
-preparer4LastName: z.ZodString;
-preparer4Street1: z.ZodString;
-preparer4Street2: z.ZodString;
-preparer4City: z.ZodString;
-preparer4State: z.ZodString;
-preparer4Zip: z.ZodString;
-preparer4Signature: z.ZodString;
-preparer4Agree: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSplitPaymentsFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSplitPaymentsFormSchema(options?: SplitPaymentsFormSchemaOptions): BuildFormSchemaResult<    {
-splitBy: z.ZodEnum<{
-Percentage: "Percentage";
-Amount: "Amount";
-}>;
-splitAmount: z.ZodRecord<z.ZodString, z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodNullable<z.ZodNumber>>>;
-priority: z.ZodRecord<z.ZodString, z.ZodNumber>;
-}>;
-
-// Warning: (ae-internal-missing-underscore) The name "createStateFields" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createStateFields(employeeStateTaxes: EmployeeStateTaxesList[], options: CreateStateFieldsOptions): StateTaxFieldsGroup[];
-
-// Warning: (ae-internal-missing-underscore) The name "CreateStateFieldsOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CreateStateFieldsOptions {
-    // (undocumented)
-    isAdmin: boolean;
-}
-
-// Warning: (ae-forgotten-export) The symbol "WorkAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createWorkAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createWorkAddressSchema(options?: WorkAddressSchemaOptions): BuildFormSchemaResult<    {
-locationUuid: z.ZodString;
-effectiveDate: z.ZodISODate;
-}>;
 
 // Warning: (ae-forgotten-export) The symbol "BaseStateTaxFieldProps" needs to be exported by the entry point index.d.ts
 //
@@ -1530,9 +1244,7 @@ export function DateOfBirthField(props: DateOfBirthFieldProps): JSX;
 // @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
 
-// Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function DatePickerHookField<TErrorCode extends string>(input: DatePickerHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -2097,46 +1809,6 @@ export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form'
 // @public
 export type EmployeeStateTaxesFormOutputs = EmployeeStateTaxesFormData;
 
-// Warning: (ae-forgotten-export) The symbol "FieldsMetadataConfig" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesMetadataConfig" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesMetadataConfig extends FieldsMetadataConfig<Record<string, z.ZodType>> {
-    groups: Array<{
-        state: string;
-        isWorkState: boolean;
-        questions: EmployeeStateTaxesQuestionMeta[];
-    }>;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesQuestionMeta" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesQuestionMeta {
-    // (undocumented)
-    apiKey: string;
-    // (undocumented)
-    formKey: string;
-    // (undocumented)
-    isAdminOnly: boolean;
-    // (undocumented)
-    isWireSelectWithBooleanOptions: boolean;
-    // (undocumented)
-    isWorkState: boolean;
-    // (undocumented)
-    state: string;
-    // (undocumented)
-    variant: StateTaxQuestionVariant;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface EmployeeStateTaxesSchemaOptions {
-    // (undocumented)
-    isAdmin?: boolean;
-}
-
 // @public
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
@@ -2326,22 +1998,6 @@ export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVal
 // @public
 export type FlsaStatusFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, FlsaStatusType>>;
 
-// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataContextValue" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface FormFieldsMetadataContextValue {
-    // (undocumented)
-    errors: SDKError[];
-    // (undocumented)
-    metadata: FieldsMetadata;
-}
-
-// Warning: (ae-forgotten-export) The symbol "FormFieldsMetadataProviderProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataProvider" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX;
-
 // @public
 export type FormHookResult = {
     errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>;
@@ -2366,16 +2022,6 @@ export function GarnishmentTypeField(props: GarnishmentTypeFieldProps): JSX;
 
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
-
-// Warning: (ae-internal-missing-underscore) The name "getQuestionVariant" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTaxQuestionVariant;
-
-// Warning: (ae-internal-missing-underscore) The name "getRequiredAttrKeys" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
 
 // @public
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
@@ -2878,8 +2524,6 @@ function Locations(input: LocationsProps): JSX;
 // @public
 function LocationsList(props: LocationsListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationsList"
-//
 // @public
 interface LocationsListProps extends BaseComponentInterface {
     companyId: string;
@@ -2983,14 +2627,7 @@ interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireR
     selfOnboarding?: boolean;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function normalizeToSDKError(error: unknown): SDKError;
-
-// Warning: (ae-internal-missing-underscore) The name "NumberInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function NumberInputHookField<TErrorCode extends string>(input: NumberInputHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -3026,13 +2663,6 @@ export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
 
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityContextValue {
-    observability: ObservabilityHook | undefined;
-}
-
 // @public
 export interface ObservabilityError extends SDKError {
     componentName?: string;
@@ -3058,21 +2688,6 @@ export interface ObservabilityMetric {
 
 // @public
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX;
-
-// Warning: (ae-internal-missing-underscore) The name "ObservabilityProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface ObservabilityProviderProps {
-    // (undocumented)
-    children: ReactNode;
-    // (undocumented)
-    observability?: ObservabilityHook;
-}
 
 // @public
 function OffCycleCreation(props: OffCycleCreationProps): JSX;
@@ -3823,11 +3438,6 @@ export type PreparerCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps<S
 // @public
 export type PreparerFieldGroup = typeof preparer1Fields;
 
-// Warning: (ae-internal-missing-underscore) The name "preparerFieldName" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function preparerFieldName(index: PreparerIndex, field: PreparerFieldSuffix): string;
-
 // @public
 export type PreparerFieldSuffix = 'FirstName' | 'LastName' | 'Street1' | 'Street2' | 'City' | 'State' | 'Zip' | 'Signature' | 'Agree';
 
@@ -3908,9 +3518,7 @@ export interface ProgressBarProps {
     totalSteps: number;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "RadioGroupHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>(input: RadioGroupHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -4057,18 +3665,7 @@ export interface SDKHooks {
     beforeRequest?: BeforeRequestHook[];
 }
 
-// Warning: (ae-internal-missing-underscore) The name "SDKInternalError" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export class SDKInternalError extends Error {
-    constructor(message: string, category?: SDKErrorCategory);
-    // (undocumented)
-    readonly category: SDKErrorCategory;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "SelectHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>(input: SelectHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -4473,9 +4070,7 @@ export const SUPPORTED_REQUIRED_ATTR_KEYS: readonly ["case_number", "order_numbe
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];
 
-// Warning: (ae-internal-missing-underscore) The name "SwitchHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function SwitchHookField<TErrorCode extends string>(input: SwitchHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -4578,9 +4173,7 @@ export interface TextAreaProps extends SharedFieldLayoutProps, Pick<TextareaHTML
     value?: string;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "TextInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function TextInputHookField<TErrorCode extends string, TOptionalErrorCode extends string = never>(input: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -4944,11 +4537,6 @@ export interface UseDeductionFormReady extends BaseFormHookReady<FieldsMetadata,
 // @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 
-// Warning: (ae-internal-missing-underscore) The name "useDeriveFieldsMetadata" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
-
 // @public
 export function UsedPreparerField(props: UsedPreparerFieldProps): JSX;
 
@@ -5080,9 +4668,7 @@ export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetada
 // @public
 export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormReady;
 
-// Warning: (ae-internal-missing-underscore) The name "useFieldErrorMessage" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function useFieldErrorMessage<TErrorCode extends string>(fieldName: string, validationMessages?: ValidationMessages<TErrorCode>): string | undefined;
 
 // @public
@@ -5153,11 +4739,6 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
-
-// Warning: (ae-internal-missing-underscore) The name "useObservability" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export const useObservability: () => ObservabilityContextValue;
 
 // @public
 export function usePaymentMethodForm(input: UsePaymentMethodFormProps): HookLoadingResult | UsePaymentMethodFormReady;
@@ -5390,9 +4971,7 @@ interface ViewHolidayScheduleProps extends BaseComponentInterface {
 // @public
 type WithholdingType = 'supplemental' | 'regular';
 
-// Warning: (ae-internal-missing-underscore) The name "withOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Array<{
     label: string;
     value: string;
