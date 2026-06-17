@@ -5,6 +5,7 @@ import { RequirementsList } from '@/components/Common/RequirementsList/Requireme
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 
+/** @internal */
 export const MissingRequirements = () => {
   const Components = useComponentContext()
   const { onboardingSteps, onboardingCompleted, handleContinue } = useOnboardingOverview()

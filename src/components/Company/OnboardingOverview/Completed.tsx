@@ -3,6 +3,7 @@ import { useOnboardingOverview } from './context'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export const Completed = () => {
   const Components = useComponentContext()
   const { onboardingCompleted, handleDone } = useOnboardingOverview()

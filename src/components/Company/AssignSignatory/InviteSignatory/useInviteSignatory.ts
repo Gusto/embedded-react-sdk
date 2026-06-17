@@ -6,6 +6,12 @@ type InviteSignatoryContextType = {
   isPending: boolean
 }
 
+/**
+ * Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
+ * `confirmEmail`, and `title`. At least one field is required.
+ *
+ * @public
+ */
 export type InviteSignatoryDefaultValues = RequireAtLeastOne<
   Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title'> & {
     confirmEmail: string

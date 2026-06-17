@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
 import { DocumentList, type FormData } from '@/components/Common/DocumentList'
 
+/** @internal */
 function List() {
   const { companyForms, handleRequestFormToSign, documentListError, isSelfSignatory } =
     useDocumentList()

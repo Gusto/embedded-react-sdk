@@ -16,6 +16,7 @@ interface IndustrySelectProps extends PropsWithChildren {
   onValid?: (data: IndustryFormFields) => Promise<void>
 }
 
+/** @internal */
 export function IndustrySelect({
   children,
   naics_code,

@@ -11,9 +11,25 @@ import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
 interface StateTaxesListProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
 }
 
+/**
+ * Displays the list of state tax requirements for a company with their setup status.
+ *
+ * @remarks
+ * Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
+ * | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
+ *
+ * @param props - Component props including the `companyId` whose state tax requirements should be listed.
+ * @returns The rendered state taxes list section.
+ * @public
+ */
 export function StateTaxesList(props: StateTaxesListProps) {
   return (
     <BaseComponent {...props}>

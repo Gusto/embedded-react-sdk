@@ -1,1 +1,1 @@
-export { Industry } from './Industry'
+export { Industry, type IndustryProps } from './Industry'

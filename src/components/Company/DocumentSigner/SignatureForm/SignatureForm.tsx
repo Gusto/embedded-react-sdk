@@ -11,11 +11,41 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { companyEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface SignatureFormProps extends BaseComponentInterface<'Company.SignatureForm'> {
+/**
+ * Props for {@link SignatureForm}.
+ *
+ * @public
+ */
+export interface SignatureFormProps extends BaseComponentInterface<'Company.SignatureForm'> {
+  /** The identifier of the form the user is signing. */
   formId: string
+  /** The associated company identifier. */
   companyId: string
+  /**
+   * Not applicable to this component — form fields are populated from the API using `formId`.
+   * @override
+   */
+  defaultValues?: never
 }
 
+/**
+ * Standalone form for signing an individual company document.
+ *
+ * @remarks
+ * Lower-level building block used internally by the document signer for its signing view.
+ * Use this component directly when you need full control over navigation between the document
+ * list and the signature form (e.g. routing the user yourself after they select a form).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/forms/sign/signForm` | Fired when a form is successfully signed | Response from the sign company form API request |
+ * | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
+ * | `company/forms/sign/done` | Fired when the form signing process is complete | — |
+ *
+ * @param props - See {@link SignatureFormProps}.
+ * @returns The rendered signature form.
+ * @public
+ */
 export function SignatureForm(props: SignatureFormProps) {
   return (
     <BaseComponent {...props}>

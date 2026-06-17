@@ -536,6 +536,13 @@ export {
   usePayScheduleForm,
   PayScheduleErrorCodes,
   createPayScheduleSchema,
+  CustomNameField,
+  FrequencyField,
+  CustomTwicePerMonthField,
+  AnchorPayDateField,
+  AnchorEndOfPayPeriodField,
+  Day1Field,
+  Day2Field,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 export type {
   PayScheduleOptionalFieldsToRequire,
@@ -544,6 +551,7 @@ export type {
   UsePayScheduleFormReady,
   PayScheduleFieldsMetadata,
   PayScheduleFormFields,
+  PayScheduleFields,
   PayScheduleErrorCode,
   PayScheduleFormData,
   PayScheduleFormOutputs,

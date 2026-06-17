@@ -9,8 +9,10 @@ import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export type CreateSignatoryInputs = z.infer<ReturnType<typeof generateCreateSignatorySchema>>
 
+/** @internal */
 export const CreateSignatoryForm = () => {
   const Components = useComponentContext()
   const { currentSignatory } = useCreateSignatory()

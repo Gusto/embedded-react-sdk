@@ -31,6 +31,37 @@ function stringifyRequirementValue(value: unknown): string {
   return ''
 }
 
+/**
+ * Standalone form for editing a company's state tax requirements for a single state.
+ *
+ * @remarks
+ * Lower-level building block used by {@link StateTaxes} for its edit view. Use directly when
+ * you need full control over navigation between the list and edit views.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
+ * | `CANCEL` | The user cancelled editing | — |
+ *
+ * @param props - {@link StateTaxesFormProps}
+ * @returns The rendered state taxes edit form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <CompanyOnboarding.StateTaxesForm
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       state="CA"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
