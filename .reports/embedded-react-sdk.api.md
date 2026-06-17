@@ -4317,8 +4317,7 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 }
 
 // @public
-export interface SharedHorizontalFieldLayoutProps extends SharedFieldLayoutProps {
-}
+export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
 
 // @public
 export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;

@@ -3,7 +3,6 @@ import type {
   SharedFieldLayoutProps,
 } from '../FieldLayout/FieldLayoutTypes'
 
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 /**
  * Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
  *
@@ -12,9 +11,9 @@ import type {
  * Alias of {@link SharedFieldLayoutProps} — exposed as a distinct name to mirror the horizontal layout used by these controls.
  *
  * @public
+ * @interface
  */
-export interface SharedHorizontalFieldLayoutProps extends SharedFieldLayoutProps {}
-/* eslint-enable @typescript-eslint/no-empty-object-type */
+export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps
 
 /**
  * Props for the {@link HorizontalFieldLayout} component.

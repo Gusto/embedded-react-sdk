@@ -137,7 +137,6 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 #### Extended by
 
-- [`SharedHorizontalFieldLayoutProps`](#sharedhorizontalfieldlayoutprops)
 - [`TextInputProps`](#textinputprops)
 - [`SelectProps`](#selectprops)
 - [`NumberInputProps`](#numberinputprops)
@@ -170,10 +169,6 @@ Shared layout props consumed by horizontally-laid-out form controls — label, d
 
 Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
 Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.
-
-#### Extends
-
-- [`SharedFieldLayoutProps`](#sharedfieldlayoutprops)
 
 #### Extended by
 
