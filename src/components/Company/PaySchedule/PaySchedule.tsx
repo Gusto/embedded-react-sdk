@@ -12,7 +12,11 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { Flow } from '@/components/Flow/Flow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
-/** @public */
+/**
+ * The full set of fields that may be pre-filled on the {@link PaySchedule} create form.
+ *
+ * @public
+ */
 export type PayScheduleDefaultFields = {
   [K in keyof Pick<
     PayScheduleFormData,

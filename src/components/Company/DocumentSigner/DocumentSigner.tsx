@@ -63,13 +63,13 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/forms/view` | Fired when a user selects a form to sign from the document list | {@link Form} |
- * | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | — |
+ * | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
  * | `company/forms/done` | Fired when the user completes the document signing process | — |
  * | `company/forms/sign/signForm` | Fired when a form is successfully signed | {@link Form} |
  * | `company/forms/sign/done` | Fired when the form signing process is complete | — |
  * | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
- * | `company/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'create_signatory'` or `'invite_signatory'` |
- * | `company/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
+ * | `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
+ * | `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
  * | `company/signatory/created` | Fired when a new signatory is created successfully | {@link Signatory} |
  * | `company/signatory/updated` | Fired when an existing signatory is updated successfully | {@link Signatory} |
  * | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | {@link Signatory} |

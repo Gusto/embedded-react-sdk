@@ -21,6 +21,11 @@ export interface SignatureFormProps extends BaseComponentInterface<'Company.Sign
   formId: string
   /** The associated company identifier. */
   companyId: string
+  /**
+   * Not applicable to this component — form fields are populated from the API using `formId`.
+   * @override
+   */
+  defaultValues?: never
 }
 
 /**

@@ -3834,7 +3834,9 @@ function PayrollReceipts(props: PayrollReceiptsProps): JSX;
 // @public
 const PaySchedule: (input: PayScheduleProps & BaseComponentInterface) => JSX;
 
-// @public (undocumented)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaySchedule"
+//
+// @public
 type PayScheduleDefaultFields = {
     [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'>]: NonNullable<PayScheduleFormData[K]>;
 };
@@ -4395,6 +4397,8 @@ function SignatureForm(props: SignatureFormProps): JSX;
 // @public
 interface SignatureFormProps extends BaseComponentInterface<'Company.SignatureForm'> {
     companyId: string;
+    // @override
+    defaultValues?: never;
     formId: string;
 }
 

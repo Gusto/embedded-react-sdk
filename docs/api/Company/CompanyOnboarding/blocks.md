@@ -151,13 +151,13 @@ presenting the document list.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | Form |
-| `company/forms/editSignatory` | Fired when the user requests to change the document signatory | — |
+| `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when the user completes the document signing process | — |
 | `company/forms/sign/signForm` | Fired when a form is successfully signed | Form |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
-| `company/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'create_signatory'` or `'invite_signatory'` |
-| `company/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
+| `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
+| `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
 | `company/signatory/created` | Fired when a new signatory is created successfully | Signatory |
 | `company/signatory/updated` | Fired when an existing signatory is updated successfully | Signatory |
 | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | Signatory |
@@ -356,7 +356,7 @@ Props for [SignatureForm](#signatureform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `companyId` | `string` | The associated company identifier. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `defaultValues?` | `undefined` | Not applicable to this component — form fields are populated from the API using `formId`. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`CompanySignatureForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `formId` | `string` | The identifier of the form the user is signing. |
@@ -596,6 +596,8 @@ Default values for the invite signatory form fields: `firstName`, `lastName`, `e
 ### PayScheduleDefaultFields
 
 > **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
+
+The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
 
 ***
 
