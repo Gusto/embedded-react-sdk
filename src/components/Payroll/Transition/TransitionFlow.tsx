@@ -10,6 +10,27 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
+/**
+ * Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule.
+ *
+ * @remarks
+ * Starts on the creation step (configure check date, deductions, and tax withholding for the
+ * transition pay period). After the payroll is created, the flow hands off to the standard
+ * payroll execution experience — configure compensation, review, submit, and view receipts.
+ *
+ * If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
+ * | `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+ *
+ * Once execution begins, all standard run-payroll events are emitted as well.
+ *
+ * @param props - See {@link TransitionFlowProps}.
+ * @returns The transition payroll flow.
+ * @public
+ */
 export function TransitionFlow({
   companyId,
   startDate,

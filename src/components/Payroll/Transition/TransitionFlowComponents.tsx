@@ -11,23 +11,45 @@ import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/**
+ * Flow context shape carried through the transition payroll state machine.
+ *
+ * @public
+ */
 export interface TransitionFlowContextInterface extends FlowContextInterface {
+  /** Company the transition payroll belongs to. */
   companyId: string
+  /** Start date of the transition pay period (YYYY-MM-DD). */
   startDate: string
+  /** End date of the transition pay period (YYYY-MM-DD). */
   endDate: string
+  /** UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
+  /** UUID of the created transition payroll, populated once creation completes. */
   payrollUuid?: string
 }
 
+/**
+ * Props for {@link TransitionFlow}.
+ *
+ * @public
+ */
 export interface TransitionFlowProps {
+  /** Company running the transition payroll. */
   companyId: string
+  /** Start date of the transition pay period (YYYY-MM-DD). */
   startDate: string
+  /** End date of the transition pay period (YYYY-MM-DD). */
   endDate: string
+  /** UUID of the pay schedule the transition is associated with. */
   payScheduleUuid: string
+  /** UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. */
   payrollUuid?: string
+  /** Callback invoked for each event emitted by the flow and its child steps. */
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function TransitionCreationContextual() {
   const { companyId, startDate, endDate, payScheduleUuid, onEvent } =
     useFlow<TransitionFlowContextInterface>()
@@ -42,6 +64,7 @@ export function TransitionCreationContextual() {
   )
 }
 
+/** @internal */
 export function TransitionExecutionContextual() {
   const { companyId, payrollUuid, onEvent, header } = useFlow<TransitionFlowContextInterface>()
 

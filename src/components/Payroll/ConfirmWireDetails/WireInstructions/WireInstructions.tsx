@@ -97,6 +97,7 @@ function WireInstructionField({ label, value }: WireInstructionFieldProps) {
   )
 }
 
+/** @internal */
 export function WireInstructions(props: WireInstructionsProps) {
   return (
     <BaseComponent {...props}>
@@ -105,7 +106,7 @@ export function WireInstructions(props: WireInstructionsProps) {
   )
 }
 
-export const Root = ({
+const Root = ({
   companyId,
   wireInId,
   selectedWireInId,

@@ -2,6 +2,7 @@ import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2025-11-15
 import { WireInRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/wireinrequest'
 import { normalizeToDate, getHoursUntil, getDaysUntil } from '@/helpers/dateFormatting'
 
+/** @internal */
 export type PayrollStatusTranslationKey =
   | 'processed'
   | 'unprocessed'
@@ -20,40 +21,64 @@ export type PayrollStatusTranslationKey =
   | 'submitted'
   | 'inProgress'
 
+/** @internal */
 export type PayrollStatusBadge = {
+  /** Optional pre-translated label; when omitted the consumer translates `translationKey`. */
   label?: string
+  /** Badge color variant. */
   variant: 'success' | 'warning' | 'error' | 'info'
+  /** Key into the `Payroll.Common` `status.*` translation namespace. */
   translationKey: PayrollStatusTranslationKey
+  /** Optional interpolation values for the translation (e.g. `{ hours: 3 }`). */
   translationParams?: Record<string, string | number>
 }
 
+/** @internal */
 export type PayrollStatusBadges = {
+  /** Ordered list of badges to render for a payroll row. */
   badges: PayrollStatusBadge[]
 }
 
+/** @internal */
 export type PayrollInput = {
+  /** Whether the payroll has been submitted for processing. */
   processed?: boolean
+  /** Date employees are paid; used to distinguish `pending` from `complete`. */
   checkDate?: string | null | Date
+  /** Deadline by which the payroll must be submitted. */
   payrollDeadline?: string | null | Date
+  /** Timestamp marking when calculation finished. */
   calculatedAt?: Date | null
+  /** Current processing request status and any associated errors. */
   processingRequest?: {
+    /** Lifecycle status reported by the payroll processing request. */
     status?: PayrollProcessingRequestStatus
+    /** Errors surfaced by the processing request, when any. */
     errors?: unknown[]
   } | null
 }
 
+/** @internal */
 export type WireInRequestInput = {
+  /** Wire-in request lifecycle status (e.g. awaiting funds, pending review). */
   status?: string
+  /** UUID of the associated payment. */
   paymentUuid?: string
+  /** Deadline by which the wire must be received. */
   wireInDeadline?: string
 } | null
 
+/** @internal */
 export type StatusConfig = {
+  /** Identifier for the status rule; used for debugging and snapshot diffs. */
   name: string
+  /** Either a static badge or a factory that derives one from the payroll/wire-in inputs. */
   badge:
     | PayrollStatusBadge
     | ((payroll: PayrollInput, wireInRequest?: WireInRequestInput) => PayrollStatusBadge)
+  /** Predicate that decides whether this status applies to the given inputs. */
   condition: (payroll: PayrollInput, wireInRequest?: WireInRequestInput) => boolean
+  /** When true, evaluation continues to later rules instead of stopping at the first match. */
   continueChecking?: boolean
 }
 
@@ -63,6 +88,7 @@ const ACTIVE_PROCESSING_STATUSES: PayrollProcessingRequestStatus[] = [
   PayrollProcessingRequestStatus.ProcessingFailed,
 ]
 
+/** @internal */
 export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'calculating',
