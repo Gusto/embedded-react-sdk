@@ -278,6 +278,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **CompanyOnboarding.LocationForm** | POST | `/v1/companies/:companyId/locations` |
 |  | GET | `/v1/locations/:locationId` |
 |  | PUT | `/v1/locations/:locationId` |
+| **CompanyOnboarding.LocationsList** | GET | `/v1/companies/:companyId/locations` |
 | **CompanyOnboarding.PaySchedule** | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyId/pay_schedules` |
 |  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |

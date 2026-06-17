@@ -91,6 +91,8 @@ function isUnder(pathname: string, target: string): boolean {
 
 const PREVIEW_CATEGORY_LABELS: Record<string, string> = {
   InformationRequests: 'Info Requests',
+  ContractorManagement: 'Contractor Management',
+  ContractorOnboarding: 'Contractor Onboarding',
   EmployeeManagement: 'Employee Management',
   EmployeeOnboarding: 'Employee Onboarding',
 }

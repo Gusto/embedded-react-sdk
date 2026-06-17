@@ -196,6 +196,7 @@ export default [
       'src/components/Common/UI/**/*.{ts,tsx}',
       'src/components/Common/PaginationControl/**',
       'src/components/Common/PayrollLoading/**',
+      'src/components/Contractor/**/*.{ts,tsx}',
       'src/components/Employee/**/*.{ts,tsx}',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/components/InformationRequests/**/*.{ts,tsx}',

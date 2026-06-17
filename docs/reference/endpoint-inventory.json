@@ -1489,6 +1489,17 @@
         "locationId"
       ]
     },
+    "CompanyOnboarding.LocationsList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
     "CompanyOnboarding.PaySchedule": {
       "endpoints": [
         {

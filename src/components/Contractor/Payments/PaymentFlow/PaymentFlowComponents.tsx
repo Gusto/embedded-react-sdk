@@ -10,10 +10,17 @@ import type { BaseComponentInterface } from '@/components/Base'
 import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/**
+ * Props for {@link PaymentFlow}.
+ *
+ * @public
+ */
 export interface PaymentFlowProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
 }
 
+/** @internal */
 export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   breadcrumbs?: BreadcrumbTrail
@@ -23,21 +30,25 @@ export interface PaymentFlowContextInterface extends FlowContextInterface {
   alerts?: InternalAlert[]
 }
 
+/** @internal */
 export function PaymentListContextual() {
   const { companyId, onEvent, alerts } = useFlow<PaymentFlowContextInterface>()
   return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} alerts={alerts} />
 }
 
+/** @internal */
 export function CreatePaymentContextual() {
   const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
   return <CreatePayment onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function PaymentHistoryContextual() {
   const { currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
   return <PaymentHistory onEvent={onEvent} paymentId={ensureRequired(currentPaymentId)} />
 }
 
+/** @internal */
 export function PaymentStatementContextual() {
   const { currentPaymentId, currentContractorUuid, onEvent } =
     useFlow<PaymentFlowContextInterface>()
@@ -50,6 +61,7 @@ export function PaymentStatementContextual() {
   )
 }
 
+/** @internal */
 export function PaymentSummaryContextual() {
   const { createdPaymentGroupId, companyId, onEvent, alerts } =
     useFlow<PaymentFlowContextInterface>()
@@ -64,6 +76,7 @@ export function PaymentSummaryContextual() {
   )
 }
 
+/** @internal */
 export function InformationRequestsContextual() {
   const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
   return (

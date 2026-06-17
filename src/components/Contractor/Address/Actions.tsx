@@ -3,6 +3,7 @@ import { useAddress } from './useAddress'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Actions() {
   const { t } = useTranslation('Contractor.Address')
   const Components = useComponentContext()

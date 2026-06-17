@@ -7,6 +7,7 @@ interface SubmitDoneProps {
   onDone: () => void
 }
 
+/** @internal */
 export const SubmitDone = ({ onDone }: SubmitDoneProps) => {
   useI18n('Contractor.Submit')
   const { Button, Heading, Text } = useComponentContext()
