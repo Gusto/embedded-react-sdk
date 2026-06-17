@@ -697,6 +697,24 @@ Form values captured by the policy settings form.
 
 ***
 
+<a id="ratebasedpolicydetails"></a>
+
+### RateBasedPolicyDetails
+
+Policy details for a rate-based accruing time-off policy.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `accrualMethod` | `RateBasedAccrualMethod` | The method by which time off accrues. |
+| `accrualRate` | `number` | Hours accrued per accrual period. |
+| `accrualRateUnit?` | `number` | Divisor used to compute the per-unit accrual rate, if applicable. |
+| `policyType` | `PolicyTypeKey` | Whether the policy covers vacation or sick time. |
+| `resetDate?` | `string` | ISO date string for the annual balance reset, if applicable. |
+
+***
+
 <a id="removedialogstate"></a>
 
 ### RemoveDialogState
@@ -735,6 +753,46 @@ Row shape for an employee enrolled in a time-off policy.
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
 | `uuid` | `string` | Unique identifier for the employee. |
+
+***
+
+<a id="timeoffpolicydetailpresentationbaseprops"></a>
+
+### TimeOffPolicyDetailPresentationBaseProps
+
+Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions?` | `ReactNode`[] | Optional action buttons rendered in the header. |
+| `backLabel` | `string` | Label for the back navigation link. |
+| `employees` | `Pick`\<[`EmployeeTableProps`](#employeetableprops)\<[`TimeOffPolicyDetailEmployee`](#timeoffpolicydetailemployee)\>, `"data"` \| `"searchValue"` \| `"onSearchChange"` \| `"onSearchClear"` \| `"searchPlaceholder"` \| `"itemMenu"` \| `"pagination"` \| `"isFetching"` \| `"emptyState"`\> | Employee table data and callbacks. |
+| `onAddEmployee?` | () => `void` | Called when the add-employee action is clicked. |
+| `onBack` | () => `void` | Called when the back navigation is clicked. |
+| `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
+| `onTabChange` | (`id`) => `void` | Called with the new tab id when the user switches tabs. |
+| `removeDialog` | [`RemoveDialogState`](#removedialogstate) | State for the employee removal confirmation dialog. |
+| `selectedTabId` | `string` | The currently active tab id. |
+| `subtitle?` | `string` | Secondary label, typically the policy type. |
+| `successAlert?` | `string` | Optional success message rendered as a dismissible alert. |
+| `title` | `string` | Policy name displayed as the page heading. |
+
+***
+
+<a id="unlimitedpolicydetails"></a>
+
+### UnlimitedPolicyDetails
+
+Policy details for an unlimited (no-accrual) time-off policy.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `accrualMethod` | `"unlimited"` | Accrual method discriminant — always `'unlimited'` for this variant. |
+| `policyType` | `PolicyTypeKey` | Whether the policy covers vacation or sick time. |
 
 ## Type Aliases
 
@@ -783,7 +841,7 @@ Only `sick` and `vacation` are creatable through the time off policy endpoint. H
 
 ### PolicyDetails
 
-> **PolicyDetails** = `UnlimitedPolicyDetails` \| `RateBasedPolicyDetails`
+> **PolicyDetails** = [`UnlimitedPolicyDetails`](#unlimitedpolicydetails) \| [`RateBasedPolicyDetails`](#ratebasedpolicydetails)
 
 Policy type and accrual configuration for the detail view.
 
@@ -830,7 +888,7 @@ a fixed calendar month/day shared across all employees.
 
 ### TimeOffPolicyDetailPresentationProps
 
-> **TimeOffPolicyDetailPresentationProps** = `TimeOffPolicyDetailPresentationBaseProps` & \{ `onChangeSettings?`: `never`; `policyDetails`: `UnlimitedPolicyDetails`; `policySettings?`: `never`; \} \| \{ `onChangeSettings?`: () => `void`; `policyDetails`: `RateBasedPolicyDetails`; `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); \}
+> **TimeOffPolicyDetailPresentationProps** = [`TimeOffPolicyDetailPresentationBaseProps`](#timeoffpolicydetailpresentationbaseprops) & \{ `onChangeSettings?`: `never`; `policyDetails`: [`UnlimitedPolicyDetails`](#unlimitedpolicydetails); `policySettings?`: `never`; \} \| \{ `onChangeSettings?`: () => `void`; `policyDetails`: [`RateBasedPolicyDetails`](#ratebasedpolicydetails); `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); \}
 
 Props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
 
