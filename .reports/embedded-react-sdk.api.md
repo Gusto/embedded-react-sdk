@@ -4160,25 +4160,16 @@ export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
 // @internal (undocumented)
 type RateBasedAccrualMethod = 'perPayPeriod' | 'perCalendarYear' | 'perAnniversaryYear' | 'perHourWorked' | 'perHourWorkedNoOvertime' | 'perHourPaid' | 'perHourPaidNoOvertime';
 
-// Warning: (ae-missing-release-tag) "RateBasedPolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 interface RateBasedPolicyDetails {
     // Warning: (ae-incompatible-release-tags) The symbol "accrualMethod" is marked as @public, but its signature references "RateBasedAccrualMethod" which is marked as @internal
     // Warning: (ae-incompatible-release-tags) The symbol "accrualMethod" is marked as @public, but its signature references "RateBasedAccrualMethod" which is marked as @internal
-    //
-    // (undocumented)
     accrualMethod: RateBasedAccrualMethod;
-    // (undocumented)
     accrualRate: number;
-    // (undocumented)
     accrualRateUnit?: number;
     // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
     // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
-    //
-    // (undocumented)
     policyType: PolicyTypeKey;
-    // (undocumented)
     resetDate?: string;
 }
 
@@ -4964,33 +4955,21 @@ interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
 // @public
 function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationProps): JSX;
 
-// Warning: (ae-missing-release-tag) "TimeOffPolicyDetailPresentationBaseProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentation"
 //
-// @public (undocumented)
+// @public
 interface TimeOffPolicyDetailPresentationBaseProps {
-    // (undocumented)
     actions?: ReactNode[];
-    // (undocumented)
     backLabel: string;
-    // (undocumented)
     employees: Pick<EmployeeTableProps<TimeOffPolicyDetailEmployee>, 'data' | 'searchValue' | 'onSearchChange' | 'onSearchClear' | 'searchPlaceholder' | 'itemMenu' | 'pagination' | 'isFetching' | 'emptyState'>;
-    // (undocumented)
     onAddEmployee?: () => void;
-    // (undocumented)
     onBack: () => void;
-    // (undocumented)
     onDismissAlert?: () => void;
-    // (undocumented)
     onTabChange: (id: string) => void;
-    // (undocumented)
     removeDialog: RemoveDialogState;
-    // (undocumented)
     selectedTabId: string;
-    // (undocumented)
     subtitle?: string;
-    // (undocumented)
     successAlert?: string;
-    // (undocumented)
     title: string;
 }
 
@@ -5105,16 +5084,11 @@ export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldPr
 // @public
 export type TypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<PaymentMethodFormRequiredValidation, PaymentMethodType>>;
 
-// Warning: (ae-missing-release-tag) "UnlimitedPolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 interface UnlimitedPolicyDetails {
-    // (undocumented)
     accrualMethod: 'unlimited';
     // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
     // Warning: (ae-incompatible-release-tags) The symbol "policyType" is marked as @public, but its signature references "PolicyTypeKey" which is marked as @internal
-    //
-    // (undocumented)
     policyType: PolicyTypeKey;
 }
 
