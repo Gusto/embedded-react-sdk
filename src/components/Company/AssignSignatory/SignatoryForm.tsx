@@ -3,6 +3,7 @@ import { SignatoryAssignmentMode, useAssignSignatory } from './useAssignSignator
 import { CreateSignatory } from './CreateSignatory'
 import { InviteSignatory } from './InviteSignatory'
 
+/** @internal */
 export const SignatoryForm = () => {
   const { companyId, signatoryId, onSignatoryFormEvent, defaultValues } = useAssignSignatory()
 

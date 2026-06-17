@@ -3,6 +3,7 @@ import { SignatoryAssignmentMode, useAssignSignatory } from './useAssignSignator
 import styles from './AssignSignatorySelection.module.scss'
 import { RadioGroupField } from '@/components/Common'
 
+/** @internal */
 export const AssignSignatorySelection = () => {
   const { t } = useTranslation('Company.AssignSignatory')
   const { onSignatoryAssignmentModeChange } = useAssignSignatory()

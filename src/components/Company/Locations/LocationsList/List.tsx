@@ -7,7 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
-/**List of employees slot for EmployeeList component */
+/** @internal */
 export const List = () => {
   const Components = useComponentContext()
   const {

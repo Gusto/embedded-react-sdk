@@ -137,6 +137,22 @@ function Root({
   )
 }
 
+/**
+ * Standalone form for creating a new company location or editing an existing one.
+ *
+ * @remarks
+ * Pass a `locationId` to edit an existing location; omit it to create a new one.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/location/add/done` | Fired when a new location is created | The created location |
+ * | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
+ * | `CANCEL` | Fired when the user cancels editing | — |
+ *
+ * @param props - {@link LocationFormProps} together with the standard {@link BaseComponentInterface}.
+ * @returns The location form.
+ * @public
+ */
 export function LocationForm({
   companyId,
   locationId,

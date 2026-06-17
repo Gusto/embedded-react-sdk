@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.48.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.1...v0.48.2) (2026-06-17)
+
+### Features & Enhancements
+
+- **Employee:** export DocumentSigner sub-components from EmployeeOnboarding ([#2192](https://github.com/Gusto/embedded-react-sdk/issues/2192)) ([5749f99](https://github.com/Gusto/embedded-react-sdk/commit/5749f99d720bd7c0614d97bef8270020150b3ab5))
+
+### Fixes
+
+- **Payroll:** use EmptyData for PayrollList empty state ([#2189](https://github.com/Gusto/embedded-react-sdk/issues/2189)) ([ac0514a](https://github.com/Gusto/embedded-react-sdk/commit/ac0514a367445e308e128eeb688e1b6a381f992a))
+- **TimeOff:** use empty data component for empty states ([#2188](https://github.com/Gusto/embedded-react-sdk/issues/2188)) ([890e155](https://github.com/Gusto/embedded-react-sdk/commit/890e15554306147ef042c5e753ef678ff81070c0))
+
+### Chores & Maintenance
+
+- add STANDALONE_PAGES routing to sdk-router (1/4) ([#2172](https://github.com/Gusto/embedded-react-sdk/issues/2172)) ([0442494](https://github.com/Gusto/embedded-react-sdk/commit/044249425647ccda5d3b1cc322262e163cc000f1))
+- **deps-dev:** bump @storybook/react-vite from 10.4.4 to 10.4.6 ([#2185](https://github.com/Gusto/embedded-react-sdk/issues/2185)) ([6611fdc](https://github.com/Gusto/embedded-react-sdk/commit/6611fdc06e89c1e01f3029dbbe9310a1abfd5bff))
+- **deps-dev:** bump @typescript-eslint/parser from 8.61.0 to 8.61.1 ([#2182](https://github.com/Gusto/embedded-react-sdk/issues/2182)) ([bd19b5f](https://github.com/Gusto/embedded-react-sdk/commit/bd19b5f89359252d92ffd5785e7ada92a093e880))
+- **deps-dev:** bump @vitest/coverage-v8 from 4.1.8 to 4.1.9 ([#2183](https://github.com/Gusto/embedded-react-sdk/issues/2183)) ([e2174fa](https://github.com/Gusto/embedded-react-sdk/commit/e2174fa840b332f9bed3d10837e936e272f950ea))
+- **deps-dev:** bump vitest from 4.1.8 to 4.1.9 ([#2184](https://github.com/Gusto/embedded-react-sdk/issues/2184)) ([0d1acf7](https://github.com/Gusto/embedded-react-sdk/commit/0d1acf744b7386cefa186825f74794170ee65fe7))
+- **DocumentList:** unify empty and error states via EmptyData ([#2190](https://github.com/Gusto/embedded-react-sdk/issues/2190)) ([6324058](https://github.com/Gusto/embedded-react-sdk/commit/6324058d200a1b2a799dd59026743a454be847fa))
+- export utility types, add TSDoc [@group](https://github.com/group) tags (2/4) ([#2173](https://github.com/Gusto/embedded-react-sdk/issues/2173)) ([75c3668](https://github.com/Gusto/embedded-react-sdk/commit/75c36685d8f562c4d270bc279a3115efba53e7b3))
+- **tsdoc-backfill:** backfill Payroll ([#2181](https://github.com/Gusto/embedded-react-sdk/issues/2181)) ([32f226e](https://github.com/Gusto/embedded-react-sdk/commit/32f226e3f8284320dcf78f64d32bc492dc9579cb))
+- **tsdoc-backfill:** backfill TimeOff ([#2179](https://github.com/Gusto/embedded-react-sdk/issues/2179)) ([e6d2c2b](https://github.com/Gusto/embedded-react-sdk/commit/e6d2c2b76d8041137346c4d675cc17dc85b366fa))
+
 ## [0.48.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.0...v0.48.1) (2026-06-16)
 
 ### Fixes

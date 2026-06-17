@@ -19,6 +19,7 @@ interface BankAccountVerifyProps extends CommonComponentInterface {
   bankAccountId: string
 }
 
+/** @internal */
 export function BankAccountVerify(props: BankAccountVerifyProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

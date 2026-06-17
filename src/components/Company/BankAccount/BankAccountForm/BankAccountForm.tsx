@@ -19,6 +19,7 @@ interface BankAccountFormProps extends CommonComponentInterface {
   isEditing?: boolean
 }
 
+/** @internal */
 export function BankAccountForm(props: BankAccountFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

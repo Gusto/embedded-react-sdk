@@ -16,8 +16,10 @@ custom_edit_url: null
 
 | Namespace | Description |
 | ------ | ------ |
+| [CompanyOnboarding](Company/CompanyOnboarding/flows.md) | - |
 | [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
 | [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
+| [InformationRequests](InformationRequests/flows.md) | - |
 | [Payroll](Payroll/flows.md) | - |
 | [TimeOff](TimeOff/flows.md) | - |
 

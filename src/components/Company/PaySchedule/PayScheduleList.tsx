@@ -13,6 +13,7 @@ interface PayScheduleListProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
   const { t } = useTranslation('Company.PaySchedule')
   const Components = useComponentContext()

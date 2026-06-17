@@ -4,7 +4,7 @@ import { LocationFormContextual, LocationsListContextual } from './locationsStat
 import { companyEvents, componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
-export const cancelTransition = transition(
+const cancelTransition = transition(
   componentEvents.CANCEL,
   'index',
   reduce((ctx: LocationsContextInterface) => ({
@@ -14,6 +14,7 @@ export const cancelTransition = transition(
   })),
 )
 
+/** @internal */
 export const locationsStateMachine = {
   index: state<MachineTransition>(
     transition(

@@ -6,6 +6,7 @@ import type { DocumentSignerContextInterface } from './useDocumentSigner'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { companyEvents } from '@/shared/constants'
 
+/** @internal */
 export const documentSignerMachine = {
   index: assignSignatoryState,
   documentList: state<MachineTransition>(

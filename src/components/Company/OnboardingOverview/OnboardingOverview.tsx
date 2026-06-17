@@ -17,6 +17,24 @@ interface OnboardingOverviewProps extends CommonComponentInterface<'Company.Onbo
   companyId: string
 }
 
+/**
+ * Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements.
+ *
+ * @remarks
+ * Renders as the landing or summary screen of a company onboarding flow. When `onboardingCompleted`
+ * is true, a completion message and "done" action are shown; otherwise a checklist of outstanding
+ * steps is rendered with a continue action. Provide `children` to override the default layout while
+ * still consuming the onboarding status via context.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
+ * | `company/overview/done` | Fired when the user signals they are done with the overview screen, typically after onboarding ends | — |
+ *
+ * @param props - Component props including the target `companyId` and standard base/common component options.
+ * @returns The rendered onboarding overview section.
+ * @public
+ */
 export function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface) {
   useI18n('Company.OnboardingOverview')
   useComponentDictionary('Company.OnboardingOverview', props.dictionary)

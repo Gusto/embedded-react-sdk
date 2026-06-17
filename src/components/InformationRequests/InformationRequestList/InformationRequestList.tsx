@@ -14,11 +14,32 @@ import { EmptyData, Flex, FlexItem } from '@/components/Common'
 import { informationRequestEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
-interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
+/**
+ * Props for {@link InformationRequestList}.
+ *
+ * @public
+ */
+export interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
+  /** The associated company identifier. */
   companyId: string
+  /** Event callback. See the events table on {@link InformationRequestList} for emitted events. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/**
+ * Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request.
+ *
+ * @remarks
+ * Renders status badges for each request and an extra "Payroll blocking" badge when the request is currently blocking payroll. Approved requests are filtered out of the list. Used as the top-level surface of `InformationRequests.InformationRequestsFlow`, but can be rendered directly when you want to host the response form yourself (e.g. in a custom modal or page).
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `informationRequest/respond` | Fired when the user clicks "Respond" on an open request | `{ requestId: string }` |
+ *
+ * @param props - See {@link InformationRequestListProps}.
+ * @returns The rendered information request list.
+ * @public
+ */
 export function InformationRequestList(props: InformationRequestListProps) {
   return (
     <BaseComponent {...props}>

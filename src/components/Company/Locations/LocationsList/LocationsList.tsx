@@ -14,6 +14,7 @@ interface LocationsListProps extends BaseComponentInterface {
   companyId: string
 }
 
+/** @internal */
 export function LocationsList(props: LocationsListProps) {
   return (
     <BaseComponent {...props}>

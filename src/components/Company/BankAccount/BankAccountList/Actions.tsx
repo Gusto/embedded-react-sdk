@@ -3,6 +3,7 @@ import { useBankAccount } from './context'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Actions() {
   const { handleContinue, handleChange } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')

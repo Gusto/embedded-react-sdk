@@ -5,6 +5,7 @@ import { CheckboxGroupField, Flex, Grid, SelectField, TextInputField } from '@/c
 import { STATES_ABBR } from '@/shared/constants'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
+/** @internal */
 export const LocationFormSchema = z.object({
   phoneNumber: phoneValidation,
   street1: z.string().min(1),
@@ -15,6 +16,7 @@ export const LocationFormSchema = z.object({
   addressType: z.array(z.enum(['mailingAddress', 'filingAddress'])).optional(),
 })
 
+/** @internal */
 export type LocationFormInputs = z.infer<typeof LocationFormSchema>
 
 interface FormProps {
@@ -22,6 +24,7 @@ interface FormProps {
   isFilingLocked?: boolean
 }
 
+/** @internal */
 export function Form({ isMailingLocked = false, isFilingLocked = false }: FormProps = {}) {
   const { t } = useTranslation('Company.Locations')
   const transform = useMaskedTransform(commonMasks.phoneMask)

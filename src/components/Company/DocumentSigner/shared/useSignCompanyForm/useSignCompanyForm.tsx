@@ -28,30 +28,63 @@ import { SDKInternalError } from '@/types/sdkError'
 
 export type { SignCompanyFormOptionalFieldsToRequire } from './signCompanyFormSchema'
 
+/**
+ * Props for {@link useSignCompanyForm}.
+ *
+ * @public
+ */
 export interface UseSignCompanyFormProps {
+  /** UUID of the company form to sign. */
   formId: string
+  /** Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. */
   optionalFieldsToRequire?: SignCompanyFormOptionalFieldsToRequire
+  /** Pre-fill form values (for example, pre-populate the signature field). */
   defaultValues?: Partial<SignCompanyFormData>
+  /** When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. */
   validationMode?: UseFormProps['mode']
+  /** Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. */
   shouldFocusError?: boolean
 }
 
+/**
+ * Field components exposed by {@link useSignCompanyForm} on `form.Fields`.
+ *
+ * @public
+ */
 export interface SignCompanyFormFields {
+  /** Text input for the signer's typed name; always required. */
   Signature: typeof SignatureField
+  /** Checkbox for confirming the signature and agreeing to the form's terms; always required. */
   ConfirmSignature: typeof ConfirmSignatureField
 }
 
+/**
+ * Ready-state shape returned by {@link useSignCompanyForm} once the form metadata and PDF have loaded.
+ *
+ * @public
+ */
 export interface UseSignCompanyFormReady extends BaseFormHookReady<
   FieldsMetadata,
   SignCompanyFormData,
   SignCompanyFormFields
 > {
+  /** Loaded data — the company form entity and a preview PDF URL. */
   data: {
+    /** The company form entity fetched from the API (includes `uuid`, `title`, `description`). */
     companyForm: Form
+    /** URL to the form's PDF document, or `null` when the document URL is not available. */
     pdfUrl: string | null
   }
-  status: { isPending: boolean; mode: 'create' }
+  /** Submit-state flags. */
+  status: {
+    /** `true` while the sign mutation is in flight. */
+    isPending: boolean
+    /** Always `'create'`; the hook always submits as a signing operation. */
+    mode: 'create'
+  }
+  /** Imperative actions exposed by the hook. */
   actions: {
+    /** Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. */
     onSubmit: () => Promise<HookSubmitResult<Form> | undefined>
   }
 }
@@ -61,6 +94,77 @@ const HARDCODED_DEFAULTS: SignCompanyFormData = {
   confirmSignature: false,
 }
 
+/**
+ * Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox.
+ *
+ * @remarks
+ * The hook fetches the company form metadata and PDF, then exposes the
+ * {@link BaseFormHookReady} contract with `Fields`, `fieldsMetadata`,
+ * `onSubmit`, and error handling. Use `data.companyForm` to display the
+ * form's title and description, and `data.pdfUrl` to render the document for
+ * review before signing. Both `signature` and `confirmSignature` are always
+ * required.
+ *
+ * @param props - See {@link UseSignCompanyFormProps}.
+ * @returns A {@link HookLoadingResult} while loading, or a {@link UseSignCompanyFormReady} once the form is loaded.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useSignCompanyForm,
+ *   SDKFormProvider,
+ *   type UseSignCompanyFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function SignFormPage({ formId }: { formId: string }) {
+ *   const signForm = useSignCompanyForm({ formId })
+ *
+ *   if (signForm.isLoading) return <div>Loading...</div>
+ *
+ *   return <SignFormReady signForm={signForm} />
+ * }
+ *
+ * function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
+ *   const { Fields } = signForm.form
+ *
+ *   const handleSubmit = async () => {
+ *     const result = await signForm.actions.onSubmit()
+ *     if (result) {
+ *       console.log('Signed form:', result.data.uuid)
+ *     }
+ *   }
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={signForm}>
+ *       <form
+ *         onSubmit={e => {
+ *           e.preventDefault()
+ *           void handleSubmit()
+ *         }}
+ *       >
+ *         <h2>{signForm.data.companyForm.title}</h2>
+ *         {signForm.data.pdfUrl && (
+ *           <iframe src={signForm.data.pdfUrl} title="Form document" width="100%" height="600" />
+ *         )}
+ *         <Fields.Signature
+ *           label="Signature"
+ *           description="Type your full legal name"
+ *           validationMessages={{ REQUIRED: 'Signature is required' }}
+ *         />
+ *         <Fields.ConfirmSignature
+ *           label="I agree to the terms above"
+ *           validationMessages={{ REQUIRED: 'You must confirm to sign this form' }}
+ *         />
+ *         <button type="submit" disabled={signForm.status.isPending}>
+ *           {signForm.status.isPending ? 'Signing...' : 'Sign form'}
+ *         </button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ */
 export function useSignCompanyForm({
   formId,
   optionalFieldsToRequire,
@@ -189,5 +293,15 @@ export function useSignCompanyForm({
   }
 }
 
+/**
+ * Result of {@link useSignCompanyForm} — a discriminated union on `isLoading`.
+ *
+ * @public
+ */
 export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormReady
+/**
+ * Shape of the `form.fieldsMetadata` object returned by {@link useSignCompanyForm}.
+ *
+ * @public
+ */
 export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata']

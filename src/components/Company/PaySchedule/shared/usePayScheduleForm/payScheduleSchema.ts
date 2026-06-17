@@ -8,17 +8,35 @@ import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocess
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by {@link usePayScheduleForm} fields.
+ *
+ * @remarks
+ * Use these as `validationMessages` keys on the corresponding `Fields.*` components.
+ *
+ * @public
+ */
 export const PayScheduleErrorCodes = {
   REQUIRED: 'REQUIRED',
   DAY_RANGE: 'DAY_RANGE',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the pay schedule form.
+ *
+ * @public
+ */
 export type PayScheduleErrorCode =
   (typeof PayScheduleErrorCodes)[keyof typeof PayScheduleErrorCodes]
 
 // ── Field validators ───────────────────────────────────────────────────
 
 const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', 'Monthly'] as const
+/**
+ * Pay schedule frequency values accepted by {@link usePayScheduleForm}.
+ *
+ * @public
+ */
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number]
 
 const fieldValidators = {
@@ -31,11 +49,26 @@ const fieldValidators = {
   day2: z.preprocess(coerceNaN(0), z.number()),
 }
 
+/**
+ * Union of field names managed by the pay schedule form.
+ *
+ * @public
+ */
 export type PayScheduleField = keyof typeof fieldValidators
 
+/**
+ * Shape of the values managed by the pay schedule form.
+ *
+ * @public
+ */
 export type PayScheduleFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/**
+ * Shape of the validated values produced by the pay schedule form on submit.
+ *
+ * @public
+ */
 export type PayScheduleFormOutputs = PayScheduleFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -83,15 +116,26 @@ function validateDayRanges(data: PayScheduleFormData, ctx: z.RefinementCtx) {
 
 // ── Schema factory ─────────────────────────────────────────────────────
 
+/**
+ * Configuration for promoting optional pay schedule fields to required in a given mode.
+ *
+ * @remarks
+ * Only fields that are optional by default can be promoted. Currently
+ * `customTwicePerMonth` is the only configurable field.
+ *
+ * @public
+ */
 export type PayScheduleOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
+/** @internal */
 interface PayScheduleSchemaOptions {
   mode?: 'create' | 'update'
   optionalFieldsToRequire?: PayScheduleOptionalFieldsToRequire
 }
 
+/** @internal */
 export function createPayScheduleSchema(options: PayScheduleSchemaOptions = {}) {
   const { mode = 'create', optionalFieldsToRequire } = options
 
