@@ -36,6 +36,12 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  * @remarks
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
+ * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |
+ * | `payroll/review` | User selected a calculated payroll to review | `{ payrollUuid: string, payPeriod: object }` |
+ * | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
+ * | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
+ * | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
+ * | `transition/runPayroll` | User started a pending transition payroll | — |
  * | `runPayroll/summary/viewed` | User opened a payroll's summary view | `{ payrollId: string }` |
  * | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
  * | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |

@@ -22,7 +22,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `payroll/review` | A calculated payroll is opened for review | `{ payrollId: string }` |
  * | `runPayroll/calculated` | Payroll calculations complete | — |
  * | `runPayroll/edit` | The user returns to configuration to make changes | — |
- * | `runPayroll/employee/edited` | An employee row is opened for editing | `{ employeeId: string }` |
+ * | `runPayroll/employee/edit` | An employee row is opened for editing | `{ employeeId: string, firstName: string, lastName: string }` |
  * | `runPayroll/employee/saved` | Employee payroll changes are saved | `{ payrollPrepared: object, employee: object }` |
  * | `runPayroll/employee/cancelled` | Employee editing is cancelled | — |
  * | `runPayroll/submitted` | Payroll is successfully submitted | Response from the submit payroll endpoint |
