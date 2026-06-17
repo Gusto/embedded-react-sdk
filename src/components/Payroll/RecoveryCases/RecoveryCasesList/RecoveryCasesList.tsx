@@ -21,6 +21,7 @@ interface RecoveryCasesListProps extends BaseComponentInterface<'Payroll.Recover
   onEvent: BaseComponentInterface['onEvent']
 }
 
+/** @internal */
 export function RecoveryCasesList(props: RecoveryCasesListProps) {
   return (
     <BaseComponent {...props}>

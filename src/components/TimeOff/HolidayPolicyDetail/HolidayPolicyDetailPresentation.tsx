@@ -8,6 +8,7 @@ import { useI18n } from '@/i18n'
 
 const HOLIDAYS_TAB_ID = 'holidays'
 
+/** @internal */
 export function HolidayPolicyDetailPresentation({
   title,
   subtitle,

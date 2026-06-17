@@ -23,6 +23,7 @@ interface RecoveryCasesResubmitProps extends BaseComponentInterface<'Payroll.Rec
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function RecoveryCasesResubmit(props: RecoveryCasesResubmitProps) {
   return (
     <BaseComponent {...props}>

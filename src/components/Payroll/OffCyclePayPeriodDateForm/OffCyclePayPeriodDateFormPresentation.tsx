@@ -3,6 +3,7 @@ import styles from './OffCyclePayPeriodDateFormPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { CheckboxField, DatePickerField } from '@/components/Common'
 
+/** @internal */
 export function OffCyclePayPeriodDateFormPresentation() {
   useI18n('Payroll.OffCyclePayPeriodDateForm')
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')

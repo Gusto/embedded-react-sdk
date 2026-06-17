@@ -22,26 +22,43 @@ import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
+/** @internal */
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
+  /** @internal */
   companyId: string
+  /** @internal */
   withReimbursements?: boolean
+  /** @internal */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  /** @internal */
   showPayrollCancelledAlert?: boolean
 }
 
+/** @internal */
 export interface PayrollLandingFlowContextInterface extends FlowContextInterface {
+  /** @internal */
   component: (() => React.JSX.Element) | null
+  /** @internal */
   companyId: string
+  /** @internal */
   payrollUuid?: string
+  /** @internal */
   previousState?: 'tabs' | 'overview'
+  /** @internal */
   selectedTab?: string
+  /** @internal */
   withReimbursements: boolean
+  /** @internal */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  /** @internal */
   startDate?: string
+  /** @internal */
   endDate?: string
+  /** @internal */
   showPayrollCancelledAlert?: boolean
 }
 
+/** @internal */
 export function PayrollLandingTabsContextual() {
   const {
     companyId,
@@ -122,6 +139,7 @@ export function PayrollLandingTabsContextual() {
   )
 }
 
+/** @internal */
 export function PayrollLandingReceiptsContextual() {
   const { payrollUuid, onEvent, withReimbursements } = useFlow<PayrollLandingFlowContextInterface>()
 
@@ -134,6 +152,7 @@ export function PayrollLandingReceiptsContextual() {
   )
 }
 
+/** @internal */
 export function PayrollLandingOverviewContextual() {
   const { companyId, payrollUuid, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
     useFlow<PayrollLandingFlowContextInterface>()

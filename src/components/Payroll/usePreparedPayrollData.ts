@@ -33,6 +33,18 @@ const isPayrollBeingProcessedError = (error: unknown): boolean => {
   return error.errors.some(e => e.category === 'invalid_operation')
 }
 
+/**
+ * Wraps the prepare-payroll mutation and pay-schedule fetch, retrying while the payroll is still being processed.
+ *
+ * @remarks
+ * Fires the prepare call once on mount, then exposes `handlePreparePayroll` for callers that need to re-prepare
+ * (e.g. after sort or pagination changes). Distinguishes initial loading from subsequent pagination via
+ * `isLoading` and `isPaginating`, and surfaces the pay schedule for the prepared payroll's pay period.
+ *
+ * @param params - The company and payroll identifiers, plus optional employee filter, sort, and ready callback.
+ * @returns The prepared payroll, its pay schedule, loading flags, and a `handlePreparePayroll` callback to re-run.
+ * @internal
+ */
 export const usePreparedPayrollData = ({
   companyId,
   payrollId,

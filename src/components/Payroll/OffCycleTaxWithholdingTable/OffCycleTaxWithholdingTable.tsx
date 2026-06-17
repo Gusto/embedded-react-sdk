@@ -9,6 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import type { TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
 
+/** @internal */
 export function OffCycleTaxWithholdingTable({
   wageTypeGroups,
   config,
