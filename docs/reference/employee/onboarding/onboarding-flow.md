@@ -15,9 +15,9 @@ Complete workflow for onboarding an employee — profile, compensation, taxes, p
 
 ## Parameters
 
-| Parameter | Type                                          | Description                                      |
-| --------- | --------------------------------------------- | ------------------------------------------------ |
-| `props`   | [`OnboardingFlowProps`](#onboardingflowprops) | See [OnboardingFlowProps](#onboardingflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`OnboardingFlowProps`](#onboardingflowprops) | See [OnboardingFlowProps](#onboardingflowprops). |
 
 ## Remarks
 

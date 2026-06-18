@@ -63,7 +63,7 @@ export function standalonePageFromSources(reflection: Reflection): string | null
   const source = (reflection as DeclarationReflection).sources?.[0]
   if (!source) return null
   const fp = source.fullFileName ?? source.fileName ?? ''
-  for (const [page, { sources, groups }] of Object.entries(STANDALONE_PAGES)) {
+  for (const { id, sources, groups } of STANDALONE_PAGES) {
     if (!sources.some(pattern => fp.includes(pattern))) continue
     if (groups) {
       const inGroup = (reflection as DeclarationReflection).comment?.blockTags.some(
@@ -71,7 +71,7 @@ export function standalonePageFromSources(reflection: Reflection): string | null
       )
       if (!inGroup) continue
     }
-    return page
+    return id
   }
   return null
 }
@@ -132,8 +132,8 @@ export function getDomainPath(model: DeclarationReflection): string {
 export function getSidebarPosition(url: string): number | undefined {
   if (url === 'index.md') return 1
   const key = url.replace(/\.md$/, '')
-  const standalone = STANDALONE_PAGES[key]
-  if (standalone?.sidebarPosition !== undefined) return standalone.sidebarPosition
+  const standaloneIdx = STANDALONE_PAGES.findIndex(p => p.id === key)
+  if (standaloneIdx !== -1) return standaloneIdx + 1
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
   if (filename === 'index') return 1

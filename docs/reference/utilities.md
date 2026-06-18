@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Hook Utilities
 description: Hook Utilities reference.
-sidebar_position: 4
+sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -24,15 +24,15 @@ Server-side field errors are automatically synced onto their corresponding field
 
 #### Type Parameters
 
-| Type Parameter                                                                                                              | Default type                                                                                                                    |
-| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `TFormData` _extends_ `FieldValues`                                                                                         | `FieldValues`                                                                                                                   |
-| `TFieldsMetadata` _extends_ \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `TFormData` *extends* `FieldValues` | `FieldValues` |
+| `TFieldsMetadata` *extends* \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
 
 #### Parameters
 
-| Parameter           | Type                                                     |
-| ------------------- | -------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | `SDKFormProviderProps`\<`TFormData`, `TFieldsMetadata`\> |
 
 #### Example
@@ -69,10 +69,10 @@ Merges multiple error sources into a single [HookErrorHandling](#hookerrorhandli
 
 #### Parameters
 
-| Parameter      | Type                                                          | Description                                                                                                      |
-| -------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `sources`      | [`MixedErrorSource`](#mixederrorsource)[]                     | Error sources to merge. Each entry is either a React Query result or an object with an `errorHandling` property. |
-| `submitState?` | [`SubmitStateForErrorHandling`](#submitstateforerrorhandling) | Optional screen-level submit state to fold into the result.                                                      |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `sources` | [`MixedErrorSource`](#mixederrorsource)[] | Error sources to merge. Each entry is either a React Query result or an object with an `errorHandling` property. |
+| `submitState?` | [`SubmitStateForErrorHandling`](#submitstateforerrorhandling) | Optional screen-level submit state to fold into the result. |
 
 #### Returns
 
@@ -122,7 +122,7 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 }
 ```
 
----
+***
 
 <a id="composesubmithandler"></a>
 
@@ -134,16 +134,16 @@ Coordinates validation and submission across multiple form hooks on the same pag
 
 #### Type Parameters
 
-| Type Parameter                              | Description                                          |
-| ------------------------------------------- | ---------------------------------------------------- |
-| `TForms` _extends_ readonly `FieldValues`[] | Tuple of form value shapes, one per slot of `forms`. |
+| Type Parameter | Description |
+| ------ | ------ |
+| `TForms` *extends* readonly `FieldValues`[] | Tuple of form value shapes, one per slot of `forms`. |
 
 #### Parameters
 
-| Parameter    | Type                                                                                      | Description                                                           |
-| ------------ | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `forms`      | readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\] | Form hook results and/or raw `UseFormReturn` instances to coordinate. |
-| `onAllValid` | () => `Promise`\<`void`\>                                                                 | Async callback invoked once every form has passed validation.         |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `forms` | readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\] | Form hook results and/or raw `UseFormReturn` instances to coordinate. |
+| `onAllValid` | () => `Promise`\<`void`\> | Async callback invoked once every form has passed validation. |
 
 #### Returns
 
@@ -206,12 +206,12 @@ Common presentation props accepted by every hook field component.
 
 #### Properties
 
-| Property       | Type        | Description                                    |
-| -------------- | ----------- | ---------------------------------------------- |
-| `label`        | `string`    | Visible label rendered above the field.        |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 
----
+***
 
 <a id="baseformhookready"></a>
 
@@ -250,30 +250,30 @@ parsed values (or `undefined` if invalid).
 
 #### Type Parameters
 
-| Type Parameter                                                  | Default type                        | Description                                          |
-| --------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------- |
-| `TFieldsMetadata` _extends_ [`FieldsMetadata`](#fieldsmetadata) | [`FieldsMetadata`](#fieldsmetadata) | Shape of the per-field metadata exposed by the hook. |
-| `TFormData` _extends_ `FieldValues`                             | `FieldValues`                       | Shape of the form values managed by react-hook-form. |
-| `TFields` _extends_ `object`                                    | `Record`\<`string`, `unknown`\>     | Shape of the pre-bound `Fields` component map.       |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TFieldsMetadata` *extends* [`FieldsMetadata`](#fieldsmetadata) | [`FieldsMetadata`](#fieldsmetadata) | Shape of the per-field metadata exposed by the hook. |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+| `TFields` *extends* `object` | `Record`\<`string`, `unknown`\> | Shape of the pre-bound `Fields` component map. |
 
 #### Properties
 
-| Property                       | Type                                                     | Description                                                                                                                    |
-| ------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `actions`                      | `Record`\<`string`, `unknown`\>                          | Hook-specific submit actions; shape is narrowed by each concrete hook.                                                         |
-| `data`                         | `Record`\<`string`, `unknown`\>                          | Hook-specific data payload; shape is narrowed by each concrete hook.                                                           |
-| `errorHandling`                | [`HookErrorHandling`](#hookerrorhandling)                | Error state and recovery actions.                                                                                              |
-| `form`                         | `object`                                                 | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals.               |
-| `form.Fields`                  | `TFields`                                                | -                                                                                                                              |
-| `form.fieldsMetadata`          | `TFieldsMetadata`                                        | -                                                                                                                              |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined`     | -                                                                                                                              |
-| `form.hookFormInternals`       | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | -                                                                                                                              |
-| `isLoading`                    | `false`                                                  | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult).                                     |
-| `status`                       | `object`                                                 | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |
-| `status.isPending`             | `boolean`                                                | -                                                                                                                              |
-| `status.mode`                  | `"create"` \| `"update"`                                 | -                                                                                                                              |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `Record`\<`string`, `unknown`\> | Hook-specific submit actions; shape is narrowed by each concrete hook. |
+| `data` | `Record`\<`string`, `unknown`\> | Hook-specific data payload; shape is narrowed by each concrete hook. |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | `TFields` | - |
+| `form.fieldsMetadata` | `TFieldsMetadata` | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
+| `status` | `object` | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"create"` \| `"update"` | - |
 
----
+***
 
 <a id="basehookready"></a>
 
@@ -294,21 +294,21 @@ narrowing. `isLoading: false` discriminates this branch from
 
 #### Type Parameters
 
-| Type Parameter                                      | Default type                    | Description                                     |
-| --------------------------------------------------- | ------------------------------- | ----------------------------------------------- |
-| `TData` _extends_ `Record`\<`string`, `unknown`\>   | `Record`\<`string`, `unknown`\> | Shape of the data the hook exposes once loaded. |
-| `TStatus` _extends_ `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the status flags the hook exposes.     |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TData` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the data the hook exposes once loaded. |
+| `TStatus` *extends* `Record`\<`string`, `unknown`\> | `Record`\<`string`, `unknown`\> | Shape of the status flags the hook exposes. |
 
 #### Properties
 
-| Property        | Type                                      | Description                                                                                |
-| --------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `data`          | `TData`                                   | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`.           |
-| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state and recovery actions.                                                          |
-| `isLoading`     | `false`                                   | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
-| `status`        | `TStatus`                                 | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`.         |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | `TData` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
+| `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
+| `status` | `TStatus` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
 
----
+***
 
 <a id="checkboxhookfieldprops"></a>
 
@@ -324,22 +324,22 @@ field attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
 
 #### Properties
 
-| Property              | Type                                                                       | Description                                                                                |
-| --------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `label`               | `string`                                                                   | Visible label rendered above the field.                                                    |
-| `name`                | `string`                                                                   | The field name; must match the corresponding key in the form schema.                       |
-| `description?`        | `ReactNode`                                                                | Optional helper text rendered below the field.                                             |
-| `FieldComponent?`     | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                        | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.  |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>                | Custom error text keyed by validation error code.                                          |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="datepickerhookfieldprops"></a>
 
@@ -357,25 +357,25 @@ attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
 
 #### Properties
 
-| Property              | Type                                                                           | Description                                                                                               |
-| --------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                                       | Visible label rendered above the field.                                                                   |
-| `name`                | `string`                                                                       | The field name; must match the corresponding key in the form schema.                                      |
-| `description?`        | `ReactNode`                                                                    | Optional helper text rendered below the field.                                                            |
-| `FieldComponent?`     | `ComponentType`\<[`DatePickerProps`](component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`.           |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                            | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.                 |
-| `maxDate?`            | `Date`                                                                         | Maximum selectable date. Dates after this will be disabled.                                               |
-| `minDate?`            | `Date`                                                                         | Minimum selectable date. Dates before this will be disabled.                                              |
-| `portalContainer?`    | `HTMLElement`                                                                  | When used inside a modal, pass the modal backdrop ref's element so the calendar popover stacks correctly. |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>                    | Custom error text keyed by validation error code.                                                         |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `maxDate?` | `Date` | Maximum selectable date. Dates after this will be disabled. |
+| `minDate?` | `Date` | Minimum selectable date. Dates before this will be disabled. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the calendar popover stacks correctly. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="fieldmetadata"></a>
 
@@ -395,16 +395,16 @@ components to render labels, inline validation, and bounded date pickers.
 
 #### Properties
 
-| Property            | Type               | Description                                                                                        |
-| ------------------- | ------------------ | -------------------------------------------------------------------------------------------------- |
-| `name`              | `string`           | Field name as registered with react-hook-form.                                                     |
-| `hasRedactedValue?` | `boolean`          | Whether the server returned a redacted placeholder instead of the real value.                      |
-| `isDisabled?`       | `boolean`          | Whether the field should be rendered in a non-interactive state.                                   |
-| `isRequired?`       | `boolean`          | Whether the field must have a value for the form to submit.                                        |
-| `maxDate?`          | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
-| `minDate?`          | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | Field name as registered with react-hook-form. |
+| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
+| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
+| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
+| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 
----
+***
 
 <a id="fieldmetadatawithoptions"></a>
 
@@ -424,24 +424,24 @@ from so callers can read additional attributes off the originating record.
 
 #### Type Parameters
 
-| Type Parameter | Default type | Description                                              |
-| -------------- | ------------ | -------------------------------------------------------- |
-| `TEntry`       | `unknown`    | Shape of the underlying records that produced `options`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TEntry` | `unknown` | Shape of the underlying records that produced `options`. |
 
 #### Properties
 
-| Property            | Type                | Description                                                                                                                 |
-| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `name`              | `string`            | Field name as registered with react-hook-form.                                                                              |
-| `options`           | `object`[]          | Display options as `label`/`value` pairs used to render the select-like control.                                            |
-| `entries?`          | readonly `TEntry`[] | Raw records the options were derived from; present when the hook supplies them for callers that need additional attributes. |
-| `hasRedactedValue?` | `boolean`           | Whether the server returned a redacted placeholder instead of the real value.                                               |
-| `isDisabled?`       | `boolean`           | Whether the field should be rendered in a non-interactive state.                                                            |
-| `isRequired?`       | `boolean`           | Whether the field must have a value for the form to submit.                                                                 |
-| `maxDate?`          | `string` \| `null`  | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField.                          |
-| `minDate?`          | `string` \| `null`  | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField.                          |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | Field name as registered with react-hook-form. |
+| `options` | `object`[] | Display options as `label`/`value` pairs used to render the select-like control. |
+| `entries?` | readonly `TEntry`[] | Raw records the options were derived from; present when the hook supplies them for callers that need additional attributes. |
+| `hasRedactedValue?` | `boolean` | Whether the server returned a redacted placeholder instead of the real value. |
+| `isDisabled?` | `boolean` | Whether the field should be rendered in a non-interactive state. |
+| `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
+| `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 
----
+***
 
 <a id="hookerrorhandling"></a>
 
@@ -460,13 +460,13 @@ the supported way to discriminate fetch vs submit failures today.
 
 #### Properties
 
-| Property           | Type                              | Description                                                                                                             |
-| ------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `clearSubmitError` | () => `void`                      | Clears the most recent submission error.                                                                                |
-| `errors`           | [`SDKError`](index.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](index.md#sdkerror) values.                                  |
-| `retryQueries`     | () => `void`                      | Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `clearSubmitError` | () => `void` | Clears the most recent submission error. |
+| `errors` | [`SDKError`](index.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](index.md#sdkerror) values. |
+| `retryQueries` | () => `void` | Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. |
 
----
+***
 
 <a id="hookforminternals"></a>
 
@@ -485,17 +485,17 @@ most use cases.
 
 #### Type Parameters
 
-| Type Parameter                      | Default type  | Description                                          |
-| ----------------------------------- | ------------- | ---------------------------------------------------- |
-| `TFormData` _extends_ `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
 
 #### Properties
 
-| Property      | Type                           | Description                                                                                               |
-| ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Property | Type | Description |
+| ------ | ------ | ------ |
 | `formMethods` | `UseFormReturn`\<`TFormData`\> | The full react-hook-form return value; use for watching fields, setting values, or triggering validation. |
 
----
+***
 
 <a id="hookloadingresult"></a>
 
@@ -512,12 +512,12 @@ ready-state shape (data, form, actions, status) becomes available.
 
 #### Properties
 
-| Property        | Type                                      | Description                                                                                       |
-| --------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Property | Type | Description |
+| ------ | ------ | ------ |
 | `errorHandling` | [`HookErrorHandling`](#hookerrorhandling) | Error state available before the form loads, e.g. for query errors surfaced during data fetching. |
-| `isLoading`     | `true`                                    | Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available.  |
+| `isLoading` | `true` | Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. |
 
----
+***
 
 <a id="hooksubmitresult"></a>
 
@@ -534,18 +534,18 @@ always null-check before reading `result.data`.
 
 #### Type Parameters
 
-| Type Parameter | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| `T`            | Type of the saved entity returned by the underlying mutation. |
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | Type of the saved entity returned by the underlying mutation. |
 
 #### Properties
 
-| Property | Type                     | Description                                                             |
-| -------- | ------------------------ | ----------------------------------------------------------------------- |
-| `data`   | `T`                      | The saved entity returned by the API.                                   |
-| `mode`   | `"create"` \| `"update"` | Whether the submission created a new entity or updated an existing one. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | `T` | The saved entity returned by the API. |
+| `mode` | `"create"` \| `"update"` | Whether the submission created a new entity or updated an existing one. |
 
----
+***
 
 <a id="numberinputhookfieldprops"></a>
 
@@ -562,26 +562,26 @@ attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
 
 #### Properties
 
-| Property              | Type                                                                             | Description                                                                                       |
-| --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                                         | Visible label rendered above the field.                                                           |
-| `name`                | `string`                                                                         | The field name; must match the corresponding key in the form schema.                              |
-| `description?`        | `ReactNode`                                                                      | Optional helper text rendered below the field.                                                    |
-| `FieldComponent?`     | `ComponentType`\<[`NumberInputProps`](component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
-| `format?`             | `"percent"` \| `"currency"` \| `"decimal"`                                       | Display format for the number value (e.g. `'currency'`).                                          |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                              | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.         |
-| `max?`                | `string` \| `number`                                                             | Maximum allowed numeric value.                                                                    |
-| `min?`                | `string` \| `number`                                                             | Minimum allowed numeric value.                                                                    |
-| `placeholder?`        | `string`                                                                         | Placeholder text displayed when the field has no value.                                           |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>                      | Custom error text keyed by validation error code.                                                 |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `format?` | `"percent"` \| `"currency"` \| `"decimal"` | Display format for the number value (e.g. `'currency'`). |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `max?` | `string` \| `number` | Maximum allowed numeric value. |
+| `min?` | `string` \| `number` | Minimum allowed numeric value. |
+| `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="radiogrouphookfieldprops"></a>
 
@@ -598,24 +598,24 @@ attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
-| `TEntry`                        | `unknown`    | Shape of each option entry consumed by `getOptionLabel`.    |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
 
 #### Properties
 
-| Property              | Type                                                                           | Description                                                                                              |
-| --------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                                       | Visible label rendered above the field.                                                                  |
-| `name`                | `string`                                                                       | The field name; must match the corresponding key in the form schema.                                     |
-| `description?`        | `ReactNode`                                                                    | Optional helper text rendered below the field.                                                           |
-| `FieldComponent?`     | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`.          |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                            | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.                |
-| `getOptionLabel?`     | (`entry`) => `string`                                                          | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>                    | Custom error text keyed by validation error code.                                                        |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="selecthookfieldprops"></a>
 
@@ -633,26 +633,26 @@ attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
-| `TEntry`                        | `unknown`    | Shape of each option entry consumed by `getOptionLabel`.    |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
+| `TEntry` | `unknown` | Shape of each option entry consumed by `getOptionLabel`. |
 
 #### Properties
 
-| Property              | Type                                                                   | Description                                                                                              |
-| --------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                               | Visible label rendered above the field.                                                                  |
-| `name`                | `string`                                                               | The field name; must match the corresponding key in the form schema.                                     |
-| `description?`        | `ReactNode`                                                            | Optional helper text rendered below the field.                                                           |
-| `FieldComponent?`     | `ComponentType`\<[`SelectProps`](component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`.                   |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                    | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.                |
-| `getOptionLabel?`     | (`entry`) => `string`                                                  | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `placeholder?`        | `string`                                                               | Placeholder text displayed when no option is selected.                                                   |
-| `portalContainer?`    | `HTMLElement`                                                          | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly.         |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>            | Custom error text keyed by validation error code.                                                        |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `placeholder?` | `string` | Placeholder text displayed when no option is selected. |
+| `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="switchhookfieldprops"></a>
 
@@ -668,22 +668,22 @@ field attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                  | Default type | Description                                                 |
-| ------------------------------- | ------------ | ----------------------------------------------------------- |
-| `TErrorCode` _extends_ `string` | `never`      | Validation error code keys mapped via `validationMessages`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Validation error code keys mapped via `validationMessages`. |
 
 #### Properties
 
-| Property              | Type                                                                   | Description                                                                                   |
-| --------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                               | Visible label rendered above the field.                                                       |
-| `name`                | `string`                                                               | The field name; must match the corresponding key in the form schema.                          |
-| `description?`        | `ReactNode`                                                            | Optional helper text rendered below the field.                                                |
-| `FieldComponent?`     | `ComponentType`\<[`SwitchProps`](component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                    | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.     |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\>            | Custom error text keyed by validation error code.                                             |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
----
+***
 
 <a id="textinputhookfieldprops"></a>
 
@@ -700,23 +700,23 @@ attributes (`label`, `description`).
 
 #### Type Parameters
 
-| Type Parameter                          | Default type | Description                                                          |
-| --------------------------------------- | ------------ | -------------------------------------------------------------------- |
-| `TErrorCode` _extends_ `string`         | `never`      | Required validation error code keys mapped via `validationMessages`. |
-| `TOptionalErrorCode` _extends_ `string` | `never`      | Optional validation error code keys mapped via `validationMessages`. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | `never` | Required validation error code keys mapped via `validationMessages`. |
+| `TOptionalErrorCode` *extends* `string` | `never` | Optional validation error code keys mapped via `validationMessages`. |
 
 #### Properties
 
-| Property              | Type                                                                              | Description                                                                                                                 |
-| --------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `label`               | `string`                                                                          | Visible label rendered above the field.                                                                                     |
-| `name`                | `string`                                                                          | The field name; must match the corresponding key in the form schema.                                                        |
-| `description?`        | `ReactNode`                                                                       | Optional helper text rendered below the field.                                                                              |
-| `FieldComponent?`     | `ComponentType`\<[`TextInputProps`](component-inventory.md#textinputprops)\>      | Replaces the default text input UI component; must accept the same props as `TextInputProps`.                               |
-| `formHookResult?`     | [`FormHookResult`](#formhookresult)                                               | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted.                                   |
-| `placeholder?`        | `string`                                                                          | Placeholder text displayed when the field has no value.                                                                     |
-| `transform?`          | (`value`) => `string`                                                             | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
-| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code.                                                                           |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `description?` | `ReactNode` | Optional helper text rendered below the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
+| `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
+| `transform?` | (`value`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
+| `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code. |
 
 ## Type Aliases
 
@@ -737,7 +737,7 @@ Map of form-field name to [FieldMetadata](#fieldmetadata) or [FieldMetadataWithO
 Exposed on every form hook as `form.fieldsMetadata` so field components can look
 up their own metadata by name.
 
----
+***
 
 <a id="formhookresult"></a>
 
@@ -757,12 +757,12 @@ under an `SDKFormProvider`.
 
 #### Properties
 
-| Property        | Type                                                                                           | Description                                                                      |
-| --------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `errorHandling` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"errorHandling"`\], `"errors"`\>           | The error handling surface; pass to [composeErrorHandler](#composeerrorhandler). |
-| `form`          | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"form"`\], `"fieldsMetadata"`\> & `object` | The form surface; provides field metadata and internal react-hook-form wiring.   |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `errorHandling` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"errorHandling"`\], `"errors"`\> | The error handling surface; pass to [composeErrorHandler](#composeerrorhandler). |
+| `form` | `Pick`\<[`BaseFormHookReady`](#baseformhookready)\[`"form"`\], `"fieldsMetadata"`\> & `object` | The form surface; provides field metadata and internal react-hook-form wiring. |
 
----
+***
 
 <a id="hookfieldprops"></a>
 
@@ -775,11 +775,11 @@ that bind the form-field name internally.
 
 #### Type Parameters
 
-| Type Parameter              | Description                                                     |
-| --------------------------- | --------------------------------------------------------------- |
-| `TProps` _extends_ `object` | Original hook field props type that includes a `name` property. |
+| Type Parameter | Description |
+| ------ | ------ |
+| `TProps` *extends* `object` | Original hook field props type that includes a `name` property. |
 
----
+***
 
 <a id="mixederrorsource"></a>
 
@@ -791,7 +791,7 @@ Accepted input shape for [composeErrorHandler](#composeerrorhandler): either a R
 (anything with `error` and `refetch`) or another SDK hook result that exposes
 an `errorHandling` object.
 
----
+***
 
 <a id="submitstateforerrorhandling"></a>
 
@@ -809,12 +809,12 @@ and can be cleared together with `clearSubmitError`.
 
 #### Properties
 
-| Property         | Type                                      | Description                                       |
-| ---------------- | ----------------------------------------- | ------------------------------------------------- |
-| `setSubmitError` | (`error`) => `void`                       | Sets or clears the submit error.                  |
-| `submitError`    | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `setSubmitError` | (`error`) => `void` | Sets or clears the submit error. |
+| `submitError` | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
----
+***
 
 <a id="validationmessages"></a>
 
@@ -826,10 +826,10 @@ Maps every error code a schema field can produce to a display string.
 
 #### Type Parameters
 
-| Type Parameter                          | Default type | Description                                         |
-| --------------------------------------- | ------------ | --------------------------------------------------- |
-| `TErrorCode` _extends_ `string`         | -            | Error codes the field is guaranteed to produce.     |
-| `TOptionalErrorCode` _extends_ `string` | `never`      | Error codes that only apply in some configurations. |
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | - | Error codes the field is guaranteed to produce. |
+| `TOptionalErrorCode` *extends* `string` | `never` | Error codes that only apply in some configurations. |
 
 #### Remarks
 

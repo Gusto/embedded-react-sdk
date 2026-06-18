@@ -15,9 +15,9 @@ Top-level workflow that renders the employee list and transitions into the dashb
 
 ## Parameters
 
-| Parameter | Type                                              | Description                                          |
-| --------- | ------------------------------------------------- | ---------------------------------------------------- |
-| `props`   | [`EmployeeListFlowProps`](#employeelistflowprops) | See [EmployeeListFlowProps](#employeelistflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`EmployeeListFlowProps`](#employeelistflowprops) | See [EmployeeListFlowProps](#employeelistflowprops). |
 
 ## Remarks
 

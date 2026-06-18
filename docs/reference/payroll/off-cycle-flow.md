@@ -15,9 +15,9 @@ Multi-step flow for creating and running an off-cycle payroll (bonus or correcti
 
 ## Parameters
 
-| Parameter | Type                                      | Description                             |
-| --------- | ----------------------------------------- | --------------------------------------- |
-| `props`   | [`OffCycleFlowProps`](#offcycleflowprops) | [OffCycleFlowProps](#offcycleflowprops) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`OffCycleFlowProps`](#offcycleflowprops) | [OffCycleFlowProps](#offcycleflowprops) |
 
 ## Remarks
 
@@ -27,10 +27,10 @@ into the standard payroll execution experience (configuration, overview, submiss
 receipts). All off-cycle payroll types share the same execution steps as regular
 payrolls — only the creation step differs.
 
-| Event                 | Description                                                              | Data                      |
-| --------------------- | ------------------------------------------------------------------------ | ------------------------- |
-| `breadcrumb/navigate` | User navigates via the flow breadcrumb header                            | `{ key: string }`         |
-| `offCycle/created`    | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
+| `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
 
 Once the flow transitions to execution, all standard run-payroll events are emitted
 (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).

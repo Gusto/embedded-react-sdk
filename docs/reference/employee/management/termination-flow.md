@@ -15,9 +15,9 @@ Guided workflow for terminating an employee — pick termination date, choose ho
 
 ## Parameters
 
-| Parameter | Type                                            | Description                                        |
-| --------- | ----------------------------------------------- | -------------------------------------------------- |
-| `props`   | [`TerminationFlowProps`](#terminationflowprops) | See [TerminationFlowProps](#terminationflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`TerminationFlowProps`](#terminationflowprops) | See [TerminationFlowProps](#terminationflowprops). |
 
 ## Remarks
 
@@ -25,18 +25,18 @@ Provides a complete experience for terminating an employee — guides the user t
 
 On mount, the flow detects existing terminations: if an active termination exists, the form is pre-populated for editing; if the employee is already terminated, the user is routed to the summary view.
 
-| Event                                     | Description                                                | Data                                                                                                |
-| ----------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `employee/termination/created`            | Fired when a new termination is created                    | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }`                       |
-| `employee/termination/updated`            | Fired when an existing termination is updated              | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }`                       |
-| `employee/termination/done`               | Fired when the termination process is complete             | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
-| `employee/termination/viewSummary`        | Fired when viewing an existing termination summary         | `{ employeeId: string, effectiveDate: string }`                                                     |
-| `employee/termination/edit`               | Fired when user clicks to edit termination details         | `{ employeeId: string }`                                                                            |
-| `employee/termination/cancelled`          | Fired when a termination is cancelled                      | `{ employeeId: string, alert?: `TerminationFlowAlert` }`                                            |
-| `employee/termination/runPayroll`         | Fired when user chooses to run termination payroll         | `{ employeeId: string, companyId: string, effectiveDate: string }`                                  |
-| `employee/termination/runOffCyclePayroll` | Fired when user chooses to run an off-cycle payroll        | `{ employeeId: string, companyId: string }`                                                         |
-| `employee/termination/payrollCreated`     | Fired when an off-cycle payroll is created for termination | `{ employeeId: string, effectiveDate: string }`                                                     |
-| `employee/termination/payrollFailed`      | Fired when off-cycle payroll creation fails                | `{ employeeId: string }`                                                                            |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/done` | Fired when the termination process is complete | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
+| `employee/termination/viewSummary` | Fired when viewing an existing termination summary | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
+| `employee/termination/cancelled` | Fired when a termination is cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }` |
+| `employee/termination/runPayroll` | Fired when user chooses to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
+| `employee/termination/runOffCyclePayroll` | Fired when user chooses to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
+| `employee/termination/payrollCreated` | Fired when an off-cycle payroll is created for termination | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/payrollFailed` | Fired when off-cycle payroll creation fails | `{ employeeId: string }` |
 
 The [PayrollOption](sub-components.md#payrolloption) on each event identifies how the partner has chosen to handle the employee's final paycheck:
 

@@ -15,9 +15,9 @@ Guided workflow for running a terminated employee's final payroll.
 
 ## Parameters
 
-| Parameter | Type                                        | Description                                                                                                |
-| --------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `props`   | [`DismissalFlowProps`](#dismissalflowprops) | [DismissalFlowProps](#dismissalflowprops) with the company, employee, optional payroll, and event handler. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`DismissalFlowProps`](#dismissalflowprops) | [DismissalFlowProps](#dismissalflowprops) with the company, employee, optional payroll, and event handler. |
 
 ## Remarks
 
@@ -25,8 +25,8 @@ Presents unprocessed termination pay periods for the employee, creates an off-cy
 
 When `payrollId` is provided, pay period selection is skipped and the flow starts directly at execution for that payroll. When omitted, the flow starts at pay period selection.
 
-| Event                          | Description                                                   | Data                      |
-| ------------------------------ | ------------------------------------------------------------- | ------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `dismissal/payPeriod/selected` | A pay period is selected and the dismissal payroll is created | `{ payrollUuid: string }` |
 
 Once the payroll is created, all standard run-payroll events (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`) are emitted during execution.

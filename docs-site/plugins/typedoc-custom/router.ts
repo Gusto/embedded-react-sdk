@@ -347,7 +347,7 @@ export class SDKRouter extends MemberRouter {
     }
 
     for (const [page, members] of standaloneGroups) {
-      const { displayName } = STANDALONE_PAGES[page]!
+      const { displayName } = STANDALONE_PAGES.find(p => p.id === page)!
       const ns = new DeclarationReflection(displayName, ReflectionKind.Namespace, project)
       ns.children = members
       ns.groups = groupSyntheticMembers(members, ns)

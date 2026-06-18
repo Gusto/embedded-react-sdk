@@ -15,9 +15,9 @@ Employee-driven onboarding workflow — landing, profile, taxes, payment method,
 
 ## Parameters
 
-| Parameter | Type                      | Description                  |
-| --------- | ------------------------- | ---------------------------- |
-| `props`   | `SelfOnboardingFlowProps` | See SelfOnboardingFlowProps. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `SelfOnboardingFlowProps` | See SelfOnboardingFlowProps. |
 
 ## Remarks
 

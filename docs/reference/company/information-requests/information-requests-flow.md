@@ -15,9 +15,9 @@ Standalone surface for viewing and responding to outstanding information request
 
 ## Parameters
 
-| Parameter | Type                                                            | Description                                                        |
-| --------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `props`   | [`InformationRequestsFlowProps`](#informationrequestsflowprops) | See [InformationRequestsFlowProps](#informationrequestsflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`InformationRequestsFlowProps`](#informationrequestsflowprops) | See [InformationRequestsFlowProps](#informationrequestsflowprops). |
 
 ## Remarks
 
@@ -27,8 +27,8 @@ On successful submit, a dismissible success alert appears at the top of the list
 Information requests can also block payroll processing; in that case they are surfaced inline within
 `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
 
-| Event                            | Description                                                                         | Data                                                  |
-| -------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `informationRequest/respond`     | Fired when the user clicks "Respond" on a request and the form modal opens          | `{ requestId: string }`                               |
-| `informationRequest/form/done`   | Fired when an information request is successfully submitted                         | Response from the Submit information request endpoint |
-| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | —                                                     |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
+| `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
+| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |

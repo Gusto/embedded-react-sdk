@@ -16,9 +16,9 @@ single payroll.
 
 ## Parameters
 
-| Parameter | Type                                                      | Description                                             |
-| --------- | --------------------------------------------------------- | ------------------------------------------------------- |
-| `input`   | [`PayrollExecutionFlowProps`](#payrollexecutionflowprops) | [PayrollExecutionFlowProps](#payrollexecutionflowprops) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`PayrollExecutionFlowProps`](#payrollexecutionflowprops) | [PayrollExecutionFlowProps](#payrollexecutionflowprops) |
 
 ## Remarks
 
@@ -28,21 +28,21 @@ payrolls. Render it directly when you have built your own payroll-creation step 
 the user off to the standard execution experience without re-implementing it. The flow ships
 with breadcrumb navigation and the standard wire-confirmation UX.
 
-| Event                           | Description                                   | Data                                      |
-| ------------------------------- | --------------------------------------------- | ----------------------------------------- |
-| `runPayroll/edit`               | Fired when user chooses to edit payroll       | —                                         |
-| `runPayroll/back`               | Fired when user navigates back                | —                                         |
-| `runPayroll/calculated`         | Fired when payroll calculation completes      | `{ payrollUuid, payPeriod?, alert? }`     |
-| `runPayroll/employee/edit`      | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }`     |
-| `runPayroll/employee/saved`     | Fired when employee edits are saved           | —                                         |
-| `runPayroll/employee/cancelled` | Fired when employee edits are cancelled       | —                                         |
-| `runPayroll/submitting`         | Fired when payroll submission begins          | —                                         |
-| `runPayroll/submitted`          | Fired when payroll is successfully submitted  | Response from the Submit payroll endpoint |
-| `runPayroll/processed`          | Fired when payroll processing is completed    | —                                         |
-| `runPayroll/processingFailed`   | Fired when payroll processing fails           | Error details                             |
-| `runPayroll/cancelled`          | Fired when a payroll is cancelled             | Response from the Cancel payroll endpoint |
-| `runPayroll/receipt/get`        | Fired when user requests payroll receipt      | `{ payrollId }`                           |
-| `runPayroll/receipt/viewed`     | Fired when the receipt screen is viewed       | —                                         |
-| `runPayroll/pdfPaystub/viewed`  | Fired when user views employee paystub PDF    | `{ employeeId }`                          |
-| `runPayroll/blockers/viewAll`   | Fired when user opens the full blockers list  | —                                         |
-| `payroll/saveAndExit`           | Fired when user uses the save-and-exit CTA    | —                                         |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `runPayroll/edit` | Fired when user chooses to edit payroll | — |
+| `runPayroll/back` | Fired when user navigates back | — |
+| `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
+| `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
+| `runPayroll/employee/saved` | Fired when employee edits are saved | — |
+| `runPayroll/employee/cancelled` | Fired when employee edits are cancelled | — |
+| `runPayroll/submitting` | Fired when payroll submission begins | — |
+| `runPayroll/submitted` | Fired when payroll is successfully submitted | Response from the Submit payroll endpoint |
+| `runPayroll/processed` | Fired when payroll processing is completed | — |
+| `runPayroll/processingFailed` | Fired when payroll processing fails | Error details |
+| `runPayroll/cancelled` | Fired when a payroll is cancelled | Response from the Cancel payroll endpoint |
+| `runPayroll/receipt/get` | Fired when user requests payroll receipt | `{ payrollId }` |
+| `runPayroll/receipt/viewed` | Fired when the receipt screen is viewed | — |
+| `runPayroll/pdfPaystub/viewed` | Fired when user views employee paystub PDF | `{ employeeId }` |
+| `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
+| `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |

@@ -5,10 +5,12 @@
 type NamespaceConfig = { id: string; subpath?: string }
 type DomainConfig = { label: string; path: string; namespaces: NamespaceConfig[] }
 
-export type StandalonePageConfig = Record<
-  string,
-  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
->
+export type StandalonePageConfig = {
+  id: string
+  sources: string[]
+  groups?: string[]
+  displayName: string
+}
 
 export const DOMAINS: DomainConfig[] = [
   {
@@ -61,13 +63,14 @@ export const DOMAIN_HUBS: Record<string, string[]> = Object.fromEntries(
   DOMAINS.map(d => [d.path, d.namespaces.map(n => n.id)]),
 )
 
-export const STANDALONE_PAGES: StandalonePageConfig = {
-  'theme-variables': {
+export const STANDALONE_PAGES: StandalonePageConfig[] = [
+  {
+    id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme Variables',
-    sidebarPosition: 2,
   },
-  'component-inventory': {
+  {
+    id: 'component-inventory',
     sources: [
       'components/Common/UI',
       'components/Common/FieldLayout',
@@ -77,13 +80,12 @@ export const STANDALONE_PAGES: StandalonePageConfig = {
       'contexts/ComponentAdapter',
     ],
     displayName: 'Component Inventory',
-    sidebarPosition: 3,
   },
-  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
-  events: {
+  { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook Utilities' },
+  {
+    id: 'events',
     sources: ['shared/constants'],
     groups: ['Events'],
     displayName: 'Events',
-    sidebarPosition: 5,
   },
-}
+]

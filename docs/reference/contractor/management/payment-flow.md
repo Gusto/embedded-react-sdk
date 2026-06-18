@@ -45,9 +45,9 @@ Guided workflow for creating, managing, and viewing contractor payment groups fo
 
 ## Parameters
 
-| Parameter | Type                                    | Description                                |
-| --------- | --------------------------------------- | ------------------------------------------ |
-| `props`   | [`PaymentFlowProps`](#paymentflowprops) | See [PaymentFlowProps](#paymentflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`PaymentFlowProps`](#paymentflowprops) | See [PaymentFlowProps](#paymentflowprops). |
 
 ## Remarks
 
@@ -55,19 +55,19 @@ Composes the contractor payment subcomponents into a complete experience with br
 
 Events emitted by the subcomponents bubble up through the single `onEvent` handler.
 
-| Event                              | Description                                                            | Data                                                                                       |
-| ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------- |
-| `contractor/payments/create`       | Fired when the user chooses to create a new payment                    | —                                                                                          |
-| `contractor/payments/created`      | Fired when a payment group is successfully created                     | The created `ContractorPaymentGroup`                                                       |
-| `contractor/payments/view`         | Fired when the user selects a payment group to view                    | `{ paymentId: string }`                                                                    |
-| `contractor/payments/view/details` | Fired when the user views a specific contractor payment                | `{ contractor: Contractor, paymentGroupId: string }`                                       |
-| `contractor/payments/cancel`       | Fired when a payment is cancelled                                      | `{ paymentId: string }`                                                                    |
-| `contractor/payments/exit`         | Fired when the user completes the payment flow                         | `{ uuid?: string                                                                           | null }` |
-| `contractor/payments/rfi/respond`  | Fired when the user clicks to respond to a pending information request | —                                                                                          |
-| `payroll/wire/form/done`           | Fired when wire transfer details are submitted                         | `{ wireInRequest: WireInRequest, confirmationAlert: { title: string, content?: string } }` |
-| `informationRequest/form/done`     | Fired when the information-requests flow completes                     | —                                                                                          |
-| `informationRequest/form/cancel`   | Fired when the information-requests flow is cancelled                  | —                                                                                          |
-| `breadcrumb/navigate`              | Fired when the user clicks a breadcrumb to navigate back               | `{ key: string, onNavigate: (ctx) => ctx }`                                                |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/create` | Fired when the user chooses to create a new payment | — |
+| `contractor/payments/created` | Fired when a payment group is successfully created | The created `ContractorPaymentGroup` |
+| `contractor/payments/view` | Fired when the user selects a payment group to view | `{ paymentId: string }` |
+| `contractor/payments/view/details` | Fired when the user views a specific contractor payment | `{ contractor: Contractor, paymentGroupId: string }` |
+| `contractor/payments/cancel` | Fired when a payment is cancelled | `{ paymentId: string }` |
+| `contractor/payments/exit` | Fired when the user completes the payment flow | `{ uuid?: string | null }` |
+| `contractor/payments/rfi/respond` | Fired when the user clicks to respond to a pending information request | — |
+| `payroll/wire/form/done` | Fired when wire transfer details are submitted | `{ wireInRequest: WireInRequest, confirmationAlert: { title: string, content?: string } }` |
+| `informationRequest/form/done` | Fired when the information-requests flow completes | — |
+| `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
+| `breadcrumb/navigate` | Fired when the user clicks a breadcrumb to navigate back | `{ key: string, onNavigate: (ctx) => ctx }` |
 
 ## Example
 

@@ -15,9 +15,9 @@ The multi-step onboarding execution flow — profile, compensation, taxes, payme
 
 ## Parameters
 
-| Parameter | Type                                                            | Description                                                        |
-| --------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `props`   | [`OnboardingExecutionFlowProps`](#onboardingexecutionflowprops) | See [OnboardingExecutionFlowProps](#onboardingexecutionflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`OnboardingExecutionFlowProps`](#onboardingexecutionflowprops) | See [OnboardingExecutionFlowProps](#onboardingexecutionflowprops). |
 
 ## Remarks
 

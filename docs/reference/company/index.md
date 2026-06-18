@@ -18,7 +18,7 @@ custom_edit_url: null
 
 ## Hooks
 
-| Hook                                              | Description                                                                                                                 |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| [usePayScheduleForm](hooks.md#usepayscheduleform) | Form hook for creating or updating a company pay schedule.                                                                  |
+| Hook | Description |
+| ---- | ----------- |
+| [usePayScheduleForm](hooks.md#usepayscheduleform) | Form hook for creating or updating a company pay schedule. |
 | [useSignCompanyForm](hooks.md#usesigncompanyform) | Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox. |

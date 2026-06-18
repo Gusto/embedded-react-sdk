@@ -59,6 +59,7 @@ export const baseOptions = {
   readme: 'none',
   useHTMLAnchors: true,
   validation: { invalidLink: true },
+  formatWithPrettier: false,
 } satisfies TypeDocOptions & PluginOptions
 
 export default {

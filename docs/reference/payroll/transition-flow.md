@@ -15,9 +15,9 @@ Multi-step flow for running a transition payroll that covers the gap between an 
 
 ## Parameters
 
-| Parameter | Type                                          | Description                                      |
-| --------- | --------------------------------------------- | ------------------------------------------------ |
-| `props`   | [`TransitionFlowProps`](#transitionflowprops) | See [TransitionFlowProps](#transitionflowprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`TransitionFlowProps`](#transitionflowprops) | See [TransitionFlowProps](#transitionflowprops). |
 
 ## Remarks
 
@@ -27,9 +27,9 @@ payroll execution experience — configure compensation, review, submit, and vie
 
 If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
 
-| Event                 | Description                                                                     | Data                      |
-| --------------------- | ------------------------------------------------------------------------------- | ------------------------- |
-| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs         | `{ key: string }`         |
-| `transition/created`  | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
+| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
 
 Once execution begins, all standard run-payroll events are emitted as well.

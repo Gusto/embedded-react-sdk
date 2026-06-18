@@ -15,9 +15,9 @@ End-to-end workflow for creating and managing a company's sick, vacation, and ho
 
 ## Parameters
 
-| Parameter | Type                                    | Description                                                                          |
-| --------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
-| `props`   | [`TimeOffFlowProps`](#timeoffflowprops) | [TimeOffFlowProps](#timeoffflowprops) with the company identifier and event handler. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`TimeOffFlowProps`](#timeoffflowprops) | [TimeOffFlowProps](#timeoffflowprops) with the company identifier and event handler. |
 
 ## Remarks
 
@@ -25,32 +25,32 @@ Composes the time off list, policy-type selection, configuration, settings, empl
 
 The flow emits these events as users navigate:
 
-| Event                               | Description                                   | Data                                                |
-| ----------------------------------- | --------------------------------------------- | --------------------------------------------------- |
-| `timeOff/createPolicy`              | User initiates policy creation                | —                                                   |
-| `timeOff/viewPolicy`                | User selects a policy to view                 | `{ policyId: string, policyType: string }`          |
-| `timeOff/policyTypeSelected`        | User selects a policy type                    | `{ policyType: 'sick' \| 'vacation' \| 'holiday' }` |
-| `timeOff/policyDetails/done`        | Policy details form is submitted              | `{ policyId: string, accrualMethod: string }`       |
-| `timeOff/policySettings/done`       | Policy settings are saved                     | TimeOffPolicy response                              |
-| `timeOff/policySettings/back`       | User navigates back from settings             | —                                                   |
-| `timeOff/addEmployees/done`         | Employees are added to a sick/vacation policy | TimeOffPolicy response                              |
-| `timeOff/addEmployees/back`         | User navigates back from employee selection   | —                                                   |
-| `timeOff/holidaySelection/done`     | Holiday selection completed (create)          | —                                                   |
-| `timeOff/holidaySelection/editDone` | Holiday selection completed (edit)            | —                                                   |
-| `timeOff/holidayAddEmployees/done`  | Employees added to holiday policy             | HolidayPayPolicy response                           |
-| `timeOff/backToList`                | User navigates back to the policy list        | —                                                   |
-| `timeOff/editPolicy`                | User edits a sick/vacation policy             | `{ policyId: string }`                              |
-| `timeOff/changeSettings`            | User edits policy settings                    | `{ policyId: string }`                              |
-| `timeOff/addEmployeesToPolicy`      | User adds employees from a policy detail      | `{ policyId: string }`                              |
-| `timeOff/holidayAddEmployees`       | User adds employees from holiday detail       | —                                                   |
-| `timeOff/editHolidayPolicy`         | User edits the holiday policy                 | —                                                   |
-| `timeOff/viewHolidayEmployees`      | User switches to the holiday employees tab    | —                                                   |
-| `timeOff/viewHolidaySchedule`       | User switches to the holiday schedule tab     | —                                                   |
-| `timeOff/policyCreate/error`        | Policy creation fails                         | `{ alert?: { type, title, content? } }`             |
-| `timeOff/policySettings/error`      | Policy settings update fails                  | `{ alert?: { type, title, content? } }`             |
-| `timeOff/addEmployees/error`        | Adding employees to a policy fails            | `{ alert?: { type, title, content? } }`             |
-| `timeOff/holidayCreate/error`       | Holiday policy creation fails                 | `{ alert?: { type, title, content? } }`             |
-| `timeOff/holidayAddEmployees/error` | Adding employees to the holiday policy fails  | `{ alert?: { type, title, content? } }`             |
-| `CANCEL`                            | User cancels the current step                 | —                                                   |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `timeOff/createPolicy` | User initiates policy creation | — |
+| `timeOff/viewPolicy` | User selects a policy to view | `{ policyId: string, policyType: string }` |
+| `timeOff/policyTypeSelected` | User selects a policy type | `{ policyType: 'sick' \| 'vacation' \| 'holiday' }` |
+| `timeOff/policyDetails/done` | Policy details form is submitted | `{ policyId: string, accrualMethod: string }` |
+| `timeOff/policySettings/done` | Policy settings are saved | TimeOffPolicy response |
+| `timeOff/policySettings/back` | User navigates back from settings | — |
+| `timeOff/addEmployees/done` | Employees are added to a sick/vacation policy | TimeOffPolicy response |
+| `timeOff/addEmployees/back` | User navigates back from employee selection | — |
+| `timeOff/holidaySelection/done` | Holiday selection completed (create) | — |
+| `timeOff/holidaySelection/editDone` | Holiday selection completed (edit) | — |
+| `timeOff/holidayAddEmployees/done` | Employees added to holiday policy | HolidayPayPolicy response |
+| `timeOff/backToList` | User navigates back to the policy list | — |
+| `timeOff/editPolicy` | User edits a sick/vacation policy | `{ policyId: string }` |
+| `timeOff/changeSettings` | User edits policy settings | `{ policyId: string }` |
+| `timeOff/addEmployeesToPolicy` | User adds employees from a policy detail | `{ policyId: string }` |
+| `timeOff/holidayAddEmployees` | User adds employees from holiday detail | — |
+| `timeOff/editHolidayPolicy` | User edits the holiday policy | — |
+| `timeOff/viewHolidayEmployees` | User switches to the holiday employees tab | — |
+| `timeOff/viewHolidaySchedule` | User switches to the holiday schedule tab | — |
+| `timeOff/policyCreate/error` | Policy creation fails | `{ alert?: { type, title, content? } }` |
+| `timeOff/policySettings/error` | Policy settings update fails | `{ alert?: { type, title, content? } }` |
+| `timeOff/addEmployees/error` | Adding employees to a policy fails | `{ alert?: { type, title, content? } }` |
+| `timeOff/holidayCreate/error` | Holiday policy creation fails | `{ alert?: { type, title, content? } }` |
+| `timeOff/holidayAddEmployees/error` | Adding employees to the holiday policy fails | `{ alert?: { type, title, content? } }` |
+| `CANCEL` | User cancels the current step | — |
 
 Only one holiday policy can exist per company; the policy-type selector disables the holiday option once one is configured.

@@ -14,13 +14,13 @@ custom_edit_url: null
 
 ## Workflow components
 
-| Component                                               | Description                                                                                                       |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Component | Description |
+| --------- | ----------- |
 | [InformationRequestsFlow](information-requests-flow.md) | Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company. |
 
 ## Block components
 
-| Component                                                          | Description                                                                                                    |
-| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| [InformationRequestForm](sub-components.md#informationrequestform) | Dynamic response form for a single information request.                                                        |
+| Component | Description |
+| --------- | ----------- |
+| [InformationRequestForm](sub-components.md#informationrequestform) | Dynamic response form for a single information request. |
 | [InformationRequestList](sub-components.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |

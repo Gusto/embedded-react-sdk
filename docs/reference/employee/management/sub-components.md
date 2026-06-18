@@ -21,9 +21,9 @@ Self-contained block for viewing and managing an employee's jobs and compensatio
 
 #### Parameters
 
-| Parameter | Type                                                                                                         | Description                                  |
-| --------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| `props`   | [`CompensationProps`](#compensationprops) & `BaseComponentInterface`\<`"Employee.Management.Compensation"`\> | See [CompensationProps](#compensationprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`CompensationProps`](#compensationprops) & `BaseComponentInterface`\<`"Employee.Management.Compensation"`\> | See [CompensationProps](#compensationprops). |
 
 #### Remarks
 
@@ -31,22 +31,22 @@ Renders a read-only card showing the employee's job(s), pay type, wage, and effe
 
 The card and form surfaces ([CompensationCard](#compensationcard), [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), [CompensationAddAnotherJobForm](#compensationaddanotherjobform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
 
-| Event                                                          | Description                                                                                                            | Data                                             |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `employee/management/compensation/card/editRequested`          | Fired when an "Edit" CTA is clicked for a job; the block opens the edit form for that job                              | `{ employeeId: string, jobId: string }`          |
-| `employee/management/compensation/card/addRequested`           | Fired when the "Add job" CTA is clicked from the card's empty state; the block opens the add-first-job form            | `{ employeeId: string }`                         |
-| `employee/management/compensation/card/addAnotherRequested`    | Fired when the "Add another job" CTA is clicked; the block opens the add-another-job form                              | `{ employeeId: string }`                         |
-| `employee/management/compensation/card/jobDeleted`             | Fired after a non-primary job is deleted via the card's confirm dialog; the block stays on the card                    | `{ employeeId: string, jobId: string }`          |
-| `employee/management/compensation/card/changeCancelled`        | Fired after a scheduled future-dated change is cancelled from the card; the block stays on the card                    | `{ employeeId: string, compensationId: string }` |
-| `employee/management/compensation/editForm/submitted`          | Fired after an edit-compensation save completes; the block returns to the card view                                    | Updated `Compensation` entity                    |
-| `employee/management/compensation/editForm/cancelled`          | Fired when the user cancels the edit form; the block returns to the card view                                          | —                                                |
-| `employee/management/compensation/addJobForm/submitted`        | Fired after the first job + compensation are saved; the block returns to the card and surfaces the "Job added" alert   | Updated `Compensation` entity                    |
-| `employee/management/compensation/addJobForm/cancelled`        | Fired when the user cancels the add-job form; the block returns to the card view                                       | —                                                |
-| `employee/management/compensation/addAnotherJobForm/submitted` | Fired after a secondary job + compensation are saved; the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity                    |
-| `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user cancels the add-another-job form; the block returns to the card view                               | —                                                |
-| `employee/management/compensation/alertDismissed`              | Fired when the user dismisses the "Job added" success alert above the card                                             | `null`                                           |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job; the block opens the edit form for that job | `{ employeeId: string, jobId: string }` |
+| `employee/management/compensation/card/addRequested` | Fired when the "Add job" CTA is clicked from the card's empty state; the block opens the add-first-job form | `{ employeeId: string }` |
+| `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked; the block opens the add-another-job form | `{ employeeId: string }` |
+| `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog; the block stays on the card | `{ employeeId: string, jobId: string }` |
+| `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card; the block stays on the card | `{ employeeId: string, compensationId: string }` |
+| `employee/management/compensation/editForm/submitted` | Fired after an edit-compensation save completes; the block returns to the card view | Updated `Compensation` entity |
+| `employee/management/compensation/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
+| `employee/management/compensation/addJobForm/submitted` | Fired after the first job + compensation are saved; the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity |
+| `employee/management/compensation/addJobForm/cancelled` | Fired when the user cancels the add-job form; the block returns to the card view | — |
+| `employee/management/compensation/addAnotherJobForm/submitted` | Fired after a secondary job + compensation are saved; the block returns to the card and surfaces the "Job added" alert | Updated `Compensation` entity |
+| `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user cancels the add-another-job form; the block returns to the card view | — |
+| `employee/management/compensation/alertDismissed` | Fired when the user dismisses the "Job added" success alert above the card | `null` |
 
----
+***
 
 <a id="compensationaddanotherjobform"></a>
 
@@ -60,25 +60,25 @@ Standalone form for adding a secondary job and compensation to an employee from 
 
 Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                              | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads.                                                                                       |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddAnotherJobForm](#compensationaddanotherjobform) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
 Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
 
-| Event                                                          | Description                                                                            | Data                        |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
-| `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card                        | —                           |
+| `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
----
+***
 
 <a id="compensationaddjobform"></a>
 
@@ -92,25 +92,25 @@ Standalone form for adding an employee's first job and compensation from the man
 
 Props for [CompensationAddJobForm](#compensationaddjobform).
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                              | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads.                                                                                                     |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationAddJobForm](#compensationaddjobform) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
 Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
 
-| Event                                                   | Description                                                                  | Data                        |
-| ------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/compensation/addJobForm/submitted` | Fired after the job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
-| `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card              | —                           |
+| `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
----
+***
 
 <a id="compensationcard"></a>
 
@@ -124,24 +124,24 @@ Standalone "Compensation" management card that displays an employee's current jo
 
 Props for [CompensationCard](#compensationcard).
 
-| Property     | Type                                                                 | Description                                                                                                                                              |
-| ------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                                                                                                                      |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
 
 #### Remarks
 
 The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
 
-| Event                                                       | Description                                                            | Data                                             |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------ |
-| `employee/management/compensation/card/editRequested`       | Fired when an "Edit" CTA is clicked for a job                          | `{ employeeId: string, jobId: string }`          |
-| `employee/management/compensation/card/addRequested`        | Fired when the "Add job" CTA is clicked from the empty state           | `{ employeeId: string }`                         |
-| `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked                        | `{ employeeId: string }`                         |
-| `employee/management/compensation/card/jobDeleted`          | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }`          |
-| `employee/management/compensation/card/changeCancelled`     | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job | `{ employeeId: string, jobId: string }` |
+| `employee/management/compensation/card/addRequested` | Fired when the "Add job" CTA is clicked from the empty state | `{ employeeId: string }` |
+| `employee/management/compensation/card/addAnotherRequested` | Fired when the "Add another job" CTA is clicked | `{ employeeId: string }` |
+| `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
+| `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
 
----
+***
 
 <a id="compensationeditform"></a>
 
@@ -155,26 +155,26 @@ Standalone form that edits the compensation for a single job, branching automati
 
 Props for [CompensationEditForm](#compensationeditform).
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                                                                                             |
-| ---------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`     | `string`                                                              | The associated employee identifier.                                                                                                                                                                                                                                                                                                     |
-| `jobId`          | `string`                                                              | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads.                                                                                                                                                                        |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                          |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                 |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                  |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `jobId` | `string` | The id of the job whose compensation is being edited (for example, the `jobId` from the [CompensationCard](#compensationcard) `employee/management/compensation/card/editRequested` payload). The form inspects the job's compensations to decide whether to edit the current compensation or an already-scheduled future-dated change. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [CompensationEditForm](#compensationeditform) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
 Pair with [CompensationCard](#compensationcard) to route its `employee/management/compensation/card/editRequested` event to this form. [Compensation](#compensation) bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
 
-| Event                                                 | Description                                                                | Data                              |
-| ----------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
-| `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card            | —                                 |
+| `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
----
+***
 
 <a id="deductions"></a>
 
@@ -184,9 +184,9 @@ Self-contained block for viewing and managing an employee's post-tax deductions 
 
 #### Parameters
 
-| Parameter | Type                                                                                                   | Description                              |
-| --------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| `props`   | [`DeductionsProps`](#deductionsprops) & `BaseComponentInterface`\<`"Employee.Management.Deductions"`\> | See [DeductionsProps](#deductionsprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`DeductionsProps`](#deductionsprops) & `BaseComponentInterface`\<`"Employee.Management.Deductions"`\> | See [DeductionsProps](#deductionsprops). |
 
 #### Remarks
 
@@ -194,17 +194,17 @@ Renders a card listing the employee's active deductions with affordances to add 
 
 The card and form surfaces ([DeductionsCard](#deductionscard), [DeductionsEditForm](#deductionseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
 
-| Event                                               | Description                                                                                                          | Data                       |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `employee/management/deductions/card/addRequested`  | Fired when the "Add deduction" CTA is clicked from the card; the block opens the edit form in add mode               | `{ employeeId: string }`   |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked from the card; the block opens the edit form in add mode | `{ employeeId: string }` |
 | `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction; the block opens the edit form pre-populated with that deduction | The matching `Garnishment` |
-| `employee/management/deductions/card/deleted`       | Fired after a deduction is deleted via the confirm dialog; the block stays on the card                               | The deleted `Garnishment`  |
-| `employee/management/deductions/editForm/created`   | Fired after a new deduction is saved from the edit form; the block returns to the card view                          | The created `Garnishment`  |
-| `employee/management/deductions/editForm/updated`   | Fired after an existing deduction is updated from the edit form; the block returns to the card view                  | The updated `Garnishment`  |
-| `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view                                        | —                          |
-| `employee/management/deductions/alertDismissed`     | Fired when the user dismisses a success alert above the card                                                         | `null`                     |
+| `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog; the block stays on the card | The deleted `Garnishment` |
+| `employee/management/deductions/editForm/created` | Fired after a new deduction is saved from the edit form; the block returns to the card view | The created `Garnishment` |
+| `employee/management/deductions/editForm/updated` | Fired after an existing deduction is updated from the edit form; the block returns to the card view | The updated `Garnishment` |
+| `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
+| `employee/management/deductions/alertDismissed` | Fired when the user dismisses a success alert above the card | `null` |
 
----
+***
 
 <a id="deductionscard"></a>
 
@@ -218,22 +218,22 @@ Standalone read-only card listing an employee's active deductions, with affordan
 
 Props for [DeductionsCard](#deductionscard).
 
-| Property     | Type                                                                 | Description                                                                                                                                          |
-| ------------ | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                                                                                                                  |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
 
 #### Remarks
 
 Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders [DeductionsEditForm](#deductionseditform) (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use [Deductions](#deductions) instead.
 
-| Event                                               | Description                                               | Data                       |
-| --------------------------------------------------- | --------------------------------------------------------- | -------------------------- |
-| `employee/management/deductions/card/addRequested`  | Fired when the "Add deduction" CTA is clicked             | `{ employeeId: string }`   |
-| `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction       | The matching `Garnishment` |
-| `employee/management/deductions/card/deleted`       | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment`  |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked | `{ employeeId: string }` |
+| `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction | The matching `Garnishment` |
+| `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment` |
 
----
+***
 
 <a id="deductionseditform"></a>
 
@@ -243,21 +243,21 @@ Standalone add/edit surface for a single employee deduction.
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Description                                                                                                          |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `input`   | [`DeductionsEditFormProps`](#deductionseditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [DeductionsEditFormProps](#deductionseditformprops), plus a `FallbackComponent` override for the error boundary. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`DeductionsEditFormProps`](#deductionseditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [DeductionsEditFormProps](#deductionseditformprops), plus a `FallbackComponent` override for the error boundary. |
 
 #### Remarks
 
 Renders the inline form for a post-tax custom deduction or court-ordered garnishment. Looks up the row to edit by `editingDeductionId`; omit it to open in add mode. Resolves its text against the `Employee.Management.Deductions` translation namespace so partner overrides on that namespace flow into the form. For an orchestrated card-plus-form flow, use [Deductions](#deductions).
 
-| Event                                               | Description                                  | Data                      |
-| --------------------------------------------------- | -------------------------------------------- | ------------------------- |
-| `employee/management/deductions/editForm/created`   | Fired after a new deduction is saved         | The created `Garnishment` |
-| `employee/management/deductions/editForm/updated`   | Fired after an existing deduction is updated | The updated `Garnishment` |
-| `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the form         | —                         |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/deductions/editForm/created` | Fired after a new deduction is saved | The created `Garnishment` |
+| `employee/management/deductions/editForm/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
+| `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the form | — |
 
----
+***
 
 <a id="documents"></a>
 
@@ -267,9 +267,9 @@ Standalone employee documents management flow.
 
 #### Parameters
 
-| Parameter | Type                                                                                                | Description                            |
-| --------- | --------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `props`   | [`DocumentsProps`](#documentsprops) & `BaseComponentInterface`\<`"Employee.Management.Documents"`\> | See [DocumentsProps](#documentsprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`DocumentsProps`](#documentsprops) & `BaseComponentInterface`\<`"Employee.Management.Documents"`\> | See [DocumentsProps](#documentsprops). |
 
 #### Remarks
 
@@ -278,11 +278,11 @@ starts on the documents card and routes to the document manager when a row's
 View CTA is selected; cancelling from the document manager returns to the
 card.
 
-| Event                                              | Description                                                  | Data                                     |
-| -------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/documents/card/viewRequested` | Fired when a row's View CTA is clicked on the documents card | `{ employeeId: string; formId: string }` |
 
----
+***
 
 <a id="documentscard"></a>
 
@@ -303,12 +303,12 @@ responsibility.
 
 Props for [DocumentsCard](#documentscard).
 
-| Property     | Type                                                                 | Description                                           |
-| ------------ | -------------------------------------------------------------------- | ----------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                   |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
 
----
+***
 
 <a id="employeelist"></a>
 
@@ -319,20 +319,20 @@ tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
 
 #### Parameters
 
-| Parameter           | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`ManagementEmployeeListProps`](#managementemployeelistprops) & `BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\> |
 
 #### Remarks
 
-| Event              | Description                                                       | Data                     |
-| ------------------ | ----------------------------------------------------------------- | ------------------------ |
-| `employee/create`  | Fired when the user clicks "Add employee".                        | —                        |
-| `employee/update`  | Fired when the user selects "Edit" on a row.                      | `{ employeeId: string }` |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/create` | Fired when the user clicks "Add employee". | — |
+| `employee/update` | Fired when the user selects "Edit" on a row. | `{ employeeId: string }` |
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
-| `employee/deleted` | Fired after a row's delete action completes.                      | `{ employeeId: string }` |
+| `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 
----
+***
 
 <a id="federaltaxes"></a>
 
@@ -342,9 +342,9 @@ Self-contained block for viewing and editing an employee's federal tax (W-4) wit
 
 #### Parameters
 
-| Parameter | Type                                                                                                         | Description                                  |
-| --------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| `props`   | [`FederalTaxesProps`](#federaltaxesprops) & `BaseComponentInterface`\<`"Employee.Management.FederalTaxes"`\> | See [FederalTaxesProps](#federaltaxesprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`FederalTaxesProps`](#federaltaxesprops) & `BaseComponentInterface`\<`"Employee.Management.FederalTaxes"`\> | See [FederalTaxesProps](#federaltaxesprops). |
 
 #### Remarks
 
@@ -352,14 +352,14 @@ Renders a read-only card showing filing status, multiple-jobs flag, dependents, 
 
 The card and form surfaces ([FederalTaxesCard](#federaltaxescard), [FederalTaxesEditForm](#federaltaxeseditform)) are also exported individually for cases where that orchestration is the wrong fit — for example, when the form needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
 
-| Event                                                 | Description                                                                   | Data                                    |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------- |
-| `employee/management/federalTaxes/card/editRequested` | Fired when the card's Edit CTA is clicked; the block opens the edit form      | `{ employeeId: string }`                |
-| `employee/management/federalTaxes/editForm/submitted` | Fired after the edit form is saved; the block returns to the card view        | The updated `EmployeeFederalTax` entity |
-| `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | —                                       |
-| `employee/management/federalTaxes/alertDismissed`     | Fired when the user dismisses an alert above the card                         | `null`                                  |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/federalTaxes/card/editRequested` | Fired when the card's Edit CTA is clicked; the block opens the edit form | `{ employeeId: string }` |
+| `employee/management/federalTaxes/editForm/submitted` | Fired after the edit form is saved; the block returns to the card view | The updated `EmployeeFederalTax` entity |
+| `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
+| `employee/management/federalTaxes/alertDismissed` | Fired when the user dismisses an alert above the card | `null` |
 
----
+***
 
 <a id="federaltaxescard"></a>
 
@@ -377,12 +377,12 @@ introduced) is the orchestrator's responsibility.
 
 Props for [FederalTaxesCard](#federaltaxescard).
 
-| Property     | Type                                                                 | Description                                                                                                                                              |
-| ------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                                                                                                                      |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
 
----
+***
 
 <a id="federaltaxeseditform"></a>
 
@@ -392,20 +392,20 @@ Standalone form for editing an employee's federal tax (W-4) withholdings — fil
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description                                                  |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `props`   | [`FederalTaxesEditFormProps`](#federaltaxeseditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [FederalTaxesEditFormProps](#federaltaxeseditformprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`FederalTaxesEditFormProps`](#federaltaxeseditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [FederalTaxesEditFormProps](#federaltaxeseditformprops). |
 
 #### Remarks
 
 Pair with [FederalTaxesCard](#federaltaxescard) to route its `employee/management/federalTaxes/card/editRequested` event to this form. [FederalTaxes](#federaltaxes) bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
 
-| Event                                                 | Description                                                     | Data                                    |
-| ----------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------- |
-| `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card     | The updated `EmployeeFederalTax` entity |
-| `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | —                                       |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
+| `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
----
+***
 
 <a id="homeaddress"></a>
 
@@ -415,21 +415,21 @@ Standalone employee home address management flow.
 
 #### Parameters
 
-| Parameter           | Type                                                                                                      |
-| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`HomeAddressProps`](#homeaddressprops) & `BaseComponentInterface`\<`"Employee.Management.HomeAddress"`\> |
 
 #### Remarks
 
-| Event                                           | Description                                    | Data                     |
-| ----------------------------------------------- | ---------------------------------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button on the home address card clicked | `{ employeeId: string }` |
-| `employee/management/homeAddress/editCancelled` | User backed out of the edit form               | —                        |
-| `employee/management/homeAddress/created`       | A new home address was created                 | EmployeeAddress          |
-| `employee/management/homeAddress/updated`       | An existing home address was updated           | EmployeeAddress          |
-| `employee/management/homeAddress/deleted`       | A home address was deleted                     | EmployeeAddress          |
+| `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
+| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
+| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
+| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
 
----
+***
 
 <a id="homeaddresscard"></a>
 
@@ -443,20 +443,20 @@ Standalone employee home address summary card.
 
 Props for [HomeAddressCard](#homeaddresscard).
 
-| Property     | Type                                                                 | Description                                                   |
-| ------------ | -------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                           |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
 Fetches the employee's active home address and renders it alongside a Manage button.
 
-| Event                                           | Description           | Data                     |
-| ----------------------------------------------- | --------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
 
----
+***
 
 <a id="homeaddresseditform"></a>
 
@@ -466,20 +466,20 @@ Standalone employee home address edit form for creating, updating, and deleting 
 
 #### Parameters
 
-| Parameter           | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`HomeAddressEditFormProps`](#homeaddresseditformprops) & `BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\> |
 
 #### Remarks
 
-| Event                                           | Description                          | Data            |
-| ----------------------------------------------- | ------------------------------------ | --------------- |
-| `employee/management/homeAddress/created`       | A new home address was created       | EmployeeAddress |
-| `employee/management/homeAddress/updated`       | An existing home address was updated | EmployeeAddress |
-| `employee/management/homeAddress/deleted`       | A home address was deleted           | EmployeeAddress |
-| `employee/management/homeAddress/editCancelled` | User backed out of the edit form     | —               |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
+| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
+| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
+| `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
 
----
+***
 
 <a id="paymentmethod"></a>
 
@@ -489,9 +489,9 @@ Management flow for editing an employee's payment method.
 
 #### Parameters
 
-| Parameter | Type                                                                                                            | Description                                    |
-| --------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `props`   | [`PaymentMethodProps`](#paymentmethodprops) & `BaseComponentInterface`\<`"Employee.Management.PaymentMethod"`\> | See [PaymentMethodProps](#paymentmethodprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`PaymentMethodProps`](#paymentmethodprops) & `BaseComponentInterface`\<`"Employee.Management.PaymentMethod"`\> | See [PaymentMethodProps](#paymentmethodprops). |
 
 #### Remarks
 
@@ -517,7 +517,7 @@ function MyComponent() {
 }
 ```
 
----
+***
 
 <a id="paymentmethodbankform"></a>
 
@@ -531,14 +531,14 @@ Standalone bank-account form for the management flow.
 
 Props for [PaymentMethodBankForm](#paymentmethodbankform).
 
-| Property                   | Type                                                                             | Description                                                                                                         |
-| -------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`               | `string`                                                                         | The associated employee identifier.                                                                                 |
-| `onEvent`                  | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>             | Event handler fired on bank-form lifecycle events.                                                                  |
-| `defaultValues?`           | `Partial`\<[`BankFormData`](../hooks.md#bankformdata)\>                          | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied.                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on bank-form lifecycle events. |
+| `defaultValues?` | `Partial`\<[`BankFormData`](../hooks.md#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
 | `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](../hooks.md#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
-| `shouldFocusError?`        | `boolean`                                                                        | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?`          | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`           | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`.                                  |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 #### Remarks
 
@@ -547,12 +547,12 @@ when the form is submitted or cancelled. Reads its copy from the dedicated
 `Employee.Management.PaymentMethodBankForm` namespace so partner overrides on
 the management bank form don't leak into the onboarding form.
 
-| Event                                                  | Description                                          | Data                     |
-| ------------------------------------------------------ | ---------------------------------------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully created | The created bank account |
-| `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the form                 | —                        |
+| `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the form | — |
 
----
+***
 
 <a id="paymentmethodcard"></a>
 
@@ -566,10 +566,10 @@ Standalone "Payment" card.
 
 Props for [PaymentMethodCard](#paymentmethodcard).
 
-| Property     | Type                                                                 | Description                               |
-| ------------ | -------------------------------------------------------------------- | ----------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.       |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
 
 #### Remarks
 
@@ -578,13 +578,13 @@ when the user clicks the card's CTAs or confirms a bank-account deletion.
 The card has no alert API — alert rendering is the orchestrator's
 responsibility.
 
-| Event                                                       | Description                                        | Data                        |
-| ----------------------------------------------------------- | -------------------------------------------------- | --------------------------- |
-| `employee/management/paymentMethod/card/addRequested`       | Fired when the user clicks the add-account CTA     | —                           |
-| `employee/management/paymentMethod/card/splitRequested`     | Fired when the user clicks the split-paycheck CTA  | —                           |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/paymentMethod/card/addRequested` | Fired when the user clicks the add-account CTA | — |
+| `employee/management/paymentMethod/card/splitRequested` | Fired when the user clicks the split-paycheck CTA | — |
 | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is successfully deleted | The delete response payload |
 
----
+***
 
 <a id="paymentmethodsplitform"></a>
 
@@ -598,13 +598,13 @@ Standalone split-paycheck form for the management flow.
 
 Props for [PaymentMethodSplitForm](#paymentmethodsplitform).
 
-| Property                   | Type                                                                                               | Description                                                                                                                                                        |
-| -------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`               | `string`                                                                                           | The associated employee identifier.                                                                                                                                |
-| `onEvent`                  | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>                               | Event handler fired on split-form lifecycle events.                                                                                                                |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on split-form lifecycle events. |
 | `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](../hooks.md#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
-| `shouldFocusError?`        | `boolean`                                                                                          | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`.                                                |
-| `validationMode?`          | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`                             | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`.                                                                                 |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 #### Remarks
 
@@ -613,12 +613,12 @@ when the form is submitted or cancelled. Reads its copy from the dedicated
 `Employee.Management.PaymentMethodSplitForm` namespace so partner overrides
 on the management split form don't leak into the onboarding form.
 
-| Event                                                   | Description                                   | Data                       |
-| ------------------------------------------------------- | --------------------------------------------- | -------------------------- |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/paymentMethod/splitForm/submitted` | Fired after the splits are successfully saved | The updated payment method |
-| `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the form          | —                          |
+| `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the form | — |
 
----
+***
 
 <a id="paystubscard"></a>
 
@@ -638,12 +638,12 @@ effect that opens the PDF in a new tab.
 
 Props for [PaystubsCard](#paystubscard).
 
-| Property     | Type                                                                 | Description                                          |
-| ------------ | -------------------------------------------------------------------- | ---------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                  |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
 
----
+***
 
 <a id="profile"></a>
 
@@ -653,9 +653,9 @@ Management surface for viewing and editing an employee's basic profile details a
 
 #### Parameters
 
-| Parameter | Type                                                                                          | Description                        |
-| --------- | --------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `props`   | [`ProfileProps`](#profileprops) & `BaseComponentInterface`\<`"Employee.Management.Profile"`\> | See [ProfileProps](#profileprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`ProfileProps`](#profileprops) & `BaseComponentInterface`\<`"Employee.Management.Profile"`\> | See [ProfileProps](#profileprops). |
 
 #### Remarks
 
@@ -663,13 +663,13 @@ Drives the read-view card and edit form via an internal state machine.
 Emits events on the supplied `onEvent` handler when the user requests an
 edit, saves changes, or cancels.
 
-| Event                                       | Description                                           | Data                     |
-| ------------------------------------------- | ----------------------------------------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ employeeId: string }` |
-| `employee/management/profile/updated`       | Fired after the profile is successfully saved         | Employee                 |
-| `employee/management/profile/editCancelled` | Fired when the user cancels editing                   | —                        |
+| `employee/management/profile/updated` | Fired after the profile is successfully saved | Employee |
+| `employee/management/profile/editCancelled` | Fired when the user cancels editing | — |
 
----
+***
 
 <a id="profilecard"></a>
 
@@ -683,10 +683,10 @@ Read-only card showing an employee's basic profile details with an Edit action.
 
 Props for [ProfileCard](#profilecard).
 
-| Property     | Type                                                                 | Description                                                     |
-| ------------ | -------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                             |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
 
 #### Remarks
 
@@ -695,11 +695,11 @@ clicks Edit so the parent can switch to the edit form. The card does not
 render success or error alerts itself — alert presentation is the
 surrounding surface's responsibility.
 
-| Event                                       | Description                                | Data                     |
-| ------------------------------------------- | ------------------------------------------ | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |
 
----
+***
 
 <a id="profileeditform"></a>
 
@@ -709,9 +709,9 @@ Standalone edit form for an employee's basic profile details.
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Description                                        |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `input`   | [`ProfileEditFormProps`](#profileeditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [ProfileEditFormProps](#profileeditformprops). |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`ProfileEditFormProps`](#profileeditformprops) & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | See [ProfileEditFormProps](#profileeditformprops). |
 
 #### Remarks
 
@@ -720,12 +720,12 @@ date of birth — all required on update — and shows a success alert when
 the save completes. Save and Cancel both emit events so the parent can
 return to the read view.
 
-| Event                                       | Description                                            | Data     |
-| ------------------------------------------- | ------------------------------------------------------ | -------- |
-| `employee/management/profile/updated`       | Fired after the employee profile is successfully saved | Employee |
-| `employee/management/profile/editCancelled` | Fired when the user clicks Cancel                      | —        |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/profile/updated` | Fired after the employee profile is successfully saved | Employee |
+| `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
 
----
+***
 
 <a id="statetaxes"></a>
 
@@ -738,19 +738,19 @@ drive the internal state machine.
 
 #### Parameters
 
-| Parameter | Type                                                                                                   | Description          |
-| --------- | ------------------------------------------------------------------------------------------------------ | -------------------- |
-| `props`   | [`StateTaxesProps`](#statetaxesprops) & `BaseComponentInterface`\<`"Employee.Management.StateTaxes"`\> | The component props. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`StateTaxesProps`](#statetaxesprops) & `BaseComponentInterface`\<`"Employee.Management.StateTaxes"`\> | The component props. |
 
 #### Remarks
 
-| Event                                          | Description                                 | Data                                                   |
-| ---------------------------------------------- | ------------------------------------------- | ------------------------------------------------------ |
-| `employee/management/stateTaxes/editRequested` | Edit button on the summary card was clicked | `{ employeeId: string }`                               |
-| `employee/management/stateTaxes/editCancelled` | Cancel button on the edit form was clicked  | —                                                      |
-| `employee/management/stateTaxes/updated`       | Edit form was submitted successfully        | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/stateTaxes/editRequested` | Edit button on the summary card was clicked | `{ employeeId: string }` |
+| `employee/management/stateTaxes/editCancelled` | Cancel button on the edit form was clicked | — |
+| `employee/management/stateTaxes/updated` | Edit form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 
----
+***
 
 <a id="statetaxescard"></a>
 
@@ -766,21 +766,21 @@ that emits an event for the orchestrator to swap in the edit form.
 
 Props for [StateTaxesCard](#statetaxescard).
 
-| Property     | Type                                                                 | Description                                          |
-| ------------ | -------------------------------------------------------------------- | ---------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                  |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
 
 #### Remarks
 
 The Edit button is hidden when no state on record has any tax-withholding
 questions (e.g. states with no income tax), since there is nothing to edit.
 
-| Event                                          | Description             | Data                     |
-| ---------------------------------------------- | ----------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |
 
----
+***
 
 <a id="statetaxeseditform"></a>
 
@@ -793,18 +793,18 @@ overrides on the management namespace do not leak into the onboarding flow.
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Description          |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `props`   | `Omit`\<`CommonComponentInterface`\<`"Employee.Management.StateTaxes"`\>, `"children"`\> & `object` & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | The component props. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `Omit`\<`CommonComponentInterface`\<`"Employee.Management.StateTaxes"`\>, `"children"`\> & `object` & `Pick`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"FallbackComponent"`\> | The component props. |
 
 #### Remarks
 
-| Event                                          | Description                     | Data                                                   |
-| ---------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
-| `employee/management/stateTaxes/updated`       | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
-| `employee/management/stateTaxes/editCancelled` | Cancel button was clicked       | —                                                      |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+| `employee/management/stateTaxes/editCancelled` | Cancel button was clicked | — |
 
----
+***
 
 <a id="terminateemployee"></a>
 
@@ -818,17 +818,17 @@ Standalone form for capturing an employee's termination details — last day of 
 
 Props for [TerminateEmployee](#terminateemployee).
 
-| Property             | Type                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `companyId`          | `string`                                                                     | The associated company identifier.                                                                                                                                                                                                                                                                                                                                                          |
-| `employeeId`         | `string`                                                                     | The employee identifier to terminate.                                                                                                                                                                                                                                                                                                                                                       |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>         | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?`          | `ReactNode`                                                                  | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                                     | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                                    | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                       | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                           | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The employee identifier to terminate. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 #### Remarks
 
@@ -837,15 +837,15 @@ terminations and pre-populates for editing when one is active, or routes to
 the summary view (via the `employee/termination/viewSummary` event) when the
 employee is already terminated.
 
-| Event                                 | Description                                                     | Data                                                                                                |
-| ------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `employee/termination/created`        | Fired when a new termination is created                         | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }`                       |
-| `employee/termination/updated`        | Fired when an existing termination is updated                   | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }`                       |
-| `employee/termination/done`           | Fired when the termination form is completed                    | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
-| `employee/termination/viewSummary`    | Fired when redirecting to view an existing termination          | `{ employeeId: string, effectiveDate: string }`                                                     |
-| `employee/termination/payrollCreated` | Fired after a dismissal-payroll period was successfully created | `{ payrolls: PayrollUnprocessed[] }`                                                                |
-| `employee/termination/payrollFailed`  | Fired if creating a dismissal payroll fails                     | `{ employeeId: string, error: unknown }`                                                            |
-| `CANCEL`                              | Fired when the user clicks Cancel                               | —                                                                                                   |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/updated` | Fired when an existing termination is updated | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |
+| `employee/termination/done` | Fired when the termination form is completed | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption, payrollUuid?: string }` |
+| `employee/termination/viewSummary` | Fired when redirecting to view an existing termination | `{ employeeId: string, effectiveDate: string }` |
+| `employee/termination/payrollCreated` | Fired after a dismissal-payroll period was successfully created | `{ payrolls: PayrollUnprocessed[] }` |
+| `employee/termination/payrollFailed` | Fired if creating a dismissal payroll fails | `{ employeeId: string, error: unknown }` |
+| `CANCEL` | Fired when the user clicks Cancel | — |
 
 #### Example
 
@@ -863,7 +863,7 @@ function MyComponent() {
 }
 ```
 
----
+***
 
 <a id="terminationsummary"></a>
 
@@ -877,19 +877,19 @@ Termination summary with edit, cancel, and run-payroll actions plus an offboardi
 
 Props for [TerminationSummary](#terminationsummary).
 
-| Property             | Type                                                                          | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `companyId`          | `string`                                                                      | The associated company identifier.                                                                                                                                                                                                                                                                                                                                                          |
-| `employeeId`         | `string`                                                                      | The associated employee identifier.                                                                                                                                                                                                                                                                                                                                                         |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>          | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?`          | `ReactNode`                                                                   | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                                      | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                                     | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                        | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                            | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
-| `payrollOption?`     | [`PayrollOption`](#payrolloption)                                             | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken.                                                                                                                                                                                                                                                                    |
-| `payrollUuid?`       | `string`                                                                      | UUID of the created off-cycle payroll (when applicable).                                                                                                                                                                                                                                                                                                                                    |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
+| `payrollUuid?` | `string` | UUID of the created off-cycle payroll (when applicable). |
 
 #### Remarks
 
@@ -900,12 +900,12 @@ Displays termination details and provides actions for managing the termination. 
 - **Run termination payroll** is shown for the `dismissalPayroll` option and navigates to the dismissal payroll flow.
 - **Run off-cycle payroll** is shown for the `anotherWay` option and navigates to the off-cycle payroll creation flow.
 
-| Event                                     | Description                                        | Data                                                               |
-| ----------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------ |
-| `employee/termination/edit`               | Fired when user clicks to edit termination details | `{ employeeId: string }`                                           |
-| `employee/termination/cancelled`          | Fired when a termination is successfully cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }`           |
-| `employee/termination/runPayroll`         | Fired when user clicks to run termination payroll  | `{ employeeId: string, companyId: string, effectiveDate: string }` |
-| `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }`                        |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |
+| `employee/termination/cancelled` | Fired when a termination is successfully cancelled | `{ employeeId: string, alert?: `TerminationFlowAlert` }` |
+| `employee/termination/runPayroll` | Fired when user clicks to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
+| `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
 
 #### Example
 
@@ -924,7 +924,7 @@ function MyComponent() {
 }
 ```
 
----
+***
 
 <a id="workaddress"></a>
 
@@ -934,21 +934,21 @@ Standalone employee work address management flow.
 
 #### Parameters
 
-| Parameter           | Type                                                                                                      |
-| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`WorkAddressProps`](#workaddressprops) & `BaseComponentInterface`\<`"Employee.Management.WorkAddress"`\> |
 
 #### Remarks
 
-| Event                                           | Description                                    | Data                     |
-| ----------------------------------------------- | ---------------------------------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button on the work address card clicked | `{ employeeId: string }` |
-| `employee/management/workAddress/editCancelled` | User backed out of the edit form               | —                        |
-| `employee/management/workAddress/created`       | A new work address was created                 | EmployeeWorkAddress      |
-| `employee/management/workAddress/updated`       | An existing work address was updated           | EmployeeWorkAddress      |
-| `employee/management/workAddress/deleted`       | A work address was deleted                     | EmployeeWorkAddress      |
+| `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
+| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
+| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
+| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
 
----
+***
 
 <a id="workaddresscard"></a>
 
@@ -962,20 +962,20 @@ Standalone employee work address summary card.
 
 Props for [WorkAddressCard](#workaddresscard).
 
-| Property     | Type                                                                 | Description                                                   |
-| ------------ | -------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `employeeId` | `string`                                                             | The associated employee identifier.                           |
-| `onEvent`    | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
 #### Remarks
 
 Fetches the employee's active work address and renders it alongside a Manage button.
 
-| Event                                           | Description           | Data                     |
-| ----------------------------------------------- | --------------------- | ------------------------ |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
 
----
+***
 
 <a id="workaddresseditform"></a>
 
@@ -985,18 +985,18 @@ Standalone employee work address edit form for creating, updating, and deleting 
 
 #### Parameters
 
-| Parameter           | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`WorkAddressEditFormProps`](#workaddresseditformprops) & `BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\> |
 
 #### Remarks
 
-| Event                                           | Description                          | Data                |
-| ----------------------------------------------- | ------------------------------------ | ------------------- |
-| `employee/management/workAddress/created`       | A new work address was created       | EmployeeWorkAddress |
-| `employee/management/workAddress/updated`       | An existing work address was updated | EmployeeWorkAddress |
-| `employee/management/workAddress/deleted`       | A work address was deleted           | EmployeeWorkAddress |
-| `employee/management/workAddress/editCancelled` | User backed out of the edit form     | —                   |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
+| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
+| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
+| `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
 
 ## Interfaces
 
@@ -1012,16 +1012,16 @@ Props for [Compensation](#compensation).
 
 #### Properties
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                              | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads.                                                                                                                        |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Compensation](#compensation) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="deductionseditformprops"></a>
 
@@ -1035,17 +1035,17 @@ Props for [DeductionsEditForm](#deductionseditform).
 
 #### Properties
 
-| Property              | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| --------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`          | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`             | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads.                                                                                                             |
-| `children?`           | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`          | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?`      | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`         | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\>  | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `editingDeductionId?` | `string`                                                             | When provided, the form opens in edit mode pre-populated with the matching active deduction. Omit to open in add mode.                                                                                                                                                   |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [DeductionsEditForm](#deductionseditform) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `editingDeductionId?` | `string` | When provided, the form opens in edit mode pre-populated with the matching active deduction. Omit to open in add mode. |
 
----
+***
 
 <a id="deductionsprops"></a>
 
@@ -1059,16 +1059,16 @@ Props for [Deductions](#deductions).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads.                                                                                                                            |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\>  | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [Deductions](#deductions) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="documentsprops"></a>
 
@@ -1082,16 +1082,16 @@ Props for [Documents](#documents).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\>   | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="federaltaxeseditformprops"></a>
 
@@ -1105,16 +1105,16 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 
 #### Properties
 
-| Property         | Type                                                                    | Description                                                                                                                                                                                                                                                              |
-| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                                | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>    | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads.                                                                                                         |
-| `children?`      | `ReactNode`                                                             | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                                | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file.                                                                                                                                                                         |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\>   | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the form emits an event. See the events table on [FederalTaxesEditForm](#federaltaxeseditform) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="federaltaxesprops"></a>
 
@@ -1128,16 +1128,16 @@ Props for [FederalTaxes](#federaltaxes).
 
 #### Properties
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                              | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads.                                                                                                                        |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the block emits an event. See the events table on [FederalTaxes](#federaltaxes) for the available event types and payloads. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="homeaddresseditformprops"></a>
 
@@ -1151,16 +1151,16 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions.                                                                                                                                                                                                            |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="homeaddressprops"></a>
 
@@ -1174,16 +1174,16 @@ Props for [HomeAddress](#homeaddress).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="managementemployeelistprops"></a>
 
@@ -1197,17 +1197,17 @@ Props for [ManagementEmployeeList](#employeelist).
 
 #### Properties
 
-| Property         | Type                                                                  | Description                                                                                                                                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `companyId`      | `string`                                                              | The associated company identifier.                                                                                                                                                                                                                                       |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `initialTab?`    | [`EmployeeTab`](#employeetab)                                         | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`.                                                                                                                                                                                           |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `initialTab?` | [`EmployeeTab`](#employeetab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
 
----
+***
 
 <a id="paymentmethodprops"></a>
 
@@ -1221,18 +1221,18 @@ Props for [PaymentMethod](#paymentmethod).
 
 #### Properties
 
-| Property         | Type                                                                   | Description                                                                                                                                                                                                                                                              |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                               | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>   | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                            | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                               | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `undefined`                                                            | Not used — payment method management edits live data.                                                                                                                                                                                                                    |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `initialState?`  | `"split"` \| `"list"` \| `"add"`                                       | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`.                                                                                                                                                             |
-| `isAdmin?`       | `boolean`                                                              | Whether the current viewer is an admin. Defaults to `true`.                                                                                                                                                                                                              |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `undefined` | Not used — payment method management edits live data. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `initialState?` | `"split"` \| `"list"` \| `"add"` | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. |
+| `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
 
----
+***
 
 <a id="profileeditformprops"></a>
 
@@ -1246,16 +1246,16 @@ Props for [ProfileEditForm](#profileeditform).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing.                                                                                                                                                                                                      |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\>     | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user saves changes or cancels editing. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="profileprops"></a>
 
@@ -1269,16 +1269,16 @@ Props for [Profile](#profile).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\>     | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="statetaxesprops"></a>
 
@@ -1292,16 +1292,16 @@ Props for [StateTaxes](#statetaxes).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\>  | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="workaddresseditformprops"></a>
 
@@ -1315,16 +1315,16 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions.                                                                                                                                                                                                            |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on form save, cancel, and delete actions. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
----
+***
 
 <a id="workaddressprops"></a>
 
@@ -1338,14 +1338,14 @@ Props for [WorkAddress](#workaddress).
 
 #### Properties
 
-| Property         | Type                                                                 | Description                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`     | `string`                                                             | The associated employee identifier.                                                                                                                                                                                                                                      |
-| `onEvent`        | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes.                                                                                                                                                                                                                               |
-| `children?`      | `ReactNode`                                                          | Optional child content rendered inside the component's layout.                                                                                                                                                                                                           |
-| `className?`     | `string`                                                             | CSS class name applied to the component's root element.                                                                                                                                                                                                                  |
-| `defaultValues?` | `unknown`                                                            | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                   |
-| `dictionary?`    | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on flow state changes. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 ## Type Aliases
 
@@ -1357,7 +1357,7 @@ Props for [WorkAddress](#workaddress).
 
 The tab currently selected on [ManagementEmployeeList](#employeelist).
 
----
+***
 
 <a id="payrolloption"></a>
 
@@ -1379,7 +1379,7 @@ How an employee's final paycheck is processed during [TerminationFlow](terminati
   payroll creation flow and removes the employee from unprocessed future
   payrolls. The termination can still be cancelled after the fact.
 
----
+***
 
 <a id="statetaxeseditformprops"></a>
 
@@ -1391,7 +1391,7 @@ Props for [StateTaxesEditForm](#statetaxeseditform).
 
 #### Type Declaration
 
-| Name         | Type                                    | Description                                                  |
-| ------------ | --------------------------------------- | ------------------------------------------------------------ |
-| `employeeId` | `string`                                | The associated employee identifier.                          |
-| `onEvent`    | `BaseComponentInterface`\[`"onEvent"`\] | Event handler fired when the form is submitted or cancelled. |
+| Name | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | `BaseComponentInterface`\[`"onEvent"`\] | Event handler fired when the form is submitted or cancelled. |

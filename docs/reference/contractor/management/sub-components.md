@@ -23,29 +23,29 @@ Form for creating a contractor payment group, including date selection, per-cont
 
 Props for [CreatePayment](#createpayment).
 
-| Property             | Type                                                                   | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `companyId`          | `string`                                                               | UUID of the company for which to create a contractor payment group.                                                                                                                                                                                                                                                                                                                         |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>   | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?`          | `ReactNode`                                                            | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                               | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                              | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                 | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                     | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company for which to create a contractor payment group. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsCreatePayment`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
 Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
 
-| Event                             | Description                                         | Data                                                                               |
-| --------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `contractor/payments/edit`        | The edit modal was opened for a contractor.         | —                                                                                  |
-| `contractor/payments/update`      | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
-| `contractor/payments/preview`     | The preview API call succeeded.                     | The contractor payment group preview response.                                     |
-| `contractor/payments/backToEdit`  | The user returned from preview to continue editing. | —                                                                                  |
-| `contractor/payments/created`     | The payment group was successfully created.         | The created contractor payment group response.                                     |
-| `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker.   | —                                                                                  |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/edit` | The edit modal was opened for a contractor. | — |
+| `contractor/payments/update` | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
+| `contractor/payments/preview` | The preview API call succeeded. | The contractor payment group preview response. |
+| `contractor/payments/backToEdit` | The user returned from preview to continue editing. | — |
+| `contractor/payments/created` | The payment group was successfully created. | The created contractor payment group response. |
+| `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker. | — |
 
 ### Example
 
@@ -62,7 +62,7 @@ function CreateContractorPayment() {
 }
 ```
 
----
+***
 
 <a id="paymenthistory"></a>
 
@@ -76,33 +76,36 @@ Displays a contractor payment group, including each individual contractor paymen
 
 Props for [PaymentHistory](#paymenthistory).
 
-| Property             | Type                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>    | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `paymentId`          | `string`                                                                | UUID of the contractor payment group to display.                                                                                                                                                                                                                                                                                                                                            |
-| `children?`          | `ReactNode`                                                             | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                                | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                               | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                  | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                      | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `paymentId` | `string` | UUID of the contractor payment group to display. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentHistory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
-| Event                              | Description                                                 | Data                                                                                                                                                   |
-| ---------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `contractor/payments/view/details` | A row's view-details action was triggered.                  | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
-| `contractor/payments/cancel`       | An individual contractor payment was successfully canceled. | `{ paymentId: string }` — the individual contractor payment UUID, not the payment group UUID passed as `paymentId` prop                                |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
+| `contractor/payments/cancel` | An individual contractor payment was successfully canceled. | `{ paymentId: string }` — the individual contractor payment UUID, not the payment group UUID passed as `paymentId` prop |
 
 ### Example
 
 ```tsx
 import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
-;<ContractorManagement.PaymentHistory paymentId="payment-group-uuid" onEvent={() => {}} />
+<ContractorManagement.PaymentHistory
+  paymentId="payment-group-uuid"
+  onEvent={() => {}}
+/>
 ```
 
----
+***
 
 <a id="paymentslist"></a>
 
@@ -119,26 +122,26 @@ Surfaces alerts for pending information requests and wire transfer requirements.
 
 Props for [PaymentsList](#paymentslist).
 
-| Property             | Type                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `companyId`          | `string`                                                              | UUID of the company whose contractor payment groups should be listed.                                                                                                                                                                                                                                                                                                                       |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>  | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?`          | `ReactNode`                                                           | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                              | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                             | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                    | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company whose contractor payment groups should be listed. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentsList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
-| Event                             | Description                                            | Data                    |
-| --------------------------------- | ------------------------------------------------------ | ----------------------- |
-| `contractor/payments/create`      | User chooses to create a new payment                   | —                       |
-| `contractor/payments/view`        | User selects a payment group to view                   | `{ paymentId: string }` |
-| `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | —                       |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/create` | User chooses to create a new payment | — |
+| `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
+| `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
 
----
+***
 
 <a id="paymentstatement"></a>
 
@@ -152,19 +155,19 @@ Displays a single contractor's payment statement within a payment group, includi
 
 Props for [PaymentStatement](#paymentstatement).
 
-| Property             | Type                                                                      | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `contractorUuid`     | `string`                                                                  | UUID of the contractor whose payment within the group is being displayed.                                                                                                                                                                                                                                                                                                                   |
-| `onEvent`            | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\>      | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `paymentGroupId`     | `string`                                                                  | UUID of the contractor payment group the statement belongs to.                                                                                                                                                                                                                                                                                                                              |
-| `children?`          | `ReactNode`                                                               | Optional child content rendered inside the component's layout.                                                                                                                                                                                                                                                                                                                              |
-| `className?`         | `string`                                                                  | CSS class name applied to the component's root element.                                                                                                                                                                                                                                                                                                                                     |
-| `defaultValues?`     | `unknown`                                                                 | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type.                                                                                                                                                                                                      |
-| `dictionary?`        | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details.                                                                                                                    |
-| `FallbackComponent?` | (`props`) => `Element`                                                    | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback.                                                                                                                                             |
-| `LoaderComponent?`   | (`__namedParameters`) => `Element`                                        | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only.                                                                                                                                                                                                                     |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorUuid` | `string` | UUID of the contractor whose payment within the group is being displayed. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `paymentGroupId` | `string` | UUID of the contractor payment group the statement belongs to. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
----
+***
 
 <a id="paymentsummary"></a>
 
@@ -178,14 +181,14 @@ Displays a summary of a created contractor payment group, including payment tota
 
 Props for [PaymentSummary](#paymentsummary).
 
-| Property         | Type                        | Description                                                          |
-| ---------------- | --------------------------- | -------------------------------------------------------------------- |
-| `companyId`      | `string`                    | UUID of the company that owns the payment group.                     |
-| `onEvent`        | (`type`, `data?`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
-| `paymentGroupId` | `string`                    | UUID of the contractor payment group to summarize.                   |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company that owns the payment group. |
+| `onEvent` | (`type`, `data?`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
+| `paymentGroupId` | `string` | UUID of the contractor payment group to summarize. |
 
 ### Remarks
 
-| Event                      | Description                      | Data |
-| -------------------------- | -------------------------------- | ---- |
-| `contractor/payments/exit` | User completes the payment flow. | —    |
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/exit` | User completes the payment flow. | — |
