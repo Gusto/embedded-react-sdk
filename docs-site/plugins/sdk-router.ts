@@ -44,9 +44,9 @@ const STANDALONE_PAGES = _STANDALONE_PAGES as StandalonePageConfig
  * Register via  "router": "sdk-router"  in the TypeDoc config.
  *
  * URL structure:
- *   employee/index.md                      ← generated domain hub (namespaces + hooks index)
- *   employee/management/index.md              ← namespace index (links to workflows + sub-components)
- *   employee/management/workflows.md          ← namespace members whose name ends with 'Flow'
+ *   employee/index.md                         ← generated domain hub (namespaces + hooks index)
+ *   employee/management/index.md              ← namespace index (links to flow pages + sub-components)
+ *   employee/management/onboarding-flow.md    ← each Flow component gets its own page (kebab-case name)
  *   employee/management/sub-components.md     ← remaining namespace members
  *   employee/hooks.md                         ← all Employee hooks consolidated on one page
  *   company/hooks.md                          ← all Company hooks consolidated on one page
@@ -121,6 +121,14 @@ export function standalonePageFromSources(reflection: Reflection): string | null
   return null
 }
 
+/** Convert a PascalCase name to kebab-case.
+ *  'OnboardingFlow' → 'onboarding-flow',  'PayrollRunFlow' → 'payroll-run-flow' */
+function toKebabCase(name: string): string {
+  return name.replace(/([A-Z])/g, (_, letter: string, offset: number) =>
+    (offset > 0 ? '-' : '') + letter.toLowerCase(),
+  )
+}
+
 /** Convert a domain output path to its TypeDoc source directory name.
  *  'employee' → 'Employee',  'time-off' → 'TimeOff' */
 function pathToSourceDir(domainPath: string): string {
@@ -147,10 +155,9 @@ function getSidebarPosition(url: string): number | undefined {
   if (standalone?.sidebarPosition !== undefined) return standalone.sidebarPosition
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
-  const depth = parts.length // 2 = domain-level file, 3 = namespace subdir file
   if (filename === 'index') return 1
-  if (filename === 'workflows') return depth >= 3 ? 1 : 2
-  if (filename === 'sub-components') return depth >= 3 ? 2 : 3
+  // Flow pages and sub-components have no explicit position — alphabetical order is correct
+  // since kebab-case flow names (e.g. 'onboarding-flow') sort before 'sub-components'.
   if (filename === 'hooks') return 100
   return undefined
 }
@@ -510,15 +517,8 @@ export function pageTitle(page: MarkdownPageEvent): string {
   // URL examples: "employee/hooks.md", "employee/management/workflows.md"
   const parts = url.replace(/\.md$/, '').split('/')
 
-  if (decl.name === 'Hooks') {
-    return `Hooks`
-  }
-  if (decl.name === 'Flow Components') {
-    return `Workflows`
-  }
-  if (decl.name === 'Block Components') {
-    return `Sub-components`
-  }
+  if (decl.name === 'Hooks') return 'Hooks'
+  if (decl.name === 'Block Components') return 'Sub-components'
 
   return decl.name
 }
@@ -1056,44 +1056,52 @@ export class SDKRouter extends MemberRouter {
       const flows = children.filter(c => c.name.endsWith('Flow'))
 
       if (flows.length > 0) {
-        // Split namespace into workflows, sub-components, and an index page.
+        // Each Flow component gets its own page; block components share sub-components.md.
         // The namespace's canonical URL points to index.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
         const ns = reflection as DeclarationReflection
 
         // Props interfaces are inlined by the parametersTable override; exclude them
-        // from .children so they don't also appear as standalone entries. Register
-        // them as anchors on the correct page so cross-references still resolve:
-        // props for a flow component → workflows.md; props for a block component → sub-components.md.
+        // from .children so they don't also appear as standalone entries. Map each flow's
+        // props to that flow's page; block props go on sub-components.md.
         const allPropsSet = componentPropsInterfaces(ns)
-        const flowProps: DeclarationReflection[] = []
+        const flowPropsMap = new Map<DeclarationReflection, DeclarationReflection[]>()
         const blockProps: DeclarationReflection[] = []
         for (const propsIface of allPropsSet) {
-          const isFlowProp = flows.some(flow =>
+          const ownerFlow = flows.find(flow =>
             flow.signatures?.some(sig =>
               sig.parameters?.some(
                 p => p.type instanceof ReferenceType && p.type.reflection === propsIface,
               ),
             ),
           )
-          ;(isFlowProp ? flowProps : blockProps).push(propsIface)
+          if (ownerFlow) {
+            const list = flowPropsMap.get(ownerFlow) ?? []
+            list.push(propsIface)
+            flowPropsMap.set(ownerFlow, list)
+          } else {
+            blockProps.push(propsIface)
+          }
         }
         const blocks = children.filter(c => !c.name.endsWith('Flow') && !allPropsSet.has(c))
 
-        const flowsNs = new DeclarationReflection(
-          'Flow Components',
-          ReflectionKind.Namespace,
-          reflection.parent,
-        )
-        flowsNs.children = flows
-        const flowsGroups = groupSyntheticMembers(flows, flowsNs)
-        if (flowsGroups.length > 1) flowsNs.groups = flowsGroups
-        this.buildSyntheticPage(
-          `${nsBasePath}/workflows`,
-          flowsNs,
-          [...flows, ...flowProps],
-          outPages,
-        )
+        // Register each flow as its own page with its props as anchors.
+        for (const flow of flows) {
+          const flowUrl = this.getFileName(`${nsBasePath}/${toKebabCase(flow.name)}`)
+          this.fullUrls.set(flow, flowUrl)
+          const slugger = new Slugger(this.sluggerConfiguration)
+          this.sluggers.set(flow, slugger)
+          outPages.push({ kind: PageKind.Reflection, model: flow, url: flowUrl })
+          for (const propsIface of (flowPropsMap.get(flow) ?? [])) {
+            const slug = slugger.slug(propsIface.name)
+            this.anchors.set(propsIface, slug)
+            this.fullUrls.set(propsIface, `${flowUrl}#${slug}`)
+            // Re-parent so TypeDoc's relativeUrl walk finds flow (which has an own URL)
+            // before reaching Project. Without this, cross-references generate same-page
+            // hash links instead of cross-page URLs.
+            propsIface.parent = flow
+          }
+        }
 
         if (blocks.length > 0) {
           const blocksNs = new DeclarationReflection(

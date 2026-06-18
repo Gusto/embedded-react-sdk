@@ -16,13 +16,13 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [DismissalFlow](workflows.md#dismissalflow) | Guided workflow for running a terminated employee's final payroll. |
-| [OffCycleFlow](workflows.md#offcycleflow) | Multi-step flow for creating and running an off-cycle payroll (bonus or correction). |
-| [PayrollExecutionFlow](workflows.md#payrollexecutionflow) | Shared execution flow that runs the configuration, overview, submission, and receipt steps for a single payroll. |
-| [PayrollFlow](workflows.md#payrollflow) | Guided workflow for selecting and running a company's payroll end to end. |
-| [TransitionFlow](workflows.md#transitionflow) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
+| [DismissalFlow](dismissal-flow.md) | Guided workflow for running a terminated employee's final payroll. |
+| [OffCycleFlow](off-cycle-flow.md) | Multi-step flow for creating and running an off-cycle payroll (bonus or correction). |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Shared execution flow that runs the configuration, overview, submission, and receipt steps for a single payroll. |
+| [PayrollFlow](payroll-flow.md) | Guided workflow for selecting and running a company's payroll end to end. |
+| [TransitionFlow](transition-flow.md) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

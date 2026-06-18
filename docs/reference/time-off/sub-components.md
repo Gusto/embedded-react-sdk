@@ -5,7 +5,6 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Sub-components
 description: Sub-components reference.
-sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---

@@ -5,7 +5,6 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Sub-components
 description: Sub-components reference.
-sidebar_position: 2
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -833,7 +832,7 @@ Props for [TerminateEmployee](#terminateemployee).
 
 #### Remarks
 
-The main termination form used inside [TerminationFlow](workflows.md#terminationflow). Detects existing
+The main termination form used inside [TerminationFlow](termination-flow.md). Detects existing
 terminations and pre-populates for editing when one is active, or routes to
 the summary view (via the `employee/termination/viewSummary` event) when the
 employee is already terminated.
@@ -1366,7 +1365,7 @@ The tab currently selected on [ManagementEmployeeList](#employeelist).
 
 > **PayrollOption** = `"dismissalPayroll"` \| `"regularPayroll"` \| `"anotherWay"`
 
-How an employee's final paycheck is processed during [TerminationFlow](workflows.md#terminationflow).
+How an employee's final paycheck is processed during [TerminationFlow](termination-flow.md).
 
 #### Remarks
 

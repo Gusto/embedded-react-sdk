@@ -3,28 +3,23 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/sdk-router.ts.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Workflows
-description: Workflows reference.
-sidebar_position: 1
+title: OnboardingFlow
+description: OnboardingFlow reference.
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Flow Components
-
-<a id="onboardingflow"></a>
-
-## OnboardingFlow
+# Function: OnboardingFlow()
 
 Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
 
-### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `OnboardingFlowProps` | See OnboardingFlowProps. |
 
-### Remarks
+## Remarks
 
 The flow begins on the overview screen and steps through locations, federal taxes, industry,
 bank account, employee onboarding, pay schedule, state taxes, and document signing before

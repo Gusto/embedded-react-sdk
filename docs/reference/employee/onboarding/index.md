@@ -16,11 +16,11 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingExecutionFlow](workflows.md#onboardingexecutionflow) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
-| [OnboardingFlow](workflows.md#onboardingflow) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
-| [SelfOnboardingFlow](workflows.md#selfonboardingflow) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+| [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

@@ -5,7 +5,6 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Sub-components
 description: Sub-components reference.
-sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -851,7 +850,7 @@ Reason for running an off-cycle payroll.
 
 > **PayrollExecutionInitialState** = `"configuration"` \| `"overview"`
 
-Entry point for [PayrollExecutionFlow](workflows.md#payrollexecutionflow). Determines which screen the flow renders first.
+Entry point for [PayrollExecutionFlow](payroll-execution-flow.md). Determines which screen the flow renders first.
 
 ***
 

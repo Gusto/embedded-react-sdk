@@ -16,9 +16,9 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingFlow](workflows.md#onboardingflow) | Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission. |
+| [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

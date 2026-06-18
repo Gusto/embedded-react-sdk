@@ -5,7 +5,6 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Sub-components
 description: Sub-components reference.
-sidebar_position: 2
 generated_by: typedoc
 custom_edit_url: null
 ---
@@ -739,7 +738,7 @@ the API, the corresponding values are overwritten.
 
 > **OnboardingExecutionInitialState** = keyof *typeof* `INITIAL_COMPONENT_MAP`
 
-The set of steps [OnboardingExecutionFlow](workflows.md#onboardingexecutionflow) can be started on.
+The set of steps [OnboardingExecutionFlow](onboarding-execution-flow.md) can be started on.
 
 ***
 
