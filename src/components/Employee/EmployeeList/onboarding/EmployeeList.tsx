@@ -13,9 +13,30 @@ import { componentEvents } from '@/shared/constants'
 export interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
   /** The associated company identifier. */
   companyId: string
+  /**
+   * Controls visibility of the Continue button in the employee list.
+   *
+   * @remarks
+   *
+   * When `true` (default), displays a Continue button below the populated employee list and
+   * a Skip button in the empty state. These controls trigger the `employee/onboarding/done` event,
+   * allowing navigation to the next step in a multi-step flow (e.g., company onboarding).
+   *
+   * When `false`, hides both buttons. Use this when the employee list is the final destination
+   * in its flow and no further navigation is needed (e.g., standalone employee onboarding where
+   * the list is the terminal screen).
+   *
+   * @defaultValue `true`
+   */
+  showContinueButton?: boolean
 }
 
-function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps) {
+function EmployeeListRoot({
+  companyId,
+  onEvent,
+  dictionary,
+  showContinueButton = true,
+}: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
 
@@ -67,6 +88,7 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
         }}
         onAddEmployee={handleAddEmployee}
         onSkip={handleSkip}
+        showContinueButton={showContinueButton}
       />
     </BaseLayout>
   )
