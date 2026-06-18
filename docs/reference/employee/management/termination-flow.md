@@ -5,6 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: TerminationFlow
 description: TerminationFlow reference.
+sidebar_position: 2
 generated_by: typedoc
 custom_edit_url: null
 ---

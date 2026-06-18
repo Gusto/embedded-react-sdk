@@ -11,7 +11,7 @@ import {
   ReflectionKind,
 } from 'typedoc'
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
-import { STANDALONE_PAGES } from './router.config.ts'
+import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
 
 /**
  * Derive a domain name from the source file path of a reflection.
@@ -133,12 +133,15 @@ export function getSidebarPosition(url: string): number | undefined {
   if (url === 'index.md') return 1
   const key = url.replace(/\.md$/, '')
   const standaloneIdx = STANDALONE_PAGES.findIndex(p => p.id === key)
-  if (standaloneIdx !== -1) return standaloneIdx + 1
+  if (standaloneIdx !== -1) return DOMAINS.length + standaloneIdx + 1
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
-  if (filename === 'index') return 1
-  // Flow pages and sub-components have no explicit position — alphabetical order is correct
-  // since kebab-case flow names (e.g. 'onboarding-flow') sort before 'sub-components'.
+  if (filename === 'index' || filename === 'namespace') return 1
+  // Flows share position 2 so they sort alphabetically among themselves (lodash breaks
+  // ties with 'source'/filename). sub-components gets a high position so it always
+  // lands after all flow pages regardless of their names.
+  if (filename.endsWith('-flow')) return 2
+  if (filename === 'sub-components') return 99
   if (filename === 'hooks') return 100
   return undefined
 }

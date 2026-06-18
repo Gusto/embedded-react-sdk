@@ -5,6 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Payroll
 description: The Payroll namespace.
+sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
 ---

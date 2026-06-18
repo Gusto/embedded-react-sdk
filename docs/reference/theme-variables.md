@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Theme Variables
 description: Theme Variables reference.
-sidebar_position: 1
+sidebar_position: 6
 generated_by: typedoc
 custom_edit_url: null
 ---

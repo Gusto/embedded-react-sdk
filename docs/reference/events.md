@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Events
 description: Events reference.
-sidebar_position: 4
+sidebar_position: 9
 generated_by: typedoc
 custom_edit_url: null
 ---

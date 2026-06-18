@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Component Inventory
 description: Component Inventory reference.
-sidebar_position: 2
+sidebar_position: 7
 generated_by: typedoc
 custom_edit_url: null
 ---

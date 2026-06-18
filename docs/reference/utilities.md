@@ -5,7 +5,7 @@
 # Then run `npm run docs:api:generate` to regenerate.
 title: Hook Utilities
 description: Hook Utilities reference.
-sidebar_position: 3
+sidebar_position: 8
 generated_by: typedoc
 custom_edit_url: null
 ---
