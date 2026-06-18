@@ -4,9 +4,7 @@ description: Install the Gusto Embedded React SDK, configure GustoProvider, set 
 order: 2
 ---
 
-## CodeSandbox
-
-[We have a demo environment in CodeSandbox](https://codesandbox.io/p/devbox/happy-ardinghelli-nzpslw?file=%2Fsrc%2FApp.jsx). You can view the project setup there which puts together what you are going to see in this guide with a working example.
+> **Note:** To see an example integration in a simple app, we have a [demo application](./example-app.md) that wires multiple SDK workflows together with a router and a backend proxy.
 
 ## Installing the SDK
 

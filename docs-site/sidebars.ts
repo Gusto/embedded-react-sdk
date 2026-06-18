@@ -7,7 +7,11 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
       collapsed: false,
-      items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
+      items: [
+        'getting-started/authentication',
+        'getting-started/proxy-security-partner-guidance',
+        'getting-started/example-app',
+      ],
     },
     {
       type: 'category',
