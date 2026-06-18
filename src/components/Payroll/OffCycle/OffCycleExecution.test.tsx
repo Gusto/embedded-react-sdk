@@ -139,7 +139,7 @@ function OffCycleFlowInExecutionState({
           companyId: COMPANY_ID,
           payrollUuid: PAYROLL_ID,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
           },
           withReimbursements,

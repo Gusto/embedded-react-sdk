@@ -68,7 +68,7 @@ export const TerminationFlow = ({ companyId, employeeId, onEvent }: TerminationF
           companyId,
           employeeId,
           header: {
-            type: 'breadcrumbs' as const,
+            indicator: 'breadcrumbs' as const,
             breadcrumbs: buildBreadcrumbs(terminationBreadcrumbNodes),
             currentBreadcrumbId: 'form',
           },

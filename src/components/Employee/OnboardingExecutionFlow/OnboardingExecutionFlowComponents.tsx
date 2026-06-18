@@ -5,7 +5,7 @@ import { StateTaxes } from '../StateTaxes/onboarding/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile/onboarding/Profile'
 import type { CompensationDefaultValues } from '../Compensation'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { useFlow, type BackConfig, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { EmployeeOnboardingStatus } from '@/shared/constants'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
@@ -38,6 +38,10 @@ export interface OnboardingContextInterface extends FlowContextInterface {
   defaultValues?: OnboardingDefaultValues
   isSelfOnboardingEnabled?: boolean
   withEmployeeI9?: boolean
+  // Back affordance to render on the initial step (and restored when the user
+  // navigates back to it). Lets a parent flow expose an "exit" affordance from
+  // step one without changing the back behaviour of intermediate steps.
+  initialBack?: BackConfig | null
 }
 
 /** @internal */

@@ -66,7 +66,9 @@ export function OffCycleExecutionContextual() {
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
   const offCycleRootBreadcrumb =
-    header?.type === 'breadcrumbs' ? header.breadcrumbs?.['createOffCyclePayroll']?.[0] : undefined
+    header?.indicator === 'breadcrumbs'
+      ? header.breadcrumbs?.['createOffCyclePayroll']?.[0]
+      : undefined
   const prefixBreadcrumbs = useMemo(
     () => (offCycleRootBreadcrumb ? [offCycleRootBreadcrumb] : undefined),
     [offCycleRootBreadcrumb],

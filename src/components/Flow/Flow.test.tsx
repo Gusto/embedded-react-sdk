@@ -28,7 +28,10 @@ const buildMachine = (overrides: Partial<FlowContextInterface> = {}) =>
             (ctx: FlowContextInterface): FlowContextInterface => ({
               ...ctx,
               component: SecondScreen,
-              header: { type: 'minimal' },
+              header: {
+                indicator: 'none',
+                back: { labelKey: 'back', namespace: 'common', event: BACK_EVENT },
+              },
             }),
           ),
         ),
@@ -141,7 +144,10 @@ describe('Flow', () => {
               (ctx: FlowContextInterface): FlowContextInterface => ({
                 ...ctx,
                 component: SecondWithButton,
-                header: { type: 'minimal' },
+                header: {
+                  indicator: 'none',
+                  back: { labelKey: 'back', namespace: 'common', event: BACK_EVENT },
+                },
               }),
             ),
           ),
@@ -209,7 +215,10 @@ describe('Flow', () => {
               (ctx: FlowContextInterface): FlowContextInterface => ({
                 ...ctx,
                 component: SecondScreen,
-                header: { type: 'minimal' },
+                header: {
+                  indicator: 'none',
+                  back: { labelKey: 'back', namespace: 'common', event: BACK_EVENT },
+                },
               }),
             ),
           ),
@@ -257,7 +266,10 @@ describe('Flow', () => {
       (ctx: FlowContextInterface): FlowContextInterface => ({
         ...ctx,
         component: SecondScreen,
-        header: { type: 'minimal' },
+        header: {
+          indicator: 'none',
+          back: { labelKey: 'back', namespace: 'common', event: BACK_EVENT },
+        },
       }),
     )
 

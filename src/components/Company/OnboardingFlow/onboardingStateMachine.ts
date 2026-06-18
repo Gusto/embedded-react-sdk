@@ -18,7 +18,7 @@ import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 const TOTAL_STEPS = 8
 
 const progressHeader = (currentStep: number): FlowHeaderConfig => ({
-  type: 'progress',
+  indicator: 'progress',
   currentStep,
   totalSteps: TOTAL_STEPS,
 })

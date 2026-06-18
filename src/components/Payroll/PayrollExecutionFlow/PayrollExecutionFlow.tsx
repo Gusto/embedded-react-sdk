@@ -135,7 +135,7 @@ export function PayrollExecutionFlow({
       initialState,
       {
         header: {
-          type: 'breadcrumbs' as const,
+          indicator: 'breadcrumbs' as const,
           breadcrumbs,
           cta: SaveAndExitCta,
         },

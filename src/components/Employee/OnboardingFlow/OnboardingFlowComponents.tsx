@@ -1,8 +1,18 @@
 import { OnboardingExecutionFlow } from '../OnboardingExecutionFlow/OnboardingExecutionFlow'
 import { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 import type { OnboardingContextInterface } from '../OnboardingExecutionFlow/OnboardingExecutionFlowComponents'
-import { useFlow } from '@/components/Flow/useFlow'
+import { useFlow, type FlowHeaderConfig } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { componentEvents } from '@/shared/constants'
+
+const backToEmployeeListHeader: FlowHeaderConfig = {
+  indicator: 'none',
+  back: {
+    labelKey: 'backToListCta',
+    namespace: 'Employee.EmployeeList',
+    event: componentEvents.EMPLOYEES_LIST,
+  },
+}
 
 export type {
   OnboardingContextInterface,
@@ -38,6 +48,7 @@ export function OnboardingExecutionFlowContextual() {
       isAdmin={isAdmin}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
       withEmployeeI9={withEmployeeI9}
+      initialBackHeader={backToEmployeeListHeader}
     />
   )
 }

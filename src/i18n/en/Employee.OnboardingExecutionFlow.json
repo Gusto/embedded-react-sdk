@@ -1,0 +1,8 @@
+{
+  "employeeProfile": "Basic details",
+  "compensation": "Compensation",
+  "federalTaxes": "Federal taxes",
+  "stateTaxes": "State taxes",
+  "paymentMethod": "Payment method",
+  "deductions": "Deductions"
+}

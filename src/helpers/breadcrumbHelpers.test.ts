@@ -13,8 +13,8 @@ import type {
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 const breadcrumbsHeader = (
-  fields: Omit<Extract<FlowHeaderConfig, { type: 'breadcrumbs' }>, 'type'>,
-): FlowHeaderConfig => ({ type: 'breadcrumbs', ...fields })
+  fields: Omit<Extract<FlowHeaderConfig, { indicator: 'breadcrumbs' }>, 'indicator'>,
+): FlowHeaderConfig => ({ indicator: 'breadcrumbs', ...fields })
 
 describe('buildBreadcrumbs', () => {
   it('should build breadcrumbs for a single node with no parent', () => {
@@ -291,7 +291,7 @@ describe('hideBreadcrumb', () => {
 
     const result = hideBreadcrumb('configuration', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs.configuration).toEqual([])
     expect(breadcrumbs.overview).toEqual([{ id: 'overview', label: 'Overview' }])
@@ -315,7 +315,7 @@ describe('hideBreadcrumb', () => {
 
     const result = hideBreadcrumb('other', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs.overview).toEqual([
       { id: 'configuration', label: 'Config' },
@@ -345,7 +345,7 @@ describe('hideBreadcrumb', () => {
 
     const result = hideBreadcrumb('anything', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs).toEqual({})
   })
@@ -355,7 +355,7 @@ describe('hideBreadcrumb', () => {
 
     const result = hideBreadcrumb('anything', context)
 
-    expect(result.header).toEqual({ type: 'breadcrumbs', breadcrumbs: {} })
+    expect(result.header).toEqual({ indicator: 'breadcrumbs', breadcrumbs: {} })
   })
 })
 
@@ -375,7 +375,7 @@ describe('lockBreadcrumb', () => {
 
     const result = lockBreadcrumb('configuration', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs.configuration![0]!.isNavigable).toBe(false)
     expect(breadcrumbs.overview![0]!.isNavigable).toBe(false)
@@ -396,7 +396,7 @@ describe('lockBreadcrumb', () => {
 
     const result = lockBreadcrumb('configuration', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs.overview![1]).toEqual({ id: 'overview', label: 'Overview' })
   })
@@ -423,7 +423,7 @@ describe('lockBreadcrumb', () => {
 
     const result = lockBreadcrumb('anything', context)
     const breadcrumbs =
-      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+      result.header.indicator === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
     expect(breadcrumbs).toEqual({})
   })
@@ -576,7 +576,7 @@ describe('updateBreadcrumbs', () => {
     const result = updateBreadcrumbs('newState', context)
 
     expect(result.header).toEqual({
-      type: 'breadcrumbs',
+      indicator: 'breadcrumbs',
       breadcrumbs: { newState: [] },
       currentBreadcrumbId: 'newState',
     })

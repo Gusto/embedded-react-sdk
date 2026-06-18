@@ -54,7 +54,9 @@ export function DismissalExecutionContextual() {
   const { companyId, payrollUuid, onEvent, header } = useFlow<DismissalFlowContextInterface>()
 
   const payPeriodSelectionBreadcrumb =
-    header?.type === 'breadcrumbs' ? header.breadcrumbs?.['payPeriodSelection']?.[0] : undefined
+    header?.indicator === 'breadcrumbs'
+      ? header.breadcrumbs?.['payPeriodSelection']?.[0]
+      : undefined
   const prefixBreadcrumbs = useMemo(() => {
     return payPeriodSelectionBreadcrumb ? [payPeriodSelectionBreadcrumb] : undefined
   }, [payPeriodSelectionBreadcrumb])

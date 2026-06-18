@@ -57,7 +57,7 @@ export const PaymentFlow = ({ companyId, onEvent }: PaymentFlowProps) => {
         component: PaymentListContextual,
         companyId,
         header: {
-          type: 'breadcrumbs' as const,
+          indicator: 'breadcrumbs' as const,
           breadcrumbs: buildBreadcrumbs(paymentFlowBreadcrumbsNodes),
         },
       })),

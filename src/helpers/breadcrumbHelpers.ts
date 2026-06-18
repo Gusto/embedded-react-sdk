@@ -6,7 +6,7 @@ import type {
 } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
-type BreadcrumbsHeader = Extract<FlowHeaderConfig, { type: 'breadcrumbs' }>
+type BreadcrumbsHeader = Extract<FlowHeaderConfig, { indicator: 'breadcrumbs' }>
 
 type WithHeader = { header?: FlowHeaderConfig | null }
 
@@ -17,8 +17,8 @@ type WithHeader = { header?: FlowHeaderConfig | null }
  * the discriminated `header` union before mutating breadcrumb data.
  */
 const getBreadcrumbsHeader = (header: FlowHeaderConfig | null | undefined): BreadcrumbsHeader => {
-  if (header?.type === 'breadcrumbs') return header
-  return { type: 'breadcrumbs' }
+  if (header?.indicator === 'breadcrumbs') return header
+  return { indicator: 'breadcrumbs' }
 }
 
 /**
@@ -96,14 +96,14 @@ export const resolveBreadcrumbVariables = (
  *
  * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
  * @param context - The context whose breadcrumbs header should be patched.
- * @param patch - Partial breadcrumbs-header fields to merge in. The `type` discriminator
+ * @param patch - Partial breadcrumbs-header fields to merge in. The `indicator` discriminator
  * cannot be overridden.
  * @returns A new context with the patched breadcrumbs header.
  * @internal
  */
 export const patchBreadcrumbsHeader = <T extends WithHeader>(
   context: T,
-  patch: Partial<Omit<BreadcrumbsHeader, 'type'>>,
+  patch: Partial<Omit<BreadcrumbsHeader, 'indicator'>>,
 ): T & { header: BreadcrumbsHeader } => {
   const existing = getBreadcrumbsHeader(context.header)
   return { ...context, header: { ...existing, ...patch } }
@@ -170,7 +170,7 @@ export const lockBreadcrumb = <T extends WithHeader>(breadcrumbId: string, conte
  * @remarks Typically called from state machine transitions to update breadcrumb navigation
  * when moving between states. Existing trails for other states are preserved; only the trail
  * for `stateName` is rewritten with `variables` resolved against the context. The resulting
- * context's header is always of type `'breadcrumbs'`.
+ * context's header is always a `'breadcrumbs'` indicator.
  *
  * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
  * @param stateName - The state whose breadcrumb trail should be updated and made active.

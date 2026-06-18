@@ -182,6 +182,7 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED` | `"employee/management/workAddress/editCancelled"` | `'employee/management/workAddress/editCancelled'` |
 | `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED` | `"employee/management/workAddress/editRequested"` | `'employee/management/workAddress/editRequested'` |
 | `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED` | `"employee/management/workAddress/updated"` | `'employee/management/workAddress/updated'` |
+| `EMPLOYEE_ONBOARDING_BACK` | `"employee/onboarding/back"` | `'employee/onboarding/back'` |
 | `EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED` | `"employee/onboardingDocumentsConfig/updated"` | `'employee/onboardingDocumentsConfig/updated'` |
 | `EMPLOYEE_ONBOARDING_DONE` | `"employee/onboarding/done"` | `'employee/onboarding/done'` |
 | `EMPLOYEE_ONBOARDING_STATUS_UPDATED` | `"employee/onboardingStatus/updated"` | `'employee/onboardingStatus/updated'` |

@@ -41,7 +41,7 @@ export const payrollLandingBreadcrumbNodes: BreadcrumbNodes = {
         ...ctx,
         component: PayrollLandingTabsContextual,
         header:
-          ctx.header?.type === 'breadcrumbs'
+          ctx.header?.indicator === 'breadcrumbs'
             ? { ...ctx.header, currentBreadcrumbId: undefined }
             : null,
         payrollUuid: undefined,
@@ -92,7 +92,9 @@ const returnToTabs = (
     startDate: undefined,
     endDate: undefined,
     header:
-      ctx.header?.type === 'breadcrumbs' ? { ...ctx.header, currentBreadcrumbId: undefined } : null,
+      ctx.header?.indicator === 'breadcrumbs'
+        ? { ...ctx.header, currentBreadcrumbId: undefined }
+        : null,
     ...extra,
   })
 }

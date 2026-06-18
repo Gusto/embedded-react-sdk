@@ -28,7 +28,7 @@ const progressHeader = (
   currentStep: number,
   totalSteps: number = TOTAL_STEPS_DEFAULT,
 ): FlowHeaderConfig => ({
-  type: 'progress',
+  indicator: 'progress',
   currentStep,
   totalSteps,
   cta: ProgressBarCta,

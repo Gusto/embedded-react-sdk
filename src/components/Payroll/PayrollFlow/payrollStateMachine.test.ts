@@ -14,7 +14,7 @@ function createTestMachine() {
       component: () => null,
       companyId: 'test-company',
       header: {
-        type: 'breadcrumbs',
+        indicator: 'breadcrumbs',
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
       },
       withReimbursements: true,
@@ -67,9 +67,9 @@ describe('payrollFlowMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
 
       expect(service.machine.current).toBe('blockers')
-      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(service.context.header?.indicator).toBe('breadcrumbs')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('blockers')
@@ -109,7 +109,7 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payrollUuid).toBeUndefined()
       expect(service.context.executionInitialState).toBeUndefined()
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBeUndefined()
@@ -137,9 +137,9 @@ describe('payrollFlowMachine', () => {
       expect(service.machine.current).toBe('submittedOverview')
       expect(service.context.payPeriod).toEqual(payPeriod)
       expect(service.context.executionInitialState).toBeUndefined()
-      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(service.context.header?.indicator).toBe('breadcrumbs')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('submittedOverview')
@@ -185,7 +185,7 @@ describe('payrollFlowMachine', () => {
 
       expect(service.machine.current).toBe('submittedReceipts')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('submittedReceipts')
@@ -255,7 +255,7 @@ describe('payrollFlowMachine', () => {
       expect(service.machine.current).toBe('offCycle')
       expect(service.context.showPayrollCancelledAlert).toBe(false)
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBeUndefined()
@@ -315,7 +315,7 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payrollUuid).toBe('payroll-789')
       expect(service.context.executionInitialState).toBeUndefined()
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('submittedOverview')
@@ -347,7 +347,7 @@ describe('payrollFlowMachine', () => {
       expect(service.context.transitionPayScheduleUuid).toBe('ps-123')
       expect(service.context.showPayrollCancelledAlert).toBe(false)
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBeUndefined()
@@ -407,7 +407,7 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payrollUuid).toBe('payroll-789')
       expect(service.context.executionInitialState).toBeUndefined()
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('submittedOverview')

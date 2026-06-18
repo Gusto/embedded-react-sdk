@@ -15,7 +15,7 @@ function createTestMachine() {
       companyId: 'test-company',
       employeeId: 'test-employee',
       header: {
-        type: 'breadcrumbs' as const,
+        indicator: 'breadcrumbs' as const,
         breadcrumbs: buildBreadcrumbs(dismissalBreadcrumbsNodes),
         currentBreadcrumbId: 'payPeriodSelection',
       },
@@ -50,7 +50,7 @@ describe('dismissalStateMachine', () => {
       expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBeUndefined()
@@ -73,9 +73,9 @@ describe('dismissalStateMachine', () => {
 
       expect(service.machine.current).toBe('payPeriodSelection')
       expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(service.context.header?.indicator).toBe('breadcrumbs')
       expect(
-        service.context.header?.type === 'breadcrumbs'
+        service.context.header?.indicator === 'breadcrumbs'
           ? service.context.header.currentBreadcrumbId
           : undefined,
       ).toBe('payPeriodSelection')
