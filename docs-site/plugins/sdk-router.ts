@@ -1,5 +1,5 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs'
-import { join } from 'path'
+import { dirname, join } from 'path'
 import { stringify as stringifyYaml } from 'yaml'
 import {
   Comment,
@@ -171,11 +171,26 @@ function pathToSourceDir(domainPath: string): string {
 function readDomainReadme(domainPath: string): string | null {
   const sourceDir = pathToSourceDir(domainPath)
   const readmePath = join(process.cwd(), '../src/components', sourceDir, 'README.md')
+  return readReadmeFile(readmePath)
+}
+
+/**
+ * Read prose from README.md in the same directory as a flow component's
+ * source file. Returns null if no README exists there.
+ */
+function readFlowReadme(sourceFilePath: string): string | null {
+  const readmePath = join(dirname(sourceFilePath), 'README.md')
+  return readReadmeFile(readmePath)
+}
+
+/**
+ * Read a README.md file and strip everything up to and including the first
+ * h1 so the file can carry a standalone title without duplicating the page
+ * heading. Returns null if the file doesn't exist or has no prose content.
+ */
+function readReadmeFile(readmePath: string): string | null {
   if (!existsSync(readmePath)) return null
   const content = readFileSync(readmePath, 'utf-8')
-  // Strip everything up to and including the first h1 so the README can carry
-  // a standalone title (useful for humans/LLMs in source) without duplicating
-  // the page heading that renderDomainHub already emits.
   const lines = content.split('\n')
   const h1Index = lines.findIndex(l => /^#\s/.test(l))
   const prose = h1Index === -1 ? content : lines.slice(h1Index + 1).join('\n')
@@ -714,6 +729,28 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
   return parts.join('\n')
 }
 
+/**
+ * Inject README prose into a rendered flow page, inserting it after the
+ * first heading and before any existing content below that heading.
+ */
+function renderFlowPage(rendered: string, readme: string): string {
+  const lines = rendered.split('\n')
+  const headingIndex = lines.findIndex(l => /^#+\s/.test(l))
+  if (headingIndex === -1) return `${readme}\n\n${rendered}`
+
+  // Skip blank lines immediately after the heading so there's no double gap.
+  let insertAt = headingIndex + 1
+  while (insertAt < lines.length && lines[insertAt] === '') insertAt++
+
+  return [
+    ...lines.slice(0, headingIndex + 1),
+    '',
+    readme,
+    '',
+    ...lines.slice(insertAt),
+  ].join('\n')
+}
+
 class SDKTheme extends MarkdownTheme {
   override getRenderContext(
     page: ConstructorParameters<typeof MarkdownThemeContext>[1],
@@ -862,6 +899,8 @@ class SDKThemeContext extends MarkdownThemeContext {
       reflection: (page: MarkdownPageEvent<DeclarationReflection>) => {
         if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
+        const flowReadme = (this.router as SDKRouter).flowReadmes.get(page.model)
+        if (flowReadme) return renderFlowPage(origReflectionTemplate(page), flowReadme)
         return origReflectionTemplate(page)
       },
     }
@@ -968,6 +1007,10 @@ export class SDKRouter extends MemberRouter {
   // Keyed by domain.path; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
+  // Keyed by the flow DeclarationReflection; populated before sources are cleared
+  // so the renderer can inject README prose at the top of each flow page.
+  readonly flowReadmes = new Map<DeclarationReflection, string>()
+
   /**
    * Pre-scan for domain hooks and consolidate them into one synthetic namespace
    * page per domain (e.g. employee/hooks.md), then delegate everything else to
@@ -1037,6 +1080,21 @@ export class SDKRouter extends MemberRouter {
     }
     if (project.groups) {
       project.groups = project.groups.filter(g => g.children.length > 0)
+    }
+
+    // Read README files for Flow components before sources are cleared. Sources
+    // are the only way to locate the flow directory at this stage.
+    for (const ns of project.children ?? []) {
+      if (!(ns instanceof DeclarationReflection)) continue
+      if (ns.kind !== ReflectionKind.Namespace) continue
+      for (const member of ns.children ?? []) {
+        if (!(member instanceof DeclarationReflection)) continue
+        if (!member.name.endsWith('Flow')) continue
+        const fp = member.sources?.[0]?.fullFileName ?? member.sources?.[0]?.fileName
+        if (!fp) continue
+        const readme = readFlowReadme(fp)
+        if (readme) this.flowReadmes.set(member, readme)
+      }
     }
 
     // Sources were only needed for routing; clear them before rendering so

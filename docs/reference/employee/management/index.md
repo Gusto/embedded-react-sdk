@@ -4,13 +4,15 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/sdk-router.ts.
 # Then run `npm run docs:api:generate` to regenerate.
 title: EmployeeManagement
-description: EmployeeManagement reference.
+description: The namespace for all workflows and blocks related to managing an employee after their initial onboarding, include termination.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
 ---
 
 # EmployeeManagement
+
+The namespace for all workflows and blocks related to managing an employee after their initial onboarding, include termination.
 
 ## Workflow components
 

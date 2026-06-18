@@ -12,9 +12,17 @@ custom_edit_url: null
 
 # Employees
 
+Introductory content about all Employee domain. What is an employee?
+
+A human paid wages.
+
 ## [EmployeeOnboarding](onboarding/index.md)
 
+The namespace for all workflows and blocks related to onboarding an employee.
+
 ## [EmployeeManagement](management/index.md)
+
+The namespace for all workflows and blocks related to managing an employee after their initial onboarding, include termination.
 
 ## Hooks
 
