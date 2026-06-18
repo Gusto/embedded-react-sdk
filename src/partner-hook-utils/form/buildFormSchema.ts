@@ -79,9 +79,9 @@ type OptionalOnUpdate<TConfig> = `${{
  * @interface
  */
 export type OptionalFieldsToRequire<TConfig> = {
-  /** Fields to require in create mode */
+  /** Fields that can be required in create mode */
   create?: Array<OptionalOnCreate<TConfig>>
-  /** Fields to require in update mode */
+  /** Fields that can be required in update mode */
   update?: Array<OptionalOnUpdate<TConfig>>
 }
 

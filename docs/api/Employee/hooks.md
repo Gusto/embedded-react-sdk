@@ -4558,8 +4558,8 @@ const job = useJobForm({
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `create?` | (`"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields to require in create mode |
-| `update?` | (`"title"` \| `"hireDate"` \| `"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields to require in update mode |
+| `create?` | (`"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in create mode |
+| `update?` | (`"title"` \| `"hireDate"` \| `"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in update mode |
 
 ***
 
