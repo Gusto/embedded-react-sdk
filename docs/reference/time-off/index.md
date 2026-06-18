@@ -18,7 +18,7 @@ custom_edit_url: null
 | --------- | ----------- |
 | [TimeOffFlow](workflows.md#timeoffflow) | End-to-end workflow for creating and managing a company's sick, vacation, and holiday time off policies. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

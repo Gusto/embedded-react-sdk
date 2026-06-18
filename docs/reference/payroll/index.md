@@ -22,7 +22,7 @@ custom_edit_url: null
 | [PayrollFlow](workflows.md#payrollflow) | Guided workflow for selecting and running a company's payroll end to end. |
 | [TransitionFlow](workflows.md#transitionflow) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

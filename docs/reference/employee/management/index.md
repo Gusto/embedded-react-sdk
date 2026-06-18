@@ -20,7 +20,7 @@ custom_edit_url: null
 | [EmployeeListFlow](workflows.md#employeelistflow) | Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows. |
 | [TerminationFlow](workflows.md#terminationflow) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

@@ -18,7 +18,7 @@ custom_edit_url: null
 | --------- | ----------- |
 | [InformationRequestsFlow](workflows.md#informationrequestsflow) | Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |

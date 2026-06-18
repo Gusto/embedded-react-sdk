@@ -20,7 +20,7 @@ custom_edit_url: null
 | [OnboardingFlow](workflows.md#onboardingflow) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
 | [SelfOnboardingFlow](workflows.md#selfonboardingflow) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
 
-## Sub-components
+## Block components
 
 | Component | Description |
 | --------- | ----------- |
