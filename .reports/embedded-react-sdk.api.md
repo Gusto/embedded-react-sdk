@@ -2036,7 +2036,7 @@ export const EmployeeDetailsErrorCodes: {
 };
 
 // @public
-export type EmployeeDetailsField = "email" | "firstName" | "middleInitial" | "lastName" | "ssn" | "dateOfBirth";
+export type EmployeeDetailsField = "firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn";
 
 // @public
 export interface EmployeeDetailsFields {
@@ -2062,7 +2062,7 @@ export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fie
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
 
 // @public
-export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("email" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; update?: ("email" | "firstName" | "middleInitial" | "lastName" | "ssn" | "dateOfBirth")[] | undefined; };
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "email" | "dateOfBirth" | "ssn")[] | undefined; update?: ("firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -2796,7 +2796,7 @@ export const HomeAddressErrorCodes: {
 };
 
 // @public
-export type HomeAddressField = "state" | "effectiveDate" | "street1" | "street2" | "city" | "zip" | "courtesyWithholding";
+export type HomeAddressField = "effectiveDate" | "state" | "street1" | "street2" | "city" | "zip" | "courtesyWithholding";
 
 // @public
 export interface HomeAddressFields {
@@ -3659,7 +3659,7 @@ interface PaymentMethodCardProps {
 }
 
 // @public
-export type PaymentMethodFormData = { type: "Direct Deposit" | "Check"; };
+export type PaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
 
 // @public
 export type PaymentMethodFormErrorCode = (typeof PaymentMethodFormErrorCodes)[keyof typeof PaymentMethodFormErrorCodes];
@@ -4055,9 +4055,7 @@ export const PayScheduleErrorCodes: {
     readonly DAY_RANGE: "DAY_RANGE";
 };
 
-// Warning: (ae-missing-release-tag) "PayScheduleField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayScheduleField = "customName" | "frequency" | "customTwicePerMonth" | "anchorPayDate" | "anchorEndOfPayPeriod" | "day1" | "day2";
 
 // @public
@@ -4074,9 +4072,7 @@ export interface PayScheduleFields {
 // @public
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-missing-release-tag) "PayScheduleFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayScheduleFormData = { customName: string; frequency: "Every week" | "Every other week" | "Twice per month" | "Monthly"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
 
 // @public
@@ -4085,14 +4081,10 @@ export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
 // @public
 export type PayScheduleFormOutputs = PayScheduleFormData;
 
-// Warning: (ae-missing-release-tag) "PayScheduleFrequency" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice per month" | "Monthly";
 
-// Warning: (ae-missing-release-tag) "PayScheduleOptionalFieldsToRequire" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type PayScheduleOptionalFieldsToRequire = { create?: "customTwicePerMonth"[] | undefined; update?: "customTwicePerMonth"[] | undefined; };
 
 // Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
@@ -4645,9 +4637,30 @@ export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCom
 // @public
 function SignatureForm(props: SignatureFormProps): JSX;
 
-// Warning: (ae-missing-release-tag) "SignCompanyFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureFormProps"
 //
-// @public (undocumented)
+// @public
+function SignatureForm_2(props: SignatureFormProps_2): JSX;
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureForm"
+//
+// @public
+interface SignatureFormProps extends BaseComponentInterface {
+    employeeId: string;
+    formId: string;
+}
+
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureForm"
+//
+// @public
+interface SignatureFormProps_2 extends BaseComponentInterface<'Company.SignatureForm'> {
+    companyId: string;
+    // @override
+    defaultValues?: never;
+    formId: string;
+}
+
+// @public
 export type SignCompanyFormData = { signature: string; confirmSignature: boolean; };
 
 // @public
@@ -4658,9 +4671,7 @@ export const SignCompanyFormErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-missing-release-tag) "SignCompanyFormField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignCompanyFormField = "signature" | "confirmSignature";
 
 // @public
@@ -4674,9 +4685,7 @@ export interface SignCompanyFormFields {
 // @public
 export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-missing-release-tag) "SignCompanyFormOptionalFieldsToRequire" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
