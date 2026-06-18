@@ -333,7 +333,7 @@ Shape of the validated values produced by the pay schedule form on submit.
 
 ### PayScheduleFrequency
 
-> **PayScheduleFrequency** = *typeof* `FREQUENCY_VALUES`\[`number`\]
+> **PayScheduleFrequency** = *typeof* [`FREQUENCY_VALUES`](#frequency_values)\[`number`\]
 
 Pay schedule frequency values accepted by [usePayScheduleForm](#usepayscheduleform).
 
@@ -376,6 +376,16 @@ pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#pays
 > **UsePayScheduleFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
+<a id="frequency_values"></a>
+
+### FREQUENCY\_VALUES
+
+> `const` **FREQUENCY\_VALUES**: readonly \[`"Every week"`, `"Every other week"`, `"Twice per month"`, `"Monthly"`\]
+
+The ordered list of pay schedule frequency values accepted by [usePayScheduleForm](#usepayscheduleform).
 
 ***
 

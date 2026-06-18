@@ -133,18 +133,18 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Extended by
 
-- [`TextInputProps`](#textinputprops)
-- [`SelectProps`](#selectprops)
-- [`NumberInputProps`](#numberinputprops)
-- [`DatePickerProps`](#datepickerprops)
-- [`RadioGroupProps`](#radiogroupprops)
 - [`CheckboxGroupProps`](#checkboxgroupprops)
 - [`ComboBoxProps`](#comboboxprops)
 - [`MultiSelectComboBoxProps`](#multiselectcomboboxprops)
+- [`DatePickerProps`](#datepickerprops)
+- [`NumberInputProps`](#numberinputprops)
+- [`RadioGroupProps`](#radiogroupprops)
+- [`SelectProps`](#selectprops)
+- [`TextInputProps`](#textinputprops)
 - [`TextAreaProps`](#textareaprops)
 
 #### Properties
@@ -173,8 +173,8 @@ Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a dist
 #### Extended by
 
 - [`CheckboxProps`](#checkboxprops)
-- [`SwitchProps`](#switchprops)
 - [`RadioProps`](#radioprops)
+- [`SwitchProps`](#switchprops)
 
 #### Properties
 
@@ -657,6 +657,35 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 
 ***
 
+<a id="inputprops"></a>
+
+### InputProps
+
+Base text-input primitive used internally by `TextInput` and `NumberInput`.
+
+#### Remarks
+
+Higher-level field components like TextInput and NumberInput reuse the
+`adornmentStart` and `adornmentEnd` slots from this interface.
+
+#### Extends
+
+- `Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"` \| `"type"` \| `"value"` \| `"onChange"` \| `"onBlur"` \| `"onFocus"` \| `"aria-describedby"` \| `"aria-labelledby"` \| `"aria-invalid"` \| `"min"` \| `"max"` \| `"maxLength"`\>
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `adornmentEnd?` | `ReactNode` | `undefined` | Content to display at the end of the input |
+| `adornmentStart?` | `ReactNode` | `undefined` | Content to display at the start of the input |
+| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-invalid?` | `boolean` \| `"true"` \| `"false"` \| `"grammar"` \| `"spelling"` | `undefined` | Indicates the entered value does not conform to the format expected by the application. **See** aria-errormessage. |
+| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | Ref for the input element |
+| `isDisabled?` | `boolean` | `false` | Whether the input is disabled |
+
+***
+
 <a id="linkprops"></a>
 
 ### LinkProps
@@ -709,7 +738,7 @@ Renders a popover menu of actions anchored to a trigger element.
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Properties
 
@@ -1285,7 +1314,7 @@ from the component adapter.
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Properties
 

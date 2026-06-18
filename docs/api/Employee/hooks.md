@@ -2933,6 +2933,22 @@ two-letter state code, then by question key (camelCased from the API key).
 
 ***
 
+<a id="sharedquestionmetadata"></a>
+
+### SharedQuestionMetadata
+
+Metadata common to every state tax question field entry.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+
+***
+
 <a id="statetaxfieldsgroup"></a>
 
 ### StateTaxFieldsGroup
@@ -3123,7 +3139,7 @@ Props for a `Field` rendered as a select (dropdown).
 
 ### StateTaxQuestionFieldEntry
 
-> **StateTaxQuestionFieldEntry** = `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata`
+> **StateTaxQuestionFieldEntry** = `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata) \| `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata) \| `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata) \| `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata) \| `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata) \| `object` & [`SharedQuestionMetadata`](#sharedquestionmetadata)
 
 One question entry within a [StateTaxFieldsGroup](#statetaxfieldsgroup), discriminated by
 `type` to identify which input variant the question uses. Each entry carries
@@ -4723,7 +4739,7 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
 ### StateWcClassCodeFieldProps
 
-> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
+> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), [`WARiskClassCode`](../index.md#wariskclasscode)\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
 

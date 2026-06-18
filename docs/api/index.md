@@ -240,6 +240,37 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 | <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` | `'Week'` |
 | <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` | `'Year'` |
 
+***
+
+<a id="sdkerrorcategories"></a>
+
+### SDKErrorCategories
+
+> `const` **SDKErrorCategories**: `object`
+
+Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` | `'api_error'` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` | `'internal_error'` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` | `'network_error'` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` | `'validation_error'` |
+
+#### Remarks
+
+Use this when you need to reference a category value by name (e.g.
+`SDKErrorCategories.API_ERROR`). Each entry corresponds to one classification:
+
+| Value | When it applies |
+| ----- | --------------- |
+| `api_error` | HTTP error response from the Gusto API (422, 404, 409, 500, etc.) |
+| `validation_error` | Client-side Zod schema validation before the request was sent |
+| `network_error` | Network connectivity failure (connection refused, timeout, abort) |
+| `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
+
 ## Interfaces
 
 <a id="apiconfig"></a>
@@ -259,6 +290,156 @@ API client configuration passed to [GustoProvider](#gustoprovider) (and [GustoPr
 
 ***
 
+<a id="basecomponentinterface"></a>
+
+### BaseComponentInterface
+
+Props for SDK feature components that participate in the standard error/loading/observability surface.
+
+#### Remarks
+
+Extends [CommonComponentInterface](#commoncomponentinterface) with the `onEvent` callback that emits component events
+and optional overrides for the error-boundary fallback and loading indicator. This is the prop
+shape mixed into every public SDK feature component.
+
+#### Extends
+
+- [`CommonComponentInterface`](#commoncomponentinterface)\<`TResourceKey`\>
+
+#### Extended by
+
+- [`InformationRequestListProps`](InformationRequests/blocks.md#informationrequestlistprops)
+- [`InformationRequestFormProps`](InformationRequests/blocks.md#informationrequestformprops)
+- [`PayrollConfigurationProps`](Payroll/blocks.md#payrollconfigurationprops)
+- [`PayrollEditEmployeeProps`](Payroll/blocks.md#payrolleditemployeeprops)
+- [`PayrollHistoryProps`](Payroll/blocks.md#payrollhistoryprops)
+- [`PayrollLandingProps`](Payroll/blocks.md#payrolllandingprops)
+- [`PayrollListBlockProps`](Payroll/blocks.md#payrolllistblockprops)
+- [`OffCycleReasonSelectionProps`](Payroll/blocks.md#offcyclereasonselectionprops)
+- [`PayrollOverviewProps`](Payroll/blocks.md#payrolloverviewprops)
+- [`PayrollFlowProps`](Payroll/flows.md#payrollflowprops)
+- [`PayrollReceiptsProps`](Payroll/blocks.md#payrollreceiptsprops)
+- [`PayrollBlockerListProps`](Payroll/blocks.md#payrollblockerlistprops)
+- [`OffCycleCreationProps`](Payroll/blocks.md#offcyclecreationprops)
+- [`DismissalPayPeriodSelectionProps`](Payroll/blocks.md#dismissalpayperiodselectionprops)
+- [`TransitionCreationProps`](Payroll/blocks.md#transitioncreationprops)
+- [`PolicyListProps`](TimeOff/blocks.md#policylistprops)
+- [`PolicyTypeSelectorProps`](TimeOff/blocks.md#policytypeselectorprops)
+- [`PolicyConfigurationFormProps`](TimeOff/blocks.md#policyconfigurationformprops)
+- [`PolicySettingsProps`](TimeOff/blocks.md#policysettingsprops)
+- [`AddEmployeesToPolicyProps`](TimeOff/blocks.md#addemployeestopolicyprops)
+- [`HolidaySelectionFormProps`](TimeOff/blocks.md#holidayselectionformprops)
+- [`AddEmployeesHolidayProps`](TimeOff/blocks.md#addemployeesholidayprops)
+- [`ViewHolidayEmployeesProps`](TimeOff/blocks.md#viewholidayemployeesprops)
+- [`ViewHolidayPolicyDetailsProps`](TimeOff/blocks.md#viewholidaypolicydetailsprops)
+- [`ViewHolidayScheduleProps`](TimeOff/blocks.md#viewholidayscheduleprops)
+- [`TimeOffPolicyDetailProps`](TimeOff/blocks.md#timeoffpolicydetailprops)
+- [`TimeOffFlowProps`](TimeOff/flows.md#timeoffflowprops)
+- [`OnboardingFlowProps`](Employee/EmployeeOnboarding/flows.md#onboardingflowprops)
+- [`EmployeeListProps`](Employee/EmployeeOnboarding/blocks.md#employeelistprops)
+- [`DocumentSignerProps`](Employee/EmployeeOnboarding/blocks.md#documentsignerprops)
+- [`EmploymentEligibilityProps`](Employee/EmployeeOnboarding/blocks.md#employmenteligibilityprops)
+- [`DocumentListProps`](Employee/EmployeeOnboarding/blocks.md#documentlistprops)
+- [`SignatureFormProps`](Employee/EmployeeOnboarding/blocks.md#signatureformprops)
+- [`I9SignatureFormProps`](Employee/EmployeeOnboarding/blocks.md#i9signatureformprops)
+- [`EmployeeDocumentsProps`](Employee/EmployeeOnboarding/blocks.md#employeedocumentsprops)
+- [`CompensationProps`](Employee/EmployeeOnboarding/blocks.md#compensationprops)
+- [`DeductionsProps`](Employee/EmployeeOnboarding/blocks.md#deductionsprops)
+- [`EmployeeListFlowProps`](Employee/EmployeeManagement/flows.md#employeelistflowprops)
+- [`DashboardFlowProps`](Employee/EmployeeManagement/flows.md#dashboardflowprops)
+- [`TerminateEmployeeProps`](Employee/EmployeeManagement/blocks.md#terminateemployeeprops)
+- [`TerminationSummaryProps`](Employee/EmployeeManagement/blocks.md#terminationsummaryprops)
+- [`TerminationFlowProps`](Employee/EmployeeManagement/flows.md#terminationflowprops)
+- [`SignatureFormProps`](Company/CompanyOnboarding/blocks.md#signatureformprops)
+- [`LocationsListProps`](Company/CompanyOnboarding/blocks.md#locationslistprops)
+- [`AssignSignatoryProps`](Company/CompanyOnboarding/blocks.md#assignsignatoryprops)
+- [`OnboardingFlowProps`](Contractor/ContractorOnboarding/flows.md#onboardingflowprops)
+- [`AddressProps`](Contractor/ContractorOnboarding/blocks.md#addressprops)
+- [`PaymentMethodProps`](Contractor/ContractorOnboarding/blocks.md#paymentmethodprops)
+- [`NewHireReportProps`](Contractor/ContractorOnboarding/blocks.md#newhirereportprops)
+- [`PaymentFlowProps`](Contractor/ContractorManagement/flows.md#paymentflowprops)
+- [`PaymentsListProps`](Contractor/ContractorManagement/blocks.md#paymentslistprops)
+- [`CreatePaymentProps`](Contractor/ContractorManagement/blocks.md#createpaymentprops)
+- [`PaymentHistoryProps`](Contractor/ContractorManagement/blocks.md#paymenthistoryprops)
+- [`PaymentStatementProps`](Contractor/ContractorManagement/blocks.md#paymentstatementprops)
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TResourceKey` *extends* keyof `Resources` | keyof `Resources` | The i18n resource namespace key whose dictionary entries can be overridden. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-basecomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| <a id="property-basecomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
+| <a id="property-basecomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| <a id="property-basecomponentinterfacedictionary"></a> `dictionary?` | `ResourceDictionary`\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| <a id="property-basecomponentinterfacefallbackcomponent"></a> `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| <a id="property-basecomponentinterfaceloadercomponent"></a> `LoaderComponent?` | (`props`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](events.md#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+***
+
+<a id="commoncomponentinterface"></a>
+
+### CommonComponentInterface
+
+Props common to all SDK feature components, including children, an optional className, default form values, and an i18n resource dictionary override.
+
+#### Extended by
+
+- [`BaseComponentInterface`](#basecomponentinterface)
+- [`OffCycleDeductionsSettingProps`](Payroll/blocks.md#offcycledeductionssettingprops)
+- [`ProfileProps`](Employee/EmployeeOnboarding/blocks.md#profileprops)
+- [`JobsListProps`](Employee/EmployeeOnboarding/blocks.md#jobslistprops)
+- [`EditCompensationProps`](Employee/EmployeeOnboarding/blocks.md#editcompensationprops)
+- [`FederalTaxesProps`](Employee/EmployeeOnboarding/blocks.md#federaltaxesprops)
+- [`PaymentMethodProps`](Employee/EmployeeOnboarding/blocks.md#paymentmethodprops)
+- [`ManagementEmployeeListProps`](Employee/EmployeeManagement/blocks.md#managementemployeelistprops)
+- [`DocumentsProps`](Employee/EmployeeManagement/blocks.md#documentsprops)
+- [`HomeAddressProps`](Employee/EmployeeManagement/blocks.md#homeaddressprops)
+- [`HomeAddressEditFormProps`](Employee/EmployeeManagement/blocks.md#homeaddresseditformprops)
+- [`WorkAddressProps`](Employee/EmployeeManagement/blocks.md#workaddressprops)
+- [`WorkAddressEditFormProps`](Employee/EmployeeManagement/blocks.md#workaddresseditformprops)
+- [`FederalTaxesProps`](Employee/EmployeeManagement/blocks.md#federaltaxesprops)
+- [`FederalTaxesEditFormProps`](Employee/EmployeeManagement/blocks.md#federaltaxeseditformprops)
+- [`StateTaxesProps`](Employee/EmployeeManagement/blocks.md#statetaxesprops)
+- [`ProfileProps`](Employee/EmployeeManagement/blocks.md#profileprops)
+- [`ProfileEditFormProps`](Employee/EmployeeManagement/blocks.md#profileeditformprops)
+- [`PaymentMethodProps`](Employee/EmployeeManagement/blocks.md#paymentmethodprops)
+- [`DeductionsProps`](Employee/EmployeeManagement/blocks.md#deductionsprops)
+- [`DeductionsEditFormProps`](Employee/EmployeeManagement/blocks.md#deductionseditformprops)
+- [`CompensationProps`](Employee/EmployeeManagement/blocks.md#compensationprops)
+- [`CompensationEditFormProps`](Employee/EmployeeManagement/blocks.md#compensationeditformprops)
+- [`CompensationAddJobFormProps`](Employee/EmployeeManagement/blocks.md#compensationaddjobformprops)
+- [`CompensationAddAnotherJobFormProps`](Employee/EmployeeManagement/blocks.md#compensationaddanotherjobformprops)
+- [`PayScheduleProps`](Company/CompanyOnboarding/blocks.md#payscheduleprops)
+- [`CreateSignatoryProps`](Company/CompanyOnboarding/blocks.md#createsignatoryprops)
+- [`InviteSignatoryProps`](Company/CompanyOnboarding/blocks.md#invitesignatoryprops)
+- [`ContractorListProps`](Contractor/ContractorOnboarding/blocks.md#contractorlistprops)
+- [`ContractorProfileProps`](Contractor/ContractorOnboarding/blocks.md#contractorprofileprops)
+- [`ContractorSubmitProps`](Contractor/ContractorOnboarding/blocks.md#contractorsubmitprops)
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TResourceKey` *extends* keyof `Resources` | keyof `Resources` | The i18n resource namespace key whose dictionary entries can be overridden. |
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-commoncomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| <a id="property-commoncomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
+| <a id="property-commoncomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| <a id="property-commoncomponentinterfacedictionary"></a> `dictionary?` | `ResourceDictionary`\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+***
+
 <a id="confirmwiredetailsprops"></a>
 
 ### ConfirmWireDetailsProps
@@ -270,7 +451,7 @@ Props for the ConfirmWireDetails component.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-confirmwiredetailspropscompanyid"></a> `companyId` | `string` | The associated company identifier. |
-| <a id="property-confirmwiredetailspropsonevent"></a> `onEvent?` | `OnEventType`\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked with wire-confirmation lifecycle events. See the events table on ConfirmWireDetails. |
+| <a id="property-confirmwiredetailspropsonevent"></a> `onEvent?` | [`OnEventType`](events.md#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked with wire-confirmation lifecycle events. See the events table on ConfirmWireDetails. |
 | <a id="property-confirmwiredetailspropswireinid"></a> `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
 ***
@@ -632,6 +813,20 @@ Use this when supplying a custom wire-confirmation UI to a payroll flow via a
 
 ***
 
+<a id="dataattributes"></a>
+
+### DataAttributes
+
+> **DataAttributes** = `object`
+
+Type-safe map for HTML `data-*` attributes.
+
+#### Index Signature
+
+\[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
+
+***
+
 <a id="observabilitymetricunit"></a>
 
 ### ObservabilityMetricUnit
@@ -642,10 +837,36 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 
 ***
 
+<a id="requireatleastone"></a>
+
+### RequireAtLeastOne
+
+> **RequireAtLeastOne**\<`T`\> = `{ [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>> }`\[keyof `T`\]
+
+Constructs a type where at least one property of `T` is required.
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+***
+
 <a id="sdkerrorcategory"></a>
 
 ### SDKErrorCategory
 
-> **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
+> **SDKErrorCategory** = *typeof* [`SDKErrorCategories`](#sdkerrorcategories)\[keyof *typeof* [`SDKErrorCategories`](#sdkerrorcategories)\]
 
 High-level classification of where an [SDKError](#sdkerror) originated.
+
+***
+
+<a id="wariskclasscode"></a>
+
+### WARiskClassCode
+
+> **WARiskClassCode** = `object`
+
+A Washington state workers' compensation risk classification entry.
