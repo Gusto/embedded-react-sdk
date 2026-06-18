@@ -434,6 +434,7 @@ export function WorkAddressView({
                       : t('form.editLocationLabel')
                   }
                   description={t('form.editLocationDescription')}
+                  placeholder={t('form.selectPlaceholder')}
                   validationMessages={locationValidation}
                   portalContainer={addressModalPortal}
                 />
@@ -460,6 +461,7 @@ export function WorkAddressView({
                 <LocationField
                   label={t('form.newWorkAddressLabel')}
                   description={t('form.newWorkAddressDescription')}
+                  placeholder={t('form.selectPlaceholder')}
                   validationMessages={locationValidation}
                   portalContainer={addressModalPortal}
                 />

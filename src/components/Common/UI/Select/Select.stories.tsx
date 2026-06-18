@@ -21,6 +21,7 @@ export const Default = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
     />
   )
 }
@@ -48,6 +49,7 @@ export const WithDescription = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
       description="Please select one of the available options"
     />
   )
@@ -62,6 +64,7 @@ export const WithError = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
       isInvalid
       errorMessage="Please select a valid option"
     />
@@ -77,6 +80,7 @@ export const Disabled = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
       isDisabled
     />
   )
@@ -91,6 +95,7 @@ export const Required = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
       isRequired={true}
     />
   )
@@ -105,6 +110,7 @@ export const WithOnBlur = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
+      placeholder="Choose an option"
     />
   )
 }

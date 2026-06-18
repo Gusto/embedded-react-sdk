@@ -57,10 +57,11 @@ function useResolvedBaseProps(
 
 /** @internal */
 export function SelectStateTaxField({ meta, ...props }: MetaProps & SelectStateTaxFieldProps) {
+  const { t } = useTranslation('common')
   const base = useResolvedBaseProps(meta, props)
   const hookProps: SelectHookFieldProps<typeof EmployeeStateTaxesErrorCodes.REQUIRED> = {
     ...base,
-    placeholder: props.placeholder,
+    placeholder: props.placeholder ?? t('selectPlaceholder'),
     FieldComponent: props.FieldComponent,
   }
   return <SelectHookField {...hookProps} />

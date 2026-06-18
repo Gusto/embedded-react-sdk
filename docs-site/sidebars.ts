@@ -8,16 +8,12 @@ const sidebars: SidebarsConfig = {
       link: { type: 'doc', id: 'getting-started/getting-started' },
       collapsed: false,
       items: [
+        'getting-started/quick-start',
         'getting-started/authentication',
         'getting-started/proxy-security-partner-guidance',
+        'getting-started/component-types',
         'getting-started/example-app',
       ],
-    },
-    {
-      type: 'category',
-      label: 'Deciding to build with the SDK',
-      link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
-      items: ['deciding-to-build-with-the-sdk/component-types'],
     },
     {
       type: 'category',

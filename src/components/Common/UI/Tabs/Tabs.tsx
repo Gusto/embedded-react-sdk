@@ -70,6 +70,7 @@ export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaPr
           <div className={styles.dropdown}>
             <Select
               label={ariaProps['aria-label'] || t('labels.tabNavigation')}
+              placeholder=""
               shouldVisuallyHideLabel={true}
               options={selectOptions}
               value={selectedId}

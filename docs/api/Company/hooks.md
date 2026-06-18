@@ -96,91 +96,23 @@ function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleForm
 
 ***
 
-<a id="payschedulefields"></a>
+<a id="anchorendofpayperiodfield"></a>
 
-### PayScheduleFields
+### AnchorEndOfPayPeriodField
 
-Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
+Date picker bound to the `anchorEndOfPayPeriod` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops) | [AnchorEndOfPayPeriodFieldProps](#anchorendofpayperiodfieldprops) — accepts the standard hook field props. |
 
 #### Remarks
 
-`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
-on the selected frequency and twice-per-month strategy — always null-check them
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AnchorEndOfPayPeriod` | (`props`) => `Element` | First pay period end date picker. Always available. |
-| `AnchorPayDate` | (`props`) => `Element` | First pay date picker. Always available. |
-| `CustomName` | (`props`) => `Element` | Display name text input. Always available. |
-| `CustomTwicePerMonth` | ((`props`) => `Element`) \| `undefined` | Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
-| `Day1` | ((`props`) => `Element`) \| `undefined` | First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
-| `Day2` | ((`props`) => `Element`) \| `undefined` | Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
-| `Frequency` | (`props`) => `Element` | Frequency selector. Always available. |
-
-***
-
-<a id="usepayscheduleformprops"></a>
-
-### UsePayScheduleFormProps
-
-Configuration options for [usePayScheduleForm](#usepayscheduleform).
-
-#### Remarks
-
-Presence or absence of `payScheduleId` selects between update and create mode.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company that owns the pay schedule. |
-| `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
-| `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usepayscheduleformready"></a>
-
-### UsePayScheduleFormReady
-
-Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with the
-pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`PayScheduleFormData`](#payscheduleformdata), [`PayScheduleFields`](#payschedulefields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Available actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
-| `data` | `object` | Static entity data resolved from the API. |
-| `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
-| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
-| `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
-| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
-| `status` | `object` | Reactive status flags. |
-| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
+Available on the hook result as `form.Fields.AnchorEndOfPayPeriod`. Always
+required. Represents the end date of the first pay period and is used to
+calculate future pay periods. May be the same date as the first pay date.
 
 ***
 
@@ -194,6 +126,25 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorEndO
 
 ***
 
+<a id="anchorpaydatefield"></a>
+
+### AnchorPayDateField
+
+Date picker bound to the `anchorPayDate` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`AnchorPayDateFieldProps`](#anchorpaydatefieldprops) | [AnchorPayDateFieldProps](#anchorpaydatefieldprops) — accepts the standard hook field props. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.AnchorPayDate`. Always required.
+Represents the date of the first paycheck under this schedule.
+
+***
+
 <a id="anchorpaydatefieldprops"></a>
 
 ### AnchorPayDateFieldProps
@@ -201,6 +152,24 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorEndO
 > **AnchorPayDateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../utilities.md#datepickerhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorPayDate` component.
+
+***
+
+<a id="customnamefield"></a>
+
+### CustomNameField
+
+Text input bound to the `customName` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`CustomNameFieldProps`](#customnamefieldprops) | [CustomNameFieldProps](#customnamefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.CustomName`. Always required.
 
 ***
 
@@ -214,6 +183,27 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomName
 
 ***
 
+<a id="customtwicepermonthfield"></a>
+
+### CustomTwicePerMonthField
+
+Radio group bound to the `customTwicePerMonth` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops) | [CustomTwicePerMonthFieldProps](#customtwicepermonthfieldprops) — accepts the standard hook field props. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.CustomTwicePerMonth`. Only present
+when the selected frequency is `'Twice per month'`; otherwise the entry on
+`Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the
+month) and `'custom'` (manual day entry via `Day1` and `Day2`).
+
+***
+
 <a id="customtwicepermonthfieldprops"></a>
 
 ### CustomTwicePerMonthFieldProps
@@ -224,6 +214,27 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwic
 
 ***
 
+<a id="day1field"></a>
+
+### Day1Field
+
+Number input bound to the `day1` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`Day1FieldProps`](#day1fieldprops) | [Day1FieldProps](#day1fieldprops) — accepts the standard hook field props. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Day1`. Only present when the
+frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and
+`customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is
+`undefined`. Accepts integers in the range 1–31.
+
+***
+
 <a id="day1fieldprops"></a>
 
 ### Day1FieldProps
@@ -231,6 +242,26 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwic
 > **Day1FieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../utilities.md#numberinputhookfieldprops)\<[`DayValidation`](#dayvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.Day1` component.
+
+***
+
+<a id="day2field"></a>
+
+### Day2Field
+
+Number input bound to the `day2` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`Day2FieldProps`](#day2fieldprops) | [Day2FieldProps](#day2fieldprops) — accepts the standard hook field props. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Day2`. Only present when the
+frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`;
+otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31.
 
 ***
 
@@ -259,6 +290,26 @@ See [PayScheduleErrorCodes](#payscheduleerrorcodes).
 
 ***
 
+<a id="frequencyfield"></a>
+
+### FrequencyField
+
+Select dropdown bound to the `frequency` field of [usePayScheduleForm](#usepayscheduleform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`FrequencyFieldProps`](#frequencyfieldprops) | [FrequencyFieldProps](#frequencyfieldprops) — accepts the standard hook field props plus `getOptionLabel`. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Frequency`. Always required.
+Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and
+`'Monthly'`. Pass `getOptionLabel` to customize how options are displayed.
+
+***
+
 <a id="frequencyfieldprops"></a>
 
 ### FrequencyFieldProps
@@ -279,6 +330,27 @@ Union of validation error code strings emitted by the pay schedule form.
 
 ***
 
+<a id="payscheduleerrorcodes"></a>
+
+### PayScheduleErrorCodes
+
+> `const` **PayScheduleErrorCodes**: `object`
+
+Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `DAY_RANGE` | `"DAY_RANGE"` | `'DAY_RANGE'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+#### Remarks
+
+Use these as `validationMessages` keys on the corresponding `Fields.*` components.
+
+***
+
 <a id="payschedulefield"></a>
 
 ### PayScheduleField
@@ -286,6 +358,32 @@ Union of validation error code strings emitted by the pay schedule form.
 > **PayScheduleField** = keyof *typeof* `fieldValidators`
 
 Union of field names managed by the pay schedule form.
+
+***
+
+<a id="payschedulefields"></a>
+
+### PayScheduleFields
+
+Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
+
+#### Remarks
+
+`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
+on the selected frequency and twice-per-month strategy — always null-check them
+before rendering.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `AnchorEndOfPayPeriod` | (`props`) => `Element` | First pay period end date picker. Always available. |
+| `AnchorPayDate` | (`props`) => `Element` | First pay date picker. Always available. |
+| `CustomName` | (`props`) => `Element` | Display name text input. Always available. |
+| `CustomTwicePerMonth` | ((`props`) => `Element`) \| `undefined` | Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
+| `Day1` | ((`props`) => `Element`) \| `undefined` | First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
+| `Day2` | ((`props`) => `Element`) \| `undefined` | Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
+| `Frequency` | (`props`) => `Element` | Frequency selector. Always available. |
 
 ***
 
@@ -369,6 +467,68 @@ pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#pays
 
 ***
 
+<a id="usepayscheduleformprops"></a>
+
+### UsePayScheduleFormProps
+
+Configuration options for [usePayScheduleForm](#usepayscheduleform).
+
+#### Remarks
+
+Presence or absence of `payScheduleId` selects between update and create mode.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company that owns the pay schedule. |
+| `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
+| `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
+***
+
+<a id="usepayscheduleformready"></a>
+
+### UsePayScheduleFormReady
+
+Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
+
+#### Remarks
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with the
+pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
+
+#### Extends
+
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`PayScheduleFormData`](#payscheduleformdata), [`PayScheduleFields`](#payschedulefields)\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Available actions. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
+| `data` | `object` | Static entity data resolved from the API. |
+| `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
+| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
+| `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
+| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
+| `status` | `object` | Reactive status flags. |
+| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
+
+***
+
 <a id="usepayscheduleformresult"></a>
 
 ### UsePayScheduleFormResult
@@ -376,166 +536,6 @@ pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#pays
 > **UsePayScheduleFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleerrorcodes"></a>
-
-### PayScheduleErrorCodes
-
-> `const` **PayScheduleErrorCodes**: `object`
-
-Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `DAY_RANGE` | `"DAY_RANGE"` | `'DAY_RANGE'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-#### Remarks
-
-Use these as `validationMessages` keys on the corresponding `Fields.*` components.
-
-***
-
-<a id="anchorendofpayperiodfield"></a>
-
-### AnchorEndOfPayPeriodField
-
-Date picker bound to the `anchorEndOfPayPeriod` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops) | [AnchorEndOfPayPeriodFieldProps](#anchorendofpayperiodfieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AnchorEndOfPayPeriod`. Always
-required. Represents the end date of the first pay period and is used to
-calculate future pay periods. May be the same date as the first pay date.
-
-***
-
-<a id="anchorpaydatefield"></a>
-
-### AnchorPayDateField
-
-Date picker bound to the `anchorPayDate` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`AnchorPayDateFieldProps`](#anchorpaydatefieldprops) | [AnchorPayDateFieldProps](#anchorpaydatefieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AnchorPayDate`. Always required.
-Represents the date of the first paycheck under this schedule.
-
-***
-
-<a id="customnamefield"></a>
-
-### CustomNameField
-
-Text input bound to the `customName` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`CustomNameFieldProps`](#customnamefieldprops) | [CustomNameFieldProps](#customnamefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CustomName`. Always required.
-
-***
-
-<a id="customtwicepermonthfield"></a>
-
-### CustomTwicePerMonthField
-
-Radio group bound to the `customTwicePerMonth` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops) | [CustomTwicePerMonthFieldProps](#customtwicepermonthfieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CustomTwicePerMonth`. Only present
-when the selected frequency is `'Twice per month'`; otherwise the entry on
-`Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the
-month) and `'custom'` (manual day entry via `Day1` and `Day2`).
-
-***
-
-<a id="day1field"></a>
-
-### Day1Field
-
-Number input bound to the `day1` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`Day1FieldProps`](#day1fieldprops) | [Day1FieldProps](#day1fieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Day1`. Only present when the
-frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and
-`customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is
-`undefined`. Accepts integers in the range 1–31.
-
-***
-
-<a id="day2field"></a>
-
-### Day2Field
-
-Number input bound to the `day2` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`Day2FieldProps`](#day2fieldprops) | [Day2FieldProps](#day2fieldprops) — accepts the standard hook field props. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Day2`. Only present when the
-frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`;
-otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31.
-
-***
-
-<a id="frequencyfield"></a>
-
-### FrequencyField
-
-Select dropdown bound to the `frequency` field of [usePayScheduleForm](#usepayscheduleform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`FrequencyFieldProps`](#frequencyfieldprops) | [FrequencyFieldProps](#frequencyfieldprops) — accepts the standard hook field props plus `getOptionLabel`. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Frequency`. Always required.
-Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and
-`'Monthly'`. Pass `getOptionLabel` to customize how options are displayed.
 
 ## useSignCompanyForm
 
@@ -627,71 +627,6 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
 
 ***
 
-<a id="signcompanyformfields"></a>
-
-### SignCompanyFormFields
-
-Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
-| `Signature` | (`props`) => `Element` | Text input for the signer's typed name; always required. |
-
-***
-
-<a id="usesigncompanyformprops"></a>
-
-### UseSignCompanyFormProps
-
-Props for [useSignCompanyForm](#usesigncompanyform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
-| `formId` | `string` | UUID of the company form to sign. |
-| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
-
-***
-
-<a id="usesigncompanyformready"></a>
-
-### UseSignCompanyFormReady
-
-Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`SignCompanyFormData`](#signcompanyformdata), [`SignCompanyFormFields`](#signcompanyformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
-| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
-| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
-| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
-| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit-state flags. |
-| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
-| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
-
-***
-
 <a id="confirmsignaturefieldprops"></a>
 
 ### ConfirmSignatureFieldProps
@@ -733,6 +668,23 @@ schema.
 
 ***
 
+<a id="signcompanyformerrorcodes"></a>
+
+### SignCompanyFormErrorCodes
+
+> `const` **SignCompanyFormErrorCodes**: `object`
+
+Validation error codes emitted by the sign-company-form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
 <a id="signcompanyformfield"></a>
 
 ### SignCompanyFormField
@@ -740,6 +692,21 @@ schema.
 > **SignCompanyFormField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the sign-company form.
+
+***
+
+<a id="signcompanyformfields"></a>
+
+### SignCompanyFormFields
+
+Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `ConfirmSignature` | (`props`) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
+| `Signature` | (`props`) => `Element` | Text input for the signer's typed name; always required. |
 
 ***
 
@@ -793,6 +760,56 @@ See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 
 ***
 
+<a id="usesigncompanyformprops"></a>
+
+### UseSignCompanyFormProps
+
+Props for [useSignCompanyForm](#usesigncompanyform).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `formId` | `string` | UUID of the company form to sign. |
+| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
+| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
+
+***
+
+<a id="usesigncompanyformready"></a>
+
+### UseSignCompanyFormReady
+
+Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
+
+#### Extends
+
+- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`SignCompanyFormData`](#signcompanyformdata), [`SignCompanyFormFields`](#signcompanyformfields)\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Imperative actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
+| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
+| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
+| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
+| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit-state flags. |
+| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
+| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+***
+
 <a id="usesigncompanyformresult"></a>
 
 ### UseSignCompanyFormResult
@@ -800,20 +817,3 @@ See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 > **UseSignCompanyFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
 
 Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
-
-***
-
-<a id="signcompanyformerrorcodes"></a>
-
-### SignCompanyFormErrorCodes
-
-> `const` **SignCompanyFormErrorCodes**: `object`
-
-Validation error codes emitted by the sign-company-form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |

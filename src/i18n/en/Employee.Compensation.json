@@ -32,6 +32,9 @@
     }
   },
   "employeeClassification": "Employee type",
+  "flsaStatusPlaceholder": "Select classification...",
+  "paymentUnitPlaceholder": "Select wage frequency...",
+  "minimumWagePlaceholder": "Select minimum wage...",
   "flsaStatusLabels": {
     "Commission Only Exempt": "Commission Only/No Overtime",
     "Commission Only Nonexempt": "Commission Only/Eligible for overtime",

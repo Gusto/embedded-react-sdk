@@ -54,9 +54,10 @@ export interface SelectProps
    */
   options: SelectOption[]
   /**
-   * Placeholder text when no option is selected
+   * Placeholder text displayed when no option is selected.
+   * Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed.
    */
-  placeholder?: string
+  placeholder: string
   /**
    * Currently selected value
    */

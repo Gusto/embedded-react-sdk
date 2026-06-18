@@ -1,9 +1,9 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsSubmit'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { usePayrollsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
 import { useWireInRequestsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsGet'
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
@@ -37,7 +37,8 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { renderErrorList } from '@/helpers/apiErrorToList'
-import { Flex } from '@/components/Common'
+import { Flex, PayrollLoading } from '@/components/Common'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 
 /**
  * Props for {@link PayrollOverview}.
@@ -142,17 +143,25 @@ const Root = ({
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList, Text } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
-  const { data } = usePayrollsGetSuspense(
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
+    defaultItemsPerPage: 10,
+  })
+  const { data, isFetching } = usePayrollsGet(
     {
       companyId,
       payrollId: payrollId,
-      include: ['taxes', 'benefits', 'deductions'],
+      include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
+      page: currentPage,
+      per: itemsPerPage,
     },
-    { refetchInterval: isPolling ? 5_000 : false },
+    {
+      refetchInterval: isPolling ? 5_000 : false,
+      placeholderData: keepPreviousData,
+    },
   )
-  const payrollData = data.payrollShow!
-  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
-  const wireInId = findWireInRequestUuid(payrollData.creditBlockers)
+  const payrollData = data?.payrollShow
+  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData?.submissionBlockers)
+  const wireInId = findWireInRequestUuid(payrollData?.creditBlockers)
 
   const { data: wireInRequestData } = useWireInRequestsGet(
     {
@@ -187,24 +196,30 @@ const Root = ({
     }
   }, [wireInRequest?.status, showWireDetailsConfirmation])
 
+  const checkDate = payrollData?.checkDate
   useEffect(() => {
-    if (showWireDetailsConfirmation) {
-      const checkDate = dateFormatter.formatShortWithYear(payrollData.checkDate)
+    if (checkDate && showWireDetailsConfirmation) {
+      const formattedCheckDate = dateFormatter.formatShortWithYear(checkDate)
 
       setInternalAlerts([
         {
           type: 'success',
           title: t('alerts.wireDetailsSubmittedTitle'),
-          content: <Text>{t('alerts.wireDetailsSubmittedMessage', { checkDate })}</Text>,
+          content: (
+            <Text>
+              {t('alerts.wireDetailsSubmittedMessage', { checkDate: formattedCheckDate })}
+            </Text>
+          ),
           onDismiss: () => {
             setShowWireDetailsConfirmation(false)
           },
         },
       ])
     }
-  }, [showWireDetailsConfirmation, payrollData.checkDate, t, dateFormatter, Text])
+  }, [showWireDetailsConfirmation, checkDate, t, dateFormatter, Text])
 
   useEffect(() => {
+    if (!payrollData) return
     // Start polling when payroll is submitting and not already polling
     if (
       payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submitting &&
@@ -260,16 +275,16 @@ const Root = ({
       setIsPolling(false)
     }
   }, [
-    payrollData.processingRequest?.status,
-    payrollData.processed,
+    payrollData?.processingRequest?.status,
+    payrollData?.processed,
     isPolling,
     onEvent,
     t,
     dateFormatter,
     formatCurrency,
-    payrollData.totals?.companyDebit,
-    payrollData.payrollStatusMeta?.expectedDebitTime,
-    payrollData.payrollDeadline,
+    payrollData?.totals?.companyDebit,
+    payrollData?.payrollStatusMeta?.expectedDebitTime,
+    payrollData?.payrollDeadline,
   ])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
@@ -279,29 +294,33 @@ const Root = ({
 
   const { paymentSpeed } = useCompanyPaymentSpeed(companyId)
 
-  const { data: employeeData } = useEmployeesListSuspense({
-    companyId,
-  })
-
   const { mutateAsync: submitPayroll, isPending } = usePayrollsSubmitMutation()
 
   const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
 
+  const gustoEmbedded = useGustoEmbeddedContext()
+
+  if (!payrollData) {
+    return <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
+  }
+
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
-  const gustoEmbedded = useGustoEmbeddedContext()
 
+  const pagination = getPaginationProps(data.httpMeta.response.headers, isFetching)
+
+  // Per-tax totals come from the payroll-level `payrollTaxes` aggregate so they stay
+  // correct when `employeeCompensations` is paginated (only a single page is loaded).
   const taxes =
-    payrollData.employeeCompensations?.reduce(
-      (acc, compensation) => {
-        compensation.taxes?.forEach(tax => {
-          acc[tax.name] = {
-            employee: (acc[tax.name]?.employee ?? 0) + (tax.employer ? 0 : tax.amount),
-            employer: (acc[tax.name]?.employer ?? 0) + (tax.employer ? tax.amount : 0),
-          }
-        })
-
+    payrollData.payrollTaxes?.reduce(
+      (acc, tax) => {
+        if (!tax.name) return acc
+        const amount = tax.amount ?? 0
+        acc[tax.name] = {
+          employee: (acc[tax.name]?.employee ?? 0) + (tax.employer ? 0 : amount),
+          employer: (acc[tax.name]?.employer ?? 0) + (tax.employer ? amount : 0),
+        }
         return acc
       },
       {} as Record<string, { employee: number; employer: number }>,
@@ -395,7 +414,6 @@ const Root = ({
       canCancel={canCancelPayroll(payrollData)}
       payrollData={payrollData}
       bankAccount={bankAccount}
-      employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
       alerts={internalAlerts}
       submissionBlockers={submissionBlockers}
@@ -406,6 +424,7 @@ const Root = ({
       wireInConfirmationRequest={wireInConfirmationRequest}
       withReimbursements={withReimbursements}
       paymentSpeed={paymentSpeed}
+      pagination={pagination}
     />
   )
 }
