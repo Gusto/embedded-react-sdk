@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { stringify as stringifyYaml } from 'yaml'
 import {
@@ -45,12 +45,15 @@ const STANDALONE_PAGES = _STANDALONE_PAGES as StandalonePageConfig
  *
  * URL structure:
  *   employee/index.md                         ← generated domain hub (namespaces + hooks index)
- *   employee/management/index.md              ← namespace index (links to flow pages + sub-components)
+ *   employee/management/index.md              ← namespace hub (links to flow pages + sub-components)
  *   employee/management/onboarding-flow.md    ← each Flow component gets its own page (kebab-case name)
  *   employee/management/sub-components.md     ← remaining namespace members
  *   employee/hooks.md                         ← all Employee hooks consolidated on one page
  *   company/hooks.md                          ← all Company hooks consolidated on one page
- *   payroll/README.md                         ← flat namespace (no subpath in DOMAINS)
+ *   payroll/index.md                          ← domain hub for single-namespace domains
+ *   payroll/namespace.md                      ← namespace hub (fixed slug for single-namespace domains)
+ *   time-off/index.md                         ← domain hub for single-namespace domains
+ *   time-off/namespace.md                     ← namespace hub
  *   theme-variables.md                        ← ThemeProvider exports (GustoSDKTheme, createTheme, …)
  *   component-inventory.md                    ← Common UI component inventory
  *   utilities.md                              ← partner hook utilities (composeErrorHandler, …)
@@ -124,9 +127,31 @@ export function standalonePageFromSources(reflection: Reflection): string | null
 /** Convert a PascalCase name to kebab-case.
  *  'OnboardingFlow' → 'onboarding-flow',  'PayrollRunFlow' → 'payroll-run-flow' */
 function toKebabCase(name: string): string {
-  return name.replace(/([A-Z])/g, (_, letter: string, offset: number) =>
-    (offset > 0 ? '-' : '') + letter.toLowerCase(),
+  return name.replace(
+    /([A-Z])/g,
+    (_, letter: string, offset: number) => (offset > 0 ? '-' : '') + letter.toLowerCase(),
   )
+}
+
+/**
+ * Return the slug for a namespace's own hub page.
+ *
+ * Multi-namespace domains (namespace has a subpath) → 'index'
+ *   e.g. EmployeeManagement (subpath 'management') → 'index'
+ *        → employee/management/index.md
+ *
+ * Single-namespace domains (no subpath) → 'namespace'
+ *   e.g. Payroll (no subpath) → 'namespace'
+ *        → payroll/namespace.md  (distinct from the domain hub at payroll/index.md)
+ *
+ * Falls back to 'index' for unknown namespaces (not in DOMAINS).
+ */
+function getNamespaceIndexSlug(namespaceName: string): string {
+  for (const domain of DOMAINS) {
+    const ns = domain.namespaces.find(n => n.id === namespaceName)
+    if (ns) return ns.subpath ? 'index' : 'namespace'
+  }
+  return 'index'
 }
 
 /** Convert a domain output path to its TypeDoc source directory name.
@@ -136,6 +161,25 @@ function pathToSourceDir(domainPath: string): string {
     .split('-')
     .map(s => s[0]!.toUpperCase() + s.slice(1))
     .join('')
+}
+
+/**
+ * Read prose from src/components/<Domain>/README.md if it exists, to be
+ * injected at the top of the generated domain hub page. TypeDoc is run from
+ * docs-site/, so src/ is one level up via process.cwd().
+ */
+function readDomainReadme(domainPath: string): string | null {
+  const sourceDir = pathToSourceDir(domainPath)
+  const readmePath = join(process.cwd(), '../src/components', sourceDir, 'README.md')
+  if (!existsSync(readmePath)) return null
+  const content = readFileSync(readmePath, 'utf-8')
+  // Strip everything up to and including the first h1 so the README can carry
+  // a standalone title (useful for humans/LLMs in source) without duplicating
+  // the page heading that renderDomainHub already emits.
+  const lines = content.split('\n')
+  const h1Index = lines.findIndex(l => /^#\s/.test(l))
+  const prose = h1Index === -1 ? content : lines.slice(h1Index + 1).join('\n')
+  return prose.trim() || null
 }
 
 function isNamespaceIndex(model: DeclarationReflection): boolean {
@@ -567,6 +611,9 @@ export function pageDescription(page: MarkdownPageEvent): string {
 
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
   const parts: string[] = [`# ${model.name}`, '']
+
+  const domainReadme = readDomainReadme(getDomainPath(model))
+  if (domainReadme) parts.push(domainReadme, '')
 
   const namespaces = (model.children ?? []).filter(
     (c): c is DeclarationReflection =>
@@ -1092,7 +1139,7 @@ export class SDKRouter extends MemberRouter {
           const slugger = new Slugger(this.sluggerConfiguration)
           this.sluggers.set(flow, slugger)
           outPages.push({ kind: PageKind.Reflection, model: flow, url: flowUrl })
-          for (const propsIface of (flowPropsMap.get(flow) ?? [])) {
+          for (const propsIface of flowPropsMap.get(flow) ?? []) {
             const slug = slugger.slug(propsIface.name)
             this.anchors.set(propsIface, slug)
             this.fullUrls.set(propsIface, `${flowUrl}#${slug}`)
@@ -1129,7 +1176,13 @@ export class SDKRouter extends MemberRouter {
         indexNs.comment = ns.comment ? ns.comment.clone() : new Comment()
         indexNs.comment.blockTags.push(new CommentTag('@namespaceIndex', []))
         indexNs.children = [...flows, ...blocks]
-        const indexUrl = this.buildSyntheticPage(`${nsBasePath}/index`, indexNs, [], outPages)
+        const nsIndexSlug = getNamespaceIndexSlug(ns.name)
+        const indexUrl = this.buildSyntheticPage(
+          `${nsBasePath}/${nsIndexSlug}`,
+          indexNs,
+          [],
+          outPages,
+        )
         this.fullUrls.set(reflection, indexUrl)
         return
       }
@@ -1160,7 +1213,11 @@ export class SDKRouter extends MemberRouter {
     // Namespace → mapped path or bare name  (no @gusto prefix)
     if (reflection.kind === ReflectionKind.Namespace) {
       const base = NAMESPACE_PATHS[reflection.name] ?? reflection.name
-      return `${base}/${this.entryFileName}`
+      const slug = getNamespaceIndexSlug(reflection.name)
+      // Multi-namespace domains use the configured entry file name (e.g. 'index').
+      // Single-namespace domains use the fixed slug 'namespace' so the namespace
+      // hub (e.g. payroll/namespace.md) is distinct from the domain hub (payroll/index.md).
+      return slug === 'index' ? `${base}/${this.entryFileName}` : `${base}/${slug}`
     }
 
     return super.getIdealBaseName(reflection)

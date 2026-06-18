@@ -197,10 +197,15 @@ describe('hookDirFromSources', () => {
 
 describe('getIdealBaseName — namespaces', () => {
   it.each([
+    // Multi-namespace domains (have a subpath) → use entry file name
     ['EmployeeOnboarding', 'employee/onboarding/README'],
     ['EmployeeManagement', 'employee/management/README'],
     ['CompanyOnboarding', 'company/onboarding/README'],
     ['ContractorOnboarding', 'contractor/onboarding/README'],
+    // Single-namespace domains (no subpath) → use fixed 'namespace' slug
+    ['Payroll', 'payroll/namespace'],
+    ['TimeOff', 'time-off/namespace'],
+    // Deprecated/unknown namespaces → fall through to entry file name
     ['Employee', 'Employee/README'],
     ['Company', 'Company/README'],
     ['Contractor', 'Contractor/README'],
@@ -352,6 +357,38 @@ describe('buildPages — namespace flows/blocks splitting', () => {
 
     expect(urls).toContain('employee/management/README.md')
     expect(urls).not.toContain('employee/management/workflows.md')
+  })
+
+  it('single-namespace domain with Flow children uses namespace.md as hub slug', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'Payroll', ReflectionKind.Namespace)
+    makeChild(ns, 'PayrollFlow', ReflectionKind.Function)
+    makeChild(ns, 'SomeCard', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    // Flow and sub-component pages sit directly in the domain directory
+    expect(urls).toContain('payroll/payroll-flow.md')
+    expect(urls).toContain('payroll/sub-components.md')
+    // Namespace hub uses fixed 'namespace' slug (not index.md, which is the domain hub)
+    expect(urls).toContain('payroll/namespace.md')
+  })
+
+  it('single-namespace domain namespace hub does not collide with the domain hub', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'Payroll', ReflectionKind.Namespace)
+    makeChild(ns, 'PayrollFlow', ReflectionKind.Function)
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('payroll/index.md') // domain hub
+    expect(urls).toContain('payroll/namespace.md') // namespace hub
+    expect(pages.filter(p => p.url === 'payroll/index.md')).toHaveLength(1)
+    expect(pages.filter(p => p.url === 'payroll/namespace.md')).toHaveLength(1)
   })
 })
 
