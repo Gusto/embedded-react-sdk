@@ -14,11 +14,11 @@ Each of our React SDK components ships with an `onEvent` property. This is a fun
 (eventType: EventType, data?: unknown) => void
 ```
 
-The `eventType` argument will be one of the constants from [`componentEvents`](../api/events.md), which can be imported from the top level SDK import identical to any of the other exported components or utilities. See the [Events API reference](../api/events.md) for the full list of constants and their string values.
+The `eventType` argument will be one of the constants from [`componentEvents`](../reference/events.md), which can be imported from the top level SDK import identical to any of the other exported components or utilities. See the [Events API reference](../reference/events.md) for the full list of constants and their string values.
 
 The `data` argument can vary in shape and content. Some events will have no data and will simply indicate that a user is done with a step and is proceeding to the next step in the flow. When data is included it is typically the response from the associated API call. For example, when the `EMPLOYEE_CREATED` event is fired, it is called with the response data from the [create an employee endpoint](https://docs.gusto.com/embedded-payroll/reference/post-v1-employees).
 
-You can supply a function to this callback and respond to events as needed. In the following example we set up an event handler for the [`EmployeeOnboarding.Profile`](../api/employee/onboarding/sub-components.md#profile) component and execute code based on the event type:
+You can supply a function to this callback and respond to events as needed. In the following example we set up an event handler for the [`EmployeeOnboarding.Profile`](../reference/employee/onboarding/sub-components.md#profile) component and execute code based on the event type:
 
 ```jsx jsx
 import { EmployeeOnboarding, componentEvents } from '@gusto/embedded-react-sdk'
@@ -60,4 +60,4 @@ function MyApp({ companyId }) {
 
 ## Event types reference
 
-For a complete list of every event constant and its string value, see the **[Events API reference](../api/events.md)**. Each component that emits an event also documents the data payload it carries.
+For a complete list of every event constant and its string value, see the **[Events API reference](../reference/events.md)**. Each component that emits an event also documents the data payload it carries.

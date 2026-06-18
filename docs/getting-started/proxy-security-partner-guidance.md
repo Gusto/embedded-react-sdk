@@ -66,7 +66,7 @@ Look up the flows or blocks your app uses, substitute `:param` placeholders with
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../reference/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../appendix/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 
@@ -81,7 +81,7 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 ## Further reading
 
-- [Proxy examples with role-based access](../reference/proxy-examples.md)
-- [Endpoint reference tables](../reference/endpoint-reference.md)
+- [Proxy examples with role-based access](../appendix/proxy-examples.md)
+- [Endpoint reference tables](../appendix/endpoint-reference.md)
 - [Gusto API Scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)
