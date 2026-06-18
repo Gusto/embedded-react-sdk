@@ -12,6 +12,7 @@ const sidebars: SidebarsConfig = {
         'getting-started/authentication',
         'getting-started/proxy-security-partner-guidance',
         'getting-started/component-types',
+        'getting-started/example-app',
       ],
     },
     {

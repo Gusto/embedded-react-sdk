@@ -34,4 +34,4 @@ function App({ companyId }) {
 }
 ```
 
-See [Quick Start](./getting-started/quick-start.md) to install and configure the SDK for your application.
+See [Quick Start](./getting-started/quick-start.md) to install and configure the SDK for your application, or explore the [Example App](./getting-started/example-app.md) for a complete, runnable reference that orchestrates multiple workflows together.
