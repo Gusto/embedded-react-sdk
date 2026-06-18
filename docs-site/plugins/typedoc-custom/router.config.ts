@@ -2,24 +2,15 @@
 // To add a domain: add a new entry to DOMAINS. NAMESPACE_PATHS and DOMAIN_HUBS are
 // derived automatically — do not edit them directly.
 
-/**
- * Domain configuration. Defines every domain's sidebar label, output path,
- * its namespaces in display order, and each namespace's output subpath.
- *
- * - `label`      — the Docusaurus sidebar category label for the domain directory.
- * - `path`       — the domain's output directory name (lowercase, kebab-case).
- * - `namespaces` — ordered list of namespaces in this domain.
- *   - `id`       — the TypeScript namespace name (exact match to `export * as X`).
- *   - `label`    — human-readable sidebar label for the namespace's `_category_.json`.
- *   - `subpath`  — output subdirectory within the domain (e.g. `onboarding` →
- *                  `company/onboarding/workflows.md`). Omit for single-namespace domains
- *                  where namespace content sits directly in the domain directory.
- *
- * Domain order here controls sidebar position.
- *
- * @type {{ label: string, path: string, namespaces: { id: string, label: string, subpath?: string }[] }[]}
- */
-export const DOMAINS = [
+type NamespaceConfig = { id: string; subpath?: string }
+type DomainConfig = { label: string; path: string; namespaces: NamespaceConfig[] }
+
+export type StandalonePageConfig = Record<
+  string,
+  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
+>
+
+export const DOMAINS: DomainConfig[] = [
   {
     label: 'Companies',
     path: 'company',
@@ -56,25 +47,21 @@ export const DOMAINS = [
   },
 ]
 
-/**
- * Derived from DOMAINS — do not edit directly.
- * Maps each namespace id to its output directory prefix.
- */
-export const NAMESPACE_PATHS = Object.fromEntries(
+/** Derived from DOMAINS — do not edit directly.
+ *  Maps each namespace id to its output directory prefix. */
+export const NAMESPACE_PATHS: Record<string, string> = Object.fromEntries(
   DOMAINS.flatMap(({ path: domainPath, namespaces }) =>
     namespaces.map(ns => [ns.id, ns.subpath ? `${domainPath}/${ns.subpath}` : domainPath]),
   ),
 )
 
-/**
- * Derived from DOMAINS — do not edit directly.
- * Maps each domain path to the ordered list of namespace ids shown on its hub page.
- */
-export const DOMAIN_HUBS = Object.fromEntries(
+/** Derived from DOMAINS — do not edit directly.
+ *  Maps each domain path to the ordered list of namespace ids shown on its hub page. */
+export const DOMAIN_HUBS: Record<string, string[]> = Object.fromEntries(
   DOMAINS.map(d => [d.path, d.namespaces.map(n => n.id)]),
 )
 
-export const STANDALONE_PAGES = {
+export const STANDALONE_PAGES: StandalonePageConfig = {
   'theme-variables': {
     sources: ['contexts/ThemeProvider'],
     displayName: 'Theme Variables',
