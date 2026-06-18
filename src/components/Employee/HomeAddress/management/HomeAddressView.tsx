@@ -513,6 +513,7 @@ export function HomeAddressView({
                 />
                 <EditState
                   label={t('form.state')}
+                  placeholder={t('form.statePlaceholder')}
                   validationMessages={{
                     [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
                   }}
@@ -564,6 +565,7 @@ export function HomeAddressView({
                 />
                 <CreateState
                   label={t('form.state')}
+                  placeholder={t('form.statePlaceholder')}
                   validationMessages={{
                     [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
                   }}

@@ -5,6 +5,7 @@
   "yesOption": "Yes, file the report for me",
   "noOption": "No, I have already filed or will file the report myself",
   "stateSelectionLabel": "Work state",
+  "statePlaceholder": "Select state...",
   "submitCta": "Continue",
   "validations": {
     "state": "Please select work state"

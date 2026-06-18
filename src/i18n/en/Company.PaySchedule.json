@@ -22,6 +22,7 @@
     "name": "Name",
     "payfrequency": "Pay frequency",
     "frequency": "Frequency",
+    "frequencyPlaceholder": "Select frequency...",
     "deadline": "Deadline to run payroll",
     "frequencyOptions": "Frequency Options",
     "firstPayDate": "First pay date",

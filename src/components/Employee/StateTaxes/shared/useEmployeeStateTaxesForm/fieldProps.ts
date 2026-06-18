@@ -42,7 +42,7 @@ export interface BaseStateTaxFieldProps {
  * @public
  */
 export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
-  /** Placeholder shown when no option is selected. */
+  /** Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. */
   placeholder?: string
   /** Replace the underlying SDK Select primitive with a component of your own. */
   FieldComponent?: ComponentType<SelectProps>

@@ -96,6 +96,7 @@ export function OffCycleTaxWithholdingModal({
             <SelectField
               name="withholdingPayPeriod"
               label={t('modal.regularSection.rateLabel')}
+              placeholder={t('modal.regularSection.ratePlaceholder')}
               options={frequencyOptions}
               shouldVisuallyHideLabel
               portalContainer={modalContainerRef.current ?? undefined}

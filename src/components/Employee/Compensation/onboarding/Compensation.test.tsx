@@ -44,7 +44,7 @@ describe('Compensation', () => {
       expect(jobTitleInput).toHaveValue('')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       expect(employmentTypeControl).toBeInTheDocument()
@@ -96,7 +96,7 @@ describe('Compensation', () => {
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -134,7 +134,7 @@ describe('Compensation', () => {
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -853,7 +853,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -885,7 +885,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -918,7 +918,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select classification/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -1000,7 +1000,7 @@ describe('Compensation', () => {
 
       await screen.findByRole('heading', { name: 'Compensation' })
       await user.type(screen.getByLabelText('Job Title'), 'My Job')
-      await user.click(screen.getByRole('button', { name: /Select an item/i }))
+      await user.click(screen.getByRole('button', { name: /Select classification/i }))
       await user.click(screen.getByRole('option', { name: 'Paid by the hour' }))
       const amount = screen.getByLabelText('Wage')
       await user.clear(amount)

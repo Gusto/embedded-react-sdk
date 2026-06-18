@@ -156,6 +156,7 @@ const Root = ({
           isRequired
           portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
+          placeholder=""
           value={selectedWireInId || ''}
           options={activeWireInRequestsWithPayrolls.map(
             ({ wireInRequest, payroll, paymentType, requestedAmount }) => {
