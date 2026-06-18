@@ -642,7 +642,7 @@ or `HolidayPolicyDetailPresentationProps`.
 | `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
 | `isFetching?` | `boolean` | When true, renders the loading state instead of the rows. |
 | `itemMenu?` | (`item`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
-| `pagination?` | [`PaginationControlProps`](../component-adapter.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
+| `pagination?` | [`PaginationControlProps`](../component-inventory.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
 | `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
 
 ***
