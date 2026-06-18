@@ -28,6 +28,10 @@ import {
   RehireEmployee as EmployeeManagementRehire,
   EmployeeManagementStates,
 } from './design/prototypes/employee-management/EmployeeManagement'
+import {
+  RegularRateOfPayPrototype,
+  RegularRateOfPayStates,
+} from './design/prototypes/regular-rate-of-pay'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -95,6 +99,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <EmployeeManagementStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'regular-rate-of-pay',
+            children: [
+              { index: true, element: <RegularRateOfPayPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <RegularRateOfPayStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <RegularRateOfPayStates />,
                   },
                 ],
               },
