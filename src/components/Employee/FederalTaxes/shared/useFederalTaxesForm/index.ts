@@ -18,6 +18,14 @@ export {
   type FederalTaxesField,
   type FilingStatusValue,
 } from './federalTaxesSchema'
+export {
+  FilingStatusField,
+  TwoJobsField,
+  DependentsAmountField,
+  OtherIncomeField,
+  DeductionsField,
+  ExtraWithholdingField,
+} from './fields'
 export type {
   RequiredValidation as FederalTaxesRequiredValidation,
   FilingStatusFieldProps,

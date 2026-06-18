@@ -331,7 +331,20 @@ function EntityCombobox({
                           handleSelect(option)
                         }}
                       >
-                        <span className={styles.optionPrimary}>{option.primary}</span>
+                        <span className={styles.optionPrimaryRow}>
+                          <span className={styles.optionPrimary}>{option.primary}</span>
+                          {option.badge && (
+                            <span
+                              className={`${styles.optionBadge} ${
+                                option.badge.tone === 'processed'
+                                  ? styles.optionBadgeProcessed
+                                  : styles.optionBadgeUnprocessed
+                              }`}
+                            >
+                              {option.badge.label}
+                            </span>
+                          )}
+                        </span>
                         <span className={styles.optionSecondary}>{option.secondary}</span>
                       </button>
                     </li>

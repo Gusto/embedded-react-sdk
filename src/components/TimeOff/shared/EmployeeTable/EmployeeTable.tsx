@@ -2,13 +2,14 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem, EmployeeTableProps } from './EmployeeTableTypes'
 import styles from './EmployeeTable.module.scss'
-import { DataView, Flex, useDataView } from '@/components/Common'
+import { DataView, EmptyData, useDataView } from '@/components/Common'
 import type { useDataViewProp } from '@/components/Common/DataView/useDataView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n/I18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 import SearchIcon from '@/assets/icons/search-lg.svg?react'
 
+/** @internal */
 export function EmployeeTable<T extends EmployeeTableItem>({
   data,
   label,
@@ -120,10 +121,5 @@ export function EmployeeTable<T extends EmployeeTableItem>({
 }
 
 function DefaultEmptySearchState({ message }: { message: string }) {
-  const { Text } = useComponentContext()
-  return (
-    <Flex flexDirection="column" alignItems="center" gap={8}>
-      <Text size="sm">{message}</Text>
-    </Flex>
-  )
+  return <EmptyData title={message} />
 }

@@ -12,24 +12,36 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Props for {@link StateTaxesEditForm}.
+ *
+ * @public
+ */
 export type StateTaxesEditFormProps = Omit<
   CommonComponentInterface<'Employee.Management.StateTaxes'>,
   'children'
 > & {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when the form is submitted or cancelled. */
   onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
- * Standalone state-tax edit screen for the management flow. Wraps the shared
- * {@link useEmployeeStateTaxesForm} hook with scoped events and the
- * `Employee.Management.StateTaxes` namespace; the shared `EmployeeStateTaxesView`
- * resolves its text through `useManagementStateTaxesViewDictionary` so partner
- * overrides on the management namespace don't leak into onboarding.
+ * Standalone edit screen for the state-tax management flow. Renders the shared
+ * state-tax form against the `Employee.Management.StateTaxes` namespace and
+ * emits scoped management events on submit and cancel, so partner copy
+ * overrides on the management namespace do not leak into the onboarding flow.
  *
- * Emits `EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED` on a successful save and
- * `EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED` on Cancel. The orchestrator
- * (the block or the dashboard) handles both by returning to the card surface.
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+ * | `employee/management/stateTaxes/editCancelled` | Cancel button was clicked | — |
+ *
+ * @param props - The component props.
+ * @public
  */
 export function StateTaxesEditForm({
   FallbackComponent,

@@ -6,10 +6,12 @@ const GROSS_UP_ELIGIBLE_CATEGORIES = new Set<PayrollCategory>([
   PayrollCategory.Correction,
 ])
 
+/** @internal */
 export const isGrossUpEligible = (payrollCategory: PayrollCategory): boolean => {
   return GROSS_UP_ELIGIBLE_CATEGORIES.has(payrollCategory)
 }
 
+/** @internal */
 export const getGrossUpTargetCompensationName = (
   payrollCategory: PayrollCategory,
 ): string | null => {

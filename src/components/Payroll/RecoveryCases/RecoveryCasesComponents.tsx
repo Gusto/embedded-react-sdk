@@ -6,9 +6,13 @@ import type { CommonComponentInterface } from '@/components/Base'
 import type { EventType } from '@/types/Helpers'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/** @internal */
 export interface RecoveryCasesContextInterface extends FlowContextInterface {
+  /** Identifier of the company whose recovery cases are being managed. */
   companyId: string
+  /** Identifier of the recovery case the user is currently resolving, if any. */
   selectedRecoveryCaseId?: string
+  /** Component to render inside the modal for the current state, or `null` when no modal step is active. */
   component:
     | (React.ComponentType<CommonComponentInterface> & {
         Footer?: React.ComponentType<{
@@ -18,6 +22,7 @@ export interface RecoveryCasesContextInterface extends FlowContextInterface {
     | null
 }
 
+/** @internal */
 export function RecoveryCasesResubmitContextual() {
   const { selectedRecoveryCaseId, onEvent } = useFlow<RecoveryCasesContextInterface>()
 

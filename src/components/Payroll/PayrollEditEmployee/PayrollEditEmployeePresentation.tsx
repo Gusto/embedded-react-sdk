@@ -15,7 +15,15 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
 import { TimeOffField, PayoutTimeOffField } from './TimeOffField'
-import { Flex, Grid, TextInputField, RadioGroupField } from '@/components/Common'
+import {
+  Flex,
+  Grid,
+  TextInputField,
+  RadioGroupField,
+  DataView,
+  useDataView,
+  EmptyData,
+} from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
@@ -38,7 +46,6 @@ import {
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import InfoIcon from '@/assets/icons/info.svg?react'
 
 interface PayrollEditEmployeeProps {
   onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => void
@@ -61,7 +68,7 @@ const ReimbursementFormSchema = z.object({
   recurring: z.boolean().optional(),
 })
 
-export const PayrollEditEmployeeFormSchema = z.object({
+const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
@@ -70,6 +77,7 @@ export const PayrollEditEmployeeFormSchema = z.object({
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
+/** @internal */
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
 
 const buildCompensationFromFormData = (
@@ -178,6 +186,7 @@ const buildCompensationFromFormData = (
   return updatedCompensation
 }
 
+/** @internal */
 export const PayrollEditEmployeePresentation = ({
   onSave,
   onCancel,
@@ -386,6 +395,14 @@ export const PayrollEditEmployeePresentation = ({
     }
   }
 
+  type VisibleReimbursementRow = (typeof reimbursementFields)[number] & {
+    originalIndex: number
+  }
+
+  const visibleReimbursementRows: VisibleReimbursementRow[] = reimbursementFields
+    .map((field, originalIndex) => ({ ...field, originalIndex }))
+    .filter(row => parseFloat(row.amount || '0') !== 0)
+
   const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
   const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
   const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
@@ -411,6 +428,56 @@ export const PayrollEditEmployeePresentation = ({
     })
     resetReimbursementDraft()
   }
+
+  const reimbursementDataViewProps = useDataView<VisibleReimbursementRow>({
+    data: visibleReimbursementRows,
+    columns: [
+      {
+        key: 'description',
+        title: t('reimbursementDescriptionColumn'),
+        render: row => row.description.trim() || t('reimbursementUnnamedFallback'),
+      },
+      {
+        key: 'amount',
+        title: t('reimbursementAmountColumn'),
+        render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
+      },
+      {
+        key: 'recurring',
+        title: t('reimbursementTypeColumn'),
+        render: row =>
+          row.recurring ? t('reimbursementTypeRecurring') : t('reimbursementTypeOneTime'),
+      },
+    ],
+    itemMenu: row => {
+      if (row.recurring) return null
+      const displayDescription = row.description.trim() || t('reimbursementUnnamedFallback')
+      return (
+        <ButtonIcon
+          variant="tertiary"
+          onClick={() => {
+            handleRemoveReimbursement(row.originalIndex)
+          }}
+          aria-label={t('removeReimbursementLabel', { description: displayDescription })}
+        >
+          <TrashCanSvg aria-hidden />
+        </ButtonIcon>
+      )
+    },
+    emptyState: () => (
+      <EmptyData title={t('reimbursementEmptyTitle')}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setIsAddingReimbursement(true)
+          }}
+          icon={<PlusCircleIcon aria-hidden />}
+        >
+          {t('addReimbursementCta')}
+        </Button>
+      </EmptyData>
+    ),
+  })
 
   const watchedFormData = useWatch({
     control: formHandlers.control,
@@ -652,56 +719,9 @@ export const PayrollEditEmployeePresentation = ({
           {withReimbursements && usesItemizedReimbursements && (
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('reimbursementTitle')}</Heading>
-              {reimbursementFields.map((field, index) => {
-                const isSoftDeleted = parseFloat(field.amount || '0') === 0
-                if (isSoftDeleted) {
-                  return null
-                }
-
-                const displayDescription =
-                  field.description.trim() || t('reimbursementUnnamedFallback')
-                const formattedAmount = formatNumberAsCurrency(parseFloat(field.amount || '0'))
-
-                if (field.recurring) {
-                  return (
-                    <Flex
-                      key={field.id}
-                      alignItems="center"
-                      justifyContent="space-between"
-                      gap={12}
-                      aria-label={t('recurringReimbursementLabel', {
-                        description: displayDescription,
-                      })}
-                    >
-                      <Text>{displayDescription}</Text>
-                      <Flex alignItems="center" gap={8}>
-                        <Text>{formattedAmount}</Text>
-                        <InfoIcon aria-label={t('recurringReimbursementTooltip')} role="img" />
-                      </Flex>
-                    </Flex>
-                  )
-                }
-
-                return (
-                  <Flex key={field.id} alignItems="center" justifyContent="space-between" gap={12}>
-                    <Text>{displayDescription}</Text>
-                    <Flex alignItems="center" gap={12}>
-                      <Text>{formattedAmount}</Text>
-                      <ButtonIcon
-                        variant="tertiary"
-                        onClick={() => {
-                          handleRemoveReimbursement(index)
-                        }}
-                        aria-label={t('removeReimbursementLabel', {
-                          description: displayDescription,
-                        })}
-                      >
-                        <TrashCanSvg aria-hidden />
-                      </ButtonIcon>
-                    </Flex>
-                  </Flex>
-                )
-              })}
+              {!(visibleReimbursementRows.length === 0 && isAddingReimbursement) && (
+                <DataView label={t('reimbursementsTableLabel')} {...reimbursementDataViewProps} />
+              )}
               {isAddingReimbursement ? (
                 <Flex flexDirection="column" gap={12}>
                   <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
@@ -733,18 +753,20 @@ export const PayrollEditEmployeePresentation = ({
                   </Flex>
                 </Flex>
               ) : (
-                <div>
-                  <Button
-                    variant="tertiary"
-                    onClick={() => {
-                      setIsAddingReimbursement(true)
-                    }}
-                    title={t('addReimbursementLink')}
-                    icon={<PlusCircleIcon aria-hidden />}
-                  >
-                    {t('addReimbursementLink')}
-                  </Button>
-                </div>
+                visibleReimbursementRows.length > 0 && (
+                  <div>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setIsAddingReimbursement(true)
+                      }}
+                      title={t('addReimbursementLink')}
+                      icon={<PlusCircleIcon aria-hidden />}
+                    >
+                      {t('addReimbursementLink')}
+                    </Button>
+                  </div>
+                )
               )}
             </div>
           )}

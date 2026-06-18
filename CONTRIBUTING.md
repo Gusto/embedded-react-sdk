@@ -337,6 +337,48 @@ gh pr create --title "chore: release <version>"
 
 Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow from the Actions UI (`Run workflow`). It accepts an optional version override; if left blank it auto-detects from commits. The workflow creates the branch, commits the changes, and opens a PR automatically.
 
+### Documentation versioning
+
+The published docs site uses Docusaurus versioning so partners on older SDK versions can read the docs that match their installed version. **All versioned content lives in `Gusto/embedded-sdk-docs`, not this repo.** This repo only ever carries the live (current) docs in `docs/`; versioned snapshots (`versioned_docs/version-X.Y/`, `versions.json`, `versioned_sidebars/`) accumulate in the downstream repo as releases land.
+
+Snapshots are **keyed by minor**, not by patch. A new minor creates a new snapshot in downstream; patch releases refresh the existing minor's snapshot content. The dropdown stays clean (`0.47`, `0.48`, …).
+
+#### What happens automatically
+
+The [Sync Docs Source](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish-docs.yaml) workflow does all the work:
+
+- **After Publish to NPM completes** (release): if the released minor isn't in downstream's `versions.json` yet, the workflow runs `npx docusaurus docs:version <minor>` inside the freshly-synced downstream working tree — copying the new `docs/` into `versioned_docs/version-<minor>/`, capturing the sidebar, and prepending the minor to `versions.json`. If the minor is already there (patch release), the workflow refreshes the existing snapshot's file contents from the synced `docs/`.
+- **On any push to `docs/**`or`docs-site/**`** on `main`: source is synced to downstream so the live (`current`) docs refresh. Versioned snapshots are not touched.
+- **On manual workflow_dispatch**: same as push by default. If downstream's `versions.json` is missing the current `package.json` minor (e.g., bootstrapping a clean downstream), the snapshot is created.
+
+`docs-site/docusaurus.config.ts` is the same file in both places. It reads `versions.json` at config-load time: if absent (this repo), versioning is disabled and the build serves only the live docs; if present (downstream), versioning is active, `lastVersion` is derived from `versions.json[0]`, and the navbar dropdown appears.
+
+#### Editing docs in a released version
+
+To change content for a partner on an older minor:
+
+- For a typo / clarification that should propagate on the **next patch release** of that minor: edit `docs/` here. The next patch refresh will copy the change into the versioned snapshot in downstream.
+- To add, remove, or rename a doc in an already-released minor: edit `versioned_docs/version-X.Y/` directly in [Gusto/embedded-sdk-docs](https://github.com/Gusto/embedded-sdk-docs). The patch refresh is content-only — it won't add new files or remove orphaned ones from a versioned snapshot.
+- After any such manual edit downstream, also update `versioned_sidebars/version-X.Y-sidebars.json` there if the change affects navigation. Patch refresh does not regenerate the versioned sidebar.
+
+#### When does the variable matter
+
+When the repo variable `DOCS_PUBLISH_ENABLED=true` is set (the current default), the `workflow_run` and `push` triggers above fire automatically. If unset, only manual `workflow_dispatch` runs publish docs. `workflow_dispatch` is allowed any time, so the pipeline can be exercised end-to-end before flipping the variable.
+
+#### Markdown links
+
+Inside `docs/`, use relative links between files (e.g. `[link](../getting-started/index.md)`), not `/docs/...` absolute links. Absolute links don't resolve correctly when the same file is served at a versioned URL like `/docs/0.47/...`.
+
+```md
+<!-- Good -->
+
+See the [Getting Started guide](../getting-started/index.md).
+
+<!-- Bad — breaks when served at /docs/0.47/... -->
+
+See the [Getting Started guide](/docs/getting-started/index.md).
+```
+
 ### After the PR is merged
 
 Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.

@@ -39,13 +39,33 @@ export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Par
   }>
 }>
 
-type OptionalOnCreate<TConfig> = {
+/**
+ * Union of field names in `TConfig` whose base rule is `'update'` or `'never'`
+ * — i.e. fields that are optional on create and therefore eligible to be
+ * promoted to required in create mode.
+ *
+ * The template-literal wrapper \`\` `${...}` \`\` is intentional: wrapping a
+ * conditional-mapped-type index access in a template literal forces TypeScript
+ * to eagerly evaluate and materialize the string union rather than deferring
+ * it. Without the wrapper, TypeScript preserves the alias name in hover
+ * tooltips and generated docs (`OptionalOnCreate<{ ... }>`), making the type
+ * opaque to callers. With it, both IntelliSense and TypeDoc display the
+ * resolved concrete union (e.g. `"stateWcCovered" | "twoPercentShareholder"`).
+ */
+type OptionalOnCreate<TConfig> = `${{
   [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never
-}[keyof TConfig & string]
+}[keyof TConfig & string]}`
 
-type OptionalOnUpdate<TConfig> = {
+/**
+ * Union of field names in `TConfig` whose base rule is `'create'` or `'never'`
+ * — i.e. fields that are optional on update and therefore eligible to be
+ * promoted to required in update mode.
+ *
+ * See {@link OptionalOnCreate} for why the template-literal wrapper is here.
+ */
+type OptionalOnUpdate<TConfig> = `${{
   [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never
-}[keyof TConfig & string]
+}[keyof TConfig & string]}`
 
 /**
  * Per-mode list of optional fields a caller can promote to required.
@@ -56,9 +76,12 @@ type OptionalOnUpdate<TConfig> = {
  *
  * @typeParam TConfig - The {@link RequiredFieldConfig} that constrains which fields are eligible.
  * @internal
+ * @interface
  */
 export type OptionalFieldsToRequire<TConfig> = {
+  /** Fields that can be required in create mode */
   create?: Array<OptionalOnCreate<TConfig>>
+  /** Fields that can be required in update mode */
   update?: Array<OptionalOnUpdate<TConfig>>
 }
 

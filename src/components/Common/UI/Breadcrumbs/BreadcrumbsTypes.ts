@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
  * Single entry in a {@link BreadcrumbsProps | Breadcrumbs} trail.
  *
  * @public
+ * @group Utility Types
  */
 export interface Breadcrumb {
   /**
@@ -25,6 +26,7 @@ export interface Breadcrumb {
  * Renders a navigation breadcrumb trail showing the user's position in a multi-step flow.
  *
  * @public
+ * @group Component Props
  */
 export interface BreadcrumbsProps {
   /**

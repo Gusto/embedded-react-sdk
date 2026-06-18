@@ -1,3 +1,4 @@
+/** @internal */
 export const COUNTRIES: { value: string; label: string }[] = [
   { value: 'United States', label: 'United States' },
   { value: 'Afghanistan', label: 'Afghanistan' },

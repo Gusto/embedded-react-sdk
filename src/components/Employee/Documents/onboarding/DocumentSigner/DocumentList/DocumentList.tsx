@@ -4,21 +4,39 @@ import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 
-interface DocumentListProps extends CommonComponentInterface {
+/**
+ * Props for {@link DocumentList}.
+ *
+ * @public
+ */
+export interface DocumentListProps extends BaseComponentInterface {
+  /** The associated employee identifier. */
   employeeId: string
 }
 
-export function DocumentList(props: DocumentListProps & BaseComponentInterface) {
+/**
+ * Lists the employee's documents pending signature.
+ *
+ * @remarks
+ * Fetches the employee's forms and renders the list of documents that still
+ * require signing along with a continue action once everything is signed.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/forms/view` | Fired when a form's "Sign" action is selected | `{ uuid: string; name?: string }` |
+ * | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
+ *
+ * @param props - See {@link DocumentListProps}.
+ * @returns The employee document list.
+ * @public
+ */
+export function DocumentList(props: DocumentListProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props} />

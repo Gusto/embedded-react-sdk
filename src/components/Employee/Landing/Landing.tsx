@@ -21,6 +21,12 @@ interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   companyId: string
 }
 
+/**
+ * Landing page for the employee self-onboarding flow. Displays a welcome
+ * message and the list of onboarding steps the employee needs to complete.
+ *
+ * @public
+ */
 export function Landing(props: SummaryProps & BaseComponentInterface) {
   useI18n('Employee.Landing')
   useComponentDictionary('Employee.Landing', props.dictionary)

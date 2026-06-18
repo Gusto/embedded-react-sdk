@@ -7,17 +7,23 @@ import { z } from 'zod'
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
-export interface AddressContextType {
+interface AddressContextType {
   contractor?: Contractor
   contractorType?: ContractorType
   address?: ContractorAddress
   isPending: boolean
 }
 
+/**
+ * Pre-fill values accepted by {@link Address}. At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+ *
+ * @public
+ */
 export type AddressDefaultValues = RequireAtLeastOne<
   Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>
 >
 
+/** @internal */
 export const AddressFormSchema = z.object({
   street1: z.string().min(1),
   street2: z.string().optional(),
@@ -26,6 +32,7 @@ export const AddressFormSchema = z.object({
   zip: z.string().min(1),
 })
 
+/** @internal */
 export type AddressFormValues = z.infer<typeof AddressFormSchema>
 
 const [useAddress, AddressProvider] = createCompoundContext<AddressContextType>(

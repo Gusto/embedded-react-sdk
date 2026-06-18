@@ -33,6 +33,26 @@ const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
   correction: ApiOffCycleReason.Correction,
 }
 
+/**
+ * Creation form for off-cycle (bonus or correction) payrolls.
+ *
+ * Walks the user through configuring pay period dates, selecting a reason, choosing
+ * employees, and setting deduction and tax withholding preferences, then submits the
+ * resulting payroll for execution.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |
+ *
+ * Changing the reason updates the deduction and withholding defaults — `'bonus'` skips
+ * regular deductions and uses the supplemental withholding rate; `'correction'` includes
+ * regular deductions and uses the regular rate.
+ *
+ * @param props - {@link OffCycleCreationProps} plus base component props.
+ * @returns The off-cycle payroll creation form.
+ * @public
+ */
 export function OffCycleCreation(props: OffCycleCreationProps) {
   return (
     <BaseComponent {...props}>

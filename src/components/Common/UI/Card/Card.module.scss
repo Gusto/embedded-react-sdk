@@ -6,3 +6,8 @@
   background-color: var(--g-colorBody);
   box-shadow: var(--g-shadowResting);
 }
+
+.cardBody {
+  flex: 1 1 auto;
+  min-width: 0;
+}

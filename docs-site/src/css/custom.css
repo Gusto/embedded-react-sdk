@@ -237,7 +237,7 @@ html {
 }
 
 @media (max-width: 996px) {
-  .navbar__link.navbarGithub {
+  .navbar__items .navbar__link.navbarGithub {
     display: none;
   }
 }
@@ -250,9 +250,15 @@ html {
 .navbar__logo {
   display: flex;
   align-items: center;
+  color: black;
 }
 
-.navbar__logo img {
+[data-theme='dark'] .navbar__logo {
+  color: white;
+}
+
+.navbar__logo img,
+.navbar__logo svg {
   display: block;
   height: 22px;
   width: auto;
@@ -784,12 +790,14 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
 /* ── Sidebar scrollbars ── */
 
 .theme-doc-sidebar-container .menu,
-.theme-doc-toc-desktop {
+.theme-doc-toc-desktop,
+.navbar-sidebar__item {
   scrollbar-width: thin;
   scrollbar-color: rgba(27, 27, 29, 0.25) transparent;
 }
 
 [data-theme='dark'] .theme-doc-sidebar-container .menu,
-[data-theme='dark'] .theme-doc-toc-desktop {
+[data-theme='dark'] .theme-doc-toc-desktop,
+[data-theme='dark'] .navbar-sidebar__item {
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }

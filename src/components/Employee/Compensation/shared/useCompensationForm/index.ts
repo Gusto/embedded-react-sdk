@@ -16,6 +16,15 @@ export {
   type CompensationFormOutputs,
   type CompensationSchemaOptions,
 } from './compensationSchema'
+export {
+  TitleField,
+  FlsaStatusField,
+  RateField,
+  PaymentUnitField,
+  AdjustForMinimumWageField,
+  MinimumWageIdField,
+  EffectiveDateField,
+} from './fields'
 export type {
   RequiredValidation,
   RateValidation,

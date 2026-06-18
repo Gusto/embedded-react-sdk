@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { SelectField } from '@/components/Common'
 import { SIGNATORY_TITLES } from '@/shared/constants'
 
+/** @internal */
 export const TitleSelect = () => {
   const { t } = useTranslation('Company.AssignSignatory')
 
@@ -20,5 +21,3 @@ export const TitleSelect = () => {
     />
   )
 }
-
-export default TitleSelect

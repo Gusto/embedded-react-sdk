@@ -5,9 +5,13 @@ import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export interface RecoveryCaseErrorCodeContent {
+  /** Localized title for the error code, or `null` when no error code is set. */
   title: string | null
+  /** Localized subtitle for the error code, or `null` when no error code is set. */
   subtitle: string | null
+  /** Localized description nodes for the error code, including any per-code instructions. Empty when no error code is set. */
   description: ReactNode[]
 }
 
@@ -28,6 +32,7 @@ function getErrorCodeKey(errorCode: string | null | undefined): ErrorCodeKey {
   }
 }
 
+/** @internal */
 export function useRecoveryCaseErrorCode(
   errorCode: string | null | undefined,
 ): RecoveryCaseErrorCodeContent {

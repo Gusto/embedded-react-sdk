@@ -23,6 +23,12 @@ import {
   CompensationHistoryStates,
 } from './design/prototypes/employee-management/CompensationHistory'
 import {
+  EmployeeManagementFlow,
+  EmployeeList as EmployeeManagementList,
+  RehireEmployee as EmployeeManagementRehire,
+  EmployeeManagementStates,
+} from './design/prototypes/employee-management/EmployeeManagement'
+import {
   PayrollEditEmployeePrototype,
   PayrollEditEmployeeStates,
 } from './design/prototypes/payroll-edit-employee'
@@ -75,6 +81,24 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <ContractorSelfOnboardingStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'employee-management',
+            element: <EmployeeManagementFlow />,
+            children: [
+              { index: true, element: <EmployeeManagementList /> },
+              { path: ':employeeId/rehire', element: <EmployeeManagementRehire /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <EmployeeManagementStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <EmployeeManagementStates />,
                   },
                 ],
               },

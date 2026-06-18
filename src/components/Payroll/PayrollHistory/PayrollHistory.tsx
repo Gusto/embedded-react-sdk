@@ -18,10 +18,35 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
+/**
+ * Props for the {@link PayrollHistory} component.
+ *
+ * @public
+ */
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
+  /** Identifier of the company whose processed payrolls should be listed. */
   companyId: string
 }
 
+/**
+ * Displays historical payroll records with filtering and management capabilities.
+ *
+ * @remarks
+ * Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
+ * check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
+ * cancelling processed payrolls when they remain within the cancellation window. Each row shows
+ * the pay period, payroll type, pay date, status, and total pay amount.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |
+ * | `runPayroll/receipt/viewed` | User views a payroll receipt | `{ payrollId: string; startDate?: string; endDate?: string }` |
+ * | `runPayroll/cancelled` | A payroll is cancelled | `{ payrollId: string; result: PayrollsCancelResponse }` |
+ *
+ * @param props - See {@link PayrollHistoryProps}.
+ * @returns The rendered payroll history view.
+ * @public
+ */
 export function PayrollHistory(props: PayrollHistoryProps) {
   return (
     <BaseComponent {...props}>
@@ -30,7 +55,7 @@ export function PayrollHistory(props: PayrollHistoryProps) {
   )
 }
 
-export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
+const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
 

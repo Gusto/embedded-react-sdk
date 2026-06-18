@@ -17,6 +17,7 @@ interface EditContractorPaymentPresentationProps {
   contractorPaymentMethod?: string
 }
 
+/** @internal */
 export const EditContractorPaymentPresentation = ({
   isOpen,
   onClose,

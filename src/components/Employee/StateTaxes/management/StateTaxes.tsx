@@ -13,8 +13,15 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
+/**
+ * Props for {@link StateTaxes}.
+ *
+ * @public
+ */
 export interface StateTaxesProps extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on flow state changes. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -34,6 +41,23 @@ function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
   return <Flow machine={machine} onEvent={onEvent} />
 }
 
+/**
+ * Standalone state-tax management flow for a given employee. Renders the
+ * read-only summary card and the edit form, switching between them as the
+ * partner-emitted events from {@link StateTaxesCard} and {@link StateTaxesEditForm}
+ * drive the internal state machine.
+ *
+ * @remarks
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/management/stateTaxes/editRequested` | Edit button on the summary card was clicked | `{ employeeId: string }` |
+ * | `employee/management/stateTaxes/editCancelled` | Cancel button on the edit form was clicked | — |
+ * | `employee/management/stateTaxes/updated` | Edit form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+ *
+ * @param props - The component props.
+ * @public
+ */
 export function StateTaxes({
   dictionary,
   FallbackComponent,

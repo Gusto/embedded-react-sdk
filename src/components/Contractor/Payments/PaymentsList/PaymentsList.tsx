@@ -9,11 +9,38 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
-interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
+/**
+ * Props for {@link PaymentsList}.
+ *
+ * @public
+ */
+export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
+  /** UUID of the company whose contractor payment groups should be listed. */
   companyId: string
+  /**
+   * @internal
+   * Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation).
+   */
   alerts?: InternalAlert[]
 }
 
+/**
+ * Displays a list of contractor payment groups for a company.
+ *
+ * Supports viewing payment history, creating new payments, and filtering by date range.
+ * Surfaces alerts for pending information requests and wire transfer requirements.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/payments/create` | User chooses to create a new payment | — |
+ * | `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
+ * | `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
+ *
+ * @param props - Component props.
+ * @returns The rendered payments list.
+ * @public
+ */
 export function PaymentsList(props: PaymentsListProps) {
   return (
     <BaseComponent {...props}>
@@ -36,7 +63,7 @@ const calculateDateRange = (months: number = 3) => {
   }
 }
 
-export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
+const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)

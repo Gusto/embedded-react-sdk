@@ -18,6 +18,7 @@ import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/components/Common'
 
+/** @internal */
 export function OffCycleCreationPresentation({
   employees,
   isPending,

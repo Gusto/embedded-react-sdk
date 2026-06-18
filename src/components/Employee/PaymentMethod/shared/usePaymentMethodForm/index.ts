@@ -5,7 +5,6 @@ export type {
   UsePaymentMethodFormReady,
   PaymentMethodFormFields,
   PaymentMethodFormFieldsMetadata,
-  PaymentMethodFormFieldsType,
 } from './usePaymentMethodForm'
 export {
   PAYMENT_METHOD_TYPES,
@@ -19,7 +18,7 @@ export {
   type PaymentMethodType,
 } from './usePaymentMethodFormSchema'
 export {
-  TypeField,
+  TypeField as PaymentMethodTypeField,
   type TypeFieldProps,
   type RequiredValidation as PaymentMethodFormRequiredValidation,
 } from './fields'

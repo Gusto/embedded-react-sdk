@@ -16,20 +16,40 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Props accepted by {@link PayrollFlow}.
+ *
+ * @public
+ */
 export interface PayrollFlowProps extends BaseComponentInterface {
+  /** Identifier of the company whose payroll is being run. */
   companyId: string
+  /** Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Optional custom component that replaces the default wire-details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
+/**
+ * An alert banner rendered above payroll content in {@link PayrollOverview} and
+ * {@link PayrollConfiguration}.
+ *
+ * @public
+ */
 export type PayrollFlowAlert = {
+  /** Visual severity of the alert. */
   type: 'error' | 'info' | 'success'
+  /** Short heading text displayed in the alert. */
   title: string
+  /** Optional body content rendered below the title. */
   content?: ReactNode
+  /** Called when the user dismisses the alert. When omitted, the alert is not dismissible. */
   onDismiss?: () => void
+  /** Stable key used to track alert identity across renders (e.g. for animations or dedup). */
   alertKey?: string
 }
 
+/** @internal */
 export interface PayrollFlowContextInterface extends FlowContextInterface {
   companyId: string
   payrollUuid?: string
@@ -49,6 +69,7 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   transitionPayScheduleUuid?: string
 }
 
+/** @internal */
 export function PayrollLandingContextual() {
   const {
     companyId,
@@ -68,6 +89,7 @@ export function PayrollLandingContextual() {
   )
 }
 
+/** @internal */
 export function PayrollConfigurationContextual() {
   const { companyId, payrollUuid, onEvent, withReimbursements } =
     useFlow<PayrollFlowContextInterface>()
@@ -81,6 +103,7 @@ export function PayrollConfigurationContextual() {
   )
 }
 
+/** @internal */
 export function PayrollOverviewContextual() {
   const {
     companyId,
@@ -102,6 +125,7 @@ export function PayrollOverviewContextual() {
   )
 }
 
+/** @internal */
 export function PayrollEditEmployeeContextual() {
   const { companyId, payrollUuid, employeeId, onEvent, withReimbursements } =
     useFlow<PayrollFlowContextInterface>()
@@ -116,6 +140,7 @@ export function PayrollEditEmployeeContextual() {
   )
 }
 
+/** @internal */
 export function PayrollReceiptsContextual() {
   const { payrollUuid, onEvent, withReimbursements } = useFlow<PayrollFlowContextInterface>()
   return (
@@ -127,11 +152,13 @@ export function PayrollReceiptsContextual() {
   )
 }
 
+/** @internal */
 export function PayrollBlockerContextual() {
   const { companyId, onEvent } = useFlow<PayrollFlowContextInterface>()
   return <PayrollBlockerList onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function SaveAndExitCta() {
   const { onEvent, ctaConfig } = useFlow<PayrollFlowContextInterface>()
   const { Button } = useComponentContext()

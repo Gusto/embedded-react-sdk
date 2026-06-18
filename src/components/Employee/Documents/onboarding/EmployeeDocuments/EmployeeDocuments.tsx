@@ -21,11 +21,36 @@ import { useFlow } from '@/components/Flow/useFlow'
 import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
-interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
+/**
+ * Props for {@link EmployeeDocuments}.
+ *
+ * @public
+ */
+export interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired on flow state changes. */
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Onboarding step for selecting which documents the employee must complete.
+ *
+ * @remarks
+ * Shows the I-9 toggle when the employee is self-onboarding (so the employee
+ * can choose whether their employer will collect I-9 verification) and a
+ * summary otherwise. Persists the selection to the employee's onboarding
+ * documents configuration and advances the parent flow.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |
+ * | `employee/documents/done` | Fired when the step is complete and the parent flow can advance | — |
+ *
+ * @param props - Component props including `employeeId` and `onEvent`.
+ * @returns The employee documents onboarding step.
+ * @public
+ */
 export function EmployeeDocuments(props: EmployeeDocumentsProps) {
   return (
     <BaseComponent {...props}>
@@ -87,6 +112,7 @@ const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
   )
 }
 
+/** @internal */
 export const EmployeeDocumentsContextual = () => {
   const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
 

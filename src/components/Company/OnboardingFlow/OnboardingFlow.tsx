@@ -8,6 +8,31 @@ import {
 } from './OnboardingFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 
+/**
+ * Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+ *
+ * @remarks
+ * The flow begins on the overview screen and steps through locations, federal taxes, industry,
+ * bank account, employee onboarding, pay schedule, state taxes, and document signing before
+ * returning to the overview.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/overview/continue` | User chose to continue to the next outstanding onboarding requirement | — |
+ * | `company/overview/done` | User signaled they are done with the overview screen | — |
+ * | `company/location/done` | User completed the locations step | — |
+ * | `company/federalTaxes/done` | User completed the federal taxes step | — |
+ * | `company/industry/selected` | User selected and saved an industry | The saved `industry` field from the update industry selection API |
+ * | `company/bankAccount/done` | User completed the bank account step | — |
+ * | `employee/onboarding/done` | User completed the embedded employee onboarding sub-flow | — |
+ * | `paySchedule/done` | User completed the pay schedule step | — |
+ * | `company/stateTaxes/done` | User completed the state taxes step | — |
+ * | `company/forms/done` | User completed signing company documents | — |
+ *
+ * @param props - See {@link OnboardingFlowProps}.
+ * @returns The multi-step company onboarding flow with internal navigation between the overview and the per-step screens.
+ * @public
+ */
 export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
   const onboardingFlow = useMemo(
     () =>

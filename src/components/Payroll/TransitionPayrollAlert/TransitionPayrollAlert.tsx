@@ -23,6 +23,7 @@ interface TransitionPayrollAlertProps {
 
 const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
 
+/** @internal */
 export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
   return (
     <BaseComponent onEvent={onEvent}>

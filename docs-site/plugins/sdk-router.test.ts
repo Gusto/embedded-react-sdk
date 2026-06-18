@@ -14,13 +14,18 @@ import {
   SourceReference,
   FileRegistry,
 } from 'typedoc'
+import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import {
   componentPropsInterfaces,
   domainFromSources,
   hookDirFromSources,
   isHookSourceFile,
+  pageDescription,
+  pageTitle,
   reparentDeprecatedMembers,
   SDKRouter,
+  serializeFrontmatter,
+  standalonePageFromSources,
 } from './sdk-router'
 
 let app: Application
@@ -979,6 +984,180 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
 })
 
 // ---------------------------------------------------------------------------
+// standalonePageFromSources
+// ---------------------------------------------------------------------------
+
+describe('standalonePageFromSources', () => {
+  it('returns the theme-variables page for a ThemeProvider source file', () => {
+    const r = new DeclarationReflection('GustoSDKTheme', ReflectionKind.TypeAlias)
+    r.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    expect(standalonePageFromSources(r)).toBe('theme-variables')
+  })
+
+  it('returns the theme-variables page for any file under the ThemeProvider directory', () => {
+    const r = new DeclarationReflection('createTheme', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/contexts/ThemeProvider/theme.ts')
+    expect(standalonePageFromSources(r)).toBe('theme-variables')
+  })
+
+  it('returns the utilities page for a partner-hook-utils source file', () => {
+    const r = new DeclarationReflection('composeErrorHandler', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+    expect(standalonePageFromSources(r)).toBe('utilities')
+  })
+
+  it('returns the utilities page for a file nested under partner-hook-utils', () => {
+    const r = new DeclarationReflection('composeSubmitHandler', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/partner-hook-utils/form/composeSubmitHandler.ts')
+    expect(standalonePageFromSources(r)).toBe('utilities')
+  })
+
+  it('returns null when sources are absent', () => {
+    const r = new DeclarationReflection('GustoSDKTheme', ReflectionKind.TypeAlias)
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+
+  it('returns null for a path that does not match any STANDALONE_PAGES key', () => {
+    const r = new DeclarationReflection('SomeUtil', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/utils/helpers.ts')
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+
+  it('returns the component-adapter page for a Common UI types file (TypeDoc resolves re-exports to their definition)', () => {
+    const r = new DeclarationReflection('AlertProps', ReflectionKind.Interface)
+    r.sources = sourceRef('/workspace/src/components/Common/UI/Alert/AlertTypes.ts')
+    expect(standalonePageFromSources(r)).toBe('component-adapter')
+  })
+
+  it('returns null for a src/components path (those go to domain or hook pages, not standalone)', () => {
+    const r = new DeclarationReflection('useSomething', ReflectionKind.Function)
+    r.sources = sourceRef('/workspace/src/components/Employee/hooks/useSomething.ts')
+    expect(standalonePageFromSources(r)).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildPages — standalone page routing
+// ---------------------------------------------------------------------------
+
+describe('buildPages — standalone page routing', () => {
+  it('ThemeProvider export gets its own page at theme-variables.md', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('theme-variables.md')
+    expect(router.hasOwnDocument(themeType)).toBe(false)
+    expect(router.getAnchor(themeType)).toBeDefined()
+  })
+
+  it('partner-hook-utils export gets its own page at utilities.md', () => {
+    const project = makeProject()
+    const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
+    util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.map(p => p.url)).toContain('utilities.md')
+    expect(router.hasOwnDocument(util)).toBe(false)
+    expect(router.getAnchor(util)).toBeDefined()
+  })
+
+  it('multiple members from the same source are consolidated onto one page', () => {
+    const project = makeProject()
+    const typeA = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    typeA.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const typeB = makeChild(project, 'GustoSDKThemeColors', ReflectionKind.TypeAlias)
+    typeB.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const fnA = makeChild(project, 'createTheme', ReflectionKind.Function)
+    fnA.sources = sourceRef('/workspace/src/contexts/ThemeProvider/theme.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    expect(pages.filter(p => p.url === 'theme-variables.md')).toHaveLength(1)
+    expect(router.getAnchor(typeA)).toBeDefined()
+    expect(router.getAnchor(typeB)).toBeDefined()
+    expect(router.getAnchor(fnA)).toBeDefined()
+  })
+
+  it('members from different standalone sources go to separate pages', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+    const util = makeChild(project, 'composeErrorHandler', ReflectionKind.Function)
+    util.sources = sourceRef('/workspace/src/partner-hook-utils/composeErrorHandler.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('theme-variables.md')
+    expect(urls).toContain('utilities.md')
+  })
+
+  it('standalone page model has the display name, not the page path', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+
+    const page = pages.find(p => p.url === 'theme-variables.md')
+    expect((page?.model as DeclarationReflection).name).toBe('Theme Variables')
+  })
+
+  it('standalone members are removed from project groups', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const group = new ReflectionGroup('Type Aliases', themeType)
+    project.groups = [group]
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    expect(project.groups?.flatMap(g => g.children)).not.toContain(themeType)
+  })
+
+  it('standalone member does NOT appear on the project index page', () => {
+    const project = makeProject()
+    const themeType = makeChild(project, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    themeType.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    router.buildPages(project)
+
+    // standalone members must not anchor to the project index
+    const projectUrl = router.getFullUrl(project)
+    const memberUrl = router.getFullUrl(themeType)
+    expect(memberUrl).not.toBe(projectUrl)
+    expect(memberUrl).toContain('theme-variables')
+  })
+
+  it('namespace members are not affected by STANDALONE_PAGES (namespace routing is unchanged)', () => {
+    const project = makeProject()
+    const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
+    const nsMember = makeChild(ns, 'GustoSDKTheme', ReflectionKind.TypeAlias)
+    // Source path matches ThemeProvider pattern, but it's inside a namespace — not project-level
+    nsMember.sources = sourceRef('/workspace/src/contexts/ThemeProvider/types.ts')
+
+    const router = new SDKRouter(app)
+    const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
+
+    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).not.toContain('theme-variables.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — domain hub page
 // ---------------------------------------------------------------------------
 
@@ -1076,5 +1255,162 @@ describe('buildPages — domain hub page', () => {
 
     expect(urls).toContain('Employee/index.md')
     expect(urls).toContain('Employee/hooks.md')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// pageTitle / pageDescription — frontmatter helpers
+// ---------------------------------------------------------------------------
+
+function makePage(
+  model: DeclarationReflection | ProjectReflection,
+  url: string,
+): MarkdownPageEvent {
+  const page = new MarkdownPageEvent(model)
+  page.url = url
+  return page
+}
+
+function makeHubModel(name: string): DeclarationReflection {
+  const hub = new DeclarationReflection(name, ReflectionKind.Namespace)
+  hub.comment = new Comment()
+  hub.comment.blockTags.push(new CommentTag('@domainHub', []))
+  return hub
+}
+
+describe('pageTitle', () => {
+  it('returns "API Reference" for the project root', () => {
+    const page = makePage(makeProject(), 'index.md')
+    expect(pageTitle(page)).toBe('API Reference')
+  })
+
+  it('returns the domain name for a domain hub page', () => {
+    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
+    expect(pageTitle(page)).toBe('Employee')
+  })
+
+  it('prefixes the domain from the URL for a hooks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Hooks', ReflectionKind.Namespace),
+      'Employee/hooks.md',
+    )
+    expect(pageTitle(page)).toBe('Employee Hooks')
+  })
+
+  it('prefixes the namespace from the URL for a flows page', () => {
+    const page = makePage(
+      new DeclarationReflection('Flow Components', ReflectionKind.Namespace),
+      'Employee/EmployeeManagement/flows.md',
+    )
+    expect(pageTitle(page)).toBe('EmployeeManagement Flows')
+  })
+
+  it('prefixes the namespace from the URL for a blocks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Block Components', ReflectionKind.Namespace),
+      'Employee/EmployeeManagement/blocks.md',
+    )
+    expect(pageTitle(page)).toBe('EmployeeManagement Blocks')
+  })
+
+  it('returns the namespace name for a regular namespace page', () => {
+    const page = makePage(
+      new DeclarationReflection('Payroll', ReflectionKind.Namespace),
+      'Payroll/index.md',
+    )
+    expect(pageTitle(page)).toBe('Payroll')
+  })
+})
+
+describe('pageDescription', () => {
+  it('uses the model comment summary when present', () => {
+    const ns = new DeclarationReflection('Payroll', ReflectionKind.Namespace)
+    ns.comment = new Comment([{ kind: 'text', text: 'Payroll processing components.' }])
+    const page = makePage(ns, 'Payroll/index.md')
+    expect(pageDescription(page)).toBe('Payroll processing components.')
+  })
+
+  it('uses the project comment summary when present', () => {
+    const project = makeProject()
+    project.comment = new Comment([{ kind: 'text', text: 'The embedded payroll SDK.' }])
+    const page = makePage(project, 'index.md')
+    expect(pageDescription(page)).toBe('The embedded payroll SDK.')
+  })
+
+  it('falls back to a branded description for the project root with no comment', () => {
+    const page = makePage(makeProject(), 'index.md')
+    expect(pageDescription(page)).toContain('@gusto/embedded-react-sdk')
+  })
+
+  it('falls back to "{title} API reference." for a namespace with no comment', () => {
+    const page = makePage(
+      new DeclarationReflection('Payroll', ReflectionKind.Namespace),
+      'Payroll/index.md',
+    )
+    expect(pageDescription(page)).toBe('Payroll API reference.')
+  })
+
+  it('uses the derived title in the fallback for a synthetic hooks page', () => {
+    const page = makePage(
+      new DeclarationReflection('Hooks', ReflectionKind.Namespace),
+      'Employee/hooks.md',
+    )
+    expect(pageDescription(page)).toBe('Employee Hooks API reference.')
+  })
+
+  it('uses the derived title in the fallback for a domain hub with no comment', () => {
+    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
+    expect(pageDescription(page)).toBe('Employee API reference.')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// serializeFrontmatter
+// ---------------------------------------------------------------------------
+
+describe('serializeFrontmatter', () => {
+  const sample = {
+    title: 'Employee Hooks',
+    description: 'Employee Hooks API reference.',
+    custom_edit_url: null,
+  }
+
+  it('wraps output in --- delimiters', () => {
+    const result = serializeFrontmatter(sample)
+    expect(result).toMatch(/^---\n/)
+    expect(result).toMatch(/\n---$/)
+  })
+
+  it('puts the autogeneration comment as the first lines inside ---', () => {
+    const result = serializeFrontmatter(sample)
+    const lines = result.split('\n')
+    expect(lines[1]).toMatch(/^# Autogenerated by TypeDoc from TSDoc comments/)
+    expect(lines[2]).toContain('src/')
+    expect(lines[3]).toContain('docs-site/typedoc.config.ts')
+    expect(lines[3]).toContain('sdk-router.ts')
+    expect(lines[4]).toContain('npm run docs:api:generate')
+  })
+
+  it('includes generated_by: typedoc after the frontmatter fields', () => {
+    const result = serializeFrontmatter(sample)
+    expect(result).toContain('generated_by: typedoc')
+  })
+
+  it('places generated_by before custom_edit_url', () => {
+    const result = serializeFrontmatter(sample)
+    const generatedByIndex = result.indexOf('generated_by:')
+    const customEditIndex = result.indexOf('custom_edit_url:')
+    expect(generatedByIndex).toBeLessThan(customEditIndex)
+  })
+
+  it('preserves title and description from the input', () => {
+    const result = serializeFrontmatter(sample)
+    expect(result).toContain('title: Employee Hooks')
+    expect(result).toContain('description: Employee Hooks API reference.')
+  })
+
+  it('serializes custom_edit_url: null as null', () => {
+    const result = serializeFrontmatter(sample)
+    expect(result).toContain('custom_edit_url: null')
   })
 })

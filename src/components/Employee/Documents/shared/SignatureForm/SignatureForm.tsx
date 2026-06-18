@@ -1,10 +1,6 @@
 import { useTranslation, Trans } from 'react-i18next'
 import { useSignEmployeeForm } from '../useSignEmployeeForm'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
@@ -15,12 +11,35 @@ import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface SignatureFormProps extends CommonComponentInterface {
+/**
+ * Props for {@link SignatureForm}.
+ *
+ * @public
+ */
+export interface SignatureFormProps extends BaseComponentInterface {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The identifier of the form to sign. */
   formId: string
 }
 
-export function SignatureForm(props: SignatureFormProps & BaseComponentInterface) {
+/**
+ * Presents a single employee document for review and signature.
+ *
+ * @remarks
+ * Renders the form's PDF and collects the employee's signature. On successful
+ * submission the signed form is emitted; cancelling returns to the document list.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/forms/sign` | Fired after the form is successfully signed | {@link Form} |
+ * | `cancel` | Fired when the user cancels signing and returns to the document list | — |
+ *
+ * @param props - See {@link SignatureFormProps}.
+ * @returns The employee signature form.
+ * @public
+ */
+export function SignatureForm(props: SignatureFormProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props} />

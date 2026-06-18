@@ -27,6 +27,7 @@ type PaymentStatementRow = {
   amount: string | null
 }
 
+/** @internal */
 export const PaymentStatementPresentation = ({
   payment,
   contractor,

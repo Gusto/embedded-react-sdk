@@ -6,6 +6,7 @@ interface GenericBlockerProps {
   blocker: PayrollSubmissionBlockerType
 }
 
+/** @internal */
 export const GenericBlocker = ({ blocker }: GenericBlockerProps) => {
   const { Banner, Text } = useComponentContext()
   const { t } = useTranslation('Contractor.Payments.CreatePayment')

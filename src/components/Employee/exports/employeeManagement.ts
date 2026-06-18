@@ -1,4 +1,8 @@
-export { ManagementEmployeeList as EmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
+export {
+  ManagementEmployeeList as EmployeeList,
+  type ManagementEmployeeListProps,
+  type EmployeeTab,
+} from '../EmployeeList/management/ManagementEmployeeList'
 export { EmployeeListFlow } from '../EmployeeListFlow'
 export type { EmployeeListFlowProps } from '../EmployeeListFlow'
 export { Documents, DocumentsCard, DocumentManager } from '../Documents/management'
@@ -7,8 +11,8 @@ export type {
   DocumentsCardProps,
   DocumentManagerProps,
 } from '../Documents/management'
-export { DashboardFlow } from '../Dashboard'
-export type { DashboardFlowProps } from '../Dashboard'
+export { DashboardFlow, Dashboard } from '../Dashboard'
+export type { DashboardFlowProps, DashboardProps } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {
   HomeAddressProps,

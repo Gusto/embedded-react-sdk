@@ -18,11 +18,11 @@ import {
 import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-export interface HeadProps {
+interface HeadProps {
   count: number
   handleAdd: () => void
 }
-export function Head({ count, handleAdd }: HeadProps) {
+function Head({ count, handleAdd }: HeadProps) {
   const { Button, Heading } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
@@ -39,10 +39,10 @@ export function Head({ count, handleAdd }: HeadProps) {
   )
 }
 
-export interface EmptyDataContractorsListProps {
+interface EmptyDataContractorsListProps {
   handleAdd: () => void
 }
-export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
+function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
   const { Button } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
@@ -55,11 +55,33 @@ export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsList
   )
 }
 
+/**
+ * Props for {@link ContractorList}.
+ *
+ * @public
+ */
 export interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+  /** UUID of the company whose contractors should be listed. */
   companyId: string
+  /** Success message to display in an alert above the list, typically after a create, update, or delete action. */
   successMessage?: string
 }
 
+/**
+ * Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/create` | The add-contractor action was triggered. | — |
+ * | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
+ * | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
+ * | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
+ *
+ * @param props - See {@link ContractorListProps}.
+ * @returns The rendered contractor list.
+ * @public
+ */
 export function ContractorList(props: ContractorListProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

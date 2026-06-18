@@ -5,16 +5,25 @@ import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export interface EditEmployeeBalanceModalProps {
+  /** Whether the modal is open. */
   isOpen: boolean
+  /** Called when the modal requests to close. */
   onClose: () => void
+  /** Display name of the employee whose balance is being edited. */
   employeeName: string
+  /** Current balance in hours. */
   currentBalance: number
+  /** Called with the new balance when the user confirms the change. */
   onConfirm: (newBalance: number) => void
+  /** Whether the confirmation is in flight. */
   isPending: boolean
+  /** Error to display in the modal, if any. */
   error?: SDKError | null
 }
 
+/** @internal */
 export function EditEmployeeBalanceModal({
   isOpen,
   onClose,

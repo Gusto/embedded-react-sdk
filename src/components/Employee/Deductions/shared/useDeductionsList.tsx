@@ -5,15 +5,17 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 
+/** @internal */
 export interface UseDeductionsListProps {
   employeeId: string
 }
 
-export interface DeductionsListDeleteResult {
+interface DeductionsListDeleteResult {
   garnishment: Garnishment
   remainingActiveCount: number
 }
 
+/** @internal */
 export interface UseDeductionsListReady extends BaseHookReady<
   { deductions: Garnishment[] },
   { isFetching: boolean; isPending: boolean; deletingGarnishmentUuid?: string }
@@ -25,8 +27,10 @@ export interface UseDeductionsListReady extends BaseHookReady<
   }
 }
 
+/** @internal */
 export type UseDeductionsListResult = HookLoadingResult | UseDeductionsListReady
 
+/** @internal */
 export function useDeductionsList({ employeeId }: UseDeductionsListProps): UseDeductionsListResult {
   const garnishmentsQuery = useGarnishmentsList({ employeeId })
   const updateMutation = useGarnishmentsUpdateMutation()

@@ -9,21 +9,37 @@ import { coerceNaN } from '@/partner-hook-utils/form/preprocessors'
 
 // ── Error codes ────────────────────────────────────────────────────────
 
+/**
+ * Validation error codes emitted by the child support garnishment form schema.
+ * Map these codes to localized copy in `validationMessages` when composing the
+ * hook.
+ *
+ * @public
+ */
 export const ChildSupportGarnishmentFormErrorCodes = {
   REQUIRED: 'REQUIRED',
   NEGATIVE_AMOUNT: 'NEGATIVE_AMOUNT',
   PERCENT_OUT_OF_RANGE: 'PERCENT_OUT_OF_RANGE',
 } as const
 
+/**
+ * Union of validation error code strings emitted by the child support
+ * garnishment form schema.
+ *
+ * @public
+ */
 export type ChildSupportGarnishmentFormErrorCode =
   (typeof ChildSupportGarnishmentFormErrorCodes)[keyof typeof ChildSupportGarnishmentFormErrorCodes]
 
 // ── Required-attribute keys recognized from the API ────────────────────
 
 /**
- * Agencies declare which child-support attributes they need via
- * `required_attributes[].key`. The legacy form only mapped three keys;
- * unknown keys are ignored both there and here.
+ * Child support attribute keys that the form recognizes. Each state agency
+ * declares which of these keys it requires; the hook exposes the resolved
+ * subset via `requiredAttrKeys` so callers can drive their own UI on which
+ * `caseNumber` / `orderNumber` / `remittanceNumber` fields are required.
+ *
+ * @public
  */
 export const SUPPORTED_REQUIRED_ATTR_KEYS = [
   'case_number',
@@ -31,15 +47,14 @@ export const SUPPORTED_REQUIRED_ATTR_KEYS = [
   'remittance_number',
 ] as const
 
+/**
+ * Union of child support attribute key strings recognized by the form.
+ *
+ * @public
+ */
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number]
 
-// Field name on the form for each required-attribute key.
-export const REQUIRED_ATTR_FIELD_NAME: Record<SupportedRequiredAttrKey, string> = {
-  case_number: 'caseNumber',
-  order_number: 'orderNumber',
-  remittance_number: 'remittanceNumber',
-}
-
+/** @internal */
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey> {
   const keys = new Set<SupportedRequiredAttrKey>()
   if (!agency?.requiredAttributes) return keys
@@ -83,12 +98,21 @@ const fieldValidators = {
   paymentPeriod: z.enum(PaymentPeriod),
 }
 
-export type ChildSupportGarnishmentFormField = keyof typeof fieldValidators
-
+/**
+ * Shape of the values managed by the child support garnishment form.
+ *
+ * @public
+ */
 export type ChildSupportGarnishmentFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
+/**
+ * Shape of the validated values produced by the child support garnishment
+ * form on submit.
+ *
+ * @public
+ */
 export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -98,6 +122,7 @@ export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 // based on the currently selected agency — see `createChildSupportGarnishmentFormSchema`
 // which assigns 'always' / 'never' per call.
 
+/** @internal */
 interface ChildSupportGarnishmentFormSchemaOptions {
   mode?: 'create' | 'update'
   /**
@@ -118,6 +143,7 @@ interface ChildSupportGarnishmentFormSchemaOptions {
   agencyList?: readonly Agencies[]
 }
 
+/** @internal */
 export function createChildSupportGarnishmentFormSchema({
   mode = 'create',
   selectedAgency,

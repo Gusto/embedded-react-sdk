@@ -30,6 +30,7 @@ const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   })
 }
 
+/** @internal */
 export const onboardingMachine = {
   overview: state<MachineTransition>(
     transition(

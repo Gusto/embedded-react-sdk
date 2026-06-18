@@ -4,6 +4,7 @@ import type { UseDeductionsListReady } from '../../shared/useDeductionsList'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
 import { useDataView, DataView } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common'
+import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { Flex } from '@/components/Common/Flex/Flex'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -13,6 +14,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
+/** @internal */
 export interface DeductionsListProps {
   className?: string
   deductionsList: UseDeductionsListReady
@@ -22,6 +24,7 @@ export interface DeductionsListProps {
   onContinue: () => void
 }
 
+/** @internal */
 export function DeductionsList({
   className,
   deductionsList,
@@ -38,6 +41,7 @@ export function DeductionsList({
 
   const { deductions } = deductionsList.data
   const isPendingAny = deductionsList.status.isPending
+  const isEmpty = deductions.length === 0
 
   const { ...dataViewProps } = useDataView({
     data: deductions,
@@ -64,6 +68,14 @@ export function DeductionsList({
           }),
       },
     ],
+    emptyState: () => (
+      <EmptyData title={t('includeDeductionsEmptyState')}>
+        <Components.Button type="button" variant="secondary" onClick={onAdd}>
+          <PlusCircleIcon />
+          {t('addDeductionButtonCta')}
+        </Components.Button>
+      </EmptyData>
+    ),
     itemMenu: deduction => {
       return (
         <HamburgerMenu
@@ -101,10 +113,12 @@ export function DeductionsList({
 
         <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
         <ActionsLayout>
-          <Components.Button variant="secondary" onClick={onAdd}>
-            <PlusCircleIcon />
-            {t('addDeductionCta')}
-          </Components.Button>
+          {!isEmpty && (
+            <Components.Button variant="secondary" onClick={onAdd}>
+              <PlusCircleIcon />
+              {t('addDeductionCta')}
+            </Components.Button>
+          )}
           <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
         </ActionsLayout>
       </Flex>

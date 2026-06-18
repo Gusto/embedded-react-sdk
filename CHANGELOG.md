@@ -1,5 +1,182 @@
 # Changelog
 
+## [0.48.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.2...v0.48.3) (2026-06-17)
+
+### Features & Enhancements
+
+- Export `LocationsList` component from `CompanyOnboarding` namespace ([#2198](https://github.com/Gusto/embedded-react-sdk/issues/2198))
+- `PayrollReceipts` now displays formatted licensee phone numbers ([#2195](https://github.com/Gusto/embedded-react-sdk/issues/2195))
+
+### Fixes
+
+- Export `LocationsListProps` type from `CompanyOnboarding` namespace ([#2200](https://github.com/Gusto/embedded-react-sdk/issues/2200))
+
+### Chores & Maintenance
+
+- Add TSDoc comments to `Company` and `Contractor` namespaces ([#2187](https://github.com/Gusto/embedded-react-sdk/issues/2187), [#2170](https://github.com/Gusto/embedded-react-sdk/issues/2170))
+
+## [0.48.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.1...v0.48.2) (2026-06-17)
+
+### Features & Enhancements
+
+- **Employee:** export DocumentSigner sub-components from EmployeeOnboarding ([#2192](https://github.com/Gusto/embedded-react-sdk/issues/2192)) ([5749f99](https://github.com/Gusto/embedded-react-sdk/commit/5749f99d720bd7c0614d97bef8270020150b3ab5))
+
+### Fixes
+
+- **Payroll:** use EmptyData for PayrollList empty state ([#2189](https://github.com/Gusto/embedded-react-sdk/issues/2189)) ([ac0514a](https://github.com/Gusto/embedded-react-sdk/commit/ac0514a367445e308e128eeb688e1b6a381f992a))
+- **TimeOff:** use empty data component for empty states ([#2188](https://github.com/Gusto/embedded-react-sdk/issues/2188)) ([890e155](https://github.com/Gusto/embedded-react-sdk/commit/890e15554306147ef042c5e753ef678ff81070c0))
+
+### Chores & Maintenance
+
+- add STANDALONE_PAGES routing to sdk-router (1/4) ([#2172](https://github.com/Gusto/embedded-react-sdk/issues/2172)) ([0442494](https://github.com/Gusto/embedded-react-sdk/commit/044249425647ccda5d3b1cc322262e163cc000f1))
+- **deps-dev:** bump @storybook/react-vite from 10.4.4 to 10.4.6 ([#2185](https://github.com/Gusto/embedded-react-sdk/issues/2185)) ([6611fdc](https://github.com/Gusto/embedded-react-sdk/commit/6611fdc06e89c1e01f3029dbbe9310a1abfd5bff))
+- **deps-dev:** bump @typescript-eslint/parser from 8.61.0 to 8.61.1 ([#2182](https://github.com/Gusto/embedded-react-sdk/issues/2182)) ([bd19b5f](https://github.com/Gusto/embedded-react-sdk/commit/bd19b5f89359252d92ffd5785e7ada92a093e880))
+- **deps-dev:** bump @vitest/coverage-v8 from 4.1.8 to 4.1.9 ([#2183](https://github.com/Gusto/embedded-react-sdk/issues/2183)) ([e2174fa](https://github.com/Gusto/embedded-react-sdk/commit/e2174fa840b332f9bed3d10837e936e272f950ea))
+- **deps-dev:** bump vitest from 4.1.8 to 4.1.9 ([#2184](https://github.com/Gusto/embedded-react-sdk/issues/2184)) ([0d1acf7](https://github.com/Gusto/embedded-react-sdk/commit/0d1acf744b7386cefa186825f74794170ee65fe7))
+- **DocumentList:** unify empty and error states via EmptyData ([#2190](https://github.com/Gusto/embedded-react-sdk/issues/2190)) ([6324058](https://github.com/Gusto/embedded-react-sdk/commit/6324058d200a1b2a799dd59026743a454be847fa))
+- export utility types, add TSDoc [@group](https://github.com/group) tags (2/4) ([#2173](https://github.com/Gusto/embedded-react-sdk/issues/2173)) ([75c3668](https://github.com/Gusto/embedded-react-sdk/commit/75c36685d8f562c4d270bc279a3115efba53e7b3))
+- **tsdoc-backfill:** backfill Payroll ([#2181](https://github.com/Gusto/embedded-react-sdk/issues/2181)) ([32f226e](https://github.com/Gusto/embedded-react-sdk/commit/32f226e3f8284320dcf78f64d32bc492dc9579cb))
+- **tsdoc-backfill:** backfill TimeOff ([#2179](https://github.com/Gusto/embedded-react-sdk/issues/2179)) ([e6d2c2b](https://github.com/Gusto/embedded-react-sdk/commit/e6d2c2b76d8041137346c4d675cc17dc85b366fa))
+
+## [0.48.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.0...v0.48.1) (2026-06-16)
+
+### Fixes
+
+- `Form` no longer enables native browser validation by default, so field-level validation and error messaging render consistently across browsers ([#2168](https://github.com/Gusto/embedded-react-sdk/issues/2168))
+- `EmptyData` no longer falls back to a magnifying-glass illustration when none is provided ([#2169](https://github.com/Gusto/embedded-react-sdk/issues/2169))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@playwright/test`, `@storybook/addon-a11y`, `@storybook/addon-docs`, `typescript-eslint`) and override transitive dependencies (`esbuild`, `js-yaml`, `markdown-it`, `uuid`, `@babel/core`) to clear security advisories ([#2155](https://github.com/Gusto/embedded-react-sdk/issues/2155), [#2152](https://github.com/Gusto/embedded-react-sdk/issues/2152), [#2154](https://github.com/Gusto/embedded-react-sdk/issues/2154), [#2153](https://github.com/Gusto/embedded-react-sdk/issues/2153), [#2156](https://github.com/Gusto/embedded-react-sdk/issues/2156), [#2157](https://github.com/Gusto/embedded-react-sdk/issues/2157), [#2159](https://github.com/Gusto/embedded-react-sdk/issues/2159), [#2162](https://github.com/Gusto/embedded-react-sdk/issues/2162), [#2163](https://github.com/Gusto/embedded-react-sdk/issues/2163), [#2166](https://github.com/Gusto/embedded-react-sdk/issues/2166))
+
+## [0.48.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.47.1...v0.48.0) (2026-06-15)
+
+### Breaking Changes
+
+#### Removed deprecated namespace exports: `Company`, `Employee`, `Contractor`, `GustoApiProvider` ([#2120](https://github.com/Gusto/embedded-react-sdk/issues/2120))
+
+These umbrella exports have been removed in favor of the journey-based namespaces.
+
+**`GustoApiProvider` → `GustoProvider`** (an alias since 0.8.0)
+
+```tsx
+// Before
+import { GustoApiProvider } from '@gusto/embedded-react-sdk'
+;<GustoApiProvider {...props} />
+
+// After
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+;<GustoProvider {...props} />
+```
+
+**`Company` → `CompanyOnboarding`**
+
+```tsx
+// Before
+import { Company } from '@gusto/embedded-react-sdk'
+;<Company.OnboardingFlow {...props} />
+
+// After
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+;<CompanyOnboarding.OnboardingFlow {...props} />
+```
+
+**`Employee` → `EmployeeOnboarding` / `EmployeeManagement`**
+
+Onboarding components live in `EmployeeOnboarding`; post-hire management components live in `EmployeeManagement`. Tax and address components exist in both namespaces — pick the one that matches your surface.
+
+```tsx
+// Before
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.Profile {...props} />
+;<Employee.FederalTaxes {...props} />
+
+// After
+import { EmployeeOnboarding, EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.Profile {...props} />
+;<EmployeeOnboarding.FederalTaxes {...props} />
+```
+
+**`Contractor` → `ContractorOnboarding` / `ContractorManagement`**
+
+Onboarding components (`OnboardingFlow`, `ContractorList`, `ContractorProfile`, `Address`, `PaymentMethod`, `NewHireReport`, `ContractorSubmit`) live in `ContractorOnboarding`. Payment components (`PaymentFlow`, `PaymentsList`, `CreatePayment`, `PaymentHistory`, `PaymentSummary`, `PaymentStatement`) live in the new `ContractorManagement` namespace.
+
+```tsx
+// Before
+import { Contractor } from '@gusto/embedded-react-sdk'
+;<Contractor.OnboardingFlow {...props} />
+;<Contractor.PaymentFlow {...props} />
+
+// After
+import { ContractorOnboarding, ContractorManagement } from '@gusto/embedded-react-sdk'
+;<ContractorOnboarding.OnboardingFlow {...props} />
+;<ContractorManagement.PaymentFlow {...props} />
+```
+
+#### Removed deprecated `Employee.Taxes` component and `EMPLOYEE_TAXES_DONE` event ([#2098](https://github.com/Gusto/embedded-react-sdk/issues/2098))
+
+Tax collection was split into separate federal and state components. The combined `Employee.Taxes` component, its i18n namespace, and the `EMPLOYEE_TAXES_DONE` event have been removed. The two components are now separate routing steps — `FederalTaxes` emits `EMPLOYEE_FEDERAL_TAXES_DONE`, and `StateTaxes` emits `EMPLOYEE_STATE_TAXES_DONE` when complete.
+
+```tsx
+// Before
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.Taxes employeeId={employeeId} onEvent={onEvent} />
+
+// After
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.FederalTaxes employeeId={employeeId} onEvent={onEvent} />
+;<EmployeeOnboarding.StateTaxes employeeId={employeeId} onEvent={onEvent} />
+```
+
+`EMPLOYEE_TAXES_DONE` → `EMPLOYEE_FEDERAL_TAXES_DONE` + `EMPLOYEE_STATE_TAXES_DONE`:
+
+```tsx
+// Before
+if (event.eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
+  navigate('/next_step')
+}
+
+// After
+if (event.eventType === componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE) {
+  navigate('/state_taxes')
+}
+// in the StateTaxes onEvent handler:
+if (event.eventType === componentEvents.EMPLOYEE_STATE_TAXES_DONE) {
+  navigate('/next_step')
+}
+```
+
+#### `TimeOff.PolicySettings` is now the data-connected component ([#2119](https://github.com/Gusto/embedded-react-sdk/issues/2119))
+
+`TimeOff.PolicySettings` now refers to the data-connected component, whose props are `{ policyId, mode?, onEvent }` (`PolicySettingsProps`). The presentational component is now exported as `TimeOff.PolicySettingsPresentation` with `PolicySettingsPresentationProps`.
+
+```tsx
+// Before — TimeOff.PolicySettings was the presentational component
+import { TimeOff, type PolicySettingsProps } from '@gusto/embedded-react-sdk'
+;<TimeOff.PolicySettings {...presentationalProps} />
+
+// After — the presentational component is renamed
+import { TimeOff, type PolicySettingsPresentationProps } from '@gusto/embedded-react-sdk'
+;<TimeOff.PolicySettingsPresentation {...presentationalProps} />
+
+// TimeOff.PolicySettings now fetches its own data
+;<TimeOff.PolicySettings policyId={policyId} onEvent={onEvent} />
+```
+
+### Features & Enhancements
+
+- Export the `useEmployeeList` hook for fetching and paginating a company's employees ([#2092](https://github.com/Gusto/embedded-react-sdk/issues/2092))
+- **TimeOff:** Export the data-connected `TimeOff.PolicySettings` and `TimeOff.TimeOffPolicyDetail` blocks, each rendering and fetching from just `policyId` + `onEvent` ([#2119](https://github.com/Gusto/embedded-react-sdk/issues/2119))
+- **Payroll:** Export the `DismissalPayPeriodSelection` block ([#2115](https://github.com/Gusto/embedded-react-sdk/issues/2115))
+- **Employee:** Surface `PayrollOption` on the `EmployeeManagement` namespace ([#2117](https://github.com/Gusto/embedded-react-sdk/issues/2117))
+- Render payroll reimbursements in a `DataView` with an empty-state CTA ([#2135](https://github.com/Gusto/embedded-react-sdk/issues/2135))
+
+### Chores & Maintenance
+
+- Bump `dompurify` (3.4.8 → 3.4.10) ([#2096](https://github.com/Gusto/embedded-react-sdk/issues/2096), [#2124](https://github.com/Gusto/embedded-react-sdk/issues/2124))
+- Bump `react-hook-form` (7.78.0 → 7.79.0) ([#2125](https://github.com/Gusto/embedded-react-sdk/issues/2125))
+- Bump dev and tooling dependencies (`storybook`, `@storybook/*`, `eslint-plugin-storybook`, `prettier`, `@types/react`, `@microsoft/api-extractor`, `axe-core`, `form-data`)
+
 ## [0.47.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.47.0...v0.47.1) (2026-06-09)
 
 ### Features & Enhancements

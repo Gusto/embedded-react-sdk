@@ -17,12 +17,14 @@ export interface RawPayroll {
   payroll_uuid?: string
   check_date?: string
   pay_period?: { start_date?: string; end_date?: string }
+  processed?: boolean
 }
 
 export interface EntityOption {
   value: string
   primary: string
   secondary: string
+  badge?: { label: string; tone: 'processed' | 'unprocessed' }
 }
 
 export function formatPayPeriod(payroll: RawPayroll): string {

@@ -39,19 +39,17 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
-- [EmployeeOnboarding.EmployeeList](#employeelist)
-- [EmployeeOnboarding.Profile](#employeeprofile)
-- [EmployeeOnboarding.Compensation](#employeecompensation)
+- [EmployeeOnboarding.EmployeeList](#employeeonboardingemployeelist)
+- [EmployeeOnboarding.Profile](#employeeonboardingprofile)
+- [EmployeeOnboarding.Compensation](#employeeonboardingcompensation)
 - [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes--employeemanagementfederaltaxes)
 - [EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes](#employeeonboardingstatetaxes--employeemanagementstatetaxes)
-- [EmployeeOnboarding.PaymentMethod](#employeepaymentmethod)
-- [EmployeeOnboarding.Deductions](#employeedeductions)
-- [EmployeeOnboarding.EmployeeDocuments](#employeeemployeedocuments)
-- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingsummary)
+- [EmployeeOnboarding.PaymentMethod](#employeeonboardingpaymentmethod)
+- [EmployeeOnboarding.Deductions](#employeeonboardingdeductions)
+- [EmployeeOnboarding.EmployeeDocuments](#employeeonboardingemployeedocuments)
+- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingonboardingsummary)
 
-> Legacy imports via `Employee.*` (e.g. `Employee.EmployeeList`) continue to work.
-
-### Employee.List
+### EmployeeOnboarding.EmployeeList
 
 Displays a list of employees containing their full name, and their current onboarding status. An onboarding status. This list also contains actions that allow for the editing or removal of an employee.
 
@@ -84,7 +82,7 @@ function MyApp() {
 | EMPLOYEE_ONBOARDING_STATUS_UPDATED | Fired after the "Review" or "Cancel self-onboarding" action updates the employee's onboarding status | The updated `EmployeeOnboardingStatus` record       |
 | EMPLOYEE_DELETED                   | Fired after selecting delete from the employee actions menu and the delete operation completes       | `{ employeeId: string }`                            |
 
-### Employee.Profile
+### EmployeeOnboarding.Profile
 
 Used to collect basic information about the employee:
 
@@ -98,11 +96,11 @@ Used to collect basic information about the employee:
 This component also provides the option to invite the employee to enter some of their details themself. If selected, they can be sent an invitation to complete the form.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Profile
+    <EmployeeOnboarding.Profile
       defaultValues={{ employee: { email: 'myown@data.com' } }}
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
@@ -132,11 +130,11 @@ function MyComponent() {
 | EMPLOYEE_HOME_ADDRESS_CREATED | Fired after form is submitted when creating a new employee                                               | Response from the Create an employee's home address endpoint                                                                                                                                                                                          |
 | EMPLOYEE_HOME_ADDRESS_UPDATED | Fired after form is submitted when editing/updating an existing employee                                 | Response from the Update an employee's home address endpoint                                                                                                                                                                                          |
 | EMPLOYEE_WORK_ADDRESS_CREATED | Fired after form is submitted when creating a new employee                                               | Response from the Create a work address endpoint                                                                                                                                                                                                      |
-| EMPLOYEE_WORK_ADDRESS_UPDATED | Fired after form is submitted when editing/updating an existing employe                                  | Response from the Update a work address endpoint                                                                                                                                                                                                      |
+| EMPLOYEE_WORK_ADDRESS_UPDATED | Fired after form is submitted when editing/updating an existing employee                                 | Response from the Update a work address endpoint                                                                                                                                                                                                      |
 | EMPLOYEE_PROFILE_DONE         | Fired after form submission and all api calls have finished and we are ready to advance to the next step | Called with an object aggregated with the responses above. This either includes all of the responses for creating new entities (if it is creating a new employee) or all the responses for updating entities (if it is updating an existing employee) |
 | CANCEL                        | Fired when user clicks cancel button                                                                     | None                                                                                                                                                                                                                                                  |
 
-### Employee.Compensation
+### EmployeeOnboarding.Compensation
 
 Collects details related to the role of the employee and their compensation:
 
@@ -148,11 +146,11 @@ Collects details related to the role of the employee and their compensation:
 For hourly employees, the compensation component allows for the configuration of multiple roles.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Compensation
+    <EmployeeOnboarding.Compensation
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       startDate="01-01-2025"
       onEvent={() => {}}
@@ -185,7 +183,7 @@ function MyComponent() {
 Provides required form inputs for employee federal tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs and emitted events; pick the variant that matches your screen instead of toggling a prop.
 
 - **`EmployeeOnboarding.FederalTaxes`** renders a single **Continue** submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save so the parent onboarding flow can advance.
-- **`EmployeeManagement.FederalTaxes`** (also exported as `Employee.FederalTaxes` for backwards compatibility) renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen.
+- **`EmployeeManagement.FederalTaxes`** renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen.
 
 ```jsx
 // Onboarding journey
@@ -277,16 +275,19 @@ function ManagementEditScreen() {
 | EMPLOYEE_STATE_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step | None                                                   |
 | CANCEL                       | Management only        | Fired when the user clicks the Cancel button                                           | None                                                   |
 
-### Employee.PaymentMethod
+### EmployeeOnboarding.PaymentMethod
 
 Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.PaymentMethod employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.PaymentMethod
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -308,16 +309,19 @@ function MyComponent() {
 | EMPLOYEE_PAYMENT_METHOD_UPDATED | Fired when the employee updates the payment method by selecting the continue CTA or if they opt to split paychecks and save the split paycheck form | Response from the Update payment method endpoint |
 | EMPLOYEE_PAYMENT_METHOD_DONE    | Fired when the continue CTA is selected on the payment details step, all API calls are finished, and we are ready to advance to the next step       | None                                             |
 
-### Employee.Deductions
+### EmployeeOnboarding.Deductions
 
 Used for configuring additional withholdings from employee pay. Deductions can be set by percentage or fixed amount, and can be either recurring or one-time.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.Deductions employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.Deductions
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -339,18 +343,18 @@ function MyComponent() {
 | EMPLOYEE_DEDUCTION_DELETED | Fired after deleting a deduction                                                       | Response from the Update a garnishment endpoint with active:false |
 | EMPLOYEE_DEDUCTION_DONE    | Fired when deductions setup is complete and user is ready to navigate to the next step | None                                                              |
 
-### Employee.EmployeeDocuments
+### EmployeeOnboarding.EmployeeDocuments
 
 Used during admin onboarding to configure which documents are included in the employee's self-onboarding experience. When the employee has been invited to self-onboard, this step allows the admin to enable or disable the I-9 (Employment Eligibility Verification) form. When the employee is not self-onboarding, this step displays a read-only summary of the documents that will be part of the onboarding process.
 
 This component is conditionally shown in the `EmployeeOnboardingFlow` when `withEmployeeI9` is set to `true`.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.EmployeeDocuments
+    <EmployeeOnboarding.EmployeeDocuments
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
     />
@@ -372,16 +376,16 @@ function MyComponent() {
 | EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED | Fired after the admin toggles the I-9 inclusion checkbox and the configuration is successfully updated | Response from the [Update an employee's onboarding documents config](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-onboarding_documents_config) endpoint |
 | EMPLOYEE_DOCUMENTS_CONTINUE                  | Fired when the admin clicks continue and is ready to advance to the next step                          | None                                                                                                                                                                                      |
 
-### Employee.OnboardingSummary
+### EmployeeOnboarding.OnboardingSummary
 
 Displays the current state of employee onboarding.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.OnboardingSummary
+    <EmployeeOnboarding.OnboardingSummary
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
       isAdmin // Set to true for admin onboarding

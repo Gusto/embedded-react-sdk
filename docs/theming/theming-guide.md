@@ -29,7 +29,7 @@ See [theme variables](./theme-variables.md) for a complete list of available var
 
 You can set your theme by passing variables to the `theme` prop of the `GustoProvider` component.
 
-```
+```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 
@@ -58,7 +58,7 @@ function MyApp({ children }) {
 
 For example, consider the body color variables:
 
-```
+```text
   colorBody
   colorBodyAccent
   colorBodyContent

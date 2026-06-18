@@ -115,6 +115,23 @@ describe('DeductionsList', () => {
     expect(onContinue).toHaveBeenCalledTimes(1)
   })
 
+  it('renders an empty state with an "Add deduction" button when no deductions exist', async () => {
+    const onAdd = vi.fn()
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([])}
+        onAdd={onAdd}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={vi.fn()}
+      />,
+    )
+
+    await screen.findByText("You haven't added any deductions yet")
+    await user.click(screen.getByRole('button', { name: 'Add deduction' }))
+    expect(onAdd).toHaveBeenCalledTimes(1)
+  })
+
   // Row-action coverage (Edit / Delete via the HamburgerMenu) is locked down
   // in useDeductionsList.test.tsx, which exercises the underlying mutation and
   // the DELETED vs DELETED_EMPTY branching directly. The react-aria Popover

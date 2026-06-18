@@ -60,6 +60,7 @@ function HomeAddressCourtesyWithholdingBlock({
   )
 }
 
+/** @internal */
 export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
   createHomeAddressForm: UseHomeAddressFormReady
@@ -76,6 +77,7 @@ export interface HomeAddressViewProps {
   isDeletePending?: boolean
 }
 
+/** @internal */
 export function HomeAddressView({
   editHomeAddressForm,
   createHomeAddressForm,

@@ -29,6 +29,19 @@ interface FederalTaxesProps extends CommonComponentInterface<'Company.FederalTax
   defaultValues?: FederalTaxesDefaultValues
 }
 
+/**
+ * Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/federalTaxes/updated` | Federal tax details were successfully updated | {@link FederalTaxDetails} |
+ * | `company/federalTaxes/done` | The federal tax update step is complete | — |
+ *
+ * @param props - Component props including `companyId` and optional `defaultValues`.
+ * @returns The rendered federal taxes form.
+ * @public
+ */
 export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>

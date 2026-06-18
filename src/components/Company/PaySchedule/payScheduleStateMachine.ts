@@ -19,6 +19,7 @@ const toList = reduce(
   }),
 )
 
+/** @internal */
 export const payScheduleStateMachine = {
   listSchedules: state<MachineTransition>(
     transition(

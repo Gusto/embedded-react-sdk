@@ -15,6 +15,13 @@ export {
   type JobFormData,
   type JobFormOutputs,
 } from './jobSchema'
+export {
+  JobTitleField,
+  HireDateField,
+  TwoPercentShareholderField,
+  StateWcCoveredField,
+  StateWcClassCodeField,
+} from './fields'
 export type {
   JobRequiredValidation,
   JobTitleFieldProps,

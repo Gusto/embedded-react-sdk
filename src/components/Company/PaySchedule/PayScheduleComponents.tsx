@@ -4,6 +4,7 @@ import { PayScheduleForm } from './PayScheduleForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export interface PayScheduleContextInterface extends FlowContextInterface {
   companyId: string
   payScheduleId?: string
@@ -11,11 +12,13 @@ export interface PayScheduleContextInterface extends FlowContextInterface {
   component: React.ComponentType | null
 }
 
+/** @internal */
 export function PayScheduleListContextual() {
   const { companyId, onEvent } = useFlow<PayScheduleContextInterface>()
   return <PayScheduleList onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function PayScheduleFormContextual() {
   const { companyId, payScheduleId, defaultValues, onEvent } =
     useFlow<PayScheduleContextInterface>()

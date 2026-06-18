@@ -21,8 +21,15 @@ import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 
+/**
+ * Props for {@link PaystubsCard}.
+ *
+ * @public
+ */
 export interface PaystubsCardProps {
+  /** The associated employee identifier. */
   employeeId: string
+  /** Event handler fired when paystub interactions occur. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -34,6 +41,8 @@ export interface PaystubsCardProps {
  * download success. The card has no edit transitions and no alert API —
  * paystubs is a read-only surface whose only action is a download side
  * effect that opens the PDF in a new tab.
+ *
+ * @public
  */
 export function PaystubsCard(props: PaystubsCardProps) {
   return (

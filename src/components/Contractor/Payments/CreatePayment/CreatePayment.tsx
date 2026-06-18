@@ -47,10 +47,49 @@ function calculateInitialPaymentDate(speedDays: number): string {
   return formatLocalDate(addBusinessDays(today, speedDays))
 }
 
-interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
+/**
+ * Props for {@link CreatePayment}.
+ *
+ * @public
+ */
+export interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
+  /** UUID of the company for which to create a contractor payment group. */
   companyId: string
 }
 
+/**
+ * Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers.
+ *
+ * @remarks
+ * Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/payments/edit` | The edit modal was opened for a contractor. | — |
+ * | `contractor/payments/update` | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
+ * | `contractor/payments/preview` | The preview API call succeeded. | The contractor payment group preview response. |
+ * | `contractor/payments/backToEdit` | The user returned from preview to continue editing. | — |
+ * | `contractor/payments/created` | The payment group was successfully created. | The created contractor payment group response. |
+ * | `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker. | — |
+ *
+ * @param props - Component props including the company identifier and event handler.
+ * @returns The rendered create-payment form, preview, and edit modal.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { ContractorManagement } from '@gusto/embedded-react-sdk'
+ *
+ * function CreateContractorPayment() {
+ *   return (
+ *     <ContractorManagement.CreatePayment
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function CreatePayment(props: CreatePaymentProps) {
   return (
     <BaseComponent {...props} componentName="Contractor.Payments.CreatePayment">
@@ -59,7 +98,7 @@ export function CreatePayment(props: CreatePaymentProps) {
   )
 }
 
-export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
+const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const [isModalOpen, setIsModalOpen] = useState(false)

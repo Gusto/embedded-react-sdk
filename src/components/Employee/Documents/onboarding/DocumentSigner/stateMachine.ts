@@ -9,6 +9,7 @@ import {
 import { componentEvents, I9_FORM_NAME } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const documentSignerMachine = {
   employmentEligibility: state<MachineTransition>(
     transition(

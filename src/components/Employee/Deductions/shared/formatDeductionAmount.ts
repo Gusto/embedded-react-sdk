@@ -1,11 +1,13 @@
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 
+/** @internal */
 export interface DeductionAmountFormatters {
   formatCurrency: (value: number) => string
   formatPercent: (value: number) => string
   formatPerPaycheck: (value: string) => string
 }
 
+/** @internal */
 export function formatDeductionAmount(
   deduction: Pick<Garnishment, 'amount' | 'deductAsPercentage' | 'recurring' | 'payPeriodMaximum'>,
   { formatCurrency, formatPercent, formatPerPaycheck }: DeductionAmountFormatters,

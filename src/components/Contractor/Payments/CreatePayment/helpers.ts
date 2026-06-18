@@ -1,6 +1,7 @@
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+/** @internal */
 export const getContractorDisplayName = (contractor?: Contractor): string => {
   if (!contractor) {
     return ''

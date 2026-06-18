@@ -3359,6 +3359,14 @@ export interface PayrollPayrollEditEmployee{
 "reimbursementDescriptionPlaceholder":string;
 "reimbursementAmountLabel":string;
 "reimbursementUnnamedFallback":string;
+"reimbursementsTableLabel":string;
+"reimbursementDescriptionColumn":string;
+"reimbursementAmountColumn":string;
+"reimbursementTypeColumn":string;
+"reimbursementTypeRecurring":string;
+"reimbursementTypeOneTime":string;
+"reimbursementEmptyTitle":string;
+"addReimbursementCta":string;
 "addReimbursementLink":string;
 "saveReimbursementCta":string;
 "cancelReimbursementCta":string;
@@ -3834,7 +3842,6 @@ export interface common{
 "calendarArrow":string;
 "nextMonth":string;
 "previousMonth":string;
-"magnifyingGlass":string;
 "paginationFirst":string;
 "paginationPrev":string;
 "paginationNext":string;

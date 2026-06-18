@@ -7,15 +7,11 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
       collapsed: false,
-      items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
-    },
-    {
-      type: 'category',
-      label: 'Deciding to build with the SDK',
-      link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
       items: [
-        'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
-        'deciding-to-build-with-the-sdk/component-types',
+        'getting-started/quick-start',
+        'getting-started/authentication',
+        'getting-started/proxy-security-partner-guidance',
+        'getting-started/component-types',
       ],
     },
     {
@@ -63,7 +59,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'doc',
               id: 'workflows-overview/contractor-onboarding',
-              label: 'Conractor onboarding',
+              label: 'Contractor onboarding',
             },
             {
               type: 'doc',
@@ -139,7 +135,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Hooks (Experimental)',
+      label: 'Hooks',
       link: { type: 'doc', id: 'hooks/hooks' },
       items: [
         'hooks/useEmployeeDetailsForm',

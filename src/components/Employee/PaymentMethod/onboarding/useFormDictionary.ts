@@ -10,6 +10,8 @@ import { useI18n } from '@/i18n'
  * `cancelAddCta` (the bank form's "Cancel" button) onto the body's `cancelCta`,
  * preserving backward compatibility for partners overriding the onboarding keys
  * through the block's `dictionary` prop.
+ *
+ * @internal
  */
 export function useOnboardingBankFormDictionary(): BankFormBodyDictionary {
   useI18n('Employee.PaymentMethod')
@@ -45,6 +47,8 @@ export function useOnboardingBankFormDictionary(): BankFormBodyDictionary {
  * (`splitAmountLabel`, `validations.percentageErrorWithTotal`) are passed
  * through unresolved so the body interpolates them at render time. The cancel
  * action maps onboarding's `cancelAddCta` onto the body's `cancelCta`.
+ *
+ * @internal
  */
 export function useOnboardingSplitFormDictionary(): SplitPaymentsFormBodyDictionary {
   useI18n('Employee.PaymentMethod')

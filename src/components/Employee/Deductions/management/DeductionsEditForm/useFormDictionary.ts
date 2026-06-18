@@ -8,6 +8,8 @@ import type { DeductionsFormDictionary } from '../../shared/DeductionsForm'
  * management's translation file under the nested `form.*` shape, so partner
  * overrides on `Employee.Management.Deductions` flow into the form text via
  * `t(...)` resolution at render time.
+ *
+ * @internal
  */
 export function useManagementDeductionsFormDictionary(): DeductionsFormDictionary {
   const { t } = useTranslation('Employee.Management.Deductions')

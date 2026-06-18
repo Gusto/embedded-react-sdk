@@ -35,6 +35,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
   paymentSpeedDays: number
 }
 
+/** @internal */
 export const CreatePaymentPresentation = ({
   contractors,
   paymentDate,

@@ -125,10 +125,14 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
     isSubmitting ||
     contractor.onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
     contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+  const isDismissedInPast = Boolean(
+    contractor.dismissalDate && new Date(contractor.dismissalDate) <= new Date(),
+  )
   const isEditable =
-    contractor.isActive ||
-    isReviewState ||
-    contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED
+    !isDismissedInPast &&
+    (contractor.isActive ||
+      isReviewState ||
+      contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED)
 
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const [fileNewHireReport, setFileNewHireReport] = useState('no')

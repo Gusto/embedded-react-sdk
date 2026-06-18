@@ -33,6 +33,7 @@ function getSetupStatus(req: TaxRequirementStatesList): SetupStatus {
   return req.setupComplete ? SetupStatus.Complete : SetupStatus.InProgress
 }
 
+/** @internal */
 export const List = () => {
   const { stateTaxRequirements, handleChange } = useStateTaxesList()
   const Components = useComponentContext()

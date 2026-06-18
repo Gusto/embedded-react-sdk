@@ -16,8 +16,6 @@ function MyApp() {
 }
 ```
 
-> Legacy import via `Employee.DashboardFlow` continues to work.
-
 ### Props
 
 | Name                | Type                | Description                                                     |
@@ -52,26 +50,24 @@ The Dashboard workflow can be used through the wrapping flow component or render
 ### Available Subcomponents
 
 - [EmployeeManagement.DashboardFlow](#employeemanagementdashboardflow)
-- [Employee.Dashboard](#employeedashboard)
+- [EmployeeManagement.Dashboard](#employeemanagementdashboard)
 - [EmployeeManagement.EmployeeList](#employeemanagementemployeelist)
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
 - [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
-
-> Legacy import via `Employee.DashboardFlow` continues to work.
 
 ### EmployeeManagement.DashboardFlow
 
 The main entry point for the Employee Dashboard workflow. Wraps the dashboard with error boundaries, suspense, and provides a consistent loading/error experience. See the [Implementation](#implementation) section above for full props and events.
 
-### Employee.Dashboard
+### EmployeeManagement.Dashboard
 
 The Dashboard component renders the tabbed interface directly without the flow wrapper. Use this when you want to embed the dashboard into a custom layout that already provides its own error boundaries.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Employee.Dashboard employeeId="employee-id" onEvent={() => {}} />
+  return <EmployeeManagement.Dashboard employeeId="employee-id" onEvent={() => {}} />
 }
 ```
 
@@ -85,7 +81,7 @@ function MyComponent() {
 
 #### Events
 
-`Employee.Dashboard` emits the same events as `EmployeeManagement.DashboardFlow`. See the events table at the top of this page.
+`EmployeeManagement.Dashboard` emits the same events as `EmployeeManagement.DashboardFlow`. See the events table at the top of this page.
 
 ### EmployeeManagement.EmployeeList
 
@@ -326,7 +322,7 @@ The Dashboard component is wrapped with `BaseBoundaries` which provides:
 To provide a custom error fallback:
 
 ```jsx
-<Employee.DashboardFlow
+<EmployeeManagement.DashboardFlow
   employeeId="employee-id"
   onEvent={() => {}}
   FallbackComponent={MyCustomErrorComponent}
@@ -368,7 +364,7 @@ function MyDashboard() {
 The Dashboard supports custom translations through the `dictionary` prop. Default translations are in English. To override:
 
 ```jsx
-<Employee.DashboardFlow
+<EmployeeManagement.DashboardFlow
   employeeId="employee-id"
   onEvent={() => {}}
   dictionary={{
@@ -396,7 +392,7 @@ import { GustoProvider } from '@gusto/embedded-react-sdk'
     // ... other component overrides
   }}
 >
-  <Employee.DashboardFlow {...props} />
+  <EmployeeManagement.DashboardFlow {...props} />
 </GustoProvider>
 ```
 

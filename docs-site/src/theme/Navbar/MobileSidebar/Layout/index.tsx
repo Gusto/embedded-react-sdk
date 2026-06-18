@@ -1,6 +1,5 @@
 import React, { version, type ReactNode } from 'react'
 import clsx from 'clsx'
-import { useNavbarSecondaryMenu } from '@docusaurus/theme-common/internal'
 import { ThemeClassNames } from '@docusaurus/theme-common'
 import NavbarColorModeToggle from '@theme/Navbar/ColorModeToggle'
 import type { Props } from '@theme/Navbar/MobileSidebar/Layout'
@@ -28,12 +27,7 @@ function NavbarMobileSidebarPanel({ children, inert }: { children: ReactNode; in
   )
 }
 
-export default function NavbarMobileSidebarLayout({
-  header,
-  primaryMenu,
-  secondaryMenu,
-}: Props): ReactNode {
-  const { shown: secondaryMenuShown } = useNavbarSecondaryMenu()
+export default function NavbarMobileSidebarLayout({ header, primaryMenu }: Props): ReactNode {
   return (
     <div
       className={clsx(
@@ -43,19 +37,18 @@ export default function NavbarMobileSidebarLayout({
       )}
     >
       {header}
-      <div
-        className={clsx('navbar-sidebar__items', styles.mobileSidebarItems, {
-          'navbar-sidebar__items--show-secondary': secondaryMenuShown,
-        })}
-      >
-        <NavbarMobileSidebarPanel inert={secondaryMenuShown}>
-          {primaryMenu}
-        </NavbarMobileSidebarPanel>
-        <NavbarMobileSidebarPanel inert={!secondaryMenuShown}>
-          {secondaryMenu}
-        </NavbarMobileSidebarPanel>
+      <div className={clsx('navbar-sidebar__items', styles.mobileSidebarItems)}>
+        <NavbarMobileSidebarPanel inert={false}>{primaryMenu}</NavbarMobileSidebarPanel>
       </div>
       <div className={styles.mobileSidebarFooter}>
+        <a
+          href="https://github.com/Gusto/embedded-react-sdk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="navbar__link navbarGithub"
+        >
+          GitHub
+        </a>
         <NavbarColorModeToggle />
       </div>
     </div>

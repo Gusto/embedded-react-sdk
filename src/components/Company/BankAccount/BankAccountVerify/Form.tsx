@@ -2,13 +2,16 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Flex, NumberInputField } from '@/components/Common'
 
+/** @internal */
 export const BankAccountVerifySchema = z.object({
   deposit1: z.number().min(0),
   deposit2: z.number().min(0),
 })
 
+/** @internal */
 export type BankAccountVerifyInputs = z.infer<typeof BankAccountVerifySchema>
 
+/** @internal */
 export function Form() {
   const { t } = useTranslation('Company.BankAccount')
 

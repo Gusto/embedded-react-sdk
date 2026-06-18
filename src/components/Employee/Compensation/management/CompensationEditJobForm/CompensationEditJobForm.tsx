@@ -13,8 +13,15 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
+/**
+ * Props for {@link CompensationEditJobForm}.
+ *
+ * @public
+ */
 export interface CompensationEditJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The job whose compensation is being edited. */
   jobId: string
   /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED` (with the saved
    *  `Compensation`) on a successful save, and
@@ -22,6 +29,11 @@ export interface CompensationEditJobFormProps extends CommonComponentInterface<'
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Schedules a future-dated compensation change for a job that's already in effect.
+ *
+ * @public
+ */
 export function CompensationEditJobForm({ dictionary, ...props }: CompensationEditJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (

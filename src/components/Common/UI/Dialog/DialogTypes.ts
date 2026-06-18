@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a modal confirmation dialog with a primary action and a cancel action.
  *
  * @public
+ * @group Component Props
  */
 export interface DialogProps {
   /**

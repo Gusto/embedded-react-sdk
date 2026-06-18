@@ -72,7 +72,10 @@ echo "$all_changed" | sed 's/^/  /'
 # burn CI minutes running the full Playwright matrix. Anything *new* with one
 # of these extensions in an unfamiliar location still falls through to the
 # cross-cutting branch below, preserving the safe default.
-changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' || true)
+#
+# docs-site/ is also excluded: it contains TypeDoc config and plugins that
+# only affect the published docs website, not the SDK runtime or e2e tests.
+changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' | grep -v '^docs-site/' || true)
 
 if [[ -z "$changed" ]]; then
   echo "No code/config changes detected (only non-runtime files)"

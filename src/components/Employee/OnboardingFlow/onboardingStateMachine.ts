@@ -23,6 +23,7 @@ const returnToIndex = reduce(
   }),
 )
 
+/** @internal */
 export const employeeOnboardingMachine = {
   index: state<MachineTransition>(
     transition(

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+/** @internal */
 export function useDeleteBankAccount(handleDelete: (uuid: string) => Promise<void>) {
   const [pendingDeleteAccount, setPendingDeleteAccount] = useState<{
     uuid: string

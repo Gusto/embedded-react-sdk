@@ -1,4 +1,3 @@
-export { GustoApiProvider } from './GustoApiProvider'
 export { GustoProvider, GustoProviderCustomUIAdapter } from './GustoProvider'
 export type {
   GustoProviderProps,

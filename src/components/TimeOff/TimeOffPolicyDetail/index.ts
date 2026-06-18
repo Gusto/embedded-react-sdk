@@ -1,11 +1,12 @@
 export { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
 export type {
   TimeOffPolicyDetailPresentationProps,
+  TimeOffPolicyDetailPresentationBaseProps,
   TimeOffPolicyDetailEmployee,
   PolicyDetails,
+  UnlimitedPolicyDetails,
+  RateBasedPolicyDetails,
+  RateBasedAccrualMethod,
   PolicySettingsDisplay,
+  PolicyTypeKey,
 } from './TimeOffPolicyDetailTypes'
-export { TimeOffPolicyDetail } from './TimeOffPolicyDetail'
-export type { TimeOffPolicyDetailProps } from './TimeOffPolicyDetail'
-export { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
-export type { EditEmployeeBalanceModalProps } from './EditEmployeeBalanceModal'

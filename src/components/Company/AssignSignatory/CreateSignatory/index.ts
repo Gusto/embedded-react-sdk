@@ -1,2 +1,2 @@
-export { CreateSignatory } from './CreateSignatory'
-export { useCreateSignatory, type CreateSignatoryDefaultValues } from './useCreateSignatory'
+export { CreateSignatory, type CreateSignatoryProps } from './CreateSignatory'
+export { type CreateSignatoryDefaultValues } from './useCreateSignatory'

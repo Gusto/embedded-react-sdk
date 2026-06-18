@@ -54,7 +54,7 @@ function MyApp({ employeeId, startDate }) {
 }
 ```
 
-![](https://files.readme.io/6fb4afca5b75cc9aac151e2ed873aa988b7ffc35dbcb3566b874d7cd8d323e64-image.png)
+![Employee onboarding flow step rendered in isolation](https://files.readme.io/6fb4afca5b75cc9aac151e2ed873aa988b7ffc35dbcb3566b874d7cd8d323e64-image.png)
 
 Each step of the employee onboarding flow can be imported like this in isolation and used directly as needed. (For a comprehensive list of employee onboarding components available [see the Employee Onboarding documentation here](../workflows-overview/employee-onboarding/employee-onboarding.md)).
 

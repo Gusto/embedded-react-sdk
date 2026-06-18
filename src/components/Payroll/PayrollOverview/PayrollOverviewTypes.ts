@@ -1,3 +1,4 @@
+/** @internal */
 export enum PayrollOverviewStatus {
   Viewing = 'viewing',
   Submitting = 'submitting',

@@ -128,10 +128,15 @@ jobs:
       - name: TypeScript check
         run: npm run tsc
 
-  # Endpoint inventory job: Verify derived inventory is up to date (parallel with other checks)
-  endpoints:
-    needs: setup
+  # derive-check-src: Run endpoint inventory and TypeDoc checks on a standard runner.
+  # Neither reads from dist/, so this job runs in parallel with `build`.
+  # On non-main branches: outputs stale=true if files changed (derive-commit handles the push).
+  # On main: fails immediately if files are stale.
+  derive-check-src:
+    needs: [setup]
     runs-on: ubuntu-latest
+    outputs:
+      stale: ${{ steps.check.outputs.stale }}
     steps:
       - uses: actions/checkout@v6
 
@@ -145,8 +150,165 @@ jobs:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
-      - name: Verify endpoint inventory
-        run: npm run endpoints:verify
+      - name: Install docs-site dependencies
+        run: npm ci
+        working-directory: docs-site
+
+      - name: Derive endpoint inventory and TypeDoc in parallel
+        run: |
+          FAIL=0
+          npm run endpoints:derive &
+          PID_ENDPOINTS=$!
+          npm run docs:api:generate &
+          PID_DOCS=$!
+          wait $PID_ENDPOINTS || FAIL=1
+          wait $PID_DOCS || FAIL=1
+          exit $FAIL
+
+      - name: Check for stale derived files
+        id: check
+        run: |
+          git add docs/reference
+          git add docs/api
+          if git diff --staged --quiet; then
+            echo "stale=false" >> $GITHUB_OUTPUT
+          else
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]]; then
+              echo "::error::Derived files are stale — run 'npm run derive' locally and commit the result."
+              exit 1
+            fi
+            echo "stale=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload derived src files
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-src
+          path: |
+            docs/reference
+            docs/api
+          retention-days: 1
+          if-no-files-found: error
+
+  # derive-check-dist: Run API report check on a standard runner.
+  # api-extractor reads dist/index.d.ts, so this job runs after `build`.
+  # On non-main branches: outputs stale=true if the report changed.
+  # On main: fails immediately if the report is stale.
+  derive-check-dist:
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    outputs:
+      stale: ${{ steps.check.outputs.stale }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Restore build artifacts
+        uses: actions/cache/restore@v5
+        with:
+          path: dist
+          key: build-${{ github.sha }}
+
+      - name: Derive API report
+        run: npm run api-report:derive
+
+      - name: Check for stale API report
+        id: check
+        run: |
+          git add .reports
+          if git diff --staged --quiet; then
+            echo "stale=false" >> $GITHUB_OUTPUT
+          else
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]]; then
+              echo "::error::API report is stale — run 'npm run derive' locally and commit the result."
+              exit 1
+            fi
+            echo "stale=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload derived dist files
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-dist
+          path: .reports
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  # derive-commit: Re-derive and commit any stale files back to the branch.
+  # Only runs when a check job detected staleness — the expensive self-hosted runner
+  # (needed for the org IP allow list to push back to the repo) is never used otherwise.
+  # Dependabot and main are gated out at the check layer (they fail on staleness rather
+  # than setting stale=true), so derive-commit never runs for either.
+  derive-commit:
+    needs: [derive-check-src, derive-check-dist]
+    if: needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
+    # Must use the self-hosted runner group — GitHub-hosted runners are blocked
+    # by the org IP allow list and cannot push back to the repository.
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+    steps:
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Download derived src files
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-src
+          path: docs
+
+      - name: Download derived dist files
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-dist
+          path: .reports
+
+      - name: Commit and push derived files
+        run: |
+          git add docs/reference
+          git add docs/api
+          git add .reports
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update derived files"
+            git push
+          fi
+
+  # derive: Single required check that branch protection can gate on.
+  # Aggregates derive-check-src and derive-check-dist. derive-commit is excluded
+  # intentionally — it only runs when files are stale and is not a health signal.
+  derive:
+    needs: [derive-check-src, derive-check-dist]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify derive checks passed
+        env:
+          SRC: ${{ needs.derive-check-src.result }}
+          DIST: ${{ needs.derive-check-dist.result }}
+        run: |
+          if [[ "$SRC" != "success" && "$SRC" != "skipped" ]]; then exit 1; fi
+          if [[ "$DIST" != "success" && "$DIST" != "skipped" ]]; then exit 1; fi
 
   # Storybook build job: validates all stories compile and index successfully
   storybook-build:
@@ -190,12 +352,15 @@ jobs:
       - name: Validate docs front matter
         run: npm run docs:lint
 
+      - name: Lint markdown
+        run: npm run docs:lint:markdown
+
+      - name: Spell check docs
+        run: npm run docs:lint:spell
+
       - name: Install docs dependencies
         working-directory: docs-site
         run: npm ci
-
-      - name: Generate TypeDoc markdown
-        run: cd docs-site && npm run typedoc
 
       - name: Build docs
         run: npm run docs:build
