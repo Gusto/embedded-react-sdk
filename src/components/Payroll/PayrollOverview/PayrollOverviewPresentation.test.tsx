@@ -51,6 +51,7 @@ const mockPayrollData: PayrollShow = {
     otherDeductions: '0.00',
   },
   companyTaxes: [],
+  payrollTaxes: [],
   createdAt: new Date('2025-08-11T12:00:00Z'),
   submissionBlockers: [],
   processingRequest: {
@@ -59,6 +60,19 @@ const mockPayrollData: PayrollShow = {
   },
   partnerOwnedDisbursement: false,
   employeeCompensations: [],
+}
+
+const mockPagination = {
+  currentPage: 1,
+  totalPages: 3,
+  totalCount: 25,
+  itemsPerPage: 10 as const,
+  isFetching: false,
+  handleFirstPage: vi.fn(),
+  handlePreviousPage: vi.fn(),
+  handleNextPage: vi.fn(),
+  handleLastPage: vi.fn(),
+  handleItemsPerPageChange: vi.fn(),
 }
 
 const mockFastAchBlocker: PayrollSubmissionBlockerType = {
@@ -79,7 +93,6 @@ const mockFastAchBlocker: PayrollSubmissionBlockerType = {
 
 const defaultProps = {
   payrollData: mockPayrollData,
-  employeeDetails: [],
   taxes: {},
   status: PayrollOverviewStatus.Viewing,
   isProcessed: false,
@@ -403,12 +416,14 @@ describe('PayrollOverviewPresentation', () => {
     })
   })
 
-  it('shows Skipped badge when employee is excluded', async () => {
+  it('shows Skipped badge and employee names sourced from compensations', async () => {
     const payrollWithExcluded: PayrollShow = {
       ...mockPayrollData,
       employeeCompensations: [
         {
           employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
           excluded: true,
           fixedCompensations: [],
           hourlyCompensations: [],
@@ -421,6 +436,8 @@ describe('PayrollOverviewPresentation', () => {
         },
         {
           employeeUuid: 'emp-2',
+          firstName: 'John',
+          lastName: 'Smith',
           excluded: false,
           fixedCompensations: [],
           hourlyCompensations: [],
@@ -435,43 +452,96 @@ describe('PayrollOverviewPresentation', () => {
     }
 
     renderWithProviders(
-      <PayrollOverviewPresentation
-        {...defaultProps}
-        payrollData={payrollWithExcluded}
-        employeeDetails={[
-          {
-            uuid: 'emp-1',
-            firstName: 'Jane',
-            lastName: 'Doe',
-            companyUuid: 'company-uuid',
-            version: 'v1',
-            onboarded: true,
-            onboardingStatus: 'onboarding_completed',
-            terminated: false,
-            twoPercentShareholder: false,
-            hasSsn: true,
-            historical: false,
-          } as never,
-          {
-            uuid: 'emp-2',
-            firstName: 'John',
-            lastName: 'Smith',
-            companyUuid: 'company-uuid',
-            version: 'v1',
-            onboarded: true,
-            onboardingStatus: 'onboarding_completed',
-            terminated: false,
-            twoPercentShareholder: false,
-            hasSsn: true,
-            historical: false,
-          } as never,
-        ]}
-      />,
+      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithExcluded} />,
     )
 
     await waitFor(() => {
       expect(screen.getByText('Skipped')).toBeInTheDocument()
     })
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    expect(screen.getByText('John Smith')).toBeInTheDocument()
+  })
+
+  it('derives the compensation type column from each compensation flsaStatus', async () => {
+    const user = userEvent.setup()
+    const payrollWithFlsa: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-exempt',
+          firstName: 'Patricia',
+          lastName: 'Churchland',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [
+            { name: 'Regular Hours', hours: '40.0', amount: '2000.0', flsaStatus: 'Exempt' },
+          ],
+          paidTimeOff: [],
+          grossPay: 2000,
+          netPay: 1600,
+          checkAmount: 1600,
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+        {
+          employeeUuid: 'emp-nonexempt',
+          firstName: 'Isaiah',
+          lastName: 'Berlin',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [
+            { name: 'Regular Hours', hours: '40.0', amount: '800.0', flsaStatus: 'Nonexempt' },
+          ],
+          paidTimeOff: [],
+          grossPay: 800,
+          netPay: 640,
+          checkAmount: 640,
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={payrollWithFlsa} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Hours worked/i }))
+
+    expect(await screen.findByText('Salaried / Exempt')).toBeInTheDocument()
+    expect(screen.getByText('Hourly / Nonexempt')).toBeInTheDocument()
+  })
+
+  it('renders a pagination control for the per-employee tables when pagination is provided', async () => {
+    const payrollWithEmployees: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          grossPay: 1000,
+          netPay: 800,
+          checkAmount: 800,
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        payrollData={payrollWithEmployees}
+        pagination={mockPagination}
+      />,
+    )
+
+    expect(await screen.findByTestId('pagination-control')).toBeInTheDocument()
   })
 
   describe('Cancelled status', () => {
@@ -489,6 +559,8 @@ describe('PayrollOverviewPresentation', () => {
       const user = userEvent.setup()
       const checkOnlyPayroll: PayrollShow = {
         ...mockPayrollData,
+        // A check-only payroll has no direct-deposit debit.
+        totals: { ...mockPayrollData.totals, netPayDebit: '0.00' },
         employeeCompensations: [
           {
             paymentMethod: 'Check',

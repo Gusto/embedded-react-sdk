@@ -215,10 +215,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         },
         {

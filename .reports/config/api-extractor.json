@@ -47,7 +47,7 @@
       },
       "ae-unresolved-link": {
         "logLevel": "none",
-        "addToApiReportFile": true
+        "addToApiReportFile": false
       },
       "ae-incompatible-release-tags": {
         "logLevel": "none",
