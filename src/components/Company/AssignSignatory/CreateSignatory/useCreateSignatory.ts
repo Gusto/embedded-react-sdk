@@ -2,6 +2,11 @@ import { type Signatory } from '@gusto/embedded-api-v-2025-11-15/models/componen
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
+/**
+ * Initial values for the {@link CreateSignatory} form fields. At least one field must be provided.
+ *
+ * @public
+ */
 export type CreateSignatoryDefaultValues = RequireAtLeastOne<
   Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title' | 'phone' | 'birthday'> &
     Pick<
@@ -19,4 +24,9 @@ type CreateSignatoryContextType = {
 const [useCreateSignatory, CreateSignatoryProvider] =
   createCompoundContext<CreateSignatoryContextType>('CreateSignatoryContext')
 
-export { useCreateSignatory, CreateSignatoryProvider }
+export {
+  /** @internal */
+  useCreateSignatory,
+  /** @internal */
+  CreateSignatoryProvider,
+}

@@ -4,6 +4,7 @@ import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?rea
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common/Flex/Flex'
 
+/** @internal */
 export function Head() {
   const { bankAccount, showVerifiedMessage, handleVerification } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')

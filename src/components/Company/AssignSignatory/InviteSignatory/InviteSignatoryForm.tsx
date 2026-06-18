@@ -8,6 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 const emailMismatchError = 'email_mismatch'
 
+/** @internal */
 export const InviteSignatorySchema = z
   .object({
     firstName: nameValidation,
@@ -21,8 +22,10 @@ export const InviteSignatorySchema = z
     path: ['confirmEmail'],
   })
 
+/** @internal */
 export type InviteSignatoryInputs = z.infer<typeof InviteSignatorySchema>
 
+/** @internal */
 export const InviteSignatoryForm = () => {
   const { t } = useTranslation('Company.AssignSignatory')
   const Components = useComponentContext()

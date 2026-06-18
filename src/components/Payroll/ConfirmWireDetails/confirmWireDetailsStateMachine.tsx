@@ -8,20 +8,31 @@ import {
 import { payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/**
+ * Payload shapes for each wire-confirmation state machine event.
+ *
+ * @internal
+ */
 export type EventPayloads = {
+  /** Wire-in request selected within the instructions screen. */
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT]: {
     selectedWireInId: string
   }
+  /** Banner button pressed to begin the wire transfer flow. */
   [payrollWireEvents.PAYROLL_WIRE_START_TRANSFER]: undefined
+  /** Instructions screen completed; advances to the confirmation form. */
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: {
     selectedWireInId: string
   }
+  /** Confirmation form submitted; carries the alert to surface on the banner. */
   [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: {
     confirmationAlert: ConfirmationAlert
   }
+  /** Confirmation form cancelled. */
   [payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL]: undefined
 }
 
+/** @internal */
 export const confirmWireDetailsMachine = {
   banner: state<MachineTransition>(
     transition(

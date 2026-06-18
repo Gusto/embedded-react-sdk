@@ -4,21 +4,25 @@ import type { companyEvents } from '@/shared/constants'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type EventPayloads = {
   [companyEvents.COMPANY_LOCATION_DONE]: undefined
   [companyEvents.COMPANY_LOCATION_EDIT]: { uuid: string }
   [companyEvents.COMPANY_LOCATION_CREATE]: undefined
 }
 
+/** @internal */
 export interface LocationsContextInterface extends FlowContextInterface {
   companyId: string
   locationId?: string
 }
 
+/** @internal */
 export function LocationsListContextual() {
   const { companyId, onEvent } = useFlow<LocationsContextInterface>()
   return <LocationsList companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
+/** @internal */
 export function LocationFormContextual() {
   const { onEvent, locationId, companyId } = useFlow<LocationsContextInterface>()
   return (

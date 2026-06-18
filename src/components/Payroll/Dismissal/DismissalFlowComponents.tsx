@@ -11,19 +11,33 @@ import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { BaseComponent } from '@/components/Base/Base'
 
+/** @internal */
 export interface DismissalFlowContextInterface extends FlowContextInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** The terminated employee whose final payroll is being run. */
   employeeId?: string
+  /** The dismissal payroll identifier, set once a pay period has been selected and the payroll created. */
   payrollUuid?: string
 }
 
+/**
+ * Props for {@link DismissalFlow}.
+ *
+ * @public
+ */
 export interface DismissalFlowProps {
+  /** The associated company identifier. */
   companyId: string
+  /** The terminated employee whose final payroll is being run. */
   employeeId?: string
+  /** Handler for events emitted by the flow. See {@link DismissalFlow} for the event table. */
   onEvent: OnEventType<EventType, unknown>
+  /** Optional dismissal payroll identifier. When provided, the flow skips pay period selection and starts directly at payroll execution. */
   payrollId?: string
 }
 
+/** @internal */
 export function DismissalPayPeriodSelectionContextual() {
   const { companyId, employeeId, onEvent } = useFlow<DismissalFlowContextInterface>()
   return (
@@ -35,6 +49,7 @@ export function DismissalPayPeriodSelectionContextual() {
   )
 }
 
+/** @internal */
 export function DismissalExecutionContextual() {
   const { companyId, payrollUuid, onEvent, header } = useFlow<DismissalFlowContextInterface>()
 

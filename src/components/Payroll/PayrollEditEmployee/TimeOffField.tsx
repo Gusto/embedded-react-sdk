@@ -8,12 +8,15 @@ import { Flex, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export interface TimeOffFieldProps {
+  /** The time-off entry whose hours the field captures. */
   timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  /** The employee whose accrual balance is displayed alongside the field. */
   employee: Employee
 }
 
-export const TimeOffBalance = ({
+const TimeOffBalance = ({
   accrualBalance,
   accrualMethod,
   hoursUsed,
@@ -41,11 +44,15 @@ export const TimeOffBalance = ({
   )
 }
 
+/** @internal */
 export interface PayoutTimeOffFieldProps {
+  /** The time-off entry whose final-payout hours the field captures. */
   timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  /** The employee whose accrual balance is displayed alongside the field. */
   employee: Employee
 }
 
+/** @internal */
 export const PayoutTimeOffField = ({ timeOff, employee }: PayoutTimeOffFieldProps) => {
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -88,6 +95,7 @@ export const PayoutTimeOffField = ({ timeOff, employee }: PayoutTimeOffFieldProp
   )
 }
 
+/** @internal */
 export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')

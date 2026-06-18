@@ -10,10 +10,32 @@ import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
-interface LocationsListProps extends BaseComponentInterface {
+/**
+ * Props for the {@link LocationsList} component.
+ *
+ * @public
+ */
+export interface LocationsListProps extends BaseComponentInterface {
+  /** The associated company identifier. */
   companyId: string
 }
 
+/**
+ * Displays the list of work locations for a company.
+ *
+ * @remarks
+ * Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/location/add` | A user chose to add a new location | — |
+ * | `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
+ * | `company/location/done` | The user chose to proceed to the next step | — |
+ *
+ * @param props - Component props including the `companyId` whose locations should be listed.
+ * @returns The rendered locations list section.
+ * @public
+ */
 export function LocationsList(props: LocationsListProps) {
   return (
     <BaseComponent {...props}>

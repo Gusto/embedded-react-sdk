@@ -4,14 +4,19 @@ import { RecoveryCasesResubmitContextual } from './RecoveryCasesComponents'
 import { recoveryCasesEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export type EventPayloads = {
+  /** Payload carried when a user opens the resubmit modal for a recovery case. */
   [recoveryCasesEvents.RECOVERY_CASE_RESOLVE]: {
     recoveryCaseId: string
   }
+  /** No payload — the modal was cancelled. */
   [recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_CANCEL]: undefined
+  /** No payload — the resubmit completed successfully. */
   [recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_DONE]: undefined
 }
 
+/** @internal */
 export const recoveryCasesMachine = {
   list: state<MachineTransition>(
     transition(

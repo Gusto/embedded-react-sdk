@@ -32,9 +32,11 @@ interface UsePayrollConfigurationDataReturn {
   refetch: () => Promise<void>
 }
 
+/** @internal */
 export const PREPARE_QUERY_KEY = 'payroll-prepare'
 const FIVE_MINUTES = 5 * 60 * 1000
 
+/** @internal */
 export function usePayrollConfigurationData({
   companyId,
   payrollId,

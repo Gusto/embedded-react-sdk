@@ -21,6 +21,7 @@ interface PaymentHistoryPresentationProps {
   isCancelling: boolean
 }
 
+/** @internal */
 export const PaymentHistoryPresentation = ({
   paymentGroup,
   contractors,

@@ -17,6 +17,7 @@ interface ConfirmWireDetailsBannerProps extends BaseComponentInterface<'Payroll.
   onStartWireTransfer: () => void
 }
 
+/** @internal */
 export function ConfirmWireDetailsBanner(props: ConfirmWireDetailsBannerProps) {
   return (
     <BaseComponent {...props}>

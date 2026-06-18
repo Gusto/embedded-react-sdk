@@ -1,14 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { RadioGroupField } from '@/components/Common'
 import { PAYMENT_METHODS } from '@/shared/constants'
 
-export const PaymentTypeSchema = z.object({
-  type: z.enum(['Check', 'Direct Deposit']),
-})
-export type PaymentTypeInputs = z.input<typeof PaymentTypeSchema>
-export type PaymentTypePayload = z.output<typeof PaymentTypeSchema>
-
+/** @internal */
 export function PaymentTypeForm() {
   const { t } = useTranslation('Contractor.PaymentMethod')
   return (

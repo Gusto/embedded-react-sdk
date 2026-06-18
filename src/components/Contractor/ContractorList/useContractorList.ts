@@ -1,15 +1,12 @@
-import { type Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
-export interface ContractorListContext {
-  contractors: Contractor[]
-}
-
+/** @internal */
 export interface useContractorsArgs {
   companyUuid: string
 }
 
+/** @internal */
 export function useContractors({ companyUuid }: useContractorsArgs) {
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 

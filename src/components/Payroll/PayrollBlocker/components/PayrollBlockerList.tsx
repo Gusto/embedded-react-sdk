@@ -39,14 +39,29 @@ interface PayrollBlocker {
   }
 }
 
-interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.PayrollBlocker'> {
+/**
+ * Props for {@link PayrollBlockerList}.
+ *
+ * @public
+ */
+export interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.PayrollBlocker'> {
+  /** The associated company identifier. */
   companyId: string
 }
 
 /**
- * PayrollBlockerList - DataView-based component displaying payroll blockers
- * Shows each blocker with individual resolution buttons
- * Also displays recovery cases and information requests sections when applicable
+ * Displays the list of blockers preventing payroll from being processed for a company.
+ *
+ * @remarks
+ * Blockers indicate issues that must be resolved before a payroll can be calculated or
+ * submitted, such as missing employee information, invalid tax setups, or incomplete
+ * company configuration. The component also renders open recovery cases and outstanding
+ * information requests for the company when present, and re-emits any events those
+ * embedded surfaces fire through `onEvent`.
+ *
+ * @param props - {@link PayrollBlockerListProps}
+ * @returns The rendered blocker list.
+ * @public
  */
 export function PayrollBlockerList(props: PayrollBlockerListProps) {
   return (

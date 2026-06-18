@@ -15,6 +15,15 @@ export {
   type EmploymentEligibilityProps,
 } from '../Documents/onboarding/DocumentSigner/EmploymentEligibility'
 export {
+  DocumentList,
+  type DocumentListProps,
+} from '../Documents/onboarding/DocumentSigner/DocumentList'
+export { SignatureForm, type SignatureFormProps } from '../Documents/shared/SignatureForm'
+export {
+  I9SignatureForm,
+  type I9SignatureFormProps,
+} from '../Documents/onboarding/DocumentSigner/I9SignatureForm'
+export {
   EmployeeDocuments,
   type EmployeeDocumentsProps,
 } from '../Documents/onboarding/EmployeeDocuments'

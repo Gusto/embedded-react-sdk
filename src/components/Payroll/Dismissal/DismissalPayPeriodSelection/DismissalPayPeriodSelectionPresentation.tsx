@@ -4,14 +4,21 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
+/** @internal */
 export interface DismissalPayPeriodSelectionPresentationProps {
+  /** Pay period options to display in the select. */
   payPeriodOptions: SelectOption[]
+  /** Key of the currently selected pay period option, or undefined when none is selected. */
   selectedPeriodKey: string | undefined
+  /** Called when the user selects a pay period from the options. */
   onSelectPeriod: (value: string) => void
+  /** Called when the user clicks the continue button. */
   onSubmit: () => void
+  /** Whether the submit action is in flight. */
   isPending: boolean
 }
 
+/** @internal */
 export function DismissalPayPeriodSelectionPresentation({
   payPeriodOptions,
   selectedPeriodKey,

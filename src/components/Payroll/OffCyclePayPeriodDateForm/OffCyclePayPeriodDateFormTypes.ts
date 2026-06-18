@@ -1,14 +1,32 @@
 import { z } from 'zod'
 
+/**
+ * Off-cycle payroll reason that drives pay-period date validation rules.
+ *
+ * @remarks
+ * `'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
+ *
+ * @public
+ */
 export type OffCyclePayrollDateType = 'bonus' | 'correction'
 
+/**
+ * Pay-period date selections collected for an off-cycle payroll.
+ *
+ * @public
+ */
 export interface OffCyclePayPeriodDateFormData {
+  /** When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. */
   isCheckOnly: boolean
+  /** Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. */
   startDate: Date | null
+  /** End of the pay period; required unless `isCheckOnly` is true, and must be on or after `startDate`. */
   endDate: Date | null
+  /** Date employees will be paid; must be at least the company's ACH lead time of business days from today for direct deposit, unless `isCheckOnly` is true. */
   checkDate: Date | null
 }
 
+/** @internal */
 export const createOffCyclePayPeriodDateFormSchema = (
   t: (key: string, options?: Record<string, unknown>) => string,
   payrollType: OffCyclePayrollDateType,
@@ -83,7 +101,3 @@ export const createOffCyclePayPeriodDateFormSchema = (
       }
     })
 }
-
-export type OffCyclePayPeriodDateFormSchema = ReturnType<
-  typeof createOffCyclePayPeriodDateFormSchema
->

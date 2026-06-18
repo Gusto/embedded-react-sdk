@@ -17,6 +17,27 @@ interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList
   signatoryId?: string
 }
 
+/**
+ * Displays the list of company documents to be signed and lets the user manage signatories.
+ *
+ * @remarks
+ * Lower-level building block used internally by `CompanyOnboarding.DocumentSigner` for its list
+ * view. Use this component directly when you need full control over navigation between the
+ * document list and the signature form.
+ *
+ * When `signatoryId` matches the currently saved signatory's id, the user is treated as the
+ * signatory and is allowed to sign documents.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
+ * | `company/forms/editSignatory` | Fired when user requests to change the document signatory | The current signatory entity |
+ * | `company/forms/done` | Fired when user completes the document signing process | — |
+ *
+ * @param props - Component props including the company id and optional signatory id
+ * @returns The document list view with signatory management and continue action
+ * @public
+ */
 export function DocumentList(props: DocumentListProps) {
   return (
     <BaseComponent {...props}>

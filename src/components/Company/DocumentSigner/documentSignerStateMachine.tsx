@@ -8,12 +8,14 @@ import type { companyEvents } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
+/** @internal */
 export type EventPayloads = {
   [companyEvents.COMPANY_VIEW_FORM_TO_SIGN]: Form
   [companyEvents.COMPANY_SIGNATORY_CREATED]: Signatory
   [companyEvents.COMPANY_SIGNATORY_UPDATED]: Signatory
 }
 
+/** @internal */
 export function AssignSignatory() {
   const { companyId, signatoryId, onEvent } = useFlow<DocumentSignerContextInterface>()
   return (
@@ -25,6 +27,7 @@ export function AssignSignatory() {
   )
 }
 
+/** @internal */
 export function DocumentList() {
   const { companyId, signatoryId, onEvent } = useFlow<DocumentSignerContextInterface>()
 
@@ -37,6 +40,7 @@ export function DocumentList() {
   )
 }
 
+/** @internal */
 export function SignatureForm() {
   const { companyId, formId, onEvent } = useFlow<DocumentSignerContextInterface>()
 

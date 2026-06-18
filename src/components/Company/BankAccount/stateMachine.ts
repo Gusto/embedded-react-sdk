@@ -8,6 +8,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
+/** @internal */
 export const bankAccountStateMachine = {
   viewBankAccount: state<MachineTransition>(
     transition(

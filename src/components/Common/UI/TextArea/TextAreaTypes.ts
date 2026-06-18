@@ -6,6 +6,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping a `<textarea>` with a label, description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface TextAreaProps
   extends

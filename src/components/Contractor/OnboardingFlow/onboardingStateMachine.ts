@@ -55,6 +55,7 @@ const cancelTransition = () =>
     ),
   )
 
+/** @internal */
 export const onboardingMachine = {
   list: state<MachineTransition>(
     transition(

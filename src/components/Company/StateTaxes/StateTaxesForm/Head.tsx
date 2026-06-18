@@ -3,6 +3,7 @@ import { useStateTaxesForm } from './context'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Head() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })

@@ -17,6 +17,7 @@ const GrossUpFormSchema = z.object({
 
 type GrossUpFormValues = z.infer<typeof GrossUpFormSchema>
 
+/** @internal */
 export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: GrossUpModalProps) {
   useI18n('Payroll.GrossUpModal')
   const { t } = useTranslation('Payroll.GrossUpModal')

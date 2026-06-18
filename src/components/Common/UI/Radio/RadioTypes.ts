@@ -6,6 +6,7 @@ import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/Horiz
  * Renders a form field wrapping an `<input type="radio" />` with a label, optional description, and error message.
  *
  * @public
+ * @group Component Props
  */
 export interface RadioProps
   extends

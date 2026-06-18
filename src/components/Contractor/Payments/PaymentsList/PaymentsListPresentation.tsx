@@ -25,6 +25,7 @@ interface ContractorPaymentPaymentsListPresentationProps {
   paginationProps?: PaginationControlProps
 }
 
+/** @internal */
 export const PaymentsListPresentation = ({
   contractorPayments,
   numberOfMonths,

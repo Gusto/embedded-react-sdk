@@ -13,13 +13,45 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
+/**
+ * Props for {@link PayrollLanding}.
+ *
+ * @public
+ */
+export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
+  /** The associated company identifier. */
   companyId: string
+  /** Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Custom component that replaces the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  /** When `true`, displays a dismissible success alert indicating a payroll was cancelled. */
   showPayrollCancelledAlert?: boolean
 }
 
+/**
+ * Main landing surface for payroll operations, with tabs for running payroll and
+ * viewing payroll history, plus inline navigation to a payroll's overview and receipt.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |
+ * | `payroll/review` | User selected a calculated payroll to review | `{ payrollUuid: string, payPeriod: object }` |
+ * | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
+ * | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
+ * | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
+ * | `transition/runPayroll` | User started a pending transition payroll | — |
+ * | `runPayroll/summary/viewed` | User opened a payroll's summary view | `{ payrollId: string }` |
+ * | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
+ * | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |
+ * | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
+ * | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
+ *
+ * @param props - See {@link PayrollLandingProps}.
+ * @returns The payroll landing flow.
+ * @public
+ */
 export function PayrollLanding(props: PayrollLandingProps) {
   return (
     <BaseComponent {...props}>
@@ -28,7 +60,7 @@ export function PayrollLanding(props: PayrollLandingProps) {
   )
 }
 
-export function PayrollLandingFlow({
+function PayrollLandingFlow({
   companyId,
   onEvent,
   dictionary,

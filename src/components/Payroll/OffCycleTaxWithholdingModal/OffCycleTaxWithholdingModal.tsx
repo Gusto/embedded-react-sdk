@@ -10,6 +10,7 @@ import { ActionsLayout, SelectField, RadioGroupField } from '@/components/Common
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export function OffCycleTaxWithholdingModal({
   isOpen,
   defaultConfig,

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Head() {
   const { t } = useTranslation('Company.DocumentList')
   const Components = useComponentContext()
