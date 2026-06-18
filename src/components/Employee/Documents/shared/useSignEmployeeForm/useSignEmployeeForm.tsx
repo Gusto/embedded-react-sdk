@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,6 +18,9 @@ import {
   SignatureField,
   ConfirmSignatureField,
   UsedPreparerField,
+  type PreparerTextFieldProps,
+  type PreparerSelectFieldProps,
+  type PreparerCheckboxFieldProps,
   Preparer1FirstName,
   Preparer1LastName,
   Preparer1Street1,
@@ -82,7 +86,7 @@ const preparer1Fields = {
   Zip: Preparer1Zip,
   Signature: Preparer1Signature,
   ConfirmSignature: Preparer1ConfirmSignature,
-}
+} satisfies PreparerFieldGroup
 
 const preparer2Fields = {
   FirstName: Preparer2FirstName,
@@ -94,7 +98,7 @@ const preparer2Fields = {
   Zip: Preparer2Zip,
   Signature: Preparer2Signature,
   ConfirmSignature: Preparer2ConfirmSignature,
-}
+} satisfies PreparerFieldGroup
 
 const preparer3Fields = {
   FirstName: Preparer3FirstName,
@@ -106,7 +110,7 @@ const preparer3Fields = {
   Zip: Preparer3Zip,
   Signature: Preparer3Signature,
   ConfirmSignature: Preparer3ConfirmSignature,
-}
+} satisfies PreparerFieldGroup
 
 const preparer4Fields = {
   FirstName: Preparer4FirstName,
@@ -118,7 +122,7 @@ const preparer4Fields = {
   Zip: Preparer4Zip,
   Signature: Preparer4Signature,
   ConfirmSignature: Preparer4ConfirmSignature,
-}
+} satisfies PreparerFieldGroup
 
 /**
  * Field group exposed for each I-9 preparer/translator on {@link useSignEmployeeForm}.
@@ -130,7 +134,26 @@ const preparer4Fields = {
  *
  * @public
  */
-export type PreparerFieldGroup = typeof preparer1Fields
+export type PreparerFieldGroup = {
+  /** Preparer's first name. */
+  FirstName: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's last name. */
+  LastName: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's street address line 1. */
+  Street1: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's street address line 2. */
+  Street2: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's city. */
+  City: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's state. */
+  State: (props: PreparerSelectFieldProps) => JSX.Element
+  /** Preparer's ZIP code. */
+  Zip: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's typed signature. */
+  Signature: (props: PreparerTextFieldProps) => JSX.Element
+  /** Preparer's electronic-signature consent checkbox. */
+  ConfirmSignature: (props: PreparerCheckboxFieldProps) => JSX.Element
+}
 
 // ── Types ──────────────────────────────────────────────────────────────
 

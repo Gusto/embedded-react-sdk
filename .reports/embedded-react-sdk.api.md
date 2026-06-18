@@ -229,12 +229,8 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // @public
 function BankAccount(props: BankAccountProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_8" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type BankFormData = {
-    [K in keyof typeof fieldValidators_8]: z.infer<(typeof fieldValidators_8)[K]>;
-};
+export type BankFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
 
 // @public
 export type BankFormErrorCode = (typeof BankFormErrorCodes)[keyof typeof BankFormErrorCodes];
@@ -247,7 +243,7 @@ export const BankFormErrorCodes: {
 };
 
 // @public
-export type BankFormField = keyof typeof fieldValidators_8;
+export type BankFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
 
 // @public
 export interface BankFormFields {
@@ -260,11 +256,8 @@ export interface BankFormFields {
 // @public
 export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "OptionalFieldsToRequire" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_7" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type BankFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_7>;
+export type BankFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
 export type BankFormOutputs = BankFormData;
@@ -462,12 +455,8 @@ export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInput
 // @public
 export type ChildSupportGarnishmentAmountValidation = ChildSupportGarnishmentRequiredValidation | ChildSupportGarnishmentPercentValidation;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_2" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type ChildSupportGarnishmentFormData = {
-    [K in keyof typeof fieldValidators_2]: z.infer<(typeof fieldValidators_2)[K]>;
-};
+export type ChildSupportGarnishmentFormData = { state: string; fipsCode: string; caseNumber: string; orderNumber: string; remittanceNumber: string; payPeriodMaximum: number; amount: number; paymentPeriod: "Every week" | "Every other week" | "Twice per month" | "Monthly"; };
 
 // @public
 export type ChildSupportGarnishmentFormErrorCode = (typeof ChildSupportGarnishmentFormErrorCodes)[keyof typeof ChildSupportGarnishmentFormErrorCodes];
@@ -674,11 +663,15 @@ export type CompensationFieldsMetadata = UseCompensationFormReady['form']['field
 // @public
 export function CompensationFlsaStatusField(props: FlsaStatusFieldProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_3" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type CompensationFormData = {
-    [K in keyof typeof fieldValidators_3]: z.infer<(typeof fieldValidators_3)[K]>;
+    title: string
+    flsaStatus: "Exempt" | "Salaried Nonexempt" | "Nonexempt" | "Owner" | "Commission Only Exempt" | "Commission Only Nonexempt" | undefined
+    paymentUnit: "Hour" | "Week" | "Month" | "Year" | "Paycheck"
+    rate: number
+    effectiveDate: string | null
+    adjustForMinimumWage: boolean
+    minimumWageId: string
 };
 
 // @public
@@ -698,10 +691,8 @@ export type CompensationFormOutputs = CompensationFormData;
 // @public
 export function CompensationMinimumWageIdField(props: MinimumWageIdFieldProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_2" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_2>;
+export type CompensationOptionalFieldsToRequire = { create?: "title"[] | undefined; update?: ("title" | "flsaStatus" | "paymentUnit" | "rate" | "effectiveDate")[] | undefined; };
 
 // @public
 export function CompensationPaymentUnitField(props: PaymentUnitFieldProps): JSX;
@@ -1624,12 +1615,8 @@ export type DeductionFormAmountValidation = DeductionFormRequiredValidation | De
 // @public
 export type DeductionFormCapValidation = DeductionFormNegativeAmountValidation;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type DeductionFormData = {
-    [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>;
-};
+export type DeductionFormData = { description: string; recurring: boolean; deductAsPercentage: boolean; amount: number; totalAmount: number; annualMaximum: number; garnishmentType: "child_support" | "federal_tax_lien" | "state_tax_lien" | "student_loan" | "creditor_garnishment" | "federal_loan" | "other_garnishment"; };
 
 // @public
 export type DeductionFormErrorCode = (typeof DeductionFormErrorCodes)[keyof typeof DeductionFormErrorCodes];
@@ -1657,10 +1644,8 @@ export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsM
 // @public
 export type DeductionFormNegativeAmountValidation = typeof DeductionFormErrorCodes.NEGATIVE_AMOUNT;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type DeductionFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig>;
+export type DeductionFormOptionalFieldsToRequire = { create?: ("totalAmount" | "annualMaximum")[] | undefined; update?: ("totalAmount" | "annualMaximum")[] | undefined; };
 
 // @public
 export type DeductionFormOutputs = DeductionFormData;
@@ -1869,10 +1854,8 @@ export const EmployeeDetailsErrorCodes: {
     readonly EMAIL_REQUIRED_FOR_SELF_ONBOARDING: "EMAIL_REQUIRED_FOR_SELF_ONBOARDING";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_5" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators_5, 'selfOnboarding'>;
+export type EmployeeDetailsField = "firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn";
 
 // @public
 export interface EmployeeDetailsFields {
@@ -1889,9 +1872,7 @@ export interface EmployeeDetailsFields {
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
 
 // @public
-export type EmployeeDetailsFormData = {
-    [K in keyof typeof fieldValidators_5]: z.infer<(typeof fieldValidators_5)[K]>;
-};
+export type EmployeeDetailsFormData = { firstName: string; middleInitial: string; lastName: string; email: string; dateOfBirth: string; ssn: string; selfOnboarding: boolean; };
 
 // @public
 export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields'];
@@ -1899,10 +1880,8 @@ export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fie
 // @public
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_4" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type EmployeeDetailsOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_4>;
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "email" | "dateOfBirth" | "ssn")[] | undefined; update?: ("firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -2220,10 +2199,8 @@ export const FederalTaxesErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_11" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type FederalTaxesField = keyof typeof fieldValidators_11;
+export type FederalTaxesField = "filingStatus" | "twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding";
 
 // @public
 export interface FederalTaxesFields {
@@ -2239,9 +2216,7 @@ export interface FederalTaxesFields {
 export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata'];
 
 // @public
-export type FederalTaxesFormData = {
-    [K in keyof typeof fieldValidators_11]: z.infer<(typeof fieldValidators_11)[K]>;
-};
+export type FederalTaxesFormData = { filingStatus: string; twoJobs: boolean; dependentsAmount: number; otherIncome: number; deductions: number; extraWithholding: number; };
 
 // @public
 export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields'];
@@ -2249,10 +2224,8 @@ export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields'];
 // @public
 export type FederalTaxesFormOutputs = FederalTaxesFormData;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_10" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_10>;
+export type FederalTaxesOptionalFieldsToRequire = { create?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; update?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; };
 
 // @public
 interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
@@ -2584,10 +2557,8 @@ export const HomeAddressErrorCodes: {
     readonly INVALID_ZIP: "INVALID_ZIP";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_7" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type HomeAddressField = keyof typeof fieldValidators_7;
+export type HomeAddressField = "effectiveDate" | "state" | "street1" | "street2" | "city" | "zip" | "courtesyWithholding";
 
 // @public
 export interface HomeAddressFields {
@@ -2604,9 +2575,7 @@ export interface HomeAddressFields {
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata'];
 
 // @public
-export type HomeAddressFormData = {
-    [K in keyof typeof fieldValidators_7]: z.infer<(typeof fieldValidators_7)[K]>;
-};
+export type HomeAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; courtesyWithholding: boolean; effectiveDate: string; };
 
 // @public
 export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields'];
@@ -2614,10 +2583,8 @@ export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields'];
 // @public
 export type HomeAddressFormOutputs = HomeAddressFormData;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_6" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type HomeAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_6>;
+export type HomeAddressOptionalFieldsToRequire = { create?: "street2"[] | undefined; update?: "street2"[] | undefined; };
 
 // @public
 interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
@@ -2763,11 +2730,13 @@ export const JobErrorCodes: {
 // @public
 export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_4" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type JobFormData = {
-    [K in keyof typeof fieldValidators_4]: z.infer<(typeof fieldValidators_4)[K]>;
+    title: string
+    hireDate: string | null
+    twoPercentShareholder: boolean
+    stateWcCovered: boolean
+    stateWcClassCode: string
 };
 
 // @public
@@ -2782,10 +2751,8 @@ export interface JobFormFields {
 // @public
 export type JobFormOutputs = JobFormData;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_3" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_3>;
+export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered")[] | undefined; };
 
 // @public
 export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED;
@@ -3326,12 +3293,8 @@ interface PaymentMethodCardProps {
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_9" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PaymentMethodFormData = {
-    [K in keyof typeof fieldValidators_9]: z.infer<(typeof fieldValidators_9)[K]>;
-};
+export type PaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
 
 // @public
 export type PaymentMethodFormErrorCode = (typeof PaymentMethodFormErrorCodes)[keyof typeof PaymentMethodFormErrorCodes];
@@ -3342,7 +3305,7 @@ export const PaymentMethodFormErrorCodes: {
 };
 
 // @public
-export type PaymentMethodFormField = keyof typeof fieldValidators_9;
+export type PaymentMethodFormField = "type";
 
 // @public
 export interface PaymentMethodFormFields {
@@ -3352,10 +3315,8 @@ export interface PaymentMethodFormFields {
 // @public
 export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_8" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PaymentMethodFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_8>;
+export type PaymentMethodFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
 export type PaymentMethodFormOutputs = PaymentMethodFormData;
@@ -3656,10 +3617,8 @@ export const PayScheduleErrorCodes: {
     readonly DAY_RANGE: "DAY_RANGE";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_13" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PayScheduleField = keyof typeof fieldValidators_13;
+export type PayScheduleField = "customName" | "frequency" | "customTwicePerMonth" | "anchorPayDate" | "anchorEndOfPayPeriod" | "day1" | "day2";
 
 // @public
 export interface PayScheduleFields {
@@ -3676,9 +3635,7 @@ export interface PayScheduleFields {
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata'];
 
 // @public
-export type PayScheduleFormData = {
-    [K in keyof typeof fieldValidators_13]: z.infer<(typeof fieldValidators_13)[K]>;
-};
+export type PayScheduleFormData = { customName: string; frequency: "Every week" | "Every other week" | "Twice per month" | "Monthly"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
 
 // @public
 export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
@@ -3686,15 +3643,11 @@ export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
 // @public
 export type PayScheduleFormOutputs = PayScheduleFormData;
 
-// Warning: (ae-forgotten-export) The symbol "FREQUENCY_VALUES" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number];
+export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice per month" | "Monthly";
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_11" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PayScheduleOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_11>;
+export type PayScheduleOptionalFieldsToRequire = { create?: "customTwicePerMonth"[] | undefined; update?: "customTwicePerMonth"[] | undefined; };
 
 // Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
 //
@@ -3834,10 +3787,18 @@ export const PREPARER_FIELDS_BY_INDEX: SignEmployeeFormField[][];
 // @public
 export type PreparerCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "preparer1Fields" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type PreparerFieldGroup = typeof preparer1Fields;
+export type PreparerFieldGroup = {
+    FirstName: (props: PreparerTextFieldProps) => JSX.Element;
+    LastName: (props: PreparerTextFieldProps) => JSX.Element;
+    Street1: (props: PreparerTextFieldProps) => JSX.Element;
+    Street2: (props: PreparerTextFieldProps) => JSX.Element;
+    City: (props: PreparerTextFieldProps) => JSX.Element;
+    State: (props: PreparerSelectFieldProps) => JSX.Element;
+    Zip: (props: PreparerTextFieldProps) => JSX.Element;
+    Signature: (props: PreparerTextFieldProps) => JSX.Element;
+    ConfirmSignature: (props: PreparerCheckboxFieldProps) => JSX.Element;
+};
 
 // Warning: (ae-internal-missing-underscore) The name "preparerFieldName" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -4179,12 +4140,8 @@ interface SignatureFormProps_2 extends BaseComponentInterface<'Company.Signature
     formId: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_14" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type SignCompanyFormData = {
-    [K in keyof typeof fieldValidators_14]: z.infer<(typeof fieldValidators_14)[K]>;
-};
+export type SignCompanyFormData = { signature: string; confirmSignature: boolean; };
 
 // @public
 export type SignCompanyFormErrorCode = (typeof SignCompanyFormErrorCodes)[keyof typeof SignCompanyFormErrorCodes];
@@ -4195,7 +4152,7 @@ export const SignCompanyFormErrorCodes: {
 };
 
 // @public
-export type SignCompanyFormField = keyof typeof fieldValidators_14;
+export type SignCompanyFormField = "signature" | "confirmSignature";
 
 // @public
 export interface SignCompanyFormFields {
@@ -4208,10 +4165,8 @@ export interface SignCompanyFormFields {
 // @public
 export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_12" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type SignCompanyFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_12>;
+export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
 export type SignCompanyFormOutputs = SignCompanyFormData;
@@ -4222,12 +4177,8 @@ export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes
 // @public
 export type SignEmployeeFormConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_12" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type SignEmployeeFormData = {
-    [K in keyof typeof fieldValidators_12]: z.infer<(typeof fieldValidators_12)[K]>;
-};
+export type SignEmployeeFormData = { signature: string; confirmSignature: boolean; usedPreparer: "yes" | "no"; preparerFirstName: string; preparerLastName: string; preparerStreet1: string; preparerStreet2: string; preparerCity: string; preparerState: string; preparerZip: string; preparerSignature: string; preparerAgree: boolean; preparer2FirstName: string; preparer2LastName: string; preparer2Street1: string; preparer2Street2: string; preparer2City: string; preparer2State: string; preparer2Zip: string; preparer2Signature: string; preparer2Agree: boolean; preparer3FirstName: string; preparer3LastName: string; preparer3Street1: string; preparer3Street2: string; preparer3City: string; preparer3State: string; preparer3Zip: string; preparer3Signature: string; preparer3Agree: boolean; preparer4FirstName: string; preparer4LastName: string; preparer4Street1: string; preparer4Street2: string; preparer4City: string; preparer4State: string; preparer4Zip: string; preparer4Signature: string; preparer4Agree: boolean; };
 
 // @public
 export type SignEmployeeFormErrorCode = (typeof SignEmployeeFormErrorCodes)[keyof typeof SignEmployeeFormErrorCodes];
@@ -4238,7 +4189,7 @@ export const SignEmployeeFormErrorCodes: {
 };
 
 // @public
-export type SignEmployeeFormField = keyof typeof fieldValidators_12;
+export type SignEmployeeFormField = "signature" | "confirmSignature" | "usedPreparer" | "preparerFirstName" | "preparerLastName" | "preparerStreet1" | "preparerStreet2" | "preparerCity" | "preparerState" | "preparerZip" | "preparerSignature" | "preparerAgree" | "preparer2FirstName" | "preparer2LastName" | "preparer2Street1" | "preparer2Street2" | "preparer2City" | "preparer2State" | "preparer2Zip" | "preparer2Signature" | "preparer2Agree" | "preparer3FirstName" | "preparer3LastName" | "preparer3Street1" | "preparer3Street2" | "preparer3City" | "preparer3State" | "preparer3Zip" | "preparer3Signature" | "preparer3Agree" | "preparer4FirstName" | "preparer4LastName" | "preparer4Street1" | "preparer4Street2" | "preparer4City" | "preparer4State" | "preparer4Zip" | "preparer4Signature" | "preparer4Agree";
 
 // @public
 export interface SignEmployeeFormFieldComponents {
@@ -4317,10 +4268,8 @@ export const SplitPaymentsFormErrorCodes: {
     readonly PERCENTAGE_TOTAL_MISMATCH: "PERCENTAGE_TOTAL_MISMATCH";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_10" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type SplitPaymentsFormField = keyof typeof fieldValidators_10;
+export type SplitPaymentsFormField = "splitBy" | "splitAmount" | "priority";
 
 // @public
 export interface SplitPaymentsFormFields {
@@ -4331,10 +4280,8 @@ export interface SplitPaymentsFormFields {
 // @public
 export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata'];
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_9" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_9>;
+export type SplitPaymentsFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
 export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
@@ -5446,10 +5393,8 @@ export const WorkAddressErrorCodes: {
     readonly REQUIRED: "REQUIRED";
 };
 
-// Warning: (ae-forgotten-export) The symbol "fieldValidators_6" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type WorkAddressField = keyof typeof fieldValidators_6;
+export type WorkAddressField = "effectiveDate" | "locationUuid";
 
 // @public
 export interface WorkAddressFields {
@@ -5461,9 +5406,7 @@ export interface WorkAddressFields {
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata'];
 
 // @public
-export type WorkAddressFormData = {
-    [K in keyof typeof fieldValidators_6]: z.infer<(typeof fieldValidators_6)[K]>;
-};
+export type WorkAddressFormData = { locationUuid: string; effectiveDate: string; };
 
 // @public
 export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields'];
@@ -5474,10 +5417,8 @@ export type WorkAddressFormOutputs = WorkAddressFormData;
 // @public
 export function WorkAddressLocationField(props: LocationFieldProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "requiredFieldsConfig_5" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type WorkAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_5>;
+export type WorkAddressOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
 interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
