@@ -1,3 +1,5 @@
+import { writeFileSync, mkdirSync } from 'fs'
+import { join } from 'path'
 import { stringify as stringifyYaml } from 'yaml'
 import {
   Comment,
@@ -13,6 +15,7 @@ import {
   type Reflection,
   ReflectionGroup,
   ReflectionKind,
+  RendererEvent,
   type SignatureReflection,
   Slugger,
 } from 'typedoc'
@@ -23,6 +26,17 @@ import {
   MarkdownThemeContext,
   MemberRouter,
 } from 'typedoc-plugin-markdown'
+import {
+  DOMAINS,
+  NAMESPACE_PATHS,
+  STANDALONE_PAGES as _STANDALONE_PAGES,
+} from './sdk-router-config.mjs'
+
+type StandalonePageConfig = Record<
+  string,
+  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
+>
+const STANDALONE_PAGES = _STANDALONE_PAGES as StandalonePageConfig
 
 /**
  * TypeDoc plugin: custom router for @gusto/embedded-react-sdk
@@ -30,71 +44,19 @@ import {
  * Register via  "router": "sdk-router"  in the TypeDoc config.
  *
  * URL structure:
- *   Employee/index.md                         ← generated domain hub (namespaces + hooks overview)
- *   Employee/EmployeeManagement/flows.md      ← namespace members whose name ends with 'Flow'
- *   Employee/EmployeeManagement/blocks.md     ← remaining namespace members
- *   Employee/Employee/index.md               ← deprecated Employee namespace (single page)
- *   Employee/hooks.md                         ← all Employee hooks consolidated on one page
- *   Company/hooks.md                          ← all Company hooks consolidated on one page
- *   Payroll/index.md                          ← domain-less namespace (no parent domain prefix)
+ *   employee/overview.md                      ← generated domain hub (namespaces + hooks overview)
+ *   employee/management/index.md              ← namespace index (links to workflows + sub-components)
+ *   employee/management/workflows.md          ← namespace members whose name ends with 'Flow'
+ *   employee/management/sub-components.md     ← remaining namespace members
+ *   employee/hooks.md                         ← all Employee hooks consolidated on one page
+ *   company/hooks.md                          ← all Company hooks consolidated on one page
+ *   payroll/README.md                         ← flat namespace (no subpath in DOMAINS)
  *   theme-variables.md                        ← ThemeProvider exports (GustoSDKTheme, createTheme, …)
- *   component-adapter.md                      ← ComponentAdapter exports (AlertProps, …)
+ *   component-inventory.md                    ← Common UI component inventory
  *   utilities.md                              ← partner hook utilities (composeErrorHandler, …)
  *   index.md#reflectionname                  ← all unmapped top-level exports (anchors on the
  *                                              project index page, which renders them inline)
  */
-
-// Maps an output page path to its display name and the list of source-path substrings
-// whose reflections are routed to that page instead of becoming anchors on index.md.
-const STANDALONE_PAGES: Record<
-  string,
-  { sources: string[]; groups?: string[]; displayName: string; sidebarPosition: number }
-> = {
-  'theme-variables': {
-    sources: ['contexts/ThemeProvider'],
-    displayName: 'Theme Variables',
-    sidebarPosition: 2,
-  },
-  'component-inventory': {
-    sources: [
-      'components/Common/UI',
-      'components/Common/FieldLayout',
-      'components/Common/PaginationControl',
-      'components/Common/PayrollLoading',
-      'components/Common/HorizontalFieldLayout',
-      'contexts/ComponentAdapter',
-    ],
-    displayName: 'Component Inventory',
-    sidebarPosition: 3,
-  },
-  utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
-  events: {
-    sources: ['shared/constants'],
-    groups: ['Events'],
-    displayName: 'Events',
-    sidebarPosition: 5,
-  },
-}
-
-// Maps each namespace to its output directory prefix.
-// Journey namespaces nest under their domain; deprecated namespaces nest one level deeper
-// so the domain root is free for the generated domain hub page.
-const NAMESPACE_PATHS: Record<string, string> = {
-  // Journey namespaces
-  EmployeeOnboarding: 'Employee/EmployeeOnboarding',
-  EmployeeManagement: 'Employee/EmployeeManagement',
-  CompanyOnboarding: 'Company/CompanyOnboarding',
-  ContractorOnboarding: 'Contractor/ContractorOnboarding',
-  ContractorManagement: 'Contractor/ContractorManagement',
-}
-
-// Maps each domain to the ordered list of namespaces shown on its generated hub page.
-// Deprecated namespaces should come last. When a domain graduates to a hand-authored
-// index page, remove it from this map and write Employee/index.md manually instead.
-const DOMAIN_HUBS: Record<string, string[]> = {
-  Employee: ['EmployeeOnboarding', 'EmployeeManagement'],
-  Contractor: ['ContractorOnboarding', 'ContractorManagement'],
-}
 
 /**
  * Derive a domain name from the source file path of a reflection.
@@ -157,6 +119,40 @@ export function standalonePageFromSources(reflection: Reflection): string | null
     return page
   }
   return null
+}
+
+/** Convert a domain output path to its TypeDoc source directory name.
+ *  'employee' → 'Employee',  'time-off' → 'TimeOff' */
+function pathToSourceDir(domainPath: string): string {
+  return domainPath
+    .split('-')
+    .map(s => s[0]!.toUpperCase() + s.slice(1))
+    .join('')
+}
+
+function isNamespaceIndex(model: DeclarationReflection): boolean {
+  return model.comment?.blockTags.some(tag => tag.tag === '@namespaceIndex') ?? false
+}
+
+function getDomainPath(model: DeclarationReflection): string {
+  const tag = model.comment?.blockTags.find(t => t.tag === '@domainPath')
+  return tag ? Comment.combineDisplayParts(tag.content) : ''
+}
+
+/** sidebar_position for a generated page, derived from its URL. */
+function getSidebarPosition(url: string): number | undefined {
+  if (url === 'index.md') return 1
+  const key = url.replace(/\.md$/, '')
+  const standalone = STANDALONE_PAGES[key]
+  if (standalone?.sidebarPosition !== undefined) return standalone.sidebarPosition
+  const parts = key.split('/')
+  const filename = parts[parts.length - 1]!
+  const depth = parts.length // 2 = domain-level file, 3 = namespace subdir file
+  if (filename === 'overview') return 1
+  if (filename === 'workflows') return depth >= 3 ? 1 : 2
+  if (filename === 'sub-components') return depth >= 3 ? 2 : 3
+  if (filename === 'hooks') return 100
+  return undefined
 }
 
 /**
@@ -224,7 +220,7 @@ export function load(app: MarkdownApplication): void {
   // We set page.frontmatter in BEGIN (so other plugins can read/override it),
   // then serialize to YAML and prepend to page.contents in END (after rendering).
   app.renderer.on(MarkdownPageEvent.BEGIN, (page: MarkdownPageEvent) => {
-    const sidebarPosition = standaloneSidebarPosition(page.url)
+    const sidebarPosition = getSidebarPosition(page.url)
     page.frontmatter = {
       title: pageTitle(page),
       description: pageDescription(page),
@@ -236,6 +232,29 @@ export function load(app: MarkdownApplication): void {
   app.renderer.on(MarkdownPageEvent.END, (page: MarkdownPageEvent) => {
     if (!page.frontmatter) return
     page.contents = `${serializeFrontmatter(page.frontmatter)}\n\n${page.contents}`
+  })
+
+  // Emit _category_.json files for each domain directory and namespace subdirectory.
+  app.renderer.on(RendererEvent.END, (event: RendererEvent) => {
+    const outDir = event.outputDirectory
+    for (const [idx, domain] of DOMAINS.entries()) {
+      const domainDir = join(outDir, domain.path)
+      mkdirSync(domainDir, { recursive: true })
+      writeFileSync(
+        join(domainDir, '_category_.json'),
+        JSON.stringify({ label: domain.label, position: idx + 1 }, null, 2) + '\n',
+      )
+      for (const [nsIdx, ns] of domain.namespaces.entries()) {
+        if (!ns.subpath) continue
+        const nsDir = join(domainDir, ns.subpath)
+        mkdirSync(nsDir, { recursive: true })
+        writeFileSync(
+          join(nsDir, '_category_.json'),
+          // overview.md = position 1; namespace subdirs start at position 2
+          JSON.stringify({ label: ns.label, position: nsIdx + 2 }, null, 2) + '\n',
+        )
+      }
+    }
   })
 
   // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
@@ -459,11 +478,16 @@ function getReflectionDescription(
   return context.helpers.getDescriptionForComment(comment) ?? ''
 }
 
-/** sidebar_position for standalone pages and the project index, or undefined for all others. */
-function standaloneSidebarPosition(url: string): number | undefined {
-  if (url === 'index.md') return 1
-  const key = url.replace(/\.md$/, '')
-  return STANDALONE_PAGES[key]?.sidebarPosition
+/** Resolve a human-readable namespace name from URL parts using DOMAINS config. */
+function resolveNsName(parts: string[]): string {
+  const domainPath = parts[0] ?? ''
+  const domain = DOMAINS.find(d => d.path === domainPath)
+  if (!domain) return parts[parts.length - 2] ?? ''
+  if (parts.length >= 3) {
+    const sub = parts[parts.length - 2]!
+    return domain.namespaces.find(n => n.subpath === sub)?.id ?? sub
+  }
+  return domain.namespaces[0]?.id ?? domainPath
 }
 
 /**
@@ -483,20 +507,19 @@ export function pageTitle(page: MarkdownPageEvent): string {
   if (isDomainHub(decl)) return decl.name
 
   // Synthetic pages: model.name is a generic label; derive context from the URL.
-  // URL examples: "Employee/hooks.md", "Employee/EmployeeManagement/flows.md"
+  // URL examples: "employee/hooks.md", "employee/management/workflows.md"
   const parts = url.replace(/\.md$/, '').split('/')
 
   if (decl.name === 'Hooks') {
-    const domain = parts[0] ?? ''
-    return `${domain} Hooks`
+    const domainPath = parts[0] ?? ''
+    const domain = DOMAINS.find(d => d.path === domainPath)
+    return `${domain?.label ?? pathToSourceDir(domainPath)} Hooks`
   }
   if (decl.name === 'Flow Components') {
-    const ns = parts[parts.length - 2] ?? decl.name
-    return `${ns} Flows`
+    return `${resolveNsName(parts)} workflows`
   }
   if (decl.name === 'Block Components') {
-    const ns = parts[parts.length - 2] ?? decl.name
-    return `${ns} Blocks`
+    return `${resolveNsName(parts)} sub-components`
   }
 
   return decl.name
@@ -594,7 +617,7 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
     }
   }
 
-  const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(model.name)
+  const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(getDomainPath(model))
   const hookGroups = (hooksNs?.groups ?? []).filter(g => /^use[A-Z]/.test(g.title))
 
   if (hookGroups.length > 0) {
@@ -609,6 +632,38 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       const description = getReflectionDescription(primaryHook, context)
       parts.push(`| [${group.title}](${url}) | ${description} |`)
     }
+  }
+
+  return parts.join('\n')
+}
+
+function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflection): string {
+  const parts: string[] = [`# ${model.name}`, '']
+
+  const nsComment = model.comment
+    ? (context.helpers.getDescriptionForComment(model.comment) ?? '')
+    : ''
+  if (nsComment) parts.push(nsComment, '')
+
+  const components = (model.children ?? []).filter(
+    (c): c is DeclarationReflection => c instanceof DeclarationReflection && isComponent(c),
+  )
+  const flows = components.filter(c => c.name.endsWith('Flow'))
+  const blocks = components.filter(c => !c.name.endsWith('Flow'))
+
+  for (const [heading, items] of [
+    ['Flow Components', flows],
+    ['Block Components', blocks],
+  ] as const) {
+    if (items.length === 0) continue
+    parts.push(`## ${heading}`, '')
+    parts.push('| Component | Description |', '| --------- | ----------- |')
+    for (const item of items) {
+      parts.push(
+        `| [${item.name}](${context.urlTo(item)}) | ${getReflectionDescription(item, context)} |`,
+      )
+    }
+    parts.push('')
   }
 
   return parts.join('\n')
@@ -760,9 +815,8 @@ class SDKThemeContext extends MarkdownThemeContext {
     this.templates = {
       ...this.templates,
       reflection: (page: MarkdownPageEvent<DeclarationReflection>) => {
-        if (isDomainHub(page.model)) {
-          return renderDomainHub(this, page.model)
-        }
+        if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
+        if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
         return origReflectionTemplate(page)
       },
     }
@@ -866,12 +920,12 @@ export class SDKRouter extends MemberRouter {
   // and must be skipped when buildChildPages would otherwise anchor them on index.md.
   private readonly handledStandalone = new Set<DeclarationReflection>()
 
-  // Keyed by domain name; populated in buildPages so renderDomainHub can list hooks.
+  // Keyed by domain.path; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
   /**
    * Pre-scan for domain hooks and consolidate them into one synthetic namespace
-   * page per domain (e.g. Employee/hooks.md), then delegate everything else to
+   * page per domain (e.g. employee/hooks.md), then delegate everything else to
    * super. Each individual hook becomes an anchor on its domain's hooks page
    * rather than getting its own file.
    */
@@ -883,6 +937,9 @@ export class SDKRouter extends MemberRouter {
     const hookGroupMap = new Map<DeclarationReflection, string>()
 
     const standaloneGroups = new Map<string, DeclarationReflection[]>()
+
+    // Maps source directory name (e.g. 'Employee') to domain path (e.g. 'employee').
+    const domainPathBySourceDir = new Map(DOMAINS.map(d => [pathToSourceDir(d.path), d.path]))
 
     for (const child of project.children ?? []) {
       if (child.kind === ReflectionKind.Namespace) continue
@@ -905,15 +962,18 @@ export class SDKRouter extends MemberRouter {
       // fall through to the project index as anchors.
       const isHookFn = child.kind === ReflectionKind.Function && /^use[A-Z]/.test(child.name)
       if (isHookFn || isHookSourceFile(child)) {
-        const domain = domainFromSources(child)
-        if (domain) {
-          const bucket = hooksByDomain.get(domain) ?? []
-          bucket.push(child)
-          hooksByDomain.set(domain, bucket)
-          this.handledHooks.add(child)
+        const sourceDir = domainFromSources(child)
+        if (sourceDir) {
+          const domainPath = domainPathBySourceDir.get(sourceDir)
+          if (domainPath) {
+            const bucket = hooksByDomain.get(domainPath) ?? []
+            bucket.push(child)
+            hooksByDomain.set(domainPath, bucket)
+            this.handledHooks.add(child)
 
-          const hookDir = hookDirFromSources(child)
-          if (hookDir) hookGroupMap.set(child, hookDir)
+            const hookDir = hookDirFromSources(child)
+            if (hookDir) hookGroupMap.set(child, hookDir)
+          }
         }
         continue
       }
@@ -940,12 +1000,12 @@ export class SDKRouter extends MemberRouter {
 
     const pages = super.buildPages(project)
 
-    for (const [domain, hooks] of hooksByDomain) {
+    for (const [domainPath, hooks] of hooksByDomain) {
       const hooksNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
       hooksNs.children = hooks
       hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
-      this.buildSyntheticPage(`${domain}/hooks`, hooksNs, hooks, pages)
-      this.hooksNsByDomain.set(domain, hooksNs)
+      this.buildSyntheticPage(`${domainPath}/hooks`, hooksNs, hooks, pages)
+      this.hooksNsByDomain.set(domainPath, hooksNs)
     }
 
     for (const [page, members] of standaloneGroups) {
@@ -956,18 +1016,21 @@ export class SDKRouter extends MemberRouter {
       this.buildSyntheticPage(page, ns, members, pages)
     }
 
-    for (const [domain, nsNames] of Object.entries(DOMAIN_HUBS)) {
-      const nsReflections = nsNames
-        .map(name =>
-          project.children?.find(c => c.name === name && c.kind === ReflectionKind.Namespace),
+    for (const domain of DOMAINS) {
+      const nsReflections = domain.namespaces
+        .map(ns =>
+          project.children?.find(c => c.name === ns.id && c.kind === ReflectionKind.Namespace),
         )
         .filter((r): r is DeclarationReflection => r !== undefined)
 
-      const hubNs = new DeclarationReflection(domain, ReflectionKind.Namespace, project)
+      const hubNs = new DeclarationReflection(domain.label, ReflectionKind.Namespace, project)
       hubNs.comment = new Comment()
       hubNs.comment.blockTags.push(new CommentTag('@domainHub', []))
+      hubNs.comment.blockTags.push(
+        new CommentTag('@domainPath', [{ kind: 'text', text: domain.path }]),
+      )
       hubNs.children = nsReflections
-      this.buildSyntheticPage(`${domain}/index`, hubNs, [], pages)
+      this.buildSyntheticPage(`${domain.path}/overview`, hubNs, [], pages)
     }
 
     return pages
@@ -976,7 +1039,7 @@ export class SDKRouter extends MemberRouter {
   /**
    * Override page building for namespaces and unmapped project-level members.
    *
-   * - Namespace with Flow children: split into flows.md and blocks.md pages.
+   * - Namespace with Flow children: split into workflows.md, sub-components.md, and index.md.
    * - Namespace without Flow children: one page, all children as anchors.
    * - Domain hook (in handledHooks): skip — already registered in buildPages.
    * - Other project-level reflection: anchor onto the project's index page.
@@ -995,15 +1058,15 @@ export class SDKRouter extends MemberRouter {
       const flows = children.filter(c => c.name.endsWith('Flow'))
 
       if (flows.length > 0) {
-        // Split namespace into flows and blocks pages.
-        // The namespace's canonical URL points to flows.md for cross-references.
+        // Split namespace into workflows, sub-components, and an index page.
+        // The namespace's canonical URL points to index.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
         const ns = reflection as DeclarationReflection
 
         // Props interfaces are inlined by the parametersTable override; exclude them
         // from .children so they don't also appear as standalone entries. Register
         // them as anchors on the correct page so cross-references still resolve:
-        // props for a flow component → flows.md; props for a block component → blocks.md.
+        // props for a flow component → workflows.md; props for a block component → sub-components.md.
         const allPropsSet = componentPropsInterfaces(ns)
         const flowProps: DeclarationReflection[] = []
         const blockProps: DeclarationReflection[] = []
@@ -1027,13 +1090,12 @@ export class SDKRouter extends MemberRouter {
         flowsNs.children = flows
         const flowsGroups = groupSyntheticMembers(flows, flowsNs)
         if (flowsGroups.length > 1) flowsNs.groups = flowsGroups
-        const flowsUrl = this.buildSyntheticPage(
-          `${nsBasePath}/flows`,
+        this.buildSyntheticPage(
+          `${nsBasePath}/workflows`,
           flowsNs,
           [...flows, ...flowProps],
           outPages,
         )
-        this.fullUrls.set(reflection, flowsUrl)
 
         if (blocks.length > 0) {
           const blocksNs = new DeclarationReflection(
@@ -1045,12 +1107,24 @@ export class SDKRouter extends MemberRouter {
           const blocksGroups = groupSyntheticMembers(blocks, blocksNs)
           if (blocksGroups.length > 1) blocksNs.groups = blocksGroups
           this.buildSyntheticPage(
-            `${nsBasePath}/blocks`,
+            `${nsBasePath}/sub-components`,
             blocksNs,
             [...blocks, ...blockProps],
             outPages,
           )
         }
+
+        // Build namespace index page; its URL becomes the canonical URL for the namespace.
+        const indexNs = new DeclarationReflection(
+          ns.name,
+          ReflectionKind.Namespace,
+          reflection.parent,
+        )
+        indexNs.comment = ns.comment ? ns.comment.clone() : new Comment()
+        indexNs.comment.blockTags.push(new CommentTag('@namespaceIndex', []))
+        indexNs.children = [...flows, ...blocks]
+        const indexUrl = this.buildSyntheticPage(`${nsBasePath}/index`, indexNs, [], outPages)
+        this.fullUrls.set(reflection, indexUrl)
         return
       }
 

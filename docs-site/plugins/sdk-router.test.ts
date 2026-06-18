@@ -197,11 +197,11 @@ describe('hookDirFromSources', () => {
 
 describe('getIdealBaseName — namespaces', () => {
   it.each([
-    ['EmployeeOnboarding', 'Employee/EmployeeOnboarding/README'],
-    ['EmployeeManagement', 'Employee/EmployeeManagement/README'],
-    ['CompanyOnboarding', 'Company/CompanyOnboarding/README'],
-    ['ContractorOnboarding', 'Contractor/ContractorOnboarding/README'],
-    ['Employee', 'Employee/Employee/README'],
+    ['EmployeeOnboarding', 'employee/onboarding/README'],
+    ['EmployeeManagement', 'employee/management/README'],
+    ['CompanyOnboarding', 'company/onboarding/README'],
+    ['ContractorOnboarding', 'contractor/onboarding/README'],
+    ['Employee', 'Employee/README'],
     ['Company', 'Company/README'],
     ['Contractor', 'Contractor/README'],
   ])('%s → %s', (name, expected) => {
@@ -243,7 +243,7 @@ describe('buildPages — namespace routing', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).toContain('employee/management/README.md')
   })
 
   it('namespace children are anchors, not separate pages', () => {
@@ -270,9 +270,9 @@ describe('buildPages — namespace routing', () => {
       .filter(p => p.model instanceof DeclarationReflection)
       .map(p => p.url)
 
-    expect(namespaceUrls).toContain('Employee/EmployeeOnboarding/README.md')
-    expect(namespaceUrls).toContain('Employee/EmployeeManagement/README.md')
-    expect(namespaceUrls).toContain('Company/CompanyOnboarding/README.md')
+    expect(namespaceUrls).toContain('employee/onboarding/README.md')
+    expect(namespaceUrls).toContain('employee/management/README.md')
+    expect(namespaceUrls).toContain('company/onboarding/README.md')
   })
 })
 
@@ -281,7 +281,7 @@ describe('buildPages — namespace routing', () => {
 // ---------------------------------------------------------------------------
 
 describe('buildPages — namespace flows/blocks splitting', () => {
-  it('namespace with Flow children produces flows.md and blocks.md instead of index', () => {
+  it('namespace with Flow children produces workflows.md, sub-components.md, and index.md', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
     makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
@@ -291,9 +291,10 @@ describe('buildPages — namespace flows/blocks splitting', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
-    expect(urls).toContain('Employee/EmployeeManagement/blocks.md')
-    expect(urls).not.toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).toContain('employee/management/workflows.md')
+    expect(urls).toContain('employee/management/sub-components.md')
+    expect(urls).toContain('employee/management/index.md')
+    expect(urls).not.toContain('employee/management/README.md')
   })
 
   it('Flow members are anchors on flows.md, not separate pages', () => {
@@ -322,7 +323,7 @@ describe('buildPages — namespace flows/blocks splitting', () => {
     expect(router.getAnchor(block)).toBeDefined()
   })
 
-  it('namespace with only Flow children produces flows.md but no blocks.md', () => {
+  it('namespace with only Flow children produces workflows.md but no sub-components.md', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
     makeChild(ns, 'EmployeeOnboardingFlow', ReflectionKind.Function)
@@ -332,8 +333,9 @@ describe('buildPages — namespace flows/blocks splitting', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
-    expect(urls).not.toContain('Employee/EmployeeManagement/blocks.md')
+    expect(urls).toContain('employee/management/workflows.md')
+    expect(urls).not.toContain('employee/management/sub-components.md')
+    expect(urls).toContain('employee/management/index.md')
   })
 
   it('namespace with no Flow children still gets a single index page', () => {
@@ -345,8 +347,8 @@ describe('buildPages — namespace flows/blocks splitting', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/README.md')
-    expect(urls).not.toContain('Employee/EmployeeManagement/flows.md')
+    expect(urls).toContain('employee/management/README.md')
+    expect(urls).not.toContain('employee/management/workflows.md')
   })
 })
 
@@ -367,14 +369,14 @@ describe('buildPages — props interfaces excluded from standalone rendering', (
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const flowsModel = pages.find(p => p.url === 'Employee/EmployeeManagement/flows.md')
+    const flowsModel = pages.find(p => p.url === 'employee/management/workflows.md')
       ?.model as DeclarationReflection
     expect(flowsModel.children).not.toContain(propsIface)
     expect(router.hasOwnDocument(propsIface)).toBe(false)
     expect(router.getAnchor(propsIface)).toBeDefined()
   })
 
-  it('flow component props are anchored on flows.md, not blocks.md', () => {
+  it('flow component props are anchored on workflows.md, not sub-components.md', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
     const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
@@ -386,12 +388,12 @@ describe('buildPages — props interfaces excluded from standalone rendering', (
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+    const blocksModel = pages.find(p => p.url === 'employee/management/sub-components.md')
       ?.model as DeclarationReflection
     expect(blocksModel.children).not.toContain(propsIface)
   })
 
-  it('block component props are not rendered as standalone children of the blocks model', () => {
+  it('block component props are not rendered as standalone children of the sub-components model', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
     makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
@@ -403,14 +405,14 @@ describe('buildPages — props interfaces excluded from standalone rendering', (
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const blocksModel = pages.find(p => p.url === 'Employee/EmployeeManagement/blocks.md')
+    const blocksModel = pages.find(p => p.url === 'employee/management/sub-components.md')
       ?.model as DeclarationReflection
     expect(blocksModel.children).not.toContain(propsIface)
     expect(router.hasOwnDocument(propsIface)).toBe(false)
     expect(router.getAnchor(propsIface)).toBeDefined()
   })
 
-  it('namespace with only flows + their props does not produce a blocks page', () => {
+  it('namespace with only flows + their props does not produce a sub-components page', () => {
     const project = makeProject()
     const ns = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
     const flow = makeChild(ns, 'DashboardFlow', ReflectionKind.Function)
@@ -422,8 +424,9 @@ describe('buildPages — props interfaces excluded from standalone rendering', (
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/flows.md')
-    expect(urls).not.toContain('Employee/EmployeeManagement/blocks.md')
+    expect(urls).toContain('employee/management/workflows.md')
+    expect(urls).not.toContain('employee/management/sub-components.md')
+    expect(urls).toContain('employee/management/index.md')
     expect(router.getAnchor(propsIface)).toBeDefined()
   })
 })
@@ -445,8 +448,8 @@ describe('buildPages — domain hooks page routing', () => {
 
     expect(router.hasOwnDocument(hook1)).toBe(false)
     expect(router.hasOwnDocument(hook2)).toBe(false)
-    expect(pages.map(p => p.url)).toContain('Employee/hooks.md')
-    expect(pages.filter(p => p.url === 'Employee/hooks.md')).toHaveLength(1)
+    expect(pages.map(p => p.url)).toContain('employee/hooks.md')
+    expect(pages.filter(p => p.url === 'employee/hooks.md')).toHaveLength(1)
   })
 
   it('non-function domain exports (types, interfaces, enums) also go to the domain page', () => {
@@ -471,7 +474,7 @@ describe('buildPages — domain hooks page routing', () => {
     expect(router.hasOwnDocument(alias)).toBe(false)
     expect(router.hasOwnDocument(enumChild)).toBe(false)
     expect(router.getAnchor(iface)).toBeDefined()
-    expect(pages.map(p => p.url)).toContain('Employee/hooks.md')
+    expect(pages.map(p => p.url)).toContain('employee/hooks.md')
   })
 
   it('each domain export gets an anchor on the domain page', () => {
@@ -497,8 +500,8 @@ describe('buildPages — domain hooks page routing', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/hooks.md')
-    expect(urls).toContain('Company/hooks.md')
+    expect(urls).toContain('employee/hooks.md')
+    expect(urls).toContain('company/hooks.md')
   })
 
   it('domain export from a non-hook file is NOT routed to hooks.md', () => {
@@ -509,7 +512,7 @@ describe('buildPages — domain hooks page routing', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).not.toContain('Employee/hooks.md')
+    expect(pages.map(p => p.url)).not.toContain('employee/hooks.md')
     // Falls through to project index anchor instead
     expect(router.hasOwnDocument(helper)).toBe(false)
   })
@@ -522,7 +525,7 @@ describe('buildPages — domain hooks page routing', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).not.toContain('Employee/hooks.md')
+    expect(pages.map(p => p.url)).not.toContain('employee/hooks.md')
     expect(router.hasOwnDocument(hook)).toBe(false)
   })
 
@@ -837,7 +840,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
     expect(group).toBeDefined()
@@ -862,7 +865,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
     expect(group).toBeDefined()
@@ -884,7 +887,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const hookDirGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
     const tagGroup = hooksModel.groups?.find(g => g.title === 'Data Hooks')
@@ -912,7 +915,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const compGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
     const jobGroup = hooksModel.groups?.find(g => g.title === 'useJobForm')
@@ -943,7 +946,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
     expect(group!.children[0]).toBe(hook)
@@ -961,7 +964,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.title === 'Form Hooks')
     expect(group?.children).toContain(hook)
@@ -976,7 +979,7 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'Employee/hooks.md')
+    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
       ?.model as DeclarationReflection
     const group = hooksModel.groups?.find(g => g.children.includes(hook))
     expect(group?.title).toBe('Functions')
@@ -1023,10 +1026,10 @@ describe('standalonePageFromSources', () => {
     expect(standalonePageFromSources(r)).toBeNull()
   })
 
-  it('returns the component-adapter page for a Common UI types file (TypeDoc resolves re-exports to their definition)', () => {
+  it('returns the component-inventory page for a Common UI types file (TypeDoc resolves re-exports to their definition)', () => {
     const r = new DeclarationReflection('AlertProps', ReflectionKind.Interface)
     r.sources = sourceRef('/workspace/src/components/Common/UI/Alert/AlertTypes.ts')
-    expect(standalonePageFromSources(r)).toBe('component-adapter')
+    expect(standalonePageFromSources(r)).toBe('component-inventory')
   })
 
   it('returns null for a src/components path (those go to domain or hook pages, not standalone)', () => {
@@ -1152,7 +1155,7 @@ describe('buildPages — standalone page routing', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/EmployeeManagement/README.md')
+    expect(urls).toContain('employee/management/README.md')
     expect(urls).not.toContain('theme-variables.md')
   })
 })
@@ -1162,14 +1165,14 @@ describe('buildPages — standalone page routing', () => {
 // ---------------------------------------------------------------------------
 
 describe('buildPages — domain hub page', () => {
-  it('generates a hub page at {Domain}/index.md for each configured domain', () => {
+  it('generates a hub page at {domain}/overview.md for each configured domain', () => {
     const project = makeProject()
     makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).toContain('Employee/index.md')
+    expect(pages.map(p => p.url)).toContain('employee/overview.md')
   })
 
   it('hub page is generated even when none of the domain namespaces are present', () => {
@@ -1178,43 +1181,44 @@ describe('buildPages — domain hub page', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.map(p => p.url)).toContain('Employee/index.md')
+    expect(pages.map(p => p.url)).toContain('employee/overview.md')
   })
 
-  it('hub model has @domainHub tag', () => {
+  it('hub model has @domainHub and @domainPath tags', () => {
     const project = makeProject()
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const hubPage = pages.find(p => p.url === 'employee/overview.md')
     const model = hubPage?.model as DeclarationReflection
     expect(model.comment?.blockTags.some(t => t.tag === '@domainHub')).toBe(true)
+    expect(model.comment?.blockTags.some(t => t.tag === '@domainPath')).toBe(true)
   })
 
   it('hub model children are the namespace reflections that exist in the project', () => {
     const project = makeProject()
     const mgmt = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
-    const deprecated = makeChild(project, 'Employee', ReflectionKind.Namespace)
+    const onboarding = makeChild(project, 'EmployeeOnboarding', ReflectionKind.Namespace)
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const hubPage = pages.find(p => p.url === 'employee/overview.md')
     const model = hubPage?.model as DeclarationReflection
     expect(model.children).toContain(mgmt)
-    expect(model.children).toContain(deprecated)
+    expect(model.children).toContain(onboarding)
   })
 
-  it('hub model children respect DOMAIN_HUBS order and exclude absent namespaces', () => {
+  it('hub model children respect DOMAINS order and exclude absent namespaces', () => {
     const project = makeProject()
-    // Only EmployeeManagement exists; EmployeeOnboarding and Employee do not
+    // Only EmployeeManagement exists; EmployeeOnboarding does not
     const mgmt = makeChild(project, 'EmployeeManagement', ReflectionKind.Namespace)
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hubPage = pages.find(p => p.url === 'Employee/index.md')
+    const hubPage = pages.find(p => p.url === 'employee/overview.md')
     const model = hubPage?.model as DeclarationReflection
     expect(model.children).toEqual([mgmt])
   })
@@ -1227,7 +1231,7 @@ describe('buildPages — domain hub page', () => {
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    expect(pages.filter(p => p.url === 'Employee/index.md')).toHaveLength(1)
+    expect(pages.filter(p => p.url === 'employee/overview.md')).toHaveLength(1)
   })
 
   it('hub page coexists with separate namespace pages', () => {
@@ -1239,9 +1243,9 @@ describe('buildPages — domain hub page', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/index.md')
-    expect(urls).toContain('Employee/EmployeeManagement/README.md')
-    expect(urls).toContain('Employee/Employee/README.md')
+    expect(urls).toContain('employee/overview.md')
+    expect(urls).toContain('employee/management/README.md')
+    expect(urls).toContain('Employee/README.md')
   })
 
   it('domain hub does not suppress the domain hooks page', () => {
@@ -1253,8 +1257,8 @@ describe('buildPages — domain hub page', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('Employee/index.md')
-    expect(urls).toContain('Employee/hooks.md')
+    expect(urls).toContain('employee/overview.md')
+    expect(urls).toContain('employee/hooks.md')
   })
 })
 
@@ -1284,39 +1288,39 @@ describe('pageTitle', () => {
     expect(pageTitle(page)).toBe('API Reference')
   })
 
-  it('returns the domain name for a domain hub page', () => {
-    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
-    expect(pageTitle(page)).toBe('Employee')
+  it('returns the domain label for a domain hub page', () => {
+    const page = makePage(makeHubModel('Employees'), 'employee/overview.md')
+    expect(pageTitle(page)).toBe('Employees')
   })
 
-  it('prefixes the domain from the URL for a hooks page', () => {
+  it('prefixes the domain label from the URL for a hooks page', () => {
     const page = makePage(
       new DeclarationReflection('Hooks', ReflectionKind.Namespace),
-      'Employee/hooks.md',
+      'employee/hooks.md',
     )
-    expect(pageTitle(page)).toBe('Employee Hooks')
+    expect(pageTitle(page)).toBe('Employees Hooks')
   })
 
-  it('prefixes the namespace from the URL for a flows page', () => {
+  it('prefixes the namespace from the URL for a workflows page', () => {
     const page = makePage(
       new DeclarationReflection('Flow Components', ReflectionKind.Namespace),
-      'Employee/EmployeeManagement/flows.md',
+      'employee/management/workflows.md',
     )
-    expect(pageTitle(page)).toBe('EmployeeManagement Flows')
+    expect(pageTitle(page)).toBe('EmployeeManagement workflows')
   })
 
-  it('prefixes the namespace from the URL for a blocks page', () => {
+  it('prefixes the namespace from the URL for a sub-components page', () => {
     const page = makePage(
       new DeclarationReflection('Block Components', ReflectionKind.Namespace),
-      'Employee/EmployeeManagement/blocks.md',
+      'employee/management/sub-components.md',
     )
-    expect(pageTitle(page)).toBe('EmployeeManagement Blocks')
+    expect(pageTitle(page)).toBe('EmployeeManagement sub-components')
   })
 
   it('returns the namespace name for a regular namespace page', () => {
     const page = makePage(
       new DeclarationReflection('Payroll', ReflectionKind.Namespace),
-      'Payroll/index.md',
+      'payroll/README.md',
     )
     expect(pageTitle(page)).toBe('Payroll')
   })
@@ -1353,14 +1357,14 @@ describe('pageDescription', () => {
   it('uses the derived title in the fallback for a synthetic hooks page', () => {
     const page = makePage(
       new DeclarationReflection('Hooks', ReflectionKind.Namespace),
-      'Employee/hooks.md',
+      'employee/hooks.md',
     )
-    expect(pageDescription(page)).toBe('Employee Hooks API reference.')
+    expect(pageDescription(page)).toBe('Employees Hooks API reference.')
   })
 
   it('uses the derived title in the fallback for a domain hub with no comment', () => {
-    const page = makePage(makeHubModel('Employee'), 'Employee/index.md')
-    expect(pageDescription(page)).toBe('Employee API reference.')
+    const page = makePage(makeHubModel('Employees'), 'employee/overview.md')
+    expect(pageDescription(page)).toBe('Employees API reference.')
   })
 })
 
