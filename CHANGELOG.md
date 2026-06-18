@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.48.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.2...v0.48.3) (2026-06-17)
+
+### Features & Enhancements
+
+- Export `LocationsList` component from `CompanyOnboarding` namespace ([#2198](https://github.com/Gusto/embedded-react-sdk/issues/2198))
+- `PayrollReceipts` now displays formatted licensee phone numbers ([#2195](https://github.com/Gusto/embedded-react-sdk/issues/2195))
+
+### Fixes
+
+- Export `LocationsListProps` type from `CompanyOnboarding` namespace ([#2200](https://github.com/Gusto/embedded-react-sdk/issues/2200))
+
+### Chores & Maintenance
+
+- Add TSDoc comments to `Company` and `Contractor` namespaces ([#2187](https://github.com/Gusto/embedded-react-sdk/issues/2187), [#2170](https://github.com/Gusto/embedded-react-sdk/issues/2170))
+
 ## [0.48.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.1...v0.48.2) (2026-06-17)
 
 ### Features & Enhancements
