@@ -29,9 +29,9 @@ import {
   EmployeeManagementStates,
 } from './design/prototypes/employee-management/EmployeeManagement'
 import {
-  PayrollEditEmployeePrototype,
-  PayrollEditEmployeeStates,
-} from './design/prototypes/payroll-edit-employee'
+  RegularRateOfPayPrototype,
+  RegularRateOfPayStates,
+} from './design/prototypes/regular-rate-of-pay'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -105,16 +105,16 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: 'payroll-edit-employee',
+            path: 'regular-rate-of-pay',
             children: [
-              { index: true, element: <PayrollEditEmployeePrototype /> },
+              { index: true, element: <RegularRateOfPayPrototype /> },
               {
                 path: 'component-states',
                 children: [
-                  { index: true, element: <PayrollEditEmployeeStates /> },
+                  { index: true, element: <RegularRateOfPayStates /> },
                   {
                     path: ':componentSlug/:configSlug',
-                    element: <PayrollEditEmployeeStates />,
+                    element: <RegularRateOfPayStates />,
                   },
                 ],
               },

@@ -1,41 +1,36 @@
 import { useOutletContext } from 'react-router-dom'
 import type { EntityIds } from '../../../useEntities'
 import { ComponentStatesPage } from '../ComponentStatesPage'
-import { PayrollEditEmployee } from './PayrollEditEmployee'
+import { RegularRateOfPay } from './RegularRateOfPay'
 import { components } from './states'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-const BASE_PATH = '/design/payroll-edit-employee'
+const BASE_PATH = '/design/regular-rate-of-pay'
 
-export function PayrollEditEmployeePrototype() {
+export function RegularRateOfPayPrototype() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const Components = useComponentContext()
 
-  const missing: string[] = []
-  if (!entities.companyId) missing.push('company ID')
-  if (!entities.employeeId) missing.push('employee ID')
-
-  if (missing.length > 0) {
+  if (!entities.companyId) {
     return (
       <Flex flexDirection="column" gap={16} alignItems="stretch">
-        <Components.Heading as="h2">Payroll Edit Employee</Components.Heading>
-        <Components.Alert label={`Missing ${missing.join(', ')}`} status="warning">
-          Set these in Settings (top right) to load real data for this prototype.
+        <Components.Heading as="h2">Regular rate of pay</Components.Heading>
+        <Components.Alert label="Missing company ID" status="warning">
+          Set this in Settings (top right) to load real data for this prototype.
         </Components.Alert>
       </Flex>
     )
   }
 
   return (
-    <PayrollEditEmployee
+    <RegularRateOfPay
       companyId={entities.companyId}
-      employeeId={entities.employeeId}
       preferredPayrollId={entities.payrollId || undefined}
     />
   )
 }
 
-export function PayrollEditEmployeeStates() {
+export function RegularRateOfPayStates() {
   return <ComponentStatesPage basePath={`${BASE_PATH}/component-states`} components={components} />
 }

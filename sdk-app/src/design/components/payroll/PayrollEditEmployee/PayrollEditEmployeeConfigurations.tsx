@@ -9,11 +9,9 @@ import type {
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
 import type { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
-import {
-  PayrollEditEmployeePresentation,
-  type WorkweekRange,
-} from '../../components/payroll/PayrollEditEmployee/PayrollEditEmployeePresentation'
-import type { PrototypeComponent } from '../prototypeTypes'
+import type { PrototypeConfiguration } from '../../../prototypes/prototypeTypes'
+import type { WorkweekRange } from './PayrollEditEmployeePresentation'
+import { PayrollEditEmployeeDemo } from './PayrollEditEmployeeStates'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 
 const PRIMARY_JOB_UUID = 'job-primary'
@@ -120,6 +118,8 @@ const paySchedule = {
   name: 'Bi-weekly',
 } as unknown as PayScheduleShow
 
+const PAY_PERIOD_START_DATE = '2025-01-06'
+
 const baseCompensation: PayrollEmployeeCompensationsType = {
   employeeUuid: 'employee-1',
   paymentMethod: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
@@ -223,46 +223,6 @@ const withItemizedReimbursements: PayrollEmployeeCompensationsType = {
   ],
 } as PayrollEmployeeCompensationsType
 
-interface DemoProps {
-  employee?: Employee
-  employeeCompensation?: PayrollEmployeeCompensationsType
-  payrollCategory?: PayrollCategory
-  hasDirectDepositSetup?: boolean
-  withReimbursements?: boolean
-  isRropEnabled?: boolean
-  workweeks?: WorkweekRange[]
-}
-
-function renderDemo({
-  employee = buildEmployee(),
-  employeeCompensation = baseCompensation,
-  payrollCategory = PayrollCategory.Regular,
-  hasDirectDepositSetup = true,
-  withReimbursements = true,
-  isRropEnabled = false,
-  workweeks,
-}: DemoProps = {}) {
-  function Demo() {
-    return (
-      <PayrollEditEmployeePresentation
-        onSave={() => {}}
-        onCancel={() => {}}
-        employee={employee}
-        employeeCompensation={employeeCompensation}
-        fixedCompensationTypes={fixedCompensationTypes}
-        payPeriodStartDate="2025-01-06"
-        paySchedule={paySchedule}
-        payrollCategory={payrollCategory}
-        hasDirectDepositSetup={hasDirectDepositSetup}
-        withReimbursements={withReimbursements}
-        isRropEnabled={isRropEnabled}
-        workweeks={workweeks}
-      />
-    )
-  }
-  return Demo
-}
-
 const RROP_WORKWEEKS: WorkweekRange[] = [{ label: 'Jan 6 – Jan 12' }, { label: 'Jan 13 – Jan 19' }]
 
 const rropWithEarnings: PayrollEmployeeCompensationsType = {
@@ -313,91 +273,159 @@ const exemptEmployee = buildEmployee({
   ] as Employee['jobs'],
 })
 
-export const components: PrototypeComponent[] = [
+const defaultEmployee = buildEmployee()
+
+export const payrollEditEmployeeConfigurations: PrototypeConfiguration[] = [
   {
-    slug: 'edit-employee',
-    name: 'Payroll Edit Employee',
-    description: 'Configurations for the payroll edit-employee form.',
-    configurations: [
-      {
-        slug: 'regular-hourly',
-        name: 'Regular — hourly',
-        description: 'Standard regular payroll for an hourly employee with PTO accruals.',
-        render: renderDemo(),
-      },
-      {
-        slug: 'multi-job',
-        name: 'Multi-job',
-        description: 'Hourly employee with two active jobs; separate hours per job.',
-        render: renderDemo({
-          employee: multiJobEmployee,
-          employeeCompensation: multiJobCompensation,
-        }),
-      },
-      {
-        slug: 'with-additional-earnings',
-        name: 'With additional earnings',
-        description: 'Includes bonus and tips as fixed compensations.',
-        render: renderDemo({ employeeCompensation: withAdditionalEarnings }),
-      },
-      {
-        slug: 'with-reimbursements',
-        name: 'With reimbursements',
-        description: 'Itemized reimbursements including a recurring one.',
-        render: renderDemo({ employeeCompensation: withItemizedReimbursements }),
-      },
-      {
-        slug: 'dismissal',
-        name: 'Dismissal payroll',
-        description: 'Off-cycle dismissal — adds the final payout section.',
-        render: renderDemo({ payrollCategory: PayrollCategory.Dismissal }),
-      },
-      {
-        slug: 'bonus-off-cycle',
-        name: 'Off-cycle (bonus)',
-        description: 'Off-cycle bonus payroll — uses the legacy reimbursement field.',
-        render: renderDemo({ payrollCategory: PayrollCategory.Bonus }),
-      },
-      {
-        slug: 'no-direct-deposit',
-        name: 'No direct deposit',
-        description: 'Employee has no bank accounts on file — payment method picker hidden.',
-        render: renderDemo({ hasDirectDepositSetup: false }),
-      },
-      {
-        slug: 'rrop-overtime-hourly',
-        name: 'RRoP — hourly, OT hidden',
-        description:
-          'OT-eligible (Nonexempt) hourly with RRoP enabled. Overtime starts hidden behind "Add overtime"; clicking it reveals OT rows AND splits Hours + Additional earnings into per-workweek columns. Tips (Other) remain single-column.',
-        render: renderDemo({
-          employeeCompensation: rropWithEarnings,
-          isRropEnabled: true,
-          workweeks: RROP_WORKWEEKS,
-        }),
-      },
-      {
-        slug: 'rrop-overtime-revealed',
-        name: 'RRoP — overtime already entered',
-        description:
-          'Same fixture as above but with overtime hours pre-filled, so the workweek split renders on first paint.',
-        render: renderDemo({
-          employeeCompensation: rropOvertimeRevealed,
-          isRropEnabled: true,
-          workweeks: RROP_WORKWEEKS,
-        }),
-      },
-      {
-        slug: 'rrop-exempt-no-split',
-        name: 'RRoP — exempt employee (no split)',
-        description:
-          'Exempt salaried employee with RRoP enabled. OT-eligibility gate prevents the split — single-column inputs even after revealing overtime.',
-        render: renderDemo({
-          employee: exemptEmployee,
-          employeeCompensation: rropWithEarnings,
-          isRropEnabled: true,
-          workweeks: RROP_WORKWEEKS,
-        }),
-      },
-    ],
+    slug: 'regular-hourly',
+    name: 'Regular — hourly',
+    description: 'Standard regular payroll for an hourly employee with PTO accruals.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={baseCompensation}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+      />
+    ),
+  },
+  {
+    slug: 'multi-job',
+    name: 'Multi-job',
+    description: 'Hourly employee with two active jobs; separate hours per job.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={multiJobEmployee}
+        employeeCompensation={multiJobCompensation}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+      />
+    ),
+  },
+  {
+    slug: 'with-additional-earnings',
+    name: 'With additional earnings',
+    description: 'Includes bonus and tips as fixed compensations.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={withAdditionalEarnings}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+      />
+    ),
+  },
+  {
+    slug: 'with-reimbursements',
+    name: 'With reimbursements',
+    description: 'Itemized reimbursements including a recurring one.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={withItemizedReimbursements}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+      />
+    ),
+  },
+  {
+    slug: 'dismissal',
+    name: 'Dismissal payroll',
+    description: 'Off-cycle dismissal — adds the final payout section.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={baseCompensation}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        payrollCategory={PayrollCategory.Dismissal}
+      />
+    ),
+  },
+  {
+    slug: 'bonus-off-cycle',
+    name: 'Off-cycle (bonus)',
+    description: 'Off-cycle bonus payroll — uses the legacy reimbursement field.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={baseCompensation}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        payrollCategory={PayrollCategory.Bonus}
+      />
+    ),
+  },
+  {
+    slug: 'no-direct-deposit',
+    name: 'No direct deposit',
+    description: 'Employee has no bank accounts on file — payment method picker hidden.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={baseCompensation}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        hasDirectDepositSetup={false}
+      />
+    ),
+  },
+  {
+    slug: 'rrop-overtime-hourly',
+    name: 'RRoP — hourly, OT hidden',
+    description:
+      'OT-eligible (Nonexempt) hourly with RRoP enabled. Overtime starts hidden behind "Add overtime"; clicking it reveals OT rows AND splits Hours + Additional earnings into per-workweek columns. Tips (Other) remain single-column.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={rropWithEarnings}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        isRropEnabled
+        workweeks={RROP_WORKWEEKS}
+      />
+    ),
+  },
+  {
+    slug: 'rrop-overtime-revealed',
+    name: 'RRoP — overtime already entered',
+    description:
+      'Same fixture as above but with overtime hours pre-filled, so the workweek split renders on first paint.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={defaultEmployee}
+        employeeCompensation={rropOvertimeRevealed}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        isRropEnabled
+        workweeks={RROP_WORKWEEKS}
+      />
+    ),
+  },
+  {
+    slug: 'rrop-exempt-no-split',
+    name: 'RRoP — exempt employee (no split)',
+    description:
+      'Exempt salaried employee with RRoP enabled. OT-eligibility gate prevents the split — single-column inputs even after revealing overtime.',
+    render: () => (
+      <PayrollEditEmployeeDemo
+        employee={exemptEmployee}
+        employeeCompensation={rropWithEarnings}
+        fixedCompensationTypes={fixedCompensationTypes}
+        paySchedule={paySchedule}
+        payPeriodStartDate={PAY_PERIOD_START_DATE}
+        isRropEnabled
+        workweeks={RROP_WORKWEEKS}
+      />
+    ),
   },
 ]
