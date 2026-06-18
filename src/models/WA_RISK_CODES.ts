@@ -1,7 +1,7 @@
 /**
  * A Washington state workers' compensation risk classification entry.
  *
- * @internal
+ * @public
  */
 export type WARiskClassCode = { code: string; description: string }
 

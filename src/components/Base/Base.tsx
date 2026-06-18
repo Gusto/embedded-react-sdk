@@ -59,12 +59,12 @@ export interface BaseComponentInterface<
    * by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props.
    * Defaults to the SDK's built-in `InternalError` fallback.
    */
-  FallbackComponent?: BaseBoundariesProps['FallbackComponent']
+  FallbackComponent?: (props: FallbackProps) => JSX.Element
   /**
    * Custom loading indicator rendered while the component's async data is fetching.
    * Overrides the indicator configured on `GustoProvider` for this component instance only.
    */
-  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
+  LoaderComponent?: (props: { children?: React.ReactNode }) => JSX.Element
   /**
    * Callback invoked each time the component emits an event — user interactions, successful API
    * responses, step transitions, or errors. Receives the event type constant and an optional

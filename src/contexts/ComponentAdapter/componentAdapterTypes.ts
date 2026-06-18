@@ -1,3 +1,5 @@
+export type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
+export type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 export type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 export type {
   BreadcrumbsProps,
@@ -33,6 +35,7 @@ export type {
 export type { SelectProps, SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 export type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 export type { TableProps, TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
+export type { InputProps } from '@/components/Common/UI/Input/InputTypes'
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 export type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 export type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'

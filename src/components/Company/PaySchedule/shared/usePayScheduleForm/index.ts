@@ -11,6 +11,7 @@ export type {
 export {
   createPayScheduleSchema,
   PayScheduleErrorCodes,
+  FREQUENCY_VALUES,
   type PayScheduleErrorCode,
   type PayScheduleFormData,
   type PayScheduleFormOutputs,

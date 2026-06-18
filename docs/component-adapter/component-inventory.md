@@ -1,8 +1,3 @@
----
-title: Component Inventory
-description: Complete catalog of customizable UI components in the Component Adapter, with prop interfaces for inputs, buttons, layout primitives, dialogs, and more.
----
-
 # Component Inventory
 
 - [AlertProps](#alertprops)
@@ -28,8 +23,12 @@ description: Complete catalog of customizable UI components in the Component Ada
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
 - [DialogProps](#dialogprops)
+- [FieldLayoutProps](#fieldlayoutprops)
 - [FileInputProps](#fileinputprops)
 - [HeadingProps](#headingprops)
+- [HorizontalFieldLayoutProps](#horizontalfieldlayoutprops)
+- [InputProps](#inputprops)
+- [InternalFieldLayoutProps](#internalfieldlayoutprops)
 - [LinkProps](#linkprops)
 - [LoadingSpinnerProps](#loadingspinnerprops)
 - [MenuProps](#menuprops)
@@ -48,6 +47,8 @@ description: Complete catalog of customizable UI components in the Component Ada
 - [RadioProps](#radioprops)
 - [SelectProps](#selectprops)
   - [SelectOption](#selectoption)
+- [SharedFieldLayoutProps](#sharedfieldlayoutprops)
+- [SharedHorizontalFieldLayoutProps](#sharedhorizontalfieldlayoutprops)
 - [SwitchProps](#switchprops)
 - [TableProps](#tableprops)
   - [TableData](#tabledata)
@@ -362,6 +363,22 @@ description: Complete catalog of customizable UI components in the Component Ada
 | **children**                   | `React.ReactNode` | No       | Optional children content to be rendered in the dialog body                       |
 | **shouldCloseOnBackdropClick** | `boolean`         | No       | Whether clicking the backdrop should close the dialog                             |
 
+## FieldLayoutProps
+
+| Prop                        | Type              | Required | Description                                                            |
+| --------------------------- | ----------------- | -------- | ---------------------------------------------------------------------- |
+| **description**             | `React.ReactNode` | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`         | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode` | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **children**                | `React.ReactNode` | Yes      | Content to be rendered inside the field layout                         |
+| **htmlFor**                 | `string`          | Yes      | ID of the form control that this label is associated with              |
+| **errorMessageId**          | `string`          | Yes      | ID of the error message element                                        |
+| **descriptionId**           | `string`          | Yes      | ID of the description element                                          |
+| **className**               | `string`          | No       | Additional CSS class name                                              |
+| **withErrorIcon**           | `boolean`         | No       | Whether to show the error icon                                         |
+
 ## FileInputProps
 
 | Prop                 | Type                           | Required | Description                                        |
@@ -390,6 +407,57 @@ description: Complete catalog of customizable UI components in the Component Ada
 | **children**  | `React.ReactNode`                              | No       | Content to be displayed inside the heading                                |
 | **className** | `string`                                       | No       | -                                                                         |
 | **id**        | `string`                                       | No       | -                                                                         |
+
+## HorizontalFieldLayoutProps
+
+| Prop                        | Type              | Required | Description                                                            |
+| --------------------------- | ----------------- | -------- | ---------------------------------------------------------------------- |
+| **description**             | `React.ReactNode` | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`         | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode` | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **children**                | `React.ReactNode` | Yes      | Content to be rendered inside the field layout                         |
+| **htmlFor**                 | `string`          | Yes      | ID of the form control that this label is associated with              |
+| **errorMessageId**          | `string`          | Yes      | ID of the error message element                                        |
+| **descriptionId**           | `string`          | Yes      | ID of the description element                                          |
+| **className**               | `string`          | No       | Additional CSS class name                                              |
+| **withErrorIcon**           | `boolean`         | No       | Whether to show the error icon                                         |
+
+## InputProps
+
+| Prop                 | Type                                                                                                                                                                                                                                                                  | Required | Description                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| **inputRef**         | `Ref<HTMLInputElement \| null>`                                                                                                                                                                                                                                       | No       | Ref for the input element                                                               |
+| **adornmentStart**   | `React.ReactNode`                                                                                                                                                                                                                                                     | No       | Content to display at the start of the input                                            |
+| **adornmentEnd**     | `React.ReactNode`                                                                                                                                                                                                                                                     | No       | Content to display at the end of the input                                              |
+| **isDisabled**       | `boolean`                                                                                                                                                                                                                                                             | No       | Whether the input is disabled                                                           |
+| **className**        | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
+| **id**               | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
+| **name**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
+| **type**             | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                                       |
+| **aria-labelledby**  | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that labels the current element.                   |
+| **aria-describedby** | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.                         |
+| **placeholder**      | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
+| **value**            | `string \| number \| string[]`                                                                                                                                                                                                                                        | No       | -                                                                                       |
+| **onChange**         | `React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>`                                                                                                                                                                                                        | No       | -                                                                                       |
+| **onBlur**           | `React.FocusEventHandler<HTMLInputElement>`                                                                                                                                                                                                                           | No       | -                                                                                       |
+| **onFocus**          | `React.FocusEventHandler<HTMLInputElement>`                                                                                                                                                                                                                           | No       | -                                                                                       |
+| **aria-invalid**     | `false \| true \| "false" \| "true" \| "grammar" \| "spelling"`                                                                                                                                                                                                       | No       | Indicates the entered value does not conform to the format expected by the application. |
+| **min**              | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                                       |
+| **max**              | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                                       |
+| **maxLength**        | `number`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
+
+## InternalFieldLayoutProps
+
+| Prop               | Type              | Required | Description                                               |
+| ------------------ | ----------------- | -------- | --------------------------------------------------------- |
+| **children**       | `React.ReactNode` | Yes      | Content to be rendered inside the field layout            |
+| **htmlFor**        | `string`          | Yes      | ID of the form control that this label is associated with |
+| **errorMessageId** | `string`          | Yes      | ID of the error message element                           |
+| **descriptionId**  | `string`          | Yes      | ID of the description element                             |
+| **className**      | `string`          | No       | Additional CSS class name                                 |
+| **withErrorIcon**  | `boolean`         | No       | Whether to show the error icon                            |
 
 ## LinkProps
 
@@ -631,6 +699,20 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 | **value** | `string` | Yes      | Value of the option that will be passed to onChange |
 | **label** | `string` | Yes      | Display text for the option                         |
 
+## SharedFieldLayoutProps
+
+| Prop                        | Type              | Required | Description                                                            |
+| --------------------------- | ----------------- | -------- | ---------------------------------------------------------------------- |
+| **description**             | `React.ReactNode` | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`         | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode` | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`         | No       | Hides the label visually while keeping it accessible to screen readers |
+
+## SharedHorizontalFieldLayoutProps
+
+The props for this component are defined in [SharedFieldLayoutProps](#sharedfieldlayoutprops).
+
 ## SwitchProps
 
 | Prop                        | Type                            | Required | Description                                                                                            |
@@ -666,7 +748,7 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 | **aria-label**        | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Defines a string value that labels the current element.                                  |
 | **aria-labelledby**   | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Identifies the element (or elements) that labels the current element.                    |
 | **aria-describedby**  | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Identifies the element (or elements) that describes the object.                          |
-| **role**              | `"form" \| "button" \| "alert" \| "alertdialog" \| "application" \| "article" \| "banner" \| "cell" \| "checkbox" \| "columnheader" \| "combobox" \| "complementary" \| "contentinfo" \| "definition" \| "dialog" \| "directory" \| "document" \| "feed" \| "figure" \| "grid" \| "gridcell" \| "group" \| "heading" \| "img" \| "link" \| "list" \| "listbox" \| "listitem" \| "log" \| "main" \| "marquee" \| "math" \| "menu" \| "menubar" \| "menuitem" \| "menuitemcheckbox" \| "menuitemradio" \| "navigation" \| "none" \| "note" \| "option" \| "presentation" \| "progressbar" \| "radio" \| "radiogroup" \| "region" \| "row" \| "rowgroup" \| "rowheader" \| "scrollbar" \| "search" \| "searchbox" \| "separator" \| "slider" \| "spinbutton" \| "status" \| "switch" \| "tab" \| "table" \| "tablist" \| "tabpanel" \| "term" \| "textbox" \| "timer" \| "toolbar" \| "tooltip" \| "tree" \| "treegrid" \| "treeitem" \| string` | No       | -                                                                                        |
+| **role**              | `"form" \| "button" \| "checkbox" \| "radio" \| "search" \| "alert" \| "alertdialog" \| "application" \| "article" \| "banner" \| "cell" \| "columnheader" \| "combobox" \| "complementary" \| "contentinfo" \| "definition" \| "dialog" \| "directory" \| "document" \| "feed" \| "figure" \| "grid" \| "gridcell" \| "group" \| "heading" \| "img" \| "link" \| "list" \| "listbox" \| "listitem" \| "log" \| "main" \| "marquee" \| "math" \| "menu" \| "menubar" \| "menuitem" \| "menuitemcheckbox" \| "menuitemradio" \| "navigation" \| "none" \| "note" \| "option" \| "presentation" \| "progressbar" \| "radiogroup" \| "region" \| "row" \| "rowgroup" \| "rowheader" \| "scrollbar" \| "searchbox" \| "separator" \| "slider" \| "spinbutton" \| "status" \| "switch" \| "tab" \| "table" \| "tablist" \| "tabpanel" \| "term" \| "textbox" \| "timer" \| "toolbar" \| "tooltip" \| "tree" \| "treegrid" \| "treeitem" \| string` | No       | -                                                                                        |
 
 ### TableData
 
@@ -745,7 +827,7 @@ type PaginationItemsPerPage = 5 | 10 | 25 | 50
 | **className**               | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **id**                      | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **name**                    | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
-| **type**                    | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "radio" \| "search" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "range" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                      |
+| **type**                    | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                      |
 | **placeholder**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **min**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
 | **max**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |

@@ -21,6 +21,7 @@ export {
   createStateFields,
   useStateFields,
   type CreateStateFieldsOptions,
+  type SharedQuestionMetadata,
   type StateTaxFieldsGroup,
   type StateTaxQuestionFieldEntry,
   type SelectStateTaxFieldProps,

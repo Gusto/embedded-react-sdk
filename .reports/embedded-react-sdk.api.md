@@ -29,7 +29,6 @@ import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/e
 import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod';
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
 import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
-import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
@@ -97,8 +96,6 @@ type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 // @public
 function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "BaseComponentInterface" needs to be exported by the entry point index.d.ts
-//
 // @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface {
     companyId: string;
@@ -117,8 +114,6 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface {
 // @public
 function Address(props: AddressProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
-//
 // @public
 type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
 
@@ -280,6 +275,17 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
     children: ReactNode;
     status?: 'warning' | 'error';
     title: ReactNode;
+}
+
+// Warning: (ae-forgotten-export) The symbol "Resources" needs to be exported by the entry point index.d.ts
+//
+// @public
+export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources> extends CommonComponentInterface<TResourceKey> {
+    FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: (props: {
+        children?: React.ReactNode;
+    }) => JSX.Element;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -534,6 +540,15 @@ export interface ComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAtt
     value?: string | null;
 }
 
+// @public
+export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
+    children?: ReactNode;
+    className?: string;
+    defaultValues?: unknown;
+    // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
+    dictionary?: ResourceDictionary<TResourceKey>;
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
@@ -581,7 +596,6 @@ function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps
 // @public
 interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1047,13 +1061,21 @@ export interface ComponentsContextType {
 // @public
 export function composeErrorHandler(sources: MixedErrorSource[], submitState?: SubmitStateForErrorHandling): HookErrorHandling;
 
-// Warning: (ae-forgotten-export) The symbol "ComposeSubmitInput" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ComposeSubmitHandlerResult" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function composeSubmitHandler<TForms extends readonly FieldValues[]>(forms: readonly [...{
     [K in keyof TForms]: ComposeSubmitInput<TForms[K]>;
 }], onAllValid: () => Promise<void>): ComposeSubmitHandlerResult;
+
+// @public
+export interface ComposeSubmitHandlerResult {
+    errorHandling: HookErrorHandling;
+    handleSubmit: (e: SyntheticEvent) => Promise<void>;
+}
+
+// Warning: (ae-forgotten-export) The symbol "ComposableFormHookResult" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type ComposeSubmitInput<T extends FieldValues = FieldValues> = ComposableFormHookResult | UseFormReturn<T>;
 
 // @public
 export function ConfirmSignatureField(props: SignEmployeeFormConfirmSignatureFieldProps): JSX;
@@ -1236,6 +1258,11 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
     //
     // (undocumented)
     selectedTab?: DashboardTab;
+}
+
+// @public
+export type DataAttributes = {
+    [key: `data-${string}`]: string | number | boolean
 }
 
 // @public
@@ -2012,6 +2039,9 @@ export type FormHookResult = {
 };
 
 // @public
+export const FREQUENCY_VALUES: readonly ["Every week", "Every other week", "Twice per month", "Monthly"];
+
+// @public
 export function FrequencyField(props: FrequencyFieldProps): JSX;
 
 // @public
@@ -2046,7 +2076,6 @@ export interface GustoProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
-    // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
     dictionary?: ResourceDictionary;
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
@@ -2367,6 +2396,14 @@ interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'Info
 }
 
 // @public
+export interface InputProps extends Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder' | 'type' | 'value' | 'onChange' | 'onBlur' | 'onFocus' | 'aria-describedby' | 'aria-labelledby' | 'aria-invalid' | 'min' | 'max' | 'maxLength'> {
+    adornmentEnd?: ReactNode;
+    adornmentStart?: ReactNode;
+    inputRef?: Ref<HTMLInputElement>;
+    isDisabled?: boolean;
+}
+
+// @public
 function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface): JSX;
 
 // @public
@@ -2542,8 +2579,6 @@ interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee
 // @public
 export const MAX_PREPARERS = 4;
 
-// Warning: (ae-forgotten-export) The symbol "DataAttributes" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface MenuItem extends DataAttributes {
     href?: string;
@@ -2573,8 +2608,6 @@ export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<Emp
 // @public
 export type MinimumWageIdFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, MinimumWage>>;
 
-// Warning: (ae-forgotten-export) The symbol "QueryWithRefetch" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type MixedErrorSource = QueryWithRefetch | {
     errorHandling: HookErrorHandling;
@@ -2645,7 +2678,6 @@ export interface NumberInputHookFieldProps<TErrorCode extends string = never> ex
 // @public
 export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'min' | 'max' | 'name' | 'id' | 'placeholder' | 'className'> {
     adornmentEnd?: InputProps['adornmentEnd'];
-    // Warning: (ae-forgotten-export) The symbol "InputProps" needs to be exported by the entry point index.d.ts
     adornmentStart?: InputProps['adornmentStart'];
     format?: 'currency' | 'decimal' | 'percent';
     inputRef?: Ref<HTMLInputElement>;
@@ -2838,6 +2870,9 @@ function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterf
 function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 
 // @public
+export type OnEventType<K, T> = (type: K, data?: T) => void;
+
+// @public
 export interface OrderedListProps extends BaseListProps {
 }
 
@@ -3013,7 +3048,7 @@ interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.
     // Warning: (ae-forgotten-export) The symbol "InternalAlert" needs to be exported by the entry point index.d.ts
     //
     // @internal
-    alerts?: InternalAlert[];
+    _alerts?: InternalAlert[];
     companyId: string;
 }
 
@@ -3285,8 +3320,6 @@ export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
 // @public
 export type PayScheduleFormOutputs = PayScheduleFormData;
 
-// Warning: (ae-forgotten-export) The symbol "FREQUENCY_VALUES" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number];
 
@@ -3295,8 +3328,6 @@ export type PayScheduleFrequency = (typeof FREQUENCY_VALUES)[number];
 // @public
 export type PayScheduleOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_11>;
 
-// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
-//
 // @public
 interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
     companyId: string;
@@ -3519,6 +3550,9 @@ export interface ProgressBarProps {
 }
 
 // @public
+export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>;
+
+// @public
 export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>(input: RadioGroupHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
@@ -3608,6 +3642,11 @@ interface RemoveDialogState {
 }
 
 // @public
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
+}[keyof T]
+
+// @public
 type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
 
 // @public
@@ -3637,8 +3676,14 @@ export interface SDKError {
     raw?: unknown;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SDKErrorCategories" needs to be exported by the entry point index.d.ts
-//
+// @public
+export const SDKErrorCategories: {
+    readonly API_ERROR: "api_error";
+    readonly VALIDATION_ERROR: "validation_error";
+    readonly NETWORK_ERROR: "network_error";
+    readonly INTERNAL_ERROR: "internal_error";
+};
+
 // @public
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories];
 
@@ -3650,12 +3695,28 @@ export interface SDKFieldError {
     metadata?: Record<string, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SDKFormProviderProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function SDKFormProvider<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
 } = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX;
+
+// @public
+export interface SDKFormProviderProps<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
+    [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
+} = Record<string, FieldMetadata | FieldMetadataWithOptions>> {
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    formHookResult: {
+        errorHandling: {
+            errors: SDKError[];
+        };
+        form: {
+            fieldsMetadata: TFieldsMetadata;
+            hookFormInternals: HookFormInternals<TFormData>;
+        };
+    };
+}
 
 // @public
 export interface SDKHooks {
@@ -3733,6 +3794,13 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 
 // @public
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
+
+// @public
+export interface SharedQuestionMetadata {
+    description: string | null;
+    label: string;
+    questionId: string;
+}
 
 // @public
 export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
@@ -4003,8 +4071,6 @@ export interface StateTaxFieldsGroup {
     state: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedQuestionMetadata" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type StateTaxQuestionFieldEntry = ({
     type: 'select';
@@ -4035,8 +4101,6 @@ export type StateTaxValue = string | number | boolean | Date | null | undefined;
 // @public
 export function StateWcClassCodeField(props: StateWcClassCodeFieldProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>>;
 
@@ -4967,6 +5031,12 @@ function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 interface ViewHolidayScheduleProps extends BaseComponentInterface {
     companyId: string;
 }
+
+// @public
+export type WARiskClassCode = {
+    code: string;
+    description: string;
+};
 
 // @public
 type WithholdingType = 'supplemental' | 'regular';

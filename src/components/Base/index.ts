@@ -7,3 +7,4 @@ export {
 } from './Base'
 export { createCompoundContext } from './createCompoundContext'
 export { useBase } from './useBase'
+export type { OnEventType } from './useBase'

@@ -37,7 +37,12 @@ function useSyncFieldErrors<
   }, [fieldErrors, setError, fieldsMetadata])
 }
 
-interface SDKFormProviderProps<
+/**
+ * Props for {@link SDKFormProvider}.
+ *
+ * @public
+ */
+export interface SDKFormProviderProps<
   TFormData extends FieldValues = FieldValues,
   TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions

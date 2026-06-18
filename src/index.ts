@@ -21,7 +21,9 @@ export type {
   AfterErrorContext,
   SDKHooks,
 } from '@/types/hooks'
+export { SDKErrorCategories } from '@/types/sdkError'
 export type { SDKError, SDKErrorCategory, SDKFieldError } from '@/types/sdkError'
+export type { RequireAtLeastOne, DataAttributes } from '@/types/Helpers'
 export type {
   ObservabilityHook,
   ObservabilityError,
@@ -33,6 +35,14 @@ export type {
   ConfirmWireDetailsProps,
   ConfirmWireDetailsComponentType,
 } from '@/components/Payroll/ConfirmWireDetails'
+
+export type {
+  BaseComponentInterface,
+  CommonComponentInterface,
+  OnEventType,
+} from '@/components/Base'
+
+export type { WARiskClassCode } from '@/models/WA_RISK_CODES'
 
 // Partner hook infrastructure
 export {
@@ -72,17 +82,10 @@ export type {
   DatePickerHookFieldProps,
   RadioGroupHookFieldProps,
   SwitchHookFieldProps,
-  SharedFieldLayoutProps,
-  SharedHorizontalFieldLayoutProps,
-  TextInputProps,
-  SelectProps,
-  SelectOption,
-  CheckboxProps,
-  NumberInputProps,
-  DatePickerProps,
-  RadioGroupProps,
-  RadioGroupOption,
-  SwitchProps,
+  ComposeSubmitInput,
+  ComposeSubmitHandlerResult,
+  SDKFormProviderProps,
+  QueryWithRefetch,
 } from '@/partner-hook-utils'
 
 // Domain hooks - Employee
@@ -430,6 +433,7 @@ export type {
   EmployeeStateTaxesFormOutputs,
   StateTaxValue,
   StateTaxQuestionVariant,
+  SharedQuestionMetadata,
   StateTaxFieldsGroup,
   StateTaxQuestionFieldEntry,
   SelectStateTaxFieldProps,
@@ -508,6 +512,7 @@ export type {
 export {
   usePayScheduleForm,
   PayScheduleErrorCodes,
+  FREQUENCY_VALUES,
   CustomNameField,
   FrequencyField,
   CustomTwicePerMonthField,

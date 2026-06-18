@@ -32,7 +32,12 @@ export type {
 
 // ── Discriminated union surfaced to partners ───────────────────────────
 
-interface SharedQuestionMetadata {
+/**
+ * Metadata common to every state tax question field entry.
+ *
+ * @public
+ */
+export interface SharedQuestionMetadata {
   /** Stable identifier for this question (camelCase form of the API key). */
   questionId: string
   /** API-supplied label; default text for the rendered Field. */

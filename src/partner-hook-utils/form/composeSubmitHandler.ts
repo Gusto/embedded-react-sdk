@@ -12,8 +12,10 @@ import type { HookErrorHandling, HookFormInternals } from '../types'
  * allowing hooks with specific form data generics to be passed without casts.
  * `_fieldElementRegistry` is reused directly since its type doesn't depend on
  * the form's generic.
+ *
+ * @public
  */
-interface ComposableFormHookResult {
+export interface ComposableFormHookResult {
   form: {
     hookFormInternals: Pick<HookFormInternals, '_fieldElementRegistry'> & {
       formMethods: {
@@ -39,7 +41,7 @@ interface ComposableFormHookResult {
  *   but no `errorHandling` (fields surface their own inline errors via react-hook-form).
  *
  * @typeParam T - The shape of the form values when a raw `UseFormReturn` is passed.
- * @internal
+ * @public
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
   | ComposableFormHookResult

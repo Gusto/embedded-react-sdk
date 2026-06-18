@@ -69,7 +69,7 @@ const STANDALONE_PAGES: Record<
   },
   utilities: { sources: ['partner-hook-utils'], displayName: 'Hook Utilities', sidebarPosition: 4 },
   events: {
-    sources: ['shared/constants'],
+    sources: ['shared/constants', 'components/Base/useBase'],
     groups: ['Events'],
     displayName: 'Events',
     sidebarPosition: 5,

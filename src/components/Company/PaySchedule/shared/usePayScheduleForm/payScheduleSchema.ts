@@ -31,7 +31,17 @@ export type PayScheduleErrorCode =
 
 // ── Field validators ───────────────────────────────────────────────────
 
-const FREQUENCY_VALUES = ['Every week', 'Every other week', 'Twice per month', 'Monthly'] as const
+/**
+ * The ordered list of pay schedule frequency values accepted by {@link usePayScheduleForm}.
+ *
+ * @public
+ */
+export const FREQUENCY_VALUES = [
+  'Every week',
+  'Every other week',
+  'Twice per month',
+  'Monthly',
+] as const
 /**
  * Pay schedule frequency values accepted by {@link usePayScheduleForm}.
  *

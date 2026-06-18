@@ -10,10 +10,16 @@ export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'
+export type { SDKFormProviderProps } from './SDKFormProvider'
 export { useDeriveFieldsMetadata } from './useDeriveFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
 
 export { composeSubmitHandler } from './composeSubmitHandler'
+export type {
+  ComposeSubmitInput,
+  ComposableFormHookResult,
+  ComposeSubmitHandlerResult,
+} from './composeSubmitHandler'
 
 export {
   TextInputHookField,
@@ -28,17 +34,6 @@ export {
   type DatePickerHookFieldProps,
   RadioGroupHookField,
   type RadioGroupHookFieldProps,
-  type SharedFieldLayoutProps,
-  type SharedHorizontalFieldLayoutProps,
-  type TextInputProps,
-  type SelectProps,
-  type SelectOption,
-  type CheckboxProps,
-  type NumberInputProps,
-  type DatePickerProps,
-  type RadioGroupProps,
-  type RadioGroupOption,
   SwitchHookField,
   type SwitchHookFieldProps,
-  type SwitchProps,
 } from './fields'

@@ -9,6 +9,11 @@ export type DeepPartial<T> = {
       : T[P]
 }
 
+/**
+ * Constructs a type where at least one property of `T` is required.
+ *
+ * @public
+ */
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
 }[keyof T]
@@ -31,6 +36,11 @@ export type MachineTransition = Transition<EventType> | Immediate<EventType>
 //Makes specific property in the given type required
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+/**
+ * Type-safe map for HTML `data-*` attributes.
+ *
+ * @public
+ */
 export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean
 }
@@ -42,7 +52,12 @@ export type Resources = CustomTypeOptions['resources']
 
 export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
 
-//ResourceDictionary us supporting 2 cases - global GustoProvider dictionary with all resources and component specific dictionaries
+/**
+ * Type for i18n resource dictionaries — either a global dictionary (all namespaces) or a
+ * namespace-scoped dictionary (a single `K` namespace).
+ *
+ * @internal
+ */
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
   K extends keyof Resources
     ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
