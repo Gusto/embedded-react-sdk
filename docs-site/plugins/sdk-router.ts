@@ -44,7 +44,7 @@ const STANDALONE_PAGES = _STANDALONE_PAGES as StandalonePageConfig
  * Register via  "router": "sdk-router"  in the TypeDoc config.
  *
  * URL structure:
- *   employee/overview.md                      ← generated domain hub (namespaces + hooks overview)
+ *   employee/index.md                      ← generated domain hub (namespaces + hooks index)
  *   employee/management/index.md              ← namespace index (links to workflows + sub-components)
  *   employee/management/workflows.md          ← namespace members whose name ends with 'Flow'
  *   employee/management/sub-components.md     ← remaining namespace members
@@ -148,7 +148,7 @@ function getSidebarPosition(url: string): number | undefined {
   const parts = key.split('/')
   const filename = parts[parts.length - 1]!
   const depth = parts.length // 2 = domain-level file, 3 = namespace subdir file
-  if (filename === 'overview') return 1
+  if (filename === 'index') return 1
   if (filename === 'workflows') return depth >= 3 ? 1 : 2
   if (filename === 'sub-components') return depth >= 3 ? 2 : 3
   if (filename === 'hooks') return 100
@@ -250,8 +250,8 @@ export function load(app: MarkdownApplication): void {
         mkdirSync(nsDir, { recursive: true })
         writeFileSync(
           join(nsDir, '_category_.json'),
-          // overview.md = position 1; namespace subdirs start at position 2
-          JSON.stringify({ label: ns.label, position: nsIdx + 2 }, null, 2) + '\n',
+          // index.md = position 1; namespace subdirs start at position 2
+          JSON.stringify({ label: ns.id, position: nsIdx + 2 }, null, 2) + '\n',
         )
       }
     }
@@ -500,7 +500,7 @@ function resolveNsName(parts: string[]): string {
 export function pageTitle(page: MarkdownPageEvent): string {
   const { model, url } = page
 
-  if (model instanceof ProjectReflection) return 'API Reference'
+  if (model instanceof ProjectReflection) return 'Reference'
 
   const decl = model as DeclarationReflection
 
@@ -511,15 +511,13 @@ export function pageTitle(page: MarkdownPageEvent): string {
   const parts = url.replace(/\.md$/, '').split('/')
 
   if (decl.name === 'Hooks') {
-    const domainPath = parts[0] ?? ''
-    const domain = DOMAINS.find(d => d.path === domainPath)
-    return `${domain?.label ?? pathToSourceDir(domainPath)} Hooks`
+    return `Hooks`
   }
   if (decl.name === 'Flow Components') {
-    return `${resolveNsName(parts)} workflows`
+    return `Workflows`
   }
   if (decl.name === 'Block Components') {
-    return `${resolveNsName(parts)} sub-components`
+    return `Sub-components`
   }
 
   return decl.name
@@ -554,7 +552,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
       model.comment?.summary && Comment.combineDisplayParts(model.comment.summary).trim()
     return (
       fromComment ||
-      'API reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.'
+      'Reference for @gusto/embedded-react-sdk — components, hooks, and utilities for Gusto Embedded Payroll.'
     )
   }
 
@@ -564,7 +562,7 @@ export function pageDescription(page: MarkdownPageEvent): string {
   if (fromComment) return fromComment
 
   const title = pageTitle(page)
-  return `${title} API reference.`
+  return `${title} reference.`
 }
 
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
@@ -592,29 +590,29 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
     const flows = componentChildren.filter(c => c.name.endsWith('Flow'))
     const blocks = componentChildren.filter(c => !c.name.endsWith('Flow'))
 
-    if (flows.length > 0) {
-      parts.push('### Flow Components', '')
-      parts.push('| Component | Description |')
-      parts.push('| --------- | ----------- |')
-      for (const flow of flows) {
-        const url = context.urlTo(flow)
-        const description = getReflectionDescription(flow, context)
-        parts.push(`| [${flow.name}](${url}) | ${description} |`)
-      }
-      parts.push('')
-    }
+    // if (flows.length > 0) {
+    //   parts.push('### Workflow components', '')
+    //   parts.push('| Component | Description |')
+    //   parts.push('| --------- | ----------- |')
+    //   for (const flow of flows) {
+    //     const url = context.urlTo(flow)
+    //     const description = getReflectionDescription(flow, context)
+    //     parts.push(`| [${flow.name}](${url}) | ${description} |`)
+    //   }
+    //   parts.push('')
+    // }
 
-    if (blocks.length > 0) {
-      parts.push('### Block Components', '')
-      parts.push('| Component | Description |')
-      parts.push('| --------- | ----------- |')
-      for (const block of blocks) {
-        const url = context.urlTo(block)
-        const description = getReflectionDescription(block, context)
-        parts.push(`| [${block.name}](${url}) | ${description} |`)
-      }
-      parts.push('')
-    }
+    // if (blocks.length > 0) {
+    //   parts.push('### Sub-components', '')
+    //   parts.push('| Component | Description |')
+    //   parts.push('| --------- | ----------- |')
+    //   for (const block of blocks) {
+    //     const url = context.urlTo(block)
+    //     const description = getReflectionDescription(block, context)
+    //     parts.push(`| [${block.name}](${url}) | ${description} |`)
+    //   }
+    //   parts.push('')
+    // }
   }
 
   const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(getDomainPath(model))
@@ -652,8 +650,8 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
   const blocks = components.filter(c => !c.name.endsWith('Flow'))
 
   for (const [heading, items] of [
-    ['Flow Components', flows],
-    ['Block Components', blocks],
+    ['Workflow components', flows],
+    ['Block components', blocks],
   ] as const) {
     if (items.length === 0) continue
     parts.push(`## ${heading}`, '')
@@ -1030,7 +1028,7 @@ export class SDKRouter extends MemberRouter {
         new CommentTag('@domainPath', [{ kind: 'text', text: domain.path }]),
       )
       hubNs.children = nsReflections
-      this.buildSyntheticPage(`${domain.path}/overview`, hubNs, [], pages)
+      this.buildSyntheticPage(`${domain.path}/index`, hubNs, [], pages)
     }
 
     return pages

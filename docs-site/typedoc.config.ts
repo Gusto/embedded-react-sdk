@@ -12,7 +12,7 @@ export const baseOptions = {
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],
-  out: '../docs/api',
+  out: '../docs/reference',
 
   groupOrder: [
     'Domains',

@@ -24,35 +24,35 @@ export const DOMAINS = [
     label: 'Companies',
     path: 'company',
     namespaces: [
-      { id: 'CompanyOnboarding', label: 'Company onboarding', subpath: 'onboarding' },
-      { id: 'InformationRequests', label: 'Information requests', subpath: 'information-requests' },
+      { id: 'CompanyOnboarding', subpath: 'onboarding' },
+      { id: 'InformationRequests', subpath: 'information-requests' },
     ],
   },
   {
     label: 'Employees',
     path: 'employee',
     namespaces: [
-      { id: 'EmployeeOnboarding', label: 'Employee onboarding', subpath: 'onboarding' },
-      { id: 'EmployeeManagement', label: 'Employee management', subpath: 'management' },
+      { id: 'EmployeeOnboarding', subpath: 'onboarding' },
+      { id: 'EmployeeManagement', subpath: 'management' },
     ],
   },
   {
     label: 'Contractors',
     path: 'contractor',
     namespaces: [
-      { id: 'ContractorOnboarding', label: 'Contractor onboarding', subpath: 'onboarding' },
-      { id: 'ContractorManagement', label: 'Contractor management', subpath: 'management' },
+      { id: 'ContractorOnboarding', subpath: 'onboarding' },
+      { id: 'ContractorManagement', subpath: 'management' },
     ],
   },
   {
     label: 'Payroll',
     path: 'payroll',
-    namespaces: [{ id: 'Payroll', label: 'Payroll' }],
+    namespaces: [{ id: 'Payroll' }],
   },
   {
     label: 'Time Off',
     path: 'time-off',
-    namespaces: [{ id: 'TimeOff', label: 'Time off' }],
+    namespaces: [{ id: 'TimeOff' }],
   },
 ]
 
