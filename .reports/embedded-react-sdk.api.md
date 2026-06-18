@@ -90,34 +90,25 @@ export function AccountTypeField(props: AccountTypeFieldProps): JSX;
 // @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationFormData"
-//
 // @public
 type AccrualMethod = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
 
 // @public
 type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesHolidayProps"
-//
 // @public
 function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "BaseComponentInterface" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesHoliday"
 //
 // @public
 interface AddEmployeesHolidayProps extends BaseComponentInterface {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesToPolicyProps"
-//
 // @public
 function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddEmployeesToPolicy"
-//
 // @public
 interface AddEmployeesToPolicyProps extends BaseComponentInterface {
     companyId: string;
@@ -125,22 +116,16 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface {
     policyType: CreatableTimeOffPolicyType;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AddressProps"
-//
 // @public
 function Address(props: AddressProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
 //
 // @public
 type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
-//
 // @public
 interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useAddress"
     children?: ReactNode;
     className?: string;
     contractorId: string;
@@ -214,25 +199,18 @@ export interface ApiProviderProps {
     url: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AssignSignatoryProps"
-//
 // @public
 function AssignSignatory(props: AssignSignatoryProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AssignSignatory"
-//
 // @public
 type AssignSignatoryDefaultValues = RequireAtLeastOne<{
     create?: CreateSignatoryDefaultValues;
     invite?: InviteSignatoryDefaultValues;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AssignSignatory"
-//
 // @public
 interface AssignSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AssignSignatoryDefaultValues"
     defaultValues?: AssignSignatoryDefaultValues;
     signatoryId?: string;
 }
@@ -247,8 +225,6 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 }
 
 // Warning: (ae-forgotten-export) The symbol "BankAccountProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompanyBankAccount"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompanyBankAccount"
 //
 // @public
 function BankAccount(props: BankAccountProps): JSX;
@@ -470,8 +446,6 @@ export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<In
     value?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AmountFieldProps"
-//
 // @public
 export function ChildSupportAmountField(props: ChildSupportGarnishmentAmountFieldProps): JSX;
 
@@ -595,10 +569,6 @@ declare namespace CompanyOnboarding {
 }
 
 // Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Job"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Job"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationProps"
 //
 // @public
 function Compensation_2(props: CompensationProps): JSX;
@@ -611,66 +581,37 @@ namespace Compensation_2 {
     EditCompensation: EditCompensation;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationProps"
-//
 // @public
 function Compensation_3(input: CompensationProps_2 & BaseComponentInterface<'Employee.Management.Compensation'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobFormProps"
-//
 // @public
 function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
-//
 // @public
 interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
     // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobFormProps"
-//
 // @public
 function CompensationAddJobForm(input: CompensationAddJobFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
-//
 // @public
 interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
     onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
 export function CompensationAdjustForMinimumWageField(props: AdjustForMinimumWageFieldProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddJobForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationAddAnotherJobForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCardProps"
-//
 // @public
 function CompensationCard(props: CompensationCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-//
 // @public
 interface CompensationCardProps {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -682,21 +623,13 @@ type CompensationDefaultValues = RequireAtLeastOne<{
     flsaStatus?: FlsaStatusType;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditFormProps"
-//
 // @public
 function CompensationEditForm(input: CompensationEditFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
-//
 // @public
 interface CompensationEditFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
     jobId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -764,8 +697,6 @@ export type CompensationOptionalFieldsToRequire = { create?: "title"[] | undefin
 // @public
 export function CompensationPaymentUnitField(props: PaymentUnitFieldProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-//
 // @public
 interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
     defaultValues?: CompensationDefaultValues;
@@ -773,12 +704,9 @@ interface CompensationProps extends BaseComponentInterface<'Employee.Compensatio
     startDate: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-//
 // @public
 interface CompensationProps_2 extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -807,8 +735,6 @@ export interface CompensationSubmitOptions {
     jobId?: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TitleFieldProps"
-//
 // @public
 export function CompensationTitleField(props: CompensationTitleFieldProps): JSX;
 
@@ -1143,7 +1069,6 @@ export function composeErrorHandler(sources: MixedErrorSource[], submitState?: S
 
 // Warning: (ae-forgotten-export) The symbol "ComposeSubmitInput" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ComposeSubmitHandlerResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ComposeSubmitHandlerResult"
 //
 // @public
 export function composeSubmitHandler<TForms extends readonly FieldValues[]>(forms: readonly [...{
@@ -1159,28 +1084,19 @@ export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<S
 // @public
 function ConfirmWireDetails(input: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ConfirmWireDetails"
-//
 // @public
 export type ConfirmWireDetailsComponentType = ComponentType<ConfirmWireDetailsProps>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ConfirmWireDetails"
-//
 // @public
 export interface ConfirmWireDetailsProps {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ConfirmWireDetails"
     onEvent?: BaseComponentInterface['onEvent'];
     wireInId?: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorListProps"
-//
 // @public
 function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorList"
-//
 // @public
 interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
     companyId: string;
@@ -1237,8 +1153,6 @@ export const ContractorOnboardingStatus: {
     readonly ONBOARDING_COMPLETED: "onboarding_completed";
 };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfileProps"
-//
 // @public
 function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
 
@@ -1247,8 +1161,6 @@ function ContractorProfile(props: ContractorProfileProps & BaseComponentInterfac
 // @public
 type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfile"
-//
 // @public
 interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
     companyId: string;
@@ -1259,13 +1171,9 @@ interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Pr
 // @public
 export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmitProps"
-//
 // @public
 function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmit"
-//
 // @public
 interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
     contractorId: string;
@@ -1443,8 +1351,6 @@ Check: "Check";
 }>;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CreatePayment"
-//
 // @public
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
     companyId: string;
@@ -1469,20 +1375,14 @@ day1: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CreateSignatoryProps"
-//
 // @public
 function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CreateSignatory"
-//
 // @public
 type CreateSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title' | 'phone' | 'birthday'> & Pick<NonNullable<Signatory['homeAddress']>, 'street1' | 'street2' | 'city' | 'state' | 'zip'> & {
     ssn?: string;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CreateSignatory"
-//
 // @public
 interface CreateSignatoryProps extends CommonComponentInterface {
     companyId: string;
@@ -1605,24 +1505,9 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 // @internal (undocumented)
 function Dashboard(input: DashboardProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Documents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "CompensationEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DashboardFlowProps"
-//
 // @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DashboardFlow"
-//
 // @public
 interface DashboardFlowProps extends BaseComponentInterface {
     employeeId: string;
@@ -1718,8 +1603,6 @@ export function DeductAsPercentageField(props: DeductAsPercentageFieldProps): JS
 // @public
 export type DeductAsPercentageFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "AmountFieldProps"
-//
 // @public
 export function DeductionAmountField(props: DeductionAmountFieldProps): JSX;
 
@@ -1770,47 +1653,28 @@ export type DeductionFormOutputs = DeductionFormData;
 // @public
 export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQUIRED;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsProps"
-//
 // @public
 function Deductions(input: DeductionsProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsProps"
-//
 // @public
 function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCardProps"
-//
 // @public
 function DeductionsCard(props: DeductionsCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
-//
 // @public
 interface DeductionsCardProps {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsCard"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditFormProps"
-//
 // @public
 function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
-//
 // @public
 interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
     editingDeductionId?: string;
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DeductionsEditForm"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -1820,19 +1684,14 @@ export function DeductionsField(props: DeductionsFieldProps): JSX;
 // @public
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-//
 // @public
 interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> {
     employeeId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-//
 // @public
 interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Management.Deductions'> {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1876,29 +1735,20 @@ export interface DialogProps {
     title?: ReactNode;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DismissalFlowProps"
-//
 // @public
 function DismissalFlow(input: DismissalFlowProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DismissalFlow"
-//
 // @public
 interface DismissalFlowProps {
     companyId: string;
     employeeId?: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DismissalFlow"
     onEvent: OnEventType<EventType, unknown>;
     payrollId?: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DismissalPayPeriodSelectionProps"
-//
 // @public
 function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DismissalPayPeriodSelection"
-//
 // @public
 interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
     companyId: string;
@@ -1906,8 +1756,6 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
     payrollId?: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentListProps"
-//
 // @public
 function DocumentList(props: DocumentListProps): JSX;
 
@@ -1916,8 +1764,6 @@ function DocumentList(props: DocumentListProps): JSX;
 // @public
 function DocumentList_2(props: DocumentListProps_2): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentList"
-//
 // @public
 interface DocumentListProps extends BaseComponentInterface {
     employeeId: string;
@@ -1934,71 +1780,46 @@ interface DocumentManagerProps {
     formId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsProps"
-//
 // @public
 function Documents(input: DocumentsProps & BaseComponentInterface<'Employee.Management.Documents'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useDocumentsList"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsCardProps"
-//
 // @public
 function DocumentsCard(props: DocumentsCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentsCard"
-//
 // @public
 interface DocumentsCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSignerProps"
-//
 // @public
 function DocumentSigner(props: DocumentSignerProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Signatory"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Signatory"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Signatory"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSignerProps"
 //
 // @public
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSigner"
-//
 // @public
 interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     withEmployeeI9?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Documents"
-//
 // @public
 interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensationProps"
-//
 // @public
 function EditCompensation(input: EditCompensationProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensation"
-//
 // @public
 interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
     currentJobId?: string | null;
     employeeId: string;
     onCancel?: () => void;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EditCompensation"
     onEvent: OnEventType<EventType, unknown>;
     partnerDefaultValues?: CompensationDefaultValues;
     startDate?: string;
@@ -2075,8 +1896,6 @@ export interface EmployeeDetailsSubmitCallbacks {
 // @public
 function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeDocuments"
-//
 // @public
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
     employeeId: string;
@@ -2086,23 +1905,14 @@ interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.Employ
 // @public
 function EmployeeList(input: EmployeeListProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DashboardFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: This type of declaration is not supported yet by the resolver
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeListFlowProps"
-//
 // @public
 const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeListFlow"
-//
 // @public
 interface EmployeeListFlowProps extends BaseComponentInterface {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeList"
-//
 // @public
 interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
     companyId: string;
@@ -2314,8 +2124,6 @@ export interface EmployeeStateTaxesSchemaOptions {
     isAdmin?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ManagementEmployeeList"
-//
 // @public
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed';
 
@@ -2336,13 +2144,9 @@ export interface EmployeeWithActions extends Employee {
     primaryJob?: Job;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmploymentEligibilityProps"
-//
 // @public
 function EmploymentEligibility(props: EmploymentEligibilityProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmploymentEligibility"
-//
 // @public
 interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.EmploymentEligibility'> {
     employeeId: string;
@@ -2357,20 +2161,13 @@ export function ExtraWithholdingField(props: ExtraWithholdingFieldProps): JSX;
 // @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesProps"
-//
 // @public
 function FederalTaxes(input: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesProps"
-//
 // @public
 function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "FederalTaxesProps_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxDetails"
 //
 // @public
 function FederalTaxes_3(props: FederalTaxesProps_3 & BaseComponentInterface): JSX;
@@ -2378,29 +2175,19 @@ function FederalTaxes_3(props: FederalTaxesProps_3 & BaseComponentInterface): JS
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
-//
 // @public
 interface FederalTaxesCardProps {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditFormProps"
-//
 // @public
 function FederalTaxesEditForm(input: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
-//
 // @public
 interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
     defaultValues?: Partial<FederalTaxesFormData>;
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxesEditForm"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -2440,22 +2227,16 @@ export type FederalTaxesFormOutputs = FederalTaxesFormData;
 // @public
 export type FederalTaxesOptionalFieldsToRequire = { create?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; update?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-//
 // @public
 interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
     defaultValues?: Partial<FederalTaxesFormData>;
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-//
 // @public
 interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
     employeeId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2538,7 +2319,6 @@ export interface FormFieldsMetadataContextValue {
 
 // Warning: (ae-forgotten-export) The symbol "FormFieldsMetadataProviderProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataProvider" should be prefixed with an underscore because the declaration is marked as @internal
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FormFieldsMetadataContext"
 //
 // @internal
 export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX;
@@ -2732,46 +2512,30 @@ interface HolidayPolicyDetailPresentationProps {
     title: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HolidaySelectionFormProps"
-//
 // @public
 function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HolidaySelectionForm"
-//
 // @public
 interface HolidaySelectionFormProps extends BaseComponentInterface {
     companyId: string;
     mode?: 'create' | 'edit';
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-//
 // @public
 function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>): JSX;
 
 // @public
 function HomeAddressCard(props: HomeAddressCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddressCard"
-//
 // @public
 interface HomeAddressCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-//
 // @public
 function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddressEditForm"
-//
 // @public
 interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
     employeeId: string;
@@ -2822,8 +2586,6 @@ export type HomeAddressFormOutputs = HomeAddressFormData;
 // @public
 export type HomeAddressOptionalFieldsToRequire = { create?: "street2"[] | undefined; update?: "street2"[] | undefined; };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "HomeAddress"
-//
 // @public
 interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
     employeeId: string;
@@ -2876,34 +2638,24 @@ export interface HookSubmitResult<T> {
 // @public
 export const I9_FORM_NAME = "US_I-9";
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "I9SignatureFormProps"
-//
 // @public
 function I9SignatureForm(props: I9SignatureFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "I9SignatureForm"
-//
 // @public
 interface I9SignatureFormProps extends BaseComponentInterface {
     employeeId: string;
     formId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "IndustryProps"
-//
 // @public
 function Industry<T>(props: IndustryProps<T>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Industry"
-//
 // @public
 type IndustryProps<T> = Pick<BaseComponentInterface<'Company.Industry'>, 'onEvent' | 'dictionary'> & Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
     companyId: string;
 };
 
 // Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestFormProps"
 //
 // @public
 function InformationRequestForm(props: InformationRequestFormProps): JSX;
@@ -2916,27 +2668,19 @@ namespace InformationRequestForm {
     }) => JSX;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestForm"
-//
 // @public
 interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestForm"
     onEvent: OnEventType<EventType, unknown>;
     requestId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestListProps"
-//
 // @public
 function InformationRequestList(props: InformationRequestListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestList"
-//
 // @public
 interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestList"
     onEvent: BaseComponentInterface['onEvent'];
 }
 
@@ -2951,13 +2695,9 @@ declare namespace InformationRequests {
     }
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestsFlowProps"
-//
 // @public
 function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InformationRequestsFlow"
-//
 // @public
 interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'InformationRequests'>, 'onEvent'> {
     companyId: string;
@@ -2965,8 +2705,6 @@ interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'Info
     withAlert?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InviteSignatoryProps"
-//
 // @public
 function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface): JSX;
 
@@ -2975,8 +2713,6 @@ type InviteSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName
     confirmEmail: string;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "InviteSignatory"
-//
 // @public
 interface InviteSignatoryProps extends CommonComponentInterface {
     companyId: string;
@@ -3115,14 +2851,11 @@ export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>
 export type LocationFieldProps = HookFieldProps<SelectHookFieldProps<WorkAddressRequiredValidation, Location_2>>;
 
 // Warning: (ae-forgotten-export) The symbol "LocationFormProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationFormProps"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "BaseComponentInterface"
 //
 // @public
 function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "LocationsProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationsProps"
 //
 // @public
 function Locations(input: LocationsProps): JSX;
@@ -3130,8 +2863,6 @@ function Locations(input: LocationsProps): JSX;
 // @public
 function LocationsList(props: LocationsListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationsList"
-//
 // @public
 interface LocationsListProps extends BaseComponentInterface {
     companyId: string;
@@ -3140,8 +2871,6 @@ interface LocationsListProps extends BaseComponentInterface {
 // @public
 function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ManagementEmployeeList"
-//
 // @public
 interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
     companyId: string;
@@ -3228,13 +2957,9 @@ export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequ
 // @public
 export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReportProps"
-//
 // @public
 function NewHireReport(props: NewHireReportProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReport"
-//
 // @public
 interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireReport'> {
     contractorId: string;
@@ -3332,13 +3057,9 @@ export interface ObservabilityProviderProps {
     observability?: ObservabilityHook;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleCreationProps"
-//
 // @public
 function OffCycleCreation(props: OffCycleCreationProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleCreation"
-//
 // @public
 interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData {
     includeAllEmployees: boolean;
@@ -3347,38 +3068,26 @@ interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData {
     skipRegularDeductions: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleCreation"
-//
 // @public
 interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycleCreation'> {
     companyId: string;
     payrollType?: OffCyclePayrollDateType;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleDeductionsSettingChangePayload"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleDeductionsSettingProps"
-//
 // @public
 function OffCycleDeductionsSetting(input: OffCycleDeductionsSettingProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleDeductionsSetting"
-//
 // @public
 interface OffCycleDeductionsSettingChangePayload {
     skipRegularDeductions: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleDeductionsSetting"
-//
 // @public
 interface OffCycleDeductionsSettingProps extends CommonComponentInterface<'Payroll.OffCycleDeductionsSetting'> {
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleDeductionsSetting"
     onEvent: OnEventType<EventType, unknown>;
     skipRegularDeductions: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleFlowProps"
-//
 // @public
 function OffCycleFlow(input: OffCycleFlowProps): JSX;
 
@@ -3392,12 +3101,9 @@ interface OffCycleFlowContextInterface extends FlowContextInterface {
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleFlow"
-//
 // @public
 interface OffCycleFlowProps {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleFlow"
     onEvent: OnEventType<EventType, unknown>;
     payrollType?: OffCycleReason;
     withReimbursements?: boolean;
@@ -3423,44 +3129,23 @@ interface OffCycleReasonDefaults {
     withholdingType: WithholdingType;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelectReasonPayload"
-//
 // @public
 function OffCycleReasonSelection(props: OffCycleReasonSelectionProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OffCycleReasonSelection"
-//
 // @public
 interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.OffCycleReasonSelection'> {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-//
 // @public
 type OnboardingDefaultValues = RequireAtLeastOne<{
     profile?: ProfileDefaultValues;
     compensation?: CompensationDefaultValues;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeDocuments"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingSummary"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingExecutionFlowProps"
-//
 // @public
 function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingExecutionFlow"
-//
 // @public
 interface OnboardingExecutionFlowProps {
     companyId: string;
@@ -3475,39 +3160,18 @@ interface OnboardingExecutionFlowProps {
 }
 
 // Warning: (ae-forgotten-export) The symbol "INITIAL_COMPONENT_MAP" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingExecutionFlow"
 //
 // @public
 type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeList"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Compensation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Deductions"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeDocuments"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingSummary"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlowProps"
-//
 // @public
 const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlowProps"
 //
 // @public
 const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorList"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorProfile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Address"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "NewHireReport"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ContractorSubmit"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlowProps"
-//
 // @public
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
@@ -3517,8 +3181,6 @@ type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
     address?: AddressDefaultValues;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
-//
 // @public
 interface OnboardingFlowProps extends BaseComponentInterface {
     companyId: string;
@@ -3527,8 +3189,6 @@ interface OnboardingFlowProps extends BaseComponentInterface {
     withEmployeeI9?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingFlow"
-//
 // @public
 interface OnboardingFlowProps_3 extends BaseComponentInterface {
     companyId: string;
@@ -3590,13 +3250,9 @@ export const PAY_PERIODS: {
 // @public
 export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentFlowProps"
-//
 // @public
 const PaymentFlow: (input: PaymentFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentFlow"
-//
 // @public
 interface PaymentFlowProps extends BaseComponentInterface {
     companyId: string;
@@ -3605,51 +3261,32 @@ interface PaymentFlowProps extends BaseComponentInterface {
 // @public
 function PaymentHistory(props: PaymentHistoryProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentHistory"
-//
 // @public
 interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.Payments.PaymentHistory'> {
     paymentId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
-//
 // @public
 function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
-//
 // @public
 function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodProps"
-//
 // @public
 function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankFormProps"
-//
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodBankForm"
-//
 // @public
 interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'> {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCardProps"
-//
 // @public
 function PaymentMethodCard(props: PaymentMethodCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodCard"
-//
 // @public
 interface PaymentMethodCardProps {
     employeeId: string;
@@ -3672,7 +3309,6 @@ export type PaymentMethodFormField = "type";
 
 // @public
 export interface PaymentMethodFormFields {
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TypeField"
     Type: typeof PaymentMethodTypeField;
 }
 
@@ -3688,8 +3324,6 @@ export type PaymentMethodFormOutputs = PaymentMethodFormData;
 // @public
 export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorCodes.REQUIRED;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-//
 // @public
 interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
     defaultValues?: never;
@@ -3698,8 +3332,6 @@ interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentM
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-//
 // @public
 interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
     defaultValues?: never;
@@ -3709,20 +3341,14 @@ interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Manage
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-//
 // @public
 interface PaymentMethodProps_3 extends BaseComponentInterface<'Contractor.PaymentMethod'> {
     contractorId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitFormProps"
-//
 // @public
 function PaymentMethodSplitForm(input: PaymentMethodSplitFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethodSplitForm"
-//
 // @public
 interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'employeeId'> {
     employeeId: string;
@@ -3744,8 +3370,6 @@ export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildS
 // @public
 function PaymentsList(props: PaymentsListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentsList"
-//
 // @public
 interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
     // Warning: (ae-forgotten-export) The symbol "InternalAlert" needs to be exported by the entry point index.d.ts
@@ -3755,13 +3379,9 @@ interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentStatementProps"
-//
 // @public
 function PaymentStatement(props: PaymentStatementProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentStatement"
-//
 // @public
 interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payments.PaymentStatement'> {
     contractorUuid: string;
@@ -3771,8 +3391,6 @@ interface PaymentStatementProps extends BaseComponentInterface<'Contractor.Payme
 // @public
 const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentSummary"
-//
 // @public
 interface PaymentSummaryProps {
     // @internal
@@ -3853,25 +3471,17 @@ declare namespace Payroll {
     }
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollBlockerListProps"
-//
 // @public
 function PayrollBlockerList(props: PayrollBlockerListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollBlockerList"
-//
 // @public
 interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.PayrollBlocker'> {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollConfigurationProps"
-//
 // @public
 function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollConfiguration"
-//
 // @public
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
     alerts?: ReactNode;
@@ -3880,13 +3490,9 @@ interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.Payr
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollEditEmployeeProps"
-//
 // @public
 function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollEditEmployee"
-//
 // @public
 interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
     companyId: string;
@@ -3895,13 +3501,9 @@ interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.Payro
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollExecutionFlowProps"
-//
 // @public
 function PayrollExecutionFlow(input: PayrollExecutionFlowProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollExecutionFlow"
-//
 // @public
 interface PayrollExecutionFlowProps {
     companyId: string;
@@ -3916,19 +3518,12 @@ interface PayrollExecutionFlowProps {
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollExecutionFlow"
-//
 // @public
 type PayrollExecutionInitialState = 'configuration' | 'overview';
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollFlowProps"
-//
 // @public
 const PayrollFlow: (input: PayrollFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollOverview"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollConfiguration"
-//
 // @public
 type PayrollFlowAlert = {
     type: 'error' | 'info' | 'success';
@@ -3938,8 +3533,6 @@ type PayrollFlowAlert = {
     alertKey?: string;
 };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollFlow"
-//
 // @public
 interface PayrollFlowProps extends BaseComponentInterface {
     companyId: string;
@@ -3947,25 +3540,17 @@ interface PayrollFlowProps extends BaseComponentInterface {
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollHistoryProps"
-//
 // @public
 function PayrollHistory(props: PayrollHistoryProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollHistory"
-//
 // @public
 interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollLandingProps"
-//
 // @public
 function PayrollLanding(props: PayrollLandingProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollLanding"
-//
 // @public
 interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
     companyId: string;
@@ -3974,14 +3559,9 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollLanding"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollListBlockProps"
-//
 // @public
 function PayrollList(props: PayrollListBlockProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollList"
-//
 // @public
 interface PayrollListBlockProps extends BaseComponentInterface {
     companyId: string;
@@ -3993,18 +3573,12 @@ export interface PayrollLoadingProps {
     title: ReactNode;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlow"
-//
 // @public
 type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay';
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollOverviewProps"
-//
 // @public
 function PayrollOverview(props: PayrollOverviewProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollOverview"
-//
 // @public
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
     alerts?: PayrollFlowAlert[];
@@ -4014,33 +3588,23 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollReceiptsProps"
-//
 // @public
 function PayrollReceipts(props: PayrollReceiptsProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollReceipts"
-//
 // @public
 interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollReceipts'> {
     payrollId: string;
     withReimbursements?: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayScheduleProps"
-//
 // @public
 const PaySchedule: (input: PayScheduleProps & BaseComponentInterface) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaySchedule"
-//
 // @public
 type PayScheduleDefaultFields = {
     [K in keyof Pick<PayScheduleFormData, 'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'>]: NonNullable<PayScheduleFormData[K]>;
 };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaySchedule"
-//
 // @public
 type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefaultFields>>;
 
@@ -4086,38 +3650,28 @@ export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice pe
 export type PayScheduleOptionalFieldsToRequire = { create?: "customTwicePerMonth"[] | undefined; update?: "customTwicePerMonth"[] | undefined; };
 
 // Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaySchedule"
 //
 // @public
 interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
     companyId: string;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayScheduleDefaultValues"
     defaultValues?: PayScheduleDefaultValues;
 }
 
 // @public
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaystubsList"
-//
 // @public
 function PaystubsCard(props: PaystubsCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaystubsCard"
-//
 // @public
 interface PaystubsCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationFormProps"
-//
 // @public
 function PolicyConfigurationForm(props: PolicyConfigurationFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationForm"
-//
 // @public
 interface PolicyConfigurationFormData {
     accrualMethod: AccrualMethod;
@@ -4132,8 +3686,6 @@ interface PolicyConfigurationFormData {
     resetMonth?: number;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyConfigurationForm"
-//
 // @public
 interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
     companyId: string;
@@ -4142,9 +3694,6 @@ interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.T
     policyType: 'sick' | 'vacation';
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentationBaseProps"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeTableItem"
-//
 // @public
 interface PolicyDetailEmployeeTableData<T extends EmployeeTableItem> {
     data: T[];
@@ -4161,20 +3710,14 @@ interface PolicyDetailEmployeeTableData<T extends EmployeeTableItem> {
 // @public
 type PolicyDetails = UnlimitedPolicyDetails | RateBasedPolicyDetails;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyListProps"
-//
 // @public
 function PolicyList(input: PolicyListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyList"
-//
 // @public
 interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicies'> {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsProps"
-//
 // @public
 function PolicySettings(props: PolicySettingsProps): JSX;
 
@@ -4192,29 +3735,20 @@ interface PolicySettingsDisplay {
 
 // @public
 interface PolicySettingsFormData {
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
     accrualMaximum?: number;
     accrualMaximumEnabled: boolean;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
     balanceMaximum?: number;
     balanceMaximumEnabled: boolean;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
     carryOverLimit?: number;
     carryOverLimitEnabled: boolean;
     paidOutOnTermination: boolean;
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsFormData"
     waitingPeriod?: number;
     waitingPeriodEnabled: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettings"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsPresentationProps"
-//
 // @public
 function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsPresentation"
-//
 // @public
 interface PolicySettingsPresentationProps {
     accrualMethod: PolicySettingsAccrualMethod;
@@ -4226,8 +3760,6 @@ interface PolicySettingsPresentationProps {
     onContinue: (data: PolicySettingsFormData) => void;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettings"
-//
 // @public
 interface PolicySettingsProps extends BaseComponentInterface {
     mode?: 'create' | 'edit';
@@ -4240,13 +3772,9 @@ type PolicyType = 'sick' | 'vacation' | 'holiday';
 // @public (undocumented)
 type PolicyTypeKey = 'vacation' | 'sick';
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyTypeSelectorProps"
-//
 // @public
 function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyTypeSelector"
-//
 // @public
 interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
     companyId: string;
@@ -4289,39 +3817,21 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 // @public
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileProps"
-//
 // @public
 function Profile(input: ProfileProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileProps"
-//
 // @public
 function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Management.Profile'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileCardProps"
-//
 // @public
 function ProfileCard(props: ProfileCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileCard"
-//
 // @public
 interface ProfileCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-//
 // @public
 type ProfileDefaultValues = RequireAtLeastOne<{
     employee?: RequireAtLeastOne<{
@@ -4341,22 +3851,15 @@ type ProfileDefaultValues = RequireAtLeastOne<{
     inviteEmployeeDefault?: boolean;
 }>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Employee"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileEditFormProps"
-//
 // @public
 function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ProfileEditForm"
-//
 // @public
 interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-//
 // @public
 interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
     companyId: string;
@@ -4367,8 +3870,6 @@ interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
     onEvent: BaseComponentInterface['onEvent'];
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-//
 // @public
 interface ProfileProps_2 extends CommonComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
@@ -4450,7 +3951,6 @@ export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValida
 export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | 'RATE_EXEMPT_THRESHOLD'];
 
 // Warning: (ae-forgotten-export) The symbol "RecoveryCasesInternalProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollBlockerList"
 //
 // @public
 function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
@@ -4598,15 +4098,6 @@ export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Landing"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Profile"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FederalTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PaymentMethod"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "DocumentSigner"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmploymentEligibility"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "OnboardingSummary"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SelfOnboardingFlowProps"
 //
 // @public
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
@@ -4629,27 +4120,18 @@ export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
 // @public
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "Form"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureFormProps"
-//
 // @public
 function SignatureForm(props: SignatureFormProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureFormProps"
-//
 // @public
 function SignatureForm_2(props: SignatureFormProps_2): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureForm"
-//
 // @public
 interface SignatureFormProps extends BaseComponentInterface {
     employeeId: string;
     formId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SignatureForm"
-//
 // @public
 interface SignatureFormProps_2 extends BaseComponentInterface<'Company.SignatureForm'> {
     companyId: string;
@@ -4791,7 +4273,6 @@ export type SplitPaymentsFormField = "splitBy" | "splitAmount" | "priority";
 
 // @public
 export interface SplitPaymentsFormFields {
-    // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "SplitByField"
     SplitBy: ComponentType<SplitByFieldProps>;
     splits: SplitFieldEntry[];
 }
@@ -4833,16 +4314,10 @@ export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressReq
 // @public
 function StateTaxes(input: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesCard"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesEditForm"
-//
 // @public
 function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesList"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesForm"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesProps"
 //
 // @public
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
@@ -4850,8 +4325,6 @@ function StateTaxes_3(input: StateTaxesProps_3): JSX;
 // @public
 function StateTaxesCard(props: StateTaxesCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesCard"
-//
 // @public
 interface StateTaxesCardProps {
     employeeId: string;
@@ -4861,8 +4334,6 @@ interface StateTaxesCardProps {
 // @public
 function StateTaxesEditForm(input: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesEditForm"
-//
 // @public
 type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Management.StateTaxes'>, 'children'> & {
     employeeId: string;
@@ -4870,8 +4341,6 @@ type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Managemen
 };
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxesFormProps"
 //
 // @public
 function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JSX;
@@ -4881,8 +4350,6 @@ function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JS
 // @public
 function StateTaxesList(props: StateTaxesListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-//
 // @public
 type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
     employeeId: string;
@@ -4890,8 +4357,6 @@ type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'ch
     onEvent: BaseComponentInterface['onEvent'];
 };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "StateTaxes"
-//
 // @public
 interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
     employeeId: string;
@@ -5036,43 +4501,27 @@ export interface TabsProps {
     tabs: TabProps[];
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlow"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminateEmployeeProps"
-//
 // @public
 function TerminateEmployee(props: TerminateEmployeeProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminateEmployee"
-//
 // @public
 interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Terminations.TerminateEmployee'> {
     companyId: string;
     employeeId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlowAlert"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PayrollOption"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlowProps"
-//
 // @public
 const TerminationFlow: (input: TerminationFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlow"
-//
 // @public
 interface TerminationFlowProps extends BaseComponentInterface {
     companyId: string;
     employeeId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationFlowAlert"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationSummaryProps"
-//
 // @public
 function TerminationSummary(props: TerminationSummaryProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TerminationSummary"
-//
 // @public
 interface TerminationSummaryProps extends BaseComponentInterface<'Employee.Terminations.TerminationSummary'> {
     companyId: string;
@@ -5190,13 +4639,9 @@ declare namespace TimeOff {
     }
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffFlowProps"
-//
 // @public
 const TimeOffFlow: (input: TimeOffFlowProps) => JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffFlow"
-//
 // @public
 interface TimeOffFlowProps extends BaseComponentInterface {
     companyId: string;
@@ -5211,14 +4656,9 @@ interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
     uuid: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetail"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentationProps"
-//
 // @public
 function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentation"
-//
 // @public
 interface TimeOffPolicyDetailPresentationBaseProps {
     actions?: ReactNode[];
@@ -5235,10 +4675,6 @@ interface TimeOffPolicyDetailPresentationBaseProps {
     title: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetailPresentation"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicyDetails"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "PolicySettingsDisplay"
-//
 // @public
 type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseProps & ({
     policyDetails: UnlimitedPolicyDetails;
@@ -5250,8 +4686,6 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
     onChangeSettings?: () => void;
 });
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TimeOffPolicyDetail"
-//
 // @public
 interface TimeOffPolicyDetailProps extends BaseComponentInterface {
     policyId: string;
@@ -5263,21 +4697,15 @@ export function TotalAmountField(props: TotalAmountFieldProps): JSX;
 // @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TransitionCreationProps"
-//
 // @public
 function TransitionCreation(props: TransitionCreationProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TransitionCreation"
-//
 // @public
 interface TransitionCreationFormData {
     checkDate: Date | null;
     skipRegularDeductions: boolean;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TransitionCreation"
-//
 // @public
 interface TransitionCreationProps extends BaseComponentInterface<'Payroll.TransitionCreation'> {
     companyId: string;
@@ -5286,8 +4714,6 @@ interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transi
     startDate: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TransitionFlowProps"
-//
 // @public
 function TransitionFlow(input: TransitionFlowProps): JSX;
 
@@ -5300,8 +4726,6 @@ interface TransitionFlowContextInterface extends FlowContextInterface {
     startDate: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "TransitionFlow"
-//
 // @public
 interface TransitionFlowProps {
     companyId: string;
@@ -5901,38 +5325,26 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
 // @public
 export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode extends string = never> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayEmployeesProps"
-//
 // @public
 function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayEmployees"
-//
 // @public
 interface ViewHolidayEmployeesProps extends BaseComponentInterface {
     companyId: string;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayPolicyDetailsProps"
-//
 // @public
 function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayPolicyDetails"
-//
 // @public
 interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
     companyId: string;
     defaultTab?: 'holidays' | 'employees';
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidayScheduleProps"
-//
 // @public
 function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ViewHolidaySchedule"
-//
 // @public
 interface ViewHolidayScheduleProps extends BaseComponentInterface {
     companyId: string;
@@ -5949,33 +5361,21 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
     value: string;
 }>, entries?: readonly TEntry[]): FieldMetadataWithOptions<TEntry>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-//
 // @public
 function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX;
 
 // @public
 function WorkAddressCard(props: WorkAddressCardProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddressCard"
-//
 // @public
 interface WorkAddressCardProps {
     employeeId: string;
     onEvent: OnEventType<EventType, unknown>;
 }
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "EmployeeWorkAddress"
-//
 // @public
 function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddressEditForm"
-//
 // @public
 interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
     employeeId: string;
@@ -6020,8 +5420,6 @@ export function WorkAddressLocationField(props: LocationFieldProps): JSX;
 // @public
 export type WorkAddressOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "WorkAddress"
-//
 // @public
 interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
     employeeId: string;
