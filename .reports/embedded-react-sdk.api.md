@@ -1916,6 +1916,7 @@ interface EmployeeListFlowProps extends BaseComponentInterface {
 // @public
 interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
     companyId: string;
+    showContinueButton?: boolean;
 }
 
 declare namespace EmployeeManagement {
