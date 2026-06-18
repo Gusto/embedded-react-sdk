@@ -113,8 +113,6 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `EMPLOYEE_DEDUCTION_DELETED_EMPTY` | `"employee/deductions/deletedEmpty"` | `'employee/deductions/deletedEmpty'` |
 | `EMPLOYEE_DEDUCTION_DONE` | `"employee/deductions/done"` | `'employee/deductions/done'` |
 | `EMPLOYEE_DEDUCTION_EDIT` | `"employee/deductions/edit"` | `'employee/deductions/edit'` |
-| `EMPLOYEE_DEDUCTION_INCLUDE_NO` | `"employee/deductions/include/no"` | `'employee/deductions/include/no'` |
-| `EMPLOYEE_DEDUCTION_INCLUDE_YES` | `"employee/deductions/include/yes"` | `'employee/deductions/include/yes'` |
 | `EMPLOYEE_DEDUCTION_UPDATED` | `"employee/deductions/updated"` | `'employee/deductions/updated'` |
 | `EMPLOYEE_DELETED` | `"employee/deleted"` | `'employee/deleted'` |
 | `EMPLOYEE_DISMISS` | `"employee/dismiss"` | `'employee/dismiss'` |
