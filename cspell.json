@@ -2,11 +2,22 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
   "language": "en",
-  "dictionaries": ["en_US", "node", "typescript", "npm", "softwareTerms", "html", "css"],
-  "files": ["docs/**/*.md", "docs-site/**/*.{md,mdx,ts,tsx}"],
+  "dictionaries": [
+    "en_US",
+    "node",
+    "typescript",
+    "npm",
+    "softwareTerms",
+    "html",
+    "css"
+  ],
+  "files": [
+    "docs/**/*.md",
+    "docs-site/**/*.{md,mdx,ts,tsx}"
+  ],
   "ignorePaths": [
     "**/node_modules/**",
-    "docs/api/**",
+    "docs/reference/**",
     "docs/reference/endpoint-reference.md",
     "docs/reference/endpoint-inventory.json",
     "docs/test-fests/**",

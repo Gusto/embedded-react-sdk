@@ -168,8 +168,8 @@ jobs:
       - name: Check for stale derived files
         id: check
         run: |
+          git add docs/appendix
           git add docs/reference
-          git add docs/api
           if git diff --staged --quiet; then
             echo "stale=false" >> $GITHUB_OUTPUT
           else
@@ -185,8 +185,8 @@ jobs:
         with:
           name: derived-src
           path: |
+            docs/appendix
             docs/reference
-            docs/api
           retention-days: 1
           if-no-files-found: error
 
@@ -284,8 +284,8 @@ jobs:
 
       - name: Commit and push derived files
         run: |
+          git add docs/appendix
           git add docs/reference
-          git add docs/api
           git add .reports
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

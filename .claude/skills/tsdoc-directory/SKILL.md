@@ -107,7 +107,7 @@ Any other value is an ESLint error (`tsdoc-coverage/valid-group`).
 
 ```bash
 npm --prefix docs-site run typedoc
-# then open docs/api/{Domain}/hooks.md — groups appear as ## headings
+# then open docs/reference/{Domain}/hooks.md — groups appear as ## headings
 ````
 
 Return a summary of what was documented and any symbols skipped with reasons. Check stderr output from tsdoc-stub calls and include any unresolved symbol warnings.
