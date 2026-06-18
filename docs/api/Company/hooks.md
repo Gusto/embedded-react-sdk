@@ -3,8 +3,9 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/sdk-router.ts.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Company Hooks
-description: Company Hooks API reference.
+title: Companies Hooks
+description: Companies Hooks API reference.
+sidebar_position: 100
 generated_by: typedoc
 custom_edit_url: null
 ---

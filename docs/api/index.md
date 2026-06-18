@@ -16,14 +16,14 @@ custom_edit_url: null
 
 | Namespace | Description |
 | ------ | ------ |
-| [CompanyOnboarding](Company/CompanyOnboarding/flows.md) | - |
-| [ContractorManagement](Contractor/ContractorManagement/flows.md) | - |
-| [ContractorOnboarding](Contractor/ContractorOnboarding/flows.md) | - |
-| [EmployeeManagement](Employee/EmployeeManagement/flows.md) | - |
-| [EmployeeOnboarding](Employee/EmployeeOnboarding/flows.md) | - |
-| [InformationRequests](InformationRequests/flows.md) | - |
-| [Payroll](Payroll/flows.md) | - |
-| [TimeOff](TimeOff/flows.md) | - |
+| [CompanyOnboarding](company/onboarding/index.md) | - |
+| [ContractorManagement](contractor/management/index.md) | - |
+| [ContractorOnboarding](contractor/onboarding/index.md) | - |
+| [EmployeeManagement](employee/management/index.md) | - |
+| [EmployeeOnboarding](employee/onboarding/index.md) | - |
+| [InformationRequests](company/information-requests/index.md) | - |
+| [Payroll](payroll/index.md) | - |
+| [TimeOff](time-off/index.md) | - |
 
 ## Components
 
