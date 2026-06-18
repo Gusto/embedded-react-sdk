@@ -130,8 +130,8 @@ jobs:
 
   # derive-check-src: Run endpoint inventory and TypeDoc checks on a standard runner.
   # Neither reads from dist/, so this job runs in parallel with `build`.
-  # On non-main branches: outputs stale=true if files changed (derive-commit handles the push).
-  # On main: fails immediately if files are stale.
+  # On regular branches: outputs stale=true if files changed (derive-commit handles the push).
+  # On main, merge_group, and dependabot: fails immediately if files are stale.
   derive-check-src:
     needs: [setup]
     runs-on: ubuntu-latest
@@ -173,7 +173,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "stale=false" >> $GITHUB_OUTPUT
           else
-            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]]; then
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]] || [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
               echo "::error::Derived files are stale — run 'npm run derive' locally and commit the result."
               exit 1
             fi
@@ -192,8 +192,8 @@ jobs:
 
   # derive-check-dist: Run API report check on a standard runner.
   # api-extractor reads dist/index.d.ts, so this job runs after `build`.
-  # On non-main branches: outputs stale=true if the report changed.
-  # On main: fails immediately if the report is stale.
+  # On regular branches: outputs stale=true if the report changed (derive-commit handles the push).
+  # On main, merge_group, and dependabot: fails immediately if the report is stale.
   derive-check-dist:
     needs: [setup, build]
     runs-on: ubuntu-latest
@@ -228,7 +228,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "stale=false" >> $GITHUB_OUTPUT
           else
-            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]]; then
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]] || [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
               echo "::error::API report is stale — run 'npm run derive' locally and commit the result."
               exit 1
             fi
@@ -247,8 +247,8 @@ jobs:
   # derive-commit: Re-derive and commit any stale files back to the branch.
   # Only runs when a check job detected staleness — the expensive self-hosted runner
   # (needed for the org IP allow list to push back to the repo) is never used otherwise.
-  # Dependabot and main are gated out at the check layer (they fail on staleness rather
-  # than setting stale=true), so derive-commit never runs for either.
+  # Main, merge_group, and dependabot are gated out at the check layer (they fail on
+  # staleness rather than setting stale=true), so derive-commit never runs for them.
   derive-commit:
     needs: [derive-check-src, derive-check-dist]
     if: needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
@@ -297,6 +297,8 @@ jobs:
   # derive: Single required check that branch protection can gate on.
   # Aggregates derive-check-src and derive-check-dist. derive-commit is excluded
   # intentionally — it only runs when files are stale and is not a health signal.
+  # Fails when either check job reported stale=true so the gate stays red until
+  # derive-commit pushes the fix and CI passes on the new commit.
   derive:
     needs: [derive-check-src, derive-check-dist]
     if: ${{ !cancelled() }}
@@ -306,9 +308,15 @@ jobs:
         env:
           SRC: ${{ needs.derive-check-src.result }}
           DIST: ${{ needs.derive-check-dist.result }}
+          SRC_STALE: ${{ needs.derive-check-src.outputs.stale }}
+          DIST_STALE: ${{ needs.derive-check-dist.outputs.stale }}
         run: |
           if [[ "$SRC" != "success" && "$SRC" != "skipped" ]]; then exit 1; fi
           if [[ "$DIST" != "success" && "$DIST" != "skipped" ]]; then exit 1; fi
+          if [[ "$SRC_STALE" == "true" || "$DIST_STALE" == "true" ]]; then
+            echo "::error::Derived files were stale — an auto-fix commit may be in progress. Re-run CI after it lands, or run 'npm run derive' locally."
+            exit 1
+          fi
 
   # Storybook build job: validates all stories compile and index successfully
   storybook-build:
