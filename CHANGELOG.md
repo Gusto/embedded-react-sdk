@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.2...v0.49.0) (2026-06-18)
+
+### Breaking Changes
+
+#### Deductions onboarding events removed ([#2193](https://github.com/Gusto/embedded-react-sdk/issues/2193))
+
+The `EmployeeOnboarding.Deductions` block no longer fires `employee/deductions/include/yes` or `employee/deductions/include/no` events, and the corresponding event constants (`componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES` and `componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_NO`) are no longer exported.
+
+**Migration:**
+
+- If you listened for "user chose to include", use `employee/deductions/add` instead
+- If you listened for "user skipped", you can derive this as `employee/deductions/done` firing with no preceding `employee/deductions/created`
+
+### Features & Enhancements
+
+- Export `LocationsList` component from `CompanyOnboarding` namespace ([#2198](https://github.com/Gusto/embedded-react-sdk/issues/2198))
+- `PayrollReceipts` now displays formatted licensee phone numbers ([#2195](https://github.com/Gusto/embedded-react-sdk/issues/2195))
+
+### Fixes
+
+- Export `LocationsListProps` type from `CompanyOnboarding` namespace ([#2200](https://github.com/Gusto/embedded-react-sdk/issues/2200))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@storybook/addon-onboarding`, `eslint-plugin-storybook`, `react-router-dom`, `vite-plugin-checker`) and `dompurify` ([#2204](https://github.com/Gusto/embedded-react-sdk/issues/2204), [#2205](https://github.com/Gusto/embedded-react-sdk/issues/2205), [#2206](https://github.com/Gusto/embedded-react-sdk/issues/2206), [#2207](https://github.com/Gusto/embedded-react-sdk/issues/2207), [#2208](https://github.com/Gusto/embedded-react-sdk/issues/2208))
+- Add TSDoc comments to `Company` and `Contractor` namespaces ([#2187](https://github.com/Gusto/embedded-react-sdk/issues/2187), [#2170](https://github.com/Gusto/embedded-react-sdk/issues/2170))
+
 ## [0.48.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.1...v0.48.2) (2026-06-17)
 
 ### Features & Enhancements
