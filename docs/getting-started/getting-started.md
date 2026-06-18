@@ -1,79 +1,43 @@
 ---
 title: Getting Started
-description: Install the Gusto Embedded React SDK, configure GustoProvider, set up a backend proxy for authenticated API requests, and render your first SDK component.
-order: 2
+description: Orientation to the Gusto Embedded React SDK for product managers, designers, and evaluators — what it can do, how it customizes, and how to see it in action.
+order: 1
 ---
 
-## CodeSandbox
+The Gusto Embedded React SDK is a library of pre-built React components and headless utilities for embedding payroll experiences directly into your product.
 
-[We have a demo environment in CodeSandbox](https://codesandbox.io/p/devbox/happy-ardinghelli-nzpslw?file=%2Fsrc%2FApp.jsx). You can view the project setup there which puts together what you are going to see in this guide with a working example.
+> This page provides an overview of the SDK's capabilities. If you're a developer ready to install the SDK and explore a demo application, head to our [Quick Start](./quick-start.md) instead.
 
-## Installing the SDK
+## What the SDK can do
 
-To get started with the Gusto Embedded React SDK, first install it from NPM via the package manager of your choice. You can see the SDK published to NPM here at [@gusto/embedded-react-sdk.](https://www.npmjs.com/package/@gusto/embedded-react-sdk)
+Pre-built UI for the core payroll lifecycle:
 
-In this case, installing via NPM:
+| Capability                      | What's included                                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Company and employee onboarding | Multi-step flows that collect business details, tax info, work and home addresses, payment methods, and form signatures. |
+| Payroll runs                    | Standard, off-cycle (bonus and correction), dismissal, and transition payroll.                                           |
+| Contractor management           | Contractor onboarding and contractor payments.                                                                           |
+| Terminations and time off       | Dismissal payroll and time-off policy management.                                                                        |
+| Information requests            | Surface the documents and inputs Gusto needs from employers, with built-in validation.                                   |
 
-```bash title="Command line"
-npm i @gusto/embedded-react-sdk
-```
+See [Workflows Overview](../workflows-overview/workflows-overview.md) for the complete, current list.
 
-## Configuring the API provider
+## How it adapts to your product
 
-The `GustoProvider` is used to configure the SDK at the application level. It must wrap the top-level component tree (typically at the root of the application) to ensure SDK components have access to the necessary configurations.
+The SDK is designed to look and feel like part of your application, not a Gusto widget bolted on:
 
-```jsx title="App.tsx"
-import { GustoProvider } from '@gusto/embedded-react-sdk'
+- **Theming:** override colors, typography, radius, shadows, and other visual tokens to match your design system.
+- **Component adapters:** replace any individual UI primitive (buttons, inputs, layouts) with your own components.
+- **Composition:** drop in entire workflows, or assemble your own page from sub-components for finer control over layout and step sequencing.
 
-function App() {
-  return <GustoProvider config={{ baseUrl: '/proxy-url/' }}>...</GustoProvider>
-}
+## How it fits into a build
 
-export default App
-```
+The SDK offers three levels of abstraction so each part of your product can pick the right balance of speed and control:
 
-The `baseUrl` property is configured with the address of your backend proxy which is detailed further in the following section.
+**Workflows** add an entire multi-step experience with one React component. Fastest to ship.
 
-## Configuring a backend proxy
+**Sub-components** let you build your own page layout from individual form and data components. More control, still backed by SDK logic.
 
-When building with the React SDK, a backend proxy is required. React SDK components do not make calls to the Gusto Embedded API directly. Instead, the `baseUrl` configuration defines the URL of your proxy server. This proxy layer gives you complete control over requests sent to Gusto, which is essential for:
+**Hooks** let you own the UI entirely while the SDK handles data fetching, validation, and API calls. Maximum control.
 
-1. Authentication
-2. Providing the user IP address for form signing operations
-
-The React SDK is designed to mirror the [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference/whats-new-in-v2025-06-15) with a 1:1 mapping of endpoints. The SDK maintains consistent naming conventions, parameters, and response structures with the Gusto API.
-
-Your proxy server simply needs to forward any incoming SDK requests to the corresponding Embedded API endpoints. The proxy's main task is adding the necessary authentication headers before forwarding the request onwards. Since the SDK requests are already in the Embedded API format, no extra endpoint mapping or request transformation is required.
-
-### Using the proxy for authentication
-
-The proxy layer allows for authentication. The recommended approach is to use a backend service that acquires OAuth2 tokens from the Gusto Embedded API for authenticated users and proxies API calls using those tokens. Learn more about configuring this and setting up authentication in the `Authentication` section.
-
-### Using the proxy to provide the user IP address
-
-Some UI workflows require users to sign forms, which need the user's IP address for security purposes. To prevent vulnerabilities such as IP address spoofing, this information must be provided by your proxy server rather than collected client-side.
-
-Your proxy server can provide the IP address by adding the `x-gusto-client-ip` header with the user IP address to all forwarded requests on the backend. By setting this header once in your proxy it will be configured for all form signing operations.
-
-### Securing your proxy
-
-Your proxy is also the authorization layer between your users and the Gusto API. Because users can make API requests outside the SDK UI, authorization must be enforced server-side. The Gusto API provides application-level protections (scopes, company-bound tokens, rate limits), but user-level authorization is your responsibility.
-
-At a minimum, your proxy should:
-
-- **Authenticate every request** -- verify the user's session, not just at login
-- **Allowlist endpoints** -- only forward requests to API endpoints your app actually uses
-- **Validate resource ownership** -- ensure users can only access their own resources (e.g., their own employee ID)
-- **Log proxied requests** -- maintain audit logs for monitoring and incident response
-
-For detailed guidance, endpoint allowlist tooling, and runnable examples, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md).
-
-## Including styles
-
-The Gusto Embedded React SDK ships with preliminary styles for the UI components as a baseline. Those can be included by importing the following stylesheet:
-
-```typescript
-import '@gusto/embedded-react-sdk/style.css'
-```
-
-See [Customizing SDK UI](../integration-guide/customizing-sdk-ui.md) for complete guidance on UI customization and making the SDK take on the look and feel of your application.
+For a full comparison of the three with tradeoffs, see [Component Types](./component-types.md).
