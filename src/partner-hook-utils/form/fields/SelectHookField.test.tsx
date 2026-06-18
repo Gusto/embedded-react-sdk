@@ -55,6 +55,7 @@ describe('SelectHookField', () => {
         <SelectHookField
           name="state"
           label="State"
+          placeholder="Select state"
           validationMessages={{ REQUIRED: 'Please select a state' }}
         />
       </TestWrapper>,
@@ -72,6 +73,7 @@ describe('SelectHookField', () => {
         <SelectHookField
           name="state"
           label="State"
+          placeholder="Select state"
           validationMessages={{ REQUIRED: 'Please select a state' }}
         />
       </TestWrapper>,
@@ -88,6 +90,7 @@ describe('SelectHookField', () => {
         <SelectHookField
           name="state"
           label="State"
+          placeholder="Select state"
           validationMessages={{ REQUIRED: 'Required' }}
           getOptionLabel={(entry: { code: string; fullName: string }) =>
             `${entry.fullName} (${entry.code})`
@@ -116,6 +119,7 @@ describe('SelectHookField', () => {
         <SelectHookField
           name="state"
           label="State"
+          placeholder="Select state"
           validationMessages={{ REQUIRED: 'Required' }}
           FieldComponent={CustomField}
         />

@@ -15,6 +15,7 @@ export const TitleSelect = () => {
     <SelectField
       name="title"
       label={t('signatoryDetails.titleSelect.label')}
+      placeholder={t('signatoryDetails.titleSelect.placeholder')}
       isRequired
       options={titleOptions}
       errorMessage={t('validations.title')}

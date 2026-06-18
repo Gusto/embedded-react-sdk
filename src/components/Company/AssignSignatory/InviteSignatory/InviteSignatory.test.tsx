@@ -36,7 +36,7 @@ describe('InviteSignatory', () => {
     await user.type(lastNameInput, 'Doe')
 
     const titleControl = screen.getByRole('button', {
-      name: /Select an item/i,
+      name: /Select title/i,
       expanded: false,
     })
 
@@ -78,7 +78,7 @@ describe('InviteSignatory', () => {
     await user.type(screen.getByLabelText('Confirm signatory email'), 'john.doe@example.com')
 
     const titleControl = screen.getByRole('button', {
-      name: /Select an item/i,
+      name: /Select title/i,
       expanded: false,
     })
 

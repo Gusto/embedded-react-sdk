@@ -4054,7 +4054,7 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
     formHookResult?: FormHookResult;
     getOptionLabel?: (entry: TEntry) => string;
     name: string;
-    placeholder?: string;
+    placeholder: string;
     portalContainer?: SelectProps['portalContainer'];
     validationMessages?: ValidationMessages<TErrorCode>;
 }
@@ -4074,7 +4074,7 @@ export interface SelectProps extends SharedFieldLayoutProps, Pick<SelectHTMLAttr
     onBlur?: () => void;
     onChange?: (value: string) => void;
     options: SelectOption[];
-    placeholder?: string;
+    placeholder: string;
     portalContainer?: HTMLElement;
     value?: string | null;
 }

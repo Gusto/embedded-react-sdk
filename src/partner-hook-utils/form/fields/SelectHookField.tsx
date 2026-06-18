@@ -27,8 +27,11 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
   validationMessages?: ValidationMessages<TErrorCode>
   /** Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. */
   getOptionLabel?: (entry: TEntry) => string
-  /** Placeholder text displayed when no option is selected. */
-  placeholder?: string
+  /**
+   * Placeholder text displayed when no option is selected.
+   * Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed.
+   */
+  placeholder: string
   /** Replaces the default select UI component; must accept the same props as `SelectProps`. */
   FieldComponent?: ComponentType<SelectProps>
   /** When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. */

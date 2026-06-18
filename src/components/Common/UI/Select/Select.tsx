@@ -89,7 +89,7 @@ export const Select = ({
         <Button ref={inputRef}>
           <SelectValue>
             {({ defaultChildren, isPlaceholder }) => {
-              return isPlaceholder && placeholder ? placeholder : defaultChildren
+              return isPlaceholder ? placeholder : defaultChildren
             }}
           </SelectValue>
           <div className={styles.icons} aria-hidden="true">

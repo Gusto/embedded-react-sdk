@@ -3462,7 +3462,7 @@ Props for a `Field` rendered as a select (dropdown).
 | Name | Type | Description |
 | ------ | ------ | ------ |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../component-adapter.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
-| `placeholder?` | `string` | Placeholder shown when no option is selected. |
+| `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
 
 ***
 

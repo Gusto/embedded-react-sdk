@@ -644,11 +644,11 @@ attributes (`label`, `description`).
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `name` | `string` | The field name; must match the corresponding key in the form schema. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-adapter.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `placeholder?` | `string` | Placeholder text displayed when no option is selected. |
 | `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
