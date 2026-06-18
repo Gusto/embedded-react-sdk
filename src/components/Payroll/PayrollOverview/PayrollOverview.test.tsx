@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import { PayrollOverview } from './PayrollOverview'
@@ -50,6 +51,7 @@ const basePayrollData: PayrollShow = {
     otherDeductions: '0.00',
   },
   companyTaxes: [],
+  payrollTaxes: [],
   createdAt: new Date('2025-08-11T12:00:00Z'),
   submissionBlockers: [],
   processingRequest: {
@@ -63,8 +65,16 @@ const basePayrollData: PayrollShow = {
 let mockPayrollData = { ...basePayrollData }
 
 vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet', () => ({
-  usePayrollsGetSuspense: () => ({
-    data: { payrollShow: mockPayrollData },
+  usePayrollsGet: () => ({
+    data: {
+      payrollShow: mockPayrollData,
+      httpMeta: {
+        response: {
+          headers: new Headers({ 'x-total-pages': '1', 'x-total-count': '0' }),
+        },
+      },
+    },
+    isFetching: false,
   }),
 }))
 
@@ -85,12 +95,6 @@ vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel', () => ({
 vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet', () => ({
   useBankAccountsGetSuspense: () => ({
     data: { companyBankAccounts: [{ hiddenAccountNumber: '****1234' }] },
-  }),
-}))
-
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
-  useEmployeesListSuspense: () => ({
-    data: { showEmployees: [] },
   }),
 }))
 
@@ -189,5 +193,49 @@ describe('PayrollOverview polling', () => {
         expect.objectContaining({ payPeriod: basePayrollData.payPeriod }),
       )
     })
+  })
+})
+
+describe('PayrollOverview tax totals', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+  })
+
+  it('derives the per-tax breakdown from the payrollTaxes aggregate, not the paginated compensations', async () => {
+    const user = userEvent.setup()
+    mockPayrollData = {
+      ...basePayrollData,
+      // Payroll-level aggregate (full payroll) — the source of truth.
+      payrollTaxes: [
+        { name: 'Social Security', employer: false, amount: 100 },
+        { name: 'Social Security', employer: true, amount: 100 },
+      ],
+      // The single loaded page sums to a different (smaller) number; if the table read
+      // from here instead of the aggregate, it would show $1.00 and be wrong.
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          taxes: [{ name: 'Social Security', employer: false, amount: 1 }],
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={vi.fn()} />,
+    )
+
+    await user.click(await screen.findByRole('tab', { name: /Taxed and debited/i }))
+
+    expect(await screen.findByText('Social Security')).toBeInTheDocument()
+    // Aggregate amount ($100.00) is shown; the page-level sum ($1.00) is not.
+    expect(screen.getAllByText('$100.00').length).toBeGreaterThan(0)
+    expect(screen.queryByText('$1.00')).not.toBeInTheDocument()
   })
 })
