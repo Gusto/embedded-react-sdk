@@ -2896,8 +2896,6 @@ function Locations(input: LocationsProps): JSX;
 // @public
 function LocationsList(props: LocationsListProps): JSX;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "LocationsList"
-//
 // @public
 interface LocationsListProps extends BaseComponentInterface {
     companyId: string;
