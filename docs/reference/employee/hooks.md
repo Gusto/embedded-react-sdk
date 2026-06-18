@@ -2905,7 +2905,7 @@ Props accepted by the confirmation checkbox preparer field of [useSignEmployeeFo
 
 ### PreparerFieldGroup
 
-> **PreparerFieldGroup** = *typeof* `preparer1Fields`
+> **PreparerFieldGroup** = `object`
 
 Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
 
@@ -2914,6 +2914,20 @@ Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#u
 Each preparer (1–4) exposes the same nine sub-fields covering name,
 address, signature, and consent. Render the sub-fields directly on the
 group, e.g. `<Fields.Preparer1.FirstName />`.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `City` | (`props`) => `JSX.Element` | Preparer's city. |
+| `ConfirmSignature` | (`props`) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
+| `FirstName` | (`props`) => `JSX.Element` | Preparer's first name. |
+| `LastName` | (`props`) => `JSX.Element` | Preparer's last name. |
+| `Signature` | (`props`) => `JSX.Element` | Preparer's typed signature. |
+| `State` | (`props`) => `JSX.Element` | Preparer's state. |
+| `Street1` | (`props`) => `JSX.Element` | Preparer's street address line 1. |
+| `Street2` | (`props`) => `JSX.Element` | Preparer's street address line 2. |
+| `Zip` | (`props`) => `JSX.Element` | Preparer's ZIP code. |
 
 ***
 
@@ -3054,10 +3068,10 @@ always null-check before rendering.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `ConfirmSignature` | (`props`) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
-| `Preparer1` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
-| `Preparer2` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
-| `Preparer3` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
-| `Preparer4` | \{ `City`: (`props`) => `Element`; `ConfirmSignature`: (`props`) => `Element`; `FirstName`: (`props`) => `Element`; `LastName`: (`props`) => `Element`; `Signature`: (`props`) => `Element`; `State`: (`props`) => `Element`; `Street1`: (`props`) => `Element`; `Street2`: (`props`) => `Element`; `Zip`: (`props`) => `Element`; \} \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
+| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
+| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
+| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
+| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
 | `Signature` | (`props`) => `Element` | Text input for the employee's typed signature; always present. |
 | `UsedPreparer` | ((`props`) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
@@ -5383,8 +5397,6 @@ and (for select-like fields) the option list.
 
 ### JobFormData
 
-> **JobFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the form values managed by [useJobForm](#usejobform).
 
 #### Remarks
@@ -5394,6 +5406,16 @@ Accepted as `defaultValues` on `useJobForm` and returned by
 an ISO date string (`YYYY-MM-DD`) or `null`; `stateWcCovered` is a boolean
 even though the radio group surfaces `'true'` / `'false'` strings during
 input (the schema preprocessor coerces them).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `hireDate` | `string` \| `null` | The employee's hire date as an ISO 8601 string (`YYYY-MM-DD`), or `null` if unknown. |
+| `stateWcClassCode` | `string` | Washington state workers' compensation risk-class code. Required when `stateWcCovered` is `true`. |
+| `stateWcCovered` | `boolean` | Whether the employee is covered under Washington state workers' compensation insurance. |
+| `title` | `string` | The employee's job title (e.g. `"Software Engineer"`). |
+| `twoPercentShareholder` | `boolean` | Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. |
 
 ***
 
@@ -5442,8 +5464,6 @@ vs. output sides of the schema remain distinguishable in advanced usages.
 
 ### JobOptionalFieldsToRequire
 
-> **JobOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
-
 Override which fields are required on a given submission mode of [useJobForm](#usejobform).
 
 #### Remarks
@@ -5471,6 +5491,13 @@ const job = useJobForm({
   },
 })
 ```
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `create?` | (`"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in create mode |
+| `update?` | (`"title"` \| `"hireDate"` \| `"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in update mode |
 
 ***
 

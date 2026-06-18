@@ -34,4 +34,4 @@ function App({ companyId }) {
 }
 ```
 
-See [Getting Started](./getting-started/getting-started.md) to install and configure the SDK for your application.
+See [Quick Start](./getting-started/quick-start.md) to install and configure the SDK for your application.

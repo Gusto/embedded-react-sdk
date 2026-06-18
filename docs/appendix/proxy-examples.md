@@ -5,7 +5,7 @@ description: Express.js example code for loading the SDK endpoint inventory, bui
 
 # Proxy Examples
 
-Express.js examples for building endpoint allowlists. These examples assume a standard Express app with session-based authentication. For background, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
+Express.js examples for building endpoint allowlists. These examples assume a standard Express app with session-based authentication. For background, see the [Proxy Security](../getting-started/proxy-security-partner-guidance.md).
 
 ## Loading the endpoint inventory
 

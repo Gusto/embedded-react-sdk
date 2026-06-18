@@ -1,9 +1,9 @@
 ---
-title: 'Proxy Security: Partner Guidance'
+title: Proxy Security
 description: Secure the SDK proxy with per-request authentication, endpoint allowlisting, resource ownership checks, and audit logging using the SDK endpoint inventory.
 ---
 
-# Proxy Security: Partner Guidance
+# Proxy Security
 
 The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary -- UI-level restrictions alone are not sufficient since users can make API requests directly.
 
@@ -83,6 +83,5 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 - [Proxy examples with role-based access](../reference/proxy-examples.md)
 - [Endpoint reference tables](../reference/endpoint-reference.md)
-- [Securing your proxy](./getting-started.md#securing-your-proxy) -- Getting Started
 - [Gusto API Scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)
