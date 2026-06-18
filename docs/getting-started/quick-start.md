@@ -40,6 +40,8 @@ A backend proxy is required when building with the React SDK. SDK components don
 - **User IP address.** Some workflows require users to sign forms, which needs the user's IP. Your proxy must add the `x-gusto-client-ip` header to forwarded requests so the IP can't be spoofed client-side.
 - **Authorization.** User-level authorization is your responsibility. At minimum, your proxy should authenticate every request, allowlist endpoints, validate resource ownership, and log proxied traffic. See [Proxy Security](./proxy-security-partner-guidance.md) for detailed practices.
 
+For a complete working example, see [`proxy.ts`](https://github.com/Gusto/embedded-react-sdk-demo-app/blob/main/backend/src/proxy.ts) in the [demo application](./example-app.md), which implements OAuth token management, IP forwarding, and request proxying in Express.
+
 The SDK mirrors the [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference/whats-new-in-v2025-06-15) with a 1:1 endpoint mapping, so your proxy doesn't need to transform requests—it just forwards them with authentication attached.
 
 ### GustoProvider

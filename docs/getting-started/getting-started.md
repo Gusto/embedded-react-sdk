@@ -6,7 +6,7 @@ order: 1
 
 The Gusto Embedded React SDK is a library of pre-built React components and headless utilities for embedding payroll experiences directly into your product.
 
-> This page provides an overview of the SDK's capabilities. If you're a developer ready to install the SDK and explore a demo application, head to our [Quick Start](./quick-start.md) instead.
+> This page provides an overview of the SDK's capabilities. If you're a developer ready to install the SDK and explore a demo application, head to our [Quick Start](./quick-start.md) instead. For a complete, runnable reference application that orchestrates SDK workflows together, see our [Example App](./example-app.md).
 
 ## What the SDK can do
 
