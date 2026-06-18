@@ -25,9 +25,9 @@ Props for [InformationRequestsFlow](#informationrequestsflow).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `companyId` | `string` | The associated company identifier. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`InformationRequests`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |

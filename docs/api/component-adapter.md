@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/sdk-router.ts.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Component Adapters
-description: Component Adapters API reference.
+title: Component Inventory
+description: Component Inventory API reference.
 sidebar_position: 3
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Component Adapters
+# Component Inventory
 
 ## Interfaces
 
@@ -104,8 +104,6 @@ function App() {
 | `MultiSelectComboBox` | `FunctionComponent`\<[`MultiSelectComboBoxProps`](#multiselectcomboboxprops)\> | Form field wrapping a typeahead `<input />` for multi-option selection. |
 | `NumberInput` | `FunctionComponent`\<[`NumberInputProps`](#numberinputprops)\> | Form field wrapping a numeric `<input />` for currency, decimal, or percent values. |
 | `OrderedList` | `FunctionComponent`\<[`OrderedListProps`](#orderedlistprops)\> | HTML `<ol>` for a numbered list of items. |
-| `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
-| `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 | `ProgressBar` | `FunctionComponent`\<[`ProgressBarProps`](#progressbarprops)\> | Step-based progress indicator for multi-step flows. |
 | `Radio` | `FunctionComponent`\<[`RadioProps`](#radioprops)\> | Form field wrapping a single `<input type="radio" />`. |
 | `RadioGroup` | `FunctionComponent`\<[`RadioGroupProps`](#radiogroupprops)\> | Form field grouping `<input type="radio" />` elements for single-option selection. |
@@ -117,6 +115,8 @@ function App() {
 | `TextArea` | `FunctionComponent`\<[`TextAreaProps`](#textareaprops)\> | Form field wrapping a `<textarea>`. |
 | `TextInput` | `FunctionComponent`\<[`TextInputProps`](#textinputprops)\> | Form field wrapping an `<input />`. |
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
+| `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
+| `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
 
 ***
 
@@ -151,10 +151,10 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text for the field |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `ReactNode` | Label text for the field |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
 ***
@@ -180,10 +180,10 @@ Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a dist
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text for the field |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `ReactNode` | Label text for the field |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
 ## Component Props
@@ -199,13 +199,13 @@ Renders a status message with an optional dismiss action; used for errors, warni
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `action?` | `ReactNode` | `undefined` | Optional action node (e.g. a Button) rendered inline beside the label, before the dismiss button. Use this for compact alerts that need a single call-to-action next to the heading (e.g. a "Review" button summarising details available in a modal). Multi-line supporting copy should still pass through `children`. |
-| `children?` | `ReactNode` | `undefined` | Optional children to be rendered inside the alert |
-| `className?` | `string` | `undefined` | CSS className to be applied |
-| `disableScrollIntoView?` | `boolean` | `undefined` | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
-| `icon?` | `ReactNode` | `undefined` | Optional custom icon component to override the default icon |
-| `label` | `string` | `undefined` | The label text for the alert |
-| `onDismiss?` | () => `void` | `undefined` | Optional callback function called when the dismiss button is clicked |
+| `label` | `string` | | The label text for the alert |
+| `action?` | `ReactNode` | | Optional action node (e.g. a Button) rendered inline beside the label, before the dismiss button. Use this for compact alerts that need a single call-to-action next to the heading (e.g. a "Review" button summarising details available in a modal). Multi-line supporting copy should still pass through `children`. |
+| `children?` | `ReactNode` | | Optional children to be rendered inside the alert |
+| `className?` | `string` | | CSS className to be applied |
+| `disableScrollIntoView?` | `boolean` | | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
+| `icon?` | `ReactNode` | | Optional custom icon component to override the default icon |
+| `onDismiss?` | () => `void` | | Optional callback function called when the dismiss button is clicked |
 | `status?` | `"error"` \| `"success"` \| `"warning"` \| `"info"` | `'info'` | The visual status that the alert should convey |
 
 ***
@@ -225,11 +225,11 @@ Renders a small inline label for status, counts, or tags; optionally dismissible
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `children` | `ReactNode` | `undefined` | Content to be displayed inside the badge |
-| `dismissAriaLabel?` | `string` | `undefined` | Accessible label for the dismiss button |
-| `isDisabled?` | `boolean` | `undefined` | Whether the badge interaction is disabled |
-| `onDismiss?` | () => `void` | `undefined` | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
+| `children` | `ReactNode` | | Content to be displayed inside the badge |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `dismissAriaLabel?` | `string` | | Accessible label for the dismiss button |
+| `isDisabled?` | `boolean` | | Whether the badge interaction is disabled |
+| `onDismiss?` | () => `void` | | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
 | `status?` | `"error"` \| `"success"` \| `"warning"` \| `"info"` | `'info'` | Visual style variant of the badge |
 
 ***
@@ -249,10 +249,10 @@ Renders a full-width notification banner with a colored header and body content 
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `children` | `ReactNode` | `undefined` | Content to be displayed in the main content area |
+| `children` | `ReactNode` | | Content to be displayed in the main content area |
+| `title` | `ReactNode` | | Title content displayed in the colored header section |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
 | `status?` | `"error"` \| `"warning"` | `'warning'` | Visual status variant of the banner |
-| `title` | `ReactNode` | `undefined` | Title content displayed in the colored header section |
 
 ***
 
@@ -267,10 +267,10 @@ Renders the header section of a Box, combining a title, optional description, an
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `action?` | `ReactNode` | `undefined` | Optional action content (e.g. a Button) rendered inline opposite the title. |
-| `description?` | `ReactNode` | `undefined` | Optional supporting description rendered below the title. |
+| `title` | `ReactNode` | | Title content rendered as the heading. |
+| `action?` | `ReactNode` | | Optional action content (e.g. a Button) rendered inline opposite the title. |
+| `description?` | `ReactNode` | | Optional supporting description rendered below the title. |
 | `headingLevel?` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | `'h3'` | Semantic heading level for the title. Defaults to `h3`. |
-| `title` | `ReactNode` | `undefined` | Title content rendered as the heading. |
 
 ***
 
@@ -304,12 +304,12 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
+| `breadcrumbs` | [`Breadcrumb`](#breadcrumb)[] | | Array of breadcrumbs |
 | `aria-label?` | `string` | `'Breadcrumbs'` | Accessibility label for the breadcrumbs |
-| `breadcrumbs` | [`Breadcrumb`](#breadcrumb)[] | `undefined` | Array of breadcrumbs |
-| `className?` | `string` | `undefined` | Additional CSS class name for the breadcrumbs container |
-| `currentBreadcrumbId?` | `string` | `undefined` | Current breadcrumb id |
+| `className?` | `string` | | Additional CSS class name for the breadcrumbs container |
+| `currentBreadcrumbId?` | `string` | | Current breadcrumb id |
 | `isSmallContainer?` | `boolean` | `false` | Passed to the breadcrumbs when the container size is small (640px and below) At this size, the breadcrumb typically does not have sufficient size to render completely. In our implementation, we switch to a condensed mobile version of the breadcrumbs |
-| `onClick?` | (`id`) => `void` | `undefined` | Event handler for breadcrumb navigation |
+| `onClick?` | (`id`) => `void` | | Event handler for breadcrumb navigation |
 
 ***
 
@@ -328,16 +328,16 @@ Renders an icon-only `<button>`; requires `aria-label` since there is no visible
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-label` | `string` | `undefined` | Required aria-label for icon buttons to ensure accessibility |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
-| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
-| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `aria-label` | `string` | | Required aria-label for icon buttons to ensure accessibility |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | | React ref for the button element |
+| `children?` | `ReactNode` | | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | | Optional leading icon rendered before children |
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
-| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
-| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -361,16 +361,16 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | `undefined` | React ref for the button element |
-| `children?` | `ReactNode` | `undefined` | Content to be rendered inside the button |
-| `icon?` | `ReactNode` | `undefined` | Optional leading icon rendered before children |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `buttonRef?` | `Ref`\<`HTMLButtonElement`\> | | React ref for the button element |
+| `children?` | `ReactNode` | | Content to be rendered inside the button |
+| `icon?` | `ReactNode` | | Optional leading icon rendered before children |
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
-| `onBlur?` | (`e`) => `void` | `undefined` | Handler for blur events |
-| `onFocus?` | (`e`) => `void` | `undefined` | Handler for focus events |
+| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onFocus?` | (`e`) => `void` | | Handler for focus events |
 | `variant?` | `"error"` \| `"primary"` \| `"secondary"` \| `"tertiary"` | `'primary'` | Visual style variant of the button |
 
 ***
@@ -405,8 +405,8 @@ Renders a content container with an optional overflow menu and a leading action 
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `action?` | `ReactNode` | Optional action element (e.g., checkbox, radio) to be displayed on the left side |
 | `children` | `ReactNode` | Content to be displayed inside the card |
+| `action?` | `ReactNode` | Optional action element (e.g., checkbox, radio) to be displayed on the left side |
 | `className?` | `string` | CSS className to be applied |
 | `menu?` | `ReactNode` | Optional menu component to be displayed on the right side of the card |
 
@@ -427,17 +427,17 @@ Renders a form field wrapping multiple `<input type="checkbox" />` elements with
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the first checkbox input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `options` | [`CheckboxGroupOption`](#checkboxgroupoption)[] | | Array of checkbox options to display |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the first checkbox input element |
 | `isDisabled?` | `boolean` | `false` | Disables all checkbox options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates if the checkbox group is in an invalid state |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when selection changes |
-| `options` | [`CheckboxGroupOption`](#checkboxgroupoption)[] | `undefined` | Array of checkbox options to display |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string`[] | `undefined` | Array of currently selected values |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string`[] | | Array of currently selected values |
 
 ***
 
@@ -456,17 +456,17 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the checkbox input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the checkbox input element |
 | `isDisabled?` | `boolean` | `false` | Disables the checkbox and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates if the checkbox is in an invalid state |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when checkbox state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the checkbox |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when checkbox state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the checkbox |
 
 ***
 
@@ -489,6 +489,8 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `string` | Label text for the combo box field |
+| `options` | [`ComboBoxOption`](#comboboxoption)[] | Array of options to display in the dropdown |
 | `allowsCustomValue?` | `boolean` | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
@@ -496,10 +498,8 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 | `isDisabled?` | `boolean` | Disables the combo box and prevents interaction |
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `string` | Label text for the combo box field |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`) => `void` | Callback when selection changes |
-| `options` | [`ComboBoxOption`](#comboboxoption)[] | Array of options to display in the dropdown |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the default SDK root container from context. |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
@@ -521,6 +521,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `string` | Label text for the date picker field |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `inputRef?` | `Ref`\<`HTMLInputElement`\> | React ref for the date input element |
@@ -528,7 +529,6 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `isDisabled?` | `boolean` | Disables the date picker and prevents interaction |
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `string` | Label text for the date picker field |
 | `maxDate?` | `Date` | Maximum selectable date. Dates after this will be disabled. |
 | `minDate?` | `Date` | Minimum selectable date. Dates before this will be disabled. |
 | `onBlur?` | () => `void` | Handler for blur events |
@@ -553,12 +553,12 @@ Renders a form field wrapping paired `<input type="date" />` elements for select
 | ------ | ------ | ------ |
 | `endDateLabel` | `string` | Accessible label for the end-date input. |
 | `label` | `string` | Label text for the date range field. |
-| `maxValue?` | `Date` | Latest selectable date. Dates after this are disabled. |
-| `minValue?` | `Date` | Earliest selectable date. Dates before this are disabled. |
 | `onChange` | (`range`) => `void` | Callback fired when the selected range changes. Receives null when the range is cleared. |
-| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers. |
 | `startDateLabel` | `string` | Accessible label for the start-date input. |
 | `value` | [`DateRange`](#daterange) \| `null` | Currently selected date range, or null when nothing is selected. |
+| `maxValue?` | `Date` | Latest selectable date. Dates after this are disabled. |
+| `minValue?` | `Date` | Earliest selectable date. Dates before this are disabled. |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers. |
 
 ***
 
@@ -573,8 +573,8 @@ Renders an HTML `<dl>` of term/description pairs in either a stacked or horizont
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `className?` | `string` | `undefined` | Additional class name applied to the root `<dl>`. |
-| `items` | [`DescriptionListItem`](#descriptionlistitem)[] | `undefined` | Term/description pairs to render in order. |
+| `items` | [`DescriptionListItem`](#descriptionlistitem)[] | | Term/description pairs to render in order. |
+| `className?` | `string` | | Additional class name applied to the root `<dl>`. |
 | `layout?` | `"stacked"` \| `"horizontal"` | `'stacked'` | Visual arrangement of each term/description pair. Defaults to `'stacked'`. |
 | `showSeparators?` | `boolean` | `true` | Whether to render dividers between rows. Defaults to `true`. |
 
@@ -591,16 +591,16 @@ Renders a modal confirmation dialog with a primary action and a cancel action.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `children?` | `ReactNode` | `undefined` | Optional children content to be rendered in the dialog body |
-| `closeActionLabel` | `string` | `undefined` | Text label for the close/cancel action button |
+| `closeActionLabel` | `string` | | Text label for the close/cancel action button |
+| `primaryActionLabel` | `string` | | Text label for the primary action button |
+| `children?` | `ReactNode` | | Optional children content to be rendered in the dialog body |
 | `isDestructive?` | `boolean` | `false` | Whether the primary action is destructive (changes button style to error variant) |
 | `isOpen?` | `boolean` | `false` | Controls whether the dialog is open or closed |
 | `isPrimaryActionLoading?` | `boolean` | `false` | Whether the primary action button is in loading state |
-| `onClose?` | () => `void` | `undefined` | Callback function called when the dialog should be closed |
-| `onPrimaryActionClick?` | () => `void` | `undefined` | Callback function called when the primary action button is clicked |
-| `primaryActionLabel` | `string` | `undefined` | Text label for the primary action button |
+| `onClose?` | () => `void` | | Callback function called when the dialog should be closed |
+| `onPrimaryActionClick?` | () => `void` | | Callback function called when the primary action button is clicked |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the dialog |
-| `title?` | `ReactNode` | `undefined` | Optional title content to be displayed at the top of the dialog |
+| `title?` | `ReactNode` | | Optional title content to be displayed at the top of the dialog |
 
 ***
 
@@ -619,19 +619,19 @@ Renders a form field wrapping an `<input type="file" />` with a label, descripti
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `accept?` | `string`[] | `undefined` | Accepted file types (MIME types or extensions) **Examples** `['image/jpeg', 'image/png', 'application/pdf']` `['.jpg', '.png', '.pdf']` |
-| `aria-describedby?` | `string` | `undefined` | Aria-describedby attribute for accessibility |
-| `className?` | `string` | `undefined` | Additional CSS class name |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `id?` | `string` | `undefined` | ID for the file input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `onChange` | (`file`) => `void` | | Callback when file selection changes |
+| `value` | `File` \| `null` | `undefined` | Currently selected file |
+| `accept?` | `string`[] | | Accepted file types (MIME types or extensions) **Examples** `['image/jpeg', 'image/png', 'application/pdf']` `['.jpg', '.png', '.pdf']` |
+| `aria-describedby?` | `string` | | Aria-describedby attribute for accessibility |
+| `className?` | `string` | | Additional CSS class name |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `id?` | `string` | | ID for the file input element |
 | `isDisabled?` | `boolean` | `false` | Disables the input and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange` | (`file`) => `void` | `undefined` | Callback when file selection changes |
-| `value` | `File` \| `null` | `undefined` | Currently selected file |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
 
 ***
 
@@ -694,7 +694,7 @@ Renders a spinner indicating that content is loading.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
 | `size?` | `"sm"` \| `"lg"` | `'lg'` | Size of the spinner |
 | `style?` | `"inline"` \| `"block"` | `'block'` | Display style of the spinner |
 
@@ -715,12 +715,12 @@ Renders a popover menu of actions anchored to a trigger element.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-label` | `string` | `undefined` | Accessible label describing the menu's purpose |
+| `aria-label` | `string` | | Accessible label describing the menu's purpose |
 | `isOpen?` | `boolean` | `false` | Controls whether the menu is currently open |
-| `items?` | [`MenuItem`](#menuitem)[] | `undefined` | Array of menu items to display |
-| `onClose?` | () => `void` | `undefined` | Callback when the menu is closed |
+| `items?` | [`MenuItem`](#menuitem)[] | | Array of menu items to display |
+| `onClose?` | () => `void` | | Callback when the menu is closed |
 | `placement?` | `"top"` \| `"top start"` \| `"top end"` \| `"bottom"` \| `"bottom start"` \| `"bottom end"` \| `"left"` \| `"right"` | `'bottom start'` | Controls the placement of the menu popover relative to the trigger |
-| `portalContainer?` | `HTMLElement` | `undefined` | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
+| `portalContainer?` | `HTMLElement` | | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
 | `triggerRef?` | `RefObject`\<`Element` \| `null`\> | `undefined` | Reference to the element that triggers the menu |
 
 ***
@@ -736,11 +736,11 @@ Renders a modal overlay with body and footer content.
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `children?` | `ReactNode` | `undefined` | Main content to be rendered in the modal body |
+| `children?` | `ReactNode` | | Main content to be rendered in the modal body |
 | `containerRef?` | `RefObject`\<`HTMLDivElement` \| `null`\> | `undefined` | Optional ref to the backdrop container |
-| `footer?` | `ReactNode` | `undefined` | Footer content to be rendered at the bottom of the modal |
+| `footer?` | `ReactNode` | | Footer content to be rendered at the bottom of the modal |
 | `isOpen?` | `boolean` | `false` | Controls whether the modal is open or closed |
-| `onClose?` | () => `void` | `undefined` | Callback function called when the modal should be closed |
+| `onClose?` | () => `void` | | Callback function called when the modal should be closed |
 | `shouldCloseOnBackdropClick?` | `boolean` | `false` | Whether clicking the backdrop should close the modal |
 
 ***
@@ -764,6 +764,8 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `string` | Label text for the combo box field |
+| `options` | [`MultiSelectComboBoxOption`](#multiselectcomboboxoption)[] | Array of options to display in the dropdown |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `inputRef?` | `Ref`\<`HTMLInputElement`\> | React ref for the combo box input element |
@@ -771,10 +773,8 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isLoading?` | `boolean` | Shows a loading message in the description slot while options are being fetched |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `string` | Label text for the combo box field |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`values`) => `void` | Callback when the set of selected values changes |
-| `options` | [`MultiSelectComboBoxOption`](#multiselectcomboboxoption)[] | Array of options to display in the dropdown |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | Currently selected values |
 
@@ -795,6 +795,7 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text for the field |
 | `adornmentEnd?` | `ReactNode` | Element to display at the end of the input |
 | `adornmentStart?` | `ReactNode` | Element to display at the start of the input |
 | `description?` | `ReactNode` | Optional description text for the field |
@@ -804,7 +805,6 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 | `isDisabled?` | `boolean` | Disables the number input and prevents interaction |
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `ReactNode` | Label text for the field |
 | `maximumFractionDigits?` | `number` | Maximum number of decimal places to display |
 | `minimumFractionDigits?` | `number` | Minimum number of decimal places to display |
 | `onBlur?` | () => `void` | Handler for blur events |
@@ -829,11 +829,11 @@ Renders an ordered (numbered) list of items.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `items` | `ReactNode`[] | The list items to render |
 | `aria-describedby?` | `string` | ID of an element that describes this list |
 | `aria-label?` | `string` | Accessibility label for the list |
 | `aria-labelledby?` | `string` | ID of an element that labels this list |
 | `className?` | `string` | Optional custom class name |
-| `items` | `ReactNode`[] | The list items to render |
 
 ***
 
@@ -854,10 +854,10 @@ Renders pagination controls for navigating between pages of results.
 | `handleLastPage` | () => `void` | Navigate to the last page. |
 | `handleNextPage` | () => `void` | Navigate to the next page. |
 | `handlePreviousPage` | () => `void` | Navigate to the previous page. |
+| `totalPages` | `number` | Total number of pages. |
 | `isFetching?` | `boolean` | Whether a page fetch is in progress. |
 | `itemsPerPage?` | [`PaginationItemsPerPage`](#paginationitemsperpage) | Number of items shown per page. |
 | `totalCount?` | `number` | Total number of items across all pages. |
-| `totalPages` | `number` | Total number of pages. |
 
 ***
 
@@ -872,8 +872,8 @@ Renders a loading state during payroll calculation.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional supporting text displayed below the title. |
 | `title` | `ReactNode` | The heading text displayed above the loading animation. |
+| `description?` | `ReactNode` | Optional supporting text displayed below the title. |
 
 ***
 
@@ -888,11 +888,11 @@ Renders a step-based progress indicator for multi-step flows.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `className?` | `string` | Additional CSS class name for the progress bar container |
-| `cta?` | `ComponentType`\<\{ \}\> \| `null` | Component to render as the progress bar's CTA |
 | `currentStep` | `number` | Current step in the progress sequence |
 | `label` | `string` | Accessible label describing the progress bar's purpose |
 | `totalSteps` | `number` | Total number of steps in the progress sequence |
+| `className?` | `string` | Additional CSS class name for the progress bar container |
+| `cta?` | `ComponentType`\<\{ \}\> \| `null` | Component to render as the progress bar's CTA |
 
 ***
 
@@ -911,17 +911,17 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `defaultValue?` | `string` | `undefined` | Initially selected value |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the first radio input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `options` | [`RadioGroupOption`](#radiogroupoption)[] | | Array of radio options to display |
+| `defaultValue?` | `string` | | Initially selected value |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the first radio input element |
 | `isDisabled?` | `boolean` | `false` | Disables all radio options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when selection changes |
-| `options` | [`RadioGroupOption`](#radiogroupoption)[] | `undefined` | Array of radio options to display |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | `undefined` | Currently selected value |
 
 ***
@@ -941,16 +941,16 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the radio input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the radio input element |
 | `isDisabled?` | `boolean` | `false` | Disables the radio button and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onChange?` | (`checked`) => `void` | `undefined` | Callback when radio button state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the radio button |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onChange?` | (`checked`) => `void` | | Callback when radio button state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the radio button |
 
 ***
 
@@ -969,16 +969,16 @@ Renders a form field wrapping a single-select dropdown with a label, description
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `string` | Label text for the select field |
+| `options` | [`SelectOption`](#selectoption)[] | Array of options to display in the select dropdown |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `inputRef?` | `Ref`\<`HTMLButtonElement`\> | React ref for the select button element |
 | `isDisabled?` | `boolean` | Disables the select and prevents interaction |
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | Indicates if the field is required |
-| `label` | `string` | Label text for the select field |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`) => `void` | Callback when selection changes |
-| `options` | [`SelectOption`](#selectoption)[] | Array of options to display in the select dropdown |
 | `placeholder?` | `string` | Placeholder text when no option is selected |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
@@ -1001,19 +1001,19 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-controls?` | `string` | `undefined` | Identifies the element (or elements) whose contents or presence are controlled by the current element. **See** aria-owns. |
-| `className?` | `string` | `undefined` | Additional CSS class name for the switch container |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the switch input element |
+| `label` | `string` | | Label text for the switch |
+| `aria-controls?` | `string` | | Identifies the element (or elements) whose contents or presence are controlled by the current element. **See** aria-owns. |
+| `className?` | `string` | | Additional CSS class name for the switch container |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the switch input element |
 | `isDisabled?` | `boolean` | `false` | Disables the switch and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `string` | `undefined` | Label text for the switch |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`checked`) => `void` | `undefined` | Callback when switch state changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `boolean` | `undefined` | Current checked state of the switch |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`checked`) => `void` | | Callback when switch state changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `boolean` | | Current checked state of the switch |
 
 ***
 
@@ -1032,15 +1032,15 @@ Renders a table with column headers, body rows, an optional footer row, and an o
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-label?` | `string` | `undefined` | Defines a string value that labels the current element. **See** aria-labelledby. |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `emptyState?` | `ReactNode` | `undefined` | Content to display when the table has no rows |
-| `footer?` | [`TableData`](#tabledata)[] | `undefined` | Array of footer cells for the table |
+| `headers` | [`TableData`](#tabledata)[] | | Array of header cells for the table |
+| `rows` | [`TableRow`](#tablerow)[] | | Array of rows to be displayed in the table |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-label?` | `string` | | Defines a string value that labels the current element. **See** aria-labelledby. |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `emptyState?` | `ReactNode` | | Content to display when the table has no rows |
+| `footer?` | [`TableData`](#tabledata)[] | | Array of footer cells for the table |
 | `hasCheckboxColumn?` | `boolean` | `false` | Whether the first column contains checkboxes (affects which column gets leading variant) |
-| `headers` | [`TableData`](#tabledata)[] | `undefined` | Array of header cells for the table |
 | `isWithinBox?` | `boolean` | `false` | Removes borders and background for use inside a Box component |
-| `rows` | [`TableRow`](#tablerow)[] | `undefined` | Array of rows to be displayed in the table |
 
 ***
 
@@ -1055,12 +1055,12 @@ Renders tabbed navigation with associated content panels.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `onSelectionChange` | (`id`) => `void` | Callback when tab selection changes |
+| `tabs` | [`TabProps`](#tabprops)[] | Array of tab configuration objects |
 | `aria-label?` | `string` | Accessible label for the tabs |
 | `aria-labelledby?` | `string` | ID of element that labels the tabs |
 | `className?` | `string` | Additional CSS class name |
-| `onSelectionChange` | (`id`) => `void` | Callback when tab selection changes |
 | `selectedId?` | `string` | Currently selected tab id |
-| `tabs` | [`TabProps`](#tabprops)[] | Array of tab configuration objects |
 
 ***
 
@@ -1079,19 +1079,19 @@ Renders a form field wrapping a `<textarea>` with a label, description, and erro
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLTextAreaElement`\> | `undefined` | React ref for the textarea element |
+| `label` | `ReactNode` | | Label text for the field |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLTextAreaElement`\> | | React ref for the textarea element |
 | `isDisabled?` | `boolean` | `false` | Disables the textarea and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when textarea value changes |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when textarea value changes |
 | `rows?` | `number` | `4` | Number of visible text rows |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string` | `undefined` | Current value of the textarea |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string` | | Current value of the textarea |
 
 ***
 
@@ -1110,21 +1110,21 @@ Renders a form field wrapping an `<input />` with a label, description, error me
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `adornmentEnd?` | `ReactNode` | `undefined` | Element to display at the end of the input |
-| `adornmentStart?` | `ReactNode` | `undefined` | Element to display at the start of the input |
-| `aria-describedby?` | `string` | `undefined` | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
-| `aria-labelledby?` | `string` | `undefined` | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
-| `description?` | `ReactNode` | `undefined` | Optional description text for the field |
-| `errorMessage?` | `string` | `undefined` | Error message to display when the field is invalid |
-| `inputRef?` | `Ref`\<`HTMLInputElement`\> | `undefined` | React ref for the input element |
+| `label` | `ReactNode` | | Label text for the field |
+| `adornmentEnd?` | `ReactNode` | | Element to display at the end of the input |
+| `adornmentStart?` | `ReactNode` | | Element to display at the start of the input |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `description?` | `ReactNode` | | Optional description text for the field |
+| `errorMessage?` | `string` | | Error message to display when the field is invalid |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | React ref for the input element |
 | `isDisabled?` | `boolean` | `false` | Disables the input and prevents interaction |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
-| `isRequired?` | `boolean` | `undefined` | Indicates if the field is required |
-| `label` | `ReactNode` | `undefined` | Label text for the field |
-| `onBlur?` | () => `void` | `undefined` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | `undefined` | Callback when input value changes |
-| `shouldVisuallyHideLabel?` | `boolean` | `undefined` | Hides the label visually while keeping it accessible to screen readers |
-| `value?` | `string` | `undefined` | Current value of the input |
+| `isRequired?` | `boolean` | | Indicates if the field is required |
+| `onBlur?` | () => `void` | | Handler for blur events |
+| `onChange?` | (`value`) => `void` | | Callback when input value changes |
+| `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
+| `value?` | `string` | | Current value of the input |
 
 ***
 
@@ -1144,7 +1144,7 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `as?` | `"div"` \| `"span"` \| `"p"` \| `"pre"` | `'p'` | HTML element to render the text as |
-| `children?` | `ReactNode` | `undefined` | Content to be displayed |
+| `children?` | `ReactNode` | | Content to be displayed |
 | `size?` | `"xs"` \| `"sm"` \| `"md"` \| `"lg"` | `'md'` | Size variant of the text |
 | `textAlign?` | `"center"` \| `"start"` \| `"end"` | `undefined` | Text alignment within the container |
 | `variant?` | `"supporting"` \| `"leading"` | `undefined` | Visual style variant of the text |
@@ -1167,11 +1167,11 @@ Renders an unordered (bulleted) list of items.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `items` | `ReactNode`[] | The list items to render |
 | `aria-describedby?` | `string` | ID of an element that describes this list |
 | `aria-label?` | `string` | Accessibility label for the list |
 | `aria-labelledby?` | `string` | ID of an element that labels this list |
 | `className?` | `string` | Optional custom class name |
-| `items` | `ReactNode`[] | The list items to render |
 
 ## Utility Types
 
@@ -1190,11 +1190,11 @@ Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `items` | `ReactNode`[] | The list items to render |
 | `aria-describedby?` | `string` | ID of an element that describes this list |
 | `aria-label?` | `string` | Accessibility label for the list |
 | `aria-labelledby?` | `string` | ID of an element that labels this list |
 | `className?` | `string` | Optional custom class name |
-| `items` | `ReactNode`[] | The list items to render |
 
 ***
 
@@ -1209,8 +1209,8 @@ Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
-| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
 | `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
 
 ***
 
@@ -1224,10 +1224,10 @@ Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgro
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
 | `label` | `ReactNode` | Label text or content for the checkbox option |
 | `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
 
 ***
 
@@ -1291,11 +1291,11 @@ from the component adapter.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
+| `label` | `string` | Text label for the menu item |
+| `onClick` | () => `void` | Callback function when the menu item is clicked |
 | `href?` | `string` | Optional URL to navigate to when clicked |
 | `icon?` | `ReactNode` | Optional icon to display before the label |
 | `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
-| `label` | `string` | Text label for the menu item |
-| `onClick` | () => `void` | Callback function when the menu item is clicked |
 
 ***
 
@@ -1332,10 +1332,10 @@ Option entry your `RadioGroup` implementation receives in the `options` array wh
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description?` | `ReactNode` | Optional description text for the radio option |
-| `isDisabled?` | `boolean` | Disables this specific radio option |
 | `label` | `ReactNode` | Label text or content for the radio option |
 | `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the radio option |
+| `isDisabled?` | `boolean` | Disables this specific radio option |
 
 ***
 
@@ -1396,5 +1396,5 @@ Shape of a single tab configuration your `Tabs` implementation receives in its `
 | ------ | ------ | ------ |
 | `content` | `ReactNode` | Content to display in the tab panel |
 | `id` | `string` | Unique identifier for the tab |
-| `isDisabled?` | `boolean` | Whether the tab is disabled |
 | `label` | `ReactNode` | Label to display in the tab button |
+| `isDisabled?` | `boolean` | Whether the tab is disabled |
