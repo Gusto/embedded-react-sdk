@@ -166,7 +166,7 @@ export class SDKRouter extends MemberRouter {
         writeFileSync(
           join(nsDir, '_category_.json'),
           // index.md = position 1; namespace subdirs start at position 2
-          JSON.stringify({ label: ns.id, position: nsIdx + 2 }, null, 2) + '\n',
+          JSON.stringify({ label: ns.id, position: nsIdx + 2, collapsed: false }, null, 2) + '\n',
         )
       }
     }
