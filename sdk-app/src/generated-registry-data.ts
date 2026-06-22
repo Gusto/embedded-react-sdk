@@ -2,6 +2,24 @@
 // Run: npx tsx sdk-app/scripts/analyze-component-props.ts
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
+  'CompanyOnboarding.AssignSignatory': ['companyId'],
+  'CompanyOnboarding.BankAccount': ['companyId'],
+  'CompanyOnboarding.CreateSignatory': ['companyId'],
+  'CompanyOnboarding.DocumentList': ['companyId'],
+  'CompanyOnboarding.DocumentSigner': ['companyId'],
+  'CompanyOnboarding.FederalTaxes': ['companyId'],
+  'CompanyOnboarding.Industry': ['companyId'],
+  'CompanyOnboarding.InviteSignatory': ['companyId'],
+  'CompanyOnboarding.LocationForm': ['companyId'],
+  'CompanyOnboarding.Locations': ['companyId'],
+  'CompanyOnboarding.LocationsList': ['companyId'],
+  'CompanyOnboarding.OnboardingFlow': ['companyId'],
+  'CompanyOnboarding.OnboardingOverview': ['companyId'],
+  'CompanyOnboarding.PaySchedule': ['companyId'],
+  'CompanyOnboarding.SignatureForm': ['companyId'],
+  'CompanyOnboarding.StateTaxes': ['companyId'],
+  'CompanyOnboarding.StateTaxesForm': ['companyId'],
+  'CompanyOnboarding.StateTaxesList': ['companyId'],
   'ContractorManagement.CreatePayment': ['companyId'],
   'ContractorManagement.PaymentFlow': ['companyId'],
   'ContractorManagement.PaymentHistory': ['companyId'],
@@ -113,6 +131,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
 }
 
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
+  'CompanyOnboarding.SignatureForm': ['formId'],
+  'CompanyOnboarding.StateTaxesForm': ['state'],
   'ContractorManagement.PaymentHistory': ['paymentId'],
   'ContractorManagement.PaymentStatement': ['paymentGroupId', 'contractorUuid'],
   'ContractorManagement.PaymentSummary': ['paymentGroupId'],
