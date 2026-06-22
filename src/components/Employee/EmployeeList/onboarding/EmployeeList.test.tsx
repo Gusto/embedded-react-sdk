@@ -83,31 +83,41 @@ describe('EmployeeList', () => {
     )
   })
 
-  it('shows Continue button by default when employees are present', async () => {
+  it('hides Continue button by default when employees are present', async () => {
     renderWithProviders(<EmployeeList companyId="some-company-uuid" onEvent={() => {}} />)
-
-    await screen.findByText('Sean Test')
-    expect(screen.getByRole('button', { name: 'Continue' })).toBeTruthy()
-  })
-
-  it('hides Continue button when showContinueButton is false', async () => {
-    renderWithProviders(
-      <EmployeeList companyId="some-company-uuid" onEvent={() => {}} showContinueButton={false} />,
-    )
 
     await screen.findByText('Sean Test')
     expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
   })
 
-  it('hides Skip button in empty state when showContinueButton is false', async () => {
+  it('shows Continue button when showContinueButton is true', async () => {
+    renderWithProviders(
+      <EmployeeList companyId="some-company-uuid" onEvent={() => {}} showContinueButton />,
+    )
+
+    await screen.findByText('Sean Test')
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeTruthy()
+  })
+
+  it('hides Skip button in empty state by default', async () => {
     server.use(handleGetCompanyEmployees(() => HttpResponse.json([])))
 
-    renderWithProviders(
-      <EmployeeList companyId="some-company-uuid" onEvent={() => {}} showContinueButton={false} />,
-    )
+    renderWithProviders(<EmployeeList companyId="some-company-uuid" onEvent={() => {}} />)
 
     await screen.findByText('No employees')
     expect(screen.queryByRole('button', { name: "I'll do this later" })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Add an employee' })).toBeTruthy()
+  })
+
+  it('shows Skip button in empty state when showContinueButton is true', async () => {
+    server.use(handleGetCompanyEmployees(() => HttpResponse.json([])))
+
+    renderWithProviders(
+      <EmployeeList companyId="some-company-uuid" onEvent={() => {}} showContinueButton />,
+    )
+
+    await screen.findByText('No employees')
+    expect(screen.getByRole('button', { name: "I'll do this later" })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Add an employee' })).toBeTruthy()
   })
 })
