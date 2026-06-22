@@ -178,6 +178,10 @@ const config: Config = {
               label: 'GitHub',
               href: 'https://github.com/Gusto/embedded-react-sdk',
             },
+            {
+              label: 'Developer Terms of Service',
+              href: 'https://gusto.com/legal/terms/developer-terms-of-service',
+            },
           ],
         },
       ],
