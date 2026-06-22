@@ -3187,6 +3187,7 @@ interface OnboardingFlowProps extends BaseComponentInterface {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
     isSelfOnboardingEnabled?: boolean;
+    showContinueButton?: boolean;
     withEmployeeI9?: boolean;
 }
 
