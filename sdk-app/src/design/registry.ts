@@ -41,6 +41,24 @@ export const categorizedRegistry: CategorizedRegistry = {
       ],
     },
     {
+      name: 'Create Historical Payment',
+      path: '/design/create-historical-payment',
+      description:
+        'Record a contractor payment that already happened outside Gusto — paid date, per-contractor amounts, no funding.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/create-historical-payment',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/create-historical-payment/component-states',
+          description: 'Browse form configurations with mock data.',
+        },
+      ],
+    },
+    {
       name: 'Contractor Self-Onboarding',
       path: '/design/contractor-self-onboarding',
       description: 'The contractor-facing onboarding experience after receiving an invite link.',
