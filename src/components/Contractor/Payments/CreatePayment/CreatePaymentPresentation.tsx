@@ -137,6 +137,7 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.hours'),
+              justify: 'end',
               render: paymentData => {
                 const hours = Number(paymentData.hours || '0')
                 return paymentData.contractorDetails?.wageType === 'Hourly' && hours
@@ -146,6 +147,7 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.wage'),
+              justify: 'end',
               render: paymentData => {
                 const amount =
                   paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
@@ -156,14 +158,17 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.bonus'),
+              justify: 'end',
               render: paymentData => currencyFormatter(Number(paymentData.bonus || '0')),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
+              justify: 'end',
               render: paymentData => currencyFormatter(Number(paymentData.reimbursement || '0')),
             },
             {
               title: t('contractorTableHeaders.total'),
+              justify: 'end',
               render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
                 const totalAmount =
                   Number(bonus || '0') +
