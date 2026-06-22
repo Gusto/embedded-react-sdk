@@ -14,7 +14,7 @@ custom_edit_url: null
 
 The Payroll namespace.
 
-## Workflow components
+## 🚂 Workflow components
 
 | Component | Description |
 | --------- | ----------- |
@@ -24,7 +24,7 @@ The Payroll namespace.
 | [PayrollFlow](payroll-flow.md) | Guided workflow for selecting and running a company's payroll end to end. |
 | [TransitionFlow](transition-flow.md) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
 
-## Block components
+## 🧩 Block components
 
 | Component | Description |
 | --------- | ----------- |

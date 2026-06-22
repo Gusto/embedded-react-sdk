@@ -12,13 +12,13 @@ custom_edit_url: null
 
 # ContractorOnboarding
 
-## Workflow components
+## 🚂 Workflow components
 
 | Component | Description |
 | --------- | ----------- |
 | [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission. |
 
-## Block components
+## 🧩 Block components
 
 | Component | Description |
 | --------- | ----------- |

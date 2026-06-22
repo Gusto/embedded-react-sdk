@@ -14,7 +14,7 @@ custom_edit_url: null
 
 The namespace for all workflows and blocks related to managing an employee after their initial onboarding, include termination.
 
-## Workflow components
+## 🚂 Workflow components
 
 | Component | Description |
 | --------- | ----------- |
@@ -22,7 +22,7 @@ The namespace for all workflows and blocks related to managing an employee after
 | [EmployeeListFlow](employee-list-flow.md) | Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows. |
 | [TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
 
-## Block components
+## 🧩 Block components
 
 | Component | Description |
 | --------- | ----------- |

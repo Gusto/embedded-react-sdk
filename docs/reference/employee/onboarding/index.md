@@ -14,7 +14,7 @@ custom_edit_url: null
 
 The namespace for all workflows and blocks related to onboarding an employee.
 
-## Workflow components
+## 🚂 Workflow components
 
 | Component | Description |
 | --------- | ----------- |
@@ -22,7 +22,7 @@ The namespace for all workflows and blocks related to onboarding an employee.
 | [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
 | [SelfOnboardingFlow](self-onboarding-flow.md) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
 
-## Block components
+## 🧩 Block components
 
 | Component | Description |
 | --------- | ----------- |

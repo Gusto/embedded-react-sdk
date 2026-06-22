@@ -63,6 +63,16 @@ export const DOMAIN_HUBS: Record<string, string[]> = Object.fromEntries(
   DOMAINS.map(d => [d.path, d.namespaces.map(n => n.id)]),
 )
 
+/** Emoji for each content type — used in DocCardList item labels and hub section headings. */
+export const TYPE_EMOJIS = {
+  namespace: '📁',
+  flow: '🚂',
+  block: '🧩',
+  hooks: '🪝',
+  formHook: '✍️',
+  dataHook: '🌐',
+} as const
+
 export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
     id: 'theme-variables',

@@ -12,13 +12,13 @@ custom_edit_url: null
 
 # ContractorManagement
 
-## Workflow components
+## 🚂 Workflow components
 
 | Component | Description |
 | --------- | ----------- |
 | [PaymentFlow](payment-flow.md) | Guided workflow for creating, managing, and viewing contractor payment groups for a company. |
 
-## Block components
+## 🧩 Block components
 
 | Component | Description |
 | --------- | ----------- |

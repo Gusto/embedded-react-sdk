@@ -22,6 +22,7 @@ import {
   serializeFrontmatter as buildFrontmatterYaml,
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
+import { NAMESPACE_PATHS, TYPE_EMOJIS } from './router.config.ts'
 
 function getReflectionDescription(
   reflection: DeclarationReflection,
@@ -47,52 +48,64 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       c instanceof DeclarationReflection && c.kind === ReflectionKind.Namespace,
   )
 
-  if (namespaces.length > 0) {
-    const items = namespaces.map(ns => {
-      const href = context
-        .urlTo(ns)
-        .replace(/\/index\.md$/, '')
-        .replace(/\.md$/, '')
-      const description = ns.comment
-        ? (context.helpers.getDescriptionForComment(ns.comment) ?? '')
-        : ''
-      const item: Record<string, string> = { type: 'link', href, label: `📁 ${ns.name}` }
-      if (description) item.description = description
-      return item
-    })
-    parts.push(`<DocCardList items={${JSON.stringify(items)}} />`, '')
-  }
+  const domainPath = getDomainPath(model)
+  for (const ns of namespaces) {
+    const nsHref = context
+      .urlTo(ns)
+      .replace(/\/index\.md$/, '')
+      .replace(/\.md$/, '')
+    parts.push(`## [${ns.name}](${nsHref})`, '')
 
-  const allFlows = namespaces.flatMap(ns =>
-    (ns.children ?? []).filter(
+    const flows = (ns.children ?? []).filter(
       (c): c is DeclarationReflection =>
         c instanceof DeclarationReflection && isComponent(c) && c.name.endsWith('Flow'),
-    ),
-  )
+    )
+    const blocks = (ns.children ?? []).filter(
+      (c): c is DeclarationReflection =>
+        c instanceof DeclarationReflection && isComponent(c) && !c.name.endsWith('Flow'),
+    )
 
-  if (allFlows.length > 0) {
-    parts.push('## Workflow components', '')
-    const flowItems = allFlows.map(comp => {
+    const cards: Record<string, string>[] = flows.map(comp => {
       const href = context.urlTo(comp).replace(/\.md$/, '')
       const description = getReflectionDescription(comp, context)
-      const item: Record<string, string> = { type: 'link', href, label: `🚂 ${comp.name}` }
+      const item: Record<string, string> = {
+        type: 'link',
+        href,
+        label: `${TYPE_EMOJIS.flow} ${comp.name}`,
+      }
       if (description) item.description = description
       return item
     })
-    parts.push(`<DocCardList items={${JSON.stringify(flowItems)}} />`, '')
+
+    if (blocks.length > 0) {
+      const nsPath = NAMESPACE_PATHS[ns.name] ?? ns.name
+      const nsRelPath = nsPath.startsWith(domainPath + '/')
+        ? nsPath.slice(domainPath.length + 1)
+        : ''
+      const subComponentsHref = nsRelPath ? `${nsRelPath}/sub-components` : 'sub-components'
+      cards.push({
+        type: 'link',
+        href: subComponentsHref,
+        label: `${TYPE_EMOJIS.block} ${blocks.length} sub-component${blocks.length === 1 ? '' : 's'}`,
+      })
+    }
+
+    if (cards.length > 0) {
+      parts.push(`<DocCardList items={${JSON.stringify(cards)}} />`, '')
+    }
   }
 
   const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(getDomainPath(model))
   const hookPages = (hooksNs?.children ?? []) as DeclarationReflection[]
 
   if (hookPages.length > 0) {
-    parts.push('## Hooks', '')
+    parts.push(`## ${TYPE_EMOJIS.hooks} Hooks`, '')
     const hookItems = hookPages.map(hookNs => {
       const href = context.urlTo(hookNs).replace(/\.md$/, '')
       const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
         hookNs.children?.[0]) as DeclarationReflection | undefined
       const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
-      const emoji = hookNs.name.endsWith('Form') ? '✍️' : '🌐'
+      const emoji = hookNs.name.endsWith('Form') ? TYPE_EMOJIS.formHook : TYPE_EMOJIS.dataHook
       const item: Record<string, string> = { type: 'link', href, label: `${emoji} ${hookNs.name}` }
       if (description) item.description = description
       return item
@@ -110,7 +123,7 @@ function renderHooksIndex(context: SDKThemeContext, model: DeclarationReflection
     const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
       hookNs.children?.[0]) as DeclarationReflection | undefined
     const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
-    const emoji = hookNs.name.endsWith('Form') ? '✍️' : '🌐'
+    const emoji = hookNs.name.endsWith('Form') ? TYPE_EMOJIS.formHook : TYPE_EMOJIS.dataHook
     const item: Record<string, string> = { type: 'link', href, label: `${emoji} ${hookNs.name}` }
     if (description) item.description = description
     return item
@@ -133,12 +146,12 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
   const flows = components.filter(c => c.name.endsWith('Flow'))
   const blocks = components.filter(c => !c.name.endsWith('Flow'))
 
-  for (const [heading, items] of [
-    ['Workflow components', flows],
-    ['Block components', blocks],
+  for (const [emoji, heading, items] of [
+    [TYPE_EMOJIS.flow, 'Workflow components', flows],
+    [TYPE_EMOJIS.block, 'Block components', blocks],
   ] as const) {
     if (items.length === 0) continue
-    parts.push(`## ${heading}`, '')
+    parts.push(`## ${emoji} ${heading}`, '')
     parts.push('| Component | Description |', '| --------- | ----------- |')
     for (const item of items) {
       parts.push(
