@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: EmployeeOnboarding
-description: The namespace for all workflows and blocks related to onboarding an employee.
+description: Flows and blocks for onboarding employees.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # EmployeeOnboarding
 
-The namespace for all workflows and blocks related to onboarding an employee.
+Flows and blocks for onboarding employees.
 
 ## 🚂 Workflows
 

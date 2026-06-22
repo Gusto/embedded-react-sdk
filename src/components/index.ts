@@ -8,16 +8,12 @@ export * as TimeOff from './TimeOff'
 // Journey-based namespaces (preferred)
 
 /**
- * {@include ./Employee/exports/EmployeeOnboarding.md}
- *
- * @public
+ * Flows and blocks for onboarding employees.
  */
 export * as EmployeeOnboarding from './Employee/exports/employeeOnboarding'
 
 /**
- * {@include ./Employee/exports/EmployeeManagement.md}
- *
- * @public
+ * Flows and blocks for managing an employee after onboarding.
  */
 export * as EmployeeManagement from './Employee/exports/employeeManagement'
 export * as CompanyOnboarding from './Company/exports/companyOnboarding'

@@ -19,8 +19,8 @@ custom_edit_url: null
 | [CompanyOnboarding](company/onboarding/index.md) | - |
 | [ContractorManagement](contractor/management/index.md) | - |
 | [ContractorOnboarding](contractor/onboarding/index.md) | - |
-| [EmployeeManagement](employee/management/index.md) | The namespace for all workflows and blocks related to managing an employee after their initial onboarding, include termination. |
-| [EmployeeOnboarding](employee/onboarding/index.md) | The namespace for all workflows and blocks related to onboarding an employee. |
+| [EmployeeManagement](employee/management/index.md) | Flows and blocks for managing an employee after onboarding. |
+| [EmployeeOnboarding](employee/onboarding/index.md) | Flows and blocks for onboarding employees. |
 | [InformationRequests](company/information-requests/index.md) | - |
 | [Payroll](payroll/namespace.md) | The Payroll namespace. |
 | [TimeOff](time-off/namespace.md) | - |
