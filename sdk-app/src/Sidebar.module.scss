@@ -169,6 +169,8 @@
 
 .items {
   list-style: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .item > a {
@@ -176,8 +178,13 @@
   padding: 0.375rem 1rem 0.375rem 1.5rem;
   color: var(--color-text);
   text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.8125rem;
   font-weight: 500;
+  border-radius: 0.4rem;
+  margin-bottom: 0.2rem;
   transition:
     background 0.1s,
     color 0.1s;
@@ -188,6 +195,7 @@
 
   &:global(.active) {
     color: var(--color-active);
+    background: var(--color-active-bg);
   }
 }
 
@@ -203,6 +211,7 @@
   color: var(--color-text-muted);
   text-decoration: none;
   font-size: 0.75rem;
+  border-radius: 0.4rem;
   transition:
     background 0.1s,
     color 0.1s;
