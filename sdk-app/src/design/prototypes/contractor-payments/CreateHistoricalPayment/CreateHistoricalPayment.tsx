@@ -15,6 +15,7 @@ import { toContractorOptions } from './states'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
+import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 export interface CreateHistoricalPaymentProps {
   companyId: string
@@ -124,7 +125,7 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
 
   if (submittedCount !== null) {
     return (
-      <Components.Alert label="Historical payment recorded" status="success">
+      <Components.Alert label="Historical payment recorded" status="success" disableScrollIntoView>
         Submitted {submittedCount} payment(s) for {paidDate}.
       </Components.Alert>
     )
@@ -144,34 +145,41 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
     )
   }
 
-  if (step === 'configure') {
-    const selected = contractorsByIds(contractors, selectedIds)
-    return (
-      <HistoricalPaymentConfiguration
-        contractors={selected}
-        payments={payments}
-        onUpdatePayment={handleUpdatePayment}
-        onContinue={() => {
-          setStep('review')
-        }}
-        onBack={() => {
-          setStep('select')
-        }}
-      />
-    )
-  }
+  const backStep: Step = step === 'review' ? 'configure' : 'select'
 
   return (
-    <HistoricalPaymentSummary
-      contractors={contractorsByIds(contractors, selectedIds)}
-      payments={payments}
-      paidDate={paidDate}
-      isSubmitting={previewMutation.isPending || createMutation.isPending}
-      onSubmit={handleSubmit}
-      onBack={() => {
-        setStep('configure')
-      }}
-    />
+    <Flex flexDirection="column" gap={16}>
+      <div>
+        <Components.Button
+          variant="secondary"
+          icon={<CaretLeftIcon aria-hidden="true" />}
+          onClick={() => {
+            setStep(backStep)
+          }}
+        >
+          Back
+        </Components.Button>
+      </div>
+
+      {step === 'configure' ? (
+        <HistoricalPaymentConfiguration
+          contractors={contractorsByIds(contractors, selectedIds)}
+          payments={payments}
+          onUpdatePayment={handleUpdatePayment}
+          onContinue={() => {
+            setStep('review')
+          }}
+        />
+      ) : (
+        <HistoricalPaymentSummary
+          contractors={contractorsByIds(contractors, selectedIds)}
+          payments={payments}
+          paidDate={paidDate}
+          isSubmitting={previewMutation.isPending || createMutation.isPending}
+          onSubmit={handleSubmit}
+        />
+      )}
+    </Flex>
   )
 }
 

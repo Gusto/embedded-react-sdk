@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { ContractorOption, HistoricalContractorPayment } from '../types'
 import { computePaymentTotal } from '../types'
 import { EditContractorPaymentModal } from './EditContractorPaymentModal'
-import { DataView, EmptyData, Flex, FlexItem } from '@/components/Common'
+import { DataView, EmptyData, Flex } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -11,7 +11,6 @@ interface HistoricalPaymentConfigurationProps {
   payments: HistoricalContractorPayment[]
   onUpdatePayment: (payment: HistoricalContractorPayment) => void
   onContinue: () => void
-  onBack?: () => void
 }
 
 interface TableRow {
@@ -26,7 +25,6 @@ export function HistoricalPaymentConfiguration({
   payments,
   onUpdatePayment,
   onContinue,
-  onBack,
 }: HistoricalPaymentConfigurationProps) {
   const Components = useComponentContext()
   const [editingContractorId, setEditingContractorId] = useState<string | null>(null)
@@ -71,15 +69,7 @@ export function HistoricalPaymentConfiguration({
             reimbursements.
           </Components.Text>
         </Flex>
-        <Flex gap={8} justifyContent="flex-end">
-          {onBack && (
-            <Components.Button variant="secondary" onClick={onBack}>
-              Back
-            </Components.Button>
-          )}
-
-          <Components.Button onClick={onContinue}>Continue</Components.Button>
-        </Flex>
+        <Components.Button onClick={onContinue}>Continue</Components.Button>
       </Flex>
 
       <DataView

@@ -128,9 +128,6 @@ export const components: PrototypeComponent[] = [
             onSubmit={() => {
               console.log('submit historical payment')
             }}
-            onBack={() => {
-              console.log('back to configure')
-            }}
           />
         ),
       },
@@ -148,9 +145,6 @@ export const components: PrototypeComponent[] = [
             onSubmit={() => {
               console.log('submit historical payment')
             }}
-            onBack={() => {
-              console.log('back to configure')
-            }}
           />
         ),
       },
@@ -165,9 +159,6 @@ export const components: PrototypeComponent[] = [
             paidDate="2026-05-12"
             onSubmit={() => {
               console.log('submit')
-            }}
-            onBack={() => {
-              console.log('back')
             }}
           />
         ),

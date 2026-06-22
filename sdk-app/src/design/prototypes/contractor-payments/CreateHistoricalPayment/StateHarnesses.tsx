@@ -59,9 +59,6 @@ export function ConfigurationHarness({ contractors, initialPayments }: Configura
       onContinue={() => {
         console.log('continue to review')
       }}
-      onBack={() => {
-        console.log('back to select')
-      }}
     />
   )
 }

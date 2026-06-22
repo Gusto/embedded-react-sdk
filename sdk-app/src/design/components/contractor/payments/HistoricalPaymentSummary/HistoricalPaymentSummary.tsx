@@ -10,7 +10,6 @@ interface HistoricalPaymentSummaryProps {
   paidDate: string
   isSubmitting?: boolean
   onSubmit: () => void
-  onBack?: () => void
 }
 
 interface TableRow {
@@ -26,7 +25,6 @@ export function HistoricalPaymentSummary({
   paidDate,
   isSubmitting,
   onSubmit,
-  onBack,
 }: HistoricalPaymentSummaryProps) {
   const Components = useComponentContext()
 
@@ -65,16 +63,9 @@ export function HistoricalPaymentSummary({
             Historical payment for {formatDate(paidDate)}
           </Components.Text>
         </Flex>
-        <Flex gap={8} justifyContent="flex-end">
-          {onBack && (
-            <Components.Button variant="secondary" onClick={onBack}>
-              Back
-            </Components.Button>
-          )}
-          <Components.Button onClick={onSubmit} isLoading={isSubmitting}>
-            Submit historical payment
-          </Components.Button>
-        </Flex>
+        <Components.Button onClick={onSubmit} isLoading={isSubmitting}>
+          Submit historical payment
+        </Components.Button>
       </Flex>
 
       <DataView
