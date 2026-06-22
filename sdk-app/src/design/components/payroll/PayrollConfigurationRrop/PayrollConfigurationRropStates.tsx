@@ -13,6 +13,7 @@ export interface PayrollConfigurationRropDemoProps {
   payPeriod?: PayrollPayPeriodType
   paySchedule?: PayScheduleShow
   payrollCategory?: PayrollCategory
+  rrop?: boolean
 }
 
 export function PayrollConfigurationRropDemo({
@@ -22,6 +23,7 @@ export function PayrollConfigurationRropDemo({
   payPeriod,
   paySchedule,
   payrollCategory = PayrollCategory.Regular,
+  rrop = false,
 }: PayrollConfigurationRropDemoProps) {
   return (
     <PayrollConfigurationRropPresentation
@@ -33,6 +35,7 @@ export function PayrollConfigurationRropDemo({
       payrollCategory={payrollCategory}
       onCalculatePayroll={() => {}}
       onViewBlockers={() => {}}
+      rrop={rrop}
     />
   )
 }
