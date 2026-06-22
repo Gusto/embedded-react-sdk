@@ -71,45 +71,40 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.wageType'),
-                  render: ({ wageType }) => <Text>{wageType}</Text>,
+                  render: ({ wageType }) => wageType,
                 },
                 {
                   title: t('tableHeaders.paymentMethod'),
-                  render: ({ paymentMethod }) => <Text>{paymentMethod}</Text>,
+                  render: ({ paymentMethod }) => paymentMethod,
                 },
                 {
                   title: t('tableHeaders.hours'),
-                  render: ({ hours }) => (
-                    <Text>{hours ? formatHoursDisplay(Number(hours)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ hours }) => (hours ? formatHoursDisplay(Number(hours)) : '–'),
                 },
                 {
                   title: t('tableHeaders.wage'),
-                  render: ({ wage }) => <Text>{wage ? currencyFormatter(Number(wage)) : '–'}</Text>,
+                  justify: 'end',
+                  render: ({ wage }) => (wage ? currencyFormatter(Number(wage)) : '–'),
                 },
                 {
                   title: t('tableHeaders.bonus'),
-                  render: ({ bonus }) => (
-                    <Text>{bonus ? currencyFormatter(Number(bonus)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ bonus }) => (bonus ? currencyFormatter(Number(bonus)) : '–'),
                 },
                 {
                   title: t('tableHeaders.reimbursements'),
-                  render: ({ reimbursement }) => (
-                    <Text>{reimbursement ? currencyFormatter(Number(reimbursement)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ reimbursement }) =>
+                    reimbursement ? currencyFormatter(Number(reimbursement)) : '–',
                 },
                 {
                   title: t('tableHeaders.total'),
-                  render: ({ wageTotal, reimbursement, bonus }) => (
-                    <Text>
-                      {wageTotal
-                        ? currencyFormatter(
-                            Number(wageTotal) + Number(reimbursement) + Number(bonus),
-                          )
-                        : '–'}
-                    </Text>
-                  ),
+                  justify: 'end',
+                  render: ({ wageTotal, reimbursement, bonus }) =>
+                    wageTotal
+                      ? currencyFormatter(Number(wageTotal) + Number(reimbursement) + Number(bonus))
+                      : '–',
                 },
               ]}
               itemMenu={({ contractorUuid, mayCancel, uuid }) => {
