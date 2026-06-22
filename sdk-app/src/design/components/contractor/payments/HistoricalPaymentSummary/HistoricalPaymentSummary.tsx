@@ -58,14 +58,14 @@ export function HistoricalPaymentSummary({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
+      <Flex justifyContent="space-between" alignItems="center" gap={16}>
         <Flex flexDirection="column" gap={4}>
           <Components.Heading as="h2">Review and submit</Components.Heading>
           <Components.Text variant="supporting">
             Historical payment for {formatDate(paidDate)}
           </Components.Text>
         </Flex>
-        <Flex gap={8}>
+        <Flex gap={8} justifyContent="flex-end">
           {onBack && (
             <Components.Button variant="secondary" onClick={onBack}>
               Back
@@ -134,14 +134,6 @@ export function HistoricalPaymentSummary({
           />
         )}
       />
-
-      <Flex flexDirection="column" gap={4}>
-        <Components.Heading as="h3">Breakdown</Components.Heading>
-        <Components.Text>Wages: {formatCurrency(totals.wage)}</Components.Text>
-        <Components.Text>Bonuses: {formatCurrency(totals.bonus)}</Components.Text>
-        <Components.Text>Reimbursements: {formatCurrency(totals.reimbursement)}</Components.Text>
-        <Components.Text weight="bold">Total: {formatCurrency(totals.total)}</Components.Text>
-      </Flex>
     </Flex>
   )
 }

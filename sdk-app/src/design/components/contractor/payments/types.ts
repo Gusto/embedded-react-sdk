@@ -1,8 +1,10 @@
 export type WageType = 'Hourly' | 'Fixed'
+export type ContractorType = 'Individual' | 'Business'
 
 export interface ContractorOption {
   id: string
   name: string
+  type: ContractorType
   wageType: WageType
   hourlyRate?: string
 }

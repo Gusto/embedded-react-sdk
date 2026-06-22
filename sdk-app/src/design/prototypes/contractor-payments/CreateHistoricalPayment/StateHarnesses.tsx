@@ -24,10 +24,20 @@ export function SelectContractorsHarness({
       paidDate={paidDate}
       selectedContractorIds={selected}
       onPaidDateChange={setPaidDate}
-      onToggleContractor={id =>
-        { setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])); }
-      }
-      onContinue={() => { console.log('continue', { paidDate, selected }); }}
+      onToggleContractor={id => {
+        setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]))
+      }}
+      onSelectAllContractors={(checked, visibleContractors) => {
+        const visibleIds = visibleContractors.map(c => c.id)
+        setSelected(prev =>
+          checked
+            ? Array.from(new Set([...prev, ...visibleIds]))
+            : prev.filter(id => !visibleIds.includes(id)),
+        )
+      }}
+      onContinue={() => {
+        console.log('continue', { paidDate, selected })
+      }}
     />
   )
 }
@@ -43,11 +53,15 @@ export function ConfigurationHarness({ contractors, initialPayments }: Configura
     <HistoricalPaymentConfiguration
       contractors={contractors}
       payments={payments}
-      onUpdatePayment={updated =>
-        { setPayments(prev => prev.map(p => (p.contractorId === updated.contractorId ? updated : p))); }
-      }
-      onContinue={() => { console.log('continue to review'); }}
-      onBack={() => { console.log('back to select'); }}
+      onUpdatePayment={updated => {
+        setPayments(prev => prev.map(p => (p.contractorId === updated.contractorId ? updated : p)))
+      }}
+      onContinue={() => {
+        console.log('continue to review')
+      }}
+      onBack={() => {
+        console.log('back to select')
+      }}
     />
   )
 }

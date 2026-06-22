@@ -1,6 +1,7 @@
 import { Suspense, useMemo, useState } from 'react'
 import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsCreate'
+import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsPreview'
 import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
 import { SelectContractors } from '../../../components/contractor/payments/SelectContractors/SelectContractors'
 import { HistoricalPaymentConfiguration } from '../../../components/contractor/payments/HistoricalPaymentConfiguration/HistoricalPaymentConfiguration'
@@ -25,6 +26,7 @@ type Step = 'select' | 'configure' | 'review'
 function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
   const Components = useComponentContext()
   const { data } = useContractorsListSuspense({ companyUuid: companyId })
+  const previewMutation = useContractorPaymentGroupsPreviewMutation()
   const createMutation = useContractorPaymentGroupsCreateMutation()
 
   const contractors = useMemo(() => toContractorOptions(data.contractors ?? []), [data.contractors])
@@ -42,6 +44,15 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
 
   const toggleContractor = (id: string) => {
     setSelectedIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]))
+  }
+
+  const selectAllContractors = (checked: boolean, visibleContractors: ContractorOption[]) => {
+    const visibleIds = visibleContractors.map(c => c.id)
+    setSelectedIds(prev =>
+      checked
+        ? Array.from(new Set([...prev, ...visibleIds]))
+        : prev.filter(id => !visibleIds.includes(id)),
+    )
   }
 
   const handleSelectContinue = () => {
@@ -71,23 +82,38 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
 
     if (touched.length === 0 || !paidDate) return
 
+    const contractorPayments = touched.map(payment => {
+      const contractor = contractors.find(c => c.id === payment.contractorId)!
+      return {
+        contractorUuid: payment.contractorId,
+        paymentMethod: 'Historical Payment' as const,
+        ...(contractor.wageType === 'Hourly'
+          ? { hours: payment.hours || '0', bonus: payment.bonus || '0' }
+          : { wage: payment.wage || '0' }),
+        reimbursement: payment.reimbursement || '0',
+      }
+    })
+
+    const previewResult = await previewMutation.mutateAsync({
+      request: {
+        companyId,
+        requestBody: {
+          checkDate: new RFCDate(paidDate),
+          contractorPayments,
+        },
+      },
+    })
+
+    const creationToken = previewResult.contractorPaymentGroupPreview?.creationToken
+    if (!creationToken) return
+
     await createMutation.mutateAsync({
       request: {
         companyId,
         requestBody: {
           checkDate: new RFCDate(paidDate),
-          creationToken: crypto.randomUUID(),
-          contractorPayments: touched.map(payment => {
-            const contractor = contractors.find(c => c.id === payment.contractorId)!
-            return {
-              contractorUuid: payment.contractorId,
-              paymentMethod: 'Historical Payment',
-              ...(contractor.wageType === 'Hourly'
-                ? { hours: payment.hours || '0', bonus: payment.bonus || '0' }
-                : { wage: payment.wage || '0' }),
-              reimbursement: payment.reimbursement || '0',
-            }
-          }),
+          creationToken,
+          contractorPayments,
         },
       },
     })
@@ -112,6 +138,7 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
         selectedContractorIds={selectedIds}
         onPaidDateChange={setPaidDate}
         onToggleContractor={toggleContractor}
+        onSelectAllContractors={selectAllContractors}
         onContinue={handleSelectContinue}
       />
     )
@@ -124,8 +151,12 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
         contractors={selected}
         payments={payments}
         onUpdatePayment={handleUpdatePayment}
-        onContinue={() => { setStep('review'); }}
-        onBack={() => { setStep('select'); }}
+        onContinue={() => {
+          setStep('review')
+        }}
+        onBack={() => {
+          setStep('select')
+        }}
       />
     )
   }
@@ -135,9 +166,11 @@ function Root({ companyId, onDone }: CreateHistoricalPaymentProps) {
       contractors={contractorsByIds(contractors, selectedIds)}
       payments={payments}
       paidDate={paidDate}
-      isSubmitting={createMutation.isPending}
+      isSubmitting={previewMutation.isPending || createMutation.isPending}
       onSubmit={handleSubmit}
-      onBack={() => { setStep('configure'); }}
+      onBack={() => {
+        setStep('configure')
+      }}
     />
   )
 }

@@ -63,7 +63,7 @@ export function HistoricalPaymentConfiguration({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
+      <Flex justifyContent="space-between" alignItems="center" gap={16}>
         <Flex flexDirection="column" gap={4}>
           <Components.Heading as="h2">Hours and payments</Components.Heading>
           <Components.Text variant="supporting">
@@ -71,15 +71,14 @@ export function HistoricalPaymentConfiguration({
             reimbursements.
           </Components.Text>
         </Flex>
-        <Flex gap={8}>
+        <Flex gap={8} justifyContent="flex-end">
           {onBack && (
             <Components.Button variant="secondary" onClick={onBack}>
               Back
             </Components.Button>
           )}
-          <FlexItem>
-            <Components.Button onClick={onContinue}>Continue</Components.Button>
-          </FlexItem>
+
+          <Components.Button onClick={onContinue}>Continue</Components.Button>
         </Flex>
       </Flex>
 
@@ -127,7 +126,9 @@ export function HistoricalPaymentConfiguration({
             items={[
               {
                 label: 'Edit contractor payment',
-                onClick: () => { setEditingContractorId(contractor.id); },
+                onClick: () => {
+                  setEditingContractorId(contractor.id)
+                },
               },
             ]}
             triggerLabel="Edit contractor payment"
@@ -156,7 +157,9 @@ export function HistoricalPaymentConfiguration({
         isOpen={editingRow !== null}
         contractor={editingRow?.contractor ?? null}
         initialPayment={editingRow?.payment ?? null}
-        onClose={() => { setEditingContractorId(null); }}
+        onClose={() => {
+          setEditingContractorId(null)
+        }}
         onSave={onUpdatePayment}
       />
     </Flex>

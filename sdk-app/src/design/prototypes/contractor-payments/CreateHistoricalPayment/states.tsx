@@ -11,23 +11,24 @@ import { ConfigurationHarness, SelectContractorsHarness } from './StateHarnesses
 
 export function toContractorOptions(contractors: Contractor[]): ContractorOption[] {
   return contractors
-    .filter(c => c.isActive)
+    .filter(c => c.isActive && c.onboarded)
     .map(c => ({
       id: c.uuid,
       name:
         c.type === 'Business'
           ? (c.businessName ?? '')
           : `${c.firstName ?? ''} ${c.lastName ?? ''}`.trim(),
+      type: (c.type ?? 'Individual') as ContractorOption['type'],
       wageType: (c.wageType ?? 'Fixed') as ContractorOption['wageType'],
       hourlyRate: c.hourlyRate,
     }))
 }
 
 const mixedContractors: ContractorOption[] = [
-  { id: 'c-1', name: 'Alex Kim', wageType: 'Hourly', hourlyRate: '45' },
-  { id: 'c-2', name: 'Riley Chen', wageType: 'Fixed' },
-  { id: 'c-3', name: 'Studio Bloom LLC', wageType: 'Fixed' },
-  { id: 'c-4', name: 'Jordan Patel', wageType: 'Hourly', hourlyRate: '60' },
+  { id: 'c-1', name: 'Alex Kim', type: 'Individual', wageType: 'Hourly', hourlyRate: '45' },
+  { id: 'c-2', name: 'Riley Chen', type: 'Individual', wageType: 'Fixed' },
+  { id: 'c-3', name: 'Studio Bloom LLC', type: 'Business', wageType: 'Fixed' },
+  { id: 'c-4', name: 'Jordan Patel', type: 'Individual', wageType: 'Hourly', hourlyRate: '60' },
 ]
 
 const populatedPayments: HistoricalContractorPayment[] = [
@@ -124,8 +125,12 @@ export const components: PrototypeComponent[] = [
             contractors={mixedContractors.slice(0, 3)}
             payments={populatedPayments}
             paidDate="2026-05-12"
-            onSubmit={() => { console.log('submit historical payment'); }}
-            onBack={() => { console.log('back to configure'); }}
+            onSubmit={() => {
+              console.log('submit historical payment')
+            }}
+            onBack={() => {
+              console.log('back to configure')
+            }}
           />
         ),
       },
@@ -140,8 +145,12 @@ export const components: PrototypeComponent[] = [
               { contractorId: 'c-2', hours: '0', wage: '3000', bonus: '0', reimbursement: '100' },
             ]}
             paidDate="2026-04-30"
-            onSubmit={() => { console.log('submit historical payment'); }}
-            onBack={() => { console.log('back to configure'); }}
+            onSubmit={() => {
+              console.log('submit historical payment')
+            }}
+            onBack={() => {
+              console.log('back to configure')
+            }}
           />
         ),
       },
@@ -154,8 +163,12 @@ export const components: PrototypeComponent[] = [
             contractors={[]}
             payments={[]}
             paidDate="2026-05-12"
-            onSubmit={() => { console.log('submit'); }}
-            onBack={() => { console.log('back'); }}
+            onSubmit={() => {
+              console.log('submit')
+            }}
+            onBack={() => {
+              console.log('back')
+            }}
           />
         ),
       },

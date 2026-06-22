@@ -1,6 +1,20 @@
 import type { ContractorOption } from '../types'
-import { ActionsLayout, EmptyData, Flex } from '@/components/Common'
+import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+function parseIsoDate(iso: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
+  if (!match) return null
+  const [, year, month, day] = match
+  return new Date(Number(year), Number(month) - 1, Number(day))
+}
+
+function toIsoDate(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 interface SelectContractorsProps {
   contractors: ContractorOption[]
@@ -8,6 +22,7 @@ interface SelectContractorsProps {
   selectedContractorIds: string[]
   onPaidDateChange: (date: string) => void
   onToggleContractor: (contractorId: string) => void
+  onSelectAllContractors: (checked: boolean, visibleContractors: ContractorOption[]) => void
   onContinue: () => void
   onCancel?: () => void
 }
@@ -18,13 +33,53 @@ export function SelectContractors({
   selectedContractorIds,
   onPaidDateChange,
   onToggleContractor,
+  onSelectAllContractors,
   onContinue,
   onCancel,
 }: SelectContractorsProps) {
   const Components = useComponentContext()
 
   const canContinue = Boolean(paidDate) && selectedContractorIds.length > 0
-  const today = new Date().toISOString().slice(0, 10)
+  const today = new Date()
+  const paidDateValue = paidDate ? parseIsoDate(paidDate) : null
+
+  const dataViewProps = useDataView<ContractorOption>({
+    data: contractors,
+    columns: [
+      {
+        key: 'name',
+        title: 'Contractor',
+        render: contractor => (
+          <>
+            {contractor.name}
+            <Components.Text variant="supporting" size="sm">
+              {contractor.type}
+            </Components.Text>
+          </>
+        ),
+      },
+      {
+        key: 'wage',
+        title: 'Wage',
+        render: contractor =>
+          contractor.wageType === 'Hourly' && contractor.hourlyRate
+            ? `Hourly · $${contractor.hourlyRate}/hr`
+            : contractor.wageType,
+      },
+    ],
+    selectionMode: 'multiple',
+    onSelect: (contractor, _checked) => {
+      onToggleContractor(contractor.id)
+    },
+    onSelectAll: onSelectAllContractors,
+    getIsItemSelected: contractor => selectedContractorIds.includes(contractor.id),
+    emptyState: () => (
+      <EmptyData
+        title="No active contractors"
+        description="Activate at least one contractor before recording a historical payment."
+      />
+    ),
+  })
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -36,52 +91,17 @@ export function SelectContractors({
         </Components.Text>
       </Flex>
 
-      <div style={{ maxWidth: 280 }}>
-        <Components.TextInput
-          type="date"
-          label="Paid date"
-          isRequired
-          value={paidDate}
-          onChange={onPaidDateChange}
-          max={today}
-        />
-      </div>
+      <Components.DatePicker
+        label="Payment date"
+        isRequired
+        value={paidDateValue}
+        onChange={date => {
+          onPaidDateChange(date ? toIsoDate(date) : '')
+        }}
+        maxDate={today}
+      />
 
-      <Flex flexDirection="column" gap={16}>
-        <Components.Heading as="h3">Contractors</Components.Heading>
-        {contractors.length === 0 ? (
-          <EmptyData
-            title="No active contractors"
-            description="Activate at least one contractor before recording a historical payment."
-          />
-        ) : (
-          <Flex flexDirection="column" gap={12}>
-            {contractors.map(contractor => {
-              const isSelected = selectedContractorIds.includes(contractor.id)
-              const wageLabel =
-                contractor.wageType === 'Hourly' && contractor.hourlyRate
-                  ? `Hourly · $${contractor.hourlyRate}/hr`
-                  : contractor.wageType
-              return (
-                <Flex
-                  key={contractor.id}
-                  flexDirection="row"
-                  gap={12}
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Components.Checkbox
-                    label={contractor.name}
-                    value={isSelected}
-                    onChange={() => { onToggleContractor(contractor.id); }}
-                  />
-                  <Components.Text variant="supporting">{wageLabel}</Components.Text>
-                </Flex>
-              )
-            })}
-          </Flex>
-        )}
-      </Flex>
+      <DataView label="Select contractors" {...dataViewProps} />
 
       <ActionsLayout>
         {onCancel && (
