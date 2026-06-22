@@ -232,21 +232,21 @@ parsed values (or `undefined` if invalid).
 
 #### Extended by
 
-- [`UseDeductionFormReady`](employee/hooks.md#usedeductionformready)
-- [`UseChildSupportGarnishmentFormReady`](employee/hooks.md#usechildsupportgarnishmentformready)
-- [`UseCompensationFormReady`](employee/hooks.md#usecompensationformready)
-- [`UseJobFormReady`](employee/hooks.md#usejobformready)
-- [`UseEmployeeDetailsFormReady`](employee/hooks.md#useemployeedetailsformready)
-- [`UseWorkAddressFormReady`](employee/hooks.md#useworkaddressformready)
-- [`UseHomeAddressFormReady`](employee/hooks.md#usehomeaddressformready)
-- [`UseBankFormReady`](employee/hooks.md#usebankformready)
-- [`UsePaymentMethodFormReady`](employee/hooks.md#usepaymentmethodformready)
-- [`UseSplitPaymentsFormReady`](employee/hooks.md#usesplitpaymentsformready)
-- [`UseEmployeeStateTaxesFormReady`](employee/hooks.md#useemployeestatetaxesformready)
-- [`UseFederalTaxesFormReady`](employee/hooks.md#usefederaltaxesformready)
-- [`UseSignEmployeeFormReady`](employee/hooks.md#usesignemployeeformready)
-- [`UsePayScheduleFormReady`](company/hooks.md#usepayscheduleformready)
-- [`UseSignCompanyFormReady`](company/hooks.md#usesigncompanyformready)
+- [`UseDeductionFormReady`](employee/hooks/use-deduction-form.md#usedeductionformready)
+- [`UseChildSupportGarnishmentFormReady`](employee/hooks/use-child-support-garnishment-form.md#usechildsupportgarnishmentformready)
+- [`UseCompensationFormReady`](employee/hooks/use-compensation-form.md#usecompensationformready)
+- [`UseJobFormReady`](employee/hooks/use-job-form.md#usejobformready)
+- [`UseEmployeeDetailsFormReady`](employee/hooks/use-employee-details-form.md#useemployeedetailsformready)
+- [`UseWorkAddressFormReady`](employee/hooks/use-work-address-form.md#useworkaddressformready)
+- [`UseHomeAddressFormReady`](employee/hooks/use-home-address-form.md#usehomeaddressformready)
+- [`UseBankFormReady`](employee/hooks/use-bank-form.md#usebankformready)
+- [`UsePaymentMethodFormReady`](employee/hooks/use-payment-method-form.md#usepaymentmethodformready)
+- [`UseSplitPaymentsFormReady`](employee/hooks/use-split-payments-form.md#usesplitpaymentsformready)
+- [`UseEmployeeStateTaxesFormReady`](employee/hooks/use-employee-state-taxes-form.md#useemployeestatetaxesformready)
+- [`UseFederalTaxesFormReady`](employee/hooks/use-federal-taxes-form.md#usefederaltaxesformready)
+- [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
+- [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
+- [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
 
 #### Type Parameters
 
@@ -290,7 +290,7 @@ narrowing. `isLoading: false` discriminates this branch from
 
 #### Extended by
 
-- [`UseEmployeeListReady`](employee/hooks.md#useemployeelistready)
+- [`UseEmployeeListReady`](employee/hooks/use-employee-list.md#useemployeelistready)
 
 #### Type Parameters
 

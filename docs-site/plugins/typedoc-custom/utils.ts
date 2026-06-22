@@ -123,6 +123,10 @@ export function isNamespaceIndex(model: DeclarationReflection): boolean {
   return model.comment?.blockTags.some(tag => tag.tag === '@namespaceIndex') ?? false
 }
 
+export function isHooksIndex(model: DeclarationReflection): boolean {
+  return model.comment?.blockTags.some(tag => tag.tag === '@hooksIndex') ?? false
+}
+
 export function getDomainPath(model: DeclarationReflection): string {
   const tag = model.comment?.blockTags.find(t => t.tag === '@domainPath')
   return tag ? Comment.combineDisplayParts(tag.content) : ''
@@ -142,7 +146,6 @@ export function getSidebarPosition(url: string): number | undefined {
   // lands after all flow pages regardless of their names.
   if (filename.endsWith('-flow')) return 2
   if (filename === 'sub-components') return 99
-  if (filename === 'hooks') return 100
   return undefined
 }
 

@@ -28,17 +28,17 @@ The namespace for all workflows and blocks related to managing an employee after
 
 | Hook | Description |
 | ---- | ----------- |
-| [useBankForm](hooks.md#usebankform) | Headless React Hook Form hook for creating an employee bank account. |
-| [useCompensationForm](hooks.md#usecompensationform) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
-| [useDeductionForm](hooks.md#usedeductionform) | Headless hook for creating or updating a non-child-support deduction. |
-| [useChildSupportGarnishmentForm](hooks.md#usechildsupportgarnishmentform) | Headless hook for creating or updating a child-support garnishment. |
-| [useHomeAddressForm](hooks.md#usehomeaddressform) | Form hook for creating or editing an employee's home address. |
-| [useSignEmployeeForm](hooks.md#usesignemployeeform) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
-| [useEmployeeStateTaxesForm](hooks.md#useemployeestatetaxesform) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
-| [useEmployeeDetailsForm](hooks.md#useemployeedetailsform) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
-| [useFederalTaxesForm](hooks.md#usefederaltaxesform) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
-| [useWorkAddressForm](hooks.md#useworkaddressform) | Form hook for creating or editing an employee's work address. |
-| [useEmployeeList](hooks.md#useemployeelist) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
-| [useJobForm](hooks.md#usejobform) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
-| [usePaymentMethodForm](hooks.md#usepaymentmethodform) | Headless React Hook Form hook for updating an employee's payment method. |
-| [useSplitPaymentsForm](hooks.md#usesplitpaymentsform) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
+| [useBankForm](hooks/use-bank-form.md) | Headless React Hook Form hook for creating an employee bank account. |
+| [useChildSupportGarnishmentForm](hooks/use-child-support-garnishment-form.md) | Headless hook for creating or updating a child-support garnishment. |
+| [useCompensationForm](hooks/use-compensation-form.md) | Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment. |
+| [useDeductionForm](hooks/use-deduction-form.md) | Headless hook for creating or updating a non-child-support deduction. |
+| [useEmployeeDetailsForm](hooks/use-employee-details-form.md) | Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference. |
+| [useEmployeeList](hooks/use-employee-list.md) | Fetches a paginated list of a company's employees and decorates each entry with the actions allowed for its current onboarding state. |
+| [useEmployeeStateTaxesForm](hooks/use-employee-state-taxes-form.md) | Headless form hook for updating an employee's state tax withholding answers. The set of questions is driven by the API response per state, so `form.Fields` is an array of state groups with discriminated, render-ready `Field` components rather than a fixed named object. |
+| [useFederalTaxesForm](hooks/use-federal-taxes-form.md) | Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [useHomeAddressForm](hooks/use-home-address-form.md) | Form hook for creating or editing an employee's home address. |
+| [useJobForm](hooks/use-job-form.md) | Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields. |
+| [usePaymentMethodForm](hooks/use-payment-method-form.md) | Headless React Hook Form hook for updating an employee's payment method. |
+| [useSignEmployeeForm](hooks/use-sign-employee-form.md) | Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification. |
+| [useSplitPaymentsForm](hooks/use-split-payments-form.md) | Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts. |
+| [useWorkAddressForm](hooks/use-work-address-form.md) | Form hook for creating or editing an employee's work address. |

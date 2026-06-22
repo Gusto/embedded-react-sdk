@@ -14,6 +14,7 @@ import {
   getSidebarPosition,
   isComponent,
   isDomainHub,
+  isHooksIndex,
   isNamespaceIndex,
   pageDescription,
   pageTitle,
@@ -54,21 +55,35 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
   }
 
   const hooksNs = (context.router as SDKRouter).hooksNsByDomain.get(getDomainPath(model))
-  const hookGroups = (hooksNs?.groups ?? []).filter(g => /^use[A-Z]/.test(g.title))
+  const hookPages = (hooksNs?.children ?? []) as DeclarationReflection[]
 
-  if (hookGroups.length > 0) {
+  if (hookPages.length > 0) {
     parts.push('## Hooks', '')
     parts.push('| Hook | Description |')
     parts.push('| ---- | ----------- |')
-    for (const group of hookGroups) {
-      const primaryHook = group.children[0] as DeclarationReflection | undefined
-      if (!primaryHook) continue
-      const url = context.urlTo(primaryHook)
-      const description = getReflectionDescription(primaryHook, context)
-      parts.push(`| [${group.title}](${url}) | ${description} |`)
+    for (const hookNs of hookPages) {
+      const url = context.urlTo(hookNs)
+      const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
+        hookNs.children?.[0]) as DeclarationReflection | undefined
+      const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
+      parts.push(`| [${hookNs.name}](${url}) | ${description} |`)
     }
   }
 
+  return parts.join('\n')
+}
+
+function renderHooksIndex(context: SDKThemeContext, model: DeclarationReflection): string {
+  const parts: string[] = [`# ${model.name}`, '']
+  parts.push('| Hook | Description |')
+  parts.push('| ---- | ----------- |')
+  for (const hookNs of (model.children ?? []) as DeclarationReflection[]) {
+    const url = context.urlTo(hookNs)
+    const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
+      hookNs.children?.[0]) as DeclarationReflection | undefined
+    const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
+    parts.push(`| [${hookNs.name}](${url}) | ${description} |`)
+  }
   return parts.join('\n')
 }
 
@@ -370,6 +385,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
       ...this.templates,
       reflection: (page: MarkdownPageEvent<DeclarationReflection>) => {
         if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
+        if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
         const flowReadme = (this.router as SDKRouter).flowReadmes.get(page.model)
         if (flowReadme) return renderFlowPage(origReflectionTemplate(page), flowReadme)

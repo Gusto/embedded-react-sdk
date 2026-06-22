@@ -147,6 +147,9 @@ function groupSyntheticMembers(
 }
 
 export class SDKRouter extends MemberRouter {
+  // Populated by buildPages; used by emitCategoryFiles to create hooks subdirectories.
+  private static readonly domainsWithHooks = new Set<string>()
+
   // Emit _category_.json files for each domain directory and namespace subdirectory
   // so Docusaurus uses our labels and ordering in the sidebar rather than inferring
   // them from directory names.
@@ -167,6 +170,14 @@ export class SDKRouter extends MemberRouter {
           join(nsDir, '_category_.json'),
           // index.md = position 1; namespace subdirs start at position 2
           JSON.stringify({ label: ns.id, position: nsIdx + 2, collapsed: false }, null, 2) + '\n',
+        )
+      }
+      if (SDKRouter.domainsWithHooks.has(domain.path)) {
+        const hooksDir = join(domainDir, 'hooks')
+        mkdirSync(hooksDir, { recursive: true })
+        writeFileSync(
+          join(hooksDir, '_category_.json'),
+          JSON.stringify({ label: 'Hooks', position: 100, collapsed: true }, null, 2) + '\n',
         )
       }
     }
@@ -339,11 +350,39 @@ export class SDKRouter extends MemberRouter {
     const pages = super.buildPages(project)
 
     for (const [domainPath, hooks] of hooksByDomain) {
-      const hooksNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
-      hooksNs.children = hooks
-      hooksNs.groups = groupSyntheticMembers(hooks, hooksNs, hookGroupMap)
-      this.buildSyntheticPage(`${domainPath}/hooks`, hooksNs, hooks, pages)
-      this.hooksNsByDomain.set(domainPath, hooksNs)
+      // Group hooks by hook directory name (e.g. 'useCompensationForm').
+      const byHookDir = new Map<string, DeclarationReflection[]>()
+      for (const hook of hooks) {
+        const hookDir = hookGroupMap.get(hook) ?? hook.name
+        const bucket = byHookDir.get(hookDir) ?? []
+        bucket.push(hook)
+        byHookDir.set(hookDir, bucket)
+      }
+
+      // Each hook directory gets its own page under ${domainPath}/hooks/.
+      const hookPageNsList: DeclarationReflection[] = []
+      for (const [hookDir, hookMembers] of byHookDir) {
+        const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
+        hookNs.children = hookMembers
+        hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
+        this.buildSyntheticPage(
+          `${domainPath}/hooks/${toKebabCase(hookDir)}`,
+          hookNs,
+          hookMembers,
+          pages,
+        )
+        hookPageNsList.push(hookNs)
+      }
+      hookPageNsList.sort((a, b) => a.name.localeCompare(b.name))
+
+      // Index page lists all hook pages for this domain.
+      const hooksIndexNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
+      hooksIndexNs.comment = new Comment()
+      hooksIndexNs.comment.blockTags.push(new CommentTag('@hooksIndex', []))
+      hooksIndexNs.children = hookPageNsList
+      this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages)
+      this.hooksNsByDomain.set(domainPath, hooksIndexNs)
+      SDKRouter.domainsWithHooks.add(domainPath)
     }
 
     for (const [page, members] of standaloneGroups) {

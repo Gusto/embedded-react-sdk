@@ -471,11 +471,11 @@ describe('buildPages — props interfaces excluded from standalone rendering', (
 })
 
 // ---------------------------------------------------------------------------
-// buildPages — domain hooks are consolidated onto a single page per domain
+// buildPages — domain hooks get individual pages under domain/hooks/
 // ---------------------------------------------------------------------------
 
 describe('buildPages — domain hooks page routing', () => {
-  it('multiple Employee exports share one Employee/hooks.md page', () => {
+  it('each hook dir gets its own page under domain/hooks/', () => {
     const project = makeProject()
     const hook1 = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     hook1.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -484,14 +484,18 @@ describe('buildPages — domain hooks page routing', () => {
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
+    expect(urls).toContain('employee/hooks/index.md')
+    expect(urls).toContain('employee/hooks/use-home-address-form.md')
+    expect(urls).toContain('employee/hooks/use-bank-form.md')
+    expect(urls).not.toContain('employee/hooks.md')
+    // Hook functions are anchors on their hook dir page, not standalone pages.
     expect(router.hasOwnDocument(hook1)).toBe(false)
     expect(router.hasOwnDocument(hook2)).toBe(false)
-    expect(pages.map(p => p.url)).toContain('employee/hooks.md')
-    expect(pages.filter(p => p.url === 'employee/hooks.md')).toHaveLength(1)
   })
 
-  it('non-function domain exports (types, interfaces, enums) also go to the domain page', () => {
+  it('non-function domain exports (types, interfaces, enums) are anchors on their hook dir page', () => {
     const project = makeProject()
     const iface = makeChild(project, 'UseBankFormProps', ReflectionKind.Interface)
     iface.sources = sourceRef(
@@ -513,10 +517,10 @@ describe('buildPages — domain hooks page routing', () => {
     expect(router.hasOwnDocument(alias)).toBe(false)
     expect(router.hasOwnDocument(enumChild)).toBe(false)
     expect(router.getAnchor(iface)).toBeDefined()
-    expect(pages.map(p => p.url)).toContain('employee/hooks.md')
+    expect(pages.map(p => p.url)).toContain('employee/hooks/use-bank-form.md')
   })
 
-  it('each domain export gets an anchor on the domain page', () => {
+  it('each domain export gets an anchor on its hook dir page', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -528,7 +532,7 @@ describe('buildPages — domain hooks page routing', () => {
     expect(router.getAnchor(hook)).toBeDefined()
   })
 
-  it('exports from different domains go to separate pages', () => {
+  it('exports from different domains go to separate hooks directories', () => {
     const project = makeProject()
     const empHook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     empHook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -539,19 +543,20 @@ describe('buildPages — domain hooks page routing', () => {
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    expect(urls).toContain('employee/hooks.md')
-    expect(urls).toContain('company/hooks.md')
+    expect(urls).toContain('employee/hooks/index.md')
+    expect(urls).toContain('company/hooks/index.md')
   })
 
-  it('domain export from a non-hook file is NOT routed to hooks.md', () => {
+  it('domain export from a non-hook file is NOT routed to any hooks page', () => {
     const project = makeProject()
     const helper = makeChild(project, 'formatDate', ReflectionKind.Function)
     helper.sources = sourceRef('/workspace/src/components/Employee/utils/helpers.ts')
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
-    expect(pages.map(p => p.url)).not.toContain('employee/hooks.md')
+    expect(urls.some(u => u.startsWith('employee/hooks/'))).toBe(false)
     // Falls through to project index anchor instead
     expect(router.hasOwnDocument(helper)).toBe(false)
   })
@@ -563,8 +568,9 @@ describe('buildPages — domain hooks page routing', () => {
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
-    expect(pages.map(p => p.url)).not.toContain('employee/hooks.md')
+    expect(urls.some(u => u.startsWith('employee/hooks/'))).toBe(false)
     expect(router.hasOwnDocument(hook)).toBe(false)
   })
 
@@ -859,17 +865,16 @@ describe('reparentDeprecatedMembers', () => {
 })
 
 // ---------------------------------------------------------------------------
-// buildPages — hook directory controls grouping on domain hooks page
+// buildPages — hook directory controls per-hook page membership
 //
-// groupSyntheticMembers uses hookGroupMap (built from source paths before they
-// are cleared) as the primary group key. Each member lands in the group named
-// after its hook directory, regardless of any @group tag. @group is only
-// consulted as a fallback when no hook directory is present, and kind-based
-// grouping is the last resort.
+// Each hook directory gets its own page under domain/hooks/. groupSyntheticMembers
+// uses hookGroupMap (built from source paths before they are cleared) as the
+// primary group key within that page. @group is only consulted as a fallback
+// when no hook directory is present, and kind-based grouping is the last resort.
 // ---------------------------------------------------------------------------
 
-describe('buildPages — hook directory controls grouping on domain hooks page', () => {
-  it('hook function is grouped under its own hook directory name', () => {
+describe('buildPages — hook directory controls per-hook page membership', () => {
+  it('hook function gets its own page named after its hook directory', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
     hook.sources = sourceRef(
@@ -878,15 +883,15 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
-      ?.model as DeclarationReflection
-    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
-    expect(group).toBeDefined()
-    expect(group!.children).toContain(hook)
+    expect(urls).toContain('employee/hooks/use-compensation-form.md')
+    // The hook function is an anchor on that page, not its own document.
+    expect(router.hasOwnDocument(hook)).toBe(false)
+    expect(router.getAnchor(hook)).toBeDefined()
   })
 
-  it('companion type from the same hook directory goes to that hook group', () => {
+  it('companion types from the same hook directory are anchors on that hook page', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
     hook.sources = sourceRef(
@@ -904,38 +909,33 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
+    const hookPageModel = pages.find(p => p.url === 'employee/hooks/use-compensation-form.md')
       ?.model as DeclarationReflection
-    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
-    expect(group).toBeDefined()
-    expect(group!.children).toContain(hook)
-    expect(group!.children).toContain(errorCodes)
-    expect(group!.children).toContain(propsIface)
+    expect(hookPageModel).toBeDefined()
+    expect(hookPageModel.children).toContain(hook)
+    expect(hookPageModel.children).toContain(errorCodes)
+    expect(hookPageModel.children).toContain(propsIface)
   })
 
-  it('hook directory takes priority over an explicit @group tag', () => {
+  it('hook directory takes priority over an explicit @group tag for page assignment', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
     hook.sources = sourceRef(
       '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
     )
-    // Explicit @group would previously have placed this in 'Data Hooks'
     hook.comment = new Comment()
     hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data Hooks' }]))
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
-      ?.model as DeclarationReflection
-    const hookDirGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
-    const tagGroup = hooksModel.groups?.find(g => g.title === 'Data Hooks')
-    expect(hookDirGroup).toBeDefined()
-    expect(hookDirGroup!.children).toContain(hook)
-    expect(tagGroup).toBeUndefined()
+    // Goes to its hook dir page, not a 'Data Hooks' page.
+    expect(urls).toContain('employee/hooks/use-compensation-form.md')
+    expect(urls.some(u => u.includes('data-hooks'))).toBe(false)
   })
 
-  it('members from different hook directories land in separate groups', () => {
+  it('hooks from different directories get separate pages', () => {
     const project = makeProject()
 
     const compHook = makeChild(project, 'useCompensationForm', ReflectionKind.Function)
@@ -953,21 +953,22 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
+    const urls = pages.map(p => p.url)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
+    expect(urls).toContain('employee/hooks/use-compensation-form.md')
+    expect(urls).toContain('employee/hooks/use-job-form.md')
+    expect(urls).toContain('employee/hooks/use-employee-state-taxes-form.md')
+
+    const compPage = pages.find(p => p.url === 'employee/hooks/use-compensation-form.md')
       ?.model as DeclarationReflection
-    const compGroup = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
-    const jobGroup = hooksModel.groups?.find(g => g.title === 'useJobForm')
-    const stateTaxGroup = hooksModel.groups?.find(g => g.title === 'useEmployeeStateTaxesForm')
-
-    expect(compGroup?.children).toContain(compHook)
-    expect(jobGroup?.children).toContain(jobHook)
-    expect(stateTaxGroup?.children).toContain(stateTaxHelper)
-    expect(compGroup?.children).not.toContain(jobHook)
-    expect(compGroup?.children).not.toContain(stateTaxHelper)
+    const jobPage = pages.find(p => p.url === 'employee/hooks/use-job-form.md')
+      ?.model as DeclarationReflection
+    expect(compPage.children).toContain(compHook)
+    expect(jobPage.children).toContain(jobHook)
+    expect(compPage.children).not.toContain(jobHook)
   })
 
-  it('primary hook function is sorted first within its hook group', () => {
+  it('hook page members are grouped by kind within the page', () => {
     const project = makeProject()
     const errorCodes = makeChild(project, 'CompensationErrorCodes', ReflectionKind.Variable)
     errorCodes.sources = sourceRef(
@@ -985,15 +986,21 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
+    const hookPageModel = pages.find(p => p.url === 'employee/hooks/use-compensation-form.md')
       ?.model as DeclarationReflection
-    const group = hooksModel.groups?.find(g => g.title === 'useCompensationForm')
-    expect(group!.children[0]).toBe(hook)
+    expect(hookPageModel).toBeDefined()
+    expect(hookPageModel.children).toContain(hook)
+    expect(hookPageModel.children).toContain(errorCodes)
+    expect(hookPageModel.children).toContain(propsIface)
+    // Members are grouped by kind within the page.
+    expect(hookPageModel.groups?.find(g => g.title === 'Functions')?.children).toContain(hook)
+    expect(hookPageModel.groups?.find(g => g.title === 'Variables')?.children).toContain(errorCodes)
+    expect(hookPageModel.groups?.find(g => g.title === 'Interfaces')?.children).toContain(
+      propsIface,
+    )
   })
 
   it('hook function in a non-hook directory falls back to @group tag when present', () => {
-    // A use[A-Z] function caught by isHookFn but living outside any hook directory
-    // (hookDirFromSources returns null). Should fall back to an explicit @group tag.
     const project = makeProject()
     const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
@@ -1003,14 +1010,16 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
+    // No hook directory → falls back to hook name as dir key, gets its own page
+    const hookPage = pages.find(p => p.url === 'employee/hooks/use-address-form.md')
       ?.model as DeclarationReflection
-    const group = hooksModel.groups?.find(g => g.title === 'Form Hooks')
+    expect(hookPage).toBeDefined()
+    // Within that page, the @group tag controls the group title.
+    const group = hookPage.groups?.find(g => g.title === 'Form Hooks')
     expect(group?.children).toContain(hook)
   })
 
   it('hook function in a non-hook directory with no @group falls back to kind name', () => {
-    // A use[A-Z] function outside any hook directory with no @group tag lands in 'Functions'.
     const project = makeProject()
     const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
@@ -1018,9 +1027,10 @@ describe('buildPages — hook directory controls grouping on domain hooks page',
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
 
-    const hooksModel = pages.find(p => p.url === 'employee/hooks.md')
+    const hookPage = pages.find(p => p.url === 'employee/hooks/use-address-form.md')
       ?.model as DeclarationReflection
-    const group = hooksModel.groups?.find(g => g.children.includes(hook))
+    expect(hookPage).toBeDefined()
+    const group = hookPage.groups?.find(g => g.children.includes(hook))
     expect(group?.title).toBe('Functions')
   })
 })
@@ -1287,7 +1297,7 @@ describe('buildPages — domain hub page', () => {
     expect(urls).toContain('Employee/README.md')
   })
 
-  it('domain hub does not suppress the domain hooks page', () => {
+  it('domain hub coexists with hooks index and individual hook pages', () => {
     const project = makeProject()
     const hook = makeChild(project, 'useHomeAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/hooks/useHomeAddressForm.ts')
@@ -1297,7 +1307,8 @@ describe('buildPages — domain hub page', () => {
     const urls = pages.map(p => p.url)
 
     expect(urls).toContain('employee/index.md')
-    expect(urls).toContain('employee/hooks.md')
+    expect(urls).toContain('employee/hooks/index.md')
+    expect(urls).toContain('employee/hooks/use-home-address-form.md')
   })
 })
 
