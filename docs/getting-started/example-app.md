@@ -4,7 +4,7 @@ description: A complete, runnable reference application that orchestrates Gusto 
 order: 4
 ---
 
-The [Gusto Embedded React SDK demo app](https://github.com/Gusto/embedded-react-sdk-demo-app) is a complete, runnable reference application that shows how to orchestrate the SDK across a real product. Where the rest of these guides cover one concept at a time, the demo app puts them together end to end: workflow components composed behind a router, a backend proxy for authentication, theming, and several full experiences wired into a single app.
+The [Gusto Embedded React SDK demo app](https://github.com/Gusto/embedded-react-sdk-demo-app) is a complete, runnable reference application that shows how to orchestrate the SDK across a hypothetical full product. Where the rest of these guides cover one concept at a time, the demo app puts them together end to end: workflow components composed behind a router, a backend proxy for authentication, theming, and several full experiences wired into a single app.
 
 It is the best place to see how the individual pieces connect into a cohesive integration.
 
@@ -17,7 +17,12 @@ It is the best place to see how the individual pieces connect into a cohesive in
   - Company onboarding
   - Employee onboarding (admin-driven)
   - Employee self-onboarding
-  - An onboarded-company dashboard covering running payroll, terminations, time off, employee management, bank accounts, locations, documents, pay schedules, and taxes
+  - An onboarded-company experience covering running payrolls as well as management of: employees, time off, terminations, bank accounts, locations, documents, pay schedules, and tax setup
+
+## What it doesn't yet demonstrate
+
+- **Hooks.** The demo app uses the component-based workflows to show the end-to-end experience. If you prefer a headless integration, the SDK also exports [hooks](../hooks/hooks.md) that give you full control over UI and state management. You can use hooks to replicate the experience shown in the demo app in a way that aligns better with your own design system.
+- **Contractor functionality.** The SDK includes components for contractor onboarding and payments. These will be added to the demo app soon. In the meantime, you can learn more about contractor workflows in the [Contractor Onboarding](../workflows-overview/contractor-onboarding.md) and [Contractor Payments](../workflows-overview/contractor-payments.md) guides.
 
 ## Running it
 
