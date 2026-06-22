@@ -32,6 +32,10 @@ import {
   RegularRateOfPayPrototype,
   RegularRateOfPayStates,
 } from './design/prototypes/regular-rate-of-pay'
+import {
+  CreateHistoricalPaymentPrototype,
+  CreateHistoricalPaymentStates,
+} from './design/prototypes/contractor-payments/CreateHistoricalPayment'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -115,6 +119,22 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <RegularRateOfPayStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'create-historical-payment',
+            children: [
+              { index: true, element: <CreateHistoricalPaymentPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <CreateHistoricalPaymentStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <CreateHistoricalPaymentStates />,
                   },
                 ],
               },
