@@ -1,7 +1,15 @@
 .addressCell {
   display: flex;
   flex-direction: column;
-  gap: toRem(4);
+  gap: toRem(2);
   container-type: normal;
   font-style: normal;
+}
+
+.firstLine {
+  font-weight: var(--g-fontWeightMedium);
+}
+
+.secondLine {
+  font-weight: var(--g-fontWeightRegular);
 }
