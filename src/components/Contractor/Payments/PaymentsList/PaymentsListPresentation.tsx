@@ -158,6 +158,16 @@ export const PaymentsListPresentation = ({
             placeholder=""
             shouldVisuallyHideLabel
           />
+          {contractorPayments.length > 0 && (
+            <Button
+              onClick={onCreatePayment}
+              variant="secondary"
+              icon={<PlusCircleIcon aria-hidden />}
+              className={styles.nowrap}
+            >
+              {t('createPaymentCta')}
+            </Button>
+          )}
         </div>
       </Flex>
 
