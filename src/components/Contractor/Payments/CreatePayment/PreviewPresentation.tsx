@@ -192,6 +192,7 @@ export const PreviewPresentation = ({
           },
           {
             title: t('contractorTableHeaders.hours'),
+            justify: 'end',
             render: contractorPayment => {
               const hours = Number(contractorPayment.hours || '0')
               return contractorPayment.wageType === 'Hourly' && hours
@@ -201,6 +202,7 @@ export const PreviewPresentation = ({
           },
           {
             title: t('contractorTableHeaders.wage'),
+            justify: 'end',
             render: contractorPayment =>
               contractorPayment.wageType === 'Fixed' && contractorPayment.wage
                 ? currencyFormatter(Number(contractorPayment.wage || '0'))
@@ -208,15 +210,18 @@ export const PreviewPresentation = ({
           },
           {
             title: t('contractorTableHeaders.bonus'),
+            justify: 'end',
             render: contractorPayment => currencyFormatter(Number(contractorPayment.bonus || '0')),
           },
           {
             title: t('contractorTableHeaders.reimbursement'),
+            justify: 'end',
             render: contractorPayment =>
               currencyFormatter(Number(contractorPayment.reimbursement || '0')),
           },
           {
             title: t('contractorTableHeaders.total'),
+            justify: 'end',
             render: contractorPayment =>
               currencyFormatter(Number(contractorPayment.wageTotal || '0')),
           },

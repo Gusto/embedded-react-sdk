@@ -58,10 +58,12 @@ export const PaymentsListPresentation = ({
       },
       {
         title: t('wageTotalColumnLabel'),
+        justify: 'end',
         render: ({ totals }) => currencyFormatter(Number(totals?.wageAmount || 0)),
       },
       {
         title: t('reimbursementTotalColumnLabel'),
+        justify: 'end',
         render: ({ totals }) => currencyFormatter(Number(totals?.reimbursementAmount) || 0),
       },
     ],
