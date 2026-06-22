@@ -22,8 +22,8 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [CreatePayment](sub-components.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
-| [PaymentHistory](sub-components.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
-| [PaymentsList](sub-components.md#paymentslist) | Displays a list of contractor payment groups for a company. |
-| [PaymentStatement](sub-components.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
-| [PaymentSummary](sub-components.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
+| [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
+| [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |

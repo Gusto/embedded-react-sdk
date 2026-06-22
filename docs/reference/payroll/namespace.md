@@ -28,18 +28,18 @@ The Payroll namespace.
 
 | Component | Description |
 | --------- | ----------- |
-| [ConfirmWireDetails](sub-components.md#confirmwiredetails) | Wire transfer confirmation workflow for payroll funding. |
-| [DismissalPayPeriodSelection](sub-components.md#dismissalpayperiodselection) | Pay period selection step for the dismissal payroll workflow. |
-| [OffCycleCreation](sub-components.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
-| [OffCycleDeductionsSetting](sub-components.md#offcycledeductionssetting) | Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions. |
-| [OffCycleReasonSelection](sub-components.md#offcyclereasonselection) | Presents the reason selection UI for choosing between a bonus and correction off-cycle payment. |
-| [PayrollBlockerList](sub-components.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
-| [PayrollConfiguration](sub-components.md#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
-| [PayrollEditEmployee](sub-components.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
-| [PayrollHistory](sub-components.md#payrollhistory) | Displays historical payroll records with filtering and management capabilities. |
-| [PayrollLanding](sub-components.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
-| [PayrollList](sub-components.md#payrolllist) | Lists upcoming payrolls and lets users start running them. |
-| [PayrollOverview](sub-components.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
-| [PayrollReceipts](sub-components.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
-| [RecoveryCases](sub-components.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
-| [TransitionCreation](sub-components.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
+| [ConfirmWireDetails](blocks.md#confirmwiredetails) | Wire transfer confirmation workflow for payroll funding. |
+| [DismissalPayPeriodSelection](blocks.md#dismissalpayperiodselection) | Pay period selection step for the dismissal payroll workflow. |
+| [OffCycleCreation](blocks.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
+| [OffCycleDeductionsSetting](blocks.md#offcycledeductionssetting) | Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions. |
+| [OffCycleReasonSelection](blocks.md#offcyclereasonselection) | Presents the reason selection UI for choosing between a bonus and correction off-cycle payment. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+| [PayrollConfiguration](blocks.md#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
+| [PayrollEditEmployee](blocks.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
+| [PayrollHistory](blocks.md#payrollhistory) | Displays historical payroll records with filtering and management capabilities. |
+| [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
+| [PayrollList](blocks.md#payrolllist) | Lists upcoming payrolls and lets users start running them. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [RecoveryCases](blocks.md#recoverycases) | Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. |
+| [TransitionCreation](blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |

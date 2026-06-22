@@ -22,7 +22,7 @@ The multi-step onboarding execution flow — profile, compensation, taxes, payme
 
 ## Remarks
 
-Drives the per-employee onboarding experience used by both [OnboardingFlow](onboarding-flow.md) (admin) and [SelfOnboardingFlow](self-onboarding-flow.md) (employee). Each step is also exported as a standalone block — see [Profile](sub-components.md#profile), [Compensation](sub-components.md#compensation), [FederalTaxes](sub-components.md#federaltaxes), [StateTaxes](sub-components.md#statetaxes), [PaymentMethod](sub-components.md#paymentmethod), [Deductions](sub-components.md#deductions), [EmployeeDocuments](sub-components.md#employeedocuments), and [OnboardingSummary](sub-components.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
+Drives the per-employee onboarding experience used by both [OnboardingFlow](onboarding-flow.md) (admin) and [SelfOnboardingFlow](self-onboarding-flow.md) (employee). Each step is also exported as a standalone block — see [Profile](blocks.md#profile), [Compensation](blocks.md#compensation), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
 
 Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
 

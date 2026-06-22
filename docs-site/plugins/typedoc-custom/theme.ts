@@ -78,11 +78,11 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       const nsRelPath = nsPath.startsWith(domainPath + '/')
         ? nsPath.slice(domainPath.length + 1)
         : ''
-      const subComponentsHref = nsRelPath ? `${nsRelPath}/sub-components` : 'sub-components'
+      const subComponentsHref = nsRelPath ? `${nsRelPath}/blocks` : 'blocks'
       cards.push({
         type: 'link',
         href: subComponentsHref,
-        label: `${TYPE_EMOJIS.block} ${blocks.length} sub-component${blocks.length === 1 ? '' : 's'}`,
+        label: `${TYPE_EMOJIS.block} ${blocks.length} block${blocks.length === 1 ? '' : 's'}`,
       })
     }
 

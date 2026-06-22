@@ -30,8 +30,8 @@ The flow is driven by an internal state machine and wraps each step in
 error and suspense boundaries.
 
 Each step of the flow is also exported as a standalone component — see
-[ContractorList](sub-components.md#contractorlist), [ContractorProfile](sub-components.md#contractorprofile), [Address](sub-components.md#address),
-[PaymentMethod](sub-components.md#paymentmethod), [NewHireReport](sub-components.md#newhirereport), and [ContractorSubmit](sub-components.md#contractorsubmit) —
+[ContractorList](blocks.md#contractorlist), [ContractorProfile](blocks.md#contractorprofile), [Address](blocks.md#address),
+[PaymentMethod](blocks.md#paymentmethod), [NewHireReport](blocks.md#newhirereport), and [ContractorSubmit](blocks.md#contractorsubmit) —
 for composing a custom workflow when this orchestration is the wrong fit.
 
 The flow forwards every event emitted by its sub-components to `onEvent`;

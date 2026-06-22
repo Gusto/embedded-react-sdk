@@ -418,7 +418,7 @@ export class SDKRouter extends MemberRouter {
   /**
    * Override page building for namespaces and unmapped project-level members.
    *
-   * - Namespace with Flow children: split into workflows.md, sub-components.md, and index.md.
+   * - Namespace with Flow children: split into blocks.md, flows, and index.md.
    * - Namespace without Flow children: one page, all children as anchors.
    * - Domain hook (in handledHooks): skip — already registered in buildPages.
    * - Other project-level reflection: anchor onto the project's index page.
@@ -437,14 +437,14 @@ export class SDKRouter extends MemberRouter {
       const flows = children.filter(c => c.name.endsWith('Flow'))
 
       if (flows.length > 0) {
-        // Each Flow component gets its own page; block components share sub-components.md.
+        // Each Flow component gets its own page; block components share blocks.md.
         // The namespace's canonical URL points to index.md for cross-references.
         const nsBasePath = NAMESPACE_PATHS[reflection.name] ?? reflection.name
         const ns = reflection as DeclarationReflection
 
         // Props interfaces are inlined by the parametersTable override; exclude them
         // from .children so they don't also appear as standalone entries. Map each flow's
-        // props to that flow's page; block props go on sub-components.md.
+        // props to that flow's page; block props go on blocks.md.
         const allPropsSet = componentPropsInterfaces(ns)
         const flowPropsMap = new Map<DeclarationReflection, DeclarationReflection[]>()
         const blockProps: DeclarationReflection[] = []
@@ -486,7 +486,7 @@ export class SDKRouter extends MemberRouter {
 
         if (blocks.length > 0) {
           const blocksNs = new DeclarationReflection(
-            'Block Components',
+            'Blocks',
             ReflectionKind.Namespace,
             reflection.parent,
           )
@@ -494,7 +494,7 @@ export class SDKRouter extends MemberRouter {
           const blocksGroups = groupSyntheticMembers(blocks, blocksNs)
           if (blocksGroups.length > 1) blocksNs.groups = blocksGroups
           this.buildSyntheticPage(
-            `${nsBasePath}/sub-components`,
+            `${nsBasePath}/blocks`,
             blocksNs,
             [...blocks, ...blockProps],
             outPages,

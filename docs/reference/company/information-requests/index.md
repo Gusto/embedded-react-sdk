@@ -22,5 +22,5 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [InformationRequestForm](sub-components.md#informationrequestform) | Dynamic response form for a single information request. |
-| [InformationRequestList](sub-components.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |
+| [InformationRequestForm](blocks.md#informationrequestform) | Dynamic response form for a single information request. |
+| [InformationRequestList](blocks.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |

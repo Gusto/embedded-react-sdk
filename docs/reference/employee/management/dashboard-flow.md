@@ -32,21 +32,21 @@ Every tab section of the dashboard is also exported as a self-contained
 block that can be dropped into a custom layout without the surrounding
 dashboard chrome:
 
-- [Compensation](sub-components.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
-- [Profile](sub-components.md#profile) — Basic details tab (name, start date, SSN, DOB, email)
-- [FederalTaxes](sub-components.md#federaltaxes) — Taxes tab, federal withholding settings
-- [StateTaxes](sub-components.md#statetaxes) — Taxes tab, state withholding settings
-- [PaymentMethod](sub-components.md#paymentmethod) — direct-deposit bank accounts and split-paycheck configuration
-- [Deductions](sub-components.md#deductions) — post-tax deductions (garnishments)
-- [HomeAddress](sub-components.md#homeaddress) — home address management
-- [WorkAddress](sub-components.md#workaddress) — work address management
-- [Documents](sub-components.md#documents) — documents and forms (read-only viewer)
+- [Compensation](blocks.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
+- [Profile](blocks.md#profile) — Basic details tab (name, start date, SSN, DOB, email)
+- [FederalTaxes](blocks.md#federaltaxes) — Taxes tab, federal withholding settings
+- [StateTaxes](blocks.md#statetaxes) — Taxes tab, state withholding settings
+- [PaymentMethod](blocks.md#paymentmethod) — direct-deposit bank accounts and split-paycheck configuration
+- [Deductions](blocks.md#deductions) — post-tax deductions (garnishments)
+- [HomeAddress](blocks.md#homeaddress) — home address management
+- [WorkAddress](blocks.md#workaddress) — work address management
+- [Documents](blocks.md#documents) — documents and forms (read-only viewer)
 
 Each block wraps its read-only card, its edit form, and the card↔form
 transitions as a single drop-in. For cases where that built-in orchestration
 doesn't fit — rendering a form in a modal, driving navigation via a router,
 or showing a card read-only — each block's card and form are also exported
-individually (e.g. [CompensationCard](sub-components.md#compensationcard), [CompensationEditForm](sub-components.md#compensationeditform)).
+individually (e.g. [CompensationCard](blocks.md#compensationcard), [CompensationEditForm](blocks.md#compensationeditform)).
 Using the individual pieces means owning the swap, any success alerts, and
 cross-component state yourself.
 

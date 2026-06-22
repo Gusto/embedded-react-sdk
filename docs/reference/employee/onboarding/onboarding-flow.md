@@ -30,10 +30,10 @@ surfaces the list again. The flow is driven by an internal state machine
 and wraps each step in error and suspense boundaries.
 
 Each step of the flow is also exported as a standalone block — see
-[EmployeeList](sub-components.md#employeelist), [Profile](sub-components.md#profile), [Compensation](sub-components.md#compensation),
-[FederalTaxes](sub-components.md#federaltaxes), [StateTaxes](sub-components.md#statetaxes), [PaymentMethod](sub-components.md#paymentmethod),
-[Deductions](sub-components.md#deductions), [EmployeeDocuments](sub-components.md#employeedocuments), and
-[OnboardingSummary](sub-components.md#onboardingsummary) — for composing a custom workflow when this
+[EmployeeList](blocks.md#employeelist), [Profile](blocks.md#profile), [Compensation](blocks.md#compensation),
+[FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod),
+[Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and
+[OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this
 orchestration is the wrong fit.
 
 The flow forwards every event emitted by its sub-components to `onEvent`;

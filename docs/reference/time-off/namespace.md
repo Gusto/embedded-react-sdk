@@ -22,16 +22,16 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [AddEmployeesHoliday](sub-components.md#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
-| [AddEmployeesToPolicy](sub-components.md#addemployeestopolicy) | Employee selection screen for assigning employees to a sick or vacation time off policy. |
-| [HolidaySelectionForm](sub-components.md#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
-| [PolicyConfigurationForm](sub-components.md#policyconfigurationform) | Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration. |
-| [PolicyList](sub-components.md#policylist) | Displays all active time off policies (sick, vacation, and holiday) for a company. |
-| [PolicySettings](sub-components.md#policysettings) | Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual. |
-| [PolicySettingsPresentation](sub-components.md#policysettingspresentation) | Presentation-only form for configuring time off policy limits and rules. |
-| [PolicyTypeSelector](sub-components.md#policytypeselector) | Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday. |
-| [TimeOffPolicyDetail](sub-components.md#timeoffpolicydetail) | Detail view for a sick or vacation time-off policy. |
-| [TimeOffPolicyDetailPresentation](sub-components.md#timeoffpolicydetailpresentation) | Presentational detail view for sick and vacation time-off policies. |
-| [ViewHolidayEmployees](sub-components.md#viewholidayemployees) | Displays the holiday policy detail view with the employees tab selected. |
-| [ViewHolidayPolicyDetails](sub-components.md#viewholidaypolicydetails) | Displays the holiday pay policy for a company with tabbed views of the included holidays and the enrolled employees. |
-| [ViewHolidaySchedule](sub-components.md#viewholidayschedule) | Displays the holiday policy detail view with the holidays tab selected. |
+| [AddEmployeesHoliday](blocks.md#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
+| [AddEmployeesToPolicy](blocks.md#addemployeestopolicy) | Employee selection screen for assigning employees to a sick or vacation time off policy. |
+| [HolidaySelectionForm](blocks.md#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
+| [PolicyConfigurationForm](blocks.md#policyconfigurationform) | Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration. |
+| [PolicyList](blocks.md#policylist) | Displays all active time off policies (sick, vacation, and holiday) for a company. |
+| [PolicySettings](blocks.md#policysettings) | Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual. |
+| [PolicySettingsPresentation](blocks.md#policysettingspresentation) | Presentation-only form for configuring time off policy limits and rules. |
+| [PolicyTypeSelector](blocks.md#policytypeselector) | Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday. |
+| [TimeOffPolicyDetail](blocks.md#timeoffpolicydetail) | Detail view for a sick or vacation time-off policy. |
+| [TimeOffPolicyDetailPresentation](blocks.md#timeoffpolicydetailpresentation) | Presentational detail view for sick and vacation time-off policies. |
+| [ViewHolidayEmployees](blocks.md#viewholidayemployees) | Displays the holiday policy detail view with the employees tab selected. |
+| [ViewHolidayPolicyDetails](blocks.md#viewholidaypolicydetails) | Displays the holiday pay policy for a company with tabbed views of the included holidays and the enrolled employees. |
+| [ViewHolidaySchedule](blocks.md#viewholidayschedule) | Displays the holiday policy detail view with the holidays tab selected. |

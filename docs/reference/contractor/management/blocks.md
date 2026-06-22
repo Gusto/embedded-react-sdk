@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Sub-components
-description: Sub-components reference.
+title: Blocks
+description: Blocks reference.
 sidebar_position: 99
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Block Components
+# Blocks
 
 <a id="createpayment"></a>
 

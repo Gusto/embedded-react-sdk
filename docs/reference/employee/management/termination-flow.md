@@ -39,7 +39,7 @@ On mount, the flow detects existing terminations: if an active termination exist
 | `employee/termination/payrollCreated` | Fired when an off-cycle payroll is created for termination | `{ employeeId: string, effectiveDate: string }` |
 | `employee/termination/payrollFailed` | Fired when off-cycle payroll creation fails | `{ employeeId: string }` |
 
-The [PayrollOption](sub-components.md#payrolloption) on each event identifies how the partner has chosen to handle the employee's final paycheck:
+The [PayrollOption](blocks.md#payrolloption) on each event identifies how the partner has chosen to handle the employee's final paycheck:
 
 - `dismissalPayroll` — Run a dismissal payroll (the most guided option). The flow swaps the employee's last regular payroll into a dismissal payroll with the termination date as the pay-period end and makes a default PTO payout recommendation.
 - `regularPayroll` — Include the final pay in the employee's next scheduled regular payroll. The termination can still be cancelled after the fact.

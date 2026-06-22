@@ -22,9 +22,9 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [Address](sub-components.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
-| [ContractorList](sub-components.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
-| [ContractorProfile](sub-components.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
-| [ContractorSubmit](sub-components.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
-| [NewHireReport](sub-components.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
-| [PaymentMethod](sub-components.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
+| [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+| [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |

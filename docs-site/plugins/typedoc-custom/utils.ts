@@ -145,7 +145,7 @@ export function getSidebarPosition(url: string): number | undefined {
   // ties with 'source'/filename). sub-components gets a high position so it always
   // lands after all flow pages regardless of their names.
   if (filename.endsWith('-flow')) return 2
-  if (filename === 'sub-components') return 99
+  if (filename === 'blocks') return 99
   return undefined
 }
 

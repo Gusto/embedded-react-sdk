@@ -22,20 +22,20 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [AssignSignatory](sub-components.md#assignsignatory) | Lets a user either create a new signatory with full details or invite someone else to become the signatory. |
-| [BankAccount](sub-components.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
-| [CreateSignatory](sub-components.md#createsignatory) | Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address. |
-| [DocumentList](sub-components.md#documentlist) | Displays the list of company documents to be signed and lets the user manage signatories. |
-| [DocumentSigner](sub-components.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
-| [FederalTaxes](sub-components.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
-| [Industry](sub-components.md#industry) | Selects and saves the company's industry classification (NAICS code). |
-| [InviteSignatory](sub-components.md#invitesignatory) | Standalone form for inviting someone else to become the company signatory. |
-| [LocationForm](sub-components.md#locationform) | Standalone form for creating a new company location or editing an existing one. |
-| [Locations](sub-components.md#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
-| [LocationsList](sub-components.md#locationslist) | Displays the list of work locations for a company. |
-| [OnboardingOverview](sub-components.md#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
-| [PaySchedule](sub-components.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
-| [SignatureForm](sub-components.md#signatureform) | Standalone form for signing an individual company document. |
-| [StateTaxes](sub-components.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
-| [StateTaxesForm](sub-components.md#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
-| [StateTaxesList](sub-components.md#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
+| [AssignSignatory](blocks.md#assignsignatory) | Lets a user either create a new signatory with full details or invite someone else to become the signatory. |
+| [BankAccount](blocks.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
+| [CreateSignatory](blocks.md#createsignatory) | Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address. |
+| [DocumentList](blocks.md#documentlist) | Displays the list of company documents to be signed and lets the user manage signatories. |
+| [DocumentSigner](blocks.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
+| [FederalTaxes](blocks.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
+| [Industry](blocks.md#industry) | Selects and saves the company's industry classification (NAICS code). |
+| [InviteSignatory](blocks.md#invitesignatory) | Standalone form for inviting someone else to become the company signatory. |
+| [LocationForm](blocks.md#locationform) | Standalone form for creating a new company location or editing an existing one. |
+| [Locations](blocks.md#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
+| [LocationsList](blocks.md#locationslist) | Displays the list of work locations for a company. |
+| [OnboardingOverview](blocks.md#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
+| [PaySchedule](blocks.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
+| [SignatureForm](blocks.md#signatureform) | Standalone form for signing an individual company document. |
+| [StateTaxes](blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
+| [StateTaxesForm](blocks.md#statetaxesform) | Standalone form for editing a company's state tax requirements for a single state. |
+| [StateTaxesList](blocks.md#statetaxeslist) | Displays the list of state tax requirements for a company with their setup status. |
