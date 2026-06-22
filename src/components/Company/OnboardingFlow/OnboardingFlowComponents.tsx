@@ -66,7 +66,13 @@ export function BankAccountContextual() {
 /** @internal */
 export function EmployeesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <EmployeeOnboardingFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return (
+    <EmployeeOnboardingFlow
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      showContinueButton
+    />
+  )
 }
 /** @internal */
 export function PayScheduleContextual() {
