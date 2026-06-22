@@ -110,7 +110,7 @@ function renderHooksIndex(context: SDKThemeContext, model: DeclarationReflection
     const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
       hookNs.children?.[0]) as DeclarationReflection | undefined
     const description = primaryHook ? getReflectionDescription(primaryHook, context) : ''
-    const emoji = hookNs.name.endsWith('Form') ? '✍️' : '📇'
+    const emoji = hookNs.name.endsWith('Form') ? '✍️' : '🌐'
     const item: Record<string, string> = { type: 'link', href, label: `${emoji} ${hookNs.name}` }
     if (description) item.description = description
     return item
