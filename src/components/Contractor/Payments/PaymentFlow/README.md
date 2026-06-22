@@ -1,5 +1,15 @@
 # PaymentFlow
 
+## Payment Workflow
+
+The typical step sequence when composing the subcomponents manually:
+
+1. [`PaymentsList`](./blocks.md#paymentslist) — browse existing payment groups and start a new one.
+2. [`CreatePayment`](./blocks.md#createpayment) — select a date, edit per-contractor amounts, preview, and submit. Handles Fast ACH blockers and wire transfer requirements inline.
+3. [`PaymentSummary`](./blocks.md#paymentsummary) — review the created group, debit details, and wire instructions when required.
+4. [`PaymentHistory`](./blocks.md#paymenthistory) — inspect a payment group's details and cancel individual payments.
+5. [`PaymentStatement`](./blocks.md#paymentstatement) — see the full breakdown for one contractor's payment.
+
 ## Important Notes
 
 ### Payment Timing
