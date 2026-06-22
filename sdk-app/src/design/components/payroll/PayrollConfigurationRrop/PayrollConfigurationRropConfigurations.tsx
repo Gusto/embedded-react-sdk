@@ -209,4 +209,20 @@ export const payrollConfigurationRropConfigurations: PrototypeConfiguration[] = 
       />
     ),
   },
+  {
+    slug: 'rrop',
+    name: 'Regular rate of pay',
+    description:
+      'Same three employees, but the spreadsheet runs in RRoP mode — clicking an applicable Overtime or Double overtime cell opens a per-workweek breakdown modal.',
+    render: () => (
+      <PayrollConfigurationRropDemo
+        employeeCompensations={compensations}
+        employeeDetails={employees}
+        fixedCompensationTypes={fixedCompensationTypes}
+        payPeriod={payPeriod}
+        paySchedule={paySchedule}
+        rrop
+      />
+    ),
+  },
 ]

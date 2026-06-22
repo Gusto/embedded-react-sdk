@@ -40,6 +40,8 @@ interface PayrollConfigurationRropPresentationProps {
   payrollBlockers?: ApiPayrollBlocker[]
   isCalculateDisabled?: boolean
   onSaveEmployeeCompensation?: (compensation: EmployeeCompensations) => void | Promise<void>
+  /** Render the spreadsheet in Regular rate of pay mode. */
+  rrop?: boolean
 }
 
 const getPayrollConfigurationTitle = (
@@ -68,6 +70,7 @@ export const PayrollConfigurationRropPresentation = ({
   payrollBlockers = [],
   isCalculateDisabled = false,
   onSaveEmployeeCompensation,
+  rrop = false,
 }: PayrollConfigurationRropPresentationProps) => {
   const { Button, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -153,6 +156,8 @@ export const PayrollConfigurationRropPresentation = ({
                 fixedCompensationTypes={fixedCompensationTypes}
                 onSave={onSaveEmployeeCompensation}
                 isLoading={isSpreadsheetLoading}
+                rrop={rrop}
+                payPeriod={payPeriod}
               />
             </Flex>
           </>
