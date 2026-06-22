@@ -150,3 +150,26 @@
 .cell.currencyHasValue .affix {
   visibility: visible;
 }
+
+.cellTrigger {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: toRem(6);
+  flex: 1;
+  margin: toRem(-8) toRem(-12);
+  padding: toRem(8) toRem(12);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.cellTriggerValue {
+  flex: 1;
+  min-width: 0;
+}
