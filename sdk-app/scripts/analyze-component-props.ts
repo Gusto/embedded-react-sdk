@@ -25,7 +25,7 @@ const OUTPUT = resolve(import.meta.dirname, '../src/generated-registry-data.ts')
 const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request)Id$/
 
 const NAMESPACES: Record<string, string[]> = {
-  Company: ['src/components/Company/index.tsx'],
+  CompanyOnboarding: ['src/components/Company/exports/companyOnboarding.ts'],
   EmployeeManagement: ['src/components/Employee/exports/employeeManagement.ts'],
   EmployeeOnboarding: ['src/components/Employee/exports/employeeOnboarding.ts'],
   ContractorOnboarding: ['src/components/Contractor/exports/contractorOnboarding.ts'],
