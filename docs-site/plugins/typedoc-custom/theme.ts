@@ -143,8 +143,8 @@ function renderNamespaceIndex(context: SDKThemeContext, model: DeclarationReflec
   const blocks = components.filter(c => !c.name.endsWith('Flow'))
 
   for (const [emoji, heading, items] of [
-    [TYPE_EMOJIS.flow, 'Workflow components', flows],
-    [TYPE_EMOJIS.block, 'Block components', blocks],
+    [TYPE_EMOJIS.flow, 'Workflows', flows],
+    [TYPE_EMOJIS.block, 'Blocks', blocks],
   ] as const) {
     if (items.length === 0) continue
     parts.push(`## ${emoji} ${heading}`, '')

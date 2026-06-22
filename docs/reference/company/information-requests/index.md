@@ -12,13 +12,13 @@ custom_edit_url: null
 
 # InformationRequests
 
-## 🚂 Workflow components
+## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
 | [InformationRequestsFlow](information-requests-flow.md) | Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company. |
 
-## 🧩 Block components
+## 🧩 Blocks
 
 | Component | Description |
 | --------- | ----------- |

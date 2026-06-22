@@ -12,13 +12,13 @@ custom_edit_url: null
 
 # CompanyOnboarding
 
-## 🚂 Workflow components
+## 🚂 Workflows
 
 | Component | Description |
 | --------- | ----------- |
 | [OnboardingFlow](onboarding-flow.md) | Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll. |
 
-## 🧩 Block components
+## 🧩 Blocks
 
 | Component | Description |
 | --------- | ----------- |
