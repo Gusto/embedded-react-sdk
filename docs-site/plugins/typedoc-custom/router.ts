@@ -380,7 +380,8 @@ export class SDKRouter extends MemberRouter {
       hooksIndexNs.comment = new Comment()
       hooksIndexNs.comment.blockTags.push(new CommentTag('@hooksIndex', []))
       hooksIndexNs.children = hookPageNsList
-      this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages)
+      const hooksIndexUrl = this.getFileName(`${domainPath}/hooks/index`).replace(/\.md$/, '.mdx')
+      this.buildSyntheticPage(`${domainPath}/hooks/index`, hooksIndexNs, [], pages, hooksIndexUrl)
       this.hooksNsByDomain.set(domainPath, hooksIndexNs)
       SDKRouter.domainsWithHooks.add(domainPath)
     }
@@ -407,7 +408,8 @@ export class SDKRouter extends MemberRouter {
         new CommentTag('@domainPath', [{ kind: 'text', text: domain.path }]),
       )
       hubNs.children = nsReflections
-      this.buildSyntheticPage(`${domain.path}/index`, hubNs, [], pages)
+      const hubUrl = this.getFileName(`${domain.path}/index`).replace(/\.md$/, '.mdx')
+      this.buildSyntheticPage(`${domain.path}/index`, hubNs, [], pages, hubUrl)
     }
 
     return pages
@@ -570,14 +572,18 @@ export class SDKRouter extends MemberRouter {
   /**
    * Register a synthetic namespace page and make every member an anchor on it.
    * Returns the page's URL.
+   *
+   * Pass `explicitUrl` to override the default URL derived from `basePath` — used
+   * for domain hubs which need a `.mdx` extension so Docusaurus enables JSX processing.
    */
   private buildSyntheticPage(
     basePath: string,
     ns: DeclarationReflection,
     members: DeclarationReflection[],
     outPages: PageDefinition[],
+    explicitUrl?: string,
   ): string {
-    const url = this.getFileName(basePath)
+    const url = explicitUrl ?? this.getFileName(basePath)
     this.fullUrls.set(ns, url)
     const slugger = new Slugger(this.sluggerConfiguration)
     this.sluggers.set(ns, slugger)
