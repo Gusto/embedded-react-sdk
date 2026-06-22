@@ -7,6 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
 import type { EventType } from '@/shared/constants'
@@ -57,10 +58,12 @@ export const PaymentsListPresentation = ({
       },
       {
         title: t('wageTotalColumnLabel'),
+        justify: 'end',
         render: ({ totals }) => currencyFormatter(Number(totals?.wageAmount || 0)),
       },
       {
         title: t('reimbursementTotalColumnLabel'),
+        justify: 'end',
         render: ({ totals }) => currencyFormatter(Number(totals?.reimbursementAmount) || 0),
       },
     ],
@@ -78,7 +81,11 @@ export const PaymentsListPresentation = ({
     emptyState: () => (
       <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
         <ActionsLayout justifyContent="center">
-          <Button variant="primary" onClick={onCreatePayment}>
+          <Button
+            variant="secondary"
+            icon={<PlusCircleIcon aria-hidden />}
+            onClick={onCreatePayment}
+          >
             {t('createPaymentCta')}
           </Button>
         </ActionsLayout>
@@ -133,7 +140,7 @@ export const PaymentsListPresentation = ({
         gap={16}
         alignItems={{
           base: 'stretch',
-          small: 'flex-end',
+          small: 'center',
         }}
         justifyContent="space-between"
       >
@@ -150,11 +157,19 @@ export const PaymentsListPresentation = ({
             options={dateRangeOptions}
             isRequired
             label={t('startDate')}
+            placeholder=""
             shouldVisuallyHideLabel
           />
-          <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>
-            {t('createPaymentCta')}
-          </Button>
+          {contractorPayments.length > 0 && (
+            <Button
+              onClick={onCreatePayment}
+              variant="secondary"
+              icon={<PlusCircleIcon aria-hidden />}
+              className={styles.nowrap}
+            >
+              {t('createPaymentCta')}
+            </Button>
+          )}
         </div>
       </Flex>
 

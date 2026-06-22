@@ -151,7 +151,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
                   value: stateAbbr,
                 }))}
                 label={t('stateSelectionLabel')}
-                placeholder={''}
+                placeholder={t('statePlaceholder')}
                 errorMessage={t('validations.state')}
                 isRequired
               />

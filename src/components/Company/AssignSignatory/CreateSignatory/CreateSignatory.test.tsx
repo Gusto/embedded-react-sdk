@@ -53,7 +53,7 @@ describe('CreateSignatory', () => {
       await user.type(screen.getByLabelText('Social security number'), '123456789')
 
       const titleControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Select title/i,
         expanded: false,
       })
       await user.click(titleControl)

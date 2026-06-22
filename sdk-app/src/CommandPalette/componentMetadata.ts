@@ -18,8 +18,8 @@ export interface ComponentMetadata {
 }
 
 export const componentMetadata: Record<string, ComponentMetadata> = {
-  // ─── Company ─────────────────────────────────────────────────────────
-  'Company.OnboardingFlow': {
+  // ─── CompanyOnboarding ───────────────────────────────────────────────
+  'CompanyOnboarding.OnboardingFlow': {
     description: 'Onboard a company end-to-end (industry, signatory, taxes, bank, pay schedule).',
     keywords: [
       'onboard company',
@@ -29,7 +29,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       'start company',
     ],
   },
-  'Company.OnboardingOverview': {
+  'CompanyOnboarding.OnboardingOverview': {
     description: 'Overview of remaining company onboarding steps.',
     keywords: ['company onboarding status', 'company progress', 'company checklist'],
   },

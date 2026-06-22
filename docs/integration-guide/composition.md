@@ -59,3 +59,5 @@ function MyApp({ employeeId, startDate }) {
 Each step of the employee onboarding flow can be imported like this in isolation and used directly as needed. (For a comprehensive list of employee onboarding components available [see the Employee Onboarding documentation here](../workflows-overview/employee-onboarding/employee-onboarding.md)).
 
 Because each step is available for direct use in isolation, it is also possible to rearrange steps, compose them with your own content, or [integrate them with your routing infrastructure as outlined here](./routing.md). For example, we could place this compensation form inside of an existing page inline with our own components, or we could use this as a step in a different flow entirely.
+
+For a real example of these composition patterns across several full flows, see the [Example App](../getting-started/example-app.md).

@@ -971,6 +971,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | ------ | ------ | ------ |
 | `label` | `string` | Label text for the select field |
 | `options` | [`SelectOption`](#selectoption)[] | Array of options to display in the select dropdown |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `description?` | `ReactNode` | Optional description text for the field |
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `inputRef?` | `Ref`\<`HTMLButtonElement`\> | React ref for the select button element |
@@ -979,7 +980,6 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`) => `void` | Callback when selection changes |
-| `placeholder?` | `string` | Placeholder text when no option is selected |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |

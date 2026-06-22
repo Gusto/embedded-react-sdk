@@ -32,11 +32,15 @@ export { mockUseContainerBreakpoints }
 // Reset mocks before each test to allow individual configuration. Re-applying the
 // desktop default here (not just mockClear) ensures a test that opts into the mobile
 // layout via mockReturnValue(['base']) doesn't leak that override into later tests.
+// Guard browser-specific calls for non-jsdom environments (e.g. node unit tests).
+const isBrowserEnv = typeof window !== 'undefined'
 beforeEach(() => {
-  mockUseContainerBreakpoints.mockClear()
-  mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-  mockResizeObserver()
-  resetPayrollPhase()
+  if (isBrowserEnv) {
+    mockUseContainerBreakpoints.mockClear()
+    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
+    mockResizeObserver()
+    resetPayrollPhase()
+  }
 })
 
 beforeAll(() => {
@@ -54,16 +58,20 @@ afterAll(() => {
   server.close()
 })
 
-// Mock scrollIntoView
-Element.prototype.scrollIntoView = vi.fn()
+// Mock scrollIntoView — guard for non-jsdom environments (e.g. node-environment unit tests)
+if (typeof Element !== 'undefined') {
+  Element.prototype.scrollIntoView = vi.fn()
+}
 
 // Mock HTMLDialogElement methods (jsdom doesn't support them)
-HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
-  this.open = true
-})
-HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
-  this.open = false
-})
+if (typeof HTMLDialogElement !== 'undefined') {
+  HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
+    this.open = true
+  })
+  HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+    this.open = false
+  })
+}
 
 expect.extend(toHaveNoViolations)
 

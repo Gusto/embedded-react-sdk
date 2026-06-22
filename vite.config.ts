@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
+import { expandDtsTypeofPlugin } from './build/expandDtsTypeofPlugin'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
@@ -61,6 +62,8 @@ export default defineConfig(({ mode }) => {
             return { content, filePath }
           },
         }),
+      !isDev &&
+        expandDtsTypeofPlugin(resolve(__dirname, 'dist'), resolve(__dirname, 'tsconfig.json')),
       !isDev && stylelint({ fix: true }),
       !isDev && circularDependencyDetector(),
       !isDev &&
