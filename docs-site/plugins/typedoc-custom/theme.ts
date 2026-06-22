@@ -54,7 +54,7 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
       .urlTo(ns)
       .replace(/\/index\.md$/, '')
       .replace(/\.md$/, '')
-    parts.push(`## [${ns.name}](${nsHref})`, '')
+    parts.push(`## [${TYPE_EMOJIS.namespace} ${ns.name}](${nsHref})`, '')
 
     const flows = (ns.children ?? []).filter(
       (c): c is DeclarationReflection =>
@@ -99,7 +99,16 @@ function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection)
   const hookPages = (hooksNs?.children ?? []) as DeclarationReflection[]
 
   if (hookPages.length > 0) {
-    parts.push(`## ${TYPE_EMOJIS.hooks} Hooks`, '')
+    const hooksHref = hooksNs
+      ? context
+          .urlTo(hooksNs)
+          .replace(/\/index\.mdx?$/, '')
+          .replace(/\.mdx?$/, '')
+      : ''
+    const hooksHeading = hooksHref
+      ? `## [${TYPE_EMOJIS.hooks} Hooks](${hooksHref})`
+      : `## ${TYPE_EMOJIS.hooks} Hooks`
+    parts.push(hooksHeading, '')
     const hookItems = hookPages.map(hookNs => {
       const href = context.urlTo(hookNs).replace(/\.md$/, '')
       const primaryHook = (hookNs.children?.find(c => c.name === hookNs.name) ??
