@@ -92,6 +92,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   overflow: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .app-body {
