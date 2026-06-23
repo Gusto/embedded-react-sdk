@@ -41,6 +41,9 @@ export type DataAttributes = {
 }
 
 /**
+ * The full set of SDK i18n resource namespaces and their string keys.
+ * Each key names a component's resource namespace.
+ *
  * @public
  */
 export type Resources = CustomTypeOptions['resources']
