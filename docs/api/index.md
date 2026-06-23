@@ -377,7 +377,7 @@ shape mixed into every public SDK feature component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | `OnEventType`\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](Base/hooks.md#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | <a id="property-basecomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | <a id="property-basecomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
 | <a id="property-basecomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -810,6 +810,9 @@ Supported keys to provide as a dictionary - global GustoProvider dictionary with
 ### Resources
 
 > **Resources** = `CustomTypeOptions`\[`"resources"`\]
+
+The full set of SDK i18n resource namespaces and their string keys.
+Each key names a component's resource namespace.
 
 ***
 

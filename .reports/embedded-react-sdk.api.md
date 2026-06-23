@@ -280,7 +280,6 @@ export interface BaseComponentInterface<TResourceKey extends keyof Resources = k
     LoaderComponent?: (input: {
         children?: ReactNode;
     }) => JSX.Element;
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -2200,8 +2199,8 @@ interface FederalTaxesCardProps {
 
 // @public
 type FederalTaxesDefaultValues = RequireAtLeastOne<{
-    taxPayerType?: string;
-    filingForm?: string;
+    taxPayerType?: string | undefined;
+    filingForm?: string | undefined;
     legalName?: string;
 }>;
 
@@ -3243,6 +3242,9 @@ interface OnboardingSummaryProps extends BaseComponentInterface<'Employee.Onboar
 }
 
 // @public
+export type OnEventType<K, T> = (type: K, data?: T) => void;
+
+// @public
 export interface OrderedListProps extends BaseListProps {
 }
 
@@ -4015,7 +4017,7 @@ K extends keyof Resources
 ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
 : Record<SupportedLanguages, Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>>
 
-// @public (undocumented)
+// @public
 export type Resources = CustomTypeOptions['resources']
 
 // @public

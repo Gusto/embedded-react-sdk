@@ -38,7 +38,7 @@ Props for [InformationRequestForm](#informationrequestform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the form is submitted or cancelled. See the events table in [InformationRequestForm](#informationrequestform). |
 | `requestId` | `string` | The identifier of the information request to respond to. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
@@ -73,7 +73,7 @@ Props for [InformationRequestList](#informationrequestlist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event callback. See the events table on [InformationRequestList](#informationrequestlist) for emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |

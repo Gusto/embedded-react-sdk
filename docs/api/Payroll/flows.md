@@ -26,7 +26,7 @@ Props for [DismissalFlow](#dismissalflow).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See [DismissalFlow](#dismissalflow) for the event table. |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See [DismissalFlow](#dismissalflow) for the event table. |
 | `employeeId?` | `string` | The terminated employee whose final payroll is being run. |
 | `payrollId?` | `string` | Optional dismissal payroll identifier. When provided, the flow skips pay period selection and starts directly at payroll execution. |
 
@@ -59,7 +59,7 @@ Props for [OffCycleFlow](#offcycleflow).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on [OffCycleFlow](#offcycleflow). |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on [OffCycleFlow](#offcycleflow). |
 | `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 | `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
 
@@ -107,7 +107,7 @@ Props for [PayrollExecutionFlow](#payrollexecutionflow).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
 | `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
 | `initialPayPeriod?` | `PayrollPayPeriodType` | Optional pay period metadata used to seed breadcrumb labels and date context. |
@@ -160,7 +160,7 @@ Props accepted by [PayrollFlow](#payrollflow).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose payroll is being run. |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
@@ -221,7 +221,7 @@ Props for [TransitionFlow](#transitionflow).
 | ------ | ------ | ------ |
 | `companyId` | `string` | Company running the transition payroll. |
 | `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
-| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
+| `onEvent` | [`OnEventType`](../Base/hooks.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
 | `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
