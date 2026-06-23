@@ -31,11 +31,7 @@ export type {
   SanitizationConfig,
 } from '@/types/observability'
 
-export type {
-  BaseComponentInterface,
-  CommonComponentInterface,
-  OnEventType,
-} from '@/components/Base'
+export type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
 export type {
   ResourceDictionary,
   Resources,
