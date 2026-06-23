@@ -23,11 +23,23 @@ Wire transfer confirmation workflow for payroll funding.
 Displays a banner when wire transfers are awaiting funds and walks the user
 through viewing wire instructions and confirming transfer details via a modal.
 
-#### Parameters
+#### ConfirmWireDetailsProps
 
-| Parameter | Type | Description |
+<a id="confirmwiredetailsprops"></a>
+
+Props for the [ConfirmWireDetails](#confirmwiredetails) component.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `Omit`\<`BaseComponentInterface`\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\>, `"onEvent"`\> & [`ConfirmWireDetailsProps`](../index.md#confirmwiredetailsprops) | [ConfirmWireDetailsProps](../index.md#confirmwiredetailsprops) plus base component props. |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollConfirmWireDetailsForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
 #### Remarks
 
@@ -390,7 +402,7 @@ Props for [PayrollLanding](#payrolllanding).
 | `onEvent` | `OnEventType`\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](../index.md#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollLanding`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
@@ -487,7 +499,7 @@ Props for [PayrollOverview](#payrolloverview).
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](../index.md#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollPayrollOverview`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
@@ -790,6 +802,19 @@ Flow context shape carried through the transition payroll state machine.
 | `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 
 ## Type Aliases
+
+<a id="confirmwiredetailscomponenttype"></a>
+
+### ConfirmWireDetailsComponentType
+
+> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
+
+Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
+
+Use this when supplying a custom wire-confirmation UI to a payroll flow via a
+`ConfirmWireDetailsComponent` prop.
+
+***
 
 <a id="offcyclepayrolldatetype"></a>
 
