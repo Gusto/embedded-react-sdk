@@ -105,7 +105,6 @@ const sidebars: SidebarsConfig = {
         'component-adapter/how-the-component-adapter-works',
         'component-adapter/setting-up-your-component-adapter',
         'component-adapter/component-adapter-types',
-        'component-adapter/component-inventory',
         'component-adapter/component-adapter-faq',
       ],
     },
@@ -113,7 +112,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Theming',
       link: { type: 'doc', id: 'theming/theming' },
-      items: ['theming/theme-variables', 'theming/theming-guide'],
+      items: ['theming/theming-guide'],
     },
     {
       type: 'category',
@@ -122,7 +121,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'integration-guide/versioning',
         'integration-guide/event-handling',
-        'integration-guide/event-types',
         'integration-guide/request-interceptors',
         'integration-guide/customizing-sdk-ui',
         'integration-guide/composition',

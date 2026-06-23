@@ -15,5 +15,5 @@ The Component Adapter provides a "bring your own UI" approach, enabling seamless
 | [How the Component Adapter Works](./how-the-component-adapter-works.md)     | Learn about the architecture and principles behind the Component Adapter system    |
 | [Setting Up Your Component Adapter](./setting-up-your-component-adapter.md) | Step-by-step instructions for creating and implementing your own Component Adapter |
 | [Component Adapter Types](./component-adapter-types.md)                     | Details about the TypeScript interfaces used by the Component Adapter system       |
-| [Component Inventory](./component-inventory.md)                             | Complete inventory of customizable UI components with prop documentation           |
+| [Component Inventory](../api/component-inventory.md)                        | Complete inventory of customizable UI components with prop documentation           |
 | [FAQ](./component-adapter-faq.md)                                           | Answers to common questions about using the Component Adapter                      |
