@@ -100,7 +100,7 @@ type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
 // @public
-interface AddEmployeesHolidayProps extends BaseComponentInterface {
+interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -108,7 +108,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface {
 function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
 
 // @public
-interface AddEmployeesToPolicyProps extends BaseComponentInterface {
+interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
     companyId: string;
     policyId: string;
     policyType: CreatableTimeOffPolicyType;
@@ -1524,7 +1524,7 @@ function Dashboard(input: DashboardProps): JSX;
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
 // @public
-interface DashboardFlowProps extends BaseComponentInterface {
+interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
 }
 
@@ -1917,7 +1917,7 @@ function EmployeeList(input: EmployeeListProps): JSX;
 const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 
 // @public
-interface EmployeeListFlowProps extends BaseComponentInterface {
+interface EmployeeListFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -2528,7 +2528,7 @@ interface HolidayPolicyDetailPresentationProps {
 function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX;
 
 // @public
-interface HolidaySelectionFormProps extends BaseComponentInterface {
+interface HolidaySelectionFormProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy'> {
     companyId: string;
     mode?: 'create' | 'edit';
 }
@@ -2882,7 +2882,7 @@ function Locations(input: LocationsProps): JSX;
 function LocationsList(props: LocationsListProps): JSX;
 
 // @public
-interface LocationsListProps extends BaseComponentInterface {
+interface LocationsListProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
 }
 
@@ -3199,7 +3199,7 @@ type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
 }>;
 
 // @public
-interface OnboardingFlowProps extends BaseComponentInterface {
+interface OnboardingFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
     isSelfOnboardingEnabled?: boolean;
@@ -3208,7 +3208,7 @@ interface OnboardingFlowProps extends BaseComponentInterface {
 }
 
 // @public
-interface OnboardingFlowProps_3 extends BaseComponentInterface {
+interface OnboardingFlowProps_3 extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues_2>;
 }
@@ -3276,7 +3276,7 @@ export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
 const PaymentFlow: (input: PaymentFlowProps) => JSX;
 
 // @public
-interface PaymentFlowProps extends BaseComponentInterface {
+interface PaymentFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -3554,7 +3554,7 @@ type PayrollFlowAlert = {
 };
 
 // @public
-interface PayrollFlowProps extends BaseComponentInterface {
+interface PayrollFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     withReimbursements?: boolean;
@@ -3583,7 +3583,7 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
 function PayrollList(props: PayrollListBlockProps): JSX;
 
 // @public
-interface PayrollListBlockProps extends BaseComponentInterface {
+interface PayrollListBlockProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -3779,7 +3779,7 @@ interface PolicySettingsPresentationProps {
 }
 
 // @public
-interface PolicySettingsProps extends BaseComponentInterface {
+interface PolicySettingsProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
     mode?: 'create' | 'edit';
     policyId: string;
 }
@@ -4539,7 +4539,7 @@ interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Termin
 const TerminationFlow: (input: TerminationFlowProps) => JSX;
 
 // @public
-interface TerminationFlowProps extends BaseComponentInterface {
+interface TerminationFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     employeeId: string;
 }
@@ -4668,7 +4668,7 @@ declare namespace TimeOff {
 const TimeOffFlow: (input: TimeOffFlowProps) => JSX;
 
 // @public
-interface TimeOffFlowProps extends BaseComponentInterface {
+interface TimeOffFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -4712,7 +4712,7 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
 });
 
 // @public
-interface TimeOffPolicyDetailProps extends BaseComponentInterface {
+interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicyDetails'> {
     policyId: string;
 }
 
@@ -5354,7 +5354,7 @@ export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode ext
 function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
 
 // @public
-interface ViewHolidayEmployeesProps extends BaseComponentInterface {
+interface ViewHolidayEmployeesProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
 }
 
@@ -5362,7 +5362,7 @@ interface ViewHolidayEmployeesProps extends BaseComponentInterface {
 function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX;
 
 // @public
-interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
+interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
     defaultTab?: 'holidays' | 'employees';
 }
@@ -5371,7 +5371,7 @@ interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
 function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 
 // @public
-interface ViewHolidayScheduleProps extends BaseComponentInterface {
+interface ViewHolidayScheduleProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
 }
 
