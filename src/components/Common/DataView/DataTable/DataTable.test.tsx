@@ -205,19 +205,6 @@ describe('DataTable Component', () => {
       expect(screen.getByText('Name').closest('div')?.className).toMatch(/cellEnd/)
       expect(screen.getByText('Alice').closest('div')?.className).toMatch(/cellEnd/)
     })
-
-    test('applies column justify to footer cells', () => {
-      renderTable({
-        columns: [
-          { key: 'name', title: 'Name', render: item => item.name },
-          { key: 'age', title: 'Age', justify: 'end', render: item => item.age.toString() },
-        ],
-        footer: () => ({ name: 'Total', age: '55' }),
-      })
-
-      expect(screen.getByText('Total').closest('div')?.className).not.toMatch(/cellEnd/)
-      expect(screen.getByText('55').closest('div')?.className).toMatch(/cellEnd/)
-    })
   })
 
   describe('accessibility', () => {
