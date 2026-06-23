@@ -1,4 +1,5 @@
-import { test, expect } from '../../utils/localTestFixture'
+import { test } from '../../utils/localTestFixture'
+import { assertCompletedOverview } from '../../utils/companyFlowDrivers'
 import { waitForLoadingComplete } from '../../utils/helpers'
 
 /**
@@ -7,9 +8,9 @@ import { waitForLoadingComplete } from '../../utils/helpers'
  * `'done'` / etc.) to a plain boolean.
  *
  * No SDK component in `src/` currently reads `migration_status` — verified
- * via `grep`. This spec exists as a defensive end-to-end check: load a
- * company-scoped flow that has migration_status on its critical response
- * path and confirm no narrowing-on-string runtime error surfaces.
+ * via `grep`. This spec exists as a defensive end-to-end check: load the
+ * already-onboarded company-onboarding flow (whose response carries
+ * migration_status) and confirm the completion overview renders cleanly.
  *
  * If this spec ever fails, we missed a consumer of the old string shape.
  */
@@ -28,16 +29,12 @@ test.describe('Company - migration_status boolean shape', () => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
     test.setTimeout(120_000)
 
-    await page.goto('/?flow=company')
+    await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page, 60_000)
 
     // The onboarded company response carries migration_status. If anything
-    // in the render tree narrows on the old string shape, we'll see a
-    // runtime error or unhandled exception surface in the page.
-    await expect(page.getByText(/migration_status/i)).toHaveCount(0, { timeout: 5_000 })
-
-    // Smoke: an onboarded company overview should render a primary nav
-    // element. If the response shape change crashes the tree, this fails.
-    await expect(page.getByRole('tab').first()).toBeVisible({ timeout: 15_000 })
+    // in the render tree narrows on the old string shape, the completion
+    // overview won't render.
+    await assertCompletedOverview(page)
   })
 })
