@@ -10,20 +10,16 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
-## Block Components
-
 <a id="confirmwiredetails"></a>
 
-### ConfirmWireDetails
+## ConfirmWireDetails
 
 Wire transfer confirmation workflow for payroll funding.
 
 Displays a banner when wire transfers are awaiting funds and walks the user
 through viewing wire instructions and confirming transfer details via a modal.
 
-#### ConfirmWireDetailsProps
+### ConfirmWireDetailsProps
 
 <a id="confirmwiredetailsprops"></a>
 
@@ -41,7 +37,7 @@ Props for the [ConfirmWireDetails](#confirmwiredetails) component.
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -52,7 +48,7 @@ Props for the [ConfirmWireDetails](#confirmwiredetails) component.
 | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
 | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
 
-#### Example
+### Example
 
 ```tsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -68,24 +64,15 @@ function MyComponent() {
 }
 ```
 
-> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
-
-Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
-
-Use this when supplying a custom wire-confirmation UI to a payroll flow via a
-`ConfirmWireDetailsComponent` prop.
-
-***
-
 <a id="dismissalpayperiodselection"></a>
 
-### DismissalPayPeriodSelection
+## DismissalPayPeriodSelection
 
 Pay period selection step for the dismissal payroll workflow.
 
 Lists the terminated employee's unprocessed termination pay periods and, on submit, creates an off-cycle payroll with the "Dismissed employee" reason for the selected period. When only one pay period is available it is pre-selected. When both `payrollId` and `employeeId` are supplied the step is skipped and the selection event fires immediately with the existing payroll.
 
-#### DismissalPayPeriodSelectionProps
+### DismissalPayPeriodSelectionProps
 
 <a id="dismissalpayperiodselectionprops"></a>
 
@@ -104,7 +91,7 @@ Props for [DismissalPayPeriodSelection](#dismissalpayperiodselection).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `payrollId?` | `string` | Identifier of an existing dismissal payroll. When provided alongside `employeeId`, pay period selection is skipped and the component immediately emits the selection event. |
 
-#### Remarks
+### Remarks
 
 Events:
 
@@ -112,11 +99,9 @@ Events:
 | ----- | ----------- | ---- |
 | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |
 
-***
-
 <a id="offcyclecreation"></a>
 
-### OffCycleCreation
+## OffCycleCreation
 
 Creation form for off-cycle (bonus or correction) payrolls.
 
@@ -124,7 +109,7 @@ Walks the user through configuring pay period dates, selecting a reason, choosin
 employees, and setting deduction and tax withholding preferences, then submits the
 resulting payroll for execution.
 
-#### OffCycleCreationProps
+### OffCycleCreationProps
 
 <a id="offcyclecreationprops"></a>
 
@@ -142,7 +127,7 @@ Props for the [OffCycleCreation](#offcyclecreation) component.
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `payrollType?` | [`OffCyclePayrollDateType`](#offcyclepayrolldatetype) | Pre-selected off-cycle reason. The creation form starts with this reason selected. Defaults to `'bonus'`. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -152,15 +137,13 @@ Changing the reason updates the deduction and withholding defaults — `'bonus'`
 regular deductions and uses the supplemental withholding rate; `'correction'` includes
 regular deductions and uses the regular rate.
 
-***
-
 <a id="offcycledeductionssetting"></a>
 
-### OffCycleDeductionsSetting
+## OffCycleDeductionsSetting
 
 Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions.
 
-#### OffCycleDeductionsSettingProps
+### OffCycleDeductionsSettingProps
 
 <a id="offcycledeductionssettingprops"></a>
 
@@ -175,7 +158,7 @@ Props for [OffCycleDeductionsSetting](#offcycledeductionssetting).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`PayrollOffCycleDeductionsSetting`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-#### Remarks
+### Remarks
 
 Taxes are always included regardless of the selection. Selecting "Skip" blocks all regular
 deductions and contributions except 401(k); selecting "Include" runs all regular deductions
@@ -185,15 +168,13 @@ and contributions normally.
 | ----- | ----------- | ---- |
 | `offCycle/deductionsChange` | Fired when the deduction preference changes | [OffCycleDeductionsSettingChangePayload](#offcycledeductionssettingchangepayload) |
 
-***
-
 <a id="offcyclereasonselection"></a>
 
-### OffCycleReasonSelection
+## OffCycleReasonSelection
 
 Presents the reason selection UI for choosing between a bonus and correction off-cycle payment.
 
-#### OffCycleReasonSelectionProps
+### OffCycleReasonSelectionProps
 
 <a id="offcyclereasonselectionprops"></a>
 
@@ -210,7 +191,7 @@ Props for the [OffCycleReasonSelection](#offcyclereasonselection) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
 so a surrounding form can update its state to match.
@@ -219,27 +200,13 @@ so a surrounding form can update its state to match.
 | ----- | ----------- | ---- |
 | `offCycle/selectReason` | Fired when the user selects a reason | [SelectReasonPayload](#selectreasonpayload) |
 
-> **OffCycleReason** = `"bonus"` \| `"correction"`
-
-Reason for running an off-cycle payroll.
-
-`bonus` covers bonuses, gifts, or commissions; `correction` covers any payroll run outside the regular pay schedule.
-
-> **WithholdingType** = `"supplemental"` \| `"regular"`
-
-Tax withholding rate applied to an off-cycle payroll.
-
-`supplemental` applies the IRS supplemental withholding rate; `regular` applies the employee's regular withholding rate.
-
-***
-
 <a id="payrollblockerlist"></a>
 
-### PayrollBlockerList
+## PayrollBlockerList
 
 Displays the list of blockers preventing payroll from being processed for a company.
 
-#### PayrollBlockerListProps
+### PayrollBlockerListProps
 
 <a id="payrollblockerlistprops"></a>
 
@@ -256,7 +223,7 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Blockers indicate issues that must be resolved before a payroll can be calculated or
 submitted, such as missing employee information, invalid tax setups, or incomplete
@@ -264,15 +231,13 @@ company configuration. The component also renders open recovery cases and outsta
 information requests for the company when present, and re-emits any events those
 embedded surfaces fire through `onEvent`.
 
-***
-
 <a id="payrollconfiguration"></a>
 
-### PayrollConfiguration
+## PayrollConfiguration
 
 Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll.
 
-#### PayrollConfigurationProps
+### PayrollConfigurationProps
 
 <a id="payrollconfigurationprops"></a>
 
@@ -292,7 +257,7 @@ Props for [PayrollConfiguration](#payrollconfiguration).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withReimbursements?` | `boolean` | Whether to show the reimbursements column in the compensation table. Defaults to `true`. |
 
-#### Remarks
+### Remarks
 
 Emits the following events:
 
@@ -307,18 +272,16 @@ Emits the following events:
 | `runPayroll/grossUp/selected` | The set-net-earnings menu item is selected for an employee | `{ employeeUuid }` |
 | `runPayroll/grossUp/calculated` | A gross-up amount is calculated from a target net pay | `{ grossUp, netPay, employeeUuid }` |
 
-***
-
 <a id="payrolleditemployee"></a>
 
-### PayrollEditEmployee
+## PayrollEditEmployee
 
 Editor for an individual employee's compensation within a payroll run.
 
 Allows modification of pay rates, hours, time off, additional earnings,
 reimbursements, and payment method for a single employee on the specified payroll.
 
-#### PayrollEditEmployeeProps
+### PayrollEditEmployeeProps
 
 <a id="payrolleditemployeeprops"></a>
 
@@ -338,14 +301,14 @@ Props for [PayrollEditEmployee](#payrolleditemployee).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields. Defaults to `true`. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
 | `runPayroll/employee/cancelled` | Fired when the user cancels editing employee payroll compensation | — |
 
-#### Example
+### Example
 
 ```tsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -362,15 +325,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="payrollhistory"></a>
 
-### PayrollHistory
+## PayrollHistory
 
 Displays historical payroll records with filtering and management capabilities.
 
-#### PayrollHistoryProps
+### PayrollHistoryProps
 
 <a id="payrollhistoryprops"></a>
 
@@ -387,7 +348,7 @@ Props for the [PayrollHistory](#payrollhistory) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
 check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
@@ -400,16 +361,14 @@ the pay period, payroll type, pay date, status, and total pay amount.
 | `runPayroll/receipt/viewed` | User views a payroll receipt | `{ payrollId: string; startDate?: string; endDate?: string }` |
 | `runPayroll/cancelled` | A payroll is cancelled | `{ payrollId: string; result: PayrollsCancelResponse }` |
 
-***
-
 <a id="payrolllanding"></a>
 
-### PayrollLanding
+## PayrollLanding
 
 Main landing surface for payroll operations, with tabs for running payroll and
 viewing payroll history, plus inline navigation to a payroll's overview and receipt.
 
-#### PayrollLandingProps
+### PayrollLandingProps
 
 <a id="payrolllandingprops"></a>
 
@@ -429,7 +388,7 @@ Props for [PayrollLanding](#payrolllanding).
 | `showPayrollCancelledAlert?` | `boolean` | When `true`, displays a dismissible success alert indicating a payroll was cancelled. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -445,11 +404,9 @@ Props for [PayrollLanding](#payrolllanding).
 | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
 | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
 
-***
-
 <a id="payrolllist"></a>
 
-### PayrollList
+## PayrollList
 
 Lists upcoming payrolls and lets users start running them.
 
@@ -458,7 +415,7 @@ deadline, and status. Each row offers actions to run, submit a calculated
 payroll, skip, or delete (for cancellable off-cycle payrolls). A separate
 call-to-action starts an off-cycle payroll.
 
-#### PayrollListBlockProps
+### PayrollListBlockProps
 
 <a id="payrolllistblockprops"></a>
 
@@ -475,7 +432,7 @@ Props for [PayrollList](#payrolllist).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 When the company has unprocessed transition pay periods within the next
 90 days, the Run Payroll action on Regular rows is disabled to prevent a
@@ -494,17 +451,15 @@ alongside it.
 | `payroll/deleted` | A cancellable off-cycle payroll was successfully deleted | `{ payrollId }` |
 | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
 
-***
-
 <a id="payrolloverview"></a>
 
-### PayrollOverview
+## PayrollOverview
 
 Final review screen for a calculated payroll before submission, with submit, cancel,
 and edit controls. After submission, tracks processing status and surfaces the receipt
 and per-employee paystub downloads once complete.
 
-#### PayrollOverviewProps
+### PayrollOverviewProps
 
 <a id="payrolloverviewprops"></a>
 
@@ -525,7 +480,7 @@ Props for [PayrollOverview](#payrolloverview).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
-#### Remarks
+### Remarks
 
 The payroll referenced by `payrollId` must already be calculated; rendering with an
 uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
@@ -545,17 +500,15 @@ polls until success or failure and emits the corresponding event.
 | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
 | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
 
-***
-
 <a id="payrollreceipts"></a>
 
-### PayrollReceipts
+## PayrollReceipts
 
 Displays a detailed receipt for a completed payroll, including the debited total, per-category
 breakdown, tax breakdown, and a per-employee summary of payment method, garnishments,
 reimbursements, taxes, and net pay.
 
-#### PayrollReceiptsProps
+### PayrollReceiptsProps
 
 <a id="payrollreceiptsprops"></a>
 
@@ -573,7 +526,7 @@ Props for [PayrollReceipts](#payrollreceipts).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withReimbursements?` | `boolean` | Whether to include reimbursement amounts in the breakdown and employee tables. Defaults to `true`. |
 
-#### Example
+### Example
 
 ```tsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -583,21 +536,19 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="recoverycases"></a>
 
-### RecoveryCases
+## RecoveryCases
 
 Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `RecoveryCasesInternalProps` | Accepts `companyId` (required) and an optional `onEvent` handler. |
 
-#### Remarks
+### Remarks
 
 Recovery cases are issues that surface after a payroll has been submitted
 (for example, a returned ACH transfer) and must be resolved before subsequent
@@ -611,11 +562,9 @@ dedicated recovery cases surface.
 | `recoveryCase/resubmit/done` | User successfully resubmits a recovery case | Resubmit result payload |
 | `recoveryCase/resubmit/cancel` | User cancels the resubmit modal | — |
 
-***
-
 <a id="transitioncreation"></a>
 
-### TransitionCreation
+## TransitionCreation
 
 Creation form for transition payrolls covering the gap between an old and new pay schedule.
 
@@ -623,7 +572,7 @@ Displays the transition pay period and pay schedule information, and collects a 
 date, deduction preference, and tax withholding configuration before submitting the
 resulting off-cycle payroll for execution.
 
-#### TransitionCreationProps
+### TransitionCreationProps
 
 <a id="transitioncreationprops"></a>
 
@@ -643,7 +592,7 @@ Props for the [TransitionCreation](#transitioncreation) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -653,7 +602,7 @@ The check date must be at least the company's ACH lead time (typically two busin
 days) from today. Deductions default to included and tax withholding defaults to the
 regular rate with an every-other-week pay period.
 
-## Interfaces
+## Utility types
 
 <a id="apipayrollblocker"></a>
 
@@ -670,7 +619,16 @@ or incomplete company configuration).
 | `key` | `string` | Stable identifier for the blocker type, used to look up display copy and behavior. |
 | `message?` | `string` | Human-readable message describing the blocker, when provided by the API. |
 
-***
+<a id="confirmwiredetailscomponenttype"></a>
+
+### ConfirmWireDetailsComponentType
+
+> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
+
+Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
+
+Use this when supplying a custom wire-confirmation UI to a payroll flow via a
+`ConfirmWireDetailsComponent` prop.
 
 <a id="offcyclecreationformdata"></a>
 
@@ -695,8 +653,6 @@ Form values collected by the [OffCycleCreation](#offcyclecreation) component.
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
 | `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
 
-***
-
 <a id="offcycledeductionssettingchangepayload"></a>
 
 ### OffCycleDeductionsSettingChangePayload
@@ -708,8 +664,6 @@ Payload emitted by [OffCycleDeductionsSetting](#offcycledeductionssetting) on th
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `skipRegularDeductions` | `boolean` | Whether the user selected to skip regular deductions. |
-
-***
 
 <a id="offcycleflowcontextinterface"></a>
 
@@ -731,8 +685,6 @@ Flow context shared across the off-cycle payroll flow steps.
 | `payrollUuid?` | `string` | Identifier of the off-cycle payroll created during the flow; set once creation completes. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the execution steps. Defaults to true. |
 
-***
-
 <a id="offcyclepayperioddateformdata"></a>
 
 ### OffCyclePayPeriodDateFormData
@@ -752,7 +704,27 @@ Pay-period date selections collected for an off-cycle payroll.
 | `isCheckOnly` | `boolean` | When true, all employees are paid by check rather than direct deposit; start and end dates become optional and the check date may be today or any future date. |
 | `startDate` | `Date` \| `null` | Beginning of the pay period; required unless `isCheckOnly` is true, and cannot be in the future when the payroll type is `'correction'`. |
 
-***
+<a id="offcyclepayrolldatetype"></a>
+
+### OffCyclePayrollDateType
+
+> **OffCyclePayrollDateType** = `"bonus"` \| `"correction"`
+
+Off-cycle payroll reason that drives pay-period date validation rules.
+
+#### Remarks
+
+`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
+
+<a id="offcyclereason"></a>
+
+### OffCycleReason
+
+> **OffCycleReason** = `"bonus"` \| `"correction"`
+
+Reason for running an off-cycle payroll.
+
+`bonus` covers bonuses, gifts, or commissions; `correction` covers any payroll run outside the regular pay schedule.
 
 <a id="offcyclereasondefaults"></a>
 
@@ -767,7 +739,32 @@ Recommended deduction and withholding defaults paired with an off-cycle reason.
 | `skipDeductions` | `boolean` | Whether regular deductions and contributions should be skipped for this payroll. |
 | `withholdingType` | [`WithholdingType`](#withholdingtype) | Withholding rate to apply for this payroll. |
 
-***
+<a id="payrollexecutioninitialstate"></a>
+
+### PayrollExecutionInitialState
+
+> **PayrollExecutionInitialState** = `"configuration"` \| `"overview"`
+
+Entry point for [PayrollExecutionFlow](payroll-execution-flow.md). Determines which screen the flow renders first.
+
+<a id="payrollflowalert"></a>
+
+### PayrollFlowAlert
+
+> **PayrollFlowAlert** = `object`
+
+An alert banner rendered above payroll content in [PayrollOverview](#payrolloverview) and
+[PayrollConfiguration](#payrollconfiguration).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `title` | `string` | Short heading text displayed in the alert. |
+| `type` | `"error"` \| `"info"` \| `"success"` | Visual severity of the alert. |
+| `alertKey?` | `string` | Stable key used to track alert identity across renders (e.g. for animations or deduplication). |
+| `content?` | `ReactNode` | Optional body content rendered below the title. |
+| `onDismiss?` | () => `void` | Called when the user dismisses the alert. When omitted, the alert is not dismissible. |
 
 <a id="selectreasonpayload"></a>
 
@@ -782,8 +779,6 @@ Payload emitted with the `offCycle/selectReason` event when a reason is chosen.
 | `defaults` | [`OffCycleReasonDefaults`](#offcyclereasondefaults) | Recommended deduction and withholding defaults for the selected reason. |
 | `reason` | [`OffCycleReason`](#offcyclereason) | The reason the user selected. |
 
-***
-
 <a id="transitioncreationformdata"></a>
 
 ### TransitionCreationFormData
@@ -796,8 +791,6 @@ Form values collected by the [TransitionCreation](#transitioncreation) component
 | ------ | ------ | ------ |
 | `checkDate` | `Date` \| `null` | The date employees will be paid. Must be at least the company's ACH lead time from today. |
 | `skipRegularDeductions` | `boolean` | When `true`, regular deductions are skipped for this payroll. |
-
-***
 
 <a id="transitionflowcontextinterface"></a>
 
@@ -820,47 +813,12 @@ Flow context shape carried through the transition payroll state machine.
 | `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
 | `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 
-## Type Aliases
+<a id="withholdingtype"></a>
 
-<a id="offcyclepayrolldatetype"></a>
+### WithholdingType
 
-### OffCyclePayrollDateType
+> **WithholdingType** = `"supplemental"` \| `"regular"`
 
-> **OffCyclePayrollDateType** = `"bonus"` \| `"correction"`
+Tax withholding rate applied to an off-cycle payroll.
 
-Off-cycle payroll reason that drives pay-period date validation rules.
-
-#### Remarks
-
-`'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
-
-***
-
-<a id="payrollexecutioninitialstate"></a>
-
-### PayrollExecutionInitialState
-
-> **PayrollExecutionInitialState** = `"configuration"` \| `"overview"`
-
-Entry point for [PayrollExecutionFlow](payroll-execution-flow.md). Determines which screen the flow renders first.
-
-***
-
-<a id="payrollflowalert"></a>
-
-### PayrollFlowAlert
-
-> **PayrollFlowAlert** = `object`
-
-An alert banner rendered above payroll content in [PayrollOverview](#payrolloverview) and
-[PayrollConfiguration](#payrollconfiguration).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `title` | `string` | Short heading text displayed in the alert. |
-| `type` | `"error"` \| `"info"` \| `"success"` | Visual severity of the alert. |
-| `alertKey?` | `string` | Stable key used to track alert identity across renders (e.g. for animations or deduplication). |
-| `content?` | `ReactNode` | Optional body content rendered below the title. |
-| `onDismiss?` | () => `void` | Called when the user dismisses the alert. When omitted, the alert is not dismissible. |
+`supplemental` applies the IRS supplemental withholding rate; `regular` applies the employee's regular withholding rate.

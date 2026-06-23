@@ -10,17 +10,13 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
-## Block Components
-
 <a id="compensation"></a>
 
-### Compensation
+## Compensation
 
 Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
 
-#### CompensationProps
+### CompensationProps
 
 <a id="compensationprops"></a>
 
@@ -37,7 +33,7 @@ Props for [Compensation](#compensation).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders a read-only card showing the employee's job(s), pay type, wage, and effective date, along with affordances to edit a job's compensation, add a first job from the empty state, add another job (when the primary job is Nonexempt), delete a non-primary job, and cancel a scheduled future-dated change. Choosing to edit or add a job swaps the card for the corresponding form; a successful add returns to the card with a dismissible "Job successfully added." alert, an edit returns to the card without an alert, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
 
@@ -58,15 +54,13 @@ The card and form surfaces ([CompensationCard](#compensationcard), [Compensation
 | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user cancels the add-another-job form; the block returns to the card view | — |
 | `employee/management/compensation/alertDismissed` | Fired when the user dismisses the "Job added" success alert above the card | `null` |
 
-***
-
 <a id="compensationaddanotherjobform"></a>
 
-### CompensationAddAnotherJobForm
+## CompensationAddAnotherJobForm
 
 Standalone form for adding a secondary job and compensation to an employee from the management surface.
 
-#### CompensationAddAnotherJobFormProps
+### CompensationAddAnotherJobFormProps
 
 <a id="compensationaddanotherjobformprops"></a>
 
@@ -81,7 +75,7 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-#### Remarks
+### Remarks
 
 Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
 
@@ -90,15 +84,13 @@ Routed from [CompensationCard](#compensationcard)'s `employee/management/compens
 | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addAnotherJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
-***
-
 <a id="compensationaddjobform"></a>
 
-### CompensationAddJobForm
+## CompensationAddJobForm
 
 Standalone form for adding an employee's first job and compensation from the management surface.
 
-#### CompensationAddJobFormProps
+### CompensationAddJobFormProps
 
 <a id="compensationaddjobformprops"></a>
 
@@ -113,7 +105,7 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-#### Remarks
+### Remarks
 
 Routed from [CompensationCard](#compensationcard)'s `employee/management/compensation/card/addRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. [Compensation](#compensation) bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
 
@@ -122,15 +114,13 @@ Routed from [CompensationCard](#compensationcard)'s `employee/management/compens
 | `employee/management/compensation/addJobForm/submitted` | Fired after the job and compensation are saved; use it to return to the card | Saved `Compensation` entity |
 | `employee/management/compensation/addJobForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
-***
-
 <a id="compensationcard"></a>
 
-### CompensationCard
+## CompensationCard
 
 Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances.
 
-#### CompensationCardProps
+### CompensationCardProps
 
 <a id="compensationcardprops"></a>
 
@@ -141,7 +131,7 @@ Props for [CompensationCard](#compensationcard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [CompensationCard](#compensationcard) for the available event types and payloads. |
 
-#### Remarks
+### Remarks
 
 The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to [CompensationEditForm](#compensationeditform), [CompensationAddJobForm](#compensationaddjobform), or [CompensationAddAnotherJobForm](#compensationaddanotherjobform) and renders any post-save success alerts. [Compensation](#compensation) bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
 
@@ -153,15 +143,13 @@ The card owns its own data fetch, the pending-change alerts and review modal, an
 | `employee/management/compensation/card/jobDeleted` | Fired after a non-primary job is deleted via the card's confirm dialog | `{ employeeId: string, jobId: string }` |
 | `employee/management/compensation/card/changeCancelled` | Fired after a scheduled future-dated change is cancelled from the card | `{ employeeId: string, compensationId: string }` |
 
-***
-
 <a id="compensationeditform"></a>
 
-### CompensationEditForm
+## CompensationEditForm
 
 Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change.
 
-#### CompensationEditFormProps
+### CompensationEditFormProps
 
 <a id="compensationeditformprops"></a>
 
@@ -177,7 +165,7 @@ Props for [CompensationEditForm](#compensationeditform).
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
-#### Remarks
+### Remarks
 
 Pair with [CompensationCard](#compensationcard) to route its `employee/management/compensation/card/editRequested` event to this form. [Compensation](#compensation) bundles the card, the three form surfaces (edit, add job, add another job), and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
 
@@ -186,13 +174,11 @@ Pair with [CompensationCard](#compensationcard) to route its `employee/managemen
 | `employee/management/compensation/editForm/submitted` | Fired after the compensation change is saved; use it to return to the card | The updated `Compensation` entity |
 | `employee/management/compensation/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
-***
-
 <a id="dashboard"></a>
 
-### Dashboard
+## Dashboard
 
-#### DashboardProps
+### DashboardProps
 
 <a id="dashboardprops"></a>
 
@@ -208,15 +194,13 @@ Pair with [CompensationCard](#compensationcard) to route its `employee/managemen
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `selectedTab?` | `DashboardTab` | The currently active tab. Defaults to `'basicDetails'` when uncontrolled. |
 
-***
-
 <a id="deductions"></a>
 
-### Deductions
+## Deductions
 
 Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
 
-#### DeductionsProps
+### DeductionsProps
 
 <a id="deductionsprops"></a>
 
@@ -233,7 +217,7 @@ Props for [Deductions](#deductions).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders a card listing the employee's active deductions with affordances to add a new deduction, edit an existing one, or delete one via a confirm dialog. Choosing to add or edit swaps the card for the deduction form; a successful save returns to the card and emits the corresponding event, and cancelling returns without saving. Wraps everything in error and suspense boundaries.
 
@@ -249,15 +233,13 @@ The card and form surfaces ([DeductionsCard](#deductionscard), [DeductionsEditFo
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
 | `employee/management/deductions/alertDismissed` | Fired when the user dismisses a success alert above the card | `null` |
 
-***
-
 <a id="deductionscard"></a>
 
-### DeductionsCard
+## DeductionsCard
 
 Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction.
 
-#### DeductionsCardProps
+### DeductionsCardProps
 
 <a id="deductionscardprops"></a>
 
@@ -268,7 +250,7 @@ Props for [DeductionsCard](#deductionscard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [DeductionsCard](#deductionscard) for the available event types and payloads. |
 
-#### Remarks
+### Remarks
 
 Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders [DeductionsEditForm](#deductionseditform) (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use [Deductions](#deductions) instead.
 
@@ -278,15 +260,13 @@ Fetches its own data and owns the delete confirm dialog. Has no alert API — al
 | `employee/management/deductions/card/editRequested` | Fired when an "Edit" CTA is clicked for a deduction | The matching `Garnishment` |
 | `employee/management/deductions/card/deleted` | Fired after a deduction is deleted via the confirm dialog | The deleted `Garnishment` |
 
-***
-
 <a id="deductionseditform"></a>
 
-### DeductionsEditForm
+## DeductionsEditForm
 
 Standalone add/edit surface for a single employee deduction.
 
-#### DeductionsEditFormProps
+### DeductionsEditFormProps
 
 <a id="deductionseditformprops"></a>
 
@@ -304,7 +284,7 @@ Props for [DeductionsEditForm](#deductionseditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders the inline form for a post-tax custom deduction or court-ordered garnishment. Looks up the row to edit by `editingDeductionId`; omit it to open in add mode. Resolves its text against the `Employee.Management.Deductions` translation namespace so partner overrides on that namespace flow into the form. For an orchestrated card-plus-form flow, use [Deductions](#deductions).
 
@@ -314,18 +294,16 @@ Renders the inline form for a post-tax custom deduction or court-ordered garnish
 | `employee/management/deductions/editForm/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
 | `employee/management/deductions/editForm/cancelled` | Fired when the user cancels the form | — |
 
-***
-
 <a id="documentmanager"></a>
 
-### DocumentManager
+## DocumentManager
 
 Read-only document viewer for the admin-facing employee dashboard. Renders the
 selected form's PDF — including unsigned forms, which are shown as-is.
 Signing is intentionally not offered here; forms are signed by the employee
 during onboarding, not by an admin viewing the dashboard.
 
-#### DocumentManagerProps
+### DocumentManagerProps
 
 <a id="documentmanagerprops"></a>
 
@@ -343,7 +321,7 @@ Props for [DocumentManager](#documentmanager).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Emits the following events:
 
@@ -351,15 +329,13 @@ Emits the following events:
 | ----- | ----------- | ---- |
 | `CANCEL` | The back button is selected | — |
 
-***
-
 <a id="documents"></a>
 
-### Documents
+## Documents
 
 Standalone employee documents management flow.
 
-#### DocumentsProps
+### DocumentsProps
 
 <a id="documentsprops"></a>
 
@@ -376,7 +352,7 @@ Props for [Documents](#documents).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Orchestrates the documents card and the per-form document manager. The flow
 starts on the documents card and routes to the document manager when a row's
@@ -387,11 +363,9 @@ card.
 | ----- | ----------- | ---- |
 | `employee/management/documents/card/viewRequested` | Fired when a row's View CTA is clicked on the documents card | `{ employeeId: string; formId: string }` |
 
-***
-
 <a id="documentscard"></a>
 
-### DocumentsCard
+## DocumentsCard
 
 Standalone "Documents" (forms) card. Owns its own data fetch via
 useDocumentsList and renders the employee's forms in a table with a
@@ -402,7 +376,7 @@ read-only — viewing or signing a form happens in the screen the parent
 routes to — and renders no alerts: alert rendering is the parent's
 responsibility.
 
-#### DocumentsCardProps
+### DocumentsCardProps
 
 <a id="documentscardprops"></a>
 
@@ -413,16 +387,14 @@ Props for [DocumentsCard](#documentscard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when a row's View CTA is clicked. |
 
-***
-
 <a id="employeelist"></a>
 
-### EmployeeList
+## EmployeeList
 
 Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed
 tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
 
-#### ManagementEmployeeListProps
+### ManagementEmployeeListProps
 
 <a id="managementemployeelistprops"></a>
 
@@ -440,7 +412,7 @@ Props for [ManagementEmployeeList](#employeelist).
 | `initialTab?` | [`EmployeeTab`](#employeetab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -449,15 +421,13 @@ Props for [ManagementEmployeeList](#employeelist).
 | `employee/dismiss` | Fired when the user selects "Dismiss" on a row in the Active tab. | `{ employeeId: string }` |
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 
-***
-
 <a id="federaltaxes"></a>
 
-### FederalTaxes
+## FederalTaxes
 
 Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome.
 
-#### FederalTaxesProps
+### FederalTaxesProps
 
 <a id="federaltaxesprops"></a>
 
@@ -474,7 +444,7 @@ Props for [FederalTaxes](#federaltaxes).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders a read-only card showing filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding, with an Edit CTA that swaps to the edit form. Submitting the form returns to the card; cancelling returns without saving. Wraps everything in error and suspense boundaries.
 
@@ -487,11 +457,9 @@ The card and form surfaces ([FederalTaxesCard](#federaltaxescard), [FederalTaxes
 | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user cancels the edit form; the block returns to the card view | — |
 | `employee/management/federalTaxes/alertDismissed` | Fired when the user dismisses an alert above the card | `null` |
 
-***
-
 <a id="federaltaxescard"></a>
 
-### FederalTaxesCard
+## FederalTaxesCard
 
 Standalone "Federal taxes" card. Owns its own data fetch via
 `useFederalTaxesSummary` and emits
@@ -499,7 +467,7 @@ Standalone "Federal taxes" card. Owns its own data fetch via
 button is clicked. The card has no alert API — alert rendering (when
 introduced) is the orchestrator's responsibility.
 
-#### FederalTaxesCardProps
+### FederalTaxesCardProps
 
 <a id="federaltaxescardprops"></a>
 
@@ -510,15 +478,13 @@ Props for [FederalTaxesCard](#federaltaxescard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the card emits an event. See the events table on [FederalTaxesCard](#federaltaxescard) for the available event types and payloads. |
 
-***
-
 <a id="federaltaxeseditform"></a>
 
-### FederalTaxesEditForm
+## FederalTaxesEditForm
 
 Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 
-#### FederalTaxesEditFormProps
+### FederalTaxesEditFormProps
 
 <a id="federaltaxeseditformprops"></a>
 
@@ -535,7 +501,7 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Pair with [FederalTaxesCard](#federaltaxescard) to route its `employee/management/federalTaxes/card/editRequested` event to this form. [FederalTaxes](#federaltaxes) bundles the card, this form, and the swap wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit (for example, when the form needs to render in a modal or drawer, or when the swap is driven by a router).
 
@@ -544,15 +510,13 @@ Pair with [FederalTaxesCard](#federaltaxescard) to route its `employee/managemen
 | `employee/management/federalTaxes/editForm/submitted` | Fired after the form is saved; use it to return to the card | The updated `EmployeeFederalTax` entity |
 | `employee/management/federalTaxes/editForm/cancelled` | Fired when the user clicks Cancel; use it to return to the card | — |
 
-***
-
 <a id="homeaddress"></a>
 
-### HomeAddress
+## HomeAddress
 
 Standalone employee home address management flow.
 
-#### HomeAddressProps
+### HomeAddressProps
 
 <a id="homeaddressprops"></a>
 
@@ -569,7 +533,7 @@ Props for [HomeAddress](#homeaddress).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -579,15 +543,13 @@ Props for [HomeAddress](#homeaddress).
 | `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
 | `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
 
-***
-
 <a id="homeaddresscard"></a>
 
-### HomeAddressCard
+## HomeAddressCard
 
 Standalone employee home address summary card.
 
-#### HomeAddressCardProps
+### HomeAddressCardProps
 
 <a id="homeaddresscardprops"></a>
 
@@ -598,7 +560,7 @@ Props for [HomeAddressCard](#homeaddresscard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
-#### Remarks
+### Remarks
 
 Fetches the employee's active home address and renders it alongside a Manage button.
 
@@ -606,15 +568,13 @@ Fetches the employee's active home address and renders it alongside a Manage but
 | ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
 
-***
-
 <a id="homeaddresseditform"></a>
 
-### HomeAddressEditForm
+## HomeAddressEditForm
 
 Standalone employee home address edit form for creating, updating, and deleting addresses.
 
-#### HomeAddressEditFormProps
+### HomeAddressEditFormProps
 
 <a id="homeaddresseditformprops"></a>
 
@@ -631,7 +591,7 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -640,15 +600,13 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
 
-***
-
 <a id="paymentmethod"></a>
 
-### PaymentMethod
+## PaymentMethod
 
 Management flow for editing an employee's payment method.
 
-#### PaymentMethodProps
+### PaymentMethodProps
 
 <a id="paymentmethodprops"></a>
 
@@ -667,7 +625,7 @@ Props for [PaymentMethod](#paymentmethod).
 | `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Orchestrates the list card, add-bank-account form, and split-paycheck form
 for an existing employee. Routes between steps based on user actions
@@ -676,7 +634,7 @@ starting from `initialState`. Composed of the smaller standalone components
 [PaymentMethodSplitForm](#paymentmethodsplitform)) which can also be used directly when an
 orchestrator other than this flow is needed.
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -691,15 +649,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="paymentmethodbankform"></a>
 
-### PaymentMethodBankForm
+## PaymentMethodBankForm
 
 Standalone bank-account form for the management flow.
 
-#### PaymentMethodBankFormProps
+### PaymentMethodBankFormProps
 
 <a id="paymentmethodbankformprops"></a>
 
@@ -714,7 +670,7 @@ Props for [PaymentMethodBankForm](#paymentmethodbankform).
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
-#### Remarks
+### Remarks
 
 Renders the shared bank-account form and emits per-component scoped events
 when the form is submitted or cancelled. Reads its copy from the dedicated
@@ -726,15 +682,13 @@ the management bank form don't leak into the onboarding form.
 | `employee/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully created | The created bank account |
 | `employee/management/paymentMethod/bankForm/cancelled` | Fired when the user cancels the form | — |
 
-***
-
 <a id="paymentmethodcard"></a>
 
-### PaymentMethodCard
+## PaymentMethodCard
 
 Standalone "Payment" card.
 
-#### PaymentMethodCardProps
+### PaymentMethodCardProps
 
 <a id="paymentmethodcardprops"></a>
 
@@ -745,7 +699,7 @@ Props for [PaymentMethodCard](#paymentmethodcard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired on card interactions. |
 
-#### Remarks
+### Remarks
 
 Owns its own data fetch and emits the management block's scoped events
 when the user clicks the card's CTAs or confirms a bank-account deletion.
@@ -758,15 +712,13 @@ responsibility.
 | `employee/management/paymentMethod/card/splitRequested` | Fired when the user clicks the split-paycheck CTA | — |
 | `employee/management/paymentMethod/card/bankAccountDeleted` | Fired after a bank account is successfully deleted | The delete response payload |
 
-***
-
 <a id="paymentmethodsplitform"></a>
 
-### PaymentMethodSplitForm
+## PaymentMethodSplitForm
 
 Standalone split-paycheck form for the management flow.
 
-#### PaymentMethodSplitFormProps
+### PaymentMethodSplitFormProps
 
 <a id="paymentmethodsplitformprops"></a>
 
@@ -780,7 +732,7 @@ Props for [PaymentMethodSplitForm](#paymentmethodsplitform).
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
-#### Remarks
+### Remarks
 
 Renders the shared split-payments form and emits per-component scoped events
 when the form is submitted or cancelled. Reads its copy from the dedicated
@@ -792,11 +744,9 @@ on the management split form don't leak into the onboarding form.
 | `employee/management/paymentMethod/splitForm/submitted` | Fired after the splits are successfully saved | The updated payment method |
 | `employee/management/paymentMethod/splitForm/cancelled` | Fired when the user cancels the form | — |
 
-***
-
 <a id="paystubscard"></a>
 
-### PaystubsCard
+## PaystubsCard
 
 Standalone "Paystubs" card. Owns its own data fetch via
 usePaystubsList and renders the paginated paystubs table with a
@@ -806,7 +756,7 @@ download success. The card has no edit transitions and no alert API —
 paystubs is a read-only surface whose only action is a download side
 effect that opens the PDF in a new tab.
 
-#### PaystubsCardProps
+### PaystubsCardProps
 
 <a id="paystubscardprops"></a>
 
@@ -817,15 +767,13 @@ Props for [PaystubsCard](#paystubscard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when paystub interactions occur. |
 
-***
-
 <a id="profile"></a>
 
-### Profile
+## Profile
 
 Management surface for viewing and editing an employee's basic profile details after onboarding.
 
-#### ProfileProps
+### ProfileProps
 
 <a id="profileprops"></a>
 
@@ -842,7 +790,7 @@ Props for [Profile](#profile).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Drives the read-view card and edit form via an internal state machine.
 Emits events on the supplied `onEvent` handler when the user requests an
@@ -854,15 +802,13 @@ edit, saves changes, or cancels.
 | `employee/management/profile/updated` | Fired after the profile is successfully saved | Employee |
 | `employee/management/profile/editCancelled` | Fired when the user cancels editing | — |
 
-***
-
 <a id="profilecard"></a>
 
-### ProfileCard
+## ProfileCard
 
 Read-only card showing an employee's basic profile details with an Edit action.
 
-#### ProfileCardProps
+### ProfileCardProps
 
 <a id="profilecardprops"></a>
 
@@ -873,7 +819,7 @@ Props for [ProfileCard](#profilecard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the user requests to edit the profile. |
 
-#### Remarks
+### Remarks
 
 Standalone card that fetches its own data. Emits an event when the user
 clicks Edit so the parent can switch to the edit form. The card does not
@@ -884,15 +830,13 @@ surrounding surface's responsibility.
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |
 
-***
-
 <a id="profileeditform"></a>
 
-### ProfileEditForm
+## ProfileEditForm
 
 Standalone edit form for an employee's basic profile details.
 
-#### ProfileEditFormProps
+### ProfileEditFormProps
 
 <a id="profileeditformprops"></a>
 
@@ -909,7 +853,7 @@ Props for [ProfileEditForm](#profileeditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders fields for first name, middle initial, last name, email, SSN, and
 date of birth — all required on update — and shows a success alert when
@@ -921,18 +865,16 @@ return to the read view.
 | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | Employee |
 | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
 
-***
-
 <a id="statetaxes"></a>
 
-### StateTaxes
+## StateTaxes
 
 Standalone state-tax management flow for a given employee. Renders the
 read-only summary card and the edit form, switching between them as the
 partner-emitted events from [StateTaxesCard](#statetaxescard) and [StateTaxesEditForm](#statetaxeseditform)
 drive the internal state machine.
 
-#### StateTaxesProps
+### StateTaxesProps
 
 <a id="statetaxesprops"></a>
 
@@ -949,7 +891,7 @@ Props for [StateTaxes](#statetaxes).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -957,17 +899,15 @@ Props for [StateTaxes](#statetaxes).
 | `employee/management/stateTaxes/editCancelled` | Cancel button on the edit form was clicked | — |
 | `employee/management/stateTaxes/updated` | Edit form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 
-***
-
 <a id="statetaxescard"></a>
 
-### StateTaxesCard
+## StateTaxesCard
 
 Standalone read-only summary card showing an employee's per-state tax
 withholding answers. Fetches its own data and surfaces an Edit button
 that emits an event for the orchestrator to swap in the edit form.
 
-#### StateTaxesCardProps
+### StateTaxesCardProps
 
 <a id="statetaxescardprops"></a>
 
@@ -978,7 +918,7 @@ Props for [StateTaxesCard](#statetaxescard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the Edit button is clicked. |
 
-#### Remarks
+### Remarks
 
 The Edit button is hidden when no state on record has any tax-withholding
 questions (e.g. states with no income tax), since there is nothing to edit.
@@ -987,18 +927,16 @@ questions (e.g. states with no income tax), since there is nothing to edit.
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |
 
-***
-
 <a id="statetaxeseditform"></a>
 
-### StateTaxesEditForm
+## StateTaxesEditForm
 
 Standalone edit screen for the state-tax management flow. Renders the shared
 state-tax form against the `Employee.Management.StateTaxes` namespace and
 emits scoped management events on submit and cancel, so partner copy
 overrides on the management namespace do not leak into the onboarding flow.
 
-#### StateTaxesEditFormProps
+### StateTaxesEditFormProps
 
 <a id="statetaxeseditformprops"></a>
 
@@ -1015,22 +953,20 @@ Props for [StateTaxesEditForm](#statetaxeseditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 | `employee/management/stateTaxes/editCancelled` | Cancel button was clicked | — |
 
-***
-
 <a id="terminateemployee"></a>
 
-### TerminateEmployee
+## TerminateEmployee
 
 Standalone form for capturing an employee's termination details — last day of work and how to process final payroll.
 
-#### TerminateEmployeeProps
+### TerminateEmployeeProps
 
 <a id="terminateemployeeprops"></a>
 
@@ -1048,7 +984,7 @@ Props for [TerminateEmployee](#terminateemployee).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 The main termination form used inside [TerminationFlow](termination-flow.md). Detects existing
 terminations and pre-populates for editing when one is active, or routes to
@@ -1065,7 +1001,7 @@ employee is already terminated.
 | `employee/termination/payrollFailed` | Fired if creating a dismissal payroll fails | `{ employeeId: string, error: unknown }` |
 | `CANCEL` | Fired when the user clicks Cancel | — |
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -1081,15 +1017,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="terminationsummary"></a>
 
-### TerminationSummary
+## TerminationSummary
 
 Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist.
 
-#### TerminationSummaryProps
+### TerminationSummaryProps
 
 <a id="terminationsummaryprops"></a>
 
@@ -1109,7 +1043,7 @@ Props for [TerminationSummary](#terminationsummary).
 | `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
 | `payrollUuid?` | `string` | UUID of the created off-cycle payroll (when applicable). |
 
-#### Remarks
+### Remarks
 
 Displays termination details and provides actions for managing the termination. Includes an offboarding checklist covering payroll timing, tax forms, and account disconnection. The available actions depend on the termination state:
 
@@ -1125,7 +1059,7 @@ Displays termination details and provides actions for managing the termination. 
 | `employee/termination/runPayroll` | Fired when user clicks to run termination payroll | `{ employeeId: string, companyId: string, effectiveDate: string }` |
 | `employee/termination/runOffCyclePayroll` | Fired when user clicks to run an off-cycle payroll | `{ employeeId: string, companyId: string }` |
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -1142,15 +1076,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="workaddress"></a>
 
-### WorkAddress
+## WorkAddress
 
 Standalone employee work address management flow.
 
-#### WorkAddressProps
+### WorkAddressProps
 
 <a id="workaddressprops"></a>
 
@@ -1167,7 +1099,7 @@ Props for [WorkAddress](#workaddress).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -1177,15 +1109,13 @@ Props for [WorkAddress](#workaddress).
 | `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
 | `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
 
-***
-
 <a id="workaddresscard"></a>
 
-### WorkAddressCard
+## WorkAddressCard
 
 Standalone employee work address summary card.
 
-#### WorkAddressCardProps
+### WorkAddressCardProps
 
 <a id="workaddresscardprops"></a>
 
@@ -1196,7 +1126,7 @@ Props for [WorkAddressCard](#workaddresscard).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Event handler fired when the card's Manage button is clicked. |
 
-#### Remarks
+### Remarks
 
 Fetches the employee's active work address and renders it alongside a Manage button.
 
@@ -1204,15 +1134,13 @@ Fetches the employee's active work address and renders it alongside a Manage but
 | ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |
 
-***
-
 <a id="workaddresseditform"></a>
 
-### WorkAddressEditForm
+## WorkAddressEditForm
 
 Standalone employee work address edit form for creating, updating, and deleting addresses.
 
-#### WorkAddressEditFormProps
+### WorkAddressEditFormProps
 
 <a id="workaddresseditformprops"></a>
 
@@ -1229,7 +1157,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -1238,7 +1166,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
 
-## Type Aliases
+## Utility types
 
 <a id="employeetab"></a>
 
@@ -1247,8 +1175,6 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 > **EmployeeTab** = `"active"` \| `"onboarding"` \| `"dismissed"`
 
 The tab currently selected on [EmployeeList](#employeelist).
-
-***
 
 <a id="payrolloption"></a>
 

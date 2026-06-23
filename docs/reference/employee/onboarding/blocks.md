@@ -10,17 +10,13 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
-## Block Components
-
 <a id="compensation"></a>
 
-### Compensation
+## Compensation
 
 Onboarding step for collecting an employee's role and compensation details.
 
-#### CompensationProps
+### CompensationProps
 
 <a id="compensationprops"></a>
 
@@ -38,7 +34,7 @@ Props for [Compensation](#compensation).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Collects the job title, employee type (hourly, salary), compensation
 amount, and pay period. For hourly employees, allows configuring multiple
@@ -55,7 +51,7 @@ stays on their current step.
 | `employee/compensation/updated` | Fired after compensation details are updated | [Compensation](#compensation) |
 | `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -71,15 +67,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="deductions"></a>
 
-### Deductions
+## Deductions
 
 Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments.
 
-#### DeductionsProps
+### DeductionsProps
 
 <a id="deductionsprops"></a>
 
@@ -96,7 +90,7 @@ Props for [Deductions](#deductions).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders the employee's current deductions as a list, with an empty state when none exist. Users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
 
@@ -112,7 +106,7 @@ Renders the employee's current deductions as a list, with an empty state when no
 | `employee/deductions/cancelEmpty` | Fired when the user cancels the form and no deductions remain | — |
 | `employee/deductions/done` | Fired when the step is complete and the parent flow can advance | — |
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -127,15 +121,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="documentlist"></a>
 
-### DocumentList
+## DocumentList
 
 Lists the employee's documents pending signature.
 
-#### DocumentListProps
+### DocumentListProps
 
 <a id="documentlistprops"></a>
 
@@ -152,7 +144,7 @@ Props for [DocumentList](#documentlist).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Fetches the employee's forms and renders the list of documents that still
 require signing along with a continue action once everything is signed.
@@ -162,15 +154,13 @@ require signing along with a continue action once everything is signed.
 | `employee/forms/view` | Fired when a form's "Sign" action is selected | `{ uuid: string; name?: string }` |
 | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
 
-***
-
 <a id="documentsigner"></a>
 
-### DocumentSigner
+## DocumentSigner
 
 Onboarding step for signing employee documents.
 
-#### DocumentSignerProps
+### DocumentSignerProps
 
 <a id="documentsignerprops"></a>
 
@@ -188,7 +178,7 @@ Props for [DocumentSigner](#documentsigner).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withEmployeeI9?` | `boolean` | When `true`, the flow routes through I-9 employment eligibility before listing documents for signing. Defaults to `false`. |
 
-#### Remarks
+### Remarks
 
 Lists the employee's pending forms and routes through the signing UI for each
 one. When `withEmployeeI9` is `true` and the employee's I-9 has not been
@@ -204,15 +194,13 @@ presenting the document list.
 | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
 | `cancel` | Fired when the user cancels signing a form and returns to the document list | — |
 
-***
-
 <a id="editcompensation"></a>
 
-### EditCompensation
+## EditCompensation
 
 Renders a form for creating or editing one of an employee's jobs together with its compensation.
 
-#### EditCompensationProps
+### EditCompensationProps
 
 <a id="editcompensationprops"></a>
 
@@ -233,7 +221,7 @@ Props for [EditCompensation](#editcompensation).
 | `partnerDefaultValues?` | [`CompensationDefaultValues`](#compensationdefaultvalues) | Initial values for the job title and compensation fields. |
 | `startDate?` | `string` | When provided, the hire date is pre-filled from this value and the hire date field is hidden. When absent, the hire date field is rendered so it can be set explicitly. |
 
-#### Remarks
+### Remarks
 
 The submit chain saves the job first, then the compensation. The `employee/job_created` or
 `employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
@@ -245,15 +233,13 @@ fires once the compensation is saved and signals the full save is complete.
 | `employee/job_updated` | Fired when an existing job is saved. | The saved [Job](https://docs.gusto.com/embedded-payroll/reference/get-v1-jobs-job_id). |
 | `employee/compensation_updated` | Fired when the compensation is saved. Treat as the "save complete" signal. | The saved [Compensation](https://docs.gusto.com/embedded-payroll/reference/get-v1-compensations-compensation_id). |
 
-***
-
 <a id="employeedocuments"></a>
 
-### EmployeeDocuments
+## EmployeeDocuments
 
 Onboarding step for selecting which documents the employee must complete.
 
-#### EmployeeDocumentsProps
+### EmployeeDocumentsProps
 
 <a id="employeedocumentsprops"></a>
 
@@ -270,7 +256,7 @@ Props for [EmployeeDocuments](#employeedocuments).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Shows the I-9 toggle when the employee is self-onboarding (so the employee
 can choose whether their employer will collect I-9 verification) and a
@@ -282,16 +268,14 @@ documents configuration and advances the parent flow.
 | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |
 | `employee/documents/done` | Fired when the step is complete and the parent flow can advance | — |
 
-***
-
 <a id="employeelist"></a>
 
-### EmployeeList
+## EmployeeList
 
 Renders a paginated list of a company's employees with per-row onboarding actions (edit,
 delete, review, cancel self-onboarding) and an "Add employee" entry point.
 
-#### EmployeeListProps
+### EmployeeListProps
 
 <a id="employeelistprops"></a>
 
@@ -308,7 +292,7 @@ Props for [EmployeeList](#employeelist).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -318,15 +302,13 @@ Props for [EmployeeList](#employeelist).
 | `employee/onboardingStatus/updated` | Fired after the "Review" or "Cancel self-onboarding" action updates an employee's onboarding status. | The updated `EmployeeOnboardingStatus` record |
 | `employee/onboarding/done` | Fired when the user clicks the skip/done control to leave the onboarding employee list. | — |
 
-***
-
 <a id="employmenteligibility"></a>
 
-### EmploymentEligibility
+## EmploymentEligibility
 
 Captures the employee's I-9 employment eligibility (Section 1) before signing.
 
-#### EmploymentEligibilityProps
+### EmploymentEligibilityProps
 
 <a id="employmenteligibilityprops"></a>
 
@@ -343,7 +325,7 @@ Props for [EmploymentEligibility](#employmenteligibility).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Collects the employee's authorization status — U.S. citizen, noncitizen
 national, permanent resident, or alien authorized to work — and any
@@ -354,15 +336,13 @@ authorization record on submit.
 | ----- | ----------- | ---- |
 | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |
 
-***
-
 <a id="federaltaxes"></a>
 
-### FederalTaxes
+## FederalTaxes
 
 Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 
-#### FederalTaxesProps
+### FederalTaxesProps
 
 <a id="federaltaxesprops"></a>
 
@@ -379,7 +359,7 @@ Props for [FederalTaxes](#federaltaxes).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
 
@@ -388,15 +368,13 @@ The federal tax record is created automatically with the employee, so this step 
 | `employee/federalTaxes/updated` | Fired after the form is saved | The updated `EmployeeFederalTax` entity |
 | `employee/federalTaxes/done` | Fired after a successful save so the parent flow can advance | — |
 
-***
-
 <a id="i9signatureform"></a>
 
-### I9SignatureForm
+## I9SignatureForm
 
 Presents the employee's I-9 form for review and signature.
 
-#### I9SignatureFormProps
+### I9SignatureFormProps
 
 <a id="i9signatureformprops"></a>
 
@@ -414,7 +392,7 @@ Props for [I9SignatureForm](#i9signatureform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders the I-9 PDF, surfaces the current employment-eligibility status, and
 collects the employee's signature along with any preparer or translator
@@ -426,13 +404,11 @@ details. On successful submission the signed form is emitted.
 | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
-***
-
 <a id="jobslist"></a>
 
-### JobsList
+## JobsList
 
-#### JobsListProps
+### JobsListProps
 
 <a id="jobslistprops"></a>
 
@@ -447,16 +423,14 @@ details. On successful submission the signed form is emitted.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-***
-
 <a id="landing"></a>
 
-### Landing
+## Landing
 
 Landing page for the employee self-onboarding flow. Displays a welcome
 message and the list of onboarding steps the employee needs to complete.
 
-#### LandingProps
+### LandingProps
 
 <a id="landingprops"></a>
 
@@ -474,16 +448,14 @@ Props for the [Landing](#landing) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-***
-
 <a id="onboardingsummary"></a>
 
-### OnboardingSummary
+## OnboardingSummary
 
 Displays a summary of an employee's onboarding status, listing completed and
 outstanding steps. Rendered as a standalone step inside `OnboardingFlow`.
 
-#### OnboardingSummaryProps
+### OnboardingSummaryProps
 
 <a id="onboardingsummaryprops"></a>
 
@@ -501,15 +473,13 @@ Props for [OnboardingSummary](#onboardingsummary).
 | `isAdmin?` | `boolean` | When `true`, renders the admin-facing view of the onboarding summary. Defaults to `false`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-***
-
 <a id="paymentmethod"></a>
 
-### PaymentMethod
+## PaymentMethod
 
 Onboarding step for setting up an employee's payment method.
 
-#### PaymentMethodProps
+### PaymentMethodProps
 
 <a id="paymentmethodprops"></a>
 
@@ -527,7 +497,7 @@ Props for [PaymentMethod](#paymentmethod).
 | `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `false`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Lets the employee (or admin acting on their behalf) choose between Direct
 Deposit and Check, add bank accounts, and configure split-paycheck
@@ -540,7 +510,7 @@ allocations across multiple accounts.
 | `employee/bankAccount/created` | Fired after a bank account is successfully added | The created bank account |
 | `employee/bankAccount/deleted` | Fired after a bank account is successfully removed | — |
 
-#### Example
+### Example
 
 ```tsx
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
@@ -555,15 +525,13 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="profile"></a>
 
-### Profile
+## Profile
 
 Onboarding step for collecting an employee's basic profile and addresses.
 
-#### ProfileProps
+### ProfileProps
 
 <a id="profileprops"></a>
 
@@ -583,7 +551,7 @@ Props for [Profile](#profile).
 | `isSelfOnboardingEnabled?` | `boolean` | When `true`, the admin variant exposes the self-onboarding toggle. Defaults to `true`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Switches between an admin-facing variant (collects employee details,
 work address, start date, and an optional self-onboarding invitation
@@ -603,15 +571,13 @@ is omitted.
 | `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | EmployeeWorkAddress |
 | `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | Employee extended with `startDate` (admin variant) |
 
-***
-
 <a id="signatureform"></a>
 
-### SignatureForm
+## SignatureForm
 
 Presents a single employee document for review and signature.
 
-#### SignatureFormProps
+### SignatureFormProps
 
 <a id="signatureformprops"></a>
 
@@ -629,7 +595,7 @@ Props for [SignatureForm](#signatureform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders the form's PDF and collects the employee's signature. On successful
 submission the signed form is emitted; cancelling returns to the document list.
@@ -639,17 +605,15 @@ submission the signed form is emitted; cancelling returns to the document list.
 | `employee/forms/sign` | Fired after the form is successfully signed | Form |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
-***
-
 <a id="statetaxes"></a>
 
-### StateTaxes
+## StateTaxes
 
 Onboarding step that collects an employee's per-state tax withholding
 answers. The set of fields is driven by the API response for each state
 on record.
 
-#### StateTaxesProps
+### StateTaxesProps
 
 <a id="statetaxesprops"></a>
 
@@ -667,14 +631,14 @@ Props for [StateTaxes](#statetaxes).
 | `isAdmin?` | `boolean` | Render admin-only questions and submit them. Defaults to `false`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 | `employee/stateTaxes/done` | Onboarding step has finished — emitted immediately after `updated` | — |
 
-## Type Aliases
+## Utility types
 
 <a id="compensationdefaultvalues"></a>
 
@@ -688,8 +652,6 @@ Default values for the compensation form fields.
 
 At least one of the fields must be provided. If employee data is available
 via the API, these values are overwritten.
-
-***
 
 <a id="onboardingdefaultvalues"></a>
 
@@ -706,8 +668,6 @@ forwarded to the matching step component (e.g. `profile` to [Profile](#profile),
 `compensation` to [Compensation](#compensation)). If employee data is available via
 the API, the corresponding values are overwritten.
 
-***
-
 <a id="onboardingexecutioninitialstate"></a>
 
 ### OnboardingExecutionInitialState
@@ -715,8 +675,6 @@ the API, the corresponding values are overwritten.
 > **OnboardingExecutionInitialState** = keyof *typeof* `INITIAL_COMPONENT_MAP`
 
 The set of steps [OnboardingExecutionFlow](onboarding-execution-flow.md) can be started on.
-
-***
 
 <a id="profiledefaultvalues"></a>
 

@@ -10,8 +10,6 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
 <a id="createpayment"></a>
 
 ## CreatePayment
@@ -63,8 +61,6 @@ function CreateContractorPayment() {
 }
 ```
 
-***
-
 <a id="paymenthistory"></a>
 
 ## PaymentHistory
@@ -106,8 +102,6 @@ import { ContractorManagement } from '@gusto/embedded-react-sdk'
 />
 ```
 
-***
-
 <a id="paymentslist"></a>
 
 ## PaymentsList
@@ -142,8 +136,6 @@ Props for [PaymentsList](#paymentslist).
 | `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
 | `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
 
-***
-
 <a id="paymentstatement"></a>
 
 ## PaymentStatement
@@ -167,8 +159,6 @@ Props for [PaymentStatement](#paymentstatement).
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorPaymentsPaymentStatement`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
-
-***
 
 <a id="paymentsummary"></a>
 

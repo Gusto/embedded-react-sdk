@@ -10,17 +10,13 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
-## Block Components
-
 <a id="address"></a>
 
-### Address
+## Address
 
 Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type.
 
-#### AddressProps
+### AddressProps
 
 <a id="addressprops"></a>
 
@@ -37,14 +33,14 @@ Props for [Address](#address).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
 | `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
 
-#### Example
+### Example
 
 ```tsx
 import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
@@ -59,19 +55,13 @@ function MyComponent() {
 }
 ```
 
-> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
-
-Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
-
-***
-
 <a id="contractorlist"></a>
 
-### ContractorList
+## ContractorList
 
 Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
 
-#### ContractorListProps
+### ContractorListProps
 
 <a id="contractorlistprops"></a>
 
@@ -89,7 +79,7 @@ Props for [ContractorList](#contractorlist).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `successMessage?` | `string` | Success message to display in an alert above the list, typically after a create, update, or delete action. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -98,15 +88,13 @@ Props for [ContractorList](#contractorlist).
 | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
 | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
 
-***
-
 <a id="contractorprofile"></a>
 
-### ContractorProfile
+## ContractorProfile
 
 Form for creating or editing a contractor profile, supporting both individual and business contractor types.
 
-#### ContractorProfileProps
+### ContractorProfileProps
 
 <a id="contractorprofileprops"></a>
 
@@ -124,7 +112,7 @@ Props for [ContractorProfile](#contractorprofile).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders different field sets depending on the contractor type (individual vs. business) and wage type
 (hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
@@ -137,19 +125,13 @@ submit; otherwise it creates a new contractor under `companyId`.
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
 | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
 
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
-
-Form field values for the contractor profile form.
-
-***
-
 <a id="contractorsubmit"></a>
 
-### ContractorSubmit
+## ContractorSubmit
 
 Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor.
 
-#### ContractorSubmitProps
+### ContractorSubmitProps
 
 <a id="contractorsubmitprops"></a>
 
@@ -167,7 +149,7 @@ Props for [ContractorSubmit](#contractorsubmit).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `selfOnboarding?` | `boolean` | When true, adjusts the submission for the self-onboarding flow, surfacing the invite step before the contractor's onboarding status is finalized. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -175,18 +157,16 @@ Props for [ContractorSubmit](#contractorsubmit).
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
 
-***
-
 <a id="newhirereport"></a>
 
-### NewHireReport
+## NewHireReport
 
 Collects new hire reporting information for a contractor and persists it to the contractor record.
 
 Asks whether a new hire report should be filed and, when the answer is yes, captures the
 work state used for filing. Submitting writes both values back to the contractor.
 
-#### NewHireReportProps
+### NewHireReportProps
 
 <a id="newhirereportprops"></a>
 
@@ -204,7 +184,7 @@ Props for the [NewHireReport](#newhirereport) component.
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `selfOnboarding?` | `boolean` | When `true`, adjusts the form for the contractor self-onboarding flow. Defaults to `false`. |
 
-#### Remarks
+### Remarks
 
 Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
 own self-onboarding flow rather than admin onboarding.
@@ -214,7 +194,7 @@ own self-onboarding flow rather than admin onboarding.
 | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
 | `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
 
-#### Example
+### Example
 
 ```tsx
 import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
@@ -229,11 +209,9 @@ function NewHireReportStep() {
 }
 ```
 
-***
-
 <a id="paymentmethod"></a>
 
-### PaymentMethod
+## PaymentMethod
 
 Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method.
 
@@ -242,7 +220,7 @@ collects bank account details (account holder name, routing number, account numb
 type) when direct deposit is selected. Submitting creates the bank account if needed and then
 updates the contractor's payment method.
 
-#### PaymentMethodProps
+### PaymentMethodProps
 
 <a id="paymentmethodprops"></a>
 
@@ -259,7 +237,7 @@ Props for the [PaymentMethod](#paymentmethod) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -267,7 +245,7 @@ Props for the [PaymentMethod](#paymentmethod) component.
 | `contractor/paymentMethod/updated` | Fired after the payment method is updated | The API response object; access the updated payment method at `.contractorPaymentMethod` |
 | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
 
-#### Example
+### Example
 
 ```tsx
 import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
@@ -282,7 +260,23 @@ function PaymentMethodStep() {
 }
 ```
 
-## Type Aliases
+## Utility types
+
+<a id="addressdefaultvalues"></a>
+
+### AddressDefaultValues
+
+> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
+
+Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
+<a id="contractorprofileformdata"></a>
+
+### ContractorProfileFormData
+
+> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
+
+Form field values for the contractor profile form.
 
 <a id="onboardingflowdefaultvalues"></a>
 

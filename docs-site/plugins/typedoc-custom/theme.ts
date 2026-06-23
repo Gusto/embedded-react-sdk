@@ -33,10 +33,6 @@ function getReflectionDescription(
   return context.helpers.getDescriptionForComment(comment) ?? ''
 }
 
-function escapeJsxAttr(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
-}
-
 function renderDomainHub(context: SDKThemeContext, model: DeclarationReflection): string {
   const parts: string[] = [`# ${model.name}`, '']
 
@@ -176,6 +172,30 @@ function renderFlowPage(rendered: string, readme: string): string {
   return [...lines.slice(0, headingIndex + 1), '', readme, '', ...lines.slice(insertAt)].join('\n')
 }
 
+function isBlocksPage(model: DeclarationReflection): boolean {
+  return model.name === 'Blocks' && model.kind === ReflectionKind.Namespace
+}
+
+function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection): string {
+  const children = model.children ?? []
+  const blockComps = children.filter(isComponent).sort((a, b) => a.name.localeCompare(b.name))
+  const utilities = children
+    .filter(c => !isComponent(c))
+    .sort((a, b) => a.name.localeCompare(b.name))
+
+  const parts: string[] = []
+  for (const block of blockComps) {
+    parts.push(context.partials.memberContainer(block, { headingLevel: 2 }))
+  }
+  if (utilities.length > 0) {
+    parts.push('## Utility types')
+    for (const util of utilities) {
+      parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
+    }
+  }
+  return parts.join('\n\n')
+}
+
 export class SDKTheme extends MarkdownTheme {
   override getRenderContext(
     page: ConstructorParameters<typeof MarkdownThemeContext>[1],
@@ -293,7 +313,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
   constructor(...args: ConstructorParameters<typeof MarkdownThemeContext>) {
     super(...args)
 
-    const origMember = this.partials.member.bind(this)
     const origMemberTitle = this.partials.memberTitle.bind(this)
     const origSignature = this.partials.signature.bind(this)
     const origSignatureTitle = this.partials.signatureTitle.bind(this)
@@ -303,19 +322,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
     this.partials = {
       ...this.partials,
-      member: (
-        model: DeclarationReflection,
-        options: { headingLevel: number; nested?: boolean },
-      ) => {
-        const result = origMember(model, options)
-        if (!isComponent(model)) return result
-        const helperTypes = (this.router as SDKRouter).blockHelperTypesMap.get(model) ?? []
-        if (helperTypes.length === 0) return result
-        return [
-          result,
-          ...helperTypes.map(t => origMember(t, { headingLevel: options.headingLevel + 1 })),
-        ].join('\n\n')
-      },
       memberTitle: (model: DeclarationReflection) => {
         const title = origMemberTitle(model)
         // Strip trailing () for components. Deprecated titles are wrapped in ~~...~~
@@ -444,6 +450,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isDomainHub(page.model)) return renderDomainHub(this, page.model)
         if (isHooksIndex(page.model)) return renderHooksIndex(this, page.model)
         if (isNamespaceIndex(page.model)) return renderNamespaceIndex(this, page.model)
+        if (isBlocksPage(page.model)) return renderBlocksPage(this, page.model)
         const flowReadme = (this.router as SDKRouter).flowReadmes.get(page.model)
         if (flowReadme) return renderFlowPage(origReflectionTemplate(page), flowReadme)
         return origReflectionTemplate(page)

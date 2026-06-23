@@ -17,7 +17,6 @@ import {
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { SDKRouter } from './router'
 import {
-  componentDirFromSources,
   componentPropsInterfaces,
   domainFromSources,
   hookDirFromSources,
@@ -91,49 +90,6 @@ describe('domainFromSources', () => {
     const r = new DeclarationReflection('foo', ReflectionKind.Function)
     r.sources = sourceRef('/workspace/src/utils/helpers.ts')
     expect(domainFromSources(r)).toBeNull()
-  })
-})
-
-// ---------------------------------------------------------------------------
-// componentDirFromSources
-// ---------------------------------------------------------------------------
-
-describe('componentDirFromSources', () => {
-  it('returns the component directory for a file directly inside it', () => {
-    const r = new DeclarationReflection('AssignSignatoryDefaultValues', ReflectionKind.TypeAlias)
-    r.sources = sourceRef('/workspace/src/components/Company/AssignSignatory/useAssignSignatory.ts')
-    expect(componentDirFromSources(r)).toBe('AssignSignatory')
-  })
-
-  it('returns the deepest PascalCase directory for a nested component path', () => {
-    const r = new DeclarationReflection('CreateSignatoryDefaultValues', ReflectionKind.TypeAlias)
-    r.sources = sourceRef(
-      '/workspace/src/components/Company/AssignSignatory/CreateSignatory/useCreateSignatory.ts',
-    )
-    expect(componentDirFromSources(r)).toBe('CreateSignatory')
-  })
-
-  it('works when the type is defined in the same file as the component', () => {
-    const r = new DeclarationReflection('PayScheduleDefaultValues', ReflectionKind.TypeAlias)
-    r.sources = sourceRef('/workspace/src/components/Company/PaySchedule/PaySchedule.tsx')
-    expect(componentDirFromSources(r)).toBe('PaySchedule')
-  })
-
-  it('returns null when sources are absent', () => {
-    const r = new DeclarationReflection('SomeType', ReflectionKind.TypeAlias)
-    expect(componentDirFromSources(r)).toBeNull()
-  })
-
-  it('returns null for a path without a PascalCase directory (e.g. flat utils file)', () => {
-    const r = new DeclarationReflection('SomeUtil', ReflectionKind.TypeAlias)
-    r.sources = sourceRef('/workspace/src/components/Company/utils.ts')
-    expect(componentDirFromSources(r)).toBeNull()
-  })
-
-  it('returns null when the last directory segment before the file is not PascalCase', () => {
-    const r = new DeclarationReflection('SomeType', ReflectionKind.TypeAlias)
-    r.sources = sourceRef('/workspace/src/components/Company/AssignSignatory/shared/types.ts')
-    expect(componentDirFromSources(r)).toBeNull()
   })
 })
 

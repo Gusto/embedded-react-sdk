@@ -10,8 +10,6 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
 <a id="assignsignatory"></a>
 
 ## AssignSignatory
@@ -48,16 +46,6 @@ For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOn
 | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
 | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
 
-> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
-
-Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
-
-#### Remarks
-
-At least one of `create` or `invite` must be provided.
-
-***
-
 <a id="bankaccount"></a>
 
 ## BankAccount
@@ -83,8 +71,6 @@ with controls to change or verify the account via micro-deposits.
 | `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
 | `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified CompanyBankAccount |
 | `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step | — |
-
-***
 
 <a id="createsignatory"></a>
 
@@ -118,12 +104,6 @@ Props for [CreateSignatory](#createsignatory).
 | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
 | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
 
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
-
-Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
-
-***
-
 <a id="documentlist"></a>
 
 ## DocumentList
@@ -150,8 +130,6 @@ signatory and is allowed to sign documents.
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
 | `company/forms/editSignatory` | Fired when user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when user completes the document signing process | — |
-
-***
 
 <a id="documentsigner"></a>
 
@@ -185,8 +163,6 @@ presenting the document list.
 | `company/signatory/updated` | Fired when an existing signatory is updated successfully | Signatory |
 | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | Signatory |
 
-***
-
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
@@ -216,8 +192,6 @@ Props for the [FederalTaxes](#federaltaxes) component.
 | ----- | ----------- | ---- |
 | `company/federalTaxes/updated` | Federal tax details were successfully updated | FederalTaxDetails |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
-
-***
 
 <a id="industry"></a>
 
@@ -249,8 +223,6 @@ Props for the [Industry](#industry) component.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
-
-***
 
 <a id="invitesignatory"></a>
 
@@ -284,13 +256,6 @@ you want to provide only the invite flow without the create option.
 | ----- | ----------- | ---- |
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
 | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
-
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
-
-Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
-`confirmEmail`, and `title`. At least one field is required.
-
-***
 
 <a id="locationform"></a>
 
@@ -326,8 +291,6 @@ Pass a `locationId` to edit an existing location; omit it to create a new one.
 | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
 | `CANCEL` | Fired when the user cancels editing | — |
 
-***
-
 <a id="locations"></a>
 
 ## Locations
@@ -353,8 +316,6 @@ use the standalone `LocationForm` component directly.
 | `company/location/edit/done` | A location is successfully edited | Response from the update location API |
 | `company/location/done` | A user chooses to proceed to the next step | — |
 | `cancel` | A user cancels the create or edit form | — |
-
-***
 
 <a id="locationslist"></a>
 
@@ -389,8 +350,6 @@ Standalone building block used internally by the orchestrated `Locations` compon
 | `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
 | `company/location/done` | The user chose to proceed to the next step | — |
 
-***
-
 <a id="onboardingoverview"></a>
 
 ## OnboardingOverview
@@ -414,8 +373,6 @@ still consuming the onboarding status via context.
 | ----- | ----------- | ---- |
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
 | `company/overview/done` | Fired when the user signals they are done with the overview screen, typically after onboarding ends | — |
-
-***
 
 <a id="payschedule"></a>
 
@@ -449,17 +406,6 @@ Emits the following events through `onEvent`:
 | ----- | ----------- | ---- |
 | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
 | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
-
-> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
-
-The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
-
-> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
-
-Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
-takes precedence over these defaults when editing.
-
-***
 
 <a id="signatureform"></a>
 
@@ -497,8 +443,6 @@ list and the signature form (e.g. routing the user yourself after they select a 
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 
-***
-
 <a id="statetaxes"></a>
 
 ## StateTaxes
@@ -523,8 +467,6 @@ For finer-grained control over navigation, use the standalone [StateTaxesList](#
 | `company/stateTaxes/updated` | State tax requirements were saved | — |
 | `company/stateTaxes/done` | The list view was completed | — |
 | `CANCEL` | Editing was cancelled and the form was closed | — |
-
-***
 
 <a id="statetaxesform"></a>
 
@@ -564,8 +506,6 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="statetaxeslist"></a>
 
 ## StateTaxesList
@@ -586,3 +526,51 @@ Standalone building block used internally by the orchestrated `StateTaxes` compo
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
+
+## Utility types
+
+<a id="assignsignatorydefaultvalues"></a>
+
+### AssignSignatoryDefaultValues
+
+> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
+
+Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
+
+#### Remarks
+
+At least one of `create` or `invite` must be provided.
+
+<a id="createsignatorydefaultvalues"></a>
+
+### CreateSignatoryDefaultValues
+
+> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+
+Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
+
+<a id="invitesignatorydefaultvalues"></a>
+
+### InviteSignatoryDefaultValues
+
+> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+
+Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
+`confirmEmail`, and `title`. At least one field is required.
+
+<a id="payscheduledefaultfields"></a>
+
+### PayScheduleDefaultFields
+
+> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
+
+The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
+
+<a id="payscheduledefaultvalues"></a>
+
+### PayScheduleDefaultValues
+
+> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
+
+Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
+takes precedence over these defaults when editing.

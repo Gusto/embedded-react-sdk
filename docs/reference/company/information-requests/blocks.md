@@ -10,8 +10,6 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
 <a id="informationrequestform"></a>
 
 ## InformationRequestForm
@@ -56,8 +54,6 @@ Events emitted via `onEvent`:
 | ----- | ----------- | ---- |
 | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |
 | `informationRequest/form/cancel` | Fired when the user cancels the form | — |
-
-***
 
 <a id="informationrequestlist"></a>
 

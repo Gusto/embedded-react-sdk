@@ -10,17 +10,13 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Blocks
-
-## Block Components
-
 <a id="addemployeesholiday"></a>
 
-### AddEmployeesHoliday
+## AddEmployeesHoliday
 
 Employee selection screen for assigning employees to a company's holiday pay policy.
 
-#### AddEmployeesHolidayProps
+### AddEmployeesHolidayProps
 
 <a id="addemployeesholidayprops"></a>
 
@@ -37,22 +33,20 @@ Props for [AddEmployeesHoliday](#addemployeesholiday).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/holidayAddEmployees/done` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |
 | `CANCEL` | The user cancels | — |
 
-***
-
 <a id="addemployeestopolicy"></a>
 
-### AddEmployeesToPolicy
+## AddEmployeesToPolicy
 
 Employee selection screen for assigning employees to a sick or vacation time off policy.
 
-#### AddEmployeesToPolicyProps
+### AddEmployeesToPolicyProps
 
 <a id="addemployeestopolicyprops"></a>
 
@@ -71,7 +65,7 @@ Props for [AddEmployeesToPolicy](#addemployeestopolicy).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Displays all active employees with search filtering and pagination. Employees already
 enrolled in the policy are pre-selected, and carry-over balances are auto-populated
@@ -85,7 +79,7 @@ confirmation.
 | `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
 | `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
 
-#### Example
+### Example
 
 ```tsx
 import { TimeOff } from '@gusto/embedded-react-sdk'
@@ -102,11 +96,9 @@ function MyComponent() {
 }
 ```
 
-***
-
 <a id="holidayselectionform"></a>
 
-### HolidaySelectionForm
+## HolidaySelectionForm
 
 Lets a user select which US federal holidays are observed by the company's holiday pay policy.
 
@@ -115,7 +107,7 @@ is pre-populated with the existing policy's selections and submitting updates it
 federal holidays are shown with their observed and next-observation dates; in create mode they
 are all selected by default.
 
-#### HolidaySelectionFormProps
+### HolidaySelectionFormProps
 
 <a id="holidayselectionformprops"></a>
 
@@ -133,7 +125,7 @@ Props for [HolidaySelectionForm](#holidayselectionform).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `mode?` | `"edit"` \| `"create"` | Whether to create a new holiday policy or edit the existing one. Defaults to `'create'`. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -141,15 +133,13 @@ Props for [HolidaySelectionForm](#holidayselectionform).
 | `timeOff/holidaySelection/editDone` | Holidays were saved in edit mode | — |
 | `CANCEL` | The user backed out of the form | — |
 
-***
-
 <a id="policyconfigurationform"></a>
 
-### PolicyConfigurationForm
+## PolicyConfigurationForm
 
 Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration.
 
-#### PolicyConfigurationFormProps
+### PolicyConfigurationFormProps
 
 <a id="policyconfigurationformprops"></a>
 
@@ -168,7 +158,7 @@ Props for [PolicyConfigurationForm](#policyconfigurationform).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `policyId?` | `string` | When set, the form loads the existing policy and submits an update. |
 
-#### Remarks
+### Remarks
 
 Omit `policyId` to create a new policy; pass `policyId` to edit an existing
 one. In edit mode, the form fetches the policy via Suspense and merges the
@@ -182,31 +172,9 @@ accrual-based).
 | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
 | `CANCEL` | Fired when the user clicks the cancel button | — |
 
-> **AccrualMethod** = `"per_hour_paid"` \| `"per_calendar_year"` \| `"unlimited"`
-
-Top-level accrual method selected on the policy configuration form.
-
-##### Remarks
-
-`per_hour_paid` covers all hourly accrual variants — the `allPaidHours` and
-`includeOvertime` toggles on [PolicyConfigurationFormData](#policyconfigurationformdata) narrow it to
-a specific API accrual method on submit.
-
-> **AccrualMethodFixed** = `"per_pay_period"` \| `"all_at_once"`
-
-Sub-method for fixed (per-calendar-year) accrual — whether hours are granted
-at the start of the year or spread evenly across pay periods.
-
-> **ResetDateType** = `"per_anniversary_year"` \| `"per_calendar_year"`
-
-When a policy's balance resets — on each employee's hire anniversary or on
-a fixed calendar month/day shared across all employees.
-
-***
-
 <a id="policylist"></a>
 
-### PolicyList
+## PolicyList
 
 Displays all active time off policies (sick, vacation, and holiday) for a company.
 
@@ -215,7 +183,7 @@ finish-setup action. Sick and vacation policies are deactivated via the time-off
 the holiday pay policy (if one exists) is merged into the same list and is deleted via the
 holiday pay policy API. Both flows go through a confirmation dialog and show a success alert.
 
-#### PolicyListProps
+### PolicyListProps
 
 <a id="policylistprops"></a>
 
@@ -232,7 +200,7 @@ Props for the [PolicyList](#policylist) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -240,15 +208,13 @@ Props for the [PolicyList](#policylist) component.
 | `timeOff/viewPolicy` | The user opened an existing policy or clicked finish-setup on an incomplete one. | `{ policyId: string, policyType: string }` |
 | `timeOff/deletePolicy/done` | A policy was successfully deleted. | `{ policyId: string }` |
 
-***
-
 <a id="policysettings"></a>
 
-### PolicySettings
+## PolicySettings
 
 Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual.
 
-#### PolicySettingsProps
+### PolicySettingsProps
 
 <a id="policysettingsprops"></a>
 
@@ -266,7 +232,7 @@ Props for [PolicySettings](#policysettings).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-#### Remarks
+### Remarks
 
 Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
 
@@ -275,15 +241,13 @@ Fetches the time off policy, derives the accrual method category, and submits up
 | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |
 | `timeOff/policySettings/back` | Fired when the user navigates back | — |
 
-***
-
 <a id="policysettingspresentation"></a>
 
-### PolicySettingsPresentation
+## PolicySettingsPresentation
 
 Presentation-only form for configuring time off policy limits and rules.
 
-#### PolicySettingsPresentationProps
+### PolicySettingsPresentationProps
 
 <a id="policysettingspresentationprops"></a>
 
@@ -299,7 +263,7 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-#### Remarks
+### Remarks
 
 Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use [PolicySettings](#policysettings).
 
@@ -307,19 +271,13 @@ The fields shown depend on `accrualMethod`:
 - Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
 - Balance maximum, carry-over limit, and paid-out-on-termination are always shown
 
-> **PolicySettingsAccrualMethod** = `"hours_worked"` \| `"fixed_per_pay_period"` \| `"fixed_all_at_once"`
-
-Accrual method category for a time off policy. Determines which settings fields are shown.
-
-***
-
 <a id="policytypeselector"></a>
 
-### PolicyTypeSelector
+## PolicyTypeSelector
 
 Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday.
 
-#### PolicyTypeSelectorProps
+### PolicyTypeSelectorProps
 
 <a id="policytypeselectorprops"></a>
 
@@ -337,7 +295,7 @@ Props for [PolicyTypeSelector](#policytypeselector).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 The holiday option is omitted when the company already has a holiday pay policy, since a company
 can only have one.
@@ -347,19 +305,13 @@ can only have one.
 | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |
 | `CANCEL` | The user cancels | — |
 
-> **PolicyType** = `"sick"` \| `"vacation"` \| `"holiday"`
-
-Identifier for the kind of time-off policy a company can configure.
-
-***
-
 <a id="timeoffpolicydetail"></a>
 
-### TimeOffPolicyDetail
+## TimeOffPolicyDetail
 
 Detail view for a sick or vacation time-off policy.
 
-#### TimeOffPolicyDetailProps
+### TimeOffPolicyDetailProps
 
 <a id="timeoffpolicydetailprops"></a>
 
@@ -376,7 +328,7 @@ Props for [TimeOffPolicyDetail](#timeoffpolicydetail).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Loads the policy and its enrolled employees, then renders the tabbed detail view with
 actions for editing the policy, adding or removing employees, and adjusting individual
@@ -389,21 +341,19 @@ balances. Editable actions are only shown for sick and vacation policies.
 | `timeOff/changeSettings` | The change-settings action was clicked. | `{ policyId: string }` |
 | `timeOff/editPolicy` | The edit-policy action was clicked. | `{ policyId: string }` |
 
-***
-
 <a id="timeoffpolicydetailpresentation"></a>
 
-### TimeOffPolicyDetailPresentation
+## TimeOffPolicyDetailPresentation
 
 Presentational detail view for sick and vacation time-off policies.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
 
-#### Remarks
+### Remarks
 
 Displays policy configuration and accrual settings in a tabbed interface alongside the
 list of enrolled employees. Provides actions for editing the policy, changing settings,
@@ -411,57 +361,13 @@ adding employees, removing employees, and editing individual employee balances. 
 component is fully controlled — pass in the data, selected tab, and dialog state and wire
 up the callbacks. The corresponding container component is [TimeOffPolicyDetail](#timeoffpolicydetail).
 
-> **PolicyDetails** = [`UnlimitedPolicyDetails`](#unlimitedpolicydetails) \| [`RateBasedPolicyDetails`](#ratebasedpolicydetails)
-
-Policy type and accrual configuration for the detail view.
-
-##### Remarks
-
-A discriminated union on `accrualMethod`. When `accrualMethod` is `'unlimited'`,
-no rate or reset date is present. For rate-based methods, `accrualRate` is set
-and `resetDate` / `accrualRateUnit` may also be provided.
-
-> **PolicyTypeKey** = `"vacation"` \| `"sick"`
-
-> **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
-
-> **TimeOffPolicyDetailPresentationProps** = [`TimeOffPolicyDetailPresentationBaseProps`](#timeoffpolicydetailpresentationbaseprops) & \{ `policyDetails`: [`UnlimitedPolicyDetails`](#unlimitedpolicydetails); `onChangeSettings?`: `never`; `policySettings?`: `never`; \} \| \{ `policyDetails`: [`RateBasedPolicyDetails`](#ratebasedpolicydetails); `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); `onChangeSettings?`: () => `void`; \}
-
-Props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
-
-##### Remarks
-
-The props form a discriminated union on `policyDetails.accrualMethod`. Unlimited policies
-omit `policySettings` and `onChangeSettings`; rate-based policies require `policySettings`
-and may provide `onChangeSettings` to enable the change-settings action.
-
-| Field | Description |
-| ----- | ----------- |
-| `title` | The policy name displayed as the page heading. |
-| `subtitle` | Secondary label, typically the policy type. |
-| `onBack` | Called when the back navigation is clicked. |
-| `backLabel` | Label for the back navigation link. |
-| `actions` | Optional action buttons rendered in the header. |
-| `policyDetails` | Policy type and accrual configuration. See [PolicyDetails](#policydetails). |
-| `policySettings` | Accrual caps and termination settings. See [PolicySettingsDisplay](#policysettingsdisplay). Required for rate-based policies. |
-| `onChangeSettings` | Called when the change-settings action is clicked. Rate-based policies only. |
-| `selectedTabId` | The currently active tab id. |
-| `onTabChange` | Called with the new tab id when the user switches tabs. |
-| `employees` | Employee table data including `data`, `searchValue`, `onSearchChange`, `onSearchClear`, and optional `itemMenu`. |
-| `onAddEmployee` | Called when the add-employee action is clicked. |
-| `removeDialog` | State for the employee removal confirmation dialog. |
-| `successAlert` | Optional success message rendered as a dismissible alert. |
-| `onDismissAlert` | Called when the success alert is dismissed. |
-
-***
-
 <a id="viewholidayemployees"></a>
 
-### ViewHolidayEmployees
+## ViewHolidayEmployees
 
 Displays the holiday policy detail view with the employees tab selected.
 
-#### ViewHolidayEmployeesProps
+### ViewHolidayEmployeesProps
 
 <a id="viewholidayemployeesprops"></a>
 
@@ -478,7 +384,7 @@ Props for [ViewHolidayEmployees](#viewholidayemployees).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Shows enrolled employees with search filtering, and provides actions to add employees,
 edit the holiday selection, or remove employees.
@@ -489,16 +395,14 @@ edit the holiday selection, or remove employees.
 | `timeOff/editHolidayPolicy` | User clicks to edit holidays | — |
 | `timeOff/backToList` | User navigates back to the policy list | — |
 
-***
-
 <a id="viewholidaypolicydetails"></a>
 
-### ViewHolidayPolicyDetails
+## ViewHolidayPolicyDetails
 
 Displays the holiday pay policy for a company with tabbed views of the included holidays and
 the enrolled employees.
 
-#### ViewHolidayPolicyDetailsProps
+### ViewHolidayPolicyDetailsProps
 
 <a id="viewholidaypolicydetailsprops"></a>
 
@@ -516,7 +420,7 @@ Props for the [ViewHolidayPolicyDetails](#viewholidaypolicydetails) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -524,17 +428,15 @@ Props for the [ViewHolidayPolicyDetails](#viewholidaypolicydetails) component.
 | `timeOff/holidayAddEmployees` | The user clicked the add-employees action. | — |
 | `timeOff/editHolidayPolicy` | The user clicked the edit-policy action. | — |
 
-***
-
 <a id="viewholidayschedule"></a>
 
-### ViewHolidaySchedule
+## ViewHolidaySchedule
 
 Displays the holiday policy detail view with the holidays tab selected.
 
 Shows the list of selected holidays with their next observation dates.
 
-#### ViewHolidayScheduleProps
+### ViewHolidayScheduleProps
 
 <a id="viewholidayscheduleprops"></a>
 
@@ -551,7 +453,7 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -559,7 +461,42 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
 | `timeOff/backToList` | Fired when user navigates back to policy list | — |
 
-## Interfaces
+## Utility types
+
+<a id="accrualmethod"></a>
+
+### AccrualMethod
+
+> **AccrualMethod** = `"per_hour_paid"` \| `"per_calendar_year"` \| `"unlimited"`
+
+Top-level accrual method selected on the policy configuration form.
+
+#### Remarks
+
+`per_hour_paid` covers all hourly accrual variants — the `allPaidHours` and
+`includeOvertime` toggles on [PolicyConfigurationFormData](#policyconfigurationformdata) narrow it to
+a specific API accrual method on submit.
+
+<a id="accrualmethodfixed"></a>
+
+### AccrualMethodFixed
+
+> **AccrualMethodFixed** = `"per_pay_period"` \| `"all_at_once"`
+
+Sub-method for fixed (per-calendar-year) accrual — whether hours are granted
+at the start of the year or spread evenly across pay periods.
+
+<a id="creatabletimeoffpolicytype"></a>
+
+### CreatableTimeOffPolicyType
+
+> **CreatableTimeOffPolicyType** = `Extract`\<`PolicyType`, `"sick"` \| `"vacation"`\>
+
+Time off policy types that can be created through the time off policy management workflow.
+
+#### Remarks
+
+Only `sick` and `vacation` are creatable through the time off policy endpoint. Holiday policies are a separate concept managed through the holiday pay policy endpoint family.
 
 <a id="employeetableitem"></a>
 
@@ -583,8 +520,6 @@ Extend this interface to add fields specific to a given policy detail view.
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
 
-***
-
 <a id="holidayitem"></a>
 
 ### HolidayItem
@@ -599,8 +534,6 @@ A single federal holiday row shown in the holiday selection table.
 | `nextObservation` | `string` | Localized date string for the next time this holiday will be observed. |
 | `observedDate` | `string` | Localized text describing when the holiday is observed. |
 | `uuid` | `string` | Stable identifier for the holiday (the federal holiday key). |
-
-***
 
 <a id="holidaypolicydetailemployee"></a>
 
@@ -620,8 +553,6 @@ An employee row rendered in the holiday policy detail employees tab.
 | `firstName?` | `string` \| `null` | Employee's first name; combined with `lastName` to render the name column. |
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
-
-***
 
 <a id="holidaypolicydetailpresentationprops"></a>
 
@@ -648,8 +579,6 @@ and an optional success alert.
 | `onDismissAlert?` | () => `void` | Called when the success alert is dismissed. |
 | `subtitle?` | `string` | Secondary label shown beneath the title. |
 | `successAlert?` | `string` | Success message displayed as a dismissible alert above the content. |
-
-***
 
 <a id="policyconfigurationformdata"></a>
 
@@ -685,8 +614,6 @@ the selected `accrualMethod`:
 | `resetDay?` | `number` | Reset day of month when `resetDateType` is `per_calendar_year`. |
 | `resetMonth?` | `number` | Reset month (1–12) when `resetDateType` is `per_calendar_year`. |
 
-***
-
 <a id="policydetailemployeetabledata"></a>
 
 ### PolicyDetailEmployeeTableData
@@ -716,7 +643,27 @@ or `HolidayPolicyDetailPresentationProps`.
 | `pagination?` | [`PaginationControlProps`](../component-inventory.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
 | `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
 
-***
+<a id="policydetails"></a>
+
+### PolicyDetails
+
+> **PolicyDetails** = [`UnlimitedPolicyDetails`](#unlimitedpolicydetails) \| [`RateBasedPolicyDetails`](#ratebasedpolicydetails)
+
+Policy type and accrual configuration for the detail view.
+
+#### Remarks
+
+A discriminated union on `accrualMethod`. When `accrualMethod` is `'unlimited'`,
+no rate or reset date is present. For rate-based methods, `accrualRate` is set
+and `resetDate` / `accrualRateUnit` may also be provided.
+
+<a id="policysettingsaccrualmethod"></a>
+
+### PolicySettingsAccrualMethod
+
+> **PolicySettingsAccrualMethod** = `"hours_worked"` \| `"fixed_per_pay_period"` \| `"fixed_all_at_once"`
+
+Accrual method category for a time off policy. Determines which settings fields are shown.
 
 <a id="policysettingsdisplay"></a>
 
@@ -733,8 +680,6 @@ Accrual caps, carryover, and termination settings displayed alongside a rate-bas
 | `maxAccrualHoursPerYear` | `number` \| `null` | Maximum hours that can accrue per year, or `null` for no limit. |
 | `maxHours` | `number` \| `null` | Maximum balance an employee can hold, or `null` for no limit. |
 | `paidOutOnTermination` | `boolean` | Whether the remaining balance is paid out when an employee is terminated. |
-
-***
 
 <a id="policysettingsformdata"></a>
 
@@ -756,7 +701,25 @@ Form values captured by the policy settings form.
 | `carryOverLimit?` | `number` | Maximum hours that carry over when the policy resets when [PolicySettingsFormData.carryOverLimitEnabled](#policysettingsformdata) is true. |
 | `waitingPeriod?` | `number` | Number of days a new employee must wait before accrual begins when [PolicySettingsFormData.waitingPeriodEnabled](#policysettingsformdata) is true. |
 
-***
+<a id="policytype"></a>
+
+### PolicyType
+
+> **PolicyType** = `"sick"` \| `"vacation"` \| `"holiday"`
+
+Identifier for the kind of time-off policy a company can configure.
+
+<a id="policytypekey"></a>
+
+### PolicyTypeKey
+
+> **PolicyTypeKey** = `"vacation"` \| `"sick"`
+
+<a id="ratebasedaccrualmethod"></a>
+
+### RateBasedAccrualMethod
+
+> **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
 
 <a id="ratebasedpolicydetails"></a>
 
@@ -773,8 +736,6 @@ Policy details for a rate-based accruing time-off policy.
 | `policyType` | [`PolicyTypeKey`](#policytypekey) | Whether the policy covers vacation or sick time. |
 | `accrualRateUnit?` | `number` | Divisor used to compute the per-unit accrual rate, if applicable. |
 | `resetDate?` | `string` | ISO date string for the annual balance reset, if applicable. |
-
-***
 
 <a id="removedialogstate"></a>
 
@@ -793,7 +754,14 @@ off or holiday policy.
 | `onClose` | () => `void` | Called when the user cancels or dismisses the dialog without confirming. |
 | `onConfirm` | () => `void` | Called when the user confirms the removal. |
 
-***
+<a id="resetdatetype"></a>
+
+### ResetDateType
+
+> **ResetDateType** = `"per_anniversary_year"` \| `"per_calendar_year"`
+
+When a policy's balance resets — on each employee's hire anniversary or on
+a fixed calendar month/day shared across all employees.
 
 <a id="timeoffpolicydetailemployee"></a>
 
@@ -814,8 +782,6 @@ Row shape for an employee enrolled in a time-off policy.
 | `firstName?` | `string` \| `null` | Employee's first name; combined with `lastName` to render the name column. |
 | `jobTitle?` | `string` \| `null` | Employee's job title; rendered in its own column unless `hideJobTitle` is set. |
 | `lastName?` | `string` \| `null` | Employee's last name; combined with `firstName` to render the name column. |
-
-***
 
 <a id="timeoffpolicydetailpresentationbaseprops"></a>
 
@@ -840,7 +806,37 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | `subtitle?` | `string` | Secondary label, typically the policy type. |
 | `successAlert?` | `string` | Optional success message rendered as a dismissible alert. |
 
-***
+<a id="timeoffpolicydetailpresentationprops"></a>
+
+### TimeOffPolicyDetailPresentationProps
+
+> **TimeOffPolicyDetailPresentationProps** = [`TimeOffPolicyDetailPresentationBaseProps`](#timeoffpolicydetailpresentationbaseprops) & \{ `policyDetails`: [`UnlimitedPolicyDetails`](#unlimitedpolicydetails); `onChangeSettings?`: `never`; `policySettings?`: `never`; \} \| \{ `policyDetails`: [`RateBasedPolicyDetails`](#ratebasedpolicydetails); `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); `onChangeSettings?`: () => `void`; \}
+
+Props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
+
+#### Remarks
+
+The props form a discriminated union on `policyDetails.accrualMethod`. Unlimited policies
+omit `policySettings` and `onChangeSettings`; rate-based policies require `policySettings`
+and may provide `onChangeSettings` to enable the change-settings action.
+
+| Field | Description |
+| ----- | ----------- |
+| `title` | The policy name displayed as the page heading. |
+| `subtitle` | Secondary label, typically the policy type. |
+| `onBack` | Called when the back navigation is clicked. |
+| `backLabel` | Label for the back navigation link. |
+| `actions` | Optional action buttons rendered in the header. |
+| `policyDetails` | Policy type and accrual configuration. See [PolicyDetails](#policydetails). |
+| `policySettings` | Accrual caps and termination settings. See [PolicySettingsDisplay](#policysettingsdisplay). Required for rate-based policies. |
+| `onChangeSettings` | Called when the change-settings action is clicked. Rate-based policies only. |
+| `selectedTabId` | The currently active tab id. |
+| `onTabChange` | Called with the new tab id when the user switches tabs. |
+| `employees` | Employee table data including `data`, `searchValue`, `onSearchChange`, `onSearchClear`, and optional `itemMenu`. |
+| `onAddEmployee` | Called when the add-employee action is clicked. |
+| `removeDialog` | State for the employee removal confirmation dialog. |
+| `successAlert` | Optional success message rendered as a dismissible alert. |
+| `onDismissAlert` | Called when the success alert is dismissed. |
 
 <a id="unlimitedpolicydetails"></a>
 
@@ -854,17 +850,3 @@ Policy details for an unlimited (no-accrual) time-off policy.
 | ------ | ------ | ------ |
 | `accrualMethod` | `"unlimited"` | Accrual method discriminant — always `'unlimited'` for this variant. |
 | `policyType` | [`PolicyTypeKey`](#policytypekey) | Whether the policy covers vacation or sick time. |
-
-## Type Aliases
-
-<a id="creatabletimeoffpolicytype"></a>
-
-### CreatableTimeOffPolicyType
-
-> **CreatableTimeOffPolicyType** = `Extract`\<`PolicyType`, `"sick"` \| `"vacation"`\>
-
-Time off policy types that can be created through the time off policy management workflow.
-
-#### Remarks
-
-Only `sick` and `vacation` are creatable through the time off policy endpoint. Holiday policies are a separate concept managed through the holiday pay policy endpoint family.
