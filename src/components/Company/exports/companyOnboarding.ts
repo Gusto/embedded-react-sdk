@@ -15,7 +15,11 @@ export {
   type PayScheduleDefaultValues,
   type PayScheduleDefaultFields,
 } from '../PaySchedule'
-export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes'
+export {
+  FederalTaxes,
+  type FederalTaxesProps,
+  type FederalTaxesDefaultValues,
+} from '../FederalTaxes'
 export { StateTaxes } from '../StateTaxes/StateTaxes'
 export { StateTaxesForm } from '../StateTaxes/StateTaxesForm'
 export { StateTaxesList } from '../StateTaxes/StateTaxesList'

@@ -116,7 +116,18 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
   )
 }
 
-/** @public */
+/**
+ * Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents.
+ *
+ * @remarks
+ * Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
+ * boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
+ * case it defaults to basic details.
+ *
+ * @param props - Component props. See {@link DashboardProps}.
+ * @returns A React element rendering the employee dashboard.
+ * @public
+ */
 export function Dashboard({ FallbackComponent, ...props }: DashboardProps) {
   return (
     <BaseBoundaries componentName="Employee.Dashboard" FallbackComponent={FallbackComponent}>

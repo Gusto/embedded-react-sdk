@@ -18,11 +18,16 @@ export const FederalTaxFormSchema = z.object({
 /** @internal */
 export type FederalTaxFormInputs = z.input<typeof FederalTaxFormSchema>
 
-/** @internal */
+/**
+ * Pre-populated values for the company federal tax form, supplied via {@link FederalTaxesProps}.
+ * At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
+ *
+ * @public
+ */
 export type FederalTaxesDefaultValues = RequireAtLeastOne<{
-  taxPayerType?: FederalTaxFormInputs['taxPayerType']
-  filingForm?: FederalTaxFormInputs['filingForm']
-  legalName?: FederalTaxFormInputs['legalName']
+  taxPayerType?: string
+  filingForm?: string
+  legalName?: string
 }>
 
 type FederalTaxesContextType = {
