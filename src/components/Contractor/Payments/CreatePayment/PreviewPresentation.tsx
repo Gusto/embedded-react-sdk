@@ -50,7 +50,7 @@ export const PreviewPresentation = ({
 
   const formatWageType = (contractor: ContractorPaymentForGroupPreview) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+      return `${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -194,19 +194,18 @@ export const PreviewPresentation = ({
             title: t('contractorTableHeaders.hours'),
             justify: 'end',
             render: contractorPayment => {
+              if (contractorPayment.wageType === 'Fixed') return t('na')
               const hours = Number(contractorPayment.hours || '0')
-              return contractorPayment.wageType === 'Hourly' && hours
-                ? formatHoursDisplay(hours)
-                : ZERO_HOURS_DISPLAY
+              return hours ? formatHoursDisplay(hours) : ZERO_HOURS_DISPLAY
             },
           },
           {
             title: t('contractorTableHeaders.wage'),
             justify: 'end',
-            render: contractorPayment =>
-              contractorPayment.wageType === 'Fixed' && contractorPayment.wage
-                ? currencyFormatter(Number(contractorPayment.wage || '0'))
-                : currencyFormatter(0),
+            render: contractorPayment => {
+              if (contractorPayment.wageType === 'Hourly') return t('na')
+              return currencyFormatter(Number(contractorPayment.wage || '0'))
+            },
           },
           {
             title: t('contractorTableHeaders.bonus'),

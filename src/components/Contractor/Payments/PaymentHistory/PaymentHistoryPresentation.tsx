@@ -1,5 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
+import type { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup'
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import styles from './PaymentHistoryPresentation.module.scss'
@@ -37,6 +38,13 @@ export const PaymentHistoryPresentation = ({
 
   const payments = paymentGroup.contractorPayments || []
 
+  const formatWageType = (contractor: ContractorPaymentForGroup) => {
+    if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
+      return `${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+    }
+    return contractor.wageType
+  }
+
   return (
     <Flex flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={8}>
@@ -71,7 +79,7 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.wageType'),
-                  render: ({ wageType }) => wageType,
+                  render: contractor => formatWageType(contractor),
                 },
                 {
                   title: t('tableHeaders.paymentMethod'),
@@ -80,12 +88,18 @@ export const PaymentHistoryPresentation = ({
                 {
                   title: t('tableHeaders.hours'),
                   justify: 'end',
-                  render: ({ hours }) => (hours ? formatHoursDisplay(Number(hours)) : '–'),
+                  render: ({ wageType, hours }) =>
+                    wageType === 'Fixed'
+                      ? t('na')
+                      : hours
+                        ? formatHoursDisplay(Number(hours))
+                        : '–',
                 },
                 {
                   title: t('tableHeaders.wage'),
                   justify: 'end',
-                  render: ({ wage }) => (wage ? currencyFormatter(Number(wage)) : '–'),
+                  render: ({ wageType, wage }) =>
+                    wageType === 'Hourly' ? t('na') : wage ? currencyFormatter(Number(wage)) : '–',
                 },
                 {
                   title: t('tableHeaders.bonus'),
