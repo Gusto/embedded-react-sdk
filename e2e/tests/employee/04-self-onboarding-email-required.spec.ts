@@ -55,12 +55,15 @@ test.describe('EmployeeOnboarding - self-onboarding email required (SDK-1000)', 
     await expect(page.getByRole('heading', { name: /^basics$/i })).toBeVisible({ timeout: 30_000 })
 
     // Toggle self-onboarding ON. Don't fill any other fields. Email is now
-    // required by Zod (and by the v2026-02-01 server contract).
-    const selfOnboardingSwitch = page.getByRole('switch', {
-      name: /invite this employee to enter their own details online/i,
-    })
-    await expect(selfOnboardingSwitch).toBeVisible({ timeout: 10_000 })
-    await selfOnboardingSwitch.click()
+    // required by Zod (and by the v2026-02-01 server contract). Click the
+    // visible label text rather than the role=switch — the SDK's
+    // SwitchHookField renders the underlying input as visually-hidden, so
+    // role-based clicks on the wrapper can hang on actionability checks.
+    const selfOnboardingLabel = page.getByText(
+      /invite this employee to enter their own details online/i,
+    )
+    await expect(selfOnboardingLabel).toBeVisible({ timeout: 10_000 })
+    await selfOnboardingLabel.click()
 
     // Submit — Zod should block the form from advancing.
     await page.getByRole('button', { name: /^continue$/i }).click()
