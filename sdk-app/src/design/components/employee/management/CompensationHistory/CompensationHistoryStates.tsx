@@ -1,4 +1,4 @@
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
 import { CompensationHistory } from './CompensationHistory'
 
 export interface CompensationHistoryDemoProps {

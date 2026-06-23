@@ -1,4 +1,4 @@
-import type { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount'
+import type { ContractorBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccount'
 import { Skeleton } from '../../../common/Skeleton'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'

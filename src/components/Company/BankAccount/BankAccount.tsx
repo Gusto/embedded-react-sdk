@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
+import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsGet'
 import {
   BankAccountFormContextual,
   type BankAccountContextInterface,

@@ -10,19 +10,19 @@ const mockSDKHooksInstance = {
   registerAfterErrorHook: vi.fn(),
 }
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/core', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/core', () => ({
   GustoEmbeddedCore: vi.fn().mockImplementation(function (config: Record<string, unknown>) {
     return { _options: { hooks: null }, config }
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/hooks/hooks', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/hooks/hooks', () => ({
   SDKHooks: vi.fn().mockImplementation(function () {
     return mockSDKHooksInstance
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/_context', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/_context', () => ({
   GustoEmbeddedProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="gusto-provider">{children}</div>
   ),
@@ -42,7 +42,7 @@ describe('ApiProvider', () => {
   })
 
   test('registers hooks with SDK when provided', async () => {
-    const { GustoEmbeddedCore } = await import('@gusto/embedded-api-v-2025-11-15/core')
+    const { GustoEmbeddedCore } = await import('@gusto/embedded-api-v-2026-02-01/core')
 
     const mockHooks: SDKHooks = {
       beforeCreateRequest: [{ beforeCreateRequest: vi.fn() }],
@@ -138,7 +138,7 @@ describe('ApiProvider', () => {
   })
 
   test('works without hooks or headers', async () => {
-    const { GustoEmbeddedCore } = await import('@gusto/embedded-api-v-2025-11-15/core')
+    const { GustoEmbeddedCore } = await import('@gusto/embedded-api-v-2026-02-01/core')
 
     render(
       <ApiProvider url="https://api.example.com">

@@ -1,6 +1,6 @@
 import { useTranslation, Trans } from 'react-i18next'
-import type { AuthorizationStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationGetAuthorization'
+import type { AuthorizationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2026-02-01/react-query/i9VerificationGetAuthorization'
 import { useSignEmployeeForm, type PreparerFieldGroup } from '../../../shared/useSignEmployeeForm'
 import styles from './I9SignatureForm.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'

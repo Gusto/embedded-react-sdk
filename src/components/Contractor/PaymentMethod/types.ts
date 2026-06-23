@@ -1,4 +1,4 @@
-import type { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount'
+import type { ContractorBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccount'
 import type { BaseComponentInterface } from '@/components/Base'
 
 /**

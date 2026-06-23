@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
 import { EmployeeList, type EmployeeListTab } from './EmployeeList'
 
 export function EmployeeListDemo({

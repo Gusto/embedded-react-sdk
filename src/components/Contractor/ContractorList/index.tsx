@@ -1,6 +1,6 @@
-import { type Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import { type Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 import { useTranslation } from 'react-i18next'
-import { useContractorsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsDelete'
+import { useContractorsDeleteMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsDelete'
 import { useContractors } from './useContractorList'
 import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
