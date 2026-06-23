@@ -141,7 +141,7 @@ const buildCompensationFromFormData = (
       fixedCompensationName.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase()
 
     // Regular payrolls write reimbursements via the itemized array; never let the legacy
-    // fixed_compensations entry slip through (the backend rejects it on v2025-11-15+).
+    // fixed_compensations entry slip through (the backend rejects it on supported API versions).
     if (isReimbursementEntry && usesItemizedReimbursements) {
       return
     }

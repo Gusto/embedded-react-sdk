@@ -214,7 +214,7 @@ export const getReimbursements = (compensation: PayrollEmployeeCompensationsType
 }
 
 /**
- * Normalizes a reimbursement list for submission to the v2025-11-15 API.
+ * Normalizes a reimbursement list for submission to the current Gusto Embedded API.
  *
  * @remarks
  * - Drops named rows that would be no-ops on the server (zero amount with no existing uuid).
