@@ -9,10 +9,10 @@
   "hoursAndPaymentsLabel": "Hours and payments",
   "contractorTableHeaders": {
     "contractor": "Contractor",
-    "wageType": "Wage type",
+    "wageType": "Wage",
     "paymentMethod": "Payment method",
     "hours": "Hours",
-    "wage": "Wage",
+    "wage": "Fixed amount",
     "bonus": "Bonus",
     "reimbursement": "Reimbursement",
     "total": "Total"
@@ -42,7 +42,7 @@
     "hoursLabel": "Hours",
     "hoursAdornment": "hrs",
     "hoursPayDescription": "{{rate}}/hr × hours = {{total}}",
-    "wageLabel": "Wage",
+    "wageLabel": "Fixed amount",
     "bonusLabel": "Bonus",
     "reimbursementLabel": "Reimbursement",
     "paymentMethodLabel": "Payment Method",
@@ -87,10 +87,10 @@
     "whatYourCompanyPays": "What your company pays",
     "contractorTableHeaders": {
       "contractor": "Contractor",
-      "wageType": "Wage type",
+      "wageType": "Wage",
       "paymentMethod": "Payment method",
       "hours": "Hours",
-      "wage": "Wage",
+      "wage": "Fixed amount",
       "bonus": "Bonus",
       "reimbursement": "Reimbursement",
       "total": "Total"
@@ -99,6 +99,7 @@
     "editButton": "Edit",
     "submitButton": "Submit",
     "perHour": "/hr",
+    "na": "N/A",
     "wageTypes": {
       "fixed": "Fixed",
       "hourly": "Hourly"

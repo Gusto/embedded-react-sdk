@@ -35,8 +35,10 @@ export const List = () => {
         render: location => {
           return (
             <address className={styles.addressCell}>
-              <Components.Text as="span">{getStreet(location)}</Components.Text>
-              <Components.Text as="span">{getCityStateZip(location)}</Components.Text>
+              <Components.Text size="sm" weight="medium">
+                {getStreet(location)}
+              </Components.Text>
+              <Components.Text size="sm">{getCityStateZip(location)}</Components.Text>
             </address>
           )
         },

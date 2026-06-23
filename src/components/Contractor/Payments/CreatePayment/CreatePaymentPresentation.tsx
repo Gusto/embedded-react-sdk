@@ -58,7 +58,7 @@ export const CreatePaymentPresentation = ({
   const formatWageType = (contractor?: Contractor) => {
     if (!contractor) return ''
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+      return ` ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -139,21 +139,17 @@ export const CreatePaymentPresentation = ({
               title: t('contractorTableHeaders.hours'),
               justify: 'end',
               render: paymentData => {
+                if (paymentData.contractorDetails?.wageType === 'Fixed') return t('na')
                 const hours = Number(paymentData.hours || '0')
-                return paymentData.contractorDetails?.wageType === 'Hourly' && hours
-                  ? formatHoursDisplay(hours)
-                  : ZERO_HOURS_DISPLAY
+                return hours ? formatHoursDisplay(hours) : ZERO_HOURS_DISPLAY
               },
             },
             {
               title: t('contractorTableHeaders.wage'),
               justify: 'end',
               render: paymentData => {
-                const amount =
-                  paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
-                    ? Number(paymentData.wage || '0')
-                    : 0
-                return currencyFormatter(amount)
+                if (paymentData.contractorDetails?.wageType === 'Hourly') return t('na')
+                return currencyFormatter(Number(paymentData.wage || '0'))
               },
             },
             {

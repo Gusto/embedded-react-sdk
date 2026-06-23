@@ -1069,6 +1069,7 @@ export interface ContractorPaymentsCreatePayment{
 "editButton":string;
 "submitButton":string;
 "perHour":string;
+"na":string;
 "wageTypes":{
 "fixed":string;
 "hourly":string;
@@ -1111,6 +1112,8 @@ export interface ContractorPaymentsPaymentHistory{
 "breadcrumbLabel":string;
 "noPaymentsFound":string;
 "noPaymentsDescription":string;
+"perHour":string;
+"na":string;
 "tableHeaders":{
 "contractor":string;
 "wageType":string;
