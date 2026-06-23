@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: InformationRequestsFlow()
+# InformationRequestsFlow
 
 Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
 

@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: DashboardFlow()
+# DashboardFlow
 
 The main entry point for the employee dashboard.
 

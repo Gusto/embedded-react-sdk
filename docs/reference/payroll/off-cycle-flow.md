@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: OffCycleFlow()
+# OffCycleFlow
 
 Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
 

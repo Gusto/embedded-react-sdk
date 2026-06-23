@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: PayrollFlow()
+# PayrollFlow
 
 Guided workflow for selecting and running a company's payroll end to end.
 

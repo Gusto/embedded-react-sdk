@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: PayrollExecutionFlow()
+# PayrollExecutionFlow
 
 Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
 single payroll.

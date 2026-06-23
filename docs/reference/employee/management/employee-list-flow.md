@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: EmployeeListFlow()
+# EmployeeListFlow
 
 Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
 

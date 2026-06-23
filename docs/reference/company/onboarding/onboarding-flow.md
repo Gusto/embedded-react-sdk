@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: OnboardingFlow()
+# OnboardingFlow
 
 Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
 

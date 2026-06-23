@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: TimeOffFlow()
+# TimeOffFlow
 
 End-to-end workflow for creating and managing a company's sick, vacation, and holiday time off policies.
 

@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: TerminationFlow()
+# TerminationFlow
 
 Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
 

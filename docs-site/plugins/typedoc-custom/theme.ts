@@ -314,6 +314,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
     super(...args)
 
     const origMemberTitle = this.partials.memberTitle.bind(this)
+    const origPageTitle = this.partials.pageTitle.bind(this)
     const origSignature = this.partials.signature.bind(this)
     const origSignatureTitle = this.partials.signatureTitle.bind(this)
     const origSignatureReturns = this.partials.signatureReturns.bind(this)
@@ -327,6 +328,18 @@ export class SDKThemeContext extends MarkdownThemeContext {
         // Strip trailing () for components. Deprecated titles are wrapped in ~~...~~
         // so the () sits before the closing ~~ rather than at the very end.
         return isComponent(model) ? title.replace(/\(\)(~~)?$/, (_, tilde = '') => tilde) : title
+      },
+      pageTitle: () => {
+        // The standalone page H1 normally comes from the pageTitle partial
+        // (e.g. "Function: TerminationFlow()" via the reflection kind). For
+        // components, reuse memberTitle so the page H1 matches how the component
+        // is titled when listed inline (e.g. on the Blocks page) — no "Function:"
+        // prefix and no trailing "()".
+        const model = this.page.model
+        if (model instanceof DeclarationReflection && isComponent(model)) {
+          return this.partials.memberTitle(model)
+        }
+        return origPageTitle()
       },
       signature: (model: SignatureReflection, options: Parameters<typeof origSignature>[1]) => {
         const result = origSignature(model, options)

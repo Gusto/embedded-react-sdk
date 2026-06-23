@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: DismissalFlow()
+# DismissalFlow
 
 Guided workflow for running a terminated employee's final payroll.
 

@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: OnboardingExecutionFlow()
+# OnboardingExecutionFlow
 
 The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary.
 

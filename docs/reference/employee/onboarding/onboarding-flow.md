@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: OnboardingFlow()
+# OnboardingFlow
 
 Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
 

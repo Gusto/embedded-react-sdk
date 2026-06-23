@@ -10,7 +10,7 @@ generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Function: SelfOnboardingFlow()
+# SelfOnboardingFlow
 
 Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing.
 
