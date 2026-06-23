@@ -3,23 +3,18 @@ import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-20
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDelete'
 import { derivePrimaryFlsaStatus } from '../../shared/derivePrimaryFlsaStatus'
 import { JobsListPresentation } from './JobsListPresentation'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-  useBase,
-} from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface, useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /** @public */
-export interface JobsListProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface JobsListProps extends BaseComponentInterface<'Employee.Compensation'> {
   /** The associated employee identifier. */
   employeeId: string
 }
 
 /** @public */
-export function JobsList(props: JobsListProps & BaseComponentInterface) {
+export function JobsList(props: JobsListProps) {
   useComponentDictionary('Employee.Compensation', props.dictionary)
   return (
     <BaseComponent {...props}>

@@ -6,12 +6,7 @@ import {
   type FederalTaxesFormData,
 } from '../shared/useFederalTaxesForm'
 import { useManagementFederalTaxesViewDictionary } from './useViewDictionary'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -22,13 +17,11 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+export interface FederalTaxesEditFormProps extends BaseComponentInterface<'Employee.Management.FederalTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Pre-fill form values. Server data takes precedence when the employee already has values on file. */
   defaultValues?: Partial<FederalTaxesFormData>
-  /** Callback invoked when the form emits an event. See the events table on {@link FederalTaxesEditForm} for the available event types and payloads. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
@@ -47,10 +40,7 @@ export interface FederalTaxesEditFormProps extends CommonComponentInterface<'Emp
  * @public
  * @group Block Components
  */
-export function FederalTaxesEditForm({
-  FallbackComponent,
-  ...props
-}: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function FederalTaxesEditForm({ FallbackComponent, ...props }: FederalTaxesEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.FederalTaxes"

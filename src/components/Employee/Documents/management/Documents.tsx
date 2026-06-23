@@ -3,26 +3,18 @@ import { useMemo } from 'react'
 import { DocumentsCardContextual, type DocumentsContextInterface } from './DocumentsComponents'
 import { documentsStateMachine } from './documentsStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link Documents}.
  *
  * @public
  */
-export interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
+export interface DocumentsProps extends BaseComponentInterface<'Employee.Management.Documents'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
@@ -58,11 +50,7 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
  * @returns The documents management flow.
  * @public
  */
-export function Documents({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: DocumentsProps & BaseComponentInterface<'Employee.Management.Documents'>) {
+export function Documents({ dictionary, FallbackComponent, ...props }: DocumentsProps) {
   useComponentDictionary('Employee.Management.Documents', dictionary)
   return (
     <BaseBoundaries

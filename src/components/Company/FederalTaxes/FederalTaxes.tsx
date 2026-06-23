@@ -17,15 +17,25 @@ import { Form } from '@/components/Company/FederalTaxes/Form'
 import { Actions } from '@/components/Company/FederalTaxes/Actions'
 import { Head } from '@/components/Company/FederalTaxes/Head'
 import { useI18n } from '@/i18n'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
 
-interface FederalTaxesProps extends CommonComponentInterface<'Company.FederalTaxes'> {
+/**
+ * Props for the {@link FederalTaxes} component.
+ *
+ * @public
+ */
+export interface FederalTaxesProps extends BaseComponentInterface<'Company.FederalTaxes'> {
+  /** Identifier of the company whose federal tax details are being collected. */
   companyId: string
+  /**
+   * Pre-populated values for the federal tax form. At least one of `taxPayerType`,
+   * `filingForm`, or `legalName` must be provided — see {@link FederalTaxesDefaultValues}.
+   */
   defaultValues?: FederalTaxesDefaultValues
 }
 
@@ -42,7 +52,7 @@ interface FederalTaxesProps extends CommonComponentInterface<'Company.FederalTax
  * @returns The rendered federal taxes form.
  * @public
  */
-export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
+export function FederalTaxes(props: FederalTaxesProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

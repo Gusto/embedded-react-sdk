@@ -9,12 +9,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
@@ -60,7 +55,7 @@ function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) 
  *
  * @public
  */
-export interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+export interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
   /** UUID of the company whose contractors should be listed. */
   companyId: string
   /** Success message to display in an alert above the list, typically after a create, update, or delete action. */
@@ -82,7 +77,7 @@ export interface ContractorListProps extends CommonComponentInterface<'Contracto
  * @returns The rendered contractor list.
  * @public
  */
-export function ContractorList(props: ContractorListProps & BaseComponentInterface) {
+export function ContractorList(props: ContractorListProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

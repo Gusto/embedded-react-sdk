@@ -1,12 +1,7 @@
 import { DeductionsForm } from '../../shared/DeductionsForm'
 import { useDeductionsList } from '../../shared/useDeductionsList'
 import { useManagementDeductionsFormDictionary } from './useFormDictionary'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
@@ -15,7 +10,7 @@ import { componentEvents } from '@/shared/constants'
  *
  * @public
  */
-export interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
+export interface DeductionsEditFormProps extends BaseComponentInterface<'Employee.Management.Deductions'> {
   /** The associated employee identifier. */
   employeeId: string
   /** When provided, the form opens in edit mode pre-populated with the
@@ -41,10 +36,7 @@ export interface DeductionsEditFormProps extends CommonComponentInterface<'Emplo
  * @returns The rendered add/edit form.
  * @public
  */
-export function DeductionsEditForm({
-  FallbackComponent,
-  ...props
-}: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function DeductionsEditForm({ FallbackComponent, ...props }: DeductionsEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.Deductions"

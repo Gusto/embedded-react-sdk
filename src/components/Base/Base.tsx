@@ -74,6 +74,16 @@ export interface BaseComponentInterface<
   onEvent: OnEventType<EventType, unknown>
 }
 
+/**
+ * Keys unique to the BaseComponentInterface
+ *
+ * @internal
+ */
+export type BaseComponentKeys = Exclude<
+  keyof BaseComponentInterface,
+  keyof CommonComponentInterface
+>
+
 interface InternalBaseComponentProps {
   componentName?: string
 }
