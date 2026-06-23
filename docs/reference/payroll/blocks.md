@@ -68,6 +68,13 @@ function MyComponent() {
 }
 ```
 
+> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
+
+Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
+
+Use this when supplying a custom wire-confirmation UI to a payroll flow via a
+`ConfirmWireDetailsComponent` prop.
+
 ***
 
 <a id="dismissalpayperiodselection"></a>
@@ -211,6 +218,18 @@ so a surrounding form can update its state to match.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `offCycle/selectReason` | Fired when the user selects a reason | [SelectReasonPayload](#selectreasonpayload) |
+
+> **OffCycleReason** = `"bonus"` \| `"correction"`
+
+Reason for running an off-cycle payroll.
+
+`bonus` covers bonuses, gifts, or commissions; `correction` covers any payroll run outside the regular pay schedule.
+
+> **WithholdingType** = `"supplemental"` \| `"regular"`
+
+Tax withholding rate applied to an off-cycle payroll.
+
+`supplemental` applies the IRS supplemental withholding rate; `regular` applies the employee's regular withholding rate.
 
 ***
 
@@ -803,19 +822,6 @@ Flow context shape carried through the transition payroll state machine.
 
 ## Type Aliases
 
-<a id="confirmwiredetailscomponenttype"></a>
-
-### ConfirmWireDetailsComponentType
-
-> **ConfirmWireDetailsComponentType** = `ComponentType`\<[`ConfirmWireDetailsProps`](#confirmwiredetailsprops)\>
-
-Component type matching the [ConfirmWireDetails](#confirmwiredetails) signature.
-
-Use this when supplying a custom wire-confirmation UI to a payroll flow via a
-`ConfirmWireDetailsComponent` prop.
-
-***
-
 <a id="offcyclepayrolldatetype"></a>
 
 ### OffCyclePayrollDateType
@@ -827,18 +833,6 @@ Off-cycle payroll reason that drives pay-period date validation rules.
 #### Remarks
 
 `'bonus'` is used for paying a bonus, gift, or commission. `'correction'` is used for running a correction payment and constrains the start date to today or earlier.
-
-***
-
-<a id="offcyclereason"></a>
-
-### OffCycleReason
-
-> **OffCycleReason** = `"bonus"` \| `"correction"`
-
-Reason for running an off-cycle payroll.
-
-`bonus` covers bonuses, gifts, or commissions; `correction` covers any payroll run outside the regular pay schedule.
 
 ***
 
@@ -870,15 +864,3 @@ An alert banner rendered above payroll content in [PayrollOverview](#payrollover
 | `alertKey?` | `string` | Stable key used to track alert identity across renders (e.g. for animations or deduplication). |
 | `content?` | `ReactNode` | Optional body content rendered below the title. |
 | `onDismiss?` | () => `void` | Called when the user dismisses the alert. When omitted, the alert is not dismissible. |
-
-***
-
-<a id="withholdingtype"></a>
-
-### WithholdingType
-
-> **WithholdingType** = `"supplemental"` \| `"regular"`
-
-Tax withholding rate applied to an off-cycle payroll.
-
-`supplemental` applies the IRS supplemental withholding rate; `regular` applies the employee's regular withholding rate.

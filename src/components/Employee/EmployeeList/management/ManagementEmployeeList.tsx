@@ -6,7 +6,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /**
- * The tab currently selected on {@link ManagementEmployeeList}.
+ * The tab currently selected on {@link ManagementEmployeeList | EmployeeList}.
  *
  * @public
  */

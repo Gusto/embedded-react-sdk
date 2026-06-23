@@ -182,6 +182,26 @@ accrual-based).
 | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
 | `CANCEL` | Fired when the user clicks the cancel button | — |
 
+> **AccrualMethod** = `"per_hour_paid"` \| `"per_calendar_year"` \| `"unlimited"`
+
+Top-level accrual method selected on the policy configuration form.
+
+##### Remarks
+
+`per_hour_paid` covers all hourly accrual variants — the `allPaidHours` and
+`includeOvertime` toggles on [PolicyConfigurationFormData](#policyconfigurationformdata) narrow it to
+a specific API accrual method on submit.
+
+> **AccrualMethodFixed** = `"per_pay_period"` \| `"all_at_once"`
+
+Sub-method for fixed (per-calendar-year) accrual — whether hours are granted
+at the start of the year or spread evenly across pay periods.
+
+> **ResetDateType** = `"per_anniversary_year"` \| `"per_calendar_year"`
+
+When a policy's balance resets — on each employee's hire anniversary or on
+a fixed calendar month/day shared across all employees.
+
 ***
 
 <a id="policylist"></a>
@@ -287,6 +307,10 @@ The fields shown depend on `accrualMethod`:
 - Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
 - Balance maximum, carry-over limit, and paid-out-on-termination are always shown
 
+> **PolicySettingsAccrualMethod** = `"hours_worked"` \| `"fixed_per_pay_period"` \| `"fixed_all_at_once"`
+
+Accrual method category for a time off policy. Determines which settings fields are shown.
+
 ***
 
 <a id="policytypeselector"></a>
@@ -322,6 +346,10 @@ can only have one.
 | ----- | ----------- | ---- |
 | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |
 | `CANCEL` | The user cancels | — |
+
+> **PolicyType** = `"sick"` \| `"vacation"` \| `"holiday"`
+
+Identifier for the kind of time-off policy a company can configure.
 
 ***
 
@@ -382,6 +410,48 @@ list of enrolled employees. Provides actions for editing the policy, changing se
 adding employees, removing employees, and editing individual employee balances. This
 component is fully controlled — pass in the data, selected tab, and dialog state and wire
 up the callbacks. The corresponding container component is [TimeOffPolicyDetail](#timeoffpolicydetail).
+
+> **PolicyDetails** = [`UnlimitedPolicyDetails`](#unlimitedpolicydetails) \| [`RateBasedPolicyDetails`](#ratebasedpolicydetails)
+
+Policy type and accrual configuration for the detail view.
+
+##### Remarks
+
+A discriminated union on `accrualMethod`. When `accrualMethod` is `'unlimited'`,
+no rate or reset date is present. For rate-based methods, `accrualRate` is set
+and `resetDate` / `accrualRateUnit` may also be provided.
+
+> **PolicyTypeKey** = `"vacation"` \| `"sick"`
+
+> **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
+
+> **TimeOffPolicyDetailPresentationProps** = [`TimeOffPolicyDetailPresentationBaseProps`](#timeoffpolicydetailpresentationbaseprops) & \{ `policyDetails`: [`UnlimitedPolicyDetails`](#unlimitedpolicydetails); `onChangeSettings?`: `never`; `policySettings?`: `never`; \} \| \{ `policyDetails`: [`RateBasedPolicyDetails`](#ratebasedpolicydetails); `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); `onChangeSettings?`: () => `void`; \}
+
+Props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
+
+##### Remarks
+
+The props form a discriminated union on `policyDetails.accrualMethod`. Unlimited policies
+omit `policySettings` and `onChangeSettings`; rate-based policies require `policySettings`
+and may provide `onChangeSettings` to enable the change-settings action.
+
+| Field | Description |
+| ----- | ----------- |
+| `title` | The policy name displayed as the page heading. |
+| `subtitle` | Secondary label, typically the policy type. |
+| `onBack` | Called when the back navigation is clicked. |
+| `backLabel` | Label for the back navigation link. |
+| `actions` | Optional action buttons rendered in the header. |
+| `policyDetails` | Policy type and accrual configuration. See [PolicyDetails](#policydetails). |
+| `policySettings` | Accrual caps and termination settings. See [PolicySettingsDisplay](#policysettingsdisplay). Required for rate-based policies. |
+| `onChangeSettings` | Called when the change-settings action is clicked. Rate-based policies only. |
+| `selectedTabId` | The currently active tab id. |
+| `onTabChange` | Called with the new tab id when the user switches tabs. |
+| `employees` | Employee table data including `data`, `searchValue`, `onSearchChange`, `onSearchClear`, and optional `itemMenu`. |
+| `onAddEmployee` | Called when the add-employee action is clicked. |
+| `removeDialog` | State for the employee removal confirmation dialog. |
+| `successAlert` | Optional success message rendered as a dismissible alert. |
+| `onDismissAlert` | Called when the success alert is dismissed. |
 
 ***
 
@@ -787,33 +857,6 @@ Policy details for an unlimited (no-accrual) time-off policy.
 
 ## Type Aliases
 
-<a id="accrualmethod"></a>
-
-### AccrualMethod
-
-> **AccrualMethod** = `"per_hour_paid"` \| `"per_calendar_year"` \| `"unlimited"`
-
-Top-level accrual method selected on the policy configuration form.
-
-#### Remarks
-
-`per_hour_paid` covers all hourly accrual variants — the `allPaidHours` and
-`includeOvertime` toggles on [PolicyConfigurationFormData](#policyconfigurationformdata) narrow it to
-a specific API accrual method on submit.
-
-***
-
-<a id="accrualmethodfixed"></a>
-
-### AccrualMethodFixed
-
-> **AccrualMethodFixed** = `"per_pay_period"` \| `"all_at_once"`
-
-Sub-method for fixed (per-calendar-year) accrual — whether hours are granted
-at the start of the year or spread evenly across pay periods.
-
-***
-
 <a id="creatabletimeoffpolicytype"></a>
 
 ### CreatableTimeOffPolicyType
@@ -825,100 +868,3 @@ Time off policy types that can be created through the time off policy management
 #### Remarks
 
 Only `sick` and `vacation` are creatable through the time off policy endpoint. Holiday policies are a separate concept managed through the holiday pay policy endpoint family.
-
-***
-
-<a id="policydetails"></a>
-
-### PolicyDetails
-
-> **PolicyDetails** = [`UnlimitedPolicyDetails`](#unlimitedpolicydetails) \| [`RateBasedPolicyDetails`](#ratebasedpolicydetails)
-
-Policy type and accrual configuration for the detail view.
-
-#### Remarks
-
-A discriminated union on `accrualMethod`. When `accrualMethod` is `'unlimited'`,
-no rate or reset date is present. For rate-based methods, `accrualRate` is set
-and `resetDate` / `accrualRateUnit` may also be provided.
-
-***
-
-<a id="policysettingsaccrualmethod"></a>
-
-### PolicySettingsAccrualMethod
-
-> **PolicySettingsAccrualMethod** = `"hours_worked"` \| `"fixed_per_pay_period"` \| `"fixed_all_at_once"`
-
-Accrual method category for a time off policy. Determines which settings fields are shown.
-
-***
-
-<a id="policytype"></a>
-
-### PolicyType
-
-> **PolicyType** = `"sick"` \| `"vacation"` \| `"holiday"`
-
-Identifier for the kind of time-off policy a company can configure.
-
-***
-
-<a id="policytypekey"></a>
-
-### PolicyTypeKey
-
-> **PolicyTypeKey** = `"vacation"` \| `"sick"`
-
-***
-
-<a id="ratebasedaccrualmethod"></a>
-
-### RateBasedAccrualMethod
-
-> **RateBasedAccrualMethod** = `"perPayPeriod"` \| `"perCalendarYear"` \| `"perAnniversaryYear"` \| `"perHourWorked"` \| `"perHourWorkedNoOvertime"` \| `"perHourPaid"` \| `"perHourPaidNoOvertime"`
-
-***
-
-<a id="resetdatetype"></a>
-
-### ResetDateType
-
-> **ResetDateType** = `"per_anniversary_year"` \| `"per_calendar_year"`
-
-When a policy's balance resets — on each employee's hire anniversary or on
-a fixed calendar month/day shared across all employees.
-
-***
-
-<a id="timeoffpolicydetailpresentationprops"></a>
-
-### TimeOffPolicyDetailPresentationProps
-
-> **TimeOffPolicyDetailPresentationProps** = [`TimeOffPolicyDetailPresentationBaseProps`](#timeoffpolicydetailpresentationbaseprops) & \{ `policyDetails`: [`UnlimitedPolicyDetails`](#unlimitedpolicydetails); `onChangeSettings?`: `never`; `policySettings?`: `never`; \} \| \{ `policyDetails`: [`RateBasedPolicyDetails`](#ratebasedpolicydetails); `policySettings`: [`PolicySettingsDisplay`](#policysettingsdisplay); `onChangeSettings?`: () => `void`; \}
-
-Props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpresentation).
-
-#### Remarks
-
-The props form a discriminated union on `policyDetails.accrualMethod`. Unlimited policies
-omit `policySettings` and `onChangeSettings`; rate-based policies require `policySettings`
-and may provide `onChangeSettings` to enable the change-settings action.
-
-| Field | Description |
-| ----- | ----------- |
-| `title` | The policy name displayed as the page heading. |
-| `subtitle` | Secondary label, typically the policy type. |
-| `onBack` | Called when the back navigation is clicked. |
-| `backLabel` | Label for the back navigation link. |
-| `actions` | Optional action buttons rendered in the header. |
-| `policyDetails` | Policy type and accrual configuration. See [PolicyDetails](#policydetails). |
-| `policySettings` | Accrual caps and termination settings. See [PolicySettingsDisplay](#policysettingsdisplay). Required for rate-based policies. |
-| `onChangeSettings` | Called when the change-settings action is clicked. Rate-based policies only. |
-| `selectedTabId` | The currently active tab id. |
-| `onTabChange` | Called with the new tab id when the user switches tabs. |
-| `employees` | Employee table data including `data`, `searchValue`, `onSearchChange`, `onSearchClear`, and optional `itemMenu`. |
-| `onAddEmployee` | Called when the add-employee action is clicked. |
-| `removeDialog` | State for the employee removal confirmation dialog. |
-| `successAlert` | Optional success message rendered as a dismissible alert. |
-| `onDismissAlert` | Called when the success alert is dismissed. |

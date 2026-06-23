@@ -59,6 +59,10 @@ function MyComponent() {
 }
 ```
 
+> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
+
+Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
 ***
 
 <a id="contractorlist"></a>
@@ -132,6 +136,10 @@ submit; otherwise it creates a new contractor under `companyId`.
 | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
 | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
+
+> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
+
+Form field values for the contractor profile form.
 
 ***
 
@@ -275,26 +283,6 @@ function PaymentMethodStep() {
 ```
 
 ## Type Aliases
-
-<a id="addressdefaultvalues"></a>
-
-### AddressDefaultValues
-
-> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
-
-Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
-
-***
-
-<a id="contractorprofileformdata"></a>
-
-### ContractorProfileFormData
-
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
-
-Form field values for the contractor profile form.
-
-***
 
 <a id="onboardingflowdefaultvalues"></a>
 

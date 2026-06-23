@@ -12,15 +12,13 @@ custom_edit_url: null
 
 # Blocks
 
-## Block Components
-
 <a id="assignsignatory"></a>
 
-### AssignSignatory
+## AssignSignatory
 
 Lets a user either create a new signatory with full details or invite someone else to become the signatory.
 
-#### AssignSignatoryProps
+### AssignSignatoryProps
 
 <a id="assignsignatoryprops"></a>
 
@@ -38,7 +36,7 @@ Props for [AssignSignatory](#assignsignatory).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When set and matching the current signatory, the create form pre-populates with their information for editing. |
 
-#### Remarks
+### Remarks
 
 For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
 
@@ -50,21 +48,29 @@ For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOn
 | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
 | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
 
+> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
+
+Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
+
+#### Remarks
+
+At least one of `create` or `invite` must be provided.
+
 ***
 
 <a id="bankaccount"></a>
 
-### BankAccount
+## BankAccount
 
 Manages a company's bank account — adding, viewing, and verifying it.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `BankAccountProps` | Component props including the target `companyId`. |
 
-#### Remarks
+### Remarks
 
 Currently supports a single default bank account per company. When no bank account exists,
 the component renders the add-account form; once one is on file it renders the list view
@@ -82,11 +88,11 @@ with controls to change or verify the account via micro-deposits.
 
 <a id="createsignatory"></a>
 
-### CreateSignatory
+## CreateSignatory
 
 Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
 
-#### CreateSignatoryProps
+### CreateSignatoryProps
 
 <a id="createsignatoryprops"></a>
 
@@ -104,7 +110,7 @@ Props for [CreateSignatory](#createsignatory).
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `signatoryId?` | `string` | Identifier of an existing signatory. When provided and matching an existing signatory on the company, the form pre-populates with their information for editing. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -112,21 +118,25 @@ Props for [CreateSignatory](#createsignatory).
 | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
 | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
 
+> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+
+Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
+
 ***
 
 <a id="documentlist"></a>
 
-### DocumentList
+## DocumentList
 
 Displays the list of company documents to be signed and lets the user manage signatories.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `DocumentListProps` | Component props including the company id and optional signatory id |
 
-#### Remarks
+### Remarks
 
 Lower-level building block used internally by `CompanyOnboarding.DocumentSigner` for its list
 view. Use this component directly when you need full control over navigation between the
@@ -145,17 +155,17 @@ signatory and is allowed to sign documents.
 
 <a id="documentsigner"></a>
 
-### DocumentSigner
+## DocumentSigner
 
 Company onboarding step for reading and signing required company documents.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `DocumentSignerProps` | See DocumentSignerProps. |
 
-#### Remarks
+### Remarks
 
 Handles document listing, signatory management, and the signing workflow. If no signatory has
 been assigned for the company yet, the flow starts on the assign-signatory step before
@@ -179,11 +189,11 @@ presenting the document list.
 
 <a id="federaltaxes"></a>
 
-### FederalTaxes
+## FederalTaxes
 
 Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
 
-#### FederalTaxesProps
+### FederalTaxesProps
 
 <a id="federaltaxesprops"></a>
 
@@ -200,7 +210,7 @@ Props for the [FederalTaxes](#federaltaxes) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -211,13 +221,13 @@ Props for the [FederalTaxes](#federaltaxes) component.
 
 <a id="industry"></a>
 
-### Industry
+## Industry
 
 Selects and saves the company's industry classification (NAICS code).
 
 Presents a searchable list of industry options and persists the selection for the given company.
 
-#### IndustryProps
+### IndustryProps
 
 <a id="industryprops"></a>
 
@@ -234,7 +244,7 @@ Props for the [Industry](#industry) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -244,11 +254,11 @@ Props for the [Industry](#industry) component.
 
 <a id="invitesignatory"></a>
 
-### InviteSignatory
+## InviteSignatory
 
 Standalone form for inviting someone else to become the company signatory.
 
-#### InviteSignatoryProps
+### InviteSignatoryProps
 
 <a id="invitesignatoryprops"></a>
 
@@ -265,7 +275,7 @@ Props for the [InviteSignatory](#invitesignatory) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 The invited person receives an email to complete their signatory information. Use this when
 you want to provide only the invite flow without the create option.
@@ -275,15 +285,20 @@ you want to provide only the invite flow without the create option.
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
 | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
 
+> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+
+Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
+`confirmEmail`, and `title`. At least one field is required.
+
 ***
 
 <a id="locationform"></a>
 
-### LocationForm
+## LocationForm
 
 Standalone form for creating a new company location or editing an existing one.
 
-#### LocationFormProps
+### LocationFormProps
 
 <a id="locationformprops"></a>
 
@@ -301,7 +316,7 @@ Props for the [LocationForm](#locationform) component.
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `locationId?` | `string` | Identifier of an existing location. When provided, the form loads and edits that location; when omitted, the form creates a new location. |
 
-#### Remarks
+### Remarks
 
 Pass a `locationId` to edit an existing location; omit it to create a new one.
 
@@ -315,17 +330,17 @@ Pass a `locationId` to edit an existing location; omit it to create a new one.
 
 <a id="locations"></a>
 
-### Locations
+## Locations
 
 Orchestrated component for managing a company's mailing and filing addresses.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `LocationsProps` | See LocationsProps. |
 
-#### Remarks
+### Remarks
 
 Internally switches between a list view and a create/edit form. For more granular control,
 use the standalone `LocationForm` component directly.
@@ -343,11 +358,11 @@ use the standalone `LocationForm` component directly.
 
 <a id="locationslist"></a>
 
-### LocationsList
+## LocationsList
 
 Displays the list of work locations for a company.
 
-#### LocationsListProps
+### LocationsListProps
 
 <a id="locationslistprops"></a>
 
@@ -364,7 +379,7 @@ Props for the [LocationsList](#locationslist) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
@@ -378,17 +393,17 @@ Standalone building block used internally by the orchestrated `Locations` compon
 
 <a id="onboardingoverview"></a>
 
-### OnboardingOverview
+## OnboardingOverview
 
 Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `OnboardingOverviewProps` | Component props including the target `companyId` and standard base/common component options. |
 
-#### Remarks
+### Remarks
 
 Renders as the landing or summary screen of a company onboarding flow. When `onboardingCompleted`
 is true, a completion message and "done" action are shown; otherwise a checklist of outstanding
@@ -404,11 +419,11 @@ still consuming the onboarding status via context.
 
 <a id="payschedule"></a>
 
-### PaySchedule
+## PaySchedule
 
 Manages a company's pay schedules, including listing existing schedules and creating or editing one.
 
-#### PayScheduleProps
+### PayScheduleProps
 
 <a id="payscheduleprops"></a>
 
@@ -425,7 +440,7 @@ Props for the [PaySchedule](#payschedule) component.
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Renders the schedule list when at least one pay schedule exists and the create form otherwise.
 Emits the following events through `onEvent`:
@@ -435,15 +450,24 @@ Emits the following events through `onEvent`:
 | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
 | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
 
+> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
+
+The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
+
+> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
+
+Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
+takes precedence over these defaults when editing.
+
 ***
 
 <a id="signatureform"></a>
 
-### SignatureForm
+## SignatureForm
 
 Standalone form for signing an individual company document.
 
-#### SignatureFormProps
+### SignatureFormProps
 
 <a id="signatureformprops"></a>
 
@@ -461,7 +485,7 @@ Props for [SignatureForm](#signatureform).
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
-#### Remarks
+### Remarks
 
 Lower-level building block used internally by the document signer for its signing view.
 Use this component directly when you need full control over navigation between the document
@@ -477,17 +501,17 @@ list and the signature form (e.g. routing the user yourself after they select a 
 
 <a id="statetaxes"></a>
 
-### StateTaxes
+## StateTaxes
 
 Orchestrated flow for managing a company's state tax setup.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `StateTaxesProps` | StateTaxesProps |
 
-#### Remarks
+### Remarks
 
 Switches internally between a list of states with tax requirements and a per-state edit form.
 For finer-grained control over navigation, use the standalone [StateTaxesList](#statetaxeslist) and
@@ -504,17 +528,17 @@ For finer-grained control over navigation, use the standalone [StateTaxesList](#
 
 <a id="statetaxesform"></a>
 
-### StateTaxesForm
+## StateTaxesForm
 
 Standalone form for editing a company's state tax requirements for a single state.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `StateTaxesFormProps` | StateTaxesFormProps |
 
-#### Remarks
+### Remarks
 
 Lower-level building block used by [StateTaxes](#statetaxes) for its edit view. Use directly when
 you need full control over navigation between the list and edit views.
@@ -524,7 +548,7 @@ you need full control over navigation between the list and edit views.
 | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
 | `CANCEL` | The user cancelled editing | — |
 
-#### Example
+### Example
 
 ```tsx
 import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
@@ -544,17 +568,17 @@ function MyComponent() {
 
 <a id="statetaxeslist"></a>
 
-### StateTaxesList
+## StateTaxesList
 
 Displays the list of state tax requirements for a company with their setup status.
 
-#### Parameters
+### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | `StateTaxesListProps` | Component props including the `companyId` whose state tax requirements should be listed. |
 
-#### Remarks
+### Remarks
 
 Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
@@ -562,59 +586,3 @@ Standalone building block used internally by the orchestrated `StateTaxes` compo
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
-
-## Type Aliases
-
-<a id="assignsignatorydefaultvalues"></a>
-
-### AssignSignatoryDefaultValues
-
-> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
-
-Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
-
-#### Remarks
-
-At least one of `create` or `invite` must be provided.
-
-***
-
-<a id="createsignatorydefaultvalues"></a>
-
-### CreateSignatoryDefaultValues
-
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
-
-Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
-
-***
-
-<a id="invitesignatorydefaultvalues"></a>
-
-### InviteSignatoryDefaultValues
-
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
-
-Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
-`confirmEmail`, and `title`. At least one field is required.
-
-***
-
-<a id="payscheduledefaultfields"></a>
-
-### PayScheduleDefaultFields
-
-> **PayScheduleDefaultFields** = \{ \[K in keyof Pick\<PayScheduleFormData, "anchorPayDate" \| "anchorEndOfPayPeriod" \| "day1" \| "day2" \| "customName" \| "frequency"\>\]: NonNullable\<PayScheduleFormData\[K\]\> \}
-
-The full set of fields that may be pre-filled on the [PaySchedule](#payschedule) create form.
-
-***
-
-<a id="payscheduledefaultvalues"></a>
-
-### PayScheduleDefaultValues
-
-> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
-
-Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
-takes precedence over these defaults when editing.

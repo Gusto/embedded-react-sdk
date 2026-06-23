@@ -1246,7 +1246,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 
 > **EmployeeTab** = `"active"` \| `"onboarding"` \| `"dismissed"`
 
-The tab currently selected on [ManagementEmployeeList](#employeelist).
+The tab currently selected on [EmployeeList](#employeelist).
 
 ***
 
