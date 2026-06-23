@@ -12,12 +12,14 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
-/** @internal */
+/** @public */
 export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
-/** @internal */
+/** @public */
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The currently active tab. Defaults to `'basicDetails'` when uncontrolled. */
   selectedTab?: DashboardTab
 }
 
@@ -114,11 +116,8 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
   )
 }
 
-/** @internal */
-export function Dashboard({
-  FallbackComponent,
-  ...props
-}: DashboardProps & BaseComponentInterface) {
+/** @public */
+export function Dashboard({ FallbackComponent, ...props }: DashboardProps) {
   return (
     <BaseBoundaries componentName="Employee.Dashboard" FallbackComponent={FallbackComponent}>
       <DashboardRoot {...props} />

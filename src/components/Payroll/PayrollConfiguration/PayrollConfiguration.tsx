@@ -73,7 +73,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * @returns The payroll configuration screen.
  * @public
  */
-export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
+export function PayrollConfiguration(props: PayrollConfigurationProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

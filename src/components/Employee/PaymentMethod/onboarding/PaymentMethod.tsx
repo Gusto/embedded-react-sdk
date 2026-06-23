@@ -6,31 +6,23 @@ import { ListViewContextual } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import { useFlow } from '@/components/Flow/useFlow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link PaymentMethod}.
  *
  * @public
  */
-export interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
+export interface PaymentMethodProps extends BaseComponentInterface<'Employee.PaymentMethod'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Not used — onboarding payment method editing operates on live data. */
   defaultValues?: never
   /** Whether the current viewer is an admin. Defaults to `false`. */
   isAdmin?: boolean
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMethodProps) {
@@ -87,11 +79,7 @@ function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMeth
  * }
  * ```
  */
-export function PaymentMethod({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: PaymentMethodProps & BaseComponentInterface) {
+export function PaymentMethod({ dictionary, FallbackComponent, ...props }: PaymentMethodProps) {
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   return (
     <BaseBoundaries componentName="Employee.PaymentMethod" FallbackComponent={FallbackComponent}>

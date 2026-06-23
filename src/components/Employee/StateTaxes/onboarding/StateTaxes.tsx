@@ -1,12 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from '../shared'
 import { useOnboardingStateTaxesViewDictionary } from './useViewDictionary'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -17,7 +12,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+export interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Render admin-only questions and submit them. Defaults to `false`. */
@@ -41,10 +36,7 @@ export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes
  * @param props - The component props.
  * @public
  */
-export function StateTaxes({
-  FallbackComponent,
-  ...props
-}: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function StateTaxes({ FallbackComponent, ...props }: StateTaxesProps) {
   return (
     <BaseBoundaries componentName="Employee.StateTaxes" FallbackComponent={FallbackComponent}>
       <StateTaxesRoot {...props} />

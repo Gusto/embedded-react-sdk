@@ -15,7 +15,7 @@ import { Flex } from '@/components/Common'
  *
  * @public
  */
-export interface DocumentListProps extends BaseComponentInterface {
+export interface DocumentListProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
   /** The associated employee identifier. */
   employeeId: string
 }

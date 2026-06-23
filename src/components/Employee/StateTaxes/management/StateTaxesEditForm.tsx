@@ -1,12 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from '../shared'
 import { useManagementStateTaxesViewDictionary } from './useViewDictionary'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -17,14 +12,9 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export type StateTaxesEditFormProps = Omit<
-  CommonComponentInterface<'Employee.Management.StateTaxes'>,
-  'children'
-> & {
+export interface StateTaxesEditFormProps extends BaseComponentInterface<'Employee.Management.StateTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired when the form is submitted or cancelled. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
@@ -43,10 +33,7 @@ export type StateTaxesEditFormProps = Omit<
  * @param props - The component props.
  * @public
  */
-export function StateTaxesEditForm({
-  FallbackComponent,
-  ...props
-}: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function StateTaxesEditForm({ FallbackComponent, ...props }: StateTaxesEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.StateTaxes"

@@ -88,10 +88,7 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
  *
  * @public
  */
-export function EmployeeList({
-  FallbackComponent,
-  ...props
-}: EmployeeListProps & BaseComponentInterface) {
+export function EmployeeList({ FallbackComponent, ...props }: EmployeeListProps) {
   return (
     <BaseBoundaries componentName="Employee.EmployeeList" FallbackComponent={FallbackComponent}>
       <EmployeeListRoot {...props} />

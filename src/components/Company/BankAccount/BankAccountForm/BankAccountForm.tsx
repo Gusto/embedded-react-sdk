@@ -7,20 +7,20 @@ import { BankAccountFormSchema, Form } from './Form'
 import { Actions } from './Actions'
 import { BankAccountFormProvider } from './context'
 import { Form as HtmlForm } from '@/components/Common/Form'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
-interface BankAccountFormProps extends CommonComponentInterface {
+interface BankAccountFormProps extends BaseComponentInterface<'Company.BankAccount'> {
   companyId: string
   isEditing?: boolean
 }
 
 /** @internal */
-export function BankAccountForm(props: BankAccountFormProps & BaseComponentInterface) {
+export function BankAccountForm(props: BankAccountFormProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
