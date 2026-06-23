@@ -25,9 +25,9 @@ export type FederalTaxFormInputs = z.input<typeof FederalTaxFormSchema>
  * @public
  */
 export type FederalTaxesDefaultValues = RequireAtLeastOne<{
-  taxPayerType?: string
-  filingForm?: string
-  legalName?: string
+  taxPayerType?: FederalTaxFormInputs['taxPayerType']
+  filingForm?: FederalTaxFormInputs['filingForm']
+  legalName?: FederalTaxFormInputs['legalName']
 }>
 
 type FederalTaxesContextType = {
