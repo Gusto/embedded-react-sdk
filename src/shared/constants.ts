@@ -818,7 +818,18 @@ export const PAYROLL_PROCESSING_STATUS = {
   processing_failed: 'processing_failed',
 } as const
 
-/** @internal */
+/**
+ * Blocker types the SDK knows how to surface a resolution UI for. Anything not
+ * in this list falls through to <GenericBlocker> at the render sites
+ * (PayrollOverviewPresentation, contractor PreviewPresentation).
+ *
+ * SDK-1000: v2026-02-01 introduces `migration_blocker` and `migration_warning`
+ * categories. They are intentionally NOT added here — they are informational
+ * (not partner-resolvable) so the GenericBlocker fallback is the correct
+ * rendering. Revisit if SDK-999 testing surfaces a resolvable migration sub-type.
+ *
+ * @internal
+ */
 export const PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES: string[] = [
   'fast_ach_threshold_exceeded',
   'needs_earned_access_for_fast_ach',
