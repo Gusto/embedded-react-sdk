@@ -13,6 +13,8 @@ custom_edit_url: null
 
 ## [EmployeeOnboarding](EmployeeOnboarding/flows.md)
 
+Flows and blocks for onboarding employees.
+
 ### Flow Components
 
 | Component | Description |
@@ -45,6 +47,8 @@ custom_edit_url: null
 
 ## [EmployeeManagement](EmployeeManagement/flows.md)
 
+Flows and blocks for managing an employee after onboarding.
+
 ### Flow Components
 
 | Component | Description |
@@ -62,9 +66,11 @@ custom_edit_url: null
 | [CompensationAddJobForm](EmployeeManagement/blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
 | [CompensationCard](EmployeeManagement/blocks.md#compensationcard) | Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances. |
 | [CompensationEditForm](EmployeeManagement/blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
+| [Dashboard](EmployeeManagement/blocks.md#dashboard) |  |
 | [Deductions](EmployeeManagement/blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
 | [DeductionsCard](EmployeeManagement/blocks.md#deductionscard) | Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction. |
 | [DeductionsEditForm](EmployeeManagement/blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
+| [DocumentManager](EmployeeManagement/blocks.md#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
 | [Documents](EmployeeManagement/blocks.md#documents) | Standalone employee documents management flow. |
 | [DocumentsCard](EmployeeManagement/blocks.md#documentscard) | Standalone "Documents" (forms) card. Owns its own data fetch via useDocumentsList and renders the employee's forms in a table with a per-row "View" action. Emits `employee/management/documents/card/viewRequested` with `{ employeeId, formId }` when a row's View CTA is clicked. The card is read-only — viewing or signing a form happens in the screen the parent routes to — and renders no alerts: alert rendering is the parent's responsibility. |
 | [EmployeeList](EmployeeManagement/blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
