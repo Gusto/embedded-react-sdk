@@ -46,7 +46,10 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
   - [How the Component Adapter Works](docs/component-adapter/how-the-component-adapter-works.md)
   - [Component Adapter Types](docs/component-adapter/component-adapter-types.md)
   - [Setting up your Component Adapter](docs/component-adapter/setting-up-your-component-adapter.md)
-  - [Component Inventory](docs/reference/component-inventory.md)
+    <<<<<<< HEAD
+  - # [Component Inventory](docs/reference/component-inventory.md)
+  - [Component Inventory](docs/api/component-inventory.md)
+    > > > > > > > 8daea3f1 (docs: consolidate legacy generated docs into TypeDoc pages (4/4) (#2176))
   - [Component Adapter FAQ](docs/component-adapter/component-adapter-faq.md)
 - [Appendix](docs/appendix/endpoint-reference.md)
   - [Endpoint Reference](docs/appendix/endpoint-reference.md)
