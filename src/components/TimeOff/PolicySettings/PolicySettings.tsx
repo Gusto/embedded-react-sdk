@@ -18,7 +18,7 @@ import { useI18n } from '@/i18n'
  *
  * @public
  */
-export interface PolicySettingsProps extends BaseComponentInterface {
+export interface PolicySettingsProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
   /** UUID of the time off policy being configured. */
   policyId: string
   /** Whether the form is being used to create a new policy or edit an existing one. Defaults to create. */

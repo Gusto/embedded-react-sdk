@@ -6,7 +6,9 @@ import type { BaseComponentInterface } from '@/components/Base'
  *
  * @public
  */
-export interface ViewHolidayEmployeesProps extends BaseComponentInterface {
+export interface ViewHolidayEmployeesProps extends BaseComponentInterface<
+  'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'
+> {
   /** Identifier of the company whose holiday policy enrollment is displayed. */
   companyId: string
 }

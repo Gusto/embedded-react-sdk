@@ -21,7 +21,7 @@ import { componentEvents } from '@/shared/constants'
  *
  * @public
  */
-export interface PayrollFlowProps extends BaseComponentInterface {
+export interface PayrollFlowProps extends BaseComponentInterface<never> {
   /** Identifier of the company whose payroll is being run. */
   companyId: string
   /** Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. */

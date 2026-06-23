@@ -7,7 +7,7 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
  *
  * @public
  */
-export interface AddEmployeesToPolicyProps extends BaseComponentInterface {
+export interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** The time off policy identifier. */

@@ -29,7 +29,7 @@ import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilte
  *
  * @public
  */
-export interface PayrollListBlockProps extends BaseComponentInterface {
+export interface PayrollListBlockProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
 }
