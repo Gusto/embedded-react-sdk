@@ -39,16 +39,13 @@
   "editContractorPayment": {
     "title": "Edit contractor pay",
     "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
-    "hoursSection": "Hours",
     "hoursLabel": "Hours",
     "hoursAdornment": "hrs",
-    "fixedPaySection": "Fixed pay",
+    "hoursPayDescription": "{{rate}}/hr × hours = {{total}}",
     "wageLabel": "Wage",
-    "additionalEarningsSection": "Additional earnings",
     "bonusLabel": "Bonus",
     "reimbursementLabel": "Reimbursement",
     "paymentMethodLabel": "Payment Method",
-    "totalPay": "Total pay",
     "cancelCta": "Cancel",
     "saveCta": "Done",
     "paymentMethods": {

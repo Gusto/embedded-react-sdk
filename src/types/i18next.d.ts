@@ -1009,16 +1009,13 @@ export interface ContractorPaymentsCreatePayment{
 "editContractorPayment":{
 "title":string;
 "subtitle":string;
-"hoursSection":string;
 "hoursLabel":string;
 "hoursAdornment":string;
-"fixedPaySection":string;
+"hoursPayDescription":string;
 "wageLabel":string;
-"additionalEarningsSection":string;
 "bonusLabel":string;
 "reimbursementLabel":string;
 "paymentMethodLabel":string;
-"totalPay":string;
 "cancelCta":string;
 "saveCta":string;
 "paymentMethods":{

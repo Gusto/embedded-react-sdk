@@ -1,9 +1,9 @@
-import { useId } from 'react'
+import { useCallback, useId, useRef } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { ActionsLayout, Flex, Grid, NumberInputField, RadioGroupField } from '@/components/Common'
+import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -37,32 +37,47 @@ export const EditContractorPaymentPresentation = ({
     name: 'wageType',
     control: formMethods.control,
   })
-  const hours = useWatch<EditContractorPaymentFormValues, 'hours'>({
-    name: 'hours',
-    control: formMethods.control,
-  })
-  const wage = useWatch<EditContractorPaymentFormValues, 'wage'>({
-    name: 'wage',
-    control: formMethods.control,
-  })
-  const bonus = useWatch<EditContractorPaymentFormValues, 'bonus'>({
-    name: 'bonus',
-    control: formMethods.control,
-  })
-  const reimbursement = useWatch<EditContractorPaymentFormValues, 'reimbursement'>({
-    name: 'reimbursement',
-    control: formMethods.control,
-  })
   const hourlyRate = useWatch<EditContractorPaymentFormValues, 'hourlyRate'>({
     name: 'hourlyRate',
     control: formMethods.control,
   })
 
-  const totalAmount =
-    (wageType === 'Fixed' ? 0 : bonus || 0) +
-    (reimbursement || 0) +
-    (wage || 0) +
-    (hours || 0) * (hourlyRate || 0)
+  // react-aria's NumberField only commits to the form on blur, so the form
+  // value lags behind keystrokes. Update the description text imperatively
+  // from the live DOM input value — re-rendering on every keystroke fights
+  // with NumberField's internal input state and breaks typing.
+  const initialHours = formMethods.getValues('hours') || 0
+  const computeDescription = (hours: number) => {
+    if (!hourlyRate || hourlyRate <= 0) return ''
+    return t('hoursPayDescription', {
+      rate: currencyFormatter(hourlyRate),
+      total: currencyFormatter(hours * hourlyRate),
+    })
+  }
+  const hoursDescriptionRef = useRef<HTMLSpanElement>(null)
+  const hoursInputCleanupRef = useRef<(() => void) | null>(null)
+  const hoursInputRef = useCallback(
+    (input: HTMLInputElement | null) => {
+      hoursInputCleanupRef.current?.()
+      hoursInputCleanupRef.current = null
+      if (!input) return
+      const sync = () => {
+        if (!hoursDescriptionRef.current) return
+        const parsed = parseFloat(input.value.replace(/[^\d.]/g, ''))
+        const hours = isNaN(parsed) ? 0 : parsed
+        hoursDescriptionRef.current.textContent = computeDescription(hours)
+      }
+      input.addEventListener('input', sync)
+      hoursInputCleanupRef.current = () => {
+        input.removeEventListener('input', sync)
+      }
+    },
+    // computeDescription is recreated each render, but the listener only
+    // needs to re-attach when hourlyRate changes (which is what affects the
+    // computation).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hourlyRate],
+  )
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -102,27 +117,27 @@ export const EditContractorPaymentPresentation = ({
             <Flex flexDirection="column" gap={4}>
               <Heading as="h2">{t('title')}</Heading>
               <Text variant="supporting">{t('subtitle')}</Text>
-              <Text weight="bold">
-                {t('totalPay')}: {currencyFormatter(totalAmount)}
-              </Text>
             </Flex>
+            <Flex flexDirection="column" gap={20}>
+              {wageType === 'Hourly' && (
+                <Flex flexDirection="column" gap={4}>
+                  <NumberInputField
+                    min={0}
+                    name="hours"
+                    isRequired
+                    label={t('hoursLabel')}
+                    adornmentEnd={t('hoursAdornment')}
+                    inputRef={hoursInputRef}
+                  />
+                  {hourlyRate && hourlyRate > 0 && (
+                    <Text size="sm" variant="supporting">
+                      <span ref={hoursDescriptionRef}>{computeDescription(initialHours)}</span>
+                    </Text>
+                  )}
+                </Flex>
+              )}
 
-            {wageType === 'Hourly' && (
-              <Flex flexDirection="column" gap={16}>
-                <Heading as="h3">{t('hoursSection')}</Heading>
-                <NumberInputField
-                  min={0}
-                  name="hours"
-                  isRequired
-                  label={t('hoursLabel')}
-                  adornmentEnd={t('hoursAdornment')}
-                />
-              </Flex>
-            )}
-
-            {wageType === 'Fixed' && (
-              <Flex flexDirection="column" gap={16}>
-                <Heading as="h3">{t('fixedPaySection')}</Heading>
+              {wageType === 'Fixed' && (
                 <NumberInputField
                   min={0}
                   name="wage"
@@ -130,27 +145,17 @@ export const EditContractorPaymentPresentation = ({
                   label={t('wageLabel')}
                   format="currency"
                 />
-              </Flex>
-            )}
+              )}
 
-            <Flex flexDirection="column" gap={16}>
-              <Heading as="h3">{t('additionalEarningsSection')}</Heading>
-              <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
-                {wageType === 'Hourly' && (
-                  <NumberInputField
-                    min={0}
-                    name="bonus"
-                    label={t('bonusLabel')}
-                    format="currency"
-                  />
-                )}
-                <NumberInputField
-                  min={0}
-                  name="reimbursement"
-                  label={t('reimbursementLabel')}
-                  format="currency"
-                />
-              </Grid>
+              {wageType === 'Hourly' && (
+                <NumberInputField min={0} name="bonus" label={t('bonusLabel')} format="currency" />
+              )}
+              <NumberInputField
+                min={0}
+                name="reimbursement"
+                label={t('reimbursementLabel')}
+                format="currency"
+              />
             </Flex>
 
             <Flex flexDirection="column" gap={16}>
