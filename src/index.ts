@@ -340,6 +340,38 @@ export type {
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
+  useContractorAddressForm,
+  ContractorAddressErrorCodes,
+  createContractorAddressSchema,
+  Street1Field as ContractorAddressStreet1Field,
+  Street2Field as ContractorAddressStreet2Field,
+  CityField as ContractorAddressCityField,
+  StateField as ContractorAddressStateField,
+  ZipField as ContractorAddressZipField,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
+export type {
+  ContractorAddressSubmitOptions,
+  ContractorAddressOptionalFieldsToRequire,
+  UseContractorAddressFormProps,
+  UseContractorAddressFormResult,
+  UseContractorAddressFormReady,
+  ContractorAddressFieldsMetadata,
+  ContractorAddressFormFields,
+  ContractorAddressErrorCode,
+  ContractorAddressFormData,
+  ContractorAddressFormOutputs,
+  ContractorAddressField,
+  ContractorAddressRequiredValidation,
+  ContractorAddressZipValidation,
+  ContractorAddressStreet1FieldProps,
+  ContractorAddressStreet2FieldProps,
+  ContractorAddressCityFieldProps,
+  ContractorAddressStateFieldProps,
+  ContractorAddressZipFieldProps,
+  ContractorAddressFields,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
+
+export {
   useBankForm,
   BankFormErrorCodes,
   createBankFormSchema,
