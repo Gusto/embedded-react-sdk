@@ -76,6 +76,28 @@ export function standalonePageFromSources(reflection: Reflection): string | null
   return null
 }
 
+/**
+ * Return the immediate PascalCase directory name for a reflection's source —
+ * the last directory segment before the file that starts with an uppercase letter.
+ * This is typically the component directory name.
+ *
+ * src/components/Company/AssignSignatory/useAssignSignatory.ts → 'AssignSignatory'
+ * src/components/Company/AssignSignatory/CreateSignatory/useCreateSignatory.ts → 'CreateSignatory'
+ * src/components/Company/PaySchedule/PaySchedule.tsx → 'PaySchedule'
+ *
+ * Returns null when sources are absent or no PascalCase directory is found.
+ */
+export function componentDirFromSources(reflection: Reflection): string | null {
+  const source = (reflection as DeclarationReflection).sources?.[0]
+  if (!source) return null
+  const fp = source.fullFileName ?? source.fileName ?? ''
+  const m = fp.match(/[/\\]src[/\\]components[/\\][^/\\]+[/\\](.+)[/\\][^/\\]+$/)
+  if (!m) return null
+  const segments = m[1]!.split(/[/\\]/)
+  const lastDir = segments[segments.length - 1]!
+  return /^[A-Z]/.test(lastDir) ? lastDir : null
+}
+
 /** Convert a domain output path to its TypeDoc source directory name.
  *  'employee' → 'Employee',  'time-off' → 'TimeOff' */
 export function pathToSourceDir(domainPath: string): string {

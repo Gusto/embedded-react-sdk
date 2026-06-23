@@ -18,9 +18,11 @@ import {
 import { MemberRouter } from 'typedoc-plugin-markdown'
 import { DOMAINS, NAMESPACE_PATHS, STANDALONE_PAGES } from './router.config.ts'
 import {
+  componentDirFromSources,
   componentPropsInterfaces,
   domainFromSources,
   hookDirFromSources,
+  isComponent,
   isHookSourceFile,
   pathToSourceDir,
   readFlowReadme,
@@ -250,6 +252,15 @@ export class SDKRouter extends MemberRouter {
   // and must be skipped when buildChildPages would otherwise anchor them on index.md.
   private readonly handledStandalone = new Set<DeclarationReflection>()
 
+  // Maps each block component to the TypeAlias reflections defined in the same
+  // source directory. Populated before clearSources in buildPages; used by
+  // buildChildPages to filter helper types out of the blocks group and by the
+  // theme to render them nested under their owning component.
+  readonly blockHelperTypesMap = new Map<DeclarationReflection, DeclarationReflection[]>()
+
+  // Flat membership index over blockHelperTypesMap values for O(1) lookup in buildChildPages.
+  private readonly helperTypeAliases = new Set<DeclarationReflection>()
+
   // Keyed by domain.path; populated in buildPages so renderDomainHub can list hooks.
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
@@ -340,6 +351,33 @@ export class SDKRouter extends MemberRouter {
         if (!fp) continue
         const readme = readFlowReadme(fp)
         if (readme) this.flowReadmes.set(member, readme)
+      }
+    }
+
+    // Pre-scan: map TypeAlias reflections to the block component in the same source
+    // directory. Must run before clearSources wipes reflection.sources.
+    for (const ns of project.children ?? []) {
+      if (!(ns instanceof DeclarationReflection)) continue
+      if (ns.kind !== ReflectionKind.Namespace) continue
+
+      const nsChildren = ns.children ?? []
+      const blockCompsByDir = new Map<string, DeclarationReflection>()
+      for (const child of nsChildren) {
+        if (!isComponent(child) || child.name.endsWith('Flow')) continue
+        const dir = componentDirFromSources(child)
+        if (dir) blockCompsByDir.set(dir, child)
+      }
+
+      for (const child of nsChildren) {
+        if (child.kind !== ReflectionKind.TypeAlias) continue
+        const dir = componentDirFromSources(child)
+        if (!dir) continue
+        const owner = blockCompsByDir.get(dir)
+        if (!owner) continue
+        const list = this.blockHelperTypesMap.get(owner) ?? []
+        list.push(child)
+        this.blockHelperTypesMap.set(owner, list)
+        this.helperTypeAliases.add(child)
       }
     }
 
@@ -464,7 +502,9 @@ export class SDKRouter extends MemberRouter {
             blockProps.push(propsIface)
           }
         }
-        const blocks = children.filter(c => !c.name.endsWith('Flow') && !allPropsSet.has(c))
+        const blocks = children.filter(
+          c => !c.name.endsWith('Flow') && !allPropsSet.has(c) && !this.helperTypeAliases.has(c),
+        )
 
         // Register each flow as its own page with its props as anchors.
         for (const flow of flows) {
@@ -493,10 +533,11 @@ export class SDKRouter extends MemberRouter {
           blocksNs.children = blocks
           const blocksGroups = groupSyntheticMembers(blocks, blocksNs)
           if (blocksGroups.length > 1) blocksNs.groups = blocksGroups
+          const blockHelperTypes = blocks.flatMap(b => this.blockHelperTypesMap.get(b) ?? [])
           this.buildSyntheticPage(
             `${nsBasePath}/blocks`,
             blocksNs,
-            [...blocks, ...blockProps],
+            [...blocks, ...blockProps, ...blockHelperTypes],
             outPages,
           )
         }

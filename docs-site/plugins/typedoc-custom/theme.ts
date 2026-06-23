@@ -293,6 +293,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
   constructor(...args: ConstructorParameters<typeof MarkdownThemeContext>) {
     super(...args)
 
+    const origMember = this.partials.member.bind(this)
     const origMemberTitle = this.partials.memberTitle.bind(this)
     const origSignature = this.partials.signature.bind(this)
     const origSignatureTitle = this.partials.signatureTitle.bind(this)
@@ -302,6 +303,19 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
     this.partials = {
       ...this.partials,
+      member: (
+        model: DeclarationReflection,
+        options: { headingLevel: number; nested?: boolean },
+      ) => {
+        const result = origMember(model, options)
+        if (!isComponent(model)) return result
+        const helperTypes = (this.router as SDKRouter).blockHelperTypesMap.get(model) ?? []
+        if (helperTypes.length === 0) return result
+        return [
+          result,
+          ...helperTypes.map(t => origMember(t, { headingLevel: options.headingLevel + 1 })),
+        ].join('\n\n')
+      },
       memberTitle: (model: DeclarationReflection) => {
         const title = origMemberTitle(model)
         // Strip trailing () for components. Deprecated titles are wrapped in ~~...~~
