@@ -29,8 +29,8 @@
   "globs": ["docs/**/*.md", "docs-site/**/*.md", "docs-site/**/*.mdx"],
   "ignores": [
     "**/node_modules/**",
-    "docs/api/**",
-    "docs/reference/endpoint-reference.md",
+    "docs/reference/**",
+    "docs/appendix/endpoint-reference.md",
     "docs/test-fests/**",
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
