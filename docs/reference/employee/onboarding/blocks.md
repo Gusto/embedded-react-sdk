@@ -281,16 +281,17 @@ delete, review, cancel self-onboarding) and an "Add employee" entry point.
 
 Props for [EmployeeList](#employeelist).
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `companyId` | `string` | | The associated company identifier. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeEmployeeList`\>\> | | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `showContinueButton?` | `boolean` | `false` | Controls visibility of the Continue button in the employee list. **Remarks** When `true`, displays a Continue button below the populated employee list and a Skip button in the empty state. These controls trigger the `employee/onboarding/done` event, allowing navigation to the next step in a multi-step flow (e.g., company onboarding). When `false` (default), hides both buttons. Use this when the employee list is the final destination in its flow and no further navigation is needed (e.g., standalone employee onboarding where the list is the terminal screen). |
 
 ### Remarks
 
