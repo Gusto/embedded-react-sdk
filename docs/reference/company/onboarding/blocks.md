@@ -217,17 +217,22 @@ Selects and saves the company's industry classification (NAICS code).
 
 Presents a searchable list of industry options and persists the selection for the given company.
 
-#### Type Parameters
+#### IndustryProps
 
-| Type Parameter | Description |
-| ------ | ------ |
-| `T` | The HTML element type that `className` and `children` are typed against. |
+<a id="industryprops"></a>
 
-#### Parameters
+Props for the [Industry](#industry) component.
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`IndustryProps`](#industryprops)\<`T`\> | [IndustryProps](#industryprops) including `companyId` and event handlers. |
+| `companyId` | `string` | The UUID of the company whose industry classification is being set. |
+| `onEvent` | `OnEventType`\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`CompanyIndustry`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 #### Remarks
 
@@ -581,28 +586,6 @@ At least one of `create` or `invite` must be provided.
 > **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
-
-***
-
-<a id="industryprops"></a>
-
-### IndustryProps
-
-> **IndustryProps**\<`T`\> = `Pick`\<`BaseComponentInterface`\<`"Company.Industry"`\>, `"onEvent"` \| `"dictionary"`\> & `Partial`\<`Pick`\<`HTMLAttributes`\<`T`\>, `"children"` \| `"className"`\>\> & `object`
-
-Props for the [Industry](#industry) component.
-
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `companyId` | `string` |
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `T` | The HTML element type that `className` and `children` are typed against. |
 
 ***
 
