@@ -1,6 +1,11 @@
 import { BREAKPOINTS } from '@/shared/constants'
 import type { CustomTypeOptions } from 'i18next'
 
+/**
+ * Recursively makes every property of `T` optional, descending into nested objects and arrays.
+ *
+ * @public
+ */
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
@@ -40,6 +45,11 @@ export type DataAttributes = {
  */
 export type Resources = CustomTypeOptions['resources']
 
+/**
+ * Language codes the SDK ships translations for; the top-level keys of {@link ResourceDictionary}.
+ *
+ * @public
+ */
 export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
 
 /**

@@ -32,7 +32,12 @@ export type {
 } from '@/types/observability'
 
 export type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
-export type { ResourceDictionary, Resources } from '@/types/Helpers'
+export type {
+  ResourceDictionary,
+  Resources,
+  DeepPartial,
+  SupportedLanguages,
+} from '@/types/Helpers'
 
 // Partner hook infrastructure
 export {

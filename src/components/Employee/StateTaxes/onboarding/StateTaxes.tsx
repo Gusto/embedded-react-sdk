@@ -17,8 +17,6 @@ export interface StateTaxesProps extends BaseComponentInterface<'Employee.StateT
   employeeId: string
   /** Render admin-only questions and submit them. Defaults to `false`. */
   isAdmin?: boolean
-  /** Event handler fired when the form is submitted successfully. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
