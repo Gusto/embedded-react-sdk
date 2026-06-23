@@ -4,15 +4,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
-import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsCreate'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdate'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
+import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsCreate'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdate'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody'
 import {
   WageType as ApiWageType,
   ContractorType as ApiContractorType,
   type Contractor,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 import { useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import {

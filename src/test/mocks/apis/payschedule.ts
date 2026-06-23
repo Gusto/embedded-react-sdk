@@ -1,9 +1,9 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompaniesCompanyIdPaySchedulesRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayschedules'
-import type { PayScheduleCreateRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/payschedulecreaterequest'
-import type { PayScheduleUpdateRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleupdaterequest'
-import type { GetV1CompaniesCompanyIdPaySchedulesPreviewRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayschedulespreview'
+import type { GetV1CompaniesCompanyIdPaySchedulesRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidpayschedules'
+import type { PayScheduleCreateRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/payschedulecreaterequest'
+import type { PayScheduleUpdateRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleupdaterequest'
+import type { GetV1CompaniesCompanyIdPaySchedulesPreviewRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidpayschedulespreview'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

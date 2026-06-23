@@ -84,7 +84,7 @@ export function AddContractorWizard({
       case componentEvents.CONTRACTOR_SUBMIT_DONE: {
         const payload = data as { message?: string } | undefined
         const message = payload?.message ?? 'Contractor added successfully'
-        queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors'] })
+        queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors'] })
         void navigate(`..?success=${encodeURIComponent(message)}`, { replace: true })
         break
       }

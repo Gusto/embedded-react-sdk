@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useEmployeesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesCreate'
-import { useEmployeesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdate'
-import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingStatus'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import { useEmployeesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import { useEmployeesCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesCreate'
+import { useEmployeesUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesUpdate'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesUpdateOnboardingStatus'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import {
   createEmployeeDetailsSchema,
   type EmployeeDetailsOptionalFieldsToRequire,

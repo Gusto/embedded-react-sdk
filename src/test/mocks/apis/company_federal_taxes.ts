@@ -1,7 +1,7 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompaniesCompanyIdFederalTaxDetailsRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidfederaltaxdetails'
-import type { FederalTaxDetailsUpdate } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetailsupdate'
+import type { GetV1CompaniesCompanyIdFederalTaxDetailsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidfederaltaxdetails'
+import type { FederalTaxDetailsUpdate } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetailsupdate'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

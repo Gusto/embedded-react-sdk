@@ -1,11 +1,11 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type { EmployeeCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
 import {
   type Employee,
   EmployeePaymentMethod1,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
 import userEvent from '@testing-library/user-event'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollCategory } from '../payrollTypes'

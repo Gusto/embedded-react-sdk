@@ -10,21 +10,21 @@ const mockCreateTimeOffPolicy = vi.fn()
 const mockUpdateTimeOffPolicy = vi.fn()
 let mockGetPolicyResponse: { timeOffPolicy: Record<string, unknown> } | undefined
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesCreate', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesCreate', () => ({
   useTimeOffPoliciesCreateMutation: () => ({
     mutateAsync: mockCreateTimeOffPolicy,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesUpdate', () => ({
   useTimeOffPoliciesUpdateMutation: () => ({
     mutateAsync: mockUpdateTimeOffPolicy,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: mockGetPolicyResponse ?? { timeOffPolicy: undefined },
   }),

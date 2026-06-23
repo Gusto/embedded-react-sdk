@@ -1,4 +1,4 @@
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 import { CONTRACTOR_TYPE } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

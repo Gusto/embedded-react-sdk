@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
-import { useTimeOffPoliciesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesCreate'
-import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate'
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
-import type { TimeOffPolicyRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicyrequest'
-import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
-import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
+import { useTimeOffPoliciesCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesCreate'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesUpdate'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGet'
+import type { TimeOffPolicyRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicyrequest'
+import type { TimeOffPolicy } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy'
+import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
 import { useQueryClient } from '@tanstack/react-query'
 import { PolicyConfigurationFormPresentation } from './PolicyConfigurationFormPresentation'
 import type { PolicyConfigurationFormData } from './PolicyConfigurationFormTypes'
@@ -329,7 +329,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
         })
 
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
+          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'timeOffPolicies', 'get'],
         })
 
         onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
