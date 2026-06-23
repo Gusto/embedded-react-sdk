@@ -32,7 +32,7 @@ Props for [Compensation](#compensation).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -78,7 +78,7 @@ Props for [CompensationAddAnotherJobForm](#compensationaddanotherjobform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
@@ -110,7 +110,7 @@ Props for [CompensationAddJobForm](#compensationaddjobform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
@@ -174,7 +174,7 @@ Props for [CompensationEditForm](#compensationeditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 #### Remarks
 
@@ -191,6 +191,8 @@ Pair with [CompensationCard](#compensationcard) to route its `employee/managemen
 
 ### Dashboard
 
+Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents.
+
 #### DashboardProps
 
 <a id="dashboardprops"></a>
@@ -202,10 +204,16 @@ Pair with [CompensationCard](#compensationcard) to route its `employee/managemen
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeDashboard`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDashboard`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `selectedTab?` | `DashboardTab` | The currently active tab. Defaults to `'basicDetails'` when uncontrolled. |
+
+#### Remarks
+
+Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
+boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
+case it defaults to basic details.
 
 ***
 
@@ -228,7 +236,7 @@ Props for [Deductions](#deductions).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -298,7 +306,7 @@ Props for [DeductionsEditForm](#deductionseditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDeductions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `editingDeductionId?` | `string` | When provided, the form opens in edit mode pre-populated with the matching active deduction. Omit to open in add mode. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
@@ -338,7 +346,7 @@ Props for [DocumentManager](#documentmanager).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeDocumentManager`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDocumentManager`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -371,7 +379,7 @@ Props for [Documents](#documents).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementDocuments`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDocuments`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -434,7 +442,7 @@ Props for [ManagementEmployeeList](#employeelist).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementEmployeeList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `initialTab?` | [`EmployeeTab`](#employeetab) | Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
@@ -469,7 +477,7 @@ Props for [FederalTaxes](#federaltaxes).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -530,7 +538,7 @@ Props for [FederalTaxesEditForm](#federaltaxeseditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](../hooks.md#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementFederalTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -564,7 +572,7 @@ Props for [HomeAddress](#homeaddress).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -626,7 +634,7 @@ Props for [HomeAddressEditForm](#homeaddresseditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementHomeAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -660,7 +668,7 @@ Props for [PaymentMethod](#paymentmethod).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `undefined` | Not used — payment method management edits live data. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaymentMethod`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `initialState?` | `"split"` \| `"list"` \| `"add"` | Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. |
 | `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `true`. |
@@ -837,7 +845,7 @@ Props for [Profile](#profile).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -904,7 +912,7 @@ Props for [ProfileEditForm](#profileeditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -944,7 +952,7 @@ Props for [StateTaxes](#statetaxes).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -1010,7 +1018,7 @@ Props for [StateTaxesEditForm](#statetaxeseditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -1043,7 +1051,7 @@ Props for [TerminateEmployee](#terminateemployee).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminateEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminateEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -1102,7 +1110,7 @@ Props for [TerminationSummary](#terminationsummary).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeTerminationsTerminationSummary`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminationSummary`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `payrollOption?` | [`PayrollOption`](#payrolloption) | The selected payroll processing option. When provided, the summary surfaces a success alert confirming the action taken. |
@@ -1162,7 +1170,7 @@ Props for [WorkAddress](#workaddress).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
@@ -1224,7 +1232,7 @@ Props for [WorkAddressEditForm](#workaddresseditform).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementWorkAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 

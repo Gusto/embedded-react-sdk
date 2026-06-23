@@ -31,7 +31,6 @@ import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/c
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
 import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
 import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
-import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
@@ -277,10 +276,10 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
 
 // @public
 export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources> extends CommonComponentInterface<TResourceKey> {
-    // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
-    FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
-    // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
-    LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
+    FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: (input: {
+        children?: ReactNode;
+    }) => JSX.Element;
     // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -571,6 +570,7 @@ declare namespace CompanyOnboarding {
         PayScheduleDefaultFields,
         FederalTaxes_3 as FederalTaxes,
         FederalTaxesProps_3 as FederalTaxesProps,
+        FederalTaxesDefaultValues,
         StateTaxes_3 as StateTaxes,
         StateTaxesForm,
         StateTaxesList,
@@ -1517,7 +1517,7 @@ export function CustomTwicePerMonthField(props: CustomTwicePerMonthFieldProps): 
 // @public
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
 
-// @public (undocumented)
+// @public
 function Dashboard(input: DashboardProps): JSX;
 
 // @public
@@ -1704,6 +1704,15 @@ interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> 
 // @public
 interface DeductionsProps_2 extends BaseComponentInterface<'Employee.Management.Deductions'> {
     employeeId: string;
+}
+
+// @public
+export type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends (infer U)[]
+    ? DeepPartial<U>[]
+    : T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P]
 }
 
 // @public
@@ -1907,7 +1916,6 @@ function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 // @public
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -2191,6 +2199,13 @@ interface FederalTaxesCardProps {
 }
 
 // @public
+type FederalTaxesDefaultValues = RequireAtLeastOne<{
+    taxPayerType?: string;
+    filingForm?: string;
+    legalName?: string;
+}>;
+
+// @public
 function FederalTaxesEditForm(input: FederalTaxesEditFormProps): JSX;
 
 // @public
@@ -2250,7 +2265,6 @@ interface FederalTaxesProps_2 extends BaseComponentInterface<'Employee.Managemen
 // @public
 interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTaxes'> {
     companyId: string;
-    // Warning: (ae-forgotten-export) The symbol "FederalTaxesDefaultValues" needs to be exported by the entry point index.d.ts
     defaultValues?: FederalTaxesDefaultValues;
 }
 
@@ -2397,6 +2411,7 @@ export interface GustoProviderProps {
     currency?: string;
     dictionary?: ResourceDictionary;
     lng?: string;
+    // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
     locale?: string;
     portalContainer?: HTMLElement;
@@ -3994,9 +4009,6 @@ interface RemoveDialogState {
 // @public
 type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
 
-// Warning: (ae-forgotten-export) The symbol "SupportedLanguages" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "DeepPartial" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
 K extends keyof Resources
@@ -4380,7 +4392,6 @@ function StateTaxesList(props: StateTaxesListProps): JSX;
 interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> {
     employeeId: string;
     isAdmin?: boolean;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
@@ -4457,6 +4468,9 @@ export type SubmitStateForErrorHandling = {
 
 // @public
 export const SUPPORTED_REQUIRED_ATTR_KEYS: readonly ["case_number", "order_number", "remittance_number"];
+
+// @public
+export type SupportedLanguages = 'en'
 
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];

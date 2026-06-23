@@ -763,6 +763,22 @@ const hooks: SDKHooks = {
 
 ## Type Aliases
 
+<a id="deeppartial"></a>
+
+### DeepPartial
+
+> **DeepPartial**\<`T`\> = `{ [P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P] }`
+
+Recursively makes every property of `T` optional, descending into nested objects and arrays.
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+***
+
 <a id="observabilitymetricunit"></a>
 
 ### ObservabilityMetricUnit
@@ -777,7 +793,7 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 
 ### ResourceDictionary
 
-> **ResourceDictionary**\<`K`\> = `K` *extends* keyof [`Resources`](#resources) ? `Record`\<`SupportedLanguages`, `DeepPartial`\<[`Resources`](#resources)\[`K`\]\>\> : `Record`\<`SupportedLanguages`, `Partial`\<`{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }`\>\>
+> **ResourceDictionary**\<`K`\> = `K` *extends* keyof [`Resources`](#resources) ? `Record`\<[`SupportedLanguages`](#supportedlanguages), [`DeepPartial`](#deeppartial)\<[`Resources`](#resources)\[`K`\]\>\> : `Record`\<[`SupportedLanguages`](#supportedlanguages), `Partial`\<`{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }`\>\>
 
 Supported keys to provide as a dictionary - global GustoProvider dictionary with all resources and component specific dictionaries
 
@@ -804,3 +820,13 @@ Supported keys to provide as a dictionary - global GustoProvider dictionary with
 > **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
 
 High-level classification of where an [SDKError](#sdkerror) originated.
+
+***
+
+<a id="supportedlanguages"></a>
+
+### SupportedLanguages
+
+> **SupportedLanguages** = `"en"`
+
+Language codes the SDK ships translations for; the top-level keys of [ResourceDictionary](#resourcedictionary).

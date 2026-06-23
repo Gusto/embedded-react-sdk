@@ -66,7 +66,7 @@ Flows and blocks for managing an employee after onboarding.
 | [CompensationAddJobForm](EmployeeManagement/blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
 | [CompensationCard](EmployeeManagement/blocks.md#compensationcard) | Standalone "Compensation" management card that displays an employee's current jobs and compensation, surfaces pending future-dated changes, and exposes edit, add, and delete affordances. |
 | [CompensationEditForm](EmployeeManagement/blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
-| [Dashboard](EmployeeManagement/blocks.md#dashboard) |  |
+| [Dashboard](EmployeeManagement/blocks.md#dashboard) | Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents. |
 | [Deductions](EmployeeManagement/blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
 | [DeductionsCard](EmployeeManagement/blocks.md#deductionscard) | Standalone read-only card listing an employee's active deductions, with affordances to add, edit, or delete a deduction. |
 | [DeductionsEditForm](EmployeeManagement/blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
