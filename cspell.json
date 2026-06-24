@@ -6,9 +6,9 @@
   "files": ["docs/**/*.md", "docs-site/**/*.{md,mdx,ts,tsx}"],
   "ignorePaths": [
     "**/node_modules/**",
-    "docs/api/**",
-    "docs/reference/endpoint-reference.md",
-    "docs/reference/endpoint-inventory.json",
+    "docs/reference/**",
+    "docs/appendix/endpoint-reference.md",
+    "docs/appendix/endpoint-inventory.json",
     "docs/test-fests/**",
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
