@@ -43,11 +43,21 @@ export interface OnboardingExecutionFlowProps {
  * The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary.
  *
  * @remarks
- * Drives the per-employee onboarding experience used by both {@link OnboardingFlow} (admin) and {@link SelfOnboardingFlow} (employee). Each step is also exported as a standalone block — see {@link Profile}, {@link Compensation}, {@link FederalTaxes}, {@link StateTaxes}, {@link PaymentMethod}, {@link Deductions}, {@link EmployeeDocuments}, and {@link OnboardingSummary} — for composing a custom workflow when this orchestration is the wrong fit.
+ * Drives the per-employee onboarding experience used by both {@link OnboardingFlow} (admin) and {@link SelfOnboardingFlow} (employee). Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit.
  *
  * Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
  *
  * The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
+ *
+ * @components
+ * - {@link Profile}
+ * - {@link Compensation}
+ * - {@link FederalTaxes}
+ * - {@link StateTaxes}
+ * - {@link PaymentMethod}
+ * - {@link Deductions}
+ * - {@link EmployeeDocuments}
+ * - {@link OnboardingSummary}
  *
  * @param props - See {@link OnboardingExecutionFlowProps}.
  * @returns The multi-step onboarding execution flow.
