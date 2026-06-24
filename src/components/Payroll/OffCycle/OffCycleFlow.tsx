@@ -27,6 +27,10 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * Once the flow transitions to execution, all standard run-payroll events are emitted
  * (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
  *
+ * @components
+ * - {@link OffCycleCreation}
+ * - {@link PayrollExecutionFlow}
+ *
  * @param props - {@link OffCycleFlowProps}
  * @returns The rendered off-cycle payroll flow.
  * @public
