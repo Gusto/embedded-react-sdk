@@ -102,7 +102,12 @@ export function NumberInput({
         maxValue={maxValue}
         {...props}
       >
-        <Group>
+        <Group
+          onChange={(event: React.ChangeEvent<HTMLElement>) => {
+            const target = event.target as HTMLInputElement
+            onInputChange?.(target.value)
+          }}
+        >
           <Input
             adornmentStart={adornmentStart || (format === 'currency' ? currencySymbol : null)}
             adornmentEnd={adornmentEnd || (format === 'percent' ? '%' : null)}
@@ -111,9 +116,6 @@ export function NumberInput({
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
             isDisabled={isDisabled}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              onInputChange?.(event.currentTarget.value)
-            }}
             // Select the existing value on focus so users can overwrite the
             // formatted placeholder (e.g. "0.00") by typing instead of having
             // to clear the field first.

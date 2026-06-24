@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
@@ -42,26 +42,20 @@ export const EditContractorPaymentPresentation = ({
     control: formMethods.control,
   })
 
+  const [typedHours, setTypedHours] = useState<number>(() => formMethods.getValues('hours') ?? 0)
+
   const parseHours = (raw: string) => {
     const parsed = parseFloat(raw.replace(/[^\d.]/g, ''))
     return isNaN(parsed) ? 0 : parsed
   }
 
-  const computeHoursPayDescription = (hours: number) => {
-    if (!hourlyRate || hourlyRate <= 0) return ''
-    return t('hoursPayDescription', {
-      rate: currencyFormatter(hourlyRate),
-      total: currencyFormatter(hours * hourlyRate),
-    })
-  }
-
-  const [hoursPayDescription, setHoursPayDescription] = useState('')
-
-  useEffect(() => {
-    if (isOpen) {
-      setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
-    }
-  }, [isOpen, hourlyRate, computeHoursPayDescription, formMethods.getValues])
+  const hoursPayDescription =
+    hourlyRate && hourlyRate > 0
+      ? t('hoursPayDescription', {
+          rate: currencyFormatter(hourlyRate),
+          total: currencyFormatter(typedHours * hourlyRate),
+        })
+      : undefined
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -110,9 +104,12 @@ export const EditContractorPaymentPresentation = ({
                   isRequired
                   label={t('hoursLabel')}
                   adornmentEnd={t('hoursAdornment')}
-                  description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
+                  description={hoursPayDescription}
                   onInputChange={raw => {
-                    setHoursPayDescription(computeHoursPayDescription(parseHours(raw)))
+                    setTypedHours(parseHours(raw))
+                  }}
+                  onChange={value => {
+                    setTypedHours(isNaN(value) ? 0 : value)
                   }}
                 />
               )}
