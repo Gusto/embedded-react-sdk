@@ -36,6 +36,10 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * - `regularPayroll` — Include the final pay in the employee's next scheduled regular payroll. The termination can still be cancelled after the fact.
  * - `anotherWay` — Handle final pay outside of Gusto. Triggers the off-cycle payroll creation flow and removes the employee from unprocessed future payrolls. The termination can still be cancelled after the fact.
  *
+ * @components
+ * - {@link TerminateEmployee}
+ * - {@link TerminationSummary}
+ *
  * @param props - See {@link TerminationFlowProps}.
  * @returns The multi-step termination workflow.
  * @public
