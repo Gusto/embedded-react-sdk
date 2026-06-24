@@ -1,0 +1,39 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Fresh company registered in WA and ID with state-tax parent radios pre-seeded",
+  "description": "Fresh react_sdk_demo decorated with WA and ID locations so the corresponding state-tax requirement sets surface, plus pre-seeded answers on the parent radios that gate conditional visibility. Used by the StateTaxesForm applicable_if e2e specs to assert direction-agnostic conditional behavior against the real backend. WA's `usedefaultsuirates` is set to true (rates hidden by default; test toggles to false to reveal them). ID's `suireimbursable` is left at the demo's natural default (false) so its rate questions are visible by default; the test toggles to true to hide them.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "wa",
+        "street_1": "1700 7th Ave",
+        "city": "Seattle",
+        "state": "WA",
+        "zip": "98101",
+        "filing_address": true,
+        "mailing_address": true
+      },
+      {
+        "key": "id",
+        "street_1": "150 N 8th St",
+        "city": "Boise",
+        "state": "ID",
+        "zip": "83702"
+      }
+    ],
+    "stateTaxes": [
+      {
+        "state": "WA",
+        "requirementSets": [
+          {
+            "key": "taxrates",
+            "requirements": [{ "key": "usedefaultsuirates", "value": true }]
+          }
+        ]
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.wa", "locationIds.id"]
+}

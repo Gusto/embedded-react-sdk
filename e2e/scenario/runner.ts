@@ -9,6 +9,7 @@ import type {
   ContractorDecoration,
   PayScheduleDecoration,
   PayrollDecoration,
+  StateTaxDecoration,
 } from '../scenarios/schema/scenario.types'
 
 const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
@@ -89,6 +90,30 @@ async function decorateLocations(
   }
 
   return locationIds
+}
+
+async function decorateStateTaxes(
+  api: ApiClient,
+  companyId: string,
+  stateTaxes: StateTaxDecoration[],
+  log: ReturnType<typeof makeLog>,
+): Promise<void> {
+  for (const entry of stateTaxes) {
+    log(`Pre-seeding tax requirements for ${entry.state}`)
+    // gws-flows surfaces tax requirements per-state once the company is
+    // registered in that state (typically via a location with state=XX or
+    // an employee work_address in XX). PUT /tax_requirements/:state accepts
+    // the same requirement_sets shape that the SDK posts during edit. We
+    // honor the canonical key names — `effective_from` and snake-case keys.
+    await api.put(`/companies/${companyId}/tax_requirements/${entry.state}`, {
+      requirement_sets: entry.requirementSets.map(set => ({
+        state: entry.state,
+        key: set.key,
+        ...(set.effective_from !== undefined ? { effective_from: set.effective_from } : {}),
+        requirements: set.requirements.map(r => ({ key: r.key, value: r.value })),
+      })),
+    })
+  }
 }
 
 async function decorateEmployees(
@@ -718,6 +743,10 @@ export async function provisionScenario(
   const locationIds = decorations.locations
     ? await decorateLocations(api, companyId, decorations.locations, log)
     : {}
+
+  if (decorations.stateTaxes) {
+    await decorateStateTaxes(api, companyId, decorations.stateTaxes, log)
+  }
 
   const employeeIds = decorations.employees
     ? await decorateEmployees(api, companyId, decorations.employees, locationIds, log)

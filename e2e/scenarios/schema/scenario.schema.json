@@ -47,11 +47,15 @@
     "decorations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Entities to create/update on top of the base demo. Order is fixed: locations -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.",
+      "description": "Entities to create/update on top of the base demo. Order is fixed: locations -> stateTaxes -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.",
       "properties": {
         "locations": {
           "type": "array",
           "items": { "$ref": "#/definitions/locationDecoration" }
+        },
+        "stateTaxes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/stateTaxDecoration" }
         },
         "employees": {
           "type": "array",
@@ -319,6 +323,58 @@
         },
         "anchor_pay_date": { "type": "string" },
         "anchor_end_of_pay_period": { "type": "string" }
+      }
+    },
+    "stateTaxDecoration": {
+      "type": "object",
+      "required": ["state", "requirementSets"],
+      "additionalProperties": false,
+      "description": "Pre-seed tax_requirements answers for a specific state. Runner PUTs the body to /companies/:id/tax_requirements/:state after locations are decorated. The state must already be relevant to the company (i.e., the company has an employee or location in that state, OR the base demo seeds the state — the demo backend returns a 404 otherwise).",
+      "properties": {
+        "state": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "description": "Two-letter state code (e.g., WA, ID)."
+        },
+        "requirementSets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["key", "requirements"],
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Requirement set key returned by GET /tax_requirements/:state (e.g., 'taxrates', 'registrations')."
+              },
+              "effective_from": {
+                "type": ["string", "null"],
+                "description": "Optional effective-from date in YYYY-MM-DD; omit to use whatever the API surfaces."
+              },
+              "requirements": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["key", "value"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID)."
+                    },
+                    "value": {
+                      "description": "Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).",
+                      "type": ["string", "number", "boolean"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "payrollDecoration": {
