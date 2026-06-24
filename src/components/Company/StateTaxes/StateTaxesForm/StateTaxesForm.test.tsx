@@ -72,7 +72,16 @@ describe('StateTaxesForm', () => {
       })
     })
 
-    it('renders tax rate fields', async () => {
+    it('hides applicable_if-gated rate fields until the radio is toggled', async () => {
+      const useDefaultRadioYes = await screen.findByRole('radio', { name: /^Yes$/ })
+      expect(useDefaultRadioYes).toBeChecked()
+      expect(screen.queryByLabelText(/Unemployment Insurance Rate/i)).toBeNull()
+
+      const useDefaultRadioNo = screen.getByRole('radio', {
+        name: /No, my agency gave me new rates/i,
+      })
+      await user.click(useDefaultRadioNo)
+
       await waitFor(() => {
         expect(screen.getByLabelText(/Unemployment Insurance Rate/i)).toBeInTheDocument()
       })

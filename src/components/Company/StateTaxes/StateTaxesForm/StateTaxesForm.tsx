@@ -9,7 +9,8 @@ import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
-import { fromRhfKey, toRhfKey } from './rhfKey'
+import { toRhfKey } from './rhfKey'
+import { isRequirementApplicable, type StateTaxesFormValues } from './applicableIf'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
@@ -163,19 +164,24 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
   const onSubmit = async (formData: InferredFormInputs) => {
     await baseSubmitHandler(formData, async payload => {
+      const formValues = payload as StateTaxesFormValues
       const requirementSets = stateTaxRequirements.requirementSets
         ?.filter(rs => rs.key && payload[rs.key])
         .map(requirementSet => {
           const requirementSetKey = requirementSet.key as string
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
 
+          const applicableRequirements = (requirementSet.requirements ?? []).filter(req =>
+            isRequirementApplicable(req, requirementSetKey, formValues),
+          )
+
           return {
             state,
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
-            requirements: Object.entries(payloadSet).map(([reqKey, value]) => ({
-              key: fromRhfKey(reqKey),
-              value: stringifyRequirementValue(value),
+            requirements: applicableRequirements.map(req => ({
+              key: req.key as string,
+              value: stringifyRequirementValue(payloadSet[toRhfKey(req.key as string)]),
             })),
           }
         })

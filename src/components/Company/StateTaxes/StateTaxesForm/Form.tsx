@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useStateTaxesForm } from './context'
 import { toRhfKey } from './rhfKey'
+import { isRequirementApplicable, type StateTaxesFormValues } from './applicableIf'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -12,6 +14,8 @@ export function Form() {
   const dateFormatter = useLocaleDateFormatter()
   const { stateTaxRequirements } = useStateTaxesForm()
   const Components = useComponentContext()
+  const { control } = useFormContext()
+  const watchedValues = useWatch({ control }) as StateTaxesFormValues
 
   return stateTaxRequirements.requirementSets?.map(
     ({ requirements, label, effectiveFrom, key }) => (
@@ -24,8 +28,9 @@ export function Form() {
             </Components.Text>
           )}
         </div>
-        {requirements?.map(requirement => {
-          return (
+        {requirements?.flatMap(requirement => {
+          if (!key || !isRequirementApplicable(requirement, key, watchedValues)) return []
+          return [
             <QuestionInput
               requirement={{
                 ...requirement,
@@ -33,8 +38,8 @@ export function Form() {
               }}
               questionType={requirement.metadata?.type ?? 'Text'}
               key={requirement.key}
-            />
-          )
+            />,
+          ]
         })}
       </Fragment>
     ),
