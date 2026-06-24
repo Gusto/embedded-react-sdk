@@ -7,6 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react'
+import { buildEntityInspectRequest, type InspectRequest } from './entity-config'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
@@ -46,11 +47,6 @@ const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolea
   { key: 'payrollId', label: 'Payroll ID' },
   { key: 'formId', label: 'Form ID' },
   { key: 'requestId', label: 'Request ID' },
-]
-
-const TEXT_FIELDS: { key: keyof EntityIds; label: string }[] = [
-  { key: 'requestId', label: 'Request ID' },
-  { key: 'formId', label: 'Form ID' },
 ]
 
 interface EntityComboboxProps {
@@ -113,6 +109,90 @@ function CopyIdButton({ value, ariaLabel }: CopyIdButtonProps) {
       aria-label={ariaLabel}
     >
       {status === 'copied' ? 'Copied' : 'Copy ID'}
+    </button>
+  )
+}
+
+function highlightJsonTokens(source: string): ReactNode[] {
+  const tokenRegex =
+    /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g
+  const nodes: ReactNode[] = []
+  let lastIndex = 0
+  let keyCounter = 0
+  let match: RegExpExecArray | null
+  while ((match = tokenRegex.exec(source))) {
+    if (match.index > lastIndex) {
+      nodes.push(source.slice(lastIndex, match.index))
+    }
+    const [whole, str, colon, literal, num] = match
+    if (str !== undefined) {
+      const className = colon ? styles.jsonKey : styles.jsonString
+      nodes.push(
+        <span key={keyCounter++} className={className}>
+          {str}
+        </span>,
+      )
+      if (colon) nodes.push(colon)
+    } else if (literal !== undefined) {
+      nodes.push(
+        <span
+          key={keyCounter++}
+          className={literal === 'null' ? styles.jsonNull : styles.jsonBoolean}
+        >
+          {literal}
+        </span>,
+      )
+    } else if (num !== undefined) {
+      nodes.push(
+        <span key={keyCounter++} className={styles.jsonNumber}>
+          {num}
+        </span>,
+      )
+    } else {
+      nodes.push(whole)
+    }
+    lastIndex = match.index + whole.length
+  }
+  if (lastIndex < source.length) nodes.push(source.slice(lastIndex))
+  return nodes
+}
+
+type InspectFetchState =
+  | { kind: 'loading' }
+  | { kind: 'ok'; body: unknown }
+  | { kind: 'error'; status: number; body: string }
+
+interface InspectState {
+  label: string
+  url: string
+  fetch: InspectFetchState
+}
+
+interface InspectIdButtonProps {
+  label: string
+  request: InspectRequest | null
+  onInspect: (label: string, request: InspectRequest) => void
+}
+
+function InspectIdButton({ label, request, onInspect }: InspectIdButtonProps) {
+  return (
+    <button
+      type="button"
+      className={styles.btn}
+      onClick={() => {
+        if (request) onInspect(label, request)
+      }}
+      disabled={!request}
+      aria-label={`Inspect ${label.toLowerCase()} response`}
+      title={
+        request
+          ? `GET ${request.url.replace(/^\/api/, '')}${
+              request.kind === 'listFilter' ? ` (filtered for ${request.matchUuid})` : ''
+            }`
+          : 'No GET endpoint available'
+      }
+    >
+      🕵️
     </button>
   )
 }
@@ -401,6 +481,82 @@ export function DemoSettingsPanel({
   const [selectedSaveName, setSelectedSaveName] = useState<string>('')
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveDialogName, setSaveDialogName] = useState('')
+  const [inspect, setInspect] = useState<InspectState | null>(null)
+
+  const handleInspect = useCallback((label: string, request: InspectRequest) => {
+    const { url } = request
+    setInspect({ label, url, fetch: { kind: 'loading' } })
+    void (async () => {
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
+        const text = await res.text()
+        if (!res.ok) {
+          setInspect(prev =>
+            prev && prev.url === url
+              ? { ...prev, fetch: { kind: 'error', status: res.status, body: text } }
+              : prev,
+          )
+          return
+        }
+        let parsed: unknown = text
+        try {
+          parsed = JSON.parse(text)
+        } catch {
+          // Non-JSON body — display as-is
+        }
+        if (request.kind === 'listFilter') {
+          const list = Array.isArray(parsed) ? (parsed as Array<Record<string, unknown>>) : []
+          const match = list.find(item => item.uuid === request.matchUuid)
+          if (!match) {
+            setInspect(prev =>
+              prev && prev.url === url
+                ? {
+                    ...prev,
+                    fetch: {
+                      kind: 'error',
+                      status: 404,
+                      body: `No item with uuid ${request.matchUuid} in list of ${list.length} from ${url.replace(/^\/api/, '')}`,
+                    },
+                  }
+                : prev,
+            )
+            return
+          }
+          setInspect(prev =>
+            prev && prev.url === url ? { ...prev, fetch: { kind: 'ok', body: match } } : prev,
+          )
+          return
+        }
+        setInspect(prev =>
+          prev && prev.url === url ? { ...prev, fetch: { kind: 'ok', body: parsed } } : prev,
+        )
+      } catch (err) {
+        setInspect(prev =>
+          prev && prev.url === url
+            ? {
+                ...prev,
+                fetch: {
+                  kind: 'error',
+                  status: 0,
+                  body: err instanceof Error ? err.message : String(err),
+                },
+              }
+            : prev,
+        )
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    if (!inspect) return
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setInspect(null)
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => {
+      window.removeEventListener('keydown', handleKey)
+    }
+  }, [inspect])
 
   const saveNames = Object.keys(manualSaves).sort((a, b) => a.localeCompare(b))
 
@@ -426,7 +582,8 @@ export function DemoSettingsPanel({
     entities.employeeId !== confirmedSnapshot.current.employeeId ||
     entities.contractorId !== confirmedSnapshot.current.contractorId ||
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
-    TEXT_FIELDS.some(({ key }) => entities[key] !== confirmedSnapshot.current[key])
+    entities.requestId !== confirmedSnapshot.current.requestId ||
+    entities.formId !== confirmedSnapshot.current.formId
 
   const displayEnv = env === 'localzp' ? 'local' : env
 
@@ -724,6 +881,15 @@ export function DemoSettingsPanel({
                   className={styles.readOnly}
                 />
                 <CopyIdButton value={entities.companyId} ariaLabel="Copy company ID" />
+                <InspectIdButton
+                  label="Company"
+                  request={buildEntityInspectRequest(
+                    'companyId',
+                    entities.companyId,
+                    entities.companyId,
+                  )}
+                  onInspect={handleInspect}
+                />
               </div>
             </div>
 
@@ -737,7 +903,20 @@ export function DemoSettingsPanel({
               onChange={value => {
                 onUpdateEntity('employeeId', value)
               }}
-              trailing={<CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />
+                  <InspectIdButton
+                    label="Employee"
+                    request={buildEntityInspectRequest(
+                      'employeeId',
+                      entities.employeeId,
+                      entities.companyId,
+                    )}
+                    onInspect={handleInspect}
+                  />
+                </>
+              }
             />
 
             <EntityCombobox
@@ -751,7 +930,18 @@ export function DemoSettingsPanel({
                 onUpdateEntity('contractorId', value)
               }}
               trailing={
-                <CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />
+                <>
+                  <CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />
+                  <InspectIdButton
+                    label="Contractor"
+                    request={buildEntityInspectRequest(
+                      'contractorId',
+                      entities.contractorId,
+                      entities.companyId,
+                    )}
+                    onInspect={handleInspect}
+                  />
+                </>
               }
             />
 
@@ -765,29 +955,73 @@ export function DemoSettingsPanel({
               onChange={value => {
                 onUpdateEntity('payrollId', value)
               }}
-              trailing={<CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />
+                  <InspectIdButton
+                    label="Payroll"
+                    request={buildEntityInspectRequest(
+                      'payrollId',
+                      entities.payrollId,
+                      entities.companyId,
+                    )}
+                    onInspect={handleInspect}
+                  />
+                </>
+              }
             />
 
-            {TEXT_FIELDS.map(({ key, label }) => {
-              const inputId = `entity-${key}-input`
-              return (
-                <div key={key} className={styles.field}>
-                  <label htmlFor={inputId}>{label}</label>
-                  <div className={styles.copyRow}>
-                    <input
-                      id={inputId}
-                      type="text"
-                      value={entities[key]}
-                      onChange={e => {
-                        onUpdateEntity(key, e.target.value)
-                      }}
-                      placeholder={`Enter ${label.toLowerCase()}...`}
-                    />
-                    <CopyIdButton value={entities[key]} ariaLabel={`Copy ${label.toLowerCase()}`} />
-                  </div>
-                </div>
-              )
-            })}
+            <EntityCombobox
+              label="Request"
+              value={entities.requestId}
+              options={entityCatalog.informationRequests}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a request id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('requestId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.requestId} ariaLabel="Copy request ID" />
+                  <InspectIdButton
+                    label="Request"
+                    request={buildEntityInspectRequest(
+                      'requestId',
+                      entities.requestId,
+                      entities.companyId,
+                    )}
+                    onInspect={handleInspect}
+                  />
+                </>
+              }
+            />
+
+            <EntityCombobox
+              label="Form"
+              value={entities.formId}
+              options={entityCatalog.forms}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a form id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('formId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.formId} ariaLabel="Copy form ID" />
+                  <InspectIdButton
+                    label="Form"
+                    request={buildEntityInspectRequest(
+                      'formId',
+                      entities.formId,
+                      entities.companyId,
+                    )}
+                    onInspect={handleInspect}
+                  />
+                </>
+              }
+            />
 
             <div className={styles.actions}>
               {hasChanges && (
@@ -847,6 +1081,55 @@ export function DemoSettingsPanel({
           </div>
         </div>
       </div>
+
+      {inspect && (
+        <div className={styles.inspectBackdrop}>
+          <button
+            type="button"
+            className={styles.inspectBackdropDismiss}
+            aria-label="Close inspect dialog"
+            onClick={() => {
+              setInspect(null)
+            }}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${inspect.label} response`}
+            className={styles.inspectModal}
+          >
+            <header className={styles.inspectHeader}>
+              <div>
+                <h4 className={styles.inspectTitle}>{inspect.label} response</h4>
+                <div className={styles.inspectUrl}>GET {inspect.url.replace(/^\/api/, '')}</div>
+              </div>
+              <button
+                type="button"
+                className={styles.btn}
+                onClick={() => {
+                  setInspect(null)
+                }}
+                aria-label="Close inspect dialog"
+              >
+                Close
+              </button>
+            </header>
+            {inspect.fetch.kind === 'loading' && (
+              <div className={styles.inspectBodyMessage}>Loading…</div>
+            )}
+            {inspect.fetch.kind === 'ok' && (
+              <pre className={styles.inspectBody}>
+                {highlightJsonTokens(JSON.stringify(inspect.fetch.body, null, 2))}
+              </pre>
+            )}
+            {inspect.fetch.kind === 'error' && (
+              <pre className={styles.inspectBody}>
+                {`HTTP ${inspect.fetch.status}\n\n${inspect.fetch.body}`}
+              </pre>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
