@@ -61,3 +61,50 @@ Props accepted by PayrollFlow.
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Shared execution flow that runs the configuration, overview, submission, and receipt steps for a single payroll. |
+| [OffCycleFlow](off-cycle-flow.md) | Multi-step flow for creating and running an off-cycle payroll (bonus or correction). |
+| [TransitionFlow](transition-flow.md) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+
+<!-- guide-source: src/components/Payroll/PayrollFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+`PayrollFlow` opens on the landing page, where pending and calculated payrolls are listed. From there it routes into one of several payrolls, each of which runs the shared `PayrollExecutionFlow` (configuration, overview, submission, receipts) before returning to the submitted overview.
+
+### Running, off-cycle, transition, and dismissal payrolls
+
+Selecting a payroll to run, reviewing a calculated payroll, starting an off-cycle payroll, or starting a pending transition payroll all hand off to an execution flow. When processing completes, the flow lands on the submitted overview and can drill into receipts.
+
+```mermaid
+flowchart
+  Landing -->|"runPayroll/selected, payroll/review"| Execution["PayrollExecutionFlow"]
+  Landing -->|"runPayroll/offCycle/start"| OffCycle["OffCycleFlow"]
+  Landing -->|"transition/runPayroll"| Transition["TransitionFlow"]
+  Execution -->|"runPayroll/processed"| SubmittedOverview["PayrollOverview"]
+  OffCycle -->|"runPayroll/processed"| SubmittedOverview
+  Transition -->|"runPayroll/processed"| SubmittedOverview
+  SubmittedOverview -->|"runPayroll/receipt/get"| SubmittedReceipts["PayrollReceipts"]
+  SubmittedOverview -->|"payroll/saveAndExit"| done(( ))
+  SubmittedReceipts -->|"payroll/saveAndExit"| done
+```
+
+### Resolving blockers
+
+When a payroll has blockers, the landing page can open the full blocker list. Resolving them and exiting returns to the landing page.
+
+```mermaid
+flowchart
+  Landing -->|"runPayroll/blockers/viewAll"| Blockers["PayrollBlockerList"]
+  Blockers -->|"payroll/saveAndExit"| done(( ))
+```
+
+A submitted payroll that is later cancelled (`runPayroll/cancelled`) routes back to the landing page, where a cancellation alert is shown.
+<!-- /guide-source (slot: appendix) -->

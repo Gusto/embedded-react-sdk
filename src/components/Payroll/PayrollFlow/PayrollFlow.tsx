@@ -35,6 +35,15 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `transition/runPayroll` | The user starts a pending transition payroll | — |
  * | `payroll/saveAndExit` | The user clicks Save and Exit | — |
  *
+ * @components
+ * - {@link PayrollLanding}
+ * - {@link PayrollExecutionFlow}
+ * - {@link OffCycleFlow}
+ * - {@link TransitionFlow}
+ * - {@link PayrollBlockerList}
+ * - {@link PayrollOverview}
+ * - {@link PayrollReceipts}
+ *
  * @param props - {@link PayrollFlowProps} with the company, optional reimbursements toggle, optional wire-details override, and event handler.
  * @returns The composed payroll flow.
  * @public

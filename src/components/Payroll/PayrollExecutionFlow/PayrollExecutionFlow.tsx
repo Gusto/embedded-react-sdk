@@ -105,6 +105,13 @@ const INITIAL_NAMESPACE_MAP = {
  * | `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
  * | `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |
  *
+ * @components
+ * - {@link PayrollConfiguration}
+ * - {@link PayrollOverview}
+ * - {@link PayrollEditEmployee}
+ * - {@link PayrollReceipts}
+ * - {@link PayrollBlockerList}
+ *
  * @param input - {@link PayrollExecutionFlowProps}
  * @returns The rendered execution flow.
  * @public

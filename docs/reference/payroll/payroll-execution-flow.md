@@ -59,3 +59,33 @@ Props for PayrollExecutionFlow.
 | `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
 | `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
 | `withReimbursements?` | `boolean` | Optional flag to show or hide reimbursement fields throughout the flow. Defaults to `true`. |
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [PayrollConfiguration](blocks.md#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollEditEmployee](blocks.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+
+<!-- guide-source: src/components/Payroll/PayrollExecutionFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The execution flow runs a single payroll from configuration through receipts. It starts on the configuration step by default, or directly on the overview step when `initialState` is `'overview'`. Once submission begins, the flow can no longer return to configuration.
+
+```mermaid
+flowchart
+  Configuration["PayrollConfiguration"] -->|"runPayroll/employee/edit"| EditEmployee["PayrollEditEmployee"]
+  Configuration -->|"runPayroll/blockers/viewAll"| Blockers["PayrollBlockerList"]
+  EditEmployee -->|"runPayroll/employee/saved, runPayroll/employee/cancelled"| Configuration
+  Configuration -->|"runPayroll/calculated"| Overview["PayrollOverview"]
+  Overview -->|"runPayroll/edit"| edit{{"hasPayrollSubmissionStarted?"}}
+  edit -->|false| Configuration
+  Overview -->|"runPayroll/submitting"| Overview
+  Overview -->|"runPayroll/receipt/get"| Receipts["PayrollReceipts"]
+```
+
+Editing an employee (`runPayroll/employee/edit`) opens that employee's row; saving or cancelling returns to configuration. The `runPayroll/edit` action returns to configuration only while the payroll has not started submitting (`hasPayrollSubmissionStarted` is false); after `runPayroll/submitting` fires, the configuration step is hidden and the flow stays on the overview through submission and processing.
+<!-- /guide-source (slot: appendix) -->
