@@ -3,12 +3,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-
 import { useCompaniesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/companiesGet'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -16,8 +11,15 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 
-interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
+/**
+ * Props for the {@link Landing} component.
+ *
+ * @public
+ */
+export interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
+  /** UUID of the employee entering the self-onboarding flow. */
   employeeId: string
+  /** UUID of the company the employee belongs to. */
   companyId: string
 }
 
@@ -27,7 +29,7 @@ interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
  *
  * @public
  */
-export function Landing(props: SummaryProps & BaseComponentInterface) {
+export function Landing(props: LandingProps) {
   useI18n('Employee.Landing')
   useComponentDictionary('Employee.Landing', props.dictionary)
 
@@ -38,7 +40,7 @@ export function Landing(props: SummaryProps & BaseComponentInterface) {
   )
 }
 
-const Root = ({ employeeId, companyId, className }: SummaryProps) => {
+const Root = ({ employeeId, companyId, className }: LandingProps) => {
   const { onEvent } = useBase()
   const Components = useComponentContext()
 

@@ -23,7 +23,7 @@ type OnboardingFlowDefaultValues = RequireAtLeastOne<{
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values applied to individual flow step components (federal taxes, pay schedule). */

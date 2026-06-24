@@ -3,7 +3,7 @@ import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/compone
 import type { ContractorProfileFormData } from './useContractorProfile'
 import { useContractorProfile } from './useContractorProfile'
 import { ContractorProfileForm } from './ContractorProfileForm'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import type { WithRequired } from '@/types/Helpers'
@@ -13,7 +13,7 @@ import type { WithRequired } from '@/types/Helpers'
  *
  * @public
  */
-export interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+export interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
   /** UUID of the company the contractor belongs to. */
   companyId: string
   /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
@@ -45,7 +45,7 @@ interface ContractorProfileConditionalProps {
  * @returns The rendered contractor profile form.
  * @public
  */
-export function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface) {
+export function ContractorProfile(props: ContractorProfileProps) {
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
     <BaseComponent {...props}>

@@ -16,7 +16,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface SignatureFormProps extends BaseComponentInterface {
+export interface SignatureFormProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
   /** The associated employee identifier. */
   employeeId: string
   /** The identifier of the form to sign. */

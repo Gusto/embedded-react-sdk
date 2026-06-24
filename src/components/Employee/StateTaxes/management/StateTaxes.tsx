@@ -3,26 +3,18 @@ import { useMemo } from 'react'
 import { StateTaxesCardContextual, type StateTaxesContextInterface } from './StateTaxesComponents'
 import { stateTaxesStateMachine } from './stateTaxesStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link StateTaxes}.
  *
  * @public
  */
-export interface StateTaxesProps extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+export interface StateTaxesProps extends BaseComponentInterface<'Employee.Management.StateTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
@@ -58,11 +50,7 @@ function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
  * @param props - The component props.
  * @public
  */
-export function StateTaxes({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: StateTaxesProps & BaseComponentInterface<'Employee.Management.StateTaxes'>) {
+export function StateTaxes({ dictionary, FallbackComponent, ...props }: StateTaxesProps) {
   useComponentDictionary('Employee.Management.StateTaxes', dictionary)
   return (
     <BaseBoundaries

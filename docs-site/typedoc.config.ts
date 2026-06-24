@@ -8,11 +8,11 @@ import {
 } from './typedoc-utils.mjs'
 
 export const baseOptions = {
-  plugin: ['./plugins/sdk-router.ts'],
+  plugin: ['./plugins/typedoc-custom/index.ts'],
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],
-  out: '../docs/api',
+  out: '../docs/reference',
 
   groupOrder: [
     'Domains',
@@ -59,6 +59,7 @@ export const baseOptions = {
   readme: 'none',
   useHTMLAnchors: true,
   validation: { invalidLink: true },
+  formatWithPrettier: false,
 } satisfies TypeDocOptions & PluginOptions
 
 export default {

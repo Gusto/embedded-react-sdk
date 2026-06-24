@@ -64,7 +64,7 @@ export interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payrol
  * }
  * ```
  */
-export function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface) {
+export function PayrollEditEmployee(props: PayrollEditEmployeeProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

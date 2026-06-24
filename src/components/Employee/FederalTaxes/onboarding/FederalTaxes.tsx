@@ -6,12 +6,7 @@ import {
   type FederalTaxesFormData,
 } from '../shared/useFederalTaxesForm'
 import { useOnboardingFederalTaxesViewDictionary } from './useViewDictionary'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -22,7 +17,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
+export interface FederalTaxesProps extends BaseComponentInterface<'Employee.FederalTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Pre-fill form values. Server data takes precedence when the employee already has values on file. */
@@ -47,10 +42,7 @@ export interface FederalTaxesProps extends CommonComponentInterface<'Employee.Fe
  * @public
  * @group Block Components
  */
-export function FederalTaxes({
-  FallbackComponent,
-  ...props
-}: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function FederalTaxes({ FallbackComponent, ...props }: FederalTaxesProps) {
   return (
     <BaseBoundaries componentName="Employee.FederalTaxes" FallbackComponent={FallbackComponent}>
       <FederalTaxesRoot {...props} />

@@ -6,7 +6,7 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
  *
  * @public
  */
-export interface AddEmployeesHolidayProps extends BaseComponentInterface {
+export interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
 }

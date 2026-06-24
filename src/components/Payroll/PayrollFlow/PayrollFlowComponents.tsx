@@ -21,7 +21,7 @@ import { componentEvents } from '@/shared/constants'
  *
  * @public
  */
-export interface PayrollFlowProps extends BaseComponentInterface {
+export interface PayrollFlowProps extends BaseComponentInterface<never> {
   /** Identifier of the company whose payroll is being run. */
   companyId: string
   /** Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. */
@@ -45,7 +45,7 @@ export type PayrollFlowAlert = {
   content?: ReactNode
   /** Called when the user dismisses the alert. When omitted, the alert is not dismissible. */
   onDismiss?: () => void
-  /** Stable key used to track alert identity across renders (e.g. for animations or dedup). */
+  /** Stable key used to track alert identity across renders (e.g. for animations or deduplication). */
   alertKey?: string
 }
 

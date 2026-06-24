@@ -10,7 +10,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesListProps extends BaseComponentInterface {
+interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
   /** The associated company identifier. */
   companyId: string
 }

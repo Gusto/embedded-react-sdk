@@ -7,7 +7,7 @@ export { SignatureForm, type SignatureFormProps } from '../DocumentSigner/Signat
 export { Industry, type IndustryProps } from '../Industry'
 export { BankAccount } from '../BankAccount/BankAccount'
 export { Locations } from '../Locations/Locations'
-export { LocationForm } from '../Locations/LocationForm'
+export { LocationForm, type LocationFormProps } from '../Locations/LocationForm'
 export { LocationsList, type LocationsListProps } from '../Locations/LocationsList'
 export {
   PaySchedule,
@@ -15,7 +15,11 @@ export {
   type PayScheduleDefaultValues,
   type PayScheduleDefaultFields,
 } from '../PaySchedule'
-export { FederalTaxes } from '../FederalTaxes'
+export {
+  FederalTaxes,
+  type FederalTaxesProps,
+  type FederalTaxesDefaultValues,
+} from '../FederalTaxes'
 export { StateTaxes } from '../StateTaxes/StateTaxes'
 export { StateTaxesForm } from '../StateTaxes/StateTaxesForm'
 export { StateTaxesList } from '../StateTaxes/StateTaxesList'

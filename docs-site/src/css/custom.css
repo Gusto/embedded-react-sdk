@@ -453,6 +453,10 @@ aside.theme-doc-sidebar-container {
   padding-bottom: 0.4rem;
 }
 
+h2.theme-doc-card-heading {
+  margin-top: 0;
+}
+
 .markdown h3 {
   font-size: 1.2rem;
   font-weight: 600;
