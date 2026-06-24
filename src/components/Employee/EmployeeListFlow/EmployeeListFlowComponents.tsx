@@ -11,7 +11,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
  *
  * @public
  */
-export interface EmployeeListFlowProps extends BaseComponentInterface {
+export interface EmployeeListFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
 }

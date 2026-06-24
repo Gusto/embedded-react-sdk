@@ -15,7 +15,7 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values for individual flow step components. */

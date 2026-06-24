@@ -20,7 +20,6 @@ const RECOVERY_CASES_RESUBMIT_FORM_ID = 'gusto-sdk-recovery-cases-resubmit-form'
 
 interface RecoveryCasesResubmitProps extends BaseComponentInterface<'Payroll.RecoveryCasesResubmit'> {
   recoveryCaseId: string
-  onEvent: OnEventType<EventType, unknown>
 }
 
 /** @internal */

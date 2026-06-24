@@ -8,7 +8,7 @@ import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsCom
 import type { ConfirmWireDetailsProps } from './types'
 export type { ConfirmWireDetailsComponentType } from './types'
 import styles from './ConfirmWireDetails.module.scss'
-import { BaseComponent, BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, BaseBoundaries } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
@@ -29,7 +29,7 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
  * | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
  * | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
  *
- * @param props - {@link ConfirmWireDetailsProps} plus base component props.
+ * @param props - {@link ConfirmWireDetailsProps}
  * @returns The wire confirmation banner and modal flow.
  * @public
  *
@@ -48,10 +48,7 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
  * }
  * ```
  */
-export function ConfirmWireDetails({
-  onEvent = () => {},
-  ...props
-}: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps) {
+export function ConfirmWireDetails({ onEvent, ...props }: ConfirmWireDetailsProps) {
   return (
     <BaseComponent {...props} onEvent={onEvent}>
       <Root {...props} onEvent={onEvent} />
@@ -59,11 +56,7 @@ export function ConfirmWireDetails({
   )
 }
 
-function Root({
-  companyId,
-  wireInId,
-  onEvent = () => {},
-}: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps) {
+function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)

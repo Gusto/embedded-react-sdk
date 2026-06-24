@@ -30,10 +30,18 @@ export type {
   ObservabilityMetricUnit,
   SanitizationConfig,
 } from '@/types/observability'
+
 export type {
-  ConfirmWireDetailsProps,
-  ConfirmWireDetailsComponentType,
-} from '@/components/Payroll/ConfirmWireDetails'
+  BaseComponentInterface,
+  CommonComponentInterface,
+  OnEventType,
+} from '@/components/Base'
+export type {
+  ResourceDictionary,
+  Resources,
+  DeepPartial,
+  SupportedLanguages,
+} from '@/types/Helpers'
 
 // Partner hook infrastructure
 export {

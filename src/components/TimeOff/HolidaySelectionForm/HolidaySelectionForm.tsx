@@ -28,7 +28,7 @@ import { useLocale } from '@/contexts/LocaleProvider/useLocale'
  *
  * @public
  */
-export interface HolidaySelectionFormProps extends BaseComponentInterface {
+export interface HolidaySelectionFormProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy'> {
   /** The associated company identifier. */
   companyId: string
   /** Whether to create a new holiday policy or edit the existing one. Defaults to `'create'`. */

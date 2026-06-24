@@ -1,6 +1,11 @@
 import { BREAKPOINTS } from '@/shared/constants'
 import type { CustomTypeOptions } from 'i18next'
 
+/**
+ * Recursively makes every property of `T` optional, descending into nested objects and arrays.
+ *
+ * @public
+ */
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
@@ -36,13 +41,25 @@ export type DataAttributes = {
 }
 
 /**
- * I18N related types
+ * The full set of SDK i18n resource namespaces and their string keys.
+ * Each key names a component's resource namespace.
+ *
+ * @public
  */
 export type Resources = CustomTypeOptions['resources']
 
+/**
+ * Language codes the SDK ships translations for; the top-level keys of {@link ResourceDictionary}.
+ *
+ * @public
+ */
 export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
 
-//ResourceDictionary us supporting 2 cases - global GustoProvider dictionary with all resources and component specific dictionaries
+/**
+ * Supported keys to provide as a dictionary - global GustoProvider dictionary with all resources and component specific dictionaries
+ *
+ * @public
+ */
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
   K extends keyof Resources
     ? Record<SupportedLanguages, DeepPartial<Resources[K]>>

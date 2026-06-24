@@ -15,7 +15,7 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
  *
  * @public
  */
-export interface LocationsListProps extends BaseComponentInterface {
+export interface LocationsListProps extends BaseComponentInterface<'Company.Locations'> {
   /** The associated company identifier. */
   companyId: string
 }

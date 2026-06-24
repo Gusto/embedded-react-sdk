@@ -15,7 +15,7 @@ interface RecoveryCasesProps {
 }
 
 interface RecoveryCasesInternalProps
-  extends Omit<BaseComponentInterface, 'onEvent'>, RecoveryCasesProps {}
+  extends Omit<BaseComponentInterface<never>, 'onEvent'>, RecoveryCasesProps {}
 
 /**
  * Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them.

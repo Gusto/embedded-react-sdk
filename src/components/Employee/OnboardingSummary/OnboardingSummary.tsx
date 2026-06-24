@@ -6,12 +6,7 @@ import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import styles from './OnboardingSummary.module.scss'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -21,8 +16,15 @@ import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-interface SummaryProps extends CommonComponentInterface<'Employee.OnboardingSummary'> {
+/**
+ * Props for {@link OnboardingSummary}.
+ *
+ * @public
+ */
+export interface OnboardingSummaryProps extends BaseComponentInterface<'Employee.OnboardingSummary'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** When `true`, renders the admin-facing view of the onboarding summary. Defaults to `false`. */
   isAdmin?: boolean
 }
 
@@ -32,7 +34,7 @@ interface SummaryProps extends CommonComponentInterface<'Employee.OnboardingSumm
  *
  * @public
  */
-export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
+export function OnboardingSummary(props: OnboardingSummaryProps) {
   useI18n('Employee.OnboardingSummary')
   useComponentDictionary('Employee.OnboardingSummary', props.dictionary)
 
@@ -43,7 +45,7 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
   )
 }
 
-const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
+const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps) => {
   const { onEvent } = useBase()
   const { t } = useTranslation('Employee.OnboardingSummary')
   const Components = useComponentContext()

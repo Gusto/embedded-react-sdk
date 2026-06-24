@@ -10,7 +10,7 @@ import type { BaseComponentInterface } from '@/components/Base'
  *
  * @public
  */
-export interface DashboardFlowProps extends BaseComponentInterface {
+export interface DashboardFlowProps extends BaseComponentInterface<never> {
   /** The associated employee identifier. */
   employeeId: string
 }

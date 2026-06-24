@@ -10,7 +10,7 @@ import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { fromRhfKey, toRhfKey } from './rhfKey'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -18,7 +18,7 @@ import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesFormProps extends CommonComponentInterface {
+interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
   companyId: string
   state: string
 }
@@ -62,7 +62,7 @@ function stringifyRequirementValue(value: unknown): string {
  * }
  * ```
  */
-export function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface) {
+export function StateTaxesForm(props: StateTaxesFormProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

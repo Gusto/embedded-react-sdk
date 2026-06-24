@@ -18,7 +18,6 @@ import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 
 interface RecoveryCasesListProps extends BaseComponentInterface<'Payroll.RecoveryCasesList'> {
   companyId: string
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /** @internal */

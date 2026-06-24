@@ -6,26 +6,18 @@ import {
 } from './CompensationComponents'
 import { compensationStateMachine } from './compensationStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link Compensation}.
  *
  * @public
  */
-export interface CompensationProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
+export interface CompensationProps extends BaseComponentInterface<'Employee.Management.Compensation'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Callback invoked when the block emits an event. See the events table on {@link Compensation} for the available event types and payloads. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
@@ -73,11 +65,7 @@ function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
  * @public
  * @group Block Components
  */
-export function Compensation({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: CompensationProps & BaseComponentInterface<'Employee.Management.Compensation'>) {
+export function Compensation({ dictionary, FallbackComponent, ...props }: CompensationProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
     <BaseBoundaries

@@ -6,26 +6,18 @@ import {
 } from './FederalTaxesComponents'
 import { federalTaxesStateMachine } from './federalTaxesStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link FederalTaxes}.
  *
  * @public
  */
-export interface FederalTaxesProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+export interface FederalTaxesProps extends BaseComponentInterface<'Employee.Management.FederalTaxes'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Callback invoked when the block emits an event. See the events table on {@link FederalTaxes} for the available event types and payloads. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
@@ -65,11 +57,7 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
  * @public
  * @group Block Components
  */
-export function FederalTaxes({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: FederalTaxesProps & BaseComponentInterface<'Employee.Management.FederalTaxes'>) {
+export function FederalTaxes({ dictionary, FallbackComponent, ...props }: FederalTaxesProps) {
   useComponentDictionary('Employee.Management.FederalTaxes', dictionary)
   return (
     <BaseBoundaries
