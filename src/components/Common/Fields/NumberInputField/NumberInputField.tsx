@@ -21,6 +21,7 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   transform,
   description,
   onBlur,
+  onInputChange,
   inputRef,
   FieldComponent,
   ...numberInputProps
@@ -51,5 +52,5 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   })
 
   const RenderComponent = FieldComponent ?? Components.NumberInput
-  return <RenderComponent {...numberInputProps} {...fieldProps} />
+  return <RenderComponent {...numberInputProps} {...fieldProps} onInputChange={onInputChange} />
 }

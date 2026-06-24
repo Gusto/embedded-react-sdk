@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
@@ -42,42 +42,25 @@ export const EditContractorPaymentPresentation = ({
     control: formMethods.control,
   })
 
-  // react-aria's NumberField only commits to the form on blur, so the form
-  // value lags behind keystrokes. Update the description text imperatively
-  // from the live DOM input value — re-rendering on every keystroke fights
-  // with NumberField's internal input state and breaks typing.
-  const initialHours = formMethods.getValues('hours') || 0
-  const computeDescription = (hours: number) => {
-    if (!hourlyRate || hourlyRate <= 0) return ''
-    return t('hoursPayDescription', {
-      rate: currencyFormatter(hourlyRate),
-      total: currencyFormatter(hours * hourlyRate),
-    })
+  const parseHours = (raw: string) => {
+    const parsed = parseFloat(raw.replace(/[^\d.]/g, ''))
+    return isNaN(parsed) ? 0 : parsed
   }
-  const hoursDescriptionRef = useRef<HTMLSpanElement>(null)
-  const hoursInputCleanupRef = useRef<(() => void) | null>(null)
-  const hoursInputRef = useCallback(
-    (input: HTMLInputElement | null) => {
-      hoursInputCleanupRef.current?.()
-      hoursInputCleanupRef.current = null
-      if (!input) return
-      const sync = () => {
-        if (!hoursDescriptionRef.current) return
-        const parsed = parseFloat(input.value.replace(/[^\d.]/g, ''))
-        const hours = isNaN(parsed) ? 0 : parsed
-        hoursDescriptionRef.current.textContent = computeDescription(hours)
+
+  const [hoursPayDescription, setHoursPayDescription] = useState('')
+
+  useEffect(() => {
+    if (isOpen) {
+      const computeHoursPayDescription = (hours: number) => {
+        if (!hourlyRate || hourlyRate <= 0) return ''
+        return t('hoursPayDescription', {
+          rate: currencyFormatter(hourlyRate),
+          total: currencyFormatter(hours * hourlyRate),
+        })
       }
-      input.addEventListener('input', sync)
-      hoursInputCleanupRef.current = () => {
-        input.removeEventListener('input', sync)
-      }
-    },
-    // computeDescription is recreated each render, but the listener only
-    // needs to re-attach when hourlyRate changes (which is what affects the
-    // computation).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [hourlyRate],
-  )
+      setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
+    }
+  }, [isOpen, hourlyRate, formMethods, t, currencyFormatter])
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -120,21 +103,27 @@ export const EditContractorPaymentPresentation = ({
             </Flex>
             <Flex flexDirection="column" gap={20}>
               {wageType === 'Hourly' && (
-                <Flex flexDirection="column" gap={4}>
-                  <NumberInputField
-                    min={0}
-                    name="hours"
-                    isRequired
-                    label={t('hoursLabel')}
-                    adornmentEnd={t('hoursAdornment')}
-                    inputRef={hoursInputRef}
-                  />
-                  {hourlyRate && hourlyRate > 0 && (
-                    <Text size="sm" variant="supporting">
-                      <span ref={hoursDescriptionRef}>{computeDescription(initialHours)}</span>
-                    </Text>
-                  )}
-                </Flex>
+                <NumberInputField
+                  min={0}
+                  name="hours"
+                  isRequired
+                  label={t('hoursLabel')}
+                  adornmentEnd={t('hoursAdornment')}
+                  description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
+                  onInputChange={raw => {
+                    const hours = parseHours(raw)
+                    if (!hourlyRate || hourlyRate <= 0) {
+                      setHoursPayDescription('')
+                    } else {
+                      setHoursPayDescription(
+                        t('hoursPayDescription', {
+                          rate: currencyFormatter(hourlyRate),
+                          total: currencyFormatter(hours * hourlyRate),
+                        }),
+                      )
+                    }
+                  }}
+                />
               )}
 
               {wageType === 'Fixed' && (

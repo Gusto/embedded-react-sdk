@@ -27,6 +27,7 @@ export function NumberInput({
   isDisabled,
   onChange,
   onBlur,
+  onInputChange,
   label,
   min,
   max,
@@ -105,6 +106,7 @@ export function NumberInput({
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
             isDisabled={isDisabled}
+            onInput={event => onInputChange?.(event.currentTarget.value)}
             // Select the existing value on focus so users can overwrite the
             // formatted placeholder (e.g. "0.00") by typing instead of having
             // to clear the field first.
