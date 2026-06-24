@@ -43,6 +43,18 @@ import { Flow } from '@/components/Flow/Flow'
  *
  * Only one holiday policy can exist per company; the policy-type selector disables the holiday option once one is configured.
  *
+ * @components
+ * - {@link PolicyList}
+ * - {@link PolicyTypeSelector}
+ * - {@link PolicyConfigurationForm}
+ * - {@link PolicySettings}
+ * - {@link AddEmployeesToPolicy}
+ * - {@link TimeOffPolicyDetail}
+ * - {@link HolidaySelectionForm}
+ * - {@link AddEmployeesHoliday}
+ * - {@link ViewHolidayEmployees}
+ * - {@link ViewHolidaySchedule}
+ *
  * @param props - {@link TimeOffFlowProps} with the company identifier and event handler.
  * @returns The composed time off policy management flow.
  * @public
