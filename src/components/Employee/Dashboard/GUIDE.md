@@ -13,18 +13,26 @@ The dashboard organizes an employee's payroll information into four tabs. Switch
 
 ## Step flow <!-- slot: appendix -->
 
-The dashboard is a hub: the tabbed cards view (`index`) is the resting state. Selecting an edit/manage CTA on a card swaps the dashboard chrome for that section's edit screen; cancelling or completing the edit returns to the cards. On a successful save the dashboard returns to the cards and surfaces a success alert at the top, which the user can dismiss (`employee/dismiss`). The diagram shows the federal-taxes spoke; every other section follows the same card → edit → cards shape.
+The dashboard is a hub: the `Dashboard` cards view is the resting state. A card's edit/manage CTA opens that section's edit form; submitting or cancelling returns to the cards, and a successful save shows a dismissible success alert. The documents card is the exception — its View CTA opens `DocumentManager`, a read-only viewer that returns on Back; signing happens during employee onboarding, not here.
 
 ```mermaid
-flowchart
-  Index -->|"employee/management/federalTaxes/card/editRequested"| FederalTaxes
-  FederalTaxes -->|"employee/management/federalTaxes/editForm/submitted (success alert)"| Index
-  FederalTaxes -->|"employee/management/federalTaxes/editForm/cancelled"| Index
-  Index -->|"employee/dashboard/tabChange"| Index
-  Index -->|"employee/dismiss"| Index
+flowchart LR
+  start@{ shape: sm-circ } --> Dashboard
+  Dashboard <--> ProfileEditForm
+  Dashboard <--> HomeAddressEditForm
+  Dashboard <--> WorkAddressEditForm
+  Dashboard <--> FederalTaxesEditForm
+  Dashboard <--> StateTaxesEditForm
+  Dashboard <--> PaymentMethodBankForm
+  Dashboard <--> PaymentMethodSplitForm
+  Dashboard <--> CompensationAddJobForm
+  Dashboard <--> CompensationEditForm
+  Dashboard <--> CompensationAddAnotherJobForm
+  Dashboard <--> DeductionsEditForm
+  Dashboard <--> DocumentManager
 ```
 
-Some actions stay on the cards view rather than opening a spoke: deleting a bank account (`employee/management/paymentMethod/card/bankAccountDeleted`) or a deduction (`employee/management/deductions/card/deleted`) surfaces a success alert in place without a screen swap.
+Some actions stay on the cards view without a screen swap: switching tabs (`employee/dashboard/tabChange`), dismissing a success alert (`employee/dismiss`), and deleting a bank account or deduction.
 
 ## Empty states <!-- slot: appendix -->
 

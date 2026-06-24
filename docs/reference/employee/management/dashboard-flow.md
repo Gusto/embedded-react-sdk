@@ -136,31 +136,43 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 | Component | Description |
 | ------ | ------ |
-| [Compensation](blocks.md#compensation) | Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [Profile](blocks.md#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
-| [FederalTaxes](blocks.md#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [StateTaxes](blocks.md#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](blocks.md#statetaxescard) and [StateTaxesEditForm](blocks.md#statetaxeseditform) drive the internal state machine. |
-| [PaymentMethod](blocks.md#paymentmethod) | Management flow for editing an employee's payment method. |
-| [Deductions](blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
-| [HomeAddress](blocks.md#homeaddress) | Standalone employee home address management flow. |
-| [WorkAddress](blocks.md#workaddress) | Standalone employee work address management flow. |
-| [Documents](blocks.md#documents) | Standalone employee documents management flow. |
+| [Dashboard](blocks.md#dashboard) | Employee self-service dashboard summarizing a single employee's basic details, job and pay, taxes, and documents. |
+| [ProfileEditForm](blocks.md#profileeditform) | Standalone edit form for an employee's basic profile details. |
+| [HomeAddressEditForm](blocks.md#homeaddresseditform) | Standalone employee home address edit form for creating, updating, and deleting addresses. |
+| [WorkAddressEditForm](blocks.md#workaddresseditform) | Standalone employee work address edit form for creating, updating, and deleting addresses. |
+| [FederalTaxesEditForm](blocks.md#federaltaxeseditform) | Standalone form for editing an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [StateTaxesEditForm](blocks.md#statetaxeseditform) | Standalone edit screen for the state-tax management flow. Renders the shared state-tax form against the `Employee.Management.StateTaxes` namespace and emits scoped management events on submit and cancel, so partner copy overrides on the management namespace do not leak into the onboarding flow. |
+| [PaymentMethodBankForm](blocks.md#paymentmethodbankform) | Standalone bank-account form for the management flow. |
+| [PaymentMethodSplitForm](blocks.md#paymentmethodsplitform) | Standalone split-paycheck form for the management flow. |
+| [CompensationAddJobForm](blocks.md#compensationaddjobform) | Standalone form for adding an employee's first job and compensation from the management surface. |
+| [CompensationEditForm](blocks.md#compensationeditform) | Standalone form that edits the compensation for a single job, branching automatically between editing the current compensation and an already-scheduled future-dated change. |
+| [CompensationAddAnotherJobForm](blocks.md#compensationaddanotherjobform) | Standalone form for adding a secondary job and compensation to an employee from the management surface. |
+| [DeductionsEditForm](blocks.md#deductionseditform) | Standalone add/edit surface for a single employee deduction. |
+| [DocumentManager](blocks.md#documentmanager) | Read-only document viewer for the admin-facing employee dashboard. Renders the selected form's PDF — including unsigned forms, which are shown as-is. Signing is intentionally not offered here; forms are signed by the employee during onboarding, not by an admin viewing the dashboard. |
 
 <!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-The dashboard is a hub: the tabbed cards view (`index`) is the resting state. Selecting an edit/manage CTA on a card swaps the dashboard chrome for that section's edit screen; cancelling or completing the edit returns to the cards. On a successful save the dashboard returns to the cards and surfaces a success alert at the top, which the user can dismiss (`employee/dismiss`). The diagram shows the federal-taxes spoke; every other section follows the same card → edit → cards shape.
+The dashboard is a hub: the `Dashboard` cards view is the resting state. A card's edit/manage CTA opens that section's edit form; submitting or cancelling returns to the cards, and a successful save shows a dismissible success alert. The documents card is the exception — its View CTA opens `DocumentManager`, a read-only viewer that returns on Back; signing happens during employee onboarding, not here.
 
 ```mermaid
-flowchart
-  Index -->|"employee/management/federalTaxes/card/editRequested"| FederalTaxes
-  FederalTaxes -->|"employee/management/federalTaxes/editForm/submitted (success alert)"| Index
-  FederalTaxes -->|"employee/management/federalTaxes/editForm/cancelled"| Index
-  Index -->|"employee/dashboard/tabChange"| Index
-  Index -->|"employee/dismiss"| Index
+flowchart LR
+  start@{ shape: sm-circ } --> Dashboard
+  Dashboard <--> ProfileEditForm
+  Dashboard <--> HomeAddressEditForm
+  Dashboard <--> WorkAddressEditForm
+  Dashboard <--> FederalTaxesEditForm
+  Dashboard <--> StateTaxesEditForm
+  Dashboard <--> PaymentMethodBankForm
+  Dashboard <--> PaymentMethodSplitForm
+  Dashboard <--> CompensationAddJobForm
+  Dashboard <--> CompensationEditForm
+  Dashboard <--> CompensationAddAnotherJobForm
+  Dashboard <--> DeductionsEditForm
+  Dashboard <--> DocumentManager
 ```
 
-Some actions stay on the cards view rather than opening a spoke: deleting a bank account (`employee/management/paymentMethod/card/bankAccountDeleted`) or a deduction (`employee/management/deductions/card/deleted`) surfaces a success alert in place without a screen swap.
+Some actions stay on the cards view without a screen swap: switching tabs (`employee/dashboard/tabChange`), dismissing a success alert (`employee/dismiss`), and deleting a bank account or deduction.
 
 ## Empty states
 

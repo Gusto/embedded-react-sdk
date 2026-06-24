@@ -97,15 +97,19 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
  * @components
- * - {@link Compensation}
- * - {@link Profile}
- * - {@link FederalTaxes}
- * - {@link StateTaxes}
- * - {@link PaymentMethod}
- * - {@link Deductions}
- * - {@link HomeAddress}
- * - {@link WorkAddress}
- * - {@link Documents}
+ * - {@link Dashboard}
+ * - {@link ProfileEditForm}
+ * - {@link HomeAddressEditForm}
+ * - {@link WorkAddressEditForm}
+ * - {@link FederalTaxesEditForm}
+ * - {@link StateTaxesEditForm}
+ * - {@link PaymentMethodBankForm}
+ * - {@link PaymentMethodSplitForm}
+ * - {@link CompensationAddJobForm}
+ * - {@link CompensationEditForm}
+ * - {@link CompensationAddAnotherJobForm}
+ * - {@link DeductionsEditForm}
+ * - {@link DocumentManager}
  *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
