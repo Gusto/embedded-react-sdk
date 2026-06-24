@@ -5,7 +5,7 @@ import {
   WageType,
   ContractorDetailsErrorCodes,
   createContractorDetailsSchema,
-  deriveContractorApplicability,
+  getExcludedContractorFields,
 } from './contractorDetailsSchema'
 
 /**
@@ -13,7 +13,7 @@ import {
  *
  * The hook derives `excludeFields` from the watched discriminators and feeds it
  * into the schema, so each scenario here does the same via
- * `deriveContractorApplicability` — building exactly the schema the hook builds.
+ * `getExcludedContractorFields` — building exactly the schema the hook builds.
  * The hook's baseline mirrors the API (ssn/ein optional; create-required fields
  * optional on update); `optionalFieldsToRequire` is exercised where a consumer
  * (e.g. ContractorProfile) tightens beyond it.
@@ -22,8 +22,8 @@ import {
 type SchemaOptions = NonNullable<Parameters<typeof createContractorDetailsSchema>[0]>
 
 const parse = (values: Record<string, unknown>, options: SchemaOptions = {}) => {
-  const { excludeFields } = deriveContractorApplicability(
-    values as Parameters<typeof deriveContractorApplicability>[0],
+  const excludeFields = getExcludedContractorFields(
+    values as Parameters<typeof getExcludedContractorFields>[0],
   )
   const [schema] = createContractorDetailsSchema({ ...options, excludeFields })
   return schema.safeParse(values)

@@ -172,73 +172,34 @@ export function createContractorDetailsSchema(options: ContractorDetailsSchemaOp
   })
 }
 
-// ── Field applicability ────────────────────────────────────────────────
-
 /**
- * Which contractor fields apply to a given type/wage/self-onboarding selection.
- *
- * @remarks
- * `excludeFields` lists the fields that should be dropped from the schema (they
- * neither render nor validate). `email` is never excluded — it always applies
- * and its requiredness is governed by the `selfOnboarding` predicate — but its
- * visibility is gated by `showEmail`.
+ * Fields that don't apply to the given contractor selection. They're dropped
+ * from both the schema (no validation) and `form.Fields` (no render). `email`
+ * is never excluded — it always applies and its requiredness is governed by the
+ * `selfOnboarding` predicate.
  *
  * @internal
  */
-export interface ContractorFieldApplicability {
-  isIndividual: boolean
-  isBusiness: boolean
-  isHourly: boolean
-  showEmail: boolean
-  showSsn: boolean
-  showEin: boolean
-  showWorkState: boolean
-  showFileNewHireReport: boolean
-  excludeFields: Array<keyof typeof fieldValidators>
-}
-
-/**
- * Derives field applicability (and the resulting `excludeFields`) from the
- * watched contractor discriminators. Single source of truth shared by the
- * hook's schema, its `form.Fields` visibility gating, and the schema tests.
- *
- * @internal
- */
-export function deriveContractorApplicability(values: {
+export function getExcludedContractorFields(values: {
   type?: ContractorDetailsFormData['type']
   wageType?: ContractorDetailsFormData['wageType']
   selfOnboarding?: boolean
   fileNewHireReport?: boolean
-}): ContractorFieldApplicability {
+}): Array<keyof typeof fieldValidators> {
   const isIndividual = values.type === ContractorType.Individual
-  const isBusiness = values.type === ContractorType.Business
-  const isHourly = values.wageType === WageType.Hourly
   const selfOnboarding = Boolean(values.selfOnboarding)
+  const excluded: Array<keyof typeof fieldValidators> = []
 
-  const showEmail = selfOnboarding
-  const showSsn = isIndividual && !selfOnboarding
-  const showEin = isBusiness && !selfOnboarding
-  const showWorkState = isIndividual && Boolean(values.fileNewHireReport)
-  const showFileNewHireReport = isIndividual
+  if (values.wageType !== WageType.Hourly) excluded.push('hourlyRate')
 
-  const excludeFields: Array<keyof typeof fieldValidators> = []
-  if (!isHourly) excludeFields.push('hourlyRate')
-  if (!isIndividual) excludeFields.push('firstName', 'lastName', 'middleInitial')
-  if (!showFileNewHireReport) excludeFields.push('fileNewHireReport')
-  if (!isBusiness) excludeFields.push('businessName')
-  if (!showSsn) excludeFields.push('ssn')
-  if (!showEin) excludeFields.push('ein')
-  if (!showWorkState) excludeFields.push('workState')
-
-  return {
-    isIndividual,
-    isBusiness,
-    isHourly,
-    showEmail,
-    showSsn,
-    showEin,
-    showWorkState,
-    showFileNewHireReport,
-    excludeFields,
+  if (isIndividual) {
+    excluded.push('businessName', 'ein')
+    if (selfOnboarding) excluded.push('ssn')
+    if (!values.fileNewHireReport) excluded.push('workState')
+  } else {
+    excluded.push('firstName', 'lastName', 'middleInitial', 'fileNewHireReport', 'ssn', 'workState')
+    if (selfOnboarding) excluded.push('ein')
   }
+
+  return excluded
 }

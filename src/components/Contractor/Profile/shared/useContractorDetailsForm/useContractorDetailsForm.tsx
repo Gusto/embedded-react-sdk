@@ -12,7 +12,7 @@ import {
   ContractorType,
   WageType,
   createContractorDetailsSchema,
-  deriveContractorApplicability,
+  getExcludedContractorFields,
   type ContractorDetailsOptionalFieldsToRequire,
   type ContractorDetailsFormData,
   type ContractorDetailsFormOutputs,
@@ -228,13 +228,12 @@ export function useContractorDetailsForm({
     Resolver<ContractorDetailsFormData, unknown, ContractorDetailsFormOutputs>
   >(
     (values, context, options) => {
-      const { excludeFields } = deriveContractorApplicability(values)
       const [schema] = createContractorDetailsSchema({
         mode,
         optionalFieldsToRequire,
         hasSsn,
         hasEin,
-        excludeFields,
+        excludeFields: getExcludedContractorFields(values),
       })
       return zodResolver(schema)(values, context, options)
     },
@@ -282,9 +281,9 @@ export function useContractorDetailsForm({
     name: ['type', 'wageType', 'selfOnboarding', 'fileNewHireReport'],
   })
 
-  const applicability = useMemo(
+  const excludedFields = useMemo(
     () =>
-      deriveContractorApplicability({
+      getExcludedContractorFields({
         type: watchedType,
         wageType: watchedWageType,
         selfOnboarding: watchedSelfOnboarding,
@@ -293,11 +292,12 @@ export function useContractorDetailsForm({
     [watchedType, watchedWageType, watchedSelfOnboarding, watchedFileNewHireReport],
   )
 
-  const { isIndividual, isBusiness, isHourly, showEmail, showSsn, showEin, showWorkState } =
-    applicability
+  // A field renders when it isn't excluded. `email` is the exception: it's never
+  // excluded but only renders under self-onboarding (its requiredness rule).
+  const showsField = (field: keyof ContractorDetailsFormData) => !excludedFields.includes(field)
 
-  // Built from the watched applicability for metadata + getFormSubmissionValues;
-  // the resolver builds its own per-validation schema from the submitted values.
+  // Built from the watched exclusions for metadata + getFormSubmissionValues; the
+  // resolver builds its own per-validation schema from the submitted values.
   const [schema, metadataConfig] = useMemo(
     () =>
       createContractorDetailsSchema({
@@ -305,9 +305,9 @@ export function useContractorDetailsForm({
         optionalFieldsToRequire,
         hasSsn,
         hasEin,
-        excludeFields: applicability.excludeFields,
+        excludeFields: excludedFields,
       }),
-    [mode, optionalFieldsToRequire, hasSsn, hasEin, applicability],
+    [mode, optionalFieldsToRequire, hasSsn, hasEin, excludedFields],
   )
 
   const createContractorMutation = useContractorsCreateMutation()
@@ -477,18 +477,18 @@ export function useContractorDetailsForm({
         Type: TypeField,
         WageType: WageTypeField,
         StartDate: StartDateField,
-        HourlyRate: isHourly ? HourlyRateField : undefined,
+        HourlyRate: showsField('hourlyRate') ? HourlyRateField : undefined,
         SelfOnboarding:
           withSelfOnboardingField && isSelfOnboardingToggleable ? SelfOnboardingField : undefined,
-        FileNewHireReport: isIndividual ? FileNewHireReportField : undefined,
-        Email: showEmail ? EmailField : undefined,
-        FirstName: isIndividual ? FirstNameField : undefined,
-        LastName: isIndividual ? LastNameField : undefined,
-        MiddleInitial: isIndividual ? MiddleInitialField : undefined,
-        BusinessName: isBusiness ? BusinessNameField : undefined,
-        Ssn: showSsn ? SsnField : undefined,
-        Ein: showEin ? EinField : undefined,
-        WorkState: showWorkState ? WorkStateField : undefined,
+        FileNewHireReport: showsField('fileNewHireReport') ? FileNewHireReportField : undefined,
+        Email: watchedSelfOnboarding ? EmailField : undefined,
+        FirstName: showsField('firstName') ? FirstNameField : undefined,
+        LastName: showsField('lastName') ? LastNameField : undefined,
+        MiddleInitial: showsField('middleInitial') ? MiddleInitialField : undefined,
+        BusinessName: showsField('businessName') ? BusinessNameField : undefined,
+        Ssn: showsField('ssn') ? SsnField : undefined,
+        Ein: showsField('ein') ? EinField : undefined,
+        WorkState: showsField('workState') ? WorkStateField : undefined,
       },
       fieldsMetadata,
       hookFormInternals,
