@@ -29,6 +29,17 @@ function MyApp() {
 }
 ```
 
+<!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: overview) -->
+## Tabs
+
+The dashboard organizes an employee's payroll information into four tabs. Switching tabs emits `employee/dashboard/tabChange`.
+
+- **Basic details** — legal name, start date, SSN, date of birth, and personal email, plus home address and work address cards. Fields are read-only with "Edit"/"Manage" CTAs.
+- **Job and pay** — compensation (one job, or a table of jobs when the primary job is nonexempt), payment method (direct-deposit bank accounts), deductions (garnishments), and paystub history. Lists paginate.
+- **Taxes** — federal tax withholding (supports both pre-2020 and Rev 2020 W-4 versions, so the visible fields vary with the W-4 on file) and per-state tax withholding records.
+- **Documents** — a read-only table of employee forms (W-2s, W-4s, direct-deposit authorizations, and other documents) with a "View" CTA per row.
+<!-- /guide-source (slot: overview) -->
+
 ## Remarks
 
 Renders a tabbed view of an employee's profile (Basic details, Job and pay,
@@ -39,17 +50,7 @@ error and suspense boundaries.
 
 Every tab section of the dashboard is also exported as a self-contained
 block that can be dropped into a custom layout without the surrounding
-dashboard chrome:
-
-- [Compensation](blocks.md#compensation) — Job &amp; Pay tab (jobs, pay type, wage, effective date)
-- [Profile](blocks.md#profile) — Basic details tab (name, start date, SSN, DOB, email)
-- [FederalTaxes](blocks.md#federaltaxes) — Taxes tab, federal withholding settings
-- [StateTaxes](blocks.md#statetaxes) — Taxes tab, state withholding settings
-- [PaymentMethod](blocks.md#paymentmethod) — direct-deposit bank accounts and split-paycheck configuration
-- [Deductions](blocks.md#deductions) — post-tax deductions (garnishments)
-- [HomeAddress](blocks.md#homeaddress) — home address management
-- [WorkAddress](blocks.md#workaddress) — work address management
-- [Documents](blocks.md#documents) — documents and forms (read-only viewer)
+dashboard chrome (see the sub-components below).
 
 Each block wraps its read-only card, its edit form, and the card↔form
 transitions as a single drop-in. For cases where that built-in orchestration
@@ -130,3 +131,38 @@ Props for DashboardFlow.
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [Compensation](blocks.md#compensation) | Self-contained block for viewing and managing an employee's jobs and compensation — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [Profile](blocks.md#profile) | Management surface for viewing and editing an employee's basic profile details after onboarding. |
+| [FederalTaxes](blocks.md#federaltaxes) | Self-contained block for viewing and editing an employee's federal tax (W-4) withholdings — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [StateTaxes](blocks.md#statetaxes) | Standalone state-tax management flow for a given employee. Renders the read-only summary card and the edit form, switching between them as the partner-emitted events from [StateTaxesCard](blocks.md#statetaxescard) and [StateTaxesEditForm](blocks.md#statetaxeseditform) drive the internal state machine. |
+| [PaymentMethod](blocks.md#paymentmethod) | Management flow for editing an employee's payment method. |
+| [Deductions](blocks.md#deductions) | Self-contained block for viewing and managing an employee's post-tax deductions — the same experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. |
+| [HomeAddress](blocks.md#homeaddress) | Standalone employee home address management flow. |
+| [WorkAddress](blocks.md#workaddress) | Standalone employee work address management flow. |
+| [Documents](blocks.md#documents) | Standalone employee documents management flow. |
+
+<!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The dashboard is a hub: the tabbed cards view (`index`) is the resting state. Selecting an edit/manage CTA on a card swaps the dashboard chrome for that section's edit screen; cancelling or completing the edit returns to the cards. On a successful save the dashboard returns to the cards and surfaces a success alert at the top, which the user can dismiss (`employee/dismiss`). The diagram shows the federal-taxes spoke; every other section follows the same card → edit → cards shape.
+
+```mermaid
+flowchart
+  Index -->|"employee/management/federalTaxes/card/editRequested"| FederalTaxes
+  FederalTaxes -->|"employee/management/federalTaxes/editForm/submitted (success alert)"| Index
+  FederalTaxes -->|"employee/management/federalTaxes/editForm/cancelled"| Index
+  Index -->|"employee/dashboard/tabChange"| Index
+  Index -->|"employee/dismiss"| Index
+```
+
+Some actions stay on the cards view rather than opening a spoke: deleting a bank account (`employee/management/paymentMethod/card/bankAccountDeleted`) or a deduction (`employee/management/deductions/card/deleted`) surfaces a success alert in place without a screen swap.
+
+## Empty states
+
+Each section handles missing data on its own: compensation shows an empty state whose header CTA switches from "Edit" to "Add job"; payment methods, deductions, and state taxes each show a "none on file" message with the relevant add CTA; paystubs indicate that records appear after payroll is run; documents show a "No forms" message.
+<!-- /guide-source (slot: appendix) -->

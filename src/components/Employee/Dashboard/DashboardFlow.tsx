@@ -27,17 +27,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  *
  * Every tab section of the dashboard is also exported as a self-contained
  * block that can be dropped into a custom layout without the surrounding
- * dashboard chrome:
- *
- * - {@link Compensation} — Job &amp; Pay tab (jobs, pay type, wage, effective date)
- * - {@link Profile} — Basic details tab (name, start date, SSN, DOB, email)
- * - {@link FederalTaxes} — Taxes tab, federal withholding settings
- * - {@link StateTaxes} — Taxes tab, state withholding settings
- * - {@link PaymentMethod} — direct-deposit bank accounts and split-paycheck configuration
- * - {@link Deductions} — post-tax deductions (garnishments)
- * - {@link HomeAddress} — home address management
- * - {@link WorkAddress} — work address management
- * - {@link Documents} — documents and forms (read-only viewer)
+ * dashboard chrome (see the sub-components below).
  *
  * Each block wraps its read-only card, its edit form, and the card↔form
  * transitions as a single drop-in. For cases where that built-in orchestration
@@ -105,6 +95,17 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * | `CANCEL` | Fired when the user clicks Back in the document viewer; the dashboard returns to the cards | — |
  * | `employee/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }` |
  * | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
+ *
+ * @components
+ * - {@link Compensation}
+ * - {@link Profile}
+ * - {@link FederalTaxes}
+ * - {@link StateTaxes}
+ * - {@link PaymentMethod}
+ * - {@link Deductions}
+ * - {@link HomeAddress}
+ * - {@link WorkAddress}
+ * - {@link Documents}
  *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
