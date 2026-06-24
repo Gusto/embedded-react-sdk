@@ -29,6 +29,7 @@ export function Form() {
           )}
         </div>
         {requirements?.flatMap(requirement => {
+          if (requirement.editable === false) return []
           if (!key || !isRequirementApplicable(requirement, key, watchedValues)) return []
           return [
             <QuestionInput

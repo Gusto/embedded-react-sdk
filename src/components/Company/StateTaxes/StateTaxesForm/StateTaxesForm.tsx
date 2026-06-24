@@ -171,9 +171,9 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           const requirementSetKey = requirementSet.key as string
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
 
-          const applicableRequirements = (requirementSet.requirements ?? []).filter(req =>
-            isRequirementApplicable(req, requirementSetKey, formValues),
-          )
+          const applicableRequirements = (requirementSet.requirements ?? [])
+            .filter(req => req.editable !== false)
+            .filter(req => isRequirementApplicable(req, requirementSetKey, formValues))
 
           return {
             state,

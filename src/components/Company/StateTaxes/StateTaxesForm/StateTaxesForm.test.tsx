@@ -107,6 +107,43 @@ describe('StateTaxesForm', () => {
       })
     })
 
+    it('does not render non-editable requirements', async () => {
+      await waitFor(() => {
+        expect(screen.getByLabelText(/Unified Business ID/i)).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText(/Legacy Read-Only Identifier/i)).toBeNull()
+      expect(screen.queryByText(/Legacy Read-Only Identifier/i)).toBeNull()
+    })
+
+    it('omits non-editable requirements from the submit payload', async () => {
+      let capturedBody: unknown = null
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
+          async ({ request }) => {
+            capturedBody = await request.json()
+            return HttpResponse.json({})
+          },
+        ),
+      )
+
+      const submitButton = await screen.findByRole('button', { name: /Save/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+      })
+
+      const body = capturedBody as {
+        requirement_sets: Array<{
+          key: string
+          requirements: Array<{ key: string; value: string }>
+        }>
+      }
+      const submittedKeys = body.requirement_sets.flatMap(rs => rs.requirements.map(r => r.key))
+      expect(submittedKeys).not.toContain('legacy_read_only_field')
+    })
+
     it('submits workers compensation rate values entered by the user', async () => {
       let capturedBody: unknown = null
       server.use(
