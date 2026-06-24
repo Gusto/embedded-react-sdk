@@ -3,9 +3,13 @@ import {
   type EntityOption,
   type RawContractor,
   type RawEmployee,
+  type RawForm,
+  type RawInformationRequest,
   type RawPayroll,
   formatContractor,
   formatEmployee,
+  formatForm,
+  formatInformationRequestType,
   formatPayPeriod,
 } from './entityFormatters'
 
@@ -13,6 +17,8 @@ export interface EntityCatalog {
   employees: EntityOption[]
   contractors: EntityOption[]
   payrolls: EntityOption[]
+  informationRequests: EntityOption[]
+  forms: EntityOption[]
   isLoading: boolean
 }
 
@@ -20,6 +26,8 @@ const EMPTY_CATALOG: EntityCatalog = {
   employees: [],
   contractors: [],
   payrolls: [],
+  informationRequests: [],
+  forms: [],
   isLoading: false,
 }
 
@@ -63,10 +71,12 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
         end_date: toIso(endDate),
         per: '100',
       })
-      const [employees, contractors, payrolls] = await Promise.all([
+      const [employees, contractors, payrolls, informationRequests, forms] = await Promise.all([
         fetchList<RawEmployee>(`${base}/employees`, controller.signal),
         fetchList<RawContractor>(`${base}/contractors`, controller.signal),
         fetchList<RawPayroll>(`${base}/payrolls?${payrollsQuery.toString()}`, controller.signal),
+        fetchList<RawInformationRequest>(`${base}/information_requests`, controller.signal),
+        fetchList<RawForm>(`${base}/forms`, controller.signal),
       ])
 
       if (controller.signal.aborted) return
@@ -101,6 +111,20 @@ export function useEntityCatalog(companyId: string): EntityCatalog {
               },
             }
           }),
+        informationRequests: informationRequests
+          .filter(r => !!r.uuid)
+          .map(r => ({
+            value: r.uuid as string,
+            primary: formatInformationRequestType(r.type),
+            secondary: r.uuid as string,
+          })),
+        forms: forms
+          .filter(f => !!f.uuid)
+          .map(f => ({
+            value: f.uuid as string,
+            primary: formatForm(f),
+            secondary: f.uuid as string,
+          })),
         isLoading: false,
       })
     }

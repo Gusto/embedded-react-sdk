@@ -64,6 +64,42 @@ export async function fetchEntityIds(
   )
 }
 
+export type InspectRequest =
+  | { kind: 'show'; url: string }
+  | { kind: 'listFilter'; url: string; matchUuid: string }
+
+export function buildEntityInspectRequest(
+  key: keyof EntityIds,
+  id: string,
+  companyId: string,
+): InspectRequest | null {
+  if (!id) return null
+  switch (key) {
+    case 'companyId':
+      return { kind: 'show', url: `/api/v1/companies/${id}` }
+    case 'employeeId':
+      return { kind: 'show', url: `/api/v1/employees/${id}` }
+    case 'contractorId':
+      return { kind: 'show', url: `/api/v1/contractors/${id}` }
+    case 'payrollId':
+      return companyId
+        ? { kind: 'show', url: `/api/v1/companies/${companyId}/payrolls/${id}` }
+        : null
+    case 'formId':
+      return { kind: 'show', url: `/api/v1/forms/${id}` }
+    case 'requestId':
+      return companyId
+        ? {
+            kind: 'listFilter',
+            url: `/api/v1/companies/${companyId}/information_requests`,
+            matchUuid: id,
+          }
+        : null
+    default:
+      return null
+  }
+}
+
 export async function fetchCompanyId(
   proxyBase: string,
   options: FetchEntityIdsOptions = {},
