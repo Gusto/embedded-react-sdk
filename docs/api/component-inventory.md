@@ -809,6 +809,7 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 | `minimumFractionDigits?` | `number` | Minimum number of decimal places to display |
 | `onBlur?` | () => `void` | Handler for blur events |
 | `onChange?` | (`value`) => `void` | Callback when number input value changes |
+| `onInputChange?` | (`value`) => `void` | Fires on every keystroke with the raw input string (pre-commit), unlike onChange which fires on blur/Enter. |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `number` | Current value of the number input |
 
