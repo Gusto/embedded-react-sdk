@@ -204,7 +204,7 @@ describe('PayrollOverview submit-in-progress overlay', () => {
     mockPayrollData = { ...basePayrollData }
   })
 
-  it('does not show the "Submitting payroll" overlay when loading a payroll whose server-side status is already submitting', async () => {
+  it('renders the review UI with active Submit and Edit controls when loading a payroll whose server-side status is already submitting', async () => {
     mockPayrollData = {
       ...basePayrollData,
       processed: false,
@@ -215,11 +215,13 @@ describe('PayrollOverview submit-in-progress overlay', () => {
       <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
     )
 
-    expect(await screen.findByText(/Review payroll/i)).toBeInTheDocument()
     // The "Submitting payroll" overlay is only correct when the current user
     // just clicked Submit. A page load against an already-processing payroll
-    // must not block the review UI behind it.
-    expect(screen.queryByText(/Submitting payroll/i)).not.toBeInTheDocument()
+    // must keep the interactive review UI on screen — the Edit/Submit
+    // action buttons are the load-bearing controls that the overlay would
+    // otherwise replace.
+    expect(await screen.findByRole('button', { name: 'Submit' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
   })
 })
 
