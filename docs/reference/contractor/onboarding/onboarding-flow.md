@@ -104,7 +104,7 @@ The progress bar's secondary button emits `CANCEL` from any step, returning to t
 ```mermaid
 flowchart
   start@{ shape: sm-circ } --> ContractorList
-  ContractorList -->|"contractor/create, contractor/update"| ContractorProfile
+  ContractorList -->|"contractor/create<br/>contractor/update"| ContractorProfile
   ContractorProfile -->|"contractor/profile/done"| selfOnboarding{{"selfOnboarding?"}}
   selfOnboarding -.->|false| Address
   Address -->|"contractor/address/done"| PaymentMethod
