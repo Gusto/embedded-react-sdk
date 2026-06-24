@@ -38,10 +38,9 @@ and transitions into the per-step screens when "Add contractor" or a row's
 The flow is driven by an internal state machine and wraps each step in
 error and suspense boundaries.
 
-Each step of the flow is also exported as a standalone component — see
-[ContractorList](blocks.md#contractorlist), [ContractorProfile](blocks.md#contractorprofile), [Address](blocks.md#address),
-[PaymentMethod](blocks.md#paymentmethod), [NewHireReport](blocks.md#newhirereport), and [ContractorSubmit](blocks.md#contractorsubmit) —
-for composing a custom workflow when this orchestration is the wrong fit.
+Each step of the flow is also exported as a standalone block (see the
+Sub-components table) for composing a custom workflow when this orchestration
+is the wrong fit.
 
 The flow forwards every event emitted by its sub-components to `onEvent`;
 see the events table on each sub-component for the full set of events and
@@ -80,3 +79,48 @@ Props for OnboardingFlow.
 | `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
 
 _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
+| [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
+| [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+
+<!-- guide-source: src/components/Contractor/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+`OnboardingFlow` begins on the contractor list and steps through the per-step screens once "Add contractor" or a row's "Edit"/"Continue" action is invoked. After the profile step, the path branches on whether the contractor self-onboards, so each path is shown on its own. The progress bar's secondary button emits `CANCEL` from any step, returning to the list.
+
+### Admin onboarding
+
+The admin completes every step. This is the five-step default path.
+
+```mermaid
+flowchart
+  ContractorList -->|"contractor/create, contractor/update"| ContractorProfile
+  ContractorProfile -->|"contractor/profile/done"| selfOnboarding{{"selfOnboarding?"}}
+  selfOnboarding -->|false| Address
+  Address -->|"contractor/address/done"| PaymentMethod
+  PaymentMethod -->|"contractor/paymentMethod/done"| NewHireReport
+  NewHireReport -->|"contractor/newHireReport/done"| ContractorSubmit
+  ContractorSubmit -->|"contractor/submit/done"| done(( ))
+```
+
+### Self-onboarding
+
+The admin sets up the basics; the contractor completes their own address and payment method. The address and payment method steps are skipped, giving a three-step path.
+
+```mermaid
+flowchart
+  ContractorList -->|"contractor/create, contractor/update"| ContractorProfile
+  ContractorProfile -->|"contractor/profile/done"| selfOnboarding{{"selfOnboarding?"}}
+  selfOnboarding -->|true| NewHireReport
+  NewHireReport -->|"contractor/newHireReport/done"| ContractorSubmit
+  ContractorSubmit -->|"contractor/submit/done"| done(( ))
+```
+<!-- /guide-source (slot: appendix) -->
