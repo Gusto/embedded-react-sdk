@@ -42,7 +42,7 @@ export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './Onboard
  * - {@link FederalTaxes}
  * - {@link Industry}
  * - {@link BankAccount}
- * - Employee onboarding sub-flow (the embedded employee `OnboardingFlow`)
+ * - {@link EmployeeOnboarding.OnboardingFlow}
  * - {@link PaySchedule}
  * - {@link StateTaxes}
  * - {@link DocumentSigner}
