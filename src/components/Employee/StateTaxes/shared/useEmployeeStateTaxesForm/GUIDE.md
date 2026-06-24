@@ -24,16 +24,16 @@ Two per-key rules override the variant mapping:
 
 The non-primitive types in the ready state are all re-exported from `@gusto/embedded-react-sdk`:
 
-| Type                               | What it is                                                                                                                                                                     |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Type                               | What it is |
+| ---------------------------------- | ---------- |
 | `UseEmployeeStateTaxesFormReady`   | The full ready-state object (the `isLoading: false` branch). Use it as the prop type for components that receive a ready form, so you don't repeat the `Extract<…>` narrowing. |
-| `EmployeeStateTaxesList`           | API record for one state's tax answers. Each entry in `data.employeeStateTaxes` is one of these.                                                                               |
-| `StateTaxFieldsGroup`              | One state's render-ready bundle: `{ state, questions }`.                                                                                                                       |
-| `StateTaxQuestionFieldEntry`       | The discriminated entry for a single question — `type` plus metadata plus a bound `Field` component.                                                                           |
-| `EmployeeStateTaxesFieldsMetadata` | Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`), with `isRequired` / `isDisabled` and option lists.                                                |
-| `EmployeeStateTaxesFormOutputs`    | The submit-time form data shape: `{ states: Record<string, Record<string, StateTaxValue>> }`. Returned by `getFormSubmissionValues()`.                                         |
-| `HookSubmitResult<T>`              | Standard SDK submit-result envelope: `{ mode: 'update', data: T }`.                                                                                                            |
-| `HookErrorHandling`                | Standard SDK error-handling object exposed by `composeErrorHandler`.                                                                                                           |
+| `EmployeeStateTaxesList`           | API record for one state's tax answers. Each entry in `data.employeeStateTaxes` is one of these. |
+| `StateTaxFieldsGroup`              | One state's render-ready bundle: `{ state, questions }`. |
+| `StateTaxQuestionFieldEntry`       | The discriminated entry for a single question — `type` plus metadata plus a bound `Field` component. |
+| `EmployeeStateTaxesFieldsMetadata` | Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`), with `isRequired` / `isDisabled` and option lists. |
+| `EmployeeStateTaxesFormOutputs`    | The submit-time form data shape: `{ states: Record<string, Record<string, StateTaxValue>> }`. Returned by `getFormSubmissionValues()`. |
+| `HookSubmitResult<T>`              | Standard SDK submit-result envelope: `{ mode: 'update', data: T }`. |
+| `HookErrorHandling`                | Standard SDK error-handling object exposed by `composeErrorHandler`.  |
 
 ```typescript
 import type {
@@ -79,10 +79,10 @@ Each `Field` accepts:
 
 You can branch on `question.type`, `group.state`, and `question.questionId`. They sit on a sliding scale from compile-time-safe to fragile:
 
-| Branch on             | Stability                                                                                                         | Use it for                                                           |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `question.type`       | Closed union of 6 strings owned by this hook. Adding a variant is an SDK breaking change.                         | Design-system primitive swaps. Safe and exhaustively typed.          |
-| `group.state`         | API-driven 2-letter code. Stable for known states, but a state's question set can change as tax law changes.      | Geographic copy or branding. Re-test when a new state opens up.      |
+| Branch on             | Stability  | Use it for |
+| --------------------- | ---------- | ---------- |
+| `question.type`       | Closed union of 6 strings owned by this hook. Adding a variant is an SDK breaking change.                         | Design-system primitive swaps. Safe and exhaustively typed. |
+| `group.state`         | API-driven 2-letter code. Stable for known states, but a state's question set can change as tax law changes.      | Geographic copy or branding. Re-test when a new state opens up. |
 | `question.questionId` | Camel-cased API key. The set of keys for a state is API-driven and **evolves** as questions are added or renamed. | One-off overrides for a specific question. Treat as a soft coupling. |
 
 > **Caution.** Branching on `questionId` or `state` is a soft coupling to the API contract. When a new state question is introduced, renamed, or split in two, hardcoded `if (question.questionId === '…')` branches silently fall through to the default render. Audit these branches as part of any state-tax-related upgrade, and prefer `type`-level overrides whenever the same change applies to a whole class of fields.
