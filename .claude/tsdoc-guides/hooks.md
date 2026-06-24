@@ -80,3 +80,7 @@ If none are available, write the structural parts (`@param`, `@returns`, release
 ```ts
 // TODO: add @remarks with product context — see [ticket/page]
 ```
+
+## Long-form prose: GUIDE.md
+
+Like flows, each hook directory can carry a `GUIDE.md` whose authored prose the doc engine slots into the hook's generated reference page. Keep `@remarks` to concise observable behavior; longer walkthroughs go in `GUIDE.md`. Don't create or backfill `GUIDE.md` speculatively — its authoring conventions are still being established in the guide-content PRs.

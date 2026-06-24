@@ -52,6 +52,9 @@ Output format: `SYMBOL: NAME\n<skeleton>` per symbol, or `SKIP` if already align
  * @remarks
  * Extended prose.
  *
+ * @components
+ * {@link ChildBlock} - what it contributes.
+ *
  * @typeParam T - description
  * @param name - description
  * @returns description
@@ -64,7 +67,9 @@ Output format: `SYMBOL: NAME\n<skeleton>` per symbol, or `SKIP` if already align
  */
 ````
 
-One blank line between summary and tag group. `@remarks` is its own group (blank lines before and after). Each `@example` is its own group.
+One blank line between summary and tag group. `@remarks` is its own group (blank lines before and after). `@components` is its own group (after `@remarks`, before `@param`). Each `@example` is its own group.
+
+**`@components` tag:** A registered block tag listing the sub-components/hooks a composing symbol pulls together — one `{@link Name} - description` per line. The doc engine renders these as a "Sub-components" table on the generated page. Used mainly on flows (see the flows guide); skip it on leaf components that compose nothing.
 
 **`@group` tags:** Optional, but expected on `@public` exports so TypeDoc organizes the sidebar. When present, the value **must** come from this fixed set (`tsdoc-coverage/valid-group` errors otherwise) — match the existing siblings in the barrel rather than inventing a label:
 
