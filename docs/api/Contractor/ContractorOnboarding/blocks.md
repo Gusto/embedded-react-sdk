@@ -280,7 +280,7 @@ Props for [ContractorProfile](#contractorprofile).
 | `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | `className?` | `string` | CSS class name applied to the component's root element. |
 | `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<\{ `contractorType`: `"Business"` \| `"Individual"`; `selfOnboarding`: `boolean`; `startDate`: `Date`; `wageType`: `"Fixed"` \| `"Hourly"`; `businessName?`: `string`; `ein?`: `string`; `email?`: `string`; `firstName?`: `string`; `hourlyRate?`: `number`; `lastName?`: `string`; `middleInitial?`: `string`; `ssn?`: `string`; \}\> | Initial values for the contractor profile form fields. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
 | `dictionary?` | `Record`\<`"en"`, `DeepPartial`\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 ***
@@ -318,21 +318,11 @@ Pre-fill values accepted by [Address](#address). At least one of `street1`, `str
 
 ***
 
-<a id="contractorprofileformdata"></a>
-
-### ContractorProfileFormData
-
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
-
-Form field values for the contractor profile form.
-
-***
-
 <a id="onboardingflowdefaultvalues"></a>
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorProfileFormData`](#contractorprofileformdata)\>; \}\>
+> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks.md#contractordetailsformdata)\>; \}\>
 
 Default pre-fill values for the contractor onboarding flow.
 At least one of `profile` or `address` must be provided.

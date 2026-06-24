@@ -237,6 +237,7 @@ parsed values (or `undefined` if invalid).
 - [`UseCompensationFormReady`](Employee/hooks.md#usecompensationformready)
 - [`UseJobFormReady`](Employee/hooks.md#usejobformready)
 - [`UseEmployeeDetailsFormReady`](Employee/hooks.md#useemployeedetailsformready)
+- [`UseContractorDetailsFormReady`](Contractor/hooks.md#usecontractordetailsformready)
 - [`UseWorkAddressFormReady`](Employee/hooks.md#useworkaddressformready)
 - [`UseHomeAddressFormReady`](Employee/hooks.md#usehomeaddressformready)
 - [`UseBankFormReady`](Employee/hooks.md#usebankformready)
