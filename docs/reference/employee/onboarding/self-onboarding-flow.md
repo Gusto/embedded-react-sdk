@@ -14,20 +14,6 @@ custom_edit_url: null
 
 Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing.
 
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `SelfOnboardingFlowProps` | See SelfOnboardingFlowProps. |
-
-## Remarks
-
-Hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information. Drives a multi-step flow keyed to the employee being self-onboarded; when `withEmployeeI9` is enabled, the Document Signer step checks whether the employee has I-9 enabled and, if so, routes them through the employment-eligibility form before presenting the I-9 form alongside other required documents.
-
-Each step is also exported as a standalone block — see [Landing](blocks.md#landing), [Profile](blocks.md#profile), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [DocumentSigner](blocks.md#documentsigner), [EmploymentEligibility](blocks.md#employmenteligibility), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
-
-The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
-
 ## Example
 
 ```tsx
@@ -44,3 +30,17 @@ function MyApp() {
   )
 }
 ```
+
+## Remarks
+
+Hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information. Drives a multi-step flow keyed to the employee being self-onboarded; when `withEmployeeI9` is enabled, the Document Signer step checks whether the employee has I-9 enabled and, if so, routes them through the employment-eligibility form before presenting the I-9 form alongside other required documents.
+
+Each step is also exported as a standalone block — see [Landing](blocks.md#landing), [Profile](blocks.md#profile), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [DocumentSigner](blocks.md#documentsigner), [EmploymentEligibility](blocks.md#employmenteligibility), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
+
+The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `SelfOnboardingFlowProps` | See SelfOnboardingFlowProps. |

@@ -23,7 +23,7 @@
  * To add a namespace: add `{ id, subpath }` to a domain. `id` must match the
  * namespace exported from `src/components/index.ts`.
  * To add a domain: append an entry. `path` doubles as the source-dir lookup
- * (`time-off` → `src/components/TimeOff`), so a README there is injected into the hub.
+ * (`time-off` → `src/components/TimeOff`), so a GUIDE.md there is slotted into the hub.
  */
 export const DOMAINS: DomainConfig[] = [
   {

@@ -35,6 +35,9 @@ ruleTester.run('tsdoc-sort-tags', rule, {
 
     // Multiple @example blocks — each is its own group
     `/**\n * Description.\n *\n * @public\n *\n * @example\n * foo(1)\n *\n * @example\n * foo(2)\n */\nfunction foo(): void {}`,
+
+    // @components is its own group between @remarks and the other tags
+    `/**\n * Description.\n *\n * @remarks Notes.\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
   ],
 
   invalid: [
@@ -63,6 +66,13 @@ ruleTester.run('tsdoc-sort-tags', rule, {
     {
       code: `/**\n * Description.\n *\n * @example\n * foo()\n *\n * @param x - the input\n * @public\n */\nfunction foo(x: string): void {}`,
       output: `/**\n * Description.\n *\n * @param x - the input\n * @public\n *\n * @example\n * foo()\n */\nfunction foo(x: string): void {}`,
+      errors: [{ messageId: 'incorrectGrouping' }],
+    },
+
+    // @components must be its own group, separated from the other tags by a blank line
+    {
+      code: `/**\n * Description.\n *\n * @components\n * - {@link Bar}\n * @public\n */\nfunction foo(): void {}`,
+      output: `/**\n * Description.\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
       errors: [{ messageId: 'incorrectGrouping' }],
     },
   ],

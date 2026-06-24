@@ -14,22 +14,20 @@ custom_edit_url: null
 
 Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
 
-## OnboardingFlowProps
+## Example
 
-<a id="onboardingflowprops"></a>
+```tsx
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
-Props for OnboardingFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
-| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
-| `dictionary?` | `undefined` | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+function MyApp() {
+  return (
+    <ContractorOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ## Remarks
 
@@ -69,17 +67,16 @@ payloads observable from this flow.
 | `contractor/submit/done` | Fired when the contractor submission is complete | `{ message: string }` or `{ onboardingStatus, message: string }` |
 | `contractor/invite/selfOnboarding` | Fired when the contractor is invited for self-onboarding | `{ contractorId: string }` |
 
-## Example
+## OnboardingFlowProps
 
-```tsx
-import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+<a id="onboardingflowprops"></a>
 
-function MyApp() {
-  return (
-    <ContractorOnboarding.OnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  )
-}
-```
+Props for OnboardingFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
