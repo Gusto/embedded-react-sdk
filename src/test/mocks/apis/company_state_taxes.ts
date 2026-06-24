@@ -6,9 +6,12 @@ export const getStateTaxRequirements = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
   async ({ params }) => {
     const state = params.state as string
-    const GAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-GA')
-    const WAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-WA')
-    return HttpResponse.json(state === 'WA' ? WAFixture : GAFixture)
+    const fixtureName = `get-v1-companies-company_id-tax_requirements-${state}`
+    try {
+      return HttpResponse.json(await getFixture(fixtureName))
+    } catch {
+      return HttpResponse.json(await getFixture('get-v1-companies-company_id-tax_requirements-GA'))
+    }
   },
 )
 
