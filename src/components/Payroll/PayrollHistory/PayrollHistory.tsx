@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react'
-import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsList'
+import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsCancel'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsList'
 import {
   DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
   SortOrder,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidpayrolls'
+import type { Payroll } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'

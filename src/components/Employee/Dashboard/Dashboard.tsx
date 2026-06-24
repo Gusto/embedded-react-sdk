@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'

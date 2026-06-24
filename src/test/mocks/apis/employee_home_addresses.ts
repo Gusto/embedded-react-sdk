@@ -3,17 +3,17 @@ import { http, HttpResponse } from 'msw'
 import type {
   GetV1EmployeesEmployeeIdHomeAddressesRequest,
   GetV1EmployeesEmployeeIdHomeAddressesResponse,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidhomeaddresses'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidhomeaddresses'
 import type {
   GetV1HomeAddressesHomeAddressUuidRequest,
   GetV1HomeAddressesHomeAddressUuidResponse,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1homeaddresseshomeaddressuuid'
-import type { PostV1EmployeesEmployeeIdHomeAddressesRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1employeesemployeeidhomeaddresses'
-import type { PutV1HomeAddressesHomeAddressUuidRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1homeaddresseshomeaddressuuid'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1homeaddresseshomeaddressuuid'
+import type { PostV1EmployeesEmployeeIdHomeAddressesRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1employeesemployeeidhomeaddresses'
+import type { PutV1HomeAddressesHomeAddressUuidRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1homeaddresseshomeaddressuuid'
 import type {
   DeleteV1HomeAddressesHomeAddressUuidRequest,
   DeleteV1HomeAddressesHomeAddressUuidResponse,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/deletev1homeaddresseshomeaddressuuid'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1homeaddresseshomeaddressuuid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

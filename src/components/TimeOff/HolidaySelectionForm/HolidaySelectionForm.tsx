@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesCreate'
+import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesCreate'
 import {
   useHolidayPayPoliciesGetSuspense,
   queryKeyHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
   type HolidayPayPoliciesGetQueryData,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
-import { useHolidayPayPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesUpdate'
-import type { HolidayPayPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesUpdate'
+import type { HolidayPayPolicy } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy'
 import {
   getDefaultHolidayItems,
   buildFederalHolidaysPayload,

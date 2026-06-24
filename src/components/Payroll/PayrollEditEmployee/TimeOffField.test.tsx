@@ -5,8 +5,8 @@ import { Suspense } from 'react'
 import {
   type Employee,
   EmployeePaymentMethod1,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
 import { TimeOffField } from './TimeOffField'
 import type { PayrollEditEmployeeFormValues } from './PayrollEditEmployeePresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

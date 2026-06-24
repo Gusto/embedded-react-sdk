@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/companiesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import { useCompaniesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/companiesGet'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'

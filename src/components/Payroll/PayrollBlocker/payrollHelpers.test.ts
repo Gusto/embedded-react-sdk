@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2026-02-01/models/errors/unprocessableentityerror'
 import {
   payrollSubmitHandler,
   parsePayrollBlockersFromError,

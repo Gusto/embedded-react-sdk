@@ -10,7 +10,7 @@ import type {
   BeforeRequestContext,
   AfterSuccessContext,
   AfterErrorContext,
-} from '@gusto/embedded-api-v-2025-11-15/hooks/types'
+} from '@gusto/embedded-api-v-2026-02-01/hooks/types'
 
 // Re-export hook types and contexts for consumer use
 export type {
@@ -31,7 +31,7 @@ export type {
  * Pass an instance of this interface to {@link GustoProvider} via `config.hooks` to
  * inspect or modify requests and responses across the four lifecycle stages.
  * Each entry is an array of objects implementing the corresponding hook type
- * from `@gusto/embedded-api-v-2025-11-15/hooks/types`.
+ * from `@gusto/embedded-api-v-2026-02-01/hooks/types`.
  *
  * | Stage | When it runs |
  * | ----- | ------------ |
