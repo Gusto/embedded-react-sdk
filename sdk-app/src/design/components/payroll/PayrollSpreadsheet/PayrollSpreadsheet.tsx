@@ -1,17 +1,22 @@
-import { useEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
 import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type {
+  EmployeeCompensations,
+  PayrollShowReimbursements,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
 import { Skeleton } from '../../common/Skeleton'
 import styles from './PayrollSpreadsheet.module.scss'
-import { firstLastName } from '@/helpers/formattedStrings'
+import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
+import { DataView, EmptyData, Flex, Grid, useDataView } from '@/components/Common'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-type ColumnKind = 'hours' | 'currency'
+type ColumnKind = 'hours' | 'currency' | 'reimbursements'
 
 interface ColumnDef {
   id: string
@@ -28,6 +33,7 @@ const COLUMNS: ColumnDef[] = [
   { id: 'paycheckTips', label: 'Paycheck tips', kind: 'currency' },
   { id: 'commission', label: 'Commission', kind: 'currency' },
   { id: 'correctionPayment', label: 'Correction payment', kind: 'currency' },
+  { id: 'reimbursements', label: 'Reimbursements', kind: 'reimbursements' },
   { id: 'sickHours', label: 'Sick hrs', kind: 'hours' },
   { id: 'vacationHours', label: 'Vacation hrs', kind: 'hours' },
 ]
@@ -136,6 +142,8 @@ function isColumnApplicable(
       return isPtoApplicable(compensation, 'sick')
     case 'vacationHours':
       return isPtoApplicable(compensation, 'vacation')
+    case 'reimbursements':
+      return true
     default:
       return isFixedCompApplicable(employee, column.id, fixedCompensationTypes)
   }
@@ -151,6 +159,7 @@ function seedValues(
     const uuid = employee.uuid
     const comp = compByEmployee.get(uuid)
     for (const column of COLUMNS) {
+      if (column.kind === 'reimbursements') continue
       let value = ''
       if (column.id === 'sickHours') {
         value = findPto(comp, 'sick')
@@ -165,6 +174,39 @@ function seedValues(
     }
   }
   return seed
+}
+
+interface ReimbursementRow {
+  uuid: string | null
+  description: string
+  amount: string
+  recurring: boolean
+}
+
+function seedReimbursements(
+  employees: Employee[],
+  employeeCompensations: EmployeeCompensations[],
+): Record<string, ReimbursementRow[]> {
+  const compByEmployee = new Map(employeeCompensations.map(comp => [comp.employeeUuid ?? '', comp]))
+  const seed: Record<string, ReimbursementRow[]> = {}
+  for (const employee of employees) {
+    const comp = compByEmployee.get(employee.uuid)
+    seed[employee.uuid] = (comp?.reimbursements ?? []).map(r => ({
+      uuid: r.uuid ?? null,
+      description: r.description ?? '',
+      amount: r.amount,
+      recurring: r.recurring ?? false,
+    }))
+  }
+  return seed
+}
+
+function reimbursementTotal(rows: ReimbursementRow[] | undefined): number {
+  if (!rows) return 0
+  return rows.reduce((acc, row) => {
+    const n = parseFloat(row.amount || '0')
+    return acc + (Number.isFinite(n) ? n : 0)
+  }, 0)
 }
 
 interface PayrollSpreadsheetProps {
@@ -246,6 +288,7 @@ const SAVE_DEBOUNCE_MS = 600
 function buildUpdatedCompensation(
   original: EmployeeCompensations,
   values: Record<CellKey, string>,
+  reimbursements: ReimbursementRow[],
   employee: Employee,
 ): EmployeeCompensations {
   const employeeUuid = employee.uuid
@@ -302,11 +345,19 @@ function buildUpdatedCompensation(
     return { ...pto, hours: v === '' ? '0.0' : v }
   })
 
+  const nextReimbursements: PayrollShowReimbursements[] = reimbursements.map(r => ({
+    amount: r.amount,
+    description: r.description.trim() === '' ? null : r.description.trim(),
+    uuid: r.uuid ?? null,
+    recurring: r.recurring,
+  }))
+
   return {
     ...original,
     hourlyCompensations: nextHourly,
     fixedCompensations: nextFixed,
     paidTimeOff: nextPto,
+    reimbursements: nextReimbursements,
   }
 }
 
@@ -327,6 +378,9 @@ export function PayrollSpreadsheet({
   const [values, setValues] = useState<Record<CellKey, string>>(() =>
     seedValues(employees, employeeCompensations),
   )
+  const [reimbursementsByEmployee, setReimbursementsByEmployee] = useState<
+    Record<string, ReimbursementRow[]>
+  >(() => seedReimbursements(employees, employeeCompensations))
 
   const workweeks = useMemo(() => deriveWorkweeks(payPeriod), [payPeriod])
 
@@ -343,12 +397,31 @@ export function PayrollSpreadsheet({
   } | null>(null)
   const [draftBreakdown, setDraftBreakdown] = useState<string[]>([])
 
+  const [openReimbursementsModal, setOpenReimbursementsModal] = useState<{
+    employeeUuid: string
+  } | null>(null)
+  const reimbursementsModalBackdropRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    if (!openReimbursementsModal) return
+    const backdrop = reimbursementsModalBackdropRef.current
+    if (!backdrop) return
+    // The Modal primitive caps inner .modal at 544rem; widen it for this surface so the
+    // reimbursements DataView + add form (two 320px columns) don't horizontally overflow.
+    const modalEl = backdrop.querySelector<HTMLElement>(':scope > div')
+    if (modalEl) modalEl.style.maxWidth = 'min(720px, 90vw)'
+  }, [openReimbursementsModal])
+  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
+  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+  const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
+
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     setIsHorizontallyScrolled(event.currentTarget.scrollLeft > 0)
   }
 
   const valuesRef = useRef(values)
   valuesRef.current = values
+  const reimbursementsRef = useRef(reimbursementsByEmployee)
+  reimbursementsRef.current = reimbursementsByEmployee
 
   const compensationByEmployee = useMemo(() => {
     const map = new Map<string, EmployeeCompensations>()
@@ -379,7 +452,12 @@ export function PayrollSpreadsheet({
     const original = compensationByEmployee.get(employeeUuid)
     const employee = employeeByUuid.get(employeeUuid)
     if (!original || !employee) return
-    const next = buildUpdatedCompensation(original, valuesRef.current, employee)
+    const next = buildUpdatedCompensation(
+      original,
+      valuesRef.current,
+      reimbursementsRef.current[employeeUuid] ?? [],
+      employee,
+    )
     void onSave(next)
   }
 
@@ -487,6 +565,58 @@ export function PayrollSpreadsheet({
     flushSave(employeeUuid)
   }
 
+  const resetReimbursementDraft = () => {
+    setIsAddingReimbursement(false)
+    setDraftReimbursementDescription('')
+    setDraftReimbursementAmount('')
+  }
+
+  const openReimbursementsModalFor = (employeeUuid: string) => {
+    resetReimbursementDraft()
+    setOpenReimbursementsModal({ employeeUuid })
+  }
+
+  const closeReimbursementsModal = () => {
+    setOpenReimbursementsModal(null)
+    resetReimbursementDraft()
+  }
+
+  const handleSaveReimbursementDraft = () => {
+    if (!openReimbursementsModal) return
+    const { employeeUuid } = openReimbursementsModal
+    const trimmedAmount = draftReimbursementAmount.trim()
+    const parsedAmount = parseFloat(trimmedAmount || '0')
+    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) return
+
+    setReimbursementsByEmployee(prev => ({
+      ...prev,
+      [employeeUuid]: [
+        ...(prev[employeeUuid] ?? []),
+        {
+          uuid: null,
+          description: draftReimbursementDescription.trim(),
+          amount: parsedAmount.toFixed(2),
+          recurring: false,
+        },
+      ],
+    }))
+    resetReimbursementDraft()
+    flushSave(employeeUuid)
+  }
+
+  const handleRemoveReimbursement = (employeeUuid: string, originalIndex: number) => {
+    setReimbursementsByEmployee(prev => {
+      const rows = prev[employeeUuid] ?? []
+      const target = rows[originalIndex]
+      if (!target) return prev
+      const next = target.uuid
+        ? rows.map((row, i) => (i === originalIndex ? { ...row, amount: '0' } : row))
+        : rows.filter((_, i) => i !== originalIndex)
+      return { ...prev, [employeeUuid]: next }
+    })
+    flushSave(employeeUuid)
+  }
+
   const modalEmployeeName = openModal
     ? (() => {
         const employee = employeeByUuid.get(openModal.employeeUuid)
@@ -569,6 +699,32 @@ export function PayrollSpreadsheet({
                       className={`${styles.cell} ${styles.cellNa}`}
                     >
                       <span className={styles.notApplicable}>N/A</span>
+                    </div>
+                  )
+                }
+                if (column.kind === 'reimbursements') {
+                  const rows = reimbursementsByEmployee[uuid] ?? []
+                  const total = reimbursementTotal(rows)
+                  const reimbursementCellClass = [
+                    styles.cell,
+                    total > 0 ? styles.currencyHasValue : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')
+                  return (
+                    <div role="gridcell" key={column.id} className={reimbursementCellClass}>
+                      <button
+                        type="button"
+                        className={styles.cellTrigger}
+                        aria-label={`${name} — ${column.label}`}
+                        onClick={() => {
+                          openReimbursementsModalFor(uuid)
+                        }}
+                      >
+                        <span className={styles.cellTriggerValue}>
+                          {total > 0 ? formatNumberAsCurrency(total) : ''}
+                        </span>
+                      </button>
                     </div>
                   )
                 }
@@ -701,6 +857,179 @@ export function PayrollSpreadsheet({
           </Flex>
         </Components.Modal>
       )}
+
+      {openReimbursementsModal && (
+        <Components.Modal
+          isOpen
+          onClose={closeReimbursementsModal}
+          shouldCloseOnBackdropClick
+          containerRef={reimbursementsModalBackdropRef}
+          footer={
+            <Flex justifyContent="flex-end" gap={8}>
+              <Components.Button variant="secondary" onClick={closeReimbursementsModal}>
+                Done
+              </Components.Button>
+            </Flex>
+          }
+        >
+          <ReimbursementsModalBody
+            employeeUuid={openReimbursementsModal.employeeUuid}
+            employeeName={(() => {
+              const employee = employeeByUuid.get(openReimbursementsModal.employeeUuid)
+              return employee
+                ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
+                : ''
+            })()}
+            rows={reimbursementsByEmployee[openReimbursementsModal.employeeUuid] ?? []}
+            isAdding={isAddingReimbursement}
+            draftDescription={draftReimbursementDescription}
+            draftAmount={draftReimbursementAmount}
+            onStartAdding={() => {
+              setIsAddingReimbursement(true)
+            }}
+            onChangeDescription={setDraftReimbursementDescription}
+            onChangeAmount={setDraftReimbursementAmount}
+            onSaveDraft={handleSaveReimbursementDraft}
+            onCancelDraft={resetReimbursementDraft}
+            onRemove={originalIndex => {
+              handleRemoveReimbursement(openReimbursementsModal.employeeUuid, originalIndex)
+            }}
+          />
+        </Components.Modal>
+      )}
     </div>
+  )
+}
+
+interface ReimbursementsModalBodyProps {
+  employeeUuid: string
+  employeeName: string
+  rows: ReimbursementRow[]
+  isAdding: boolean
+  draftDescription: string
+  draftAmount: string
+  onStartAdding: () => void
+  onChangeDescription: (value: string) => void
+  onChangeAmount: (value: string) => void
+  onSaveDraft: () => void
+  onCancelDraft: () => void
+  onRemove: (originalIndex: number) => void
+}
+
+function ReimbursementsModalBody({
+  employeeUuid: _employeeUuid,
+  employeeName,
+  rows,
+  isAdding,
+  draftDescription,
+  draftAmount,
+  onStartAdding,
+  onChangeDescription,
+  onChangeAmount,
+  onSaveDraft,
+  onCancelDraft,
+  onRemove,
+}: ReimbursementsModalBodyProps) {
+  const { Button, ButtonIcon, Heading, TextInput } = useComponentContext()
+
+  type VisibleRow = ReimbursementRow & { originalIndex: number }
+  const visibleRows: VisibleRow[] = rows
+    .map((row, originalIndex) => ({ ...row, originalIndex }))
+    .filter(row => parseFloat(row.amount || '0') !== 0)
+
+  const dataViewProps = useDataView<VisibleRow>({
+    data: visibleRows,
+    columns: [
+      {
+        key: 'description',
+        title: 'Description',
+        render: row => row.description.trim() || 'Unnamed reimbursement',
+      },
+      {
+        key: 'amount',
+        title: 'Amount',
+        render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
+      },
+      {
+        key: 'recurring',
+        title: 'Type',
+        render: row => (row.recurring ? 'Recurring' : 'One-time'),
+      },
+    ],
+    itemMenu: row => {
+      if (row.recurring) return null
+      const displayDescription = row.description.trim() || 'Unnamed reimbursement'
+      return (
+        <ButtonIcon
+          variant="tertiary"
+          onClick={() => {
+            onRemove(row.originalIndex)
+          }}
+          aria-label={`Remove ${displayDescription}`}
+        >
+          <TrashCanSvg aria-hidden />
+        </ButtonIcon>
+      )
+    },
+    emptyState: () => (
+      <EmptyData title="No reimbursements added yet">
+        <Button variant="secondary" onClick={onStartAdding} icon={<PlusCircleIcon aria-hidden />}>
+          Add reimbursement
+        </Button>
+      </EmptyData>
+    ),
+  })
+
+  return (
+    <Flex flexDirection="column" gap={24}>
+      <Heading as="h3" styledAs="h4">
+        Reimbursements for {employeeName}
+      </Heading>
+      {!(visibleRows.length === 0 && isAdding) && (
+        <DataView label="Reimbursements" {...dataViewProps} />
+      )}
+      {isAdding ? (
+        <Flex flexDirection="column" gap={12}>
+          <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+            <TextInput
+              name="newReimbursementDescription"
+              label="Description"
+              placeholder="e.g. Mileage"
+              value={draftDescription}
+              onChange={onChangeDescription}
+            />
+            <TextInput
+              name="newReimbursementAmount"
+              type="number"
+              min={0}
+              adornmentStart="$"
+              isRequired
+              label="Amount"
+              value={draftAmount}
+              onChange={onChangeAmount}
+            />
+          </Grid>
+          <Flex gap={12}>
+            <Button onClick={onSaveDraft}>Save reimbursement</Button>
+            <Button variant="secondary" onClick={onCancelDraft}>
+              Cancel
+            </Button>
+          </Flex>
+        </Flex>
+      ) : (
+        visibleRows.length > 0 && (
+          <div>
+            <Button
+              variant="secondary"
+              onClick={onStartAdding}
+              title="Add reimbursement"
+              icon={<PlusCircleIcon aria-hidden />}
+            >
+              Add reimbursement
+            </Button>
+          </div>
+        )
+      )}
+    </Flex>
   )
 }

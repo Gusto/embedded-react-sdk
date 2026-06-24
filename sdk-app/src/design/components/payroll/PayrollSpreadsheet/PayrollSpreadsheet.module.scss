@@ -5,7 +5,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(toRem(200), toRem(240)) repeat(10, minmax(toRem(140), 1fr));
+  grid-template-columns: minmax(toRem(200), toRem(240)) repeat(11, minmax(toRem(140), 1fr));
   min-width: max-content;
 }
 
