@@ -34,7 +34,7 @@ Import it from the package:
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/reference/endpoint-inventory.json` in any language.
+Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/appendix/endpoint-inventory.json` in any language.
 
 The JSON structure:
 
