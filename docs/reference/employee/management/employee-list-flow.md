@@ -59,10 +59,10 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 | Component | Description |
 | ------ | ------ |
-| [EmployeeManagement.EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
-| [EmployeeManagement.DashboardFlow](dashboard-flow.md) | The main entry point for the employee dashboard. |
-| [EmployeeManagement.TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
-| [EmployeeManagement.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+| [EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [DashboardFlow](dashboard-flow.md) | The main entry point for the employee dashboard. |
+| [TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
+| [EmployeeOnboarding.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
 
 <!-- guide-source: src/components/Employee/EmployeeListFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
