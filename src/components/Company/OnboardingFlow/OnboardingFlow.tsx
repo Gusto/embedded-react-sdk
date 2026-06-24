@@ -30,6 +30,23 @@ export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './Onboard
  * | `company/stateTaxes/done` | User completed the state taxes step | — |
  * | `company/forms/done` | User completed signing company documents | — |
  *
+ * Each step is also exported as a standalone block (see the Sub-components
+ * table) for composing a custom workflow when this orchestration is the wrong
+ * fit. See the
+ * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
+ *
+ * @components
+ * - {@link OnboardingOverview}
+ * - {@link Locations}
+ * - {@link FederalTaxes}
+ * - {@link Industry}
+ * - {@link BankAccount}
+ * - Employee onboarding sub-flow (the embedded employee `OnboardingFlow`)
+ * - {@link PaySchedule}
+ * - {@link StateTaxes}
+ * - {@link DocumentSigner}
+ *
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step company onboarding flow with internal navigation between the overview and the per-step screens.
  * @public
