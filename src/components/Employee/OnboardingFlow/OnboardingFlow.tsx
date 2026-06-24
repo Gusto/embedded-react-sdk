@@ -63,7 +63,9 @@ export interface OnboardingFlowProps extends BaseComponentInterface<never> {
  * {@link FederalTaxes}, {@link StateTaxes}, {@link PaymentMethod},
  * {@link Deductions}, {@link EmployeeDocuments}, and
  * {@link OnboardingSummary} — for composing a custom workflow when this
- * orchestration is the wrong fit.
+ * orchestration is the wrong fit. See the
+ * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
  *
  * The flow forwards every event emitted by its sub-components to `onEvent`;
  * see the events table on each sub-component for the full set of events and
