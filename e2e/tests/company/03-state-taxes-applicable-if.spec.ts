@@ -1,6 +1,18 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
 
+// MSW-only: these specs assert client-side `applicable_if` filtering against
+// deterministic fixture data (e2e/../tax_requirements-{WA,ID}.json). The
+// CI matrix runs `npm run test:e2e:demo` with E2E_USE_REAL_BACKEND=true,
+// which bypasses MSW and hits a demo company whose state-tax requirements
+// aren't shaped for this assertion. The behavior is fully covered by the
+// unit tests in StateTaxesForm.test.tsx + applicableIf.test.ts; these
+// specs add real-DOM coverage when running locally via `npm run test:e2e`.
+test.skip(
+  process.env.E2E_USE_REAL_BACKEND === 'true',
+  'MSW-only spec: relies on tax_requirements fixtures, not real demo data',
+)
+
 test.describe('StateTaxesForm — applicable_if conditional visibility', () => {
   test('WA: rate fields stay hidden until "use default rates" radio toggles to No', async ({
     page,
