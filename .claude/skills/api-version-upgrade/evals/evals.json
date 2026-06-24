@@ -52,8 +52,8 @@
           "text": "Endpoints with no SDK consumer (migrate, migration_readiness, ToS, Simple IRA, reverse_wire_detail_id) are classified ✅ verified-by-typecheck, not ⚠️"
         },
         {
-          "id": "self-onboarding-email-e2e",
-          "text": "Self-onboarding email requirement gets a real E2E spec scaffolded (not test.skip without reason)"
+          "id": "self-onboarding-email-classified-error-pipeline",
+          "text": "Self-onboarding email requirement is classified as ✅ trust-the-error-pipeline (server-side validation tightening), NOT 🔴 or ⚠️. The SDK's normalizeToSDKError → form-hook errorHandling pipeline already renders the server's 422 field error inline. Adding an E2E for this would be testing the error pipeline, not the upgrade."
         },
         {
           "id": "cache-namespace-17-sites",

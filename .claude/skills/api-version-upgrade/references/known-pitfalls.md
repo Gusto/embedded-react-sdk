@@ -62,6 +62,33 @@ This means `getReimbursements()` in `helpers.ts:198-214` (which prefers `compens
 
 Earlier analysis of `helpers.test.ts` claimed ~28 test sites using `{ name: 'Reimbursement', amount: ... }` fixtures inside `fixedCompensations` would all need rewriting. **Re-verify before treating as mandatory work.** The Eval 3 analysis found that most of those sites test helper behavior (filter / exclusion / fallback) rather than wire shape — they assert valid contracts regardless of whether real responses still carry the legacy entry. Treat the refactor as ⚠️ optional cleanup unless inspection shows the test bodies actually depend on the wire-shape detail being present.
 
+## Trust the error pipeline
+
+**The most important conceptual rule.** Many "breaking changes" in API changelogs are forms of **server-side validation tightening** — a field that was always supported is now validated more strictly, a conditional rule (e.g. "X required if Y is true") is now enforced at the server, an obscure combination of inputs now returns a 422 where it previously sailed through.
+
+**These are not breaking changes for the SDK.** The SDK has a complete error-display pipeline that handles them automatically:
+
+1. Server returns `422` with `{ errors: [{ errorKey: "<field>", category: "invalid_attribute_value", message: "<reason>" }] }`
+2. `normalizeToSDKError` in `src/types/sdkError.ts:247` shapes the response into `SDKError.fieldErrors[]`
+3. Form hooks expose `errorHandling.error` containing those field errors
+4. UI renders the field-level message next to the input (e.g. `validationErrorCollector` machinery)
+
+**The UX is identical** to a client-side gate. The only difference: one extra HTTP round-trip. This is exactly the pattern the SDK uses for pay-schedule date constraints, frequency rules, payroll-version conflicts, federal-tax narrowing, garnishment cap validation, and dozens of other fields the SDK doesn't try to encode client-side. We let the server validate and surface the error.
+
+**Concrete examples that look scary in changelogs but are ✅ for the SDK:**
+
+- "Field X now required if Y=true" — server returns 422 with `errorKey: "x"`, message renders.
+- "Endpoint Z now rejects format A; only accepts format B" — server returns 422 with the right errorKey.
+- "Validation rule N is now enforced for status=Q" — same.
+
+**The only time server-side validation tightening becomes a real concern:**
+
+- The **error key** the server returns doesn't match a field name the form was binding (causing the message to render in a generic banner instead of inline). Verify this against actual demo response for any new validation rule.
+- The SDK has its own **custom Zod refinement** that pre-validates the same thing client-side, and the refinement disagrees with the new server rule. Then it's a 🔴 — fix the custom refinement so the two stay in sync.
+- The new validation **silently strips data** instead of returning a 422 (e.g., server accepts the request but stores something different). Truly rare; would need to be flagged in the changelog.
+
+If you find yourself proposing an E2E that asserts "the error renders" or "the form doesn't advance" for a validation rule that didn't exist before, **stop**. You're testing the SDK's error pipeline, not the upgrade. The upgrade just changed which validation rules the server enforces.
+
 ## General durable pitfalls
 
 These apply to every upgrade:

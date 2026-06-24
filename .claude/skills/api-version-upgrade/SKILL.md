@@ -90,6 +90,8 @@ For **every** 🔴 / ⚠️ row in the matrix, write an E2E spec that exercises 
 
 **Each spec must actually run, not `test.skip` unless explicitly blocked by missing Demo state.** The E2E suite is the canary for breaking changes that the typecheck cannot catch. A passing spec proves we're fine; a failing spec is real signal.
 
+**Don't write E2Es to verify the error pipeline.** If the only thing the upgrade changed is *server-side validation tightening* — a field that already existed is now stricter, or a conditional requirement is now enforced at the API — that flows through the SDK's existing error rendering path unchanged. The server returns 422 with field errors, `normalizeToSDKError` shapes them, the form hook surfaces them, the UI renders them. The UX is identical to a client-side gate. Adding an E2E for this case is testing the SDK's own error pipeline, not the upgrade. See the "Server-side validation tightening" decision rule below.
+
 See `references/e2e-patterns.md` for proven patterns and brittleness avoidance (chiefly: prefer label-text clicks over `getByRole('switch')` for SDK custom controls — the underlying input is visually-hidden and role-based click can hang on actionability checks).
 
 Specs should be **minimal** — assert only the contract under test. Filling out an entire form to test one Zod gate introduces brittleness from unrelated controls (date pickers, comboboxes). The Zod gate fires on submit regardless of other field state; you only need to assert the form did not advance.
@@ -113,6 +115,7 @@ These are the rules the skill follows without asking:
 - **Consumer found but field is wider/optional now → ⚠️ verify-only.** Typecheck verifies the consumer still compiles; E2E optional.
 - **Consumer found and shape narrowed or renamed → 🔴 real fix required.** Apply the fix in the codemod commit if mechanical; otherwise stop and report for design input.
 - **Removed enum value with no `=== '<removed>'` narrowing in src → ✅.** The enum widening is a no-op.
+- **Server-side validation tightening (field exists in both versions, just stricter now) → ✅ trust the error pipeline.** The SDK's `normalizeToSDKError` (`src/types/sdkError.ts`) converts server 422 responses into `SDKError.fieldErrors[]`; form hooks expose them via `errorHandling.error`; the UI renders the field-level message next to the input. UX is identical to a client-side gate — just one extra HTTP round-trip. This is the same pattern as pay-schedule date constraints, frequency rules, etc. Don't write an E2E to verify the error pipeline works; that's not what the upgrade is changing. See `references/known-pitfalls.md` § "Trust the error pipeline" for the full reasoning.
 - **Cache-namespace string sweep is non-negotiable** regardless of how few hits — silent stale-data bugs are the highest-cost failure mode of any upgrade.
 - **All PRs open as draft** until the user merges.
 

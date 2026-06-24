@@ -95,6 +95,7 @@ Upgrade-verification specs are almost always read-only or create-isolated. Slot 
 - **Generic smoke tests not tied to a breaking change.** If a spec doesn't map to a matrix row, it doesn't belong in the upgrade PR.
 - **Inline scenario state setup.** Mutating state at the start of every test invites flakes. Author a shared scenario.
 - **Asserting against text the SDK doesn't own.** Don't assert on copy that lives in a partner's app or in mocked-MSW responses. Assert against the SDK's own rendered output.
+- **Testing the error pipeline as if it's the breaking change.** When an upgrade introduces server-side validation tightening (e.g., "field X required if Y=true at the server"), the SDK's `normalizeToSDKError` → `errorHandling.error.fieldErrors[]` → inline UI render path handles it. The user sees an inline error and resubmits — identical UX to a client-side gate. An E2E asserting "submit fails and error appears" is testing the existing error pipeline, not the upgrade. See `known-pitfalls.md` § "Trust the error pipeline" for the full reasoning. **Only write an E2E for these cases if the SDK has a custom Zod refinement that mirrors the server rule and you need to verify the two stay in sync.**
 
 ## Pattern: the canonical upgrade-verification spec
 
