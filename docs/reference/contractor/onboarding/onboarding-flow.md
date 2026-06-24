@@ -113,7 +113,6 @@ flowchart
   NewHireReport -->|"contractor/newHireReport/done"| ContractorSubmit
   ContractorSubmit -->|"contractor/submit/done"| done@{ shape: fr-circ, label: " " }
 
-  class ContractorList,ContractorProfile,Address,PaymentMethod,NewHireReport,ContractorSubmit component
   class selfOnboarding branch
 ```
 <!-- /guide-source (slot: appendix) -->
