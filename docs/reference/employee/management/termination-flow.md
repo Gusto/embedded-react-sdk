@@ -53,7 +53,7 @@ The [PayrollOption](blocks.md#payrolloption) on each event identifies how the pa
 
 - `dismissalPayroll` — Run a dismissal payroll (the most guided option). The flow swaps the employee's last regular payroll into a dismissal payroll with the termination date as the pay-period end and makes a default PTO payout recommendation.
 - `regularPayroll` — Include the final pay in the employee's next scheduled regular payroll. The termination can still be cancelled after the fact.
-- `anotherWay` — Handle final pay outside of Gusto. Triggers the off-cycle payroll creation flow and removes the employee from unprocessed future payrolls. The termination can still be cancelled after the fact.
+- `anotherWay` — Handle the final pay another way: either run an off-cycle payroll to calculate final amounts, or pay the employee outside of Gusto (reporting it separately so the amounts land on tax forms). The employee is removed from unprocessed future payrolls, and the termination can still be cancelled after the fact.
 
 ## TerminationFlowProps
 
@@ -75,37 +75,33 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | ------ | ------ |
 | [TerminateEmployee](blocks.md#terminateemployee) | Standalone form for capturing an employee's termination details — last day of work and how to process final payroll. |
 | [TerminationSummary](blocks.md#terminationsummary) | Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist. |
+| [Payroll.DismissalFlow](../../payroll/dismissal-flow.md) | Guided workflow for running a terminated employee's final payroll. |
+| [Payroll.PayrollLanding](../../payroll/blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
 
 <!-- guide-source: src/components/Employee/Terminations/TerminationFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-The flow opens on the termination form, advances to the summary, and — depending on how the final paycheck is handled — branches into the dismissal payroll flow. On mount it detects existing terminations: an active termination pre-populates the form for editing, and an already-terminated employee is routed straight to the summary.
+On entry the flow checks whether the employee is already terminated. If so, it routes straight to a read-only summary (`employee/termination/viewSummary`). Otherwise it opens the termination form — blank for a new termination, or pre-populated when a pending termination exists — and submitting it saves the termination and emits `employee/termination/done` (carrying the chosen `payrollOption`). That `done` event — not anything on the summary — is the completion signal. The form's Cancel button emits `CANCEL`, the only event that leaves the flow; the machine doesn't handle it, so the partner decides where to go next. From the summary the employee can edit or cancel (returning to the form). What the summary offers next is driven by the payroll option:
 
-The route out of the summary is driven by the payroll option chosen on the form.
+- **`regularPayroll`** — no further action. The summary is a confirmation; final pay is processed in the next scheduled regular payroll.
+- **`dismissalPayroll`** — the summary offers a CTA that emits `employee/termination/runPayroll`, opening the existing final payroll as a dismissal payroll.
+- **`anotherWay`** — the summary offers a CTA that emits `employee/termination/runOffCyclePayroll`, removing the employee from unprocessed future payrolls and creating a new off-cycle payroll.
 
-### Run a dismissal payroll or handle it another way
-
-```mermaid
-flowchart
-  Form -->|"employee/termination/done"| Summary
-  Form -->|"employee/termination/viewSummary"| Summary
-  Summary -->|"employee/termination/edit"| Form
-  Summary -->|"employee/termination/cancelled"| Form
-  Summary --> opt{{"payrollOption?"}}
-  opt -->|"dismissalPayroll: employee/termination/runPayroll"| DismissalPayroll
-  opt -->|"anotherWay: employee/termination/runOffCyclePayroll"| DismissalPayroll
-  DismissalPayroll -->|"payroll/saveAndExit"| PayrollLanding
-```
-
-### Include in the regular payroll
-
-The summary is the final screen; final pay is processed in the next scheduled regular payroll. The termination can still be edited or cancelled from here.
+The last two both run `Payroll.DismissalFlow` (with an existing `payrollId` for the dismissal path, without one for the off-cycle path), which on `payroll/saveAndExit` lands on `Payroll.PayrollLanding` — the payroll surface where that payroll is run. There is no exit event from the landing; breadcrumbs navigate back to the summary or form from there (and from the dismissal flow).
 
 ```mermaid
 flowchart
-  Form -->|"employee/termination/done"| Summary
-  Summary -->|"employee/termination/edit"| Form
-  Summary -->|"employee/termination/cancelled"| Form
+  start@{ shape: sm-circ } --> terminated{{"already terminated?"}}
+  terminated -.->|"no"| TerminateEmployee
+  terminated -.->|"yes"| viewExisting@{ shape: sm-circ }
+  viewExisting -->|"employee/termination/viewSummary"| TerminationSummary
+  TerminateEmployee -->|"employee/termination/done"| TerminationSummary
+  TerminateEmployee -->|"CANCEL"| done@{ shape: fr-circ, label: " " }
+  TerminationSummary -->|"employee/termination/edit<br/>employee/termination/cancelled"| TerminateEmployee
+  TerminationSummary -->|"employee/termination/runPayroll<br/>employee/termination/runOffCyclePayroll"| DismissalFlow["Payroll.DismissalFlow"]
+  DismissalFlow -->|"payroll/saveAndExit"| PayrollLanding["Payroll.PayrollLanding"]
+  class terminated branch
+  class DismissalFlow flow
 ```
 
 ## Business rules
