@@ -23,6 +23,12 @@ import { Flow } from '@/components/Flow/Flow'
  * see the events table on each sub-component for the full set of events and
  * payloads observable from this flow.
  *
+ * @components
+ * - {@link EmployeeList}
+ * - {@link DashboardFlow}
+ * - {@link TerminationFlow}
+ * - {@link EmployeeOnboarding.OnboardingExecutionFlow | OnboardingExecutionFlow}
+ *
  * @param props - See {@link EmployeeListFlowProps}.
  * @returns The employee list workflow with internal navigation to the dashboard, termination, and onboarding flows.
  * @public

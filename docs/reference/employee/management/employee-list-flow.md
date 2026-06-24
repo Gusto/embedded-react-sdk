@@ -54,3 +54,31 @@ Props for EmployeeListFlow.
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [EmployeeManagement.EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [EmployeeManagement.DashboardFlow](dashboard-flow.md) | The main entry point for the employee dashboard. |
+| [EmployeeManagement.TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
+| [EmployeeManagement.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+
+<!-- guide-source: src/components/Employee/EmployeeListFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow rests on the management employee list and routes into one of three sub-flows based on the row action the admin invokes (or the "Add employee" CTA). Each sub-flow is given a "Back to employees" header that emits `employee/returnToList` to come back to the list.
+
+The list itself is tabbed into Active, Onboarding, and Dismissed employees, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+
+```mermaid
+flowchart
+  List -->|"employee/update"| DashboardFlow
+  List -->|"employee/dismiss"| TerminationFlow
+  List -->|"employee/create"| OnboardingExecutionFlow
+
+  DashboardFlow -->|"employee/returnToList"| List
+  TerminationFlow -->|"employee/returnToList"| List
+  OnboardingExecutionFlow -->|"employee/returnToList, company/employees"| List
+```
+<!-- /guide-source (slot: appendix) -->
