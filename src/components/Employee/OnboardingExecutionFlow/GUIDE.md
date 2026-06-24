@@ -4,37 +4,31 @@
 
 ## Step flow <!-- slot: appendix -->
 
-The execution steps differ by whether the employee self-onboards, so each path is shown on its own. (The documents step appears only when `withEmployeeI9` is set.)
+`OnboardingExecutionFlow` runs the per-employee steps in order. After compensation, the path branches on the employee's self-onboarding status — set by the self-onboarding toggle the admin chooses on the Profile step, not by a flow prop:
 
-### Without self-onboarding
+- **Admin onboarding** — the admin completes every step, including federal taxes, state taxes, and payment method.
+- **Self-onboarding** — the admin sets up the basics and the employee completes federal taxes, state taxes, and payment method themselves, so those three steps are skipped here.
 
-The admin completes every step.
+The `isSelfOnboardingEnabled` prop only controls whether that toggle is offered: when `false`, the toggle is hidden and the flow always takes the admin path; when `true` (the default), the branch follows the admin's selection.
+
+The documents step appears only when `withEmployeeI9` is set.
 
 ```mermaid
 flowchart
+  start@{ shape: sm-circ } --> Profile
   Profile -->|"employee/profile/done"| Compensation
-  Compensation -->|"employee/compensations/done"| FederalTaxes
+  Compensation -->|"employee/compensations/done"| selfOnboarding{{"selfOnboarding?"}}
+  selfOnboarding -.->|false| FederalTaxes
   FederalTaxes -->|"employee/federalTaxes/done"| StateTaxes
   StateTaxes -->|"employee/stateTaxes/done"| PaymentMethod
   PaymentMethod -->|"employee/paymentMethod/done"| Deductions
-  Deductions -->|"employee/deductions/done"| i9{{"withEmployeeI9?"}}
-  i9 -->|true| EmployeeDocuments
-  i9 -->|false| OnboardingSummary
+  selfOnboarding -.->|true| Deductions
+  Deductions -->|"employee/deductions/done"| withEmployeeI9{{"withEmployeeI9?"}}
+  withEmployeeI9 -.->|true| EmployeeDocuments
   EmployeeDocuments -->|"employee/documents/done"| OnboardingSummary
-  OnboardingSummary -->|"employee/onboarding/done"| done(( ))
-```
+  withEmployeeI9 -.->|false| OnboardingSummary
+  OnboardingSummary -->|"employee/onboarding/done"| done@{ shape: fr-circ, label: " " }
 
-### With self-onboarding
-
-The admin sets up the basics; the employee completes taxes and payment method themselves.
-
-```mermaid
-flowchart
-  Profile -->|"employee/profile/done"| Compensation
-  Compensation -->|"employee/compensations/done"| Deductions
-  Deductions -->|"employee/deductions/done"| i9{{"withEmployeeI9?"}}
-  i9 -->|true| EmployeeDocuments
-  i9 -->|false| OnboardingSummary
-  EmployeeDocuments -->|"employee/documents/done"| OnboardingSummary
-  OnboardingSummary -->|"employee/onboarding/done"| done(( ))
+  class selfOnboarding branch
+  class withEmployeeI9 branch
 ```
