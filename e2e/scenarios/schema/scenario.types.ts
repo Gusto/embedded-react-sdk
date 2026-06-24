@@ -8,99 +8,99 @@
 export type LocationDecoration =
   | FragmentRef
   | {
-      key: KeyHandle;
-      street_1: string;
-      street_2?: string;
-      city: string;
-      state: string;
-      zip: string;
-      filing_address?: boolean;
-      mailing_address?: boolean;
-      [k: string]: unknown;
-    };
+      key: KeyHandle
+      street_1: string
+      street_2?: string
+      city: string
+      state: string
+      zip: string
+      filing_address?: boolean
+      mailing_address?: boolean
+      [k: string]: unknown
+    }
 /**
  * Stable handle for cross-referencing entities within the scenario (e.g., employees[].key='alice' -> scenario.employeeIds.alice).
  */
-export type KeyHandle = string;
+export type KeyHandle = string
 export type EmployeeDecoration =
   | FragmentRef
   | {
-      key: KeyHandle;
-      first_name: string;
-      last_name: string;
-      email?: string;
+      key: KeyHandle
+      first_name: string
+      last_name: string
+      email?: string
       home_address?: {
-        street_1?: string;
-        street_2?: string;
-        city?: string;
-        state?: string;
-        zip?: string;
-        [k: string]: unknown;
-      };
+        street_1?: string
+        street_2?: string
+        city?: string
+        state?: string
+        zip?: string
+        [k: string]: unknown
+      }
       work_address?: {
-        locationKey?: KeyHandle;
-        [k: string]: unknown;
-      };
+        locationKey?: KeyHandle
+        [k: string]: unknown
+      }
       job?: {
-        title: string;
-        hire_date: string;
-        locationKey?: KeyHandle;
-        [k: string]: unknown;
-      };
+        title: string
+        hire_date: string
+        locationKey?: KeyHandle
+        [k: string]: unknown
+      }
       compensation?: {
-        rate?: string;
-        payment_unit?: "Year" | "Hour" | "Month" | "Week" | "Paycheck";
+        rate?: string
+        payment_unit?: 'Year' | 'Hour' | 'Month' | 'Week' | 'Paycheck'
         flsa_status?:
-          | "Exempt"
-          | "Nonexempt"
-          | "Owner"
-          | "Salaried Nonexempt"
-          | "Commission Only Exempt"
-          | "Commission Only Nonexempt";
-        [k: string]: unknown;
-      };
+          | 'Exempt'
+          | 'Nonexempt'
+          | 'Owner'
+          | 'Salaried Nonexempt'
+          | 'Commission Only Exempt'
+          | 'Commission Only Nonexempt'
+        [k: string]: unknown
+      }
       /**
        * Target onboarding_status. Runner validates that the transition is legal from the current state.
        */
-      onboarding_status?: string;
+      onboarding_status?: string
       /**
        * If present, runner creates a termination after the employee is fully provisioned.
        */
       termination?: {
-        effective_date?: string;
-        run_termination_payroll?: boolean;
-        [k: string]: unknown;
-      };
-      [k: string]: unknown;
-    };
+        effective_date?: string
+        run_termination_payroll?: boolean
+        [k: string]: unknown
+      }
+      [k: string]: unknown
+    }
 export type ContractorDecoration =
   | FragmentRef
   | {
-      key: KeyHandle;
-      type: "Individual" | "Business";
-      first_name?: string;
-      last_name?: string;
-      business_name?: string;
-      email?: string;
-      wage_type?: "Fixed" | "Hourly";
-      hourly_rate?: string;
+      key: KeyHandle
+      type: 'Individual' | 'Business'
+      first_name?: string
+      last_name?: string
+      business_name?: string
+      email?: string
+      wage_type?: 'Fixed' | 'Hourly'
+      hourly_rate?: string
       /**
        * If present, runner PUTs the contractor's address before applying onboarding_status. Required to make a contractor payment-ready.
        */
       address?: {
-        street_1: string;
-        street_2?: string;
-        city: string;
-        state: string;
-        zip: string;
-        [k: string]: unknown;
-      };
+        street_1: string
+        street_2?: string
+        city: string
+        state: string
+        zip: string
+        [k: string]: unknown
+      }
       /**
        * Target contractor onboarding_status. When set to 'onboarding_completed', the runner marks the contractor as fully onboarded so they appear in the payment list.
        */
-      onboarding_status?: string;
-      [k: string]: unknown;
-    };
+      onboarding_status?: string
+      [k: string]: unknown
+    }
 
 /**
  * E2E scenario definition consumed by the e2e/scenario/runner. Provisions a per-test company by decorating a base demo with locations, employees, contractors, pay schedules, and payrolls. Templated strings ({{ts}}, {{relative:+Nd}}, {{relative:+Nd:DayName}}) are resolved at decoration time.
@@ -109,66 +109,66 @@ export interface Scenario {
   /**
    * Path to this schema for editor autocomplete (ignored at runtime).
    */
-  $schema?: string;
+  $schema?: string
   /**
    * Human-readable scenario name shown in test reports.
    */
-  name: string;
+  name: string
   /**
    * Optional longer description of what this scenario provisions and why.
    */
-  description?: string;
+  description?: string
   /**
    * Domain the scenario belongs to. Used by the fixture to auto-tag tests with @<domain>. Use 'shared' for scenarios that are consumed by tests across multiple domain folders (e.g., shared/onboarded-ro is used by payroll, employee, contractor, and time-off RO tests).
    */
   domain:
-    | "payroll"
-    | "employee"
-    | "contractor"
-    | "company"
-    | "time-off"
-    | "dismissal"
-    | "information-requests"
-    | "shared";
+    | 'payroll'
+    | 'employee'
+    | 'contractor'
+    | 'company'
+    | 'time-off'
+    | 'dismissal'
+    | 'information-requests'
+    | 'shared'
   /**
    * gws-flows demo form value to provision before decoration. Start from the cheapest demo that gets us close; decorate the rest.
    */
   baseDemo:
-    | "react_sdk_demo"
-    | "react_sdk_demo_company_onboarded"
-    | "react_sdk_demo_employee_self_onboarding"
-    | "react_sdk_demo_contractor_onboarding";
+    | 'react_sdk_demo'
+    | 'react_sdk_demo_company_onboarded'
+    | 'react_sdk_demo_employee_self_onboarding'
+    | 'react_sdk_demo_contractor_onboarding'
   /**
    * Entities to create/update on top of the base demo. Order is fixed: locations -> stateTaxes -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.
    */
   decorations: {
-    locations?: LocationDecoration[];
-    stateTaxes?: StateTaxDecoration[];
-    employees?: EmployeeDecoration[];
-    contractors?: ContractorDecoration[];
-    paySchedule?: PayScheduleDecoration;
-    payrolls?: PayrollDecoration[];
-  };
+    locations?: LocationDecoration[]
+    stateTaxes?: StateTaxDecoration[]
+    employees?: EmployeeDecoration[]
+    contractors?: ContractorDecoration[]
+    paySchedule?: PayScheduleDecoration
+    payrolls?: PayrollDecoration[]
+  }
   /**
    * Dotted-path keys the scenario guarantees will be populated in ScenarioContext after provisioning. The runner fails fast if any are missing post-decoration.
    */
-  expectedContext?: string[];
+  expectedContext?: string[]
   /**
    * When true, e2e-setup validates that the base demo's company is fully onboarded (GET /companies/:id/onboarding_status returns onboarding_completed=true) before writing the scenario to the artifact. The runner polls the same demo with backoff up to a 180s budget to tolerate the demo backend's 10-90s seeding window. Set on scenarios that depend on the seeded onboarded state. Defaults to false.
    */
-  requireOnboardedCompany?: boolean;
+  requireOnboardedCompany?: boolean
   /**
    * When true, e2e-setup additionally validates that the base demo's company has at least one onboarded, non-terminated employee. Implies requireOnboardedCompany. Used by payroll canaries that drive flows against the seed's pre-onboarded employees rather than scenario-decorated ones. Defaults to false.
    */
-  requireOnboardedEmployees?: boolean;
+  requireOnboardedEmployees?: boolean
   /**
    * When true, e2e-setup ensures the company has at least one signatory with identity_verification_status='Pass'. If missing, e2e-setup runs the self-heal step that POSTs a canonical test signatory and signs all required forms. Then asserts the final state. Defaults to false.
    */
-  requireSignatory?: boolean;
+  requireSignatory?: boolean
   /**
    * When true, e2e-setup asserts that GET /companies/:id/payrolls/blockers returns an empty array. Fails loudly with the list of present blockers if any exist, refusing to write the scenario artifact. Defaults to false.
    */
-  requireNoBlockers?: boolean;
+  requireNoBlockers?: boolean
 }
 /**
  * Reference to a shared fragment file with optional deep-merge overrides.
@@ -177,15 +177,15 @@ export interface FragmentRef {
   /**
    * Relative path to a JSON fragment file (resolved by the loader from the scenario's directory).
    */
-  $ref: string;
-  key?: KeyHandle;
+  $ref: string
+  key?: KeyHandle
   /**
    * Properties to deep-merge into the fragment. Arrays are replaced, not merged.
    */
   overrides?: {
-    [k: string]: unknown;
-  };
-  [k: string]: unknown;
+    [k: string]: unknown
+  }
+  [k: string]: unknown
 }
 /**
  * Pre-seed tax_requirements answers for a specific state. Runner PUTs the body to /companies/:id/tax_requirements/:state after locations are decorated. The state must already be relevant to the company (i.e., the company has an employee or location in that state, OR the base demo seeds the state — the demo backend returns a 404 otherwise).
@@ -194,7 +194,7 @@ export interface StateTaxDecoration {
   /**
    * Two-letter state code (e.g., WA, ID).
    */
-  state: string;
+  state: string
   /**
    * @minItems 1
    */
@@ -203,11 +203,11 @@ export interface StateTaxDecoration {
       /**
        * Requirement set key returned by GET /tax_requirements/:state (e.g., 'taxrates', 'registrations').
        */
-      key: string;
+      key: string
       /**
        * Optional effective-from date in YYYY-MM-DD; omit to use whatever the API surfaces.
        */
-      effective_from?: string | null;
+      effective_from?: string | null
       /**
        * @minItems 1
        */
@@ -216,33 +216,33 @@ export interface StateTaxDecoration {
           /**
            * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
            */
-          key: string;
+          key: string
           /**
            * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
            */
-          value: string | number | boolean;
+          value: string | number | boolean
         },
         ...{
           /**
            * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
            */
-          key: string;
+          key: string
           /**
            * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
            */
-          value: string | number | boolean;
-        }[]
-      ];
+          value: string | number | boolean
+        }[],
+      ]
     },
     ...{
       /**
        * Requirement set key returned by GET /tax_requirements/:state (e.g., 'taxrates', 'registrations').
        */
-      key: string;
+      key: string
       /**
        * Optional effective-from date in YYYY-MM-DD; omit to use whatever the API surfaces.
        */
-      effective_from?: string | null;
+      effective_from?: string | null
       /**
        * @minItems 1
        */
@@ -251,46 +251,46 @@ export interface StateTaxDecoration {
           /**
            * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
            */
-          key: string;
+          key: string
           /**
            * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
            */
-          value: string | number | boolean;
+          value: string | number | boolean
         },
         ...{
           /**
            * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
            */
-          key: string;
+          key: string
           /**
            * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
            */
-          value: string | number | boolean;
-        }[]
-      ];
-    }[]
-  ];
+          value: string | number | boolean
+        }[],
+      ]
+    }[],
+  ]
 }
 export interface PayScheduleDecoration {
   frequency:
-    | "Every week"
-    | "Every other week"
-    | "Twice per month"
-    | "Monthly"
-    | "Quarterly"
-    | "Semiannually"
-    | "Annually";
-  anchor_pay_date?: string;
-  anchor_end_of_pay_period?: string;
-  [k: string]: unknown;
+    | 'Every week'
+    | 'Every other week'
+    | 'Twice per month'
+    | 'Monthly'
+    | 'Quarterly'
+    | 'Semiannually'
+    | 'Annually'
+  anchor_pay_date?: string
+  anchor_end_of_pay_period?: string
+  [k: string]: unknown
 }
 export interface PayrollDecoration {
-  key: KeyHandle;
-  type: "regular" | "off_cycle" | "termination";
+  key: KeyHandle
+  type: 'regular' | 'off_cycle' | 'termination'
   /**
    * If 'processed', runner runs prepare -> calculate -> submit -> poll until status=processed.
    */
-  status?: "unprocessed" | "calculated" | "processed";
-  check_date?: string;
-  [k: string]: unknown;
+  status?: 'unprocessed' | 'calculated' | 'processed'
+  check_date?: string
+  [k: string]: unknown
 }
