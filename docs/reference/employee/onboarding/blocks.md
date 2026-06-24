@@ -183,6 +183,13 @@ presenting the document list.
 | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
 | `cancel` | Fired when the user cancels signing a form and returns to the document list | — |
 
+### Components
+
+- [EmploymentEligibility](#employmenteligibility)
+- [I9SignatureForm](#i9signatureform)
+- [DocumentList](#documentlist)
+- [SignatureForm](#signatureform)
+
 <a id="editcompensation"></a>
 
 ## EditCompensation
