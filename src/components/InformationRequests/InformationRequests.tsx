@@ -59,6 +59,16 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
  * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
  *
+ * Each piece is also exported as a standalone block (see the Sub-components
+ * table) for composing a custom workflow when this orchestration is the wrong
+ * fit. See the
+ * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
+ *
+ * @components
+ * - {@link InformationRequestList}
+ * - {@link InformationRequestForm}
+ *
  * @param props - See {@link InformationRequestsFlowProps}.
  * @returns The information requests flow surface.
  * @public

@@ -28,6 +28,12 @@ Information requests can also block payroll processing; in that case they are su
 | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
 | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
 
+Each piece is also exported as a standalone block (see the Sub-components
+table) for composing a custom workflow when this orchestration is the wrong
+fit. See the
+[Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
+for how to recompose these blocks into your own flow.
+
 ## InformationRequestsFlowProps
 
 <a id="informationrequestsflowprops"></a>
@@ -42,3 +48,27 @@ Props for InformationRequestsFlow.
 | `withAlert?` | `boolean` | When `true` (default), the submission success alert is rendered at the top of this component. Set to `false` when embedding in a parent that renders the alert elsewhere. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [InformationRequestList](blocks.md#informationrequestlist) | Displays the list of outstanding information requests for a company with a "Respond" CTA on each open request. |
+| [InformationRequestForm](blocks.md#informationrequestform) | Dynamic response form for a single information request. |
+
+<!-- guide-source: src/components/InformationRequests/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow opens on the list of open and submitted information requests for the company, each open request carrying a "Respond" action. Selecting "Respond" opens the response form in a modal over the list. Submitting the form returns to the list (and, when `withAlert` is `true`, shows a dismissible success alert at the top); cancelling closes the modal and returns to the list without submitting.
+
+```mermaid
+flowchart
+  List -->|"informationRequest/respond"| Form
+  Form -->|"informationRequest/form/done"| List
+  Form -->|"informationRequest/form/cancel"| List
+```
+
+The response form is rendered dynamically from the request's required questions. Supported response types and their input behavior are documented on the `InformationRequestForm` block.
+
+Each piece is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/integration-guide/composition) for how to recompose these blocks into your own flow.
+<!-- /guide-source (slot: appendix) -->
