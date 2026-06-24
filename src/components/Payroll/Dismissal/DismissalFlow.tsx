@@ -25,6 +25,10 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * Once the payroll is created, all standard run-payroll events (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`) are emitted during execution.
  *
+ * @components
+ * - {@link DismissalPayPeriodSelection}
+ * - {@link PayrollExecutionFlow}
+ *
  * @param props - {@link DismissalFlowProps} with the company, employee, optional payroll, and event handler.
  * @returns The composed dismissal payroll flow.
  * @public
