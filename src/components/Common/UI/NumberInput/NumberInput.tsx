@@ -49,6 +49,17 @@ export function NumberInput({
   const minValue = typeof min === 'string' ? Number(min) : min
   const maxValue = typeof max === 'string' ? Number(max) : max
 
+  const formatOptions = useMemo(
+    () => ({
+      style: 'decimal' as const,
+      minimumFractionDigits: format === 'currency' ? 2 : minimumFractionDigits,
+      maximumFractionDigits: format === 'currency' ? 2 : maximumFractionDigits,
+      currency,
+      currencyDisplay: 'symbol' as const,
+    }),
+    [format, minimumFractionDigits, maximumFractionDigits, currency],
+  )
+
   const currencySymbol = useMemo(() => {
     return new Intl.NumberFormat(locale, {
       style: 'currency',
@@ -75,13 +86,7 @@ export function NumberInput({
       <AriaNumberField
         value={value}
         name={name}
-        formatOptions={{
-          style: 'decimal',
-          minimumFractionDigits: format === 'currency' ? 2 : minimumFractionDigits,
-          maximumFractionDigits: format === 'currency' ? 2 : maximumFractionDigits,
-          currency,
-          currencyDisplay: 'symbol',
-        }}
+        formatOptions={formatOptions}
         isInvalid={isInvalid}
         isDisabled={isDisabled}
         isRequired={isRequired}

@@ -47,20 +47,22 @@ export const EditContractorPaymentPresentation = ({
     return isNaN(parsed) ? 0 : parsed
   }
 
+  const computeHoursPayDescription = (hours: number) => {
+    if (!hourlyRate || hourlyRate <= 0) return ''
+    return t('hoursPayDescription', {
+      rate: currencyFormatter(hourlyRate),
+      total: currencyFormatter(hours * hourlyRate),
+    })
+  }
+
   const [hoursPayDescription, setHoursPayDescription] = useState('')
 
   useEffect(() => {
     if (isOpen) {
-      const computeHoursPayDescription = (hours: number) => {
-        if (!hourlyRate || hourlyRate <= 0) return ''
-        return t('hoursPayDescription', {
-          rate: currencyFormatter(hourlyRate),
-          total: currencyFormatter(hours * hourlyRate),
-        })
-      }
       setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
     }
-  }, [isOpen, hourlyRate, formMethods, t, currencyFormatter])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, hourlyRate])
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -110,18 +112,11 @@ export const EditContractorPaymentPresentation = ({
                   label={t('hoursLabel')}
                   adornmentEnd={t('hoursAdornment')}
                   description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
+                  onChange={hours => {
+                    setHoursPayDescription(computeHoursPayDescription(hours))
+                  }}
                   onInputChange={raw => {
-                    const hours = parseHours(raw)
-                    if (!hourlyRate || hourlyRate <= 0) {
-                      setHoursPayDescription('')
-                    } else {
-                      setHoursPayDescription(
-                        t('hoursPayDescription', {
-                          rate: currencyFormatter(hourlyRate),
-                          total: currencyFormatter(hours * hourlyRate),
-                        }),
-                      )
-                    }
+                    setHoursPayDescription(computeHoursPayDescription(parseHours(raw)))
                   }}
                 />
               )}
