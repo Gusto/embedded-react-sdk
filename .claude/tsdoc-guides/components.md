@@ -27,6 +27,36 @@ Every exported React component's `@remarks` must include an events table listing
 
 ## Props interfaces
 
-For `@public` components, every property on the props interface needs at minimum a one-line `/** description */` inline comment — ESLint's `require-member-comment` rule will catch any missing ones.
+Component props are declared as interfaces extending `BaseComponentInterface<'Namespace.Component'>`, pinning the component's i18n resource namespace as the type argument:
 
-Use `interface` over `type = { ... }` for props types — TypeDoc renders interfaces with full property tables, and IDE hover tooltips only show per-property docs when the type is declared as an `interface`.
+```ts
+export interface ContractorSubmitProps extends BaseComponentInterface<'Contractor.Submit'> {
+  /** UUID of the contractor being submitted. */
+  contractorId: string
+}
+```
+
+Document only the props **declared on this interface**. The members inherited from `BaseComponentInterface` / `CommonComponentInterface` — `children`, `className`, `defaultValues`, `dictionary`, `onEvent`, `FallbackComponent`, `LoadingIndicator` — are already documented on the base; do not redeclare or re-document them.
+
+The one common exception is **narrowing**: a component may re-declare `defaultValues` with its own form-data shape (e.g. `defaultValues?: Partial<ContractorProfileFormData>`). When a member is re-declared to narrow its type, give it a `/** description */` describing that component's shape.
+
+`require-member-comment` enforces a one-line `/** description */` on every own member. Use `interface` over `type = { ... }` — TypeDoc renders interfaces with full property tables, and IDE hover tooltips only show per-property docs for interfaces.
+
+## The component function
+
+Document the component itself separately from its props interface. The dominant convention delegates the param to the interface rather than repeating each prop:
+
+```ts
+/**
+ * Summary of what the component does.
+ *
+ * @remarks
+ * <events table>
+ *
+ * @param props - See {@link ContractorSubmitProps}.
+ * @returns The rendered <thing>.
+ * @public
+ */
+```
+
+The component takes no `@typeParam` — the `TResourceKey` generic is pinned in the props interface, not re-exposed on the component.

@@ -3,7 +3,7 @@ name: tsdoc
 description: >-
   Write TSDoc for exported symbols. Use after writing new code or when an export
   is missing documentation. For auditing drift across many files after a refactor,
-  use the tsdoc-directory skill instead.
+  use the tsdoc-auditor agent instead.
 argument-hint: '[file path or symbol name — omit to document what was just written]'
 ---
 
@@ -65,6 +65,16 @@ Output format: `SYMBOL: NAME\n<skeleton>` per symbol, or `SKIP` if already align
 ````
 
 One blank line between summary and tag group. `@remarks` is its own group (blank lines before and after). Each `@example` is its own group.
+
+**`@group` tags:** Optional, but expected on `@public` exports so TypeDoc organizes the sidebar. When present, the value **must** come from this fixed set (`tsdoc-coverage/valid-group` errors otherwise) — match the existing siblings in the barrel rather than inventing a label:
+
+| `@group` value                                | Use for                                           |
+| --------------------------------------------- | ------------------------------------------------- |
+| `Flow Components` / `Block Components`        | Flow orchestrators / standalone block components  |
+| `Form Hooks` / `Data Hooks` / `Utility Hooks` | `useXxxForm` / data-fetching hooks / helper hooks |
+| `Component Props`                             | Component and hook props interfaces               |
+| `Utility Types`                               | Exported helper/return types                      |
+| `Events`                                      | Exported event-name constants/types               |
 
 **Style rules:**
 
