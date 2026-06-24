@@ -135,6 +135,7 @@ const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
+  const [hasSubmittedInSession, setHasSubmittedInSession] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
@@ -250,6 +251,7 @@ const Root = ({
       ])
       setShowWireDetailsConfirmation(false)
       setIsPolling(false)
+      setHasSubmittedInSession(false)
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
     if (
@@ -273,6 +275,7 @@ const Root = ({
       ])
       setShowWireDetailsConfirmation(false)
       setIsPolling(false)
+      setHasSubmittedInSession(false)
     }
   }, [
     payrollData?.processingRequest?.status,
@@ -301,7 +304,7 @@ const Root = ({
   const gustoEmbedded = useGustoEmbeddedContext()
 
   if (!payrollData) {
-    return <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
+    return <PayrollLoading title={t('dataLoadingTitle')} />
   }
 
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
@@ -396,6 +399,7 @@ const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
       setIsPolling(true)
+      setHasSubmittedInSession(true)
     })
   }
 
@@ -406,7 +410,7 @@ const Root = ({
       onCancel={onCancel}
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
-      status={isPending || isPolling ? PayrollOverviewStatus.Submitting : status}
+      status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
       isProcessed={
         payrollData.processed === true ||
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
