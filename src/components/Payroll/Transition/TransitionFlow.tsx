@@ -27,6 +27,10 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * Once execution begins, all standard run-payroll events are emitted as well.
  *
+ * @components
+ * - {@link TransitionCreation}
+ * - {@link PayrollExecutionFlow}
+ *
  * @param props - See {@link TransitionFlowProps}.
  * @returns The transition payroll flow.
  * @public
