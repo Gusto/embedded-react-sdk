@@ -3032,6 +3032,7 @@ export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTML
     minimumFractionDigits?: number;
     onBlur?: () => void;
     onChange?: (value: number) => void;
+    onInputChange?: (value: string) => void;
     value?: number;
 }
 

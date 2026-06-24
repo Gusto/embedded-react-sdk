@@ -45,6 +45,10 @@ export interface NumberInputProps
    */
   onBlur?: () => void
   /**
+   * Fires on every keystroke with the raw input string (pre-commit), unlike onChange which fires on blur/Enter.
+   */
+  onInputChange?: (value: string) => void
+  /**
    * Element to display at the start of the input
    */
   adornmentStart?: InputProps['adornmentStart']
