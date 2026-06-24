@@ -63,9 +63,9 @@ The flow opens on the list of open and submitted information requests for the co
 
 ```mermaid
 flowchart
-  List -->|"informationRequest/respond"| Form
-  Form -->|"informationRequest/form/done"| List
-  Form -->|"informationRequest/form/cancel"| List
+  start@{ shape: sm-circ } --> List["InformationRequestList"]
+  List -->|"informationRequest/respond"| Form["InformationRequestForm"]
+  Form -->|"informationRequest/form/done<br/>informationRequest/form/cancel"| List
 ```
 
 The response form is rendered dynamically from the request's required questions. Supported response types and their input behavior are documented on the `InformationRequestForm` block.
