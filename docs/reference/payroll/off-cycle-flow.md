@@ -14,18 +14,15 @@ custom_edit_url: null
 
 Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
 
-## OffCycleFlowProps
+## Example
 
-<a id="offcycleflowprops"></a>
+```tsx
+import { Payroll } from '@gusto/embedded-react-sdk'
 
-Props for OffCycleFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
-| `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
-| `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
+function MyApp() {
+  return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+}
+```
 
 ## Remarks
 
@@ -43,12 +40,15 @@ payrolls — only the creation step differs.
 Once the flow transitions to execution, all standard run-payroll events are emitted
 (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
 
-## Example
+## OffCycleFlowProps
 
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
+<a id="offcycleflowprops"></a>
 
-function MyApp() {
-  return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
-}
-```
+Props for OffCycleFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
+| `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
+| `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |

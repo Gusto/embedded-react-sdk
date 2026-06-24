@@ -14,12 +14,6 @@ custom_edit_url: null
 
 Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
 
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `OnboardingFlowProps` | See OnboardingFlowProps. |
-
 ## Remarks
 
 The flow begins on the overview screen and steps through locations, federal taxes, industry,
@@ -38,3 +32,9 @@ returning to the overview.
 | `paySchedule/done` | User completed the pay schedule step | — |
 | `company/stateTaxes/done` | User completed the state taxes step | — |
 | `company/forms/done` | User completed signing company documents | — |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `OnboardingFlowProps` | See OnboardingFlowProps. |

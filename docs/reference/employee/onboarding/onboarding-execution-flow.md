@@ -14,6 +14,29 @@ custom_edit_url: null
 
 The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary.
 
+## Example
+
+```tsx
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeOnboarding.OnboardingExecutionFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+## Remarks
+
+Drives the per-employee onboarding experience used by both [OnboardingFlow](onboarding-flow.md) (admin) and [SelfOnboardingFlow](self-onboarding-flow.md) (employee). Each step is also exported as a standalone block — see [Profile](blocks.md#profile), [Compensation](blocks.md#compensation), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
+
+Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
+
+The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
+
 ## OnboardingExecutionFlowProps
 
 <a id="onboardingexecutionflowprops"></a>
@@ -31,26 +54,3 @@ Props for OnboardingExecutionFlow.
 | `isAdmin?` | `boolean` | When true, the flow renders in the admin context. When false, it is configured for employee self-onboarding. Defaults to `true`. |
 | `isSelfOnboardingEnabled?` | `boolean` | When true, presents the self-onboarding toggle on the profile step. Defaults to `true`. |
 | `withEmployeeI9?` | `boolean` | When true, enables the Employee Documents step in the flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
-
-## Remarks
-
-Drives the per-employee onboarding experience used by both [OnboardingFlow](onboarding-flow.md) (admin) and [SelfOnboardingFlow](self-onboarding-flow.md) (employee). Each step is also exported as a standalone block — see [Profile](blocks.md#profile), [Compensation](blocks.md#compensation), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
-
-Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
-
-The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
-
-## Example
-
-```tsx
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <EmployeeOnboarding.OnboardingExecutionFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  )
-}
-```

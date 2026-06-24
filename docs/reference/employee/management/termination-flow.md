@@ -14,23 +14,21 @@ custom_edit_url: null
 
 Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
 
-## TerminationFlowProps
+## Example
 
-<a id="terminationflowprops"></a>
+```tsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
-Props for TerminationFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `employeeId` | `string` | The employee identifier to terminate. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `undefined` | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+function MyApp() {
+  return (
+    <EmployeeManagement.TerminationFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ## Remarks
 
@@ -57,18 +55,16 @@ The [PayrollOption](blocks.md#payrolloption) on each event identifies how the pa
 - `regularPayroll` — Include the final pay in the employee's next scheduled regular payroll. The termination can still be cancelled after the fact.
 - `anotherWay` — Handle final pay outside of Gusto. Triggers the off-cycle payroll creation flow and removes the employee from unprocessed future payrolls. The termination can still be cancelled after the fact.
 
-## Example
+## TerminationFlowProps
 
-```tsx
-import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+<a id="terminationflowprops"></a>
 
-function MyApp() {
-  return (
-    <EmployeeManagement.TerminationFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
-    />
-  )
-}
-```
+Props for TerminationFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeId` | `string` | The employee identifier to terminate. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._

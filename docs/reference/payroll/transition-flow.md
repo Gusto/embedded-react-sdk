@@ -14,21 +14,6 @@ custom_edit_url: null
 
 Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule.
 
-## TransitionFlowProps
-
-<a id="transitionflowprops"></a>
-
-Props for TransitionFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Company running the transition payroll. |
-| `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
-| `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
-| `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
-| `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
-
 ## Remarks
 
 Starts on the creation step (configure check date, deductions, and tax withholding for the
@@ -43,3 +28,18 @@ If a `payrollUuid` is supplied, the flow skips creation and resumes directly in 
 | `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
 
 Once execution begins, all standard run-payroll events are emitted as well.
+
+## TransitionFlowProps
+
+<a id="transitionflowprops"></a>
+
+Props for TransitionFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Company running the transition payroll. |
+| `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
+| `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
+| `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
+| `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
