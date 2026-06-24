@@ -50,11 +50,22 @@ For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOn
 
 Manages a company's bank account — adding, viewing, and verifying it.
 
-### Parameters
+### BankAccountProps
 
-| Parameter | Type | Description |
+<a id="bankaccountprops"></a>
+
+Props for the [BankAccount](#bankaccount) component.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `BankAccountProps` | Component props including the target `companyId`. |
+| `companyId` | `string` | Identifier of the company whose bank account is being managed. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyBankAccount`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -106,11 +117,23 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 Displays the list of company documents to be signed and lets the user manage signatories.
 
-### Parameters
+### DocumentListProps
 
-| Parameter | Type | Description |
+<a id="documentlistprops"></a>
+
+Props for [DocumentList](#documentlist).
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `DocumentListProps` | Component props including the company id and optional signatory id |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyDocumentList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `signatoryId?` | `string` | Identifier of the signatory viewing the documents. When it matches the company's saved signatory, the user is treated as that signatory and is allowed to sign documents. |
 
 ### Remarks
 
@@ -133,11 +156,23 @@ signatory and is allowed to sign documents.
 
 Company onboarding step for reading and signing required company documents.
 
-### Parameters
+### DocumentSignerProps
 
-| Parameter | Type | Description |
+<a id="documentsignerprops"></a>
+
+Props for [DocumentSigner](#documentsigner).
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `DocumentSignerProps` | See DocumentSignerProps. |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyDocumentList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| `signatoryId?` | `string` | ID of the signatory. When set and matching the current signatory, the user is treated as the signatory and is allowed to sign documents — the signature form is pre-populated with their information. |
 
 ### Remarks
 
@@ -283,11 +318,22 @@ Pass a `locationId` to edit an existing location; omit it to create a new one.
 
 Orchestrated component for managing a company's mailing and filing addresses.
 
-### Parameters
+### LocationsProps
 
-| Parameter | Type | Description |
+<a id="locationsprops"></a>
+
+Props for the [Locations](#locations) component.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `LocationsProps` | See LocationsProps. |
+| `companyId` | `string` | Identifier of the company whose locations are being managed. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyLocations`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -339,11 +385,22 @@ Standalone building block used internally by the orchestrated `Locations` compon
 
 Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements.
 
-### Parameters
+### OnboardingOverviewProps
 
-| Parameter | Type | Description |
+<a id="onboardingoverviewprops"></a>
+
+Props for the [OnboardingOverview](#onboardingoverview) component.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `OnboardingOverviewProps` | Component props including the target `companyId` and standard base/common component options. |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyOnboardingOverview`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -428,11 +485,22 @@ list and the signature form (e.g. routing the user yourself after they select a 
 
 Orchestrated flow for managing a company's state tax setup.
 
-### Parameters
+### StateTaxesProps
 
-| Parameter | Type | Description |
+<a id="statetaxesprops"></a>
+
+Props for the [StateTaxes](#statetaxes) flow.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `StateTaxesProps` | StateTaxesProps |
+| `companyId` | `string` | UUID of the company whose state taxes are being managed. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -453,11 +521,23 @@ For finer-grained control over navigation, use the standalone [StateTaxesList](#
 
 Standalone form for editing a company's state tax requirements for a single state.
 
-### Parameters
+### StateTaxesFormProps
 
-| Parameter | Type | Description |
+<a id="statetaxesformprops"></a>
+
+Props for [StateTaxesForm](#statetaxesform).
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `StateTaxesFormProps` | StateTaxesFormProps |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `state` | `string` | Two-letter code of the state whose tax requirements are edited. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -491,11 +571,22 @@ function MyComponent() {
 
 Displays the list of state tax requirements for a company with their setup status.
 
-### Parameters
+### StateTaxesListProps
 
-| Parameter | Type | Description |
+<a id="statetaxeslistprops"></a>
+
+Props for the [StateTaxesList](#statetaxeslist) component.
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | `StateTaxesListProps` | Component props including the `companyId` whose state tax requirements should be listed. |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyStateTaxes`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 ### Remarks
 
@@ -545,6 +636,20 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.
+
+<a id="onboardingflowdefaultvalues"></a>
+
+### OnboardingFlowDefaultValues
+
+> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
+
+Default values for the company onboarding flow's per-step form components.
+
+#### Remarks
+
+At least one of the step-level keys must be provided. Per-step values are
+forwarded to the matching step component. If company data is already
+available via the API, the corresponding values are overwritten.
 
 <a id="payscheduledefaultfields"></a>
 

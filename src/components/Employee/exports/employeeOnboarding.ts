@@ -5,7 +5,10 @@ export {
   type OnboardingExecutionInitialState,
   type OnboardingDefaultValues,
 } from '../OnboardingExecutionFlow'
-export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
+export {
+  SelfOnboardingFlow,
+  type SelfOnboardingFlowProps,
+} from '../SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeList, type EmployeeListProps } from '../EmployeeList/onboarding/EmployeeList'
 export { OnboardingSummary, type OnboardingSummaryProps } from '../OnboardingSummary'
 export { Landing, type LandingProps } from '../Landing'

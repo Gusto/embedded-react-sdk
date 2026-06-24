@@ -8,6 +8,8 @@ import { Landing } from './SelfOnboardingComponents'
 import { employeeSelfOnboardingMachine } from './selfOnboardingMachine'
 import { Flow } from '@/components/Flow/Flow'
 
+export type { SelfOnboardingFlowProps } from './SelfOnboardingComponents'
+
 /**
  * Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing.
  *
