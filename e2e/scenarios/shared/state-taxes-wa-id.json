@@ -23,6 +23,26 @@
         "zip": "83702"
       }
     ],
+    "stateTaxes": [
+      {
+        "state": "WA",
+        "requirementSets": [
+          {
+            "key": "taxrates",
+            "requirements": [{ "key": "usedefaultsuirates", "value": true }]
+          }
+        ]
+      },
+      {
+        "state": "ID",
+        "requirementSets": [
+          {
+            "key": "taxrates",
+            "requirements": [{ "key": "suireimbursable", "value": false }]
+          }
+        ]
+      }
+    ],
     "employees": [
       {
         "key": "wa_employee",

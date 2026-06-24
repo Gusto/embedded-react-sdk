@@ -876,13 +876,17 @@ export async function provisionScenario(
     ? await decorateLocations(api, companyId, decorations.locations, log)
     : {}
 
-  if (decorations.stateTaxes) {
-    await decorateStateTaxes(api, companyId, decorations.stateTaxes, log)
-  }
-
   const employeeIds = decorations.employees
     ? await decorateEmployees(api, companyId, decorations.employees, locationIds, log)
     : {}
+
+  // stateTaxes runs AFTER employees because Gusto only surfaces state-tax
+  // requirement_sets once the company has nexus in the state — typically
+  // an employee with a home address there. Decorating before employees
+  // means GET returns empty for every new state and there's nothing to seed.
+  if (decorations.stateTaxes) {
+    await decorateStateTaxes(api, companyId, decorations.stateTaxes, log)
+  }
 
   const contractorIds = decorations.contractors
     ? await decorateContractors(api, companyId, decorations.contractors, log)

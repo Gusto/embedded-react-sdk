@@ -139,7 +139,7 @@ export interface Scenario {
     | 'react_sdk_demo_employee_self_onboarding'
     | 'react_sdk_demo_contractor_onboarding'
   /**
-   * Entities to create/update on top of the base demo. Order is fixed: locations -> stateTaxes -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.
+   * Entities to create/update on top of the base demo. Order is fixed: locations -> employees (+ addresses, jobs, compensations, onboarding_status) -> stateTaxes -> contractors -> paySchedule -> payrolls. stateTaxes runs after employees because Gusto only exposes state-tax requirement_sets once the company has nexus (an employee with a home address) in the state.
    */
   decorations: {
     locations?: LocationDecoration[]
