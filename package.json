@@ -158,7 +158,7 @@
     "vite-plugin-circular-dependency": "^0.6.0",
     "vite-plugin-dts": "^4.5.3",
     "vite-plugin-externalize-deps": "^0.10.0",
-    "vite-plugin-stylelint": "^6.1.0",
+    "vite-plugin-stylelint": "^6.3.0",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.9",
     "yaml": "^2.9.0"
