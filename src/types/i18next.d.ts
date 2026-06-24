@@ -3543,6 +3543,7 @@ export interface PayrollPayrollOverview{
 "downloadPaystubLabel":string;
 "loadingTitle":string;
 "loadingDescription":string;
+"dataLoadingTitle":string;
 "cancellingTitle":string;
 "cancelledEmptyState":string;
 "skippedBadge":string;
