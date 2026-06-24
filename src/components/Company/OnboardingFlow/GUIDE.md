@@ -19,6 +19,8 @@ flowchart
   StateTaxes -->|"company/stateTaxes/done"| DocumentSigner
   DocumentSigner -->|"company/forms/done"| Overview
   Overview -->|"company/overview/done"| done@{ shape: fr-circ, label: " " }
+
+  class Overview,Locations,FederalTaxes,Industry,BankAccount,Employees,PaySchedule,StateTaxes,DocumentSigner component
 ```
 
 Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/integration-guide/composition) for how to recompose these blocks into your own flow.
