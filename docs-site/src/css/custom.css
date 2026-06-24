@@ -805,3 +805,23 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
 [data-theme='dark'] .navbar-sidebar__item {
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
+
+/* ── Workflow step-diagram colors ──
+   The actual fill/stroke/text rules live in themeConfig.mermaid.options.themeCSS
+   and reference these variables. Mermaid scopes themeCSS to each diagram's
+   #<svg-id> (so it can't read the root [data-theme]), but CSS custom properties
+   cascade down from the root regardless — so we set the palette here per color
+   mode and the diagrams pick it up. No specificity hacks or !important needed. */
+:root {
+  /* Accent: Gusto coral for control flow — branches, start/stop, condition edges.
+     Step/content nodes use the base Mermaid theme's neutral default (no override). */
+  --diagram-accent-fill: #fde8e4;
+  --diagram-accent-stroke: #f15e49;
+  --diagram-text: #1b1b1d;
+}
+
+[data-theme='dark'] {
+  --diagram-accent-fill: #3a1f1a;
+  --diagram-accent-stroke: #f67660;
+  --diagram-text: #f5f5f5;
+}

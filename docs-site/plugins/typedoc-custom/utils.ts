@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'fs'
-import { dirname, join } from 'path'
+import { basename, dirname, join, relative } from 'path'
 import { stringify as stringifyYaml } from 'yaml'
 import {
   Comment,
@@ -95,37 +95,105 @@ export function pathToSourceDir(domainPath: string): string {
 }
 
 /**
- * Read prose from src/components/<Domain>/README.md if it exists, to be
- * injected at the top of the generated domain hub page. TypeDoc is run from
- * docs-site/, so src/ is one level up via process.cwd().
+ * Author-only guide content lives in a GUIDE.md alongside a component (or in a
+ * domain's source dir). Each `##` section carries a `<!-- slot: name -->` tag
+ * naming its purpose; the theme decides where each slot lands in the generated
+ * page. These are the recognized slots — extend deliberately.
  */
-export function readDomainReadme(domainPath: string): string | null {
+export const GUIDE_SLOTS = ['overview', 'appendix'] as const
+export type GuideSlot = (typeof GUIDE_SLOTS)[number]
+export type GuideSlots = Partial<Record<GuideSlot, string>>
+
+/** A parsed GUIDE.md: its tagged slots plus the repo-relative source path, so
+ *  the renderer can fence injected content with a provenance comment. */
+export interface Guide {
+  source: string
+  slots: GuideSlots
+}
+
+const SLOT_TAG = /<!--\s*slot:\s*([\w-]+)\s*-->/
+
+/**
+ * Read guide prose from src/components/<Domain>/GUIDE.md if it exists. TypeDoc
+ * is run from docs-site/, so src/ is one level up via process.cwd().
+ */
+export function readDomainGuide(domainPath: string): Guide | null {
   const sourceDir = pathToSourceDir(domainPath)
-  const readmePath = join(process.cwd(), '../src/components', sourceDir, 'README.md')
-  return readReadmeFile(readmePath)
+  return readGuideFile(join(process.cwd(), '../src/components', sourceDir, 'GUIDE.md'))
 }
 
 /**
- * Read prose from README.md in the same directory as a flow component's
- * source file. Returns null if no README exists there.
+ * Read guide prose from GUIDE.md in the same directory as a flow component's
+ * source file. Returns null if no GUIDE exists there.
  */
-export function readFlowReadme(sourceFilePath: string): string | null {
-  const readmePath = join(dirname(sourceFilePath), 'README.md')
-  return readReadmeFile(readmePath)
+export function readFlowGuide(sourceFilePath: string): Guide | null {
+  return readGuideFile(join(dirname(sourceFilePath), 'GUIDE.md'))
 }
 
 /**
- * Read a README.md file and strip everything up to and including the first
- * h1 so the file can carry a standalone title without duplicating the page
- * heading. Returns null if the file doesn't exist or has no prose content.
+ * Read guide prose from GUIDE.md at the root of a hook directory. The source
+ * file may be nested (e.g. `useEmployeeStateTaxesForm/fields.tsx`), so resolve
+ * up to the `hookDir` path segment rather than using the file's own directory.
+ * Returns null for flat-file hooks (no dedicated dir segment) or when absent.
  */
-function readReadmeFile(readmePath: string): string | null {
-  if (!existsSync(readmePath)) return null
-  const content = readFileSync(readmePath, 'utf-8')
-  const lines = content.split('\n')
+export function readHookGuide(sourceFilePath: string, hookDir: string): Guide | null {
+  let dir = dirname(sourceFilePath)
+  while (dir !== dirname(dir)) {
+    if (basename(dir) === hookDir) return readGuideFile(join(dir, 'GUIDE.md'))
+    dir = dirname(dir)
+  }
+  return null
+}
+
+/**
+ * Parse a GUIDE.md into its tagged slots. Everything up to and including the
+ * first h1 is dropped (the file carries a standalone title + maintainer comment
+ * that must not reach the page). Each subsequent `##` section is bucketed by its
+ * `<!-- slot: name -->` tag, with the tag stripped from the rendered heading.
+ * Untagged or unknown-slot sections are routed to `appendix` with a warning so
+ * content is never silently lost. Returns null if the file is missing or empty.
+ */
+function readGuideFile(guidePath: string): Guide | null {
+  if (!existsSync(guidePath)) return null
+  const lines = readFileSync(guidePath, 'utf-8').split('\n')
   const h1Index = lines.findIndex(l => /^#\s/.test(l))
-  const prose = h1Index === -1 ? content : lines.slice(h1Index + 1).join('\n')
-  return prose.trim() || null
+  const body = h1Index === -1 ? lines : lines.slice(h1Index + 1)
+
+  const slots: GuideSlots = {}
+  let current: GuideSlot | null = null
+  let buffer: string[] = []
+
+  const flush = () => {
+    if (!current) return
+    const text = buffer.join('\n').trim()
+    if (text) slots[current] = slots[current] ? `${slots[current]}\n\n${text}` : text
+  }
+
+  for (const line of body) {
+    if (!/^##\s/.test(line)) {
+      buffer.push(line)
+      continue
+    }
+    flush()
+    buffer = []
+    const slot = line.match(SLOT_TAG)?.[1]
+    const heading = line.replace(SLOT_TAG, '').trimEnd()
+    if (slot && (GUIDE_SLOTS as readonly string[]).includes(slot)) {
+      current = slot as GuideSlot
+    } else {
+      const title = heading.replace(/^#+\s*/, '')
+      const reason = slot ? `unknown slot "${slot}"` : 'no slot tag'
+      console.warn(
+        `[typedoc-custom] ${guidePath}: section "${title}" has ${reason}; using appendix`,
+      )
+      current = 'appendix'
+    }
+    buffer.push(heading)
+  }
+  flush()
+
+  if (Object.keys(slots).length === 0) return null
+  return { source: relative(join(process.cwd(), '..'), guidePath), slots }
 }
 
 export function isNamespaceIndex(model: DeclarationReflection): boolean {

@@ -24,7 +24,9 @@ import {
   isHookSourceFile,
   NAMESPACE_PATHS,
   pathToSourceDir,
-  readFlowReadme,
+  readFlowGuide,
+  readHookGuide,
+  type Guide,
   reparentDeprecatedMembers,
   standalonePageFromSources,
 } from './utils.ts'
@@ -255,8 +257,12 @@ export class SDKRouter extends MemberRouter {
   readonly hooksNsByDomain = new Map<string, DeclarationReflection>()
 
   // Keyed by the flow DeclarationReflection; populated before sources are cleared
-  // so the renderer can inject README prose at the top of each flow page.
-  readonly flowReadmes = new Map<DeclarationReflection, string>()
+  // so the renderer can slot GUIDE.md prose into each flow page.
+  readonly flowGuides = new Map<DeclarationReflection, Guide>()
+
+  // Keyed by the synthetic per-hook namespace; same GUIDE.md slot mechanism as
+  // flows, read from the hook directory root before sources are cleared.
+  readonly hookGuides = new Map<DeclarationReflection, Guide>()
 
   /**
    * Pre-scan for domain hooks and consolidate them into one synthetic namespace
@@ -270,6 +276,9 @@ export class SDKRouter extends MemberRouter {
     // wipes reflection.sources. groupSyntheticMembers uses this map to group
     // each hooks-page member under its hook's name rather than a kind section.
     const hookGroupMap = new Map<DeclarationReflection, string>()
+    // GUIDE.md slots per hook directory, captured here while sources are intact;
+    // applied to each synthetic hook namespace once it's built below.
+    const hookGuidesByDir = new Map<string, Guide>()
 
     const standaloneGroups = new Map<string, DeclarationReflection[]>()
 
@@ -307,7 +316,14 @@ export class SDKRouter extends MemberRouter {
             this.handledHooks.add(child)
 
             const hookDir = hookDirFromSources(child)
-            if (hookDir) hookGroupMap.set(child, hookDir)
+            if (hookDir) {
+              hookGroupMap.set(child, hookDir)
+              if (!hookGuidesByDir.has(hookDir)) {
+                const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName
+                const guide = fp ? readHookGuide(fp, hookDir) : null
+                if (guide) hookGuidesByDir.set(hookDir, guide)
+              }
+            }
           }
         }
         continue
@@ -329,8 +345,8 @@ export class SDKRouter extends MemberRouter {
       project.groups = project.groups.filter(g => g.children.length > 0)
     }
 
-    // Read README files for Flow components before sources are cleared. Sources
-    // are the only way to locate the flow directory at this stage.
+    // Read GUIDE.md files for Flow components before sources are cleared.
+    // Sources are the only way to locate the flow directory at this stage.
     for (const ns of project.children ?? []) {
       if (!(ns instanceof DeclarationReflection)) continue
       if (ns.kind !== ReflectionKind.Namespace) continue
@@ -339,8 +355,8 @@ export class SDKRouter extends MemberRouter {
         if (!member.name.endsWith('Flow')) continue
         const fp = member.sources?.[0]?.fullFileName ?? member.sources?.[0]?.fileName
         if (!fp) continue
-        const readme = readFlowReadme(fp)
-        if (readme) this.flowReadmes.set(member, readme)
+        const guide = readFlowGuide(fp)
+        if (guide) this.flowGuides.set(member, guide)
       }
     }
 
@@ -366,6 +382,8 @@ export class SDKRouter extends MemberRouter {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
+        const hookGuide = hookGuidesByDir.get(hookDir)
+        if (hookGuide) this.hookGuides.set(hookNs, hookGuide)
         this.buildSyntheticPage(
           `${domainPath}/hooks/${toKebabCase(hookDir)}`,
           hookNs,

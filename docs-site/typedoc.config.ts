@@ -1,4 +1,4 @@
-import { type TypeDocOptions } from 'typedoc'
+import { type TypeDocOptions, OptionDefaults } from 'typedoc'
 import { type PluginOptions } from 'typedoc-plugin-markdown'
 import {
   COMPONENT_GROUPS,
@@ -60,6 +60,10 @@ export const baseOptions = {
   useHTMLAnchors: true,
   validation: { invalidLink: true },
   formatWithPrettier: false,
+
+  // Custom block tag listing the components/hooks a flow composes; rendered as a
+  // table by the SDK theme. Spread the defaults so the built-in tags are kept.
+  blockTags: [...OptionDefaults.blockTags, '@components'],
 } satisfies TypeDocOptions & PluginOptions
 
 export default {
