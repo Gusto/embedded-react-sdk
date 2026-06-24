@@ -9,3 +9,4 @@ docs/appendix/endpoint-reference.md
 .reports/*.md
 docs-site/build/
 docs/reference/
+**/GUIDE.md
