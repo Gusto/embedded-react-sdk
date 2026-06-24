@@ -54,21 +54,12 @@ Props for TransitionFlow.
 <!-- guide-source: src/components/Payroll/Transition/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. The flow's entry point depends on whether `payrollUuid` is supplied. Without it, the flow opens on the creation step. With it, creation is skipped and the flow resumes directly in execution.
-
-### Without `payrollUuid`
+A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. The flow's entry point depends on whether `payrollUuid` is supplied. Without it, the flow opens on the creation step and advances into execution, as shown below. With it, the creation step is skipped and the flow starts directly in `PayrollExecutionFlow`.
 
 ```mermaid
 flowchart
   CreateTransitionPayroll["TransitionCreation"] -->|"transition/created"| Execution["PayrollExecutionFlow"]
   Execution -.->|"breadcrumb/navigate"| CreateTransitionPayroll
-```
-
-### With `payrollUuid`
-
-```mermaid
-flowchart
-  Execution["PayrollExecutionFlow"]
 ```
 
 ## Creation step

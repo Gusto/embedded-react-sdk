@@ -49,21 +49,12 @@ Props for DismissalFlow.
 <!-- guide-source: src/components/Payroll/Dismissal/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-The flow's entry point depends on whether `payrollId` is supplied. Without it, the flow opens on pay period selection. With it, pay period selection is skipped and the flow starts directly in execution for that payroll.
-
-### Without `payrollId`
+The flow's entry point depends on whether `payrollId` is supplied. Without it, the flow opens on pay period selection and advances into execution, as shown below. With it, pay period selection is skipped and the flow starts directly in `PayrollExecutionFlow` for that payroll.
 
 ```mermaid
 flowchart
   PayPeriodSelection["DismissalPayPeriodSelection"] -->|"dismissal/payPeriod/selected"| Execution["PayrollExecutionFlow"]
   Execution -.->|"breadcrumb/navigate"| PayPeriodSelection
-```
-
-### With `payrollId`
-
-```mermaid
-flowchart
-  Execution["PayrollExecutionFlow"]
 ```
 
 ## Pay period selection
