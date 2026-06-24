@@ -31,6 +31,13 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
  * | `breadcrumb/navigate` | Fired when the user clicks a breadcrumb to navigate back | `{ key: string, onNavigate: (ctx) => ctx }` |
  *
+ * @components
+ * - {@link PaymentsList}
+ * - {@link CreatePayment}
+ * - {@link PaymentSummary}
+ * - {@link PaymentHistory}
+ * - {@link PaymentStatement}
+ *
  * @param props - See {@link PaymentFlowProps}.
  * @returns The multi-step contractor payments workflow.
  * @public
