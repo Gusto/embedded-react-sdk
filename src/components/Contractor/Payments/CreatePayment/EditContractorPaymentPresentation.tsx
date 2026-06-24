@@ -61,8 +61,7 @@ export const EditContractorPaymentPresentation = ({
     if (isOpen) {
       setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, hourlyRate])
+  }, [isOpen, hourlyRate, computeHoursPayDescription, formMethods.getValues])
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -112,9 +111,6 @@ export const EditContractorPaymentPresentation = ({
                   label={t('hoursLabel')}
                   adornmentEnd={t('hoursAdornment')}
                   description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
-                  onChange={hours => {
-                    setHoursPayDescription(computeHoursPayDescription(hours))
-                  }}
                   onInputChange={raw => {
                     setHoursPayDescription(computeHoursPayDescription(parseHours(raw)))
                   }}

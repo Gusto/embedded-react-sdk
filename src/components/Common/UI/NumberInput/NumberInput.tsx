@@ -111,7 +111,7 @@ export function NumberInput({
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
             isDisabled={isDisabled}
-            onInput={(event: React.FormEvent<HTMLInputElement>) => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               onInputChange?.(event.currentTarget.value)
             }}
             // Select the existing value on focus so users can overwrite the

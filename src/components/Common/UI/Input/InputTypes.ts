@@ -20,7 +20,6 @@ export interface InputProps extends Pick<
   | 'onChange'
   | 'onBlur'
   | 'onFocus'
-  | 'onInput'
   | 'aria-describedby'
   | 'aria-labelledby'
   | 'aria-invalid'
