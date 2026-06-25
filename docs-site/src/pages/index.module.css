@@ -309,7 +309,7 @@
 .previewContinue {
   padding: 0.5rem 1.25rem;
   background: linear-gradient(135deg, #ff8266, #e15a43);
-  color: #ffffff;
+  color: #1b1b1d;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -429,8 +429,8 @@
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 2rem;
-  background-color: var(--ifm-color-primary-darkest);
-  color: #ffffff;
+  background-color: var(--ifm-color-primary);
+  color: #1b1b1d;
   border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
@@ -441,8 +441,8 @@
 }
 
 .heroPrimary:hover {
-  background-color: #b71b0a;
-  color: #ffffff;
+  background-color: #f67660;
+  color: #1b1b1d;
   text-decoration: none;
 }
 
