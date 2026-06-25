@@ -1663,6 +1663,22 @@
         "signatoryUuid"
       ]
     },
+    "ContractorOnboarding.Landing": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "contractorUuid"
+      ]
+    },
     "ContractorOnboarding.ContractorList": {
       "endpoints": [
         {

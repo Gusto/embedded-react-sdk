@@ -872,6 +872,7 @@ export const componentEvents: {
     readonly PAYROLL_EXIT_FLOW: "payroll/saveAndExit";
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
+    readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
     readonly CONTRACTOR_ADDRESS_UPDATED: "contractor/address/updated";
     readonly CONTRACTOR_ADDRESS_DONE: "contractor/address/done";
     readonly CONTRACTOR_PAYMENT_METHOD_UPDATED: "contractor/paymentMethod/updated";
@@ -1273,6 +1274,8 @@ declare namespace ContractorOnboarding {
         OnboardingFlow_3 as OnboardingFlow,
         OnboardingFlowProps_3 as OnboardingFlowProps,
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
+        Landing_2 as Landing,
+        LandingProps_2 as LandingProps,
         ContractorList,
         ContractorListProps,
         ContractorProfile,
@@ -2985,9 +2988,18 @@ export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequi
 function Landing(props: LandingProps): JSX;
 
 // @public
+function Landing_2(props: LandingProps_2): JSX;
+
+// @public
 interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
     companyId: string;
     employeeId: string;
+}
+
+// @public
+interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
+    companyId: string;
+    contractorId: string;
 }
 
 // @public
