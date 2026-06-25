@@ -18,7 +18,9 @@ import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types'
 import { ButtonHTMLAttributes } from 'react';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
+import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
+import { ContractorType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
@@ -117,19 +119,24 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface {
 }
 
 // @public
-function Address(props: AddressProps): JSX;
+function Address(input: AddressProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
 //
 // @public
-type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
+type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
 
 // @public
-interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
-    children?: ReactNode;
+interface AddressProps {
     className?: string;
     contractorId: string;
     defaultValues?: AddressDefaultValues;
+    // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
+    dictionary?: ResourceDictionary<'Contractor.Address'>;
+    // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
+    FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
+    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -590,7 +597,6 @@ function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps
 // @public
 interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -1095,6 +1101,83 @@ export interface ConfirmWireDetailsProps {
 }
 
 // @public
+export function ContractorAddressCityField(props: ContractorAddressCityFieldProps): JSX;
+
+// @public
+export type ContractorAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export type ContractorAddressErrorCode = (typeof ContractorAddressErrorCodes)[keyof typeof ContractorAddressErrorCodes];
+
+// @public
+export const ContractorAddressErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_ZIP: "INVALID_ZIP";
+};
+
+// @public
+export type ContractorAddressField = "street1" | "street2" | "city" | "state" | "zip";
+
+// @public
+export interface ContractorAddressFields {
+    City: typeof ContractorAddressCityField;
+    State: typeof ContractorAddressStateField;
+    Street1: typeof ContractorAddressStreet1Field;
+    Street2: typeof ContractorAddressStreet2Field;
+    Zip: typeof ContractorAddressZipField;
+}
+
+// @public
+export type ContractorAddressFieldsMetadata = UseContractorAddressFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; };
+
+// @public
+export type ContractorAddressFormFields = UseContractorAddressFormReady['form']['Fields'];
+
+// @public
+export type ContractorAddressFormOutputs = ContractorAddressFormData;
+
+// @public
+export type ContractorAddressOptionalFieldsToRequire = { create?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; update?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; };
+
+// @public
+export type ContractorAddressRequiredValidation = typeof ContractorAddressErrorCodes.REQUIRED;
+
+// @public
+export function ContractorAddressStateField(props: ContractorAddressStateFieldProps): JSX;
+
+// @public
+export type ContractorAddressStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorAddressRequiredValidation, string>>;
+
+// @public
+export function ContractorAddressStreet1Field(props: ContractorAddressStreet1FieldProps): JSX;
+
+// @public
+export type ContractorAddressStreet1FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export function ContractorAddressStreet2Field(props: ContractorAddressStreet2FieldProps): JSX;
+
+// @public
+export type ContractorAddressStreet2FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export interface ContractorAddressSubmitOptions {
+    contractorId?: string;
+}
+
+// @public
+export function ContractorAddressZipField(props: ContractorAddressZipFieldProps): JSX;
+
+// @public
+export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressZipValidation>>;
+
+// @public
+export type ContractorAddressZipValidation = (typeof ContractorAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
+
+// @public
 function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
 
 // @public
@@ -1254,6 +1337,18 @@ rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
 adjustForMinimumWage: z.ZodBoolean;
 minimumWageId: z.ZodString;
+}>;
+
+// Warning: (ae-forgotten-export) The symbol "ContractorAddressSchemaOptions" needs to be exported by the entry point index.d.ts
+// Warning: (ae-internal-missing-underscore) The name "createContractorAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function createContractorAddressSchema(options?: ContractorAddressSchemaOptions): BuildFormSchemaResult<    {
+street1: z.ZodString;
+street2: z.ZodString;
+city: z.ZodString;
+state: z.ZodString;
+zip: z.ZodString;
 }>;
 
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
@@ -2381,7 +2476,6 @@ export interface GustoProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
-    // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
     dictionary?: ResourceDictionary;
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
@@ -2558,7 +2652,7 @@ export const HomeAddressErrorCodes: {
 };
 
 // @public
-export type HomeAddressField = "effectiveDate" | "state" | "street1" | "street2" | "city" | "zip" | "courtesyWithholding";
+export type HomeAddressField = "street1" | "street2" | "city" | "state" | "zip" | "effectiveDate" | "courtesyWithholding";
 
 // @public
 export interface HomeAddressFields {
@@ -4862,6 +4956,37 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
 
 // @public
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
+
+// @public
+export function useContractorAddressForm(input: UseContractorAddressFormProps): HookLoadingResult | UseContractorAddressFormReady;
+
+// @public
+export interface UseContractorAddressFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorAddressFormData>;
+    optionalFieldsToRequire?: ContractorAddressOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsMetadata, ContractorAddressFormData, ContractorAddressFields> {
+    actions: {
+        onSubmit: (options?: ContractorAddressSubmitOptions) => Promise<HookSubmitResult<ContractorAddress> | undefined>;
+    };
+    data: {
+        contractorAddress: ContractorAddress;
+        contractor: Contractor;
+        contractorType: ContractorType | undefined;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+    };
+}
+
+// @public
+export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;

@@ -47,3 +47,9 @@ custom_edit_url: null
 | [PaymentsList](ContractorManagement/blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
 | [PaymentStatement](ContractorManagement/blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
 | [PaymentSummary](ContractorManagement/blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+
+## Hooks
+
+| Hook | Description |
+| ---- | ----------- |
+| [useContractorAddressForm](hooks.md#usecontractoraddressform) | Form hook for editing a contractor's address. |
