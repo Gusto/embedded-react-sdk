@@ -18,9 +18,9 @@ Flows and blocks for managing an employee after onboarding.
 
 | Component | Description |
 | --------- | ----------- |
-| [DashboardFlow](dashboard-flow.md) | The main entry point for the employee dashboard. |
-| [EmployeeListFlow](employee-list-flow.md) | Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows. |
-| [TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
+| [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single employee's profile, pay, and documents. |
+| [EmployeeListFlow](employee-list-flow.md) | Hub for viewing and managing all employees, including onboarding new ones. |
+| [TerminationFlow](termination-flow.md) | Guided flow to terminate an employee and arrange their final paycheck. |
 
 ## 🧩 Blocks
 

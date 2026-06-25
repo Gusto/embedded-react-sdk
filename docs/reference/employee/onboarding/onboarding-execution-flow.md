@@ -12,18 +12,22 @@ custom_edit_url: null
 
 # OnboardingExecutionFlow
 
-The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary.
+Guided flow to onboard an employee.
 
 ## Example
 
-```tsx
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+```tsx title="App.tsx"
+import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <EmployeeOnboarding.OnboardingExecutionFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'employee/onboarding/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -31,7 +35,7 @@ function MyApp() {
 
 ## Remarks
 
-Drives the per-employee onboarding experience used by both [OnboardingFlow](onboarding-flow.md) (admin) and [SelfOnboardingFlow](self-onboarding-flow.md) (employee). Each step is also exported as a standalone block — see [Profile](blocks.md#profile), [Compensation](blocks.md#compensation), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
+Drives the per-employee, admin-led onboarding steps used by [OnboardingFlow](onboarding-flow.md) and [EmployeeManagement.EmployeeListFlow](../management/employee-list-flow.md). ([SelfOnboardingFlow](self-onboarding-flow.md) is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit.
 
 Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
 
@@ -54,3 +58,49 @@ Props for OnboardingExecutionFlow.
 | `isAdmin?` | `boolean` | When true, the flow renders in the admin context. When false, it is configured for employee self-onboarding. Defaults to `true`. |
 | `isSelfOnboardingEnabled?` | `boolean` | When true, presents the self-onboarding toggle on the profile step. Defaults to `true`. |
 | `withEmployeeI9?` | `boolean` | When true, enables the Employee Documents step in the flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [Profile](blocks.md#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
+| [Compensation](blocks.md#compensation) | Onboarding step for collecting an employee's role and compensation details. |
+| [FederalTaxes](blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [StateTaxes](blocks.md#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
+| [PaymentMethod](blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |
+| [Deductions](blocks.md#deductions) | Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments. |
+| [EmployeeDocuments](blocks.md#employeedocuments) | Onboarding step for selecting which documents the employee must complete. |
+| [OnboardingSummary](blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
+
+<!-- guide-source: src/components/Employee/OnboardingExecutionFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+`OnboardingExecutionFlow` runs the per-employee steps in order. After compensation, the path branches on the employee's self-onboarding status — set by the self-onboarding toggle the admin chooses on the Profile step, not by a flow prop:
+
+- **Admin onboarding** — the admin completes every step, including federal taxes, state taxes, and payment method.
+- **Self-onboarding** — the admin sets up the basics and the employee completes federal taxes, state taxes, and payment method themselves, so those three steps are skipped here.
+
+The `isSelfOnboardingEnabled` prop only controls whether that toggle is offered: when `false`, the toggle is hidden and the flow always takes the admin path; when `true` (the default), the branch follows the admin's selection.
+
+The documents step appears only when `withEmployeeI9` is set.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> Profile
+  Profile -->|"employee/profile/done"| Compensation
+  Compensation -->|"employee/compensations/done"| selfOnboarding{{"selfOnboarding?"}}
+  selfOnboarding -.->|false| FederalTaxes
+  FederalTaxes -->|"employee/federalTaxes/done"| StateTaxes
+  StateTaxes -->|"employee/stateTaxes/done"| PaymentMethod
+  PaymentMethod -->|"employee/paymentMethod/done"| Deductions
+  selfOnboarding -.->|true| Deductions
+  Deductions -->|"employee/deductions/done"| withEmployeeI9{{"withEmployeeI9?"}}
+  withEmployeeI9 -.->|true| EmployeeDocuments
+  EmployeeDocuments -->|"employee/documents/done"| OnboardingSummary
+  withEmployeeI9 -.->|false| OnboardingSummary
+  OnboardingSummary -->|"employee/onboarding/done"| done@{ shape: fr-circ, label: " " }
+
+  class selfOnboarding branch
+  class withEmployeeI9 branch
+```
+<!-- /guide-source (slot: appendix) -->

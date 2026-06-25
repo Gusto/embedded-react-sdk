@@ -10,7 +10,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
+ * Guided flow to create and run a bonus or correction payroll.
  *
  * @remarks
  * Guides the user through configuring pay period dates, selecting a reason, choosing
@@ -27,16 +27,29 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * Once the flow transitions to execution, all standard run-payroll events are emitted
  * (e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
  *
+ * @components
+ * - {@link OffCycleCreation}
+ * - {@link PayrollExecutionFlow}
+ *
  * @param props - {@link OffCycleFlowProps}
  * @returns The rendered off-cycle payroll flow.
  * @public
  *
  * @example
- * ```tsx
- * import { Payroll } from '@gusto/embedded-react-sdk'
+ * ```tsx title="App.tsx"
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
- *   return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+ *   return (
+ *     <Payroll.OffCycleFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
  * }
  * ```
  */
