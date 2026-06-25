@@ -511,25 +511,25 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 
 ### ObservabilityError
 
-An [SDKError](#sdkerror) enriched with component context for observability telemetry.
+An [SDKError](errors.md#sdkerror) enriched with component context for observability telemetry.
 
 #### Remarks
 
-Delivered to [ObservabilityHook.onError](#property-observabilityhookonerror). Extends [SDKError](#sdkerror) with
+Delivered to [ObservabilityHook.onError](#property-observabilityhookonerror). Extends [SDKError](errors.md#sdkerror) with
 `timestamp`, `componentName`, and `componentStack` so error-tracking tools
-(e.g. Sentry) can correlate and group errors. The base [SDKError](#sdkerror)
+(e.g. Sentry) can correlate and group errors. The base [SDKError](errors.md#sdkerror)
 (without these fields) is the shape exposed through form hooks.
 
 #### Extends
 
-- [`SDKError`](#sdkerror)
+- [`SDKError`](errors.md#sdkerror)
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-observabilityerrorcategory"></a> `category` | [`SDKErrorCategory`](#sdkerrorcategory) | High-level error classification |
-| <a id="property-observabilityerrorfielderrors"></a> `fieldErrors` | [`SDKFieldError`](#sdkfielderror)[] | Flattened field-level errors from API responses. Empty array for non-field errors. |
+| <a id="property-observabilityerrorcategory"></a> `category` | [`SDKErrorCategory`](errors.md#sdkerrorcategory) | High-level error classification |
+| <a id="property-observabilityerrorfielderrors"></a> `fieldErrors` | [`SDKFieldError`](errors.md#sdkfielderror)[] | Flattened field-level errors from API responses. Empty array for non-field errors. |
 | <a id="property-observabilityerrormessage"></a> `message` | `string` | Human-readable error summary |
 | <a id="property-observabilityerrortimestamp"></a> `timestamp` | `number` | When the error occurred (Unix timestamp in milliseconds) |
 | <a id="property-observabilityerrorcomponentname"></a> `componentName?` | `string` | SDK component where the error occurred (e.g. "Employee.Profile") |
@@ -636,78 +636,6 @@ error object is excluded unless `includeRawError` is set to `true`.
 | <a id="property-sanitizationconfigcustommetricsanitizer"></a> `customMetricSanitizer?` | (`metric`) => [`ObservabilityMetric`](#observabilitymetric) | Custom sanitization function for metrics |
 | <a id="property-sanitizationconfigenabled"></a> `enabled?` | `boolean` | Whether to sanitize error data. Default: true |
 | <a id="property-sanitizationconfigincluderawerror"></a> `includeRawError?` | `boolean` | Whether to include the raw error object on SDKError. Default: false WARNING: Raw errors may contain sensitive data from form inputs or API responses |
-
-***
-
-<a id="sdkerror"></a>
-
-### SDKError
-
-Unified error shape returned by every form hook and error-handling surface.
-
-#### Remarks
-
-Every caught error — whether from the Gusto API, client-side Zod validation,
-a network failure, or an unexpected runtime exception — is normalized into
-this shape. The [SDKErrorCategory](#sdkerrorcategory) `category` field distinguishes
-which source produced the error; `fieldErrors` is populated for structured
-API responses (typically 422) and is an empty array otherwise.
-
-Observability telemetry uses [ObservabilityError](#observabilityerror), which extends this
-shape with component context.
-
-#### Example
-
-```tsx
-import { useEmployeeForm } from '@gusto/embedded-react-sdk'
-
-const { errorHandling } = useEmployeeForm({ employeeId })
-const error = errorHandling.error
-
-if (error) {
-  console.log(error.category)    // 'api_error'
-  console.log(error.httpStatus)  // 422
-  console.log(error.fieldErrors) // [{ field: 'firstName', ... }]
-}
-```
-
-#### Extended by
-
-- [`ObservabilityError`](#observabilityerror)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-sdkerrorcategory"></a> `category` | [`SDKErrorCategory`](#sdkerrorcategory) | High-level error classification |
-| <a id="property-sdkerrorfielderrors"></a> `fieldErrors` | [`SDKFieldError`](#sdkfielderror)[] | Flattened field-level errors from API responses. Empty array for non-field errors. |
-| <a id="property-sdkerrormessage"></a> `message` | `string` | Human-readable error summary |
-| <a id="property-sdkerrorhttpstatus"></a> `httpStatus?` | `number` | HTTP status code (undefined for non-HTTP errors like network or validation) |
-| <a id="property-sdkerrorraw"></a> `raw?` | `unknown` | The original error object for advanced use cases. May be stripped by sanitization (controlled by `sanitization.includeRawError`). |
-
-***
-
-<a id="sdkfielderror"></a>
-
-### SDKFieldError
-
-A flattened, field-level error extracted from an API response.
-
-#### Remarks
-
-For API errors with structured field errors (e.g. 422 responses), nested
-`errors[]` structures are recursively flattened into one entry per leaf
-field. The `field` property is the dot-separated camelCase path
-(e.g. `"firstName"`, `"states.CA.filingStatus.value"`).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| <a id="property-sdkfielderrorcategory"></a> `category` | `string` | API error category (e.g. "invalid_attribute_value", "invalid_operation", "payroll_blocker") |
-| <a id="property-sdkfielderrorfield"></a> `field` | `string` | Dot-separated camelCase field path (e.g. "firstName", "states.CA.filingStatus.value") |
-| <a id="property-sdkfielderrormessage"></a> `message` | `string` | Human-readable error message from the API |
-| <a id="property-sdkfielderrormetadata"></a> `metadata?` | `Record`\<`string`, `unknown`\> | Additional metadata from the API (e.g. `{ key: "missing_bank_info" }` for payroll blockers) |
 
 ***
 
@@ -848,16 +776,6 @@ Supported keys to provide as a dictionary - global GustoProvider dictionary with
 
 The full set of SDK i18n resource namespaces and their string keys.
 Each key names a component's resource namespace.
-
-***
-
-<a id="sdkerrorcategory"></a>
-
-### SDKErrorCategory
-
-> **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
-
-High-level classification of where an [SDKError](#sdkerror) originated.
 
 ***
 

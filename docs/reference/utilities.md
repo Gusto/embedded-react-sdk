@@ -463,7 +463,7 @@ the supported way to discriminate fetch vs submit failures today.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `clearSubmitError` | () => `void` | Clears the most recent submission error. |
-| `errors` | [`SDKError`](index.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](index.md#sdkerror) values. |
+| `errors` | [`SDKError`](errors.md#sdkerror)[] | Aggregated fetch and submit errors as normalized [SDKError](errors.md#sdkerror) values. |
 | `retryQueries` | () => `void` | Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. |
 
 ***
@@ -812,7 +812,7 @@ and can be cleared together with `clearSubmitError`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `setSubmitError` | (`error`) => `void` | Sets or clears the submit error. |
-| `submitError` | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
+| `submitError` | [`SDKError`](errors.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
 ***
 

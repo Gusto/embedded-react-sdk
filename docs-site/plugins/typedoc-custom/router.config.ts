@@ -95,6 +95,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     displayName: 'Component Inventory',
   },
   { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook Utilities' },
+  { id: 'errors', sources: ['types/sdkError'], displayName: 'Errors' },
   {
     id: 'events',
     // Ignore any non-event constants
