@@ -6,15 +6,36 @@ import type {
 } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
 import { Skeleton } from '../../common/Skeleton'
 import styles from './PayrollSpreadsheet.module.scss'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { formatHoursDisplay } from '@/components/Payroll/helpers'
+import { calculateGrossPay, formatHoursDisplay } from '@/components/Payroll/helpers'
+import type { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, EmptyData, Flex, Grid, useDataView } from '@/components/Common'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <path d="M7 11 V7 a5 5 0 0 1 10 0 V11" />
+    </svg>
+  )
+}
 
 type ColumnKind = 'hours' | 'currency' | 'reimbursements'
 
@@ -225,6 +246,10 @@ interface PayrollSpreadsheetProps {
   rrop?: boolean
   /** Used in RRoP mode to derive workweek date ranges shown in the breakdown modal. */
   payPeriod?: PayrollPayPeriodType
+  /** Required to compute Total pay for salaried employees (hours-in-pay-period derivation). */
+  paySchedule?: PayScheduleObject
+  /** Payroll category — switches PTO handling for off-cycle in the Total pay calculation. */
+  payrollCategory?: PayrollCategory
 }
 
 /** Columns that participate in the Regular Rate of Pay workweek breakdown.
@@ -369,6 +394,8 @@ export function PayrollSpreadsheet({
   isLoading = false,
   rrop = false,
   payPeriod,
+  paySchedule,
+  payrollCategory,
 }: PayrollSpreadsheetProps) {
   const Components = useComponentContext()
   const dateFormatter = useDateFormatter()
@@ -495,6 +522,45 @@ export function PayrollSpreadsheet({
       container.scrollBy({ left: -hiddenAmount, behavior: 'smooth' })
     }
   }
+
+  // Total pay derives from the live-edited compensation so the cell updates as the user types.
+  // Uses the main SDK's calculateGrossPay so the prototype matches PayrollConfiguration's column
+  // exactly (regular + overtime + fixed earnings + PTO + minimum-wage adjustment).
+  const totalPayByEmployee = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const employee of employees) {
+      const original = compensationByEmployee.get(employee.uuid)
+      if (!original) {
+        map.set(employee.uuid, 0)
+        continue
+      }
+      const updated = buildUpdatedCompensation(
+        original,
+        values,
+        reimbursementsByEmployee[employee.uuid] ?? [],
+        employee,
+      )
+      map.set(
+        employee.uuid,
+        calculateGrossPay(
+          updated as PayrollEmployeeCompensationsType,
+          employee,
+          payPeriod?.startDate,
+          paySchedule,
+          payrollCategory,
+        ),
+      )
+    }
+    return map
+  }, [
+    employees,
+    compensationByEmployee,
+    values,
+    reimbursementsByEmployee,
+    payPeriod?.startDate,
+    paySchedule,
+    payrollCategory,
+  ])
 
   const applicabilityByEmployee = useMemo(() => {
     const compByEmployee = new Map(
@@ -658,6 +724,9 @@ export function PayrollSpreadsheet({
           >
             Employee
           </div>
+          <div role="columnheader" className={styles.headerCell}>
+            Total pay
+          </div>
           {COLUMNS.map(column => (
             <div role="columnheader" key={column.id} className={styles.headerCell}>
               {column.label}
@@ -680,6 +749,19 @@ export function PayrollSpreadsheet({
                   <Skeleton width="8.75rem" height="0.875rem" />
                 ) : (
                   <span className={styles.employeeName}>{name}</span>
+                )}
+              </div>
+
+              <div role="gridcell" className={`${styles.cell} ${styles.cellReadOnly}`}>
+                {isLoading ? (
+                  <Skeleton width="4rem" height="0.875rem" />
+                ) : (
+                  <>
+                    <span className={styles.cellReadOnlyContent}>
+                      {formatNumberAsCurrency(totalPayByEmployee.get(uuid) ?? 0)}
+                    </span>
+                    <LockIcon className={styles.lockIcon} />
+                  </>
                 )}
               </div>
 
