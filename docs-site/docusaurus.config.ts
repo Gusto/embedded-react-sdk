@@ -298,7 +298,37 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Gusto, Inc.`,
     },
     prism: {
-      theme: prismThemes.github,
+      theme: {
+        ...prismThemes.github,
+        styles: [
+          ...prismThemes.github.styles,
+          {
+            types: ['comment', 'prolog', 'doctype', 'cdata'],
+            style: { color: '#57606a', fontStyle: 'italic' },
+          },
+          { types: ['string', 'attr-value'], style: { color: '#b91c5c' } },
+          {
+            types: [
+              'entity',
+              'url',
+              'symbol',
+              'number',
+              'boolean',
+              'variable',
+              'constant',
+              'property',
+              'regex',
+              'inserted',
+            ],
+            style: { color: '#0a7b78' },
+          },
+          {
+            types: ['atrule', 'keyword', 'attr-name', 'selector'],
+            style: { color: '#0969da' },
+          },
+          { types: ['function', 'deleted', 'tag'], style: { color: '#cf222e' } },
+        ],
+      },
       darkTheme: prismThemes.nightOwl,
       additionalLanguages: ['bash', 'json', 'ruby', 'python', 'java'],
     },
