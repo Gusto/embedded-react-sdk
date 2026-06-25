@@ -547,7 +547,7 @@ Verify hook placement:
 
 All form hooks live inside a `shared/` directory scoped to the domain feature, one directory per hook:
 
-```
+```text
 src/components/<Domain>/<Feature>/shared/
 └── use<Name>Form/
     ├── use<Name>Form.tsx       # hook implementation
@@ -576,14 +576,9 @@ Reference examples (read the closest match before scaffolding):
 
 ## 11. Documentation
 
-Once the migration is complete and tests are passing, spawn the **`sdk-hook-documenter`** agent in the background to write the partner-facing docs. You do not need to wait for it — it runs while you move on to cleanup or open the PR.
+Once the migration is complete and tests are passing, run `/tsdoc` to document the new hook before opening the PR. The skill writes TSDoc inline in the source — no separate doc files needed.
 
-Spawn the agent (background):
-
-- **description**: `"Document $HOOK_NAME hook"`
-- **prompt**: `"Write partner-facing documentation for the new $HOOK_NAME hook at $HOOK_PATH. Add it to the docs/hooks/ inventory and create docs/hooks/$HOOK_NAME.md."`
-
-The agent will produce `docs/hooks/use<Name>Form.md` and update the inventory row in `docs/hooks/hooks.md`. You will be notified when it finishes — review the output and commit it alongside the migration or as a fast-follow.
+Key symbols to document: `useXxxForm`, `UseXxxProps`, `UseXxxFormOutputs` (or equivalent return type alias), and any other exports from the hook's `index.ts`. The `/tsdoc` session will load `.claude/tsdoc-guides/hooks.md` for hook-specific guidance.
 
 ## 12. Migration Checklist
 
@@ -603,5 +598,4 @@ The agent will produce `docs/hooks/use<Name>Form.md` and update the inventory ro
 - [ ] Dead code from old implementation removed
 - [ ] Hook placed in `src/components/<Domain>/<Feature>/shared/use<Name>Form/` and exported from barrels
 - [ ] All tests pass after migration (`npm run test -- --run`)
-- [ ] Hook row added to `docs/hooks/hooks.md` inventory table
-- [ ] `docs/hooks/use<Name>Form.md` created following existing doc structure
+- [ ] TSDoc added to all exported hook symbols — `useXxxForm`, `UseXxxProps`, `UseXxxFormOutputs`

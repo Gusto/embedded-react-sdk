@@ -10,16 +10,25 @@ function hasMetadataKey(metadata: unknown): metadata is { key: string } {
   )
 }
 
+/**
+ * A single payroll blocker entry: an issue that must be resolved before a payroll can be
+ * calculated or submitted (for example, missing employee information, invalid tax setups,
+ * or incomplete company configuration).
+ *
+ * @public
+ */
 export interface ApiPayrollBlocker {
+  /** Stable identifier for the blocker type, used to look up display copy and behavior. */
   key: string
+  /** Human-readable message describing the blocker, when provided by the API. */
   message?: string
 }
 
-export function isPayrollBlockersError(error: unknown): error is PayrollBlockersError {
+function isPayrollBlockersError(error: unknown): error is PayrollBlockersError {
   return error instanceof PayrollBlockersError
 }
 
-export function isUnprocessableEntityWithPayrollBlockers(
+function isUnprocessableEntityWithPayrollBlockers(
   error: unknown,
 ): error is UnprocessableEntityError {
   return (
@@ -28,6 +37,7 @@ export function isUnprocessableEntityWithPayrollBlockers(
   )
 }
 
+/** @internal */
 export function parsePayrollBlockersFromError(error: unknown): ApiPayrollBlocker[] {
   // Handle PayrollBlockersError (dedicated blocker error type)
   if (isPayrollBlockersError(error)) {
@@ -72,15 +82,15 @@ const hasPayrollBlockers = (error: unknown): error is PayrollBlockerError => {
   return false
 }
 
+/** @internal */
 export interface PayrollSubmitResult {
+  /** Whether the wrapped payroll operation completed without payroll blockers. */
   success: boolean
+  /** Blockers parsed from the caught error; empty when `success` is `true`. */
   blockers: ApiPayrollBlocker[]
 }
 
-/**
- * Direct submit handler for payroll operations that handles payroll blockers
- * Returns blockers if found, otherwise throws the error for caller to handle
- */
+/** @internal */
 export const payrollSubmitHandler = async (
   payrollHandler: () => Promise<void>,
 ): Promise<PayrollSubmitResult> => {
@@ -100,15 +110,15 @@ export const payrollSubmitHandler = async (
 
 const ACTIONABLE_BLOCKER_KEYS = ['pending_information_request', 'pending_recovery_case'] as const
 
+/** @internal */
 export const isActionableBlocker = (key: string) =>
   ACTIONABLE_BLOCKER_KEYS.includes(key as (typeof ACTIONABLE_BLOCKER_KEYS)[number])
 
+/** @internal */
 export const hasActionableBlockers = (blockers: ApiPayrollBlocker[]) =>
   blockers.some(b => isActionableBlocker(b.key))
 
-/**
- * Get translation keys for a blocker - use these in components with useTranslation
- */
+/** @internal */
 export function getBlockerTranslationKeys(key: string) {
   return {
     titleKey: `blockers.${key}.title`,

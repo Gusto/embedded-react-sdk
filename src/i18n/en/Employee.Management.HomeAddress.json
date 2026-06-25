@@ -43,6 +43,7 @@
     "street2": "Street 2",
     "city": "City",
     "state": "State",
+    "statePlaceholder": "Select state...",
     "zip": "Zip",
     "noCurrentAddress": "Home address",
     "courtesyWithholdingLabel": "Include courtesy withholding",

@@ -5,7 +5,9 @@ import { isDismissalPayroll } from '../helpers'
 import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { Loading } from '@/components/Common/Loading/Loading'
 
+/** @internal */
 export function PayrollExecutionFlowContextual() {
   const {
     companyId,
@@ -24,7 +26,7 @@ export function PayrollExecutionFlowContextual() {
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <PayrollExecutionFlowWithData
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}

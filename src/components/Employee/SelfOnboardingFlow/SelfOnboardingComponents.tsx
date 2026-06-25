@@ -16,7 +16,7 @@ import { DocumentSigner as DocumentSignerComponent } from '@/components/Employee
  *
  * @public
  */
-export interface SelfOnboardingFlowProps extends BaseComponentInterface {
+export interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** The associated employee identifier. */

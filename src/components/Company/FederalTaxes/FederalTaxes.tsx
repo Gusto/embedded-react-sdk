@@ -17,19 +17,42 @@ import { Form } from '@/components/Company/FederalTaxes/Form'
 import { Actions } from '@/components/Company/FederalTaxes/Actions'
 import { Head } from '@/components/Company/FederalTaxes/Head'
 import { useI18n } from '@/i18n'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
 
-interface FederalTaxesProps extends CommonComponentInterface<'Company.FederalTaxes'> {
+/**
+ * Props for the {@link FederalTaxes} component.
+ *
+ * @public
+ */
+export interface FederalTaxesProps extends BaseComponentInterface<'Company.FederalTaxes'> {
+  /** Identifier of the company whose federal tax details are being collected. */
   companyId: string
+  /**
+   * Pre-populated values for the federal tax form. At least one of `taxPayerType`,
+   * `filingForm`, or `legalName` must be provided — see {@link FederalTaxesDefaultValues}.
+   */
   defaultValues?: FederalTaxesDefaultValues
 }
 
-export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
+/**
+ * Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/federalTaxes/updated` | Federal tax details were successfully updated | {@link FederalTaxDetails} |
+ * | `company/federalTaxes/done` | The federal tax update step is complete | — |
+ *
+ * @param props - Component props including `companyId` and optional `defaultValues`.
+ * @returns The rendered federal taxes form.
+ * @public
+ */
+export function FederalTaxes(props: FederalTaxesProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

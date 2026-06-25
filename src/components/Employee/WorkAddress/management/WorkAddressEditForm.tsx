@@ -4,12 +4,7 @@ import {
   isUseWorkAddressManagementSuccess,
   useWorkAddressManagement,
 } from './useWorkAddressManagement'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
 import { componentEvents } from '@/shared/constants'
@@ -19,11 +14,9 @@ import { componentEvents } from '@/shared/constants'
  *
  * @public
  */
-export interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+export interface WorkAddressEditFormProps extends BaseComponentInterface<'Employee.Management.WorkAddress'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on form save, cancel, and delete actions. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddressEditFormProps) {
@@ -81,10 +74,7 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
  *
  * @public
  */
-export function WorkAddressEditForm({
-  FallbackComponent,
-  ...props
-}: WorkAddressEditFormProps & BaseComponentInterface) {
+export function WorkAddressEditForm({ FallbackComponent, ...props }: WorkAddressEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.WorkAddress"

@@ -5,6 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping an `<input type="file" />` with a label, description, error message, and optional file type restrictions.
  *
  * @public
+ * @group Component Props
  */
 export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisuallyHideLabel'> {
   /**

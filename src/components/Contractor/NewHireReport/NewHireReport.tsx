@@ -26,8 +26,41 @@ const NewHireReportSchema = z.union([
   }),
 ])
 
-export type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
+type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
 
+/**
+ * Collects new hire reporting information for a contractor and persists it to the contractor record.
+ *
+ * Asks whether a new hire report should be filed and, when the answer is yes, captures the
+ * work state used for filing. Submitting writes both values back to the contractor.
+ *
+ * @remarks
+ * Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
+ * own self-onboarding flow rather than admin onboarding.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
+ * | `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
+ *
+ * @param props - Component configuration; see {@link NewHireReportProps}.
+ * @returns The rendered new hire report form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function NewHireReportStep() {
+ *   return (
+ *     <ContractorOnboarding.NewHireReport
+ *       contractorId="contractor-uuid"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
 export function NewHireReport(props: NewHireReportProps) {
   return (
     <BaseComponent {...props}>
@@ -118,7 +151,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
                   value: stateAbbr,
                 }))}
                 label={t('stateSelectionLabel')}
-                placeholder={''}
+                placeholder={t('statePlaceholder')}
                 errorMessage={t('validations.state')}
                 isRequired
               />

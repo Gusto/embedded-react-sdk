@@ -15,12 +15,36 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { formatPayPeriodRange } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
+/**
+ * Props for {@link DismissalPayPeriodSelection}.
+ *
+ * @public
+ */
 export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
+  /** Identifier of the company the dismissal payroll belongs to. */
   companyId: string
+  /** Identifier of the terminated employee. When provided, the available pay periods are filtered to this employee. */
   employeeId?: string
+  /** Identifier of an existing dismissal payroll. When provided alongside `employeeId`, pay period selection is skipped and the component immediately emits the selection event. */
   payrollId?: string
 }
 
+/**
+ * Pay period selection step for the dismissal payroll workflow.
+ *
+ * Lists the terminated employee's unprocessed termination pay periods and, on submit, creates an off-cycle payroll with the "Dismissed employee" reason for the selected period. When only one pay period is available it is pre-selected. When both `payrollId` and `employeeId` are supplied the step is skipped and the selection event fires immediately with the existing payroll.
+ *
+ * @remarks
+ * Events:
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |
+ *
+ * @param props - See {@link DismissalPayPeriodSelectionProps}.
+ * @returns The rendered pay period selection step, or nothing while auto-advancing past selection.
+ * @public
+ */
 export function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionProps) {
   return (
     <BaseComponent {...props}>

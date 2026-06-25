@@ -10,6 +10,7 @@ import { ActionsLayout, SelectField, RadioGroupField } from '@/components/Common
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+/** @internal */
 export function OffCycleTaxWithholdingModal({
   isOpen,
   defaultConfig,
@@ -95,6 +96,7 @@ export function OffCycleTaxWithholdingModal({
             <SelectField
               name="withholdingPayPeriod"
               label={t('modal.regularSection.rateLabel')}
+              placeholder={t('modal.regularSection.ratePlaceholder')}
               options={frequencyOptions}
               shouldVisuallyHideLabel
               portalContainer={modalContainerRef.current ?? undefined}

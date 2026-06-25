@@ -15,7 +15,7 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values for individual flow step components. */
@@ -32,6 +32,19 @@ export interface OnboardingFlowProps extends BaseComponentInterface {
    * `false`.
    */
   withEmployeeI9?: boolean
+  /**
+   * Controls visibility of the Continue button in the employee list.
+   *
+   * When `true`, shows a Continue button allowing navigation to the next step.
+   * Use this when the employee onboarding flow is embedded as a step within
+   * a larger flow (e.g., company onboarding).
+   *
+   * When `false` (default), hides the Continue button. Use this for standalone
+   * employee onboarding where the list is the terminal screen.
+   *
+   * @defaultValue `false`
+   */
+  showContinueButton?: boolean
 }
 
 /**
@@ -82,6 +95,7 @@ export const OnboardingFlow = ({
   defaultValues,
   isSelfOnboardingEnabled = true,
   withEmployeeI9 = false,
+  showContinueButton = false,
 }: OnboardingFlowProps) => {
   const manageEmployees = useMemo(
     () =>
@@ -96,9 +110,10 @@ export const OnboardingFlow = ({
           defaultValues,
           isSelfOnboardingEnabled,
           withEmployeeI9,
+          showContinueButton,
         }),
       ),
-    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9],
+    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9, showContinueButton],
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />
 }

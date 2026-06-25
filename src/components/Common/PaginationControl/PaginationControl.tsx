@@ -43,6 +43,7 @@ const DefaultPaginationControl = ({
           <section>
             <Components.Select
               label={t('labels.paginationControlCountLabel')}
+              placeholder=""
               shouldVisuallyHideLabel
               value={itemsPerPage.toString()}
               onChange={n => {

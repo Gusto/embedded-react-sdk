@@ -10,6 +10,7 @@ type EventPayloads = {
   [componentEvents.COMPANY_STATE_TAX_EDIT]: { state: string }
 }
 
+/** @internal */
 export const stateTaxesStateMachine = {
   viewStateTaxes: state<MachineTransition>(
     transition(

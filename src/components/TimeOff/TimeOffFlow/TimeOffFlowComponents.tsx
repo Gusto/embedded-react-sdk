@@ -16,30 +16,45 @@ import { Flex } from '@/components/Common'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface TimeOffFlowProps extends BaseComponentInterface {
+/**
+ * Props for {@link TimeOffFlow}.
+ *
+ * @public
+ */
+export interface TimeOffFlowProps extends BaseComponentInterface<never> {
+  /** The associated company identifier. */
   companyId: string
 }
 
+/** @internal */
 export type TimeOffFlowAlert = {
   type: 'error' | 'info' | 'success'
   title: string
   content?: ReactNode
 }
 
+/** @internal */
 export type AddEmployeesSource =
   | 'policySettings'
   | 'policyDetailsForm'
   | 'viewTimeOffPolicyDetail'
   | 'viewHolidayEmployees'
 
+/** @internal */
 export interface TimeOffFlowContextInterface extends FlowContextInterface {
+  /** The associated company identifier. */
   companyId: string
+  /** The currently selected policy type, if any. */
   policyType?: TimeOffPolicyType
+  /** The currently selected policy identifier, if any. */
   policyId?: string
+  /** Alerts to render at the top of the current step. */
   alerts?: TimeOffFlowAlert[]
+  /** Which step launched the add-employees screen, used to route the back transition. */
   addEmployeesSource?: AddEmployeesSource
 }
 
+/** @internal */
 export function PolicyListContextual() {
   const { onEvent, companyId, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -56,6 +71,7 @@ export function PolicyListContextual() {
   )
 }
 
+/** @internal */
 export function SelectPolicyTypeContextual() {
   const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -81,6 +97,7 @@ export function SelectPolicyTypeContextual() {
   )
 }
 
+/** @internal */
 export function PolicyDetailsFormContextual() {
   const { onEvent, companyId, policyType, policyId, alerts } =
     useFlow<TimeOffFlowContextInterface>()
@@ -105,6 +122,7 @@ export function PolicyDetailsFormContextual() {
   )
 }
 
+/** @internal */
 export function PolicySettingsContextual() {
   const { onEvent, policyId, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -121,6 +139,7 @@ export function PolicySettingsContextual() {
   )
 }
 
+/** @internal */
 export function EditPolicySettingsContextual() {
   const { onEvent, policyId, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -137,6 +156,7 @@ export function EditPolicySettingsContextual() {
   )
 }
 
+/** @internal */
 export function AddEmployeesToPolicyContextual() {
   const { onEvent, companyId, policyId, policyType } = useFlow<TimeOffFlowContextInterface>()
   const requiredPolicyType = ensureRequired(policyType)
@@ -151,11 +171,13 @@ export function AddEmployeesToPolicyContextual() {
   )
 }
 
+/** @internal */
 export function TimeOffPolicyDetailContextual() {
   const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
   return <TimeOffPolicyDetail onEvent={onEvent} policyId={ensureRequired(policyId)} />
 }
 
+/** @internal */
 export function HolidaySelectionFormContextual() {
   const { onEvent, companyId, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -172,6 +194,7 @@ export function HolidaySelectionFormContextual() {
   )
 }
 
+/** @internal */
 export function EditHolidaySelectionFormContextual() {
   const { onEvent, companyId, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
@@ -188,16 +211,19 @@ export function EditHolidaySelectionFormContextual() {
   )
 }
 
+/** @internal */
 export function AddEmployeesHolidayContextual() {
   const { onEvent, companyId } = useFlow<TimeOffFlowContextInterface>()
   return <AddEmployeesHoliday onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function ViewHolidayEmployeesContextual() {
   const { onEvent, companyId } = useFlow<TimeOffFlowContextInterface>()
   return <ViewHolidayEmployees onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function ViewHolidayScheduleContextual() {
   const { onEvent, companyId } = useFlow<TimeOffFlowContextInterface>()
   return <ViewHolidaySchedule onEvent={onEvent} companyId={ensureRequired(companyId)} />

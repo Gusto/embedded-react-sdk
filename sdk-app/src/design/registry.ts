@@ -41,6 +41,24 @@ export const categorizedRegistry: CategorizedRegistry = {
       ],
     },
     {
+      name: 'Create Historical Payment',
+      path: '/design/create-historical-payment',
+      description:
+        'Record a contractor payment that already happened outside Gusto — paid date, per-contractor amounts, no funding.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/create-historical-payment',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/create-historical-payment/component-states',
+          description: 'Browse form configurations with mock data.',
+        },
+      ],
+    },
+    {
       name: 'Contractor Self-Onboarding',
       path: '/design/contractor-self-onboarding',
       description: 'The contractor-facing onboarding experience after receiving an invite link.',
@@ -60,6 +78,24 @@ export const categorizedRegistry: CategorizedRegistry = {
   ],
   Employees: [
     {
+      name: 'Employee Management',
+      path: '/design/employee-management',
+      description:
+        'A prototype for managing employees — list active, onboarding, and dismissed employees, and rehire dismissed employees.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/employee-management',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/employee-management/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+    {
       name: 'Compensation History',
       path: '/design/employee-compensation-history',
       description:
@@ -78,5 +114,24 @@ export const categorizedRegistry: CategorizedRegistry = {
       ],
     },
   ],
-  Payroll: [],
+  Payroll: [
+    {
+      name: 'Regular rate of pay',
+      path: '/design/regular-rate-of-pay',
+      description:
+        'A duplicate of the PayrollEditEmployee form for design iteration — adjust the UI independently of the live SDK component.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/regular-rate-of-pay',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/regular-rate-of-pay/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+  ],
 }

@@ -22,6 +22,20 @@ import {
   CompensationHistoryPrototype,
   CompensationHistoryStates,
 } from './design/prototypes/employee-management/CompensationHistory'
+import {
+  EmployeeManagementFlow,
+  EmployeeList as EmployeeManagementList,
+  RehireEmployee as EmployeeManagementRehire,
+  EmployeeManagementStates,
+} from './design/prototypes/employee-management/EmployeeManagement'
+import {
+  RegularRateOfPayPrototype,
+  RegularRateOfPayStates,
+} from './design/prototypes/regular-rate-of-pay'
+import {
+  CreateHistoricalPaymentPrototype,
+  CreateHistoricalPaymentStates,
+} from './design/prototypes/contractor-payments/CreateHistoricalPayment'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -71,6 +85,56 @@ const router = createBrowserRouter([
                   {
                     path: ':componentSlug/:configSlug',
                     element: <ContractorSelfOnboardingStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'employee-management',
+            element: <EmployeeManagementFlow />,
+            children: [
+              { index: true, element: <EmployeeManagementList /> },
+              { path: ':employeeId/rehire', element: <EmployeeManagementRehire /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <EmployeeManagementStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <EmployeeManagementStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'regular-rate-of-pay',
+            children: [
+              { index: true, element: <RegularRateOfPayPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <RegularRateOfPayStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <RegularRateOfPayStates />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'create-historical-payment',
+            children: [
+              { index: true, element: <CreateHistoricalPaymentPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <CreateHistoricalPaymentStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <CreateHistoricalPaymentStates />,
                   },
                 ],
               },

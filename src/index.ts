@@ -7,6 +7,7 @@ export {
   ContractorOnboardingStatus,
   ContractorSelfOnboardingStatuses,
   PAY_PERIODS,
+  I9_FORM_NAME,
 } from '@/shared/constants'
 export type { EventType } from '@/shared/constants'
 export type {
@@ -29,10 +30,18 @@ export type {
   ObservabilityMetricUnit,
   SanitizationConfig,
 } from '@/types/observability'
+
 export type {
-  ConfirmWireDetailsProps,
-  ConfirmWireDetailsComponentType,
-} from '@/components/Payroll/ConfirmWireDetails'
+  BaseComponentInterface,
+  CommonComponentInterface,
+  OnEventType,
+} from '@/components/Base'
+export type {
+  ResourceDictionary,
+  Resources,
+  DeepPartial,
+  SupportedLanguages,
+} from '@/types/Helpers'
 
 // Partner hook infrastructure
 export {
@@ -535,6 +544,13 @@ export {
   usePayScheduleForm,
   PayScheduleErrorCodes,
   createPayScheduleSchema,
+  CustomNameField,
+  FrequencyField,
+  CustomTwicePerMonthField,
+  AnchorPayDateField,
+  AnchorEndOfPayPeriodField,
+  Day1Field,
+  Day2Field,
 } from '@/components/Company/PaySchedule/shared/usePayScheduleForm'
 export type {
   PayScheduleOptionalFieldsToRequire,
@@ -543,6 +559,7 @@ export type {
   UsePayScheduleFormReady,
   PayScheduleFieldsMetadata,
   PayScheduleFormFields,
+  PayScheduleFields,
   PayScheduleErrorCode,
   PayScheduleFormData,
   PayScheduleFormOutputs,

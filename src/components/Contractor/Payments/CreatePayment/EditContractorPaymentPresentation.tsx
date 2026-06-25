@@ -1,9 +1,9 @@
-import { useId } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { ActionsLayout, Flex, Grid, NumberInputField, RadioGroupField } from '@/components/Common'
+import { ActionsLayout, Flex, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -17,6 +17,7 @@ interface EditContractorPaymentPresentationProps {
   contractorPaymentMethod?: string
 }
 
+/** @internal */
 export const EditContractorPaymentPresentation = ({
   isOpen,
   onClose,
@@ -36,32 +37,31 @@ export const EditContractorPaymentPresentation = ({
     name: 'wageType',
     control: formMethods.control,
   })
-  const hours = useWatch<EditContractorPaymentFormValues, 'hours'>({
-    name: 'hours',
-    control: formMethods.control,
-  })
-  const wage = useWatch<EditContractorPaymentFormValues, 'wage'>({
-    name: 'wage',
-    control: formMethods.control,
-  })
-  const bonus = useWatch<EditContractorPaymentFormValues, 'bonus'>({
-    name: 'bonus',
-    control: formMethods.control,
-  })
-  const reimbursement = useWatch<EditContractorPaymentFormValues, 'reimbursement'>({
-    name: 'reimbursement',
-    control: formMethods.control,
-  })
   const hourlyRate = useWatch<EditContractorPaymentFormValues, 'hourlyRate'>({
     name: 'hourlyRate',
     control: formMethods.control,
   })
 
-  const totalAmount =
-    (wageType === 'Fixed' ? 0 : bonus || 0) +
-    (reimbursement || 0) +
-    (wage || 0) +
-    (hours || 0) * (hourlyRate || 0)
+  const parseHours = (raw: string) => {
+    const parsed = parseFloat(raw.replace(/[^\d.]/g, ''))
+    return isNaN(parsed) ? 0 : parsed
+  }
+
+  const computeHoursPayDescription = (hours: number) => {
+    if (!hourlyRate || hourlyRate <= 0) return ''
+    return t('hoursPayDescription', {
+      rate: currencyFormatter(hourlyRate),
+      total: currencyFormatter(hours * hourlyRate),
+    })
+  }
+
+  const [hoursPayDescription, setHoursPayDescription] = useState('')
+
+  useEffect(() => {
+    if (isOpen) {
+      setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
+    }
+  }, [isOpen, hourlyRate, computeHoursPayDescription, formMethods.getValues])
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
@@ -101,27 +101,23 @@ export const EditContractorPaymentPresentation = ({
             <Flex flexDirection="column" gap={4}>
               <Heading as="h2">{t('title')}</Heading>
               <Text variant="supporting">{t('subtitle')}</Text>
-              <Text weight="bold">
-                {t('totalPay')}: {currencyFormatter(totalAmount)}
-              </Text>
             </Flex>
-
-            {wageType === 'Hourly' && (
-              <Flex flexDirection="column" gap={16}>
-                <Heading as="h3">{t('hoursSection')}</Heading>
+            <Flex flexDirection="column" gap={20}>
+              {wageType === 'Hourly' && (
                 <NumberInputField
                   min={0}
                   name="hours"
                   isRequired
                   label={t('hoursLabel')}
                   adornmentEnd={t('hoursAdornment')}
+                  description={hourlyRate && hourlyRate > 0 ? hoursPayDescription : undefined}
+                  onInputChange={raw => {
+                    setHoursPayDescription(computeHoursPayDescription(parseHours(raw)))
+                  }}
                 />
-              </Flex>
-            )}
+              )}
 
-            {wageType === 'Fixed' && (
-              <Flex flexDirection="column" gap={16}>
-                <Heading as="h3">{t('fixedPaySection')}</Heading>
+              {wageType === 'Fixed' && (
                 <NumberInputField
                   min={0}
                   name="wage"
@@ -129,27 +125,17 @@ export const EditContractorPaymentPresentation = ({
                   label={t('wageLabel')}
                   format="currency"
                 />
-              </Flex>
-            )}
+              )}
 
-            <Flex flexDirection="column" gap={16}>
-              <Heading as="h3">{t('additionalEarningsSection')}</Heading>
-              <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
-                {wageType === 'Hourly' && (
-                  <NumberInputField
-                    min={0}
-                    name="bonus"
-                    label={t('bonusLabel')}
-                    format="currency"
-                  />
-                )}
-                <NumberInputField
-                  min={0}
-                  name="reimbursement"
-                  label={t('reimbursementLabel')}
-                  format="currency"
-                />
-              </Grid>
+              {wageType === 'Hourly' && (
+                <NumberInputField min={0} name="bonus" label={t('bonusLabel')} format="currency" />
+              )}
+              <NumberInputField
+                min={0}
+                name="reimbursement"
+                label={t('reimbursementLabel')}
+                format="currency"
+              />
             </Flex>
 
             <Flex flexDirection="column" gap={16}>

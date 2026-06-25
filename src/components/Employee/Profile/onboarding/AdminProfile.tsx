@@ -269,13 +269,13 @@ function AdminProfileReady({
             </Flex>
 
             {isSelfOnboardingEnabled && EmployeeFields.SelfOnboarding && (
-              <div className={styles.switchFieldContainer}>
+              <Components.Box>
                 <EmployeeFields.SelfOnboarding
                   label={t('selfOnboardingLabel')}
                   description={t('selfOnboardingDescription')}
                   formHookResult={employeeDetails}
                 />
-              </div>
+              </Components.Box>
             )}
             <Grid
               gap={{ base: 20, small: 8 }}
@@ -307,6 +307,7 @@ function AdminProfileReady({
               <WorkAddressFields.Location
                 label={t('workAddress')}
                 description={t('workAddressDescription')}
+                placeholder={t('workAddressPlaceholder')}
                 validationMessages={{ REQUIRED: t('validations.location', { ns: 'common' }) }}
               />
             </SDKFormProvider>

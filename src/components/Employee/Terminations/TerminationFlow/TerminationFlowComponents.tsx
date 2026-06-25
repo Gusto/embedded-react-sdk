@@ -18,7 +18,7 @@ import { componentEvents, type EventType } from '@/shared/constants'
  *
  * @public
  */
-export interface TerminationFlowProps extends BaseComponentInterface {
+export interface TerminationFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** The employee identifier to terminate. */

@@ -1,2 +1,1 @@
-export { PaymentSummary } from './PaymentSummary'
-export { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
+export { PaymentSummary, type PaymentSummaryProps } from './PaymentSummary'

@@ -1,5 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
+import type { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup'
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import styles from './PaymentHistoryPresentation.module.scss'
@@ -21,6 +22,7 @@ interface PaymentHistoryPresentationProps {
   isCancelling: boolean
 }
 
+/** @internal */
 export const PaymentHistoryPresentation = ({
   paymentGroup,
   contractors,
@@ -35,6 +37,13 @@ export const PaymentHistoryPresentation = ({
   const { formatLongWithYear } = useDateFormatter()
 
   const payments = paymentGroup.contractorPayments || []
+
+  const formatWageType = (contractor: ContractorPaymentForGroup) => {
+    if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
+      return `${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+    }
+    return contractor.wageType
+  }
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -70,45 +79,46 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.wageType'),
-                  render: ({ wageType }) => <Text>{wageType}</Text>,
+                  render: contractor => formatWageType(contractor),
                 },
                 {
                   title: t('tableHeaders.paymentMethod'),
-                  render: ({ paymentMethod }) => <Text>{paymentMethod}</Text>,
+                  render: ({ paymentMethod }) => paymentMethod,
                 },
                 {
                   title: t('tableHeaders.hours'),
-                  render: ({ hours }) => (
-                    <Text>{hours ? formatHoursDisplay(Number(hours)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ wageType, hours }) =>
+                    wageType === 'Fixed'
+                      ? t('na')
+                      : hours
+                        ? formatHoursDisplay(Number(hours))
+                        : '–',
                 },
                 {
                   title: t('tableHeaders.wage'),
-                  render: ({ wage }) => <Text>{wage ? currencyFormatter(Number(wage)) : '–'}</Text>,
+                  justify: 'end',
+                  render: ({ wageType, wage }) =>
+                    wageType === 'Hourly' ? t('na') : wage ? currencyFormatter(Number(wage)) : '–',
                 },
                 {
                   title: t('tableHeaders.bonus'),
-                  render: ({ bonus }) => (
-                    <Text>{bonus ? currencyFormatter(Number(bonus)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ bonus }) => (bonus ? currencyFormatter(Number(bonus)) : '–'),
                 },
                 {
                   title: t('tableHeaders.reimbursements'),
-                  render: ({ reimbursement }) => (
-                    <Text>{reimbursement ? currencyFormatter(Number(reimbursement)) : '–'}</Text>
-                  ),
+                  justify: 'end',
+                  render: ({ reimbursement }) =>
+                    reimbursement ? currencyFormatter(Number(reimbursement)) : '–',
                 },
                 {
                   title: t('tableHeaders.total'),
-                  render: ({ wageTotal, reimbursement, bonus }) => (
-                    <Text>
-                      {wageTotal
-                        ? currencyFormatter(
-                            Number(wageTotal) + Number(reimbursement) + Number(bonus),
-                          )
-                        : '–'}
-                    </Text>
-                  ),
+                  justify: 'end',
+                  render: ({ wageTotal, reimbursement, bonus }) =>
+                    wageTotal
+                      ? currencyFormatter(Number(wageTotal) + Number(reimbursement) + Number(bonus))
+                      : '–',
                 },
               ]}
               itemMenu={({ contractorUuid, mayCancel, uuid }) => {

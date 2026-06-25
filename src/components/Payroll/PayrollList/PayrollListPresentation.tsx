@@ -9,13 +9,12 @@ import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import { DataView, Flex, HamburgerMenu, DateRangeFilter } from '@/components/Common'
+import { DataView, Flex, HamburgerMenu, DateRangeFilter, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { useI18n } from '@/i18n'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 const CANCELLABLE_OFF_CYCLE_REASONS = new Set<string>([
@@ -74,6 +73,7 @@ interface PayrollListPresentationProps {
   hasUnprocessedTransitions?: boolean
 }
 
+/** @internal */
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
@@ -272,12 +272,7 @@ export const PayrollListPresentation = ({
         <DataView
           breakAt="large"
           pagination={pagination}
-          emptyState={() => (
-            <Flex flexDirection="column" alignItems="center" gap={24}>
-              <FeatureIconCheck />
-              <Text>{t('emptyState')}</Text>
-            </Flex>
-          )}
+          emptyState={() => <EmptyData title={t('emptyState')} />}
           data={payrolls}
           columns={[
             {

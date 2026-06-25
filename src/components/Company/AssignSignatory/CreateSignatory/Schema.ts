@@ -16,6 +16,7 @@ const createSSNValidation = (hasSsn?: boolean) =>
     return SSN_REGEX.test(removeNonDigits(value))
   })
 
+/** @internal */
 export const generateCreateSignatorySchema = (hasSsn?: boolean) =>
   z.object({
     firstName: nameValidation,

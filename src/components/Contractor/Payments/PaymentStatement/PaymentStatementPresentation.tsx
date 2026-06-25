@@ -27,6 +27,7 @@ type PaymentStatementRow = {
   amount: string | null
 }
 
+/** @internal */
 export const PaymentStatementPresentation = ({
   payment,
   contractor,
@@ -125,7 +126,7 @@ export const PaymentStatementPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Flex flexDirection="column" gap={8}>
           <Heading as="h2">{t('title', { contractorName })}</Heading>
-          <Text>{formatLongWithYear(checkDate)}</Text>
+          <Text variant="supporting">{formatLongWithYear(checkDate)}</Text>
         </Flex>
       </Flex>
 
@@ -198,11 +199,11 @@ export const PaymentStatementPresentation = ({
         columns={[
           {
             title: t('debitedColumn'),
-            render: ({ label }) => <Text>{label}</Text>,
+            render: ({ label }) => label,
           },
           {
             title: t('amountColumn'),
-            render: ({ amount }) => <Text>{amount || ''}</Text>,
+            render: ({ amount }) => amount || '',
           },
         ]}
         data={statementRows}

@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const SUPPORTED_PAYMENT_METHODS = ['Check', 'Direct Deposit'] as const
 
-export const EditContractorPaymentFormSchema = z.object({
+const EditContractorPaymentFormSchema = z.object({
   wageType: z.enum(['Hourly', 'Fixed']),
   hours: z.number().nonnegative().max(20000).optional(),
   wage: z.number().nonnegative().optional(),
@@ -14,6 +14,7 @@ export const EditContractorPaymentFormSchema = z.object({
   contractorPaymentMethod: z.string().optional(),
 })
 
+/** @internal */
 export const createEditContractorPaymentFormSchema = () => {
   return EditContractorPaymentFormSchema.refine(
     data => {
@@ -29,4 +30,5 @@ export const createEditContractorPaymentFormSchema = () => {
   )
 }
 
+/** @internal */
 export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>

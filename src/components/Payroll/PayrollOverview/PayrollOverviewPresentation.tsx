@@ -6,7 +6,6 @@ import type {
 import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount'
 import { useState, useRef } from 'react'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
@@ -17,7 +16,6 @@ import {
   calculateTotalPayroll,
   getPayrollTypeLabel,
   getReimbursements,
-  hasDirectDepositEmployees,
   isDismissalPayroll,
 } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -36,12 +34,12 @@ import {
   PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
   PAYMENT_METHODS,
 } from '@/shared/constants'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
   bankAccount?: CompanyBankAccount
-  employeeDetails: Employee[]
   taxes: Record<string, { employee: number; employer: number }>
   status?: PayrollOverviewStatus
   isProcessed: boolean
@@ -50,6 +48,7 @@ interface PayrollOverviewProps {
   submissionBlockers?: PayrollSubmissionBlockerType[]
   selectedUnblockOptions?: Record<string, string>
   wireInConfirmationRequest?: React.ReactNode
+  pagination?: PaginationControlProps
   onEdit: () => void
   onSubmit: () => void
   onCancel: () => void
@@ -70,13 +69,13 @@ const getPayrollOverviewTitle = (
   return { startDate: '', endDate: '' }
 }
 
+/** @internal */
 export const PayrollOverviewPresentation = ({
   onEdit,
   onSubmit,
   onCancel,
   onPayrollReceipt,
   onPaystubDownload,
-  employeeDetails,
   payrollData,
   bankAccount,
   taxes,
@@ -90,6 +89,7 @@ export const PayrollOverviewPresentation = ({
   wireInConfirmationRequest,
   withReimbursements = true,
   paymentSpeed,
+  pagination,
 }: PayrollOverviewProps) => {
   const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -170,8 +170,6 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
-
   const fastAchBlocker = submissionBlockers.find(
     blocker =>
       blocker.blockerType === 'fast_ach_threshold_exceeded' ||
@@ -230,8 +228,8 @@ export const PayrollOverviewPresentation = ({
       render: (employeeCompensations: EmployeeCompensations) => (
         <Flex flexDirection="column" gap={0}>
           {firstLastName({
-            first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-            last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+            first_name: employeeCompensations.firstName,
+            last_name: employeeCompensations.lastName,
           })}
           {employeeCompensations.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
         </Flex>
@@ -302,6 +300,7 @@ export const PayrollOverviewPresentation = ({
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
           data={payrollData.employeeCompensations!}
+          pagination={pagination}
           itemMenu={
             isProcessed && !isDesktop
               ? (employeeCompensations: EmployeeCompensations) => (
@@ -353,8 +352,8 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Flex flexDirection="column" gap={0}>
                   {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                    first_name: employeeCompensations.firstName,
+                    last_name: employeeCompensations.lastName,
                   })}
                   {employeeCompensations.excluded && (
                     <Badge status="warning">{t('skippedBadge')}</Badge>
@@ -364,24 +363,20 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.compensationType'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                employeeMap.get(employeeCompensations.employeeUuid!)?.jobs?.reduce((acc, job) => {
-                  if (job.primary) {
-                    const flsaStatus = job.compensations?.find(
-                      comp => comp.uuid === job.currentCompensationUuid,
-                    )?.flsaStatus
+              render: (employeeCompensations: EmployeeCompensations) => {
+                const flsaStatus = employeeCompensations.hourlyCompensations?.find(
+                  compensation => compensation.flsaStatus,
+                )?.flsaStatus
 
-                    switch (flsaStatus) {
-                      case FlsaStatus.EXEMPT:
-                        return t('compensationTypeLabels.exempt')
-                      case FlsaStatus.NONEXEMPT:
-                        return t('compensationTypeLabels.nonexempt')
-                      default:
-                        return flsaStatus ?? ''
-                    }
-                  }
-                  return acc
-                }, ''),
+                switch (flsaStatus) {
+                  case FlsaStatus.EXEMPT:
+                    return t('compensationTypeLabels.exempt')
+                  case FlsaStatus.NONEXEMPT:
+                    return t('compensationTypeLabels.nonexempt')
+                  default:
+                    return flsaStatus ?? ''
+                }
+              },
             },
             {
               title: t('tableHeaders.regular'),
@@ -417,6 +412,7 @@ export const PayrollOverviewPresentation = ({
             },
           ]}
           data={payrollData.employeeCompensations!}
+          pagination={pagination}
         />
       ),
     },
@@ -432,8 +428,8 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Flex flexDirection="column" gap={0}>
                   {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                    first_name: employeeCompensations.firstName,
+                    last_name: employeeCompensations.lastName,
                   })}
                   {employeeCompensations.excluded && (
                     <Badge status="warning">{t('skippedBadge')}</Badge>
@@ -497,6 +493,7 @@ export const PayrollOverviewPresentation = ({
             },
           ]}
           data={payrollData.employeeCompensations!}
+          pagination={pagination}
         />
       ),
     },
@@ -817,7 +814,7 @@ export const PayrollOverviewPresentation = ({
               >
                 <Flex gap={14} flexDirection="column">
                   <Text>{t('cancelDialogDescription')}</Text>
-                  {hasDirectDepositEmployees(payrollData.employeeCompensations) && (
+                  {Number(payrollData.totals?.netPayDebit ?? 0) > 0 && (
                     <Text>
                       {t('cancelDialogDescriptionDeadline', {
                         deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,

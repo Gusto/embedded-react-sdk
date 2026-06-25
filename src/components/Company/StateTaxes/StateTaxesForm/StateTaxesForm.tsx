@@ -10,7 +10,7 @@ import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { fromRhfKey, toRhfKey } from './rhfKey'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -18,7 +18,7 @@ import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesFormProps extends CommonComponentInterface {
+interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
   companyId: string
   state: string
 }
@@ -31,7 +31,38 @@ function stringifyRequirementValue(value: unknown): string {
   return ''
 }
 
-export function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface) {
+/**
+ * Standalone form for editing a company's state tax requirements for a single state.
+ *
+ * @remarks
+ * Lower-level building block used by {@link StateTaxes} for its edit view. Use directly when
+ * you need full control over navigation between the list and edit views.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
+ * | `CANCEL` | The user cancelled editing | — |
+ *
+ * @param props - {@link StateTaxesFormProps}
+ * @returns The rendered state taxes edit form.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <CompanyOnboarding.StateTaxesForm
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       state="CA"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
+export function StateTaxesForm(props: StateTaxesFormProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

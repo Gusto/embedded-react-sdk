@@ -7,6 +7,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping a numeric `<input />` for currency, decimal, or percent values, with optional start/end adornments.
  *
  * @public
+ * @group Component Props
  */
 export interface NumberInputProps
   extends
@@ -43,6 +44,10 @@ export interface NumberInputProps
    * Handler for blur events
    */
   onBlur?: () => void
+  /**
+   * Fires on every keystroke with the raw input string (pre-commit), unlike onChange which fires on blur/Enter.
+   */
+  onInputChange?: (value: string) => void
   /**
    * Element to display at the start of the input
    */

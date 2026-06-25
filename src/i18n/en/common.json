@@ -7,6 +7,7 @@
     "multipleErrorsEncountered": "There were multiple problems with your submission"
   },
   "optionalLabel": "(optional)",
+  "selectPlaceholder": "Select an option...",
   "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
   "back": "Back",
   "errors": {
@@ -24,7 +25,6 @@
     "calendarArrow": "Show calendar",
     "nextMonth": "Show next month",
     "previousMonth": "Show previous month",
-    "magnifyingGlass": "Magnifying glass",
     "paginationFirst": "Navigate to first page",
     "paginationPrev": "Navigate to previous page",
     "paginationNext": "Navigate to next page",

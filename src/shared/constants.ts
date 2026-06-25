@@ -41,8 +41,6 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_EDIT: 'employee/deductions/edit',
   EMPLOYEE_DEDUCTION_CANCEL: 'employee/deductions/cancel',
   EMPLOYEE_DEDUCTION_CANCEL_EMPTY: 'employee/deductions/cancelEmpty',
-  EMPLOYEE_DEDUCTION_INCLUDE_YES: 'employee/deductions/include/yes',
-  EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
   EMPLOYEE_COMPENSATION_CREATED: 'employee/compensations/created',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
@@ -477,6 +475,7 @@ export const timeOffEvents = {
  * a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
  *
  * @public
+ * @group Events
  *
  * @example
  * ```tsx
@@ -520,6 +519,7 @@ export const componentEvents = {
  * the specific event keys you care about.
  *
  * @public
+ * @group Events
  *
  * @example
  * ```tsx
@@ -646,7 +646,16 @@ export const HOURS_PER_PAY_PERIOD_MONTHLY = 173.333333
 /** @internal */
 export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
 
-/** @internal */
+/**
+ * The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
+ *
+ * @remarks
+ * `DocumentList` emits `employee/forms/view` with `{ uuid, name }`. Compare `name` against this
+ * constant to decide whether to route a form to `I9SignatureForm` (when it matches) or the standard
+ * `SignatureForm`.
+ *
+ * @public
+ */
 export const I9_FORM_NAME = 'US_I-9'
 
 /** @internal */

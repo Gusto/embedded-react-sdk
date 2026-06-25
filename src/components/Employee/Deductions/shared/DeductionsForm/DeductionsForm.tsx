@@ -9,6 +9,7 @@ import { ChildSupportFormView } from './ChildSupportFormView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { ActionsLayout } from '@/components/Common'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import type { ResourceDictionary } from '@/types/Helpers'
 
@@ -129,6 +130,7 @@ export function DeductionsForm({
               {variant?.kind === 'garnishment' && (
                 <Components.Select
                   label={t('garnishmentTypeLabel')}
+                  placeholder=""
                   options={garnishmentTypeOptions}
                   value={variant.type}
                   onChange={handleSelectGarnishmentType}
@@ -138,6 +140,14 @@ export function DeductionsForm({
             </Flex>
 
             {variant !== null && <hr />}
+
+            {variant === null && (
+              <ActionsLayout>
+                <Components.Button variant="secondary" type="button" onClick={onCancel}>
+                  {t('actions.cancel')}
+                </Components.Button>
+              </ActionsLayout>
+            )}
           </>
         )}
 

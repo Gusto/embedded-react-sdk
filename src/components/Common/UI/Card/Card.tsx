@@ -16,7 +16,7 @@ export function Card({ children, menu, className, action }: CardProps) {
       <Flex flexDirection="row" gap={8}>
         {action && <div>{action}</div>}
         <div className={styles.cardBody}>
-          <Flex flexDirection={'column'} gap={16}>
+          <Flex flexDirection="column" alignItems="stretch" gap={16}>
             {children}
           </Flex>
         </div>

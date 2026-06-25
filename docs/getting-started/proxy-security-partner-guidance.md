@@ -1,9 +1,9 @@
 ---
-title: 'Proxy Security: Partner Guidance'
+title: Proxy Security
 description: Secure the SDK proxy with per-request authentication, endpoint allowlisting, resource ownership checks, and audit logging using the SDK endpoint inventory.
 ---
 
-# Proxy Security: Partner Guidance
+# Proxy Security
 
 The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary -- UI-level restrictions alone are not sufficient since users can make API requests directly.
 
@@ -34,7 +34,7 @@ Import it from the package:
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/reference/endpoint-inventory.json` in any language.
+Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/appendix/endpoint-inventory.json` in any language.
 
 The JSON structure:
 
@@ -66,7 +66,7 @@ Look up the flows or blocks your app uses, substitute `:param` placeholders with
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../reference/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../appendix/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
 
 ## Content Security Policy
 
@@ -139,8 +139,7 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 ## Further reading
 
-- [Proxy examples with role-based access](../reference/proxy-examples.md)
-- [Endpoint reference tables](../reference/endpoint-reference.md)
-- [Securing your proxy](./getting-started.md#securing-your-proxy) -- Getting Started
+- [Proxy examples with role-based access](../appendix/proxy-examples.md)
+- [Endpoint reference tables](../appendix/endpoint-reference.md)
 - [Gusto API Scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)

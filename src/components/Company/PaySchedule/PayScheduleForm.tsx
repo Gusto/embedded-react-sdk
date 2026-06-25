@@ -16,6 +16,7 @@ interface PayScheduleFormProps extends UsePayScheduleFormProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
+/** @internal */
 export function PayScheduleForm({ onEvent, ...hookProps }: PayScheduleFormProps) {
   return (
     <BaseBoundaries componentName="Company.PayScheduleForm">
@@ -87,6 +88,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                     />
                     <Fields.Frequency
                       label={t('labels.frequency')}
+                      placeholder={t('labels.frequencyPlaceholder')}
                       getOptionLabel={(entry: PayScheduleFrequency) => frequencyLabels[entry]}
                       validationMessages={{ REQUIRED: t('validations.frequency') }}
                     />
@@ -136,6 +138,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                       {!payPreviewLoading && (
                         <Components.Select
                           label={t('labels.preview')}
+                          placeholder=""
                           isRequired
                           options={payPeriodPreview.map((period, index) => ({
                             value: String(index),

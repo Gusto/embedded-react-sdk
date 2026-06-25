@@ -9,13 +9,11 @@ import {
   type EmployeeDocumentsFormValues,
 } from './EmployeeDocumentsPresentation'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary } from '@/i18n'
 import {
   componentEvents,
   EmployeeSelfOnboardingStatuses,
   EmployeeOnboardingStatus,
-  type EventType,
 } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
@@ -29,8 +27,6 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 export interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 /**

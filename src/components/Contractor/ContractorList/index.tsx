@@ -9,20 +9,15 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-export interface HeadProps {
+interface HeadProps {
   count: number
   handleAdd: () => void
 }
-export function Head({ count, handleAdd }: HeadProps) {
+function Head({ count, handleAdd }: HeadProps) {
   const { Button, Heading } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
@@ -39,10 +34,10 @@ export function Head({ count, handleAdd }: HeadProps) {
   )
 }
 
-export interface EmptyDataContractorsListProps {
+interface EmptyDataContractorsListProps {
   handleAdd: () => void
 }
-export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
+function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
   const { Button } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
@@ -55,12 +50,34 @@ export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsList
   )
 }
 
-export interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+/**
+ * Props for {@link ContractorList}.
+ *
+ * @public
+ */
+export interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
+  /** UUID of the company whose contractors should be listed. */
   companyId: string
+  /** Success message to display in an alert above the list, typically after a create, update, or delete action. */
   successMessage?: string
 }
 
-export function ContractorList(props: ContractorListProps & BaseComponentInterface) {
+/**
+ * Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/create` | The add-contractor action was triggered. | — |
+ * | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
+ * | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
+ * | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
+ *
+ * @param props - See {@link ContractorListProps}.
+ * @returns The rendered contractor list.
+ * @public
+ */
+export function ContractorList(props: ContractorListProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

@@ -1,4 +1,4 @@
-import { useCallback, type HTMLAttributes } from 'react'
+import { useCallback } from 'react'
 import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/industrySelectionGet'
 import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/industrySelectionUpdate'
 import type { IndustryFormFields } from './Edit'
@@ -8,15 +8,17 @@ import { componentEvents } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
-export type IndustryProps<T> = Pick<
-  BaseComponentInterface<'Company.Industry'>,
-  'onEvent' | 'dictionary'
-> &
-  Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
-    companyId: string
-  }
+/**
+ * Props for the {@link Industry} component.
+ *
+ * @public
+ */
+export interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
+  /** The UUID of the company whose industry classification is being set. */
+  companyId: string
+}
 
-function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T>) {
+function Root({ children, className, companyId, dictionary }: IndustryProps) {
   useComponentDictionary('Company.Industry', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
 
@@ -49,7 +51,21 @@ function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T
   )
 }
 
-export function Industry<T>(props: IndustryProps<T>) {
+/**
+ * Selects and saves the company's industry classification (NAICS code).
+ *
+ * Presents a searchable list of industry options and persists the selection for the given company.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+ *
+ * @param props - {@link IndustryProps} including `companyId` and event handlers.
+ * @returns The rendered industry selector.
+ * @public
+ */
+export function Industry(props: IndustryProps) {
   useI18n('Company.Industry')
 
   return (

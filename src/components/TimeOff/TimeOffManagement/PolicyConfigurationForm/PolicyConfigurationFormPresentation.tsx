@@ -24,6 +24,7 @@ import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useI18n } from '@/i18n'
 import { getDaysInMonth } from '@/helpers/dateFormatting'
 
+/** @internal */
 export function PolicyConfigurationFormPresentation({
   onContinue,
   onCancel,
@@ -283,12 +284,14 @@ export function PolicyConfigurationFormPresentation({
                       className={styles.dateSelect}
                       name="resetMonth"
                       label={t('policyDetails.monthLabel')}
+                      placeholder=""
                       options={monthOptions}
                     />
                     <SelectField<number>
                       className={styles.dateSelect}
                       name="resetDay"
                       label={t('policyDetails.dayLabel')}
+                      placeholder=""
                       options={dayOptions}
                     />
                   </Flex>

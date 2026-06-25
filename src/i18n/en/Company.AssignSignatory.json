@@ -16,7 +16,8 @@
     "ssn": "Social security number",
     "birthday": "Date of birth",
     "titleSelect": {
-      "label": "Title"
+      "label": "Title",
+      "placeholder": "Select title..."
     }
   },
   "address": {

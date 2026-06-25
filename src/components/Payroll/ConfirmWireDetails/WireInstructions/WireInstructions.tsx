@@ -18,7 +18,6 @@ interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInst
   companyId: string
   wireInId?: string
   selectedWireInId?: string
-  onEvent: OnEventType<EventType, unknown>
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
 
@@ -97,6 +96,7 @@ function WireInstructionField({ label, value }: WireInstructionFieldProps) {
   )
 }
 
+/** @internal */
 export function WireInstructions(props: WireInstructionsProps) {
   return (
     <BaseComponent {...props}>
@@ -105,7 +105,7 @@ export function WireInstructions(props: WireInstructionsProps) {
   )
 }
 
-export const Root = ({
+const Root = ({
   companyId,
   wireInId,
   selectedWireInId,
@@ -155,6 +155,7 @@ export const Root = ({
           isRequired
           portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
+          placeholder=""
           value={selectedWireInId || ''}
           options={activeWireInRequestsWithPayrolls.map(
             ({ wireInRequest, payroll, paymentType, requestedAmount }) => {

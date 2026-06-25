@@ -12,19 +12,31 @@ import { Actions } from './Actions'
 import { LocationsFormProvider } from './useLocationForm'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
+import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { WithRequired } from '@/types/Helpers'
 
-interface LocationFormProps extends CommonComponentInterface {
+/**
+ * Props for the {@link LocationForm} component.
+ *
+ * @public
+ */
+export interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> {
+  /** Identifier of the company the location belongs to. */
   companyId: string
+  /** Identifier of an existing location. When provided, the form loads and edits that location; when omitted, the form creates a new location. */
   locationId?: string
 }
 
+type CommonLocationFormProps = Omit<
+  LocationFormProps,
+  'FallbackComponent' | 'LoaderComponent' | 'onEvent'
+>
+
 /**Accounting for conditional logic where location data needs to be fetched only if locationId is present */
-function RootWithLocation(props: WithRequired<LocationFormProps, 'locationId'>) {
+function RootWithLocation(props: WithRequired<CommonLocationFormProps, 'locationId'>) {
   const {
     data: { location },
   } = useLocationsRetrieveSuspense({ locationId: props.locationId })
@@ -36,7 +48,7 @@ function Root({
   location,
   className,
   children,
-}: LocationFormProps & { location?: Location }) {
+}: CommonLocationFormProps & { location?: Location }) {
   useI18n('Company.Locations')
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -137,13 +149,29 @@ function Root({
   )
 }
 
+/**
+ * Standalone form for creating a new company location or editing an existing one.
+ *
+ * @remarks
+ * Pass a `locationId` to edit an existing location; omit it to create a new one.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `company/location/add/done` | Fired when a new location is created | The created location |
+ * | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
+ * | `CANCEL` | Fired when the user cancels editing | — |
+ *
+ * @param props - {@link LocationFormProps} together with the standard {@link BaseComponentInterface}.
+ * @returns The location form.
+ * @public
+ */
 export function LocationForm({
   companyId,
   locationId,
   className,
   children,
   ...props
-}: LocationFormProps & BaseComponentInterface) {
+}: LocationFormProps) {
   return (
     <BaseComponent {...props}>
       {locationId ? (

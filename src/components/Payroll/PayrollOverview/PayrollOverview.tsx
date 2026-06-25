@@ -1,9 +1,9 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsSubmit'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { usePayrollsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
 import { useWireInRequestsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsGet'
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
@@ -37,13 +37,24 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { renderErrorList } from '@/helpers/apiErrorToList'
-import { Flex } from '@/components/Common'
+import { Flex, PayrollLoading } from '@/components/Common'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 
-interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
+/**
+ * Props for {@link PayrollOverview}.
+ *
+ * @public
+ */
+export interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
+  /** Identifier of the company that owns the payroll. */
   companyId: string
+  /** Identifier of the payroll being reviewed. The payroll must already be calculated. */
   payrollId: string
+  /** Alert banners to display above the payroll summary. */
   alerts?: PayrollFlowAlert[]
+  /** Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. */
   withReimbursements?: boolean
+  /** Custom component to replace the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
@@ -74,6 +85,34 @@ const findWireInRequestUuid = (
   return wireUnblockOption?.metadata.wireInRequestUuid
 }
 
+/**
+ * Final review screen for a calculated payroll before submission, with submit, cancel,
+ * and edit controls. After submission, tracks processing status and surfaces the receipt
+ * and per-employee paystub downloads once complete.
+ *
+ * @remarks
+ * The payroll referenced by `payrollId` must already be calculated; rendering with an
+ * uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+ * wire-in funding) are surfaced inline and the submit action stays disabled until each
+ * blocker has a selected unblock option. While the payroll is processing, the component
+ * polls until success or failure and emits the corresponding event.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/edit` | User chose to edit the payroll before submitting | — |
+ * | `runPayroll/submitting` | Submit request was sent to the API | — |
+ * | `runPayroll/submitted` | Payroll was successfully submitted | Submit payroll response |
+ * | `runPayroll/processed` | Payroll finished processing successfully | `{ payPeriod, payrollUuid }` |
+ * | `runPayroll/processingFailed` | Payroll processing failed | — |
+ * | `runPayroll/cancelled` | Payroll was cancelled | Cancel payroll response |
+ * | `runPayroll/receipt/get` | User requested the payroll receipt | `{ payrollId }` |
+ * | `runPayroll/pdfPaystub/viewed` | User opened an employee's paystub PDF | `{ employeeId }` |
+ * | `payroll/wire/form/done` | Wire-in details were confirmed via the embedded wire form | Submit wire-in response |
+ *
+ * @param props - See {@link PayrollOverviewProps}.
+ * @returns The payroll overview surface.
+ * @public
+ */
 export function PayrollOverview(props: PayrollOverviewProps) {
   return (
     <BaseComponent {...props}>
@@ -82,7 +121,7 @@ export function PayrollOverview(props: PayrollOverviewProps) {
   )
 }
 
-export const Root = ({
+const Root = ({
   companyId,
   payrollId,
   dictionary,
@@ -96,6 +135,7 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
+  const [hasSubmittedInSession, setHasSubmittedInSession] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
@@ -104,17 +144,25 @@ export const Root = ({
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList, Text } = useComponentContext()
   const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
-  const { data } = usePayrollsGetSuspense(
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
+    defaultItemsPerPage: 10,
+  })
+  const { data, isFetching } = usePayrollsGet(
     {
       companyId,
       payrollId: payrollId,
-      include: ['taxes', 'benefits', 'deductions'],
+      include: ['taxes', 'benefits', 'deductions', 'totals', 'payroll_taxes'],
+      page: currentPage,
+      per: itemsPerPage,
     },
-    { refetchInterval: isPolling ? 5_000 : false },
+    {
+      refetchInterval: isPolling ? 5_000 : false,
+      placeholderData: keepPreviousData,
+    },
   )
-  const payrollData = data.payrollShow!
-  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
-  const wireInId = findWireInRequestUuid(payrollData.creditBlockers)
+  const payrollData = data?.payrollShow
+  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData?.submissionBlockers)
+  const wireInId = findWireInRequestUuid(payrollData?.creditBlockers)
 
   const { data: wireInRequestData } = useWireInRequestsGet(
     {
@@ -149,24 +197,30 @@ export const Root = ({
     }
   }, [wireInRequest?.status, showWireDetailsConfirmation])
 
+  const checkDate = payrollData?.checkDate
   useEffect(() => {
-    if (showWireDetailsConfirmation) {
-      const checkDate = dateFormatter.formatShortWithYear(payrollData.checkDate)
+    if (checkDate && showWireDetailsConfirmation) {
+      const formattedCheckDate = dateFormatter.formatShortWithYear(checkDate)
 
       setInternalAlerts([
         {
           type: 'success',
           title: t('alerts.wireDetailsSubmittedTitle'),
-          content: <Text>{t('alerts.wireDetailsSubmittedMessage', { checkDate })}</Text>,
+          content: (
+            <Text>
+              {t('alerts.wireDetailsSubmittedMessage', { checkDate: formattedCheckDate })}
+            </Text>
+          ),
           onDismiss: () => {
             setShowWireDetailsConfirmation(false)
           },
         },
       ])
     }
-  }, [showWireDetailsConfirmation, payrollData.checkDate, t, dateFormatter, Text])
+  }, [showWireDetailsConfirmation, checkDate, t, dateFormatter, Text])
 
   useEffect(() => {
+    if (!payrollData) return
     // Start polling when payroll is submitting and not already polling
     if (
       payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submitting &&
@@ -197,6 +251,7 @@ export const Root = ({
       ])
       setShowWireDetailsConfirmation(false)
       setIsPolling(false)
+      setHasSubmittedInSession(false)
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
     if (
@@ -220,18 +275,19 @@ export const Root = ({
       ])
       setShowWireDetailsConfirmation(false)
       setIsPolling(false)
+      setHasSubmittedInSession(false)
     }
   }, [
-    payrollData.processingRequest?.status,
-    payrollData.processed,
+    payrollData?.processingRequest?.status,
+    payrollData?.processed,
     isPolling,
     onEvent,
     t,
     dateFormatter,
     formatCurrency,
-    payrollData.totals?.companyDebit,
-    payrollData.payrollStatusMeta?.expectedDebitTime,
-    payrollData.payrollDeadline,
+    payrollData?.totals?.companyDebit,
+    payrollData?.payrollStatusMeta?.expectedDebitTime,
+    payrollData?.payrollDeadline,
   ])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
@@ -241,29 +297,33 @@ export const Root = ({
 
   const { paymentSpeed } = useCompanyPaymentSpeed(companyId)
 
-  const { data: employeeData } = useEmployeesListSuspense({
-    companyId,
-  })
-
   const { mutateAsync: submitPayroll, isPending } = usePayrollsSubmitMutation()
 
   const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
 
+  const gustoEmbedded = useGustoEmbeddedContext()
+
+  if (!payrollData) {
+    return <PayrollLoading title={t('dataLoadingTitle')} />
+  }
+
   if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
-  const gustoEmbedded = useGustoEmbeddedContext()
 
+  const pagination = getPaginationProps(data.httpMeta.response.headers, isFetching)
+
+  // Per-tax totals come from the payroll-level `payrollTaxes` aggregate so they stay
+  // correct when `employeeCompensations` is paginated (only a single page is loaded).
   const taxes =
-    payrollData.employeeCompensations?.reduce(
-      (acc, compensation) => {
-        compensation.taxes?.forEach(tax => {
-          acc[tax.name] = {
-            employee: (acc[tax.name]?.employee ?? 0) + (tax.employer ? 0 : tax.amount),
-            employer: (acc[tax.name]?.employer ?? 0) + (tax.employer ? tax.amount : 0),
-          }
-        })
-
+    payrollData.payrollTaxes?.reduce(
+      (acc, tax) => {
+        if (!tax.name) return acc
+        const amount = tax.amount ?? 0
+        acc[tax.name] = {
+          employee: (acc[tax.name]?.employee ?? 0) + (tax.employer ? 0 : amount),
+          employer: (acc[tax.name]?.employer ?? 0) + (tax.employer ? amount : 0),
+        }
         return acc
       },
       {} as Record<string, { employee: number; employer: number }>,
@@ -339,6 +399,7 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
       setIsPolling(true)
+      setHasSubmittedInSession(true)
     })
   }
 
@@ -349,7 +410,7 @@ export const Root = ({
       onCancel={onCancel}
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
-      status={isPending || isPolling ? PayrollOverviewStatus.Submitting : status}
+      status={isPending || hasSubmittedInSession ? PayrollOverviewStatus.Submitting : status}
       isProcessed={
         payrollData.processed === true ||
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
@@ -357,7 +418,6 @@ export const Root = ({
       canCancel={canCancelPayroll(payrollData)}
       payrollData={payrollData}
       bankAccount={bankAccount}
-      employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
       alerts={internalAlerts}
       submissionBlockers={submissionBlockers}
@@ -368,6 +428,7 @@ export const Root = ({
       wireInConfirmationRequest={wireInConfirmationRequest}
       withReimbursements={withReimbursements}
       paymentSpeed={paymentSpeed}
+      pagination={pagination}
     />
   )
 }

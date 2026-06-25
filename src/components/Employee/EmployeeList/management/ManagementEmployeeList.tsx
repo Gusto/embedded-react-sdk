@@ -1,17 +1,12 @@
 import { useState, useMemo } from 'react'
 import { useEmployeeList, type EmployeeType } from '../shared/useEmployeeList'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
 /**
- * The tab currently selected on {@link ManagementEmployeeList}.
+ * The tab currently selected on {@link ManagementEmployeeList | EmployeeList}.
  *
  * @public
  */
@@ -22,13 +17,11 @@ export type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
  *
  * @public
  */
-export interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+export interface ManagementEmployeeListProps extends BaseComponentInterface<'Employee.ManagementEmployeeList'> {
   /** The associated company identifier. */
   companyId: string
   /** Tab to render first: Active, Onboarding, or Dismissed. Defaults to `'active'`. */
   initialTab?: EmployeeTab
-  /** Event handler fired on flow state changes. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 const mapTabToEmployeeType = (tab: EmployeeTab): EmployeeType => {
@@ -119,7 +112,7 @@ function ManagementEmployeeListRoot({
 export function ManagementEmployeeList({
   FallbackComponent,
   ...props
-}: ManagementEmployeeListProps & BaseComponentInterface) {
+}: ManagementEmployeeListProps) {
   return (
     <BaseBoundaries
       componentName="Employee.ManagementEmployeeList"

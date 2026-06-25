@@ -30,6 +30,7 @@ export interface CompanyAssignSignatory{
 "birthday":string;
 "titleSelect":{
 "label":string;
+"placeholder":string;
 };
 };
 "address":{
@@ -137,8 +138,10 @@ export interface CompanyFederalTaxes{
 "federalEinDescription":string;
 "taxpayerTypeLabel":string;
 "taxpayerTypeDescription":string;
+"taxpayerTypePlaceholder":string;
 "federalFilingFormLabel":string;
 "federalFilingFormDescription":string;
+"federalFilingFormPlaceholder":string;
 "legalEntityNameLabel":string;
 "legalEntityNameDescription":string;
 "legalEntityNameError":string;
@@ -269,6 +272,7 @@ export interface CompanyPaySchedule{
 "name":string;
 "payfrequency":string;
 "frequency":string;
+"frequencyPlaceholder":string;
 "deadline":string;
 "frequencyOptions":string;
 "firstPayDate":string;
@@ -935,6 +939,7 @@ export interface ContractorNewHireReport{
 "yesOption":string;
 "noOption":string;
 "stateSelectionLabel":string;
+"statePlaceholder":string;
 "submitCta":string;
 "validations":{
 "state":string;
@@ -1004,16 +1009,13 @@ export interface ContractorPaymentsCreatePayment{
 "editContractorPayment":{
 "title":string;
 "subtitle":string;
-"hoursSection":string;
 "hoursLabel":string;
 "hoursAdornment":string;
-"fixedPaySection":string;
+"hoursPayDescription":string;
 "wageLabel":string;
-"additionalEarningsSection":string;
 "bonusLabel":string;
 "reimbursementLabel":string;
 "paymentMethodLabel":string;
-"totalPay":string;
 "cancelCta":string;
 "saveCta":string;
 "paymentMethods":{
@@ -1067,6 +1069,7 @@ export interface ContractorPaymentsCreatePayment{
 "editButton":string;
 "submitButton":string;
 "perHour":string;
+"na":string;
 "wageTypes":{
 "fixed":string;
 "hourly":string;
@@ -1109,6 +1112,8 @@ export interface ContractorPaymentsPaymentHistory{
 "breadcrumbLabel":string;
 "noPaymentsFound":string;
 "noPaymentsDescription":string;
+"perHour":string;
+"na":string;
 "tableHeaders":{
 "contractor":string;
 "wageType":string;
@@ -1381,6 +1386,9 @@ export interface EmployeeCompensation{
 };
 };
 "employeeClassification":string;
+"flsaStatusPlaceholder":string;
+"paymentUnitPlaceholder":string;
+"minimumWagePlaceholder":string;
 "flsaStatusLabels":{
 "Commission Only Exempt":string;
 "Commission Only Nonexempt":string;
@@ -1609,10 +1617,12 @@ export interface EmployeeDeductionsForm{
 };
 "childSupport":{
 "agencyLabel":string;
+"agencyPlaceholder":string;
 "agencyDescription":string;
 "agencyRequired":string;
 "manualPaymentRequired":string;
 "countyLabel":string;
+"countyPlaceholder":string;
 "countyDescription":string;
 "allCounties":string;
 "countyRequired":string;
@@ -1631,6 +1641,7 @@ export interface EmployeeDeductionsForm{
 "amountNonNegative":string;
 "percentOutOfRange":string;
 "paymentPeriodLabel":string;
+"paymentPeriodPlaceholder":string;
 "paymentPeriodDescription":string;
 "paymentPeriodRequired":string;
 "paymentPeriod":{
@@ -2009,6 +2020,9 @@ export interface EmployeeManagementCompensation{
 "effectiveDate":string;
 "twoPercentStakeholderLabel":string;
 "employeeClassification":string;
+"flsaStatusPlaceholder":string;
+"paymentUnitPlaceholder":string;
+"minimumWagePlaceholder":string;
 "classificationLink":string;
 "wageLabel":string;
 "wageFrequencyLabel":string;
@@ -2294,6 +2308,7 @@ export interface EmployeeManagementHomeAddress{
 "street2":string;
 "city":string;
 "state":string;
+"statePlaceholder":string;
 "zip":string;
 "noCurrentAddress":string;
 "courtesyWithholdingLabel":string;
@@ -3104,6 +3119,7 @@ export interface PayrollOffCycleTaxWithholding{
 "title":string;
 "subtitle":string;
 "rateLabel":string;
+"ratePlaceholder":string;
 "rateDescription":string;
 };
 "supplementalSection":{
@@ -3524,6 +3540,7 @@ export interface PayrollPayrollOverview{
 "downloadPaystubLabel":string;
 "loadingTitle":string;
 "loadingDescription":string;
+"dataLoadingTitle":string;
 "cancellingTitle":string;
 "cancelledEmptyState":string;
 "skippedBadge":string;
@@ -3825,6 +3842,7 @@ export interface common{
 "multipleErrorsEncountered":string;
 };
 "optionalLabel":string;
+"selectPlaceholder":string;
 "progressBarLabel":string;
 "back":string;
 "errors":{
@@ -3842,7 +3860,6 @@ export interface common{
 "calendarArrow":string;
 "nextMonth":string;
 "previousMonth":string;
-"magnifyingGlass":string;
 "paginationFirst":string;
 "paginationPrev":string;
 "paginationNext":string;

@@ -3,19 +3,20 @@ import { Head } from './Head'
 import { AccountView } from './AccountView'
 import { BankAccountProvider } from './context'
 import { Actions } from './Actions'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
-interface BankAccountListProps extends CommonComponentInterface {
+interface BankAccountListProps extends BaseComponentInterface<'Company.BankAccount'> {
   companyId: string
   showVerifiedMessage?: boolean
 }
 
-export function BankAccountList(props: BankAccountListProps & BaseComponentInterface) {
+/** @internal */
+export function BankAccountList(props: BankAccountListProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

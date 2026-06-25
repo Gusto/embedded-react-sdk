@@ -44,6 +44,7 @@ type EventPayloads = {
   }
 }
 
+/** @internal */
 export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
   landing: {
     parent: null,
@@ -104,6 +105,7 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PaymentFlowContextInterface>()
 
+/** @internal */
 export const paymentMachine = {
   landing: state<MachineTransition>(
     transition(

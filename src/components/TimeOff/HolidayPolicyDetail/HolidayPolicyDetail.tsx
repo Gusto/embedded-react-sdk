@@ -23,11 +23,17 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import EditIcon from '@/assets/icons/edit-02.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
-export interface HolidayPolicyDetailProps extends BaseComponentInterface {
+/** @internal */
+export interface HolidayPolicyDetailProps extends BaseComponentInterface<
+  'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'
+> {
+  /** The associated company identifier. */
   companyId: string
+  /** Which tab to display initially. Defaults to `'holidays'`. */
   defaultTab?: 'holidays' | 'employees'
 }
 
+/** @internal */
 export function HolidayPolicyDetail(props: HolidayPolicyDetailProps) {
   return (
     <BaseComponent {...props} componentName="Company.TimeOff.HolidayPolicy">

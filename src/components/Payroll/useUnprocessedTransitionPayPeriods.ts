@@ -11,6 +11,13 @@ interface UseUnprocessedTransitionPayPeriodsResult {
   hasUnprocessedTransitions: boolean
 }
 
+/**
+ * Returns the company's unprocessed transition pay periods within the next 90 days.
+ *
+ * @param companyId - The company whose transition pay periods to fetch.
+ * @returns The unprocessed transition pay periods and a flag indicating whether any exist.
+ * @internal
+ */
 export function useUnprocessedTransitionPayPeriods(
   companyId: string,
 ): UseUnprocessedTransitionPayPeriodsResult {

@@ -11,6 +11,21 @@ import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
+/**
+ * Presents the reason selection UI for choosing between a bonus and correction off-cycle payment.
+ *
+ * @remarks
+ * Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
+ * so a surrounding form can update its state to match.
+ *
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `offCycle/selectReason` | Fired when the user selects a reason | {@link SelectReasonPayload} |
+ *
+ * @param props - Component props including `companyId` and standard `onEvent`/`dictionary` handlers.
+ * @returns The rendered reason selection UI.
+ * @public
+ */
 export function OffCycleReasonSelection(props: OffCycleReasonSelectionProps) {
   return (
     <BaseComponent {...props}>

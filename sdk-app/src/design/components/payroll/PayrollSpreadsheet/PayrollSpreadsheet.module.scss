@@ -1,0 +1,175 @@
+.scrollContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(toRem(200), toRem(240)) repeat(11, minmax(toRem(140), 1fr));
+  min-width: max-content;
+}
+
+.headerRow,
+.row {
+  display: contents;
+}
+
+.headerCell,
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: toRem(8) toRem(12);
+  border-bottom: toRem(1) solid var(--g-colorBorderSecondary);
+  border-right: toRem(1) solid var(--g-colorBorderSecondary);
+  min-height: toRem(44);
+  color: var(--g-colorBodyContent);
+  font-size: var(--g-fontSizeSmall);
+  background: var(--g-colorBody);
+}
+
+/* The <label> uses negative margins to extend its click target into the cell's
+ * padding area, while its own padding visually keeps content where it was. Clicks
+ * anywhere in the cell now focus the input natively. */
+.cellLabel {
+  display: flex;
+  align-items: center;
+  gap: toRem(6);
+  flex: 1;
+  margin: toRem(-8) toRem(-12);
+  padding: toRem(8) toRem(12);
+  cursor: text;
+  min-width: 0;
+}
+
+.cell:last-child,
+.headerCell:last-child {
+  border-right: none;
+}
+
+.row:last-child .cell {
+  border-bottom: none;
+}
+
+.headerCell {
+  font-weight: 600;
+  background: var(--g-colorBodyAccent);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.cell {
+  gap: toRem(6);
+}
+
+.cell:not(.stickyLeft):not(.cellNa) {
+  cursor: text;
+}
+
+/* Row hover OR row has an active (focused) cell → all cells get accent background */
+.row:hover .cell,
+.row:has(.cell:focus-within) .cell {
+  background: var(--g-colorBodyAccent);
+}
+
+/* The hovered or active editable cell itself stays body color (overrides row accent; bumped specificity) */
+.row .cell:not(.stickyLeft):not(.cellNa):hover,
+.row .cell:not(.stickyLeft):focus-within {
+  background: var(--g-colorBody);
+}
+
+/* Hover + active outline on editable data cells (employee + N/A cells excluded) */
+.cell:not(.stickyLeft):not(.cellNa):hover,
+.cell:not(.stickyLeft):focus-within {
+  outline: toRem(2) solid var(--g-colorBodyContent);
+  outline-offset: toRem(-2);
+}
+
+.stickyLeft {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.headerCell.stickyLeft {
+  z-index: 3;
+}
+
+/* Continuous column-edge shadow when the table is scrolled horizontally. Rendered as a
+ * gradient strip via ::after on each sticky cell so adjacent strips tile vertically into
+ * one seamless edge — no per-cell box-shadow stacking. */
+.scrollContainer.isScrolled .stickyLeft::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: toRem(20);
+  background: linear-gradient(to right, rgba(10, 13, 18, 0.07), rgba(10, 13, 18, 0));
+  pointer-events: none;
+}
+
+.employeeName {
+  font-weight: 600;
+}
+
+.notApplicable {
+  color: var(--g-colorBodySubContent);
+  font-style: italic;
+}
+
+.cellInput {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  font: inherit;
+  color: inherit;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+.affix {
+  visibility: hidden;
+  color: var(--g-colorBodySubContent);
+  flex: 0 0 auto;
+  user-select: none;
+}
+
+.cell:focus-within .affix,
+.cell.currencyHasValue .affix {
+  visibility: visible;
+}
+
+.cellTrigger {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: toRem(6);
+  flex: 1;
+  margin: toRem(-8) toRem(-12);
+  padding: toRem(8) toRem(12);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.cellTriggerValue {
+  flex: 1;
+  min-width: 0;
+}

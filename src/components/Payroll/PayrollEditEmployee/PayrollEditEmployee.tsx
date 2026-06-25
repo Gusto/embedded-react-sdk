@@ -16,14 +16,55 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
 import { useBase } from '@/components/Base/useBase'
 
-interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
+/**
+ * Props for {@link PayrollEditEmployee}.
+ *
+ * @public
+ */
+export interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
+  /** The associated employee identifier. */
   employeeId: string
+  /** The associated company identifier. */
   companyId: string
+  /** The associated payroll identifier. */
   payrollId: string
+  /** Whether to show reimbursement fields. Defaults to `true`. */
   withReimbursements?: boolean
 }
 
-export function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface) {
+/**
+ * Editor for an individual employee's compensation within a payroll run.
+ *
+ * Allows modification of pay rates, hours, time off, additional earnings,
+ * reimbursements, and payment method for a single employee on the specified payroll.
+ *
+ * @remarks
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
+ * | `runPayroll/employee/cancelled` | Fired when the user cancels editing employee payroll compensation | — |
+ *
+ * @param props - {@link PayrollEditEmployeeProps} plus base component props.
+ * @returns The employee compensation editor.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function MyComponent() {
+ *   return (
+ *     <Payroll.PayrollEditEmployee
+ *       employeeId="your-employee-id"
+ *       companyId="your-company-id"
+ *       payrollId="your-payroll-id"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
+ */
+export function PayrollEditEmployee(props: PayrollEditEmployeeProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -31,7 +72,7 @@ export function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseCompon
   )
 }
 
-export const Root = ({
+const Root = ({
   employeeId,
   companyId,
   payrollId,

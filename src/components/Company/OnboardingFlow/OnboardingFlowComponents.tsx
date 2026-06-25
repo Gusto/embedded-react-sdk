@@ -14,23 +14,33 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { OnboardingFlow as EmployeeOnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
 
-export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+type OnboardingFlowDefaultValues = RequireAtLeastOne<{
   federalTaxes?: FederalTaxesDefaultValues
   paySchedule?: PayScheduleDefaultValues
 }>
-export interface OnboardingFlowProps extends BaseComponentInterface {
+/**
+ * Props for the company onboarding flow orchestrator.
+ *
+ * @public
+ */
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
+  /** The associated company identifier. */
   companyId: string
+  /** Default values applied to individual flow step components (federal taxes, pay schedule). */
   defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>
 }
+/** @internal */
 export interface OnboardingFlowContextInterface extends FlowContextInterface {
   companyId: string
   defaultValues?: OnboardingFlowDefaultValues
 }
 
+/** @internal */
 export function LocationsContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <Locations onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
+/** @internal */
 export function FederalTaxesContextual() {
   const { companyId, defaultValues, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -42,19 +52,29 @@ export function FederalTaxesContextual() {
   )
 }
 
+/** @internal */
 export function IndustryContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <Industry onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
+/** @internal */
 export function BankAccountContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <BankAccount onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
+/** @internal */
 export function EmployeesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <EmployeeOnboardingFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return (
+    <EmployeeOnboardingFlow
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      showContinueButton
+    />
+  )
 }
+/** @internal */
 export function PayScheduleContextual() {
   const { companyId, defaultValues, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return (
@@ -65,14 +85,17 @@ export function PayScheduleContextual() {
     />
   )
 }
+/** @internal */
 export function StateTaxesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <StateTaxes onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
+/** @internal */
 export function DocumentSignerContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <DocumentSigner onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
+/** @internal */
 export function OnboardingOverviewContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <OnboardingOverview companyId={ensureRequired(companyId)} onEvent={onEvent} />

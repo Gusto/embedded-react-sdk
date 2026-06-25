@@ -40,10 +40,12 @@
   },
   "childSupport": {
     "agencyLabel": "Agency",
+    "agencyPlaceholder": "Select state...",
     "agencyDescription": "Select the appropriate state agency.",
     "agencyRequired": "Agency is required",
     "manualPaymentRequired": "This agency doesn't support electronic payments. You are responsible for paying the agency yourself.",
     "countyLabel": "County",
+    "countyPlaceholder": "Select county...",
     "countyDescription": "Select the appropriate state county",
     "allCounties": "All counties",
     "countyRequired": "County is required",
@@ -62,6 +64,7 @@
     "amountNonNegative": "Amount must be 0 or greater",
     "percentOutOfRange": "Must be between 0 and 100",
     "paymentPeriodLabel": "Per",
+    "paymentPeriodPlaceholder": "Select payment period...",
     "paymentPeriodDescription": "Enter how often the agency collects the withholding amount",
     "paymentPeriodRequired": "Payment period is required",
     "paymentPeriod": {

@@ -3,6 +3,7 @@ import { useInviteSignatory } from './useInviteSignatory'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export const Actions = () => {
   const { t } = useTranslation('Company.AssignSignatory')
   const { isPending } = useInviteSignatory()

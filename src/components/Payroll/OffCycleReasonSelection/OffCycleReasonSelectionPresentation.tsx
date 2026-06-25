@@ -8,6 +8,7 @@ interface OffCycleReasonSelectionPresentationProps {
   onChange?: (value: OffCycleReason) => void
 }
 
+/** @internal */
 export function OffCycleReasonSelectionPresentation({
   name,
   onChange,

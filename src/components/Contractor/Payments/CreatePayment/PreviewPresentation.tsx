@@ -29,6 +29,7 @@ interface PreviewPresentationProps {
   paymentSpeed?: PaymentSpeed
 }
 
+/** @internal */
 export const PreviewPresentation = ({
   contractorPaymentGroup,
   contractors,
@@ -49,7 +50,7 @@ export const PreviewPresentation = ({
 
   const formatWageType = (contractor: ContractorPaymentForGroupPreview) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+      return `${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -191,31 +192,35 @@ export const PreviewPresentation = ({
           },
           {
             title: t('contractorTableHeaders.hours'),
+            justify: 'end',
             render: contractorPayment => {
+              if (contractorPayment.wageType === 'Fixed') return t('na')
               const hours = Number(contractorPayment.hours || '0')
-              return contractorPayment.wageType === 'Hourly' && hours
-                ? formatHoursDisplay(hours)
-                : ZERO_HOURS_DISPLAY
+              return hours ? formatHoursDisplay(hours) : ZERO_HOURS_DISPLAY
             },
           },
           {
             title: t('contractorTableHeaders.wage'),
-            render: contractorPayment =>
-              contractorPayment.wageType === 'Fixed' && contractorPayment.wage
-                ? currencyFormatter(Number(contractorPayment.wage || '0'))
-                : currencyFormatter(0),
+            justify: 'end',
+            render: contractorPayment => {
+              if (contractorPayment.wageType === 'Hourly') return t('na')
+              return currencyFormatter(Number(contractorPayment.wage || '0'))
+            },
           },
           {
             title: t('contractorTableHeaders.bonus'),
+            justify: 'end',
             render: contractorPayment => currencyFormatter(Number(contractorPayment.bonus || '0')),
           },
           {
             title: t('contractorTableHeaders.reimbursement'),
+            justify: 'end',
             render: contractorPayment =>
               currencyFormatter(Number(contractorPayment.reimbursement || '0')),
           },
           {
             title: t('contractorTableHeaders.total'),
+            justify: 'end',
             render: contractorPayment =>
               currencyFormatter(Number(contractorPayment.wageTotal || '0')),
           },

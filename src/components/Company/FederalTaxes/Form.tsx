@@ -9,6 +9,7 @@ import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
@@ -62,6 +63,7 @@ export function Form() {
         name="taxPayerType"
         label={t('taxpayerTypeLabel')}
         description={t('taxpayerTypeDescription')}
+        placeholder={t('taxpayerTypePlaceholder')}
         options={taxPayerTypeOptions}
         isRequired
       />
@@ -83,6 +85,7 @@ export function Form() {
             }}
           />
         }
+        placeholder={t('federalFilingFormPlaceholder')}
         options={filingFormOptions}
         isRequired
       />

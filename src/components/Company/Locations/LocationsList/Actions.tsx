@@ -3,6 +3,7 @@ import { useLocationsList } from './useLocationsList'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export function Actions() {
   const { t } = useTranslation('Company.Locations')
   const { handleAddLocation, handleContinue } = useLocationsList()

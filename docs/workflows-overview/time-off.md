@@ -405,7 +405,6 @@ function MyComponent() {
 | Event type                     | Description                                   | Data |
 | ------------------------------ | --------------------------------------------- | ---- |
 | TIME_OFF_HOLIDAY_ADD_EMPLOYEES | Fired when user clicks to add employees       | None |
-| TIME_OFF_VIEW_HOLIDAY_SCHEDULE | Fired when user switches to the schedule tab  | None |
 | TIME_OFF_EDIT_HOLIDAY_POLICY   | Fired when user clicks to edit holidays       | None |
 | TIME_OFF_BACK_TO_LIST          | Fired when user navigates back to policy list | None |
 
@@ -431,12 +430,11 @@ function MyComponent() {
 
 #### Events
 
-| Event type                      | Description                                   | Data |
-| ------------------------------- | --------------------------------------------- | ---- |
-| TIME_OFF_VIEW_HOLIDAY_EMPLOYEES | Fired when user switches to the employees tab | None |
-| TIME_OFF_HOLIDAY_ADD_EMPLOYEES  | Fired when user clicks to add employees       | None |
-| TIME_OFF_EDIT_HOLIDAY_POLICY    | Fired when user clicks to edit holidays       | None |
-| TIME_OFF_BACK_TO_LIST           | Fired when user navigates back to policy list | None |
+| Event type                     | Description                                   | Data |
+| ------------------------------ | --------------------------------------------- | ---- |
+| TIME_OFF_HOLIDAY_ADD_EMPLOYEES | Fired when user clicks to add employees       | None |
+| TIME_OFF_EDIT_HOLIDAY_POLICY   | Fired when user clicks to edit holidays       | None |
+| TIME_OFF_BACK_TO_LIST          | Fired when user navigates back to policy list | None |
 
 ### TimeOff.ViewHolidayPolicyDetails
 

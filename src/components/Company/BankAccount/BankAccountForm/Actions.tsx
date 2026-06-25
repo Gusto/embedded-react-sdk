@@ -4,6 +4,7 @@ import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents } from '@/shared/constants'
 
+/** @internal */
 export function Actions() {
   const { t } = useTranslation('Company.BankAccount')
   const { isPending, isEditing, onEvent } = useBankAccountForm()

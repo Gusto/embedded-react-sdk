@@ -7,13 +7,22 @@ export {
 } from '../OnboardingExecutionFlow'
 export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeList, type EmployeeListProps } from '../EmployeeList/onboarding/EmployeeList'
-export { OnboardingSummary } from '../OnboardingSummary'
-export { Landing } from '../Landing'
+export { OnboardingSummary, type OnboardingSummaryProps } from '../OnboardingSummary'
+export { Landing, type LandingProps } from '../Landing'
 export { DocumentSigner, type DocumentSignerProps } from '../Documents/onboarding/DocumentSigner'
 export {
   EmploymentEligibility,
   type EmploymentEligibilityProps,
 } from '../Documents/onboarding/DocumentSigner/EmploymentEligibility'
+export {
+  DocumentList,
+  type DocumentListProps,
+} from '../Documents/onboarding/DocumentSigner/DocumentList'
+export { SignatureForm, type SignatureFormProps } from '../Documents/shared/SignatureForm'
+export {
+  I9SignatureForm,
+  type I9SignatureFormProps,
+} from '../Documents/onboarding/DocumentSigner/I9SignatureForm'
 export {
   EmployeeDocuments,
   type EmployeeDocumentsProps,

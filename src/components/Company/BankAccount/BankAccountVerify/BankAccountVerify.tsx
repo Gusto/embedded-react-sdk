@@ -7,19 +7,20 @@ import type { BankAccountVerifyInputs } from './Form'
 import { BankAccountVerifySchema, Form } from './Form'
 import { Actions } from './Actions'
 import { Form as HtmlForm } from '@/components/Common/Form'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
-interface BankAccountVerifyProps extends CommonComponentInterface {
+interface BankAccountVerifyProps extends BaseComponentInterface<'Company.BankAccount'> {
   companyId: string
   bankAccountId: string
 }
 
-export function BankAccountVerify(props: BankAccountVerifyProps & BaseComponentInterface) {
+/** @internal */
+export function BankAccountVerify(props: BankAccountVerifyProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
