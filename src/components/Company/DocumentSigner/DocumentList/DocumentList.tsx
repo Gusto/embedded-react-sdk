@@ -12,8 +12,19 @@ import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
+/**
+ * Props for {@link DocumentList}.
+ *
+ * @public
+ */
+export interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
+  /** The associated company identifier. */
   companyId: string
+  /**
+   * Identifier of the signatory viewing the documents. When it matches the
+   * company's saved signatory, the user is treated as that signatory and is
+   * allowed to sign documents.
+   */
   signatoryId?: string
 }
 

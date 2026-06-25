@@ -14,16 +14,29 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { OnboardingFlow as EmployeeOnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
 
-type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+/**
+ * Default values for the company onboarding flow's per-step form components.
+ *
+ * @remarks
+ * At least one of the step-level keys must be provided. Per-step values are
+ * forwarded to the matching step component. If company data is already
+ * available via the API, the corresponding values are overwritten.
+ *
+ * @public
+ */
+export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+  /** Default values forwarded to the federal taxes step. */
   federalTaxes?: FederalTaxesDefaultValues
+  /** Default values forwarded to the pay schedule step. */
   paySchedule?: PayScheduleDefaultValues
 }>
+
 /**
  * Props for the company onboarding flow orchestrator.
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values applied to individual flow step components (federal taxes, pay schedule). */
@@ -66,7 +79,13 @@ export function BankAccountContextual() {
 /** @internal */
 export function EmployeesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <EmployeeOnboardingFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return (
+    <EmployeeOnboardingFlow
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      showContinueButton
+    />
+  )
 }
 /** @internal */
 export function PayScheduleContextual() {

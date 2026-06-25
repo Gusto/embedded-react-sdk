@@ -5,7 +5,10 @@
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(toRem(200), toRem(240)) repeat(10, minmax(toRem(140), 1fr));
+  grid-template-columns:
+    minmax(toRem(200), toRem(240))
+    minmax(toRem(120), toRem(140))
+    repeat(11, minmax(toRem(140), 1fr));
   min-width: max-content;
 }
 
@@ -63,7 +66,7 @@
   gap: toRem(6);
 }
 
-.cell:not(.stickyLeft):not(.cellNa) {
+.cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly) {
   cursor: text;
 }
 
@@ -74,16 +77,38 @@
 }
 
 /* The hovered or active editable cell itself stays body color (overrides row accent; bumped specificity) */
-.row .cell:not(.stickyLeft):not(.cellNa):hover,
+.row .cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):hover,
 .row .cell:not(.stickyLeft):focus-within {
   background: var(--g-colorBody);
 }
 
-/* Hover + active outline on editable data cells (employee + N/A cells excluded) */
-.cell:not(.stickyLeft):not(.cellNa):hover,
+/* Hover + active outline on editable data cells (employee, N/A, and read-only cells excluded) */
+.cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):hover,
 .cell:not(.stickyLeft):focus-within {
   outline: toRem(2) solid var(--g-colorBodyContent);
   outline-offset: toRem(-2);
+}
+
+.cellReadOnly {
+  cursor: not-allowed;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellReadOnlyContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.lockIcon {
+  flex: 0 0 auto;
+  width: toRem(14);
+  height: toRem(14);
+  color: var(--g-colorBodySubContent);
+  visibility: hidden;
+}
+
+.cellReadOnly:hover .lockIcon {
+  visibility: visible;
 }
 
 .stickyLeft {

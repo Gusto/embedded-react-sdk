@@ -15,7 +15,7 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values for individual flow step components. */
@@ -32,10 +32,23 @@ export interface OnboardingFlowProps extends BaseComponentInterface {
    * `false`.
    */
   withEmployeeI9?: boolean
+  /**
+   * Controls visibility of the Continue button in the employee list.
+   *
+   * When `true`, shows a Continue button allowing navigation to the next step.
+   * Use this when the employee onboarding flow is embedded as a step within
+   * a larger flow (e.g., company onboarding).
+   *
+   * When `false` (default), hides the Continue button. Use this for standalone
+   * employee onboarding where the list is the terminal screen.
+   *
+   * @defaultValue `false`
+   */
+  showContinueButton?: boolean
 }
 
 /**
- * Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
+ * Guided flow to onboard multiple employees, one at a time.
  *
  * @remarks
  * Renders a multi-step experience that collects every piece of information
@@ -45,16 +58,19 @@ export interface OnboardingFlowProps extends BaseComponentInterface {
  * surfaces the list again. The flow is driven by an internal state machine
  * and wraps each step in error and suspense boundaries.
  *
- * Each step of the flow is also exported as a standalone block — see
- * {@link EmployeeList}, {@link Profile}, {@link Compensation},
- * {@link FederalTaxes}, {@link StateTaxes}, {@link PaymentMethod},
- * {@link Deductions}, {@link EmployeeDocuments}, and
- * {@link OnboardingSummary} — for composing a custom workflow when this
- * orchestration is the wrong fit.
+ * The per-employee steps live in {@link OnboardingExecutionFlow}, which is also
+ * exported as a standalone block — along with each individual step — for
+ * composing a custom workflow when this orchestration is the wrong fit. See the
+ * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
  *
  * The flow forwards every event emitted by its sub-components to `onEvent`;
  * see the events table on each sub-component for the full set of events and
  * payloads observable from this flow.
+ *
+ * @components
+ * - {@link EmployeeList}
+ * - {@link OnboardingExecutionFlow}
  *
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step onboarding flow with internal navigation between the employee list and the per-step screens.
@@ -62,15 +78,19 @@ export interface OnboardingFlowProps extends BaseComponentInterface {
  * @group Flow Components
  *
  * @example
- * ```tsx
- * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+ * ```tsx title="App.tsx"
+ * import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <EmployeeOnboarding.OnboardingFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
  *       withEmployeeI9
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'employee/onboarding/done') {
+ *           // Onboarding complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }
@@ -82,6 +102,7 @@ export const OnboardingFlow = ({
   defaultValues,
   isSelfOnboardingEnabled = true,
   withEmployeeI9 = false,
+  showContinueButton = false,
 }: OnboardingFlowProps) => {
   const manageEmployees = useMemo(
     () =>
@@ -96,9 +117,10 @@ export const OnboardingFlow = ({
           defaultValues,
           isSelfOnboardingEnabled,
           withEmployeeI9,
+          showContinueButton,
         }),
       ),
-    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9],
+    [companyId, defaultValues, isSelfOnboardingEnabled, withEmployeeI9, showContinueButton],
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />
 }

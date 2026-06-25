@@ -167,6 +167,9 @@ export default [
       'tsdoc/syntax': 'error',
       'tsdoc-coverage/sort-tags': 'error',
       'tsdoc-coverage/valid-group': 'error',
+      'tsdoc-coverage/require-comment': 'error',
+      'tsdoc-coverage/require-member-comment': 'error',
+      'tsdoc-coverage/require-release-tag': 'error',
     },
   },
 

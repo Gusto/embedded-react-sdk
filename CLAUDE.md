@@ -34,7 +34,7 @@ See [sdk-app/README.md](sdk-app/README.md) for all available commands and enviro
 
 ## Code Style
 
-- Write self-explanatory code; avoid comments unless they are JSDoc for public APIs, TODO/FIXME for temporary workarounds, or legal notices
+- Write self-explanatory code; avoid comments unless they are TSDoc on exported symbols, TODO/FIXME for temporary workarounds, or legal notices. Every new export needs TSDoc before the work is done — use `/tsdoc` for standards guidance.
 - Use descriptive variable/function names that eliminate the need for comments
 - NEVER use `!important` in CSS/SCSS files — use proper CSS specificity instead
 - Do not include `@use` imports in `.module.scss` for modules globally available via Vite (e.g., `@/styles/Helpers` is auto-injected)

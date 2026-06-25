@@ -26,14 +26,14 @@ html {
   --ifm-navbar-height: 3.75rem;
   --ifm-navbar-search-input-background-color: rgba(27, 27, 29, 0.04);
   --ifm-navbar-search-input-color: #1b1b1d;
-  --ifm-navbar-search-input-placeholder-color: rgba(82, 88, 96, 0.7);
+  --ifm-navbar-search-input-placeholder-color: rgba(27, 27, 29, 0.72);
   --ifm-navbar-search-input-icon: url('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23525860" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>');
 
   --ifm-menu-link-sublist-icon: url('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23525860" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg>');
   --ifm-menu-link-sublist-icon-filter: none;
 
-  --ifm-link-color: #f15e49;
-  --ifm-link-hover-color: #d91f0c;
+  --ifm-link-color: #d91f0c;
+  --ifm-link-hover-color: #b71b0a;
   --ifm-breadcrumb-color-active: #f15e49;
 
   --ifm-toc-border-color: #ebedf0;
@@ -307,8 +307,12 @@ aside.theme-doc-sidebar-container {
 
 .menu__link--active:not(.menu__link--sublist) {
   background-color: transparent;
-  color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darkest);
   font-weight: 500;
+}
+
+[data-theme='dark'] .menu__link--active:not(.menu__link--sublist) {
+  color: var(--ifm-color-primary);
 }
 
 .menu__list .menu__list .menu__link--active:not(.menu__link--sublist) {
@@ -395,12 +399,20 @@ aside.theme-doc-sidebar-container {
 }
 
 .menu__list-item-collapsible--active > .menu__link {
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .menu__list-item-collapsible--active > .menu__link {
   color: var(--ifm-color-primary);
 }
 
 .menu__list-item-collapsible > .menu__link--sublist.menu__link--active {
-  color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darkest);
   font-weight: 500;
+}
+
+[data-theme='dark'] .menu__list-item-collapsible > .menu__link--sublist.menu__link--active {
+  color: var(--ifm-color-primary);
 }
 
 .menu__list .menu__list {
@@ -451,6 +463,10 @@ aside.theme-doc-sidebar-container {
   font-weight: 600;
   margin-top: 2.5rem;
   padding-bottom: 0.4rem;
+}
+
+h2.theme-doc-card-heading {
+  margin-top: 0;
 }
 
 .markdown h3 {
@@ -513,7 +529,7 @@ aside.theme-doc-sidebar-container {
   text-align: left;
   padding: 10px 32px 10px 0;
   border: none;
-  color: rgba(27, 27, 29, 0.6);
+  color: rgba(27, 27, 29, 0.75);
 }
 
 [data-theme='dark'] .markdown table th {
@@ -614,11 +630,19 @@ pre code,
 }
 
 .table-of-contents__link--active {
-  color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darkest);
   font-weight: 500;
 }
 
+[data-theme='dark'] .table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+}
+
 .table-of-contents__link:hover {
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .table-of-contents__link:hover {
   color: var(--ifm-color-primary);
 }
 
@@ -651,8 +675,12 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
 
 .breadcrumbs__item--active .breadcrumbs__link {
   background-color: transparent;
-  color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-darkest);
   font-weight: 600;
+}
+
+[data-theme='dark'] .breadcrumbs__item--active .breadcrumbs__link {
+  color: var(--ifm-color-primary);
 }
 
 [data-theme='dark'] .breadcrumbs__item--active .breadcrumbs__link {
@@ -708,7 +736,7 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
 
 .footer__copyright {
   font-size: 0.85rem;
-  color: rgba(27, 27, 29, 0.55);
+  color: rgba(27, 27, 29, 0.72);
 }
 
 [data-theme='dark'] .footer__copyright {
@@ -800,4 +828,240 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
 [data-theme='dark'] .theme-doc-toc-desktop,
 [data-theme='dark'] .navbar-sidebar__item {
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+/* ── Workflow step-diagram colors ──
+   The actual fill/stroke/text rules live in themeConfig.mermaid.options.themeCSS
+   and reference these variables. Mermaid scopes themeCSS to each diagram's
+   #<svg-id> (so it can't read the root [data-theme]), but CSS custom properties
+   cascade down from the root regardless — so we set the palette here per color
+   mode and the diagrams pick it up. No specificity hacks or !important needed. */
+:root {
+  /* Accent: Gusto coral for control flow — branches, start/stop, condition edges.
+     Step/content nodes use the base Mermaid theme's neutral default (no override). */
+  --diagram-accent-fill: #fde8e4;
+  --diagram-accent-stroke: #f15e49;
+  --diagram-text: #1b1b1d;
+}
+
+[data-theme='dark'] {
+  --diagram-accent-fill: #3a1f1a;
+  --diagram-accent-stroke: #f67660;
+  --diagram-text: #f5f5f5;
+}
+
+/* ── Cookie consent banner ──
+   The plugin renders a 500px bottom-left toast card. We override it to a full-
+   width hairline rail anchored to the bottom, with the inner content centered
+   on the same 1400px column as the navbar/footer and styled with the docs
+   site's existing pill-button + body-text language. */
+
+.cookie-consent-toast.cookie-consent-modal {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  border: none;
+  border-top: 1px solid rgba(27, 27, 29, 0.08);
+  border-radius: 0;
+  /* Translucent surface + blurred backdrop so content behind shows through
+     subtly — banner reads as a layer floating above the page. */
+  background-color: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -12px 32px -8px rgba(15, 15, 15, 0.12),
+    0 -2px 8px -2px rgba(15, 15, 15, 0.06);
+  color: var(--gusto-body-text-color);
+  z-index: 200;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.9rem max(1.5rem, calc((100vw - 1400px) / 2));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cookie-consent-toast.cookie-consent-modal {
+    background-color: #ffffff;
+  }
+}
+
+[data-theme='dark'] .cookie-consent-toast.cookie-consent-modal {
+  background-color: rgba(10, 10, 10, 0.78);
+  border-top-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -12px 36px -8px rgba(0, 0, 0, 0.55),
+    0 -2px 10px -2px rgba(0, 0, 0, 0.4);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-theme='dark'] .cookie-consent-toast.cookie-consent-modal {
+    background-color: #050505;
+  }
+}
+
+/* Push page content above the rail so the bottom of the page isn't covered. */
+body:has(.cookie-consent-toast.cookie-consent-modal) {
+  padding-bottom: 88px;
+}
+
+/* Title is the dialog's accessible name (aria-labelledby) — hide visually. */
+.cookie-consent-toast .cookie-consent-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cookie-consent-toast .cookie-consent-description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  max-width: 64ch;
+  color: var(--gusto-body-text-color);
+}
+
+.cookie-consent-toast .cookie-consent-description a {
+  color: var(--ifm-link-color);
+  text-decoration: underline;
+}
+
+.cookie-consent-toast .cookie-consent-description a:hover {
+  color: var(--ifm-link-hover-color);
+}
+
+.cookie-consent-toast .cookie-consent-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  flex-wrap: nowrap;
+}
+
+/* With only one optional category exposed, "Reject optional" and "Reject all"
+   do the same thing — hide the third sibling (Reject all) to keep the rail tidy. */
+.cookie-consent-toast .cookie-consent-buttons > button:nth-of-type(3) {
+  display: none;
+}
+
+.cookie-consent-toast .cookie-consent-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  min-width: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.cookie-consent-toast .cookie-consent-button-primary {
+  background-color: var(--ifm-color-primary);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+.cookie-consent-toast .cookie-consent-button-primary:hover:not(:disabled) {
+  background-color: var(--ifm-color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(241, 94, 73, 0.25);
+}
+
+.cookie-consent-toast .cookie-consent-button-secondary {
+  background-color: transparent;
+  color: var(--ifm-navbar-link-color);
+  border: 1px solid rgba(27, 27, 29, 0.16);
+}
+
+.cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
+  background-color: rgba(27, 27, 29, 0.05);
+  border-color: rgba(27, 27, 29, 0.24);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary {
+  color: var(--ifm-navbar-link-color);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.cookie-consent-toast .cookie-consent-button-text {
+  background: transparent;
+  border: none;
+  height: auto;
+  padding: 0 0.4rem;
+  color: var(--ifm-link-color);
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.cookie-consent-toast .cookie-consent-button-text:hover:not(:disabled) {
+  color: var(--ifm-link-hover-color);
+  opacity: 1;
+}
+
+/* Expanded details panel — when "Show details" is open, the categories section
+   stacks below the description. Tame the spacing so it fits the rail. */
+.cookie-consent-toast .cookie-consent-details {
+  grid-column: 1 / -1;
+  margin: 0.5rem 0 0 0;
+  padding: 0.75rem 1rem;
+  background-color: rgba(27, 27, 29, 0.03);
+  border: 1px solid rgba(27, 27, 29, 0.08);
+  border-radius: 8px;
+}
+
+[data-theme='dark'] .cookie-consent-toast .cookie-consent-details {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .cookie-consent-toast.cookie-consent-modal {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .cookie-consent-toast .cookie-consent-buttons {
+    flex-wrap: wrap;
+  }
+
+  .cookie-consent-toast .cookie-consent-button-primary,
+  .cookie-consent-toast .cookie-consent-button-secondary {
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+
+  .cookie-consent-toast .cookie-consent-button-text {
+    flex: 1 1 100%;
+  }
+
+  body:has(.cookie-consent-toast.cookie-consent-modal) {
+    padding-bottom: 200px;
+  }
 }

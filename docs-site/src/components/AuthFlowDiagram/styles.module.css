@@ -4,15 +4,7 @@
   align-items: stretch;
   gap: 0.5rem;
   margin: 2rem 0;
-  padding: 1.5rem;
-  background-color: var(--ifm-background-surface-color, #ffffff);
-  border: 1px solid var(--ifm-toc-border-color);
-  border-radius: 12px;
-}
-
-[data-theme='dark'] .diagram {
-  background-color: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.08);
+  padding: 1.5rem 0;
 }
 
 .node {
@@ -47,7 +39,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(27, 27, 29, 0.55);
+  color: rgba(27, 27, 29, 0.72);
 }
 
 [data-theme='dark'] .label {
@@ -86,7 +78,7 @@
 .connectorCaption {
   font-size: 0.7rem;
   font-weight: 500;
-  color: rgba(27, 27, 29, 0.55);
+  color: rgba(27, 27, 29, 0.72);
   white-space: nowrap;
 }
 

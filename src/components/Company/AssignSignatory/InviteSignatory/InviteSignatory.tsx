@@ -12,12 +12,7 @@ import type { InviteSignatoryDefaultValues } from './useInviteSignatory'
 import { InviteSignatoryProvider } from './useInviteSignatory'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
-import {
-  useBase,
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
@@ -26,7 +21,7 @@ import { companyEvents } from '@/shared/constants'
  *
  * @public
  */
-export interface InviteSignatoryProps extends CommonComponentInterface {
+export interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
   /** The associated company identifier. */
   companyId: string
   /** Default values to pre-populate the invite form fields. */
@@ -49,7 +44,7 @@ export interface InviteSignatoryProps extends CommonComponentInterface {
  * @returns The rendered invite signatory form.
  * @public
  */
-export function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface) {
+export function InviteSignatory(props: InviteSignatoryProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

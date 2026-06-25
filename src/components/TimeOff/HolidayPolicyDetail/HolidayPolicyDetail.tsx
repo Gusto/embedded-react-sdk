@@ -24,7 +24,9 @@ import EditIcon from '@/assets/icons/edit-02.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 /** @internal */
-export interface HolidayPolicyDetailProps extends BaseComponentInterface {
+export interface HolidayPolicyDetailProps extends BaseComponentInterface<
+  'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'
+> {
   /** The associated company identifier. */
   companyId: string
   /** Which tab to display initially. Defaults to `'holidays'`. */

@@ -19,7 +19,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface I9SignatureFormProps extends BaseComponentInterface {
+export interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9SignatureForm'> {
   /** The associated employee identifier. */
   employeeId: string
   /** The identifier of the I-9 form to sign. */

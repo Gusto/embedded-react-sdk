@@ -76,8 +76,7 @@ const INITIAL_NAMESPACE_MAP = {
 } as const
 
 /**
- * Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
- * single payroll.
+ * Guided flow to configure, review, and submit a single payroll.
  *
  * @remarks
  * This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
@@ -89,7 +88,6 @@ const INITIAL_NAMESPACE_MAP = {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
- * | `runPayroll/back` | Fired when user navigates back | — |
  * | `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
  * | `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
  * | `runPayroll/employee/saved` | Fired when employee edits are saved | — |
@@ -105,9 +103,35 @@ const INITIAL_NAMESPACE_MAP = {
  * | `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
  * | `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |
  *
+ * @components
+ * - {@link PayrollConfiguration}
+ * - {@link PayrollOverview}
+ * - {@link PayrollEditEmployee}
+ * - {@link PayrollReceipts}
+ * - {@link PayrollBlockerList}
+ *
  * @param input - {@link PayrollExecutionFlowProps}
  * @returns The rendered execution flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.PayrollExecutionFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       payrollId="0987fcea-7b59-4907-a301-f232b5aff508"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function PayrollExecutionFlow({
   companyId,
