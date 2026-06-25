@@ -4,13 +4,21 @@
 
 ## Step flow <!-- slot: appendix -->
 
-The flow's entry point depends on whether `payrollId` is supplied. Without it, the flow opens on pay period selection and advances into execution, as shown below. With it, pay period selection is skipped and the flow starts directly in `PayrollExecutionFlow` for that payroll.
+The flow's entry point depends on whether `payrollId` is supplied: without it, the flow opens on pay period selection and advances into execution; with it, pay period selection is skipped and the flow starts directly in `PayrollExecutionFlow` for that payroll.
 
 ```mermaid
 flowchart
-  PayPeriodSelection["DismissalPayPeriodSelection"] -->|"dismissal/payPeriod/selected"| Execution["PayrollExecutionFlow"]
-  Execution -.->|"breadcrumb/navigate"| PayPeriodSelection
+  start@{ shape: sm-circ } --> hasPayroll{{"payrollId provided?"}}
+  hasPayroll -.->|"no"| PayPeriodSelection["DismissalPayPeriodSelection"]
+  hasPayroll -.->|"yes"| Execution["PayrollExecutionFlow"]
+  PayPeriodSelection -->|"dismissal/payPeriod/selected"| Execution
+  Execution -->|"breadcrumb/navigate"| PayPeriodSelection
+  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class hasPayroll branch
+  class Execution flow
 ```
+
+Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
 
 ## Pay period selection <!-- slot: appendix -->
 
