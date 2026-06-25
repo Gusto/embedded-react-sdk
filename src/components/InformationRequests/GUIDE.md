@@ -7,7 +7,7 @@
 The flow opens on the list of open and submitted information requests for the company, each open request carrying a "Respond" action. Selecting "Respond" opens the response form in a modal over the list. Submitting the form returns to the list (and, when `withAlert` is `true`, shows a dismissible success alert at the top); cancelling closes the modal and returns to the list without submitting.
 
 ```mermaid
-flowchart
+flowchart LR
   start@{ shape: sm-circ } --> List["InformationRequestList"]
   List -->|"informationRequest/respond"| Form["InformationRequestForm"]
   Form -->|"informationRequest/form/done<br/>informationRequest/form/cancel"| List
