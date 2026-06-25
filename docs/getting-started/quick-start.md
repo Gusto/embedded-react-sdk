@@ -74,4 +74,4 @@ The SDK is designed to take on your application's look and feel via theming and 
 
 - Read [Authentication](./authentication.mdx) for the full picture on how your proxy should acquire and use OAuth tokens in production.
 - Review [Proxy Security](./proxy-security-partner-guidance.md) before pointing a proxy at real partner traffic.
-- Explore the [Reference](../reference/index.md) for the pre-built flows you can drop into your app.
+- Explore [Workflows Overview](../workflows-overview/workflows-overview.md) for the pre-built flows you can drop into your app.

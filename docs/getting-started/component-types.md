@@ -28,12 +28,12 @@ Sub-components are individual components for a single step or interaction (for e
 - You can insert your own content between SDK steps
 - You can apply [Component Adapters](../component-adapter/component-adapter.md) to bring your own UI components while keeping the SDK's business logic
 
-See the [Reference](../reference/index.md) for the sub-components available in each domain.
+See the [Workflows Overview](../workflows-overview/workflows-overview.md) for the sub-components available in each domain.
 
 ### Workflows
 
 Workflows are single components that encapsulate an entire multi-step user experience. They are the fastest path to a production-ready feature and support the same theming and event handling as individual sub-components.
 
-See the [Reference](../reference/index.md) for all available workflows.
+See the [Workflows Overview](../workflows-overview/workflows-overview.md) for all available workflows.
 
 > Not sure which type is right for you? Starting with a workflow and dropping down to sub-components or hooks for areas that need more control is a common pattern.
