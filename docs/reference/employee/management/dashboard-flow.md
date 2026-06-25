@@ -170,6 +170,7 @@ flowchart LR
   Dashboard <--> CompensationAddAnotherJobForm
   Dashboard <--> DeductionsEditForm
   Dashboard <--> DocumentManager
+  linkStyle 1,2,3,4,5,6,7,8,9,10,11,12 stroke-width:2.5px
 ```
 
 Some actions stay on the cards view without a screen swap: switching tabs (`employee/dashboard/tabChange`), dismissing a success alert (`employee/dismiss`), and deleting a bank account or deduction.

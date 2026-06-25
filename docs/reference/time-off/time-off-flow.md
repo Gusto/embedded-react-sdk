@@ -81,57 +81,50 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 <!-- guide-source: src/components/TimeOff/TimeOffFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
 
-The flow opens on the policy list. Creating a policy branches by the selected
-policy type: sick and vacation share one path; holiday follows a separate one.
-Each branch is shown on its own. Existing policies are opened from the list for
-viewing, editing, and managing enrollment.
+The flow opens on the policy list (`PolicyList`), which acts as the hub: creating or opening a policy launches from it, and every step returns to it (`timeOff/backToList`, or cancel from a create step). There is no terminal step.
 
-### Create a sick or vacation policy
+### Create a policy
 
-Policies with an unlimited accrual method skip the settings step, since there is
-no balance to cap or carry over.
+Selecting a type branches the path: sick and vacation share the configuration-and-settings path, while holiday follows its own. A policy with an unlimited accrual method skips the settings step, since there is no balance to cap or carry over. (Only one holiday policy can exist per company; the type selector disables holiday once one is configured.)
 
 ```mermaid
 flowchart
-  policyList -->|"timeOff/createPolicy"| policyTypeSelector
-  policyTypeSelector -->|"timeOff/policyTypeSelected (sick / vacation)"| policyDetailsForm
-  policyDetailsForm -->|"timeOff/policyDetails/done"| unlimited{{"unlimited accrual?"}}
-  unlimited -->|true| addEmployeesToPolicy
-  unlimited -->|false| policySettings
-  policySettings -->|"timeOff/policySettings/done"| addEmployeesToPolicy
-  addEmployeesToPolicy -->|"timeOff/addEmployees/done"| viewTimeOffPolicyDetail
-  viewTimeOffPolicyDetail -->|"timeOff/backToList"| done(( ))
+  start@{ shape: sm-circ } --> PolicyList["PolicyList"]
+  PolicyList -->|"timeOff/createPolicy"| PolicyTypeSelector["PolicyTypeSelector"]
+  PolicyTypeSelector -->|"timeOff/policyTypeSelected"| policyType{{"policy type?"}}
+  policyType -.->|"sick / vacation"| PolicyConfigurationForm["PolicyConfigurationForm"]
+  policyType -.->|"holiday"| HolidaySelectionForm["HolidaySelectionForm"]
+  PolicyConfigurationForm -->|"timeOff/policyDetails/done"| unlimited{{"unlimited accrual?"}}
+  unlimited -.->|"yes"| AddEmployeesToPolicy["AddEmployeesToPolicy"]
+  unlimited -.->|"no"| PolicySettings["PolicySettings"]
+  PolicySettings -->|"timeOff/policySettings/done"| AddEmployeesToPolicy
+  AddEmployeesToPolicy -->|"timeOff/addEmployees/done"| TimeOffPolicyDetail["TimeOffPolicyDetail"]
+  HolidaySelectionForm -->|"timeOff/holidaySelection/done"| AddEmployeesHoliday["AddEmployeesHoliday"]
+  AddEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| ViewHolidayEmployees["ViewHolidayEmployees"]
+  TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
+  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
+  class policyType branch
+  class unlimited branch
 ```
 
-### Create a holiday policy
+### Manage an existing policy
 
-Only one holiday policy can exist per company; the policy-type selector disables
-the holiday option once one is configured.
-
-```mermaid
-flowchart
-  policyList -->|"timeOff/createPolicy"| policyTypeSelector
-  policyTypeSelector -->|"timeOff/policyTypeSelected (holiday)"| holidaySelectionForm
-  holidaySelectionForm -->|"timeOff/holidaySelection/done"| addEmployeesHoliday
-  addEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| viewHolidayEmployees
-  viewHolidayEmployees -->|"timeOff/backToList"| done(( ))
-```
-
-### Open an existing policy
-
-Selecting a policy from the list routes to the matching detail view by type.
+Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`); from the holiday view you can edit the holiday selection (`timeOff/editHolidayPolicy`), add employees (`timeOff/holidayAddEmployees`), or view the observed-holiday schedule (`timeOff/viewHolidaySchedule`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
 
 ```mermaid
-flowchart
-  policyList -->|"timeOff/viewPolicy"| isHoliday{{"holiday policy?"}}
-  isHoliday -->|false| viewTimeOffPolicyDetail
-  isHoliday -->|true| viewHolidayEmployees
-  viewTimeOffPolicyDetail -->|"timeOff/editPolicy"| editPolicyDetailsForm
-  viewTimeOffPolicyDetail -->|"timeOff/changeSettings"| editPolicySettings
-  viewTimeOffPolicyDetail -->|"timeOff/addEmployeesToPolicy"| addEmployeesToPolicy
-  viewHolidayEmployees -->|"timeOff/editHolidayPolicy"| editHolidaySelectionForm
-  viewHolidayEmployees -->|"timeOff/holidayAddEmployees"| addEmployeesHoliday
-  viewHolidayEmployees -->|"timeOff/viewHolidaySchedule"| viewHolidaySchedule
+flowchart LR
+  start@{ shape: sm-circ } --> PolicyList["PolicyList"]
+  PolicyList -->|"timeOff/viewPolicy<br/>(non-holiday)"| TimeOffPolicyDetail["TimeOffPolicyDetail"]
+  TimeOffPolicyDetail <--> PolicyConfigurationForm["PolicyConfigurationForm"]
+  TimeOffPolicyDetail <--> PolicySettings["PolicySettings"]
+  TimeOffPolicyDetail <--> AddEmployeesToPolicy["AddEmployeesToPolicy"]
+  TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
+  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayEmployees["ViewHolidayEmployees"]
+  ViewHolidayEmployees <--> HolidaySelectionForm["HolidaySelectionForm"]
+  ViewHolidayEmployees <--> AddEmployeesHoliday["AddEmployeesHoliday"]
+  ViewHolidayEmployees <--> ViewHolidaySchedule["ViewHolidaySchedule"]
+  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
+  linkStyle 2,3,4,7,8,9 stroke-width:2.5px
 ```
 
 ## Policy types

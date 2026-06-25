@@ -89,7 +89,6 @@ const INITIAL_NAMESPACE_MAP = {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
- * | `runPayroll/back` | Fired when user navigates back | — |
  * | `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
  * | `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
  * | `runPayroll/employee/saved` | Fired when employee edits are saved | — |
