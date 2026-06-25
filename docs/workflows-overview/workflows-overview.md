@@ -10,18 +10,23 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 
 ### Available Workflows
 
-- Company Onboarding
-- Employee Onboarding
-- Employee Self Onboarding
-- Payroll Processing
-- Off-Cycle Payroll (Bonus & Correction)
-- Dismissal Payroll
-- Transition Payroll
-- Contractor Onboarding
-- Contractor Payments
-- Employee Termination
-- Time Off Policy Management
-- Information Requests
+| Workflow                                                                                       | Description                                                                |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Company Onboarding](../reference/company/onboarding/onboarding-flow.md)                       | Guided flow to onboard a company to Gusto.                                 |
+| [Information Requests](../reference/company/information-requests/information-requests-flow.md) | Hub for responding to outstanding requests from Gusto.                     |
+| [Employee Onboarding](../reference/employee/onboarding/onboarding-flow.md)                     | Guided flow to onboard multiple employees, one at a time.                  |
+| [Employee Self-Onboarding](../reference/employee/onboarding/self-onboarding-flow.md)           | Guided flow for employee self-onboarding.                                  |
+| [Employee Dashboard](../reference/employee/management/dashboard-flow.md)                       | Hub for viewing and managing an employee's details.                        |
+| [Employee List](../reference/employee/management/employee-list-flow.md)                        | Hub for viewing and managing all employees, including onboarding new ones. |
+| [Employee Termination](../reference/employee/management/termination-flow.md)                   | Guided flow to terminate an employee.                                      |
+| [Contractor Onboarding](../reference/contractor/onboarding/onboarding-flow.md)                 | Guided flow to onboard a contractor.                                       |
+| [Contractor Payments](../reference/contractor/management/payment-flow.md)                      | Hub for managing contractor payments.                                      |
+| [Payroll Processing](../reference/payroll/payroll-flow.md)                                     | Hub for running and managing payroll.                                      |
+| [Payroll Execution](../reference/payroll/payroll-execution-flow.md)                            | Guided flow for a single payroll run.                                      |
+| [Off-Cycle Payroll](../reference/payroll/off-cycle-flow.md)                                    | Guided flow for off-cycle payroll.                                         |
+| [Dismissal Payroll](../reference/payroll/dismissal-flow.md)                                    | Guided flow for dismissal payroll.                                         |
+| [Transition Payroll](../reference/payroll/transition-flow.md)                                  | Guided flow for transition payroll.                                        |
+| [Time Off](../reference/time-off/time-off-flow.md)                                             | Hub for managing time off policies and schedules.                          |
 
 ### Why should I use a Workflow?
 
@@ -53,4 +58,4 @@ This example renders a fully functional flow with the following steps:
 
 As can be seen, using workflow components can allow for implementing complex flows in a simple way.
 
-The following documents in this section will provide more detailed usage examples and implementation guidelines for each flow.
+For detailed usage, props, events, and sub-component references for each workflow, follow the links in the table above.

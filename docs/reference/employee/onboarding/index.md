@@ -18,9 +18,9 @@ Flows and blocks for onboarding employees.
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingExecutionFlow](onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
-| [OnboardingFlow](onboarding-flow.md) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
-| [SelfOnboardingFlow](self-onboarding-flow.md) | Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+| [OnboardingFlow](onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Guided flow for employees to complete their own onboarding. |
 
 ## 🧩 Blocks
 

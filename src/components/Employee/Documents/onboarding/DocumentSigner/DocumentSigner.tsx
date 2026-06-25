@@ -43,6 +43,12 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Employee.Do
  * | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
  * | `cancel` | Fired when the user cancels signing a form and returns to the document list | — |
  *
+ * @components
+ * - {@link EmploymentEligibility}
+ * - {@link I9SignatureForm}
+ * - {@link DocumentList}
+ * - {@link SignatureForm}
+ *
  * @param props - See {@link DocumentSignerProps}.
  * @returns The document signer flow.
  * @public

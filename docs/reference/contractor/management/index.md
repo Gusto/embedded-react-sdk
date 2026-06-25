@@ -16,7 +16,7 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [PaymentFlow](payment-flow.md) | Guided workflow for creating, managing, and viewing contractor payment groups for a company. |
+| [PaymentFlow](payment-flow.md) | Hub for creating and managing contractor payments for a company. |
 
 ## 🧩 Blocks
 

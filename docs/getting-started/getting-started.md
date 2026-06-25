@@ -20,7 +20,7 @@ Pre-built UI for the core payroll lifecycle:
 | Terminations and time off       | Dismissal payroll and time-off policy management.                                                                        |
 | Information requests            | Surface the documents and inputs Gusto needs from employers, with built-in validation.                                   |
 
-See [Workflows Overview](../workflows-overview/workflows-overview.md) for the complete, current list.
+See the [Workflows Overview](../workflows-overview/workflows-overview.md) for the complete, current list.
 
 ## How it adapts to your product
 

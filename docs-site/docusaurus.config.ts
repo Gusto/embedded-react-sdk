@@ -132,6 +132,13 @@ const config: Config = {
           '.rough-node.branch > g > path:first-of-type { stroke: var(--diagram-accent-fill); }',
           '.rough-node.branch > g > path:last-of-type { stroke: var(--diagram-accent-stroke); }',
           '.branch .nodeLabel { color: var(--diagram-text); fill: var(--diagram-text); }',
+          // flow (composed-sub-flow) nodes — accent BORDER only, default fill, so a
+          // node that links out to another documented flow pops without reading as a
+          // branch (which fills coral). classic/neo: recolor stroke only; handDrawn:
+          // recolor just the border path (last-of-type), leaving the fill hatch
+          // (first-of-type) at the neutral default. Thicker stroke to emphasize.
+          '.flow > rect, .flow > polygon, .flow > path { stroke: var(--diagram-accent-stroke); stroke-width: 2px; }',
+          '.rough-node.flow > g > path:last-of-type { stroke: var(--diagram-accent-stroke); stroke-width: 2px; }',
           // start/stop markers (sm-circ/fr-circ) don't carry node cssClasses, so
           // target them by their stable node-id pattern. Fill + stroke so the
           // interior is the accent tint, not the gray node background showing through.
@@ -142,6 +149,14 @@ const config: Config = {
           // arrowheads are one shared marker; context-stroke makes each inherit its
           // edge's stroke, so condition arrows turn coral and event arrows stay neutral.
           '.arrowMarkerPath { fill: context-stroke; stroke: context-stroke; }',
+          // subgraph clusters are pure layout-grouping, not content. handDrawn draws
+          // a hatch-fill path (first-of-type) + a border path (last-of-type). Drop the
+          // hatch so only the neutral border remains — a minimal box that groups nodes
+          // without reading as a styled container. Titles are suppressed per-diagram via
+          // empty-string subgraph labels (`[" "]`), not globally, so a real title still
+          // renders if ever wanted. (classic/neo fallback: the single rect gets no fill.)
+          '.cluster > g > path:first-of-type { display: none; }',
+          '.cluster > rect { fill: none; }',
         ].join('\n'),
       },
     },

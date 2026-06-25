@@ -9,7 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 
 /**
- * Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+ * Guided flow for admins to onboard a contractor to the company.
  *
  * @remarks
  * Renders a multi-step experience that collects every piece of information
@@ -19,10 +19,9 @@ import { Flow } from '@/components/Flow/Flow'
  * The flow is driven by an internal state machine and wraps each step in
  * error and suspense boundaries.
  *
- * Each step of the flow is also exported as a standalone component — see
- * {@link ContractorList}, {@link ContractorProfile}, {@link Address},
- * {@link PaymentMethod}, {@link NewHireReport}, and {@link ContractorSubmit} —
- * for composing a custom workflow when this orchestration is the wrong fit.
+ * Each step of the flow is also exported as a standalone block (see the
+ * Sub-components table) for composing a custom workflow when this orchestration
+ * is the wrong fit.
  *
  * The flow forwards every event emitted by its sub-components to `onEvent`;
  * see the events table on each sub-component for the full set of events and
@@ -48,19 +47,31 @@ import { Flow } from '@/components/Flow/Flow'
  * | `contractor/submit/done` | Fired when the contractor submission is complete | `{ message: string }` or `{ onboardingStatus, message: string }` |
  * | `contractor/invite/selfOnboarding` | Fired when the contractor is invited for self-onboarding | `{ contractorId: string }` |
  *
+ * @components
+ * - {@link ContractorList}
+ * - {@link ContractorProfile}
+ * - {@link Address}
+ * - {@link PaymentMethod}
+ * - {@link NewHireReport}
+ * - {@link ContractorSubmit}
+ *
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step onboarding flow with internal navigation between the contractor list and the per-step screens.
  * @public
  *
  * @example
- * ```tsx
- * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ * ```tsx title="App.tsx"
+ * import { ContractorOnboarding, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <ContractorOnboarding.OnboardingFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'contractor/submit/done') {
+ *           // Contractor onboarding complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }

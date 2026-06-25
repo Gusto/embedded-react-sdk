@@ -50,6 +50,13 @@ const findWireInRequestUuid = (
  * Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required.
  *
  * @remarks
+ * Features:
+ *
+ * - **Success confirmation** — confirms the number of payments scheduled.
+ * - **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+ * - **Debit account** — shows the company bank account used for the debit.
+ * - **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+ *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/exit` | User completes the payment flow. | — |
