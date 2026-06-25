@@ -37,7 +37,7 @@ export default function NotFoundContent(): ReactNode {
               <Link to="/docs/component-adapter">Component Adapter</Link>
             </li>
             <li>
-              <Link to="/docs/reference">Reference</Link>
+              <Link to="/docs/workflows-overview">Workflows</Link>
             </li>
           </ul>
         </div>
