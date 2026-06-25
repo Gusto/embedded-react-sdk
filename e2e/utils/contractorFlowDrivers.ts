@@ -272,9 +272,9 @@ async function setPaymentDate(page: Page): Promise<void> {
     })
     await page.waitForTimeout(500)
 
-    const monthValue = await dateGroup.getByRole('spinbutton', { name: /^month/i }).inputValue()
-    const dayValue = await dateGroup.getByRole('spinbutton', { name: /^day/i }).inputValue()
-    const yearValue = await dateGroup.getByRole('spinbutton', { name: /^year/i }).inputValue()
+    const monthValue = await dateGroup.getByRole('spinbutton', { name: /^month/i }).textContent()
+    const dayValue = await dateGroup.getByRole('spinbutton', { name: /^day/i }).textContent()
+    const yearValue = await dateGroup.getByRole('spinbutton', { name: /^year/i }).textContent()
 
     if (
       monthValue === String(targetMonth) &&
