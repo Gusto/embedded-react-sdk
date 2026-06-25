@@ -5,7 +5,7 @@ import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
 import { NewHireReport } from '../NewHireReport/NewHireReport'
 import { ContractorSubmit } from '../Submit/Submit'
-import type { ContractorProfileFormData } from '../Profile/useContractorProfile'
+import type { ContractorDetailsFormData } from '../Profile/shared'
 import type { AddressDefaultValues } from '../Address/useAddress'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
@@ -22,7 +22,7 @@ import { componentEvents } from '@/shared/constants'
  * @public
  */
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
-  profile?: Partial<ContractorProfileFormData>
+  profile?: Partial<ContractorDetailsFormData>
   address?: AddressDefaultValues
 }>
 /**

@@ -102,7 +102,7 @@ Props for [ContractorProfile](#contractorprofile).
 | `companyId` | `string` | UUID of the company the contractor belongs to. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<\{ `contractorType`: `"Business"` \| `"Individual"`; `selfOnboarding`: `boolean`; `startDate`: `Date`; `wageType`: `"Fixed"` \| `"Hourly"`; `businessName?`: `string`; `ein?`: `string`; `email?`: `string`; `firstName?`: `string`; `hourlyRate?`: `number`; `lastName?`: `string`; `middleInitial?`: `string`; `ssn?`: `string`; \}\> | Initial values for the contractor profile form fields. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
@@ -256,19 +256,11 @@ function PaymentMethodStep() {
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
 
-<a id="contractorprofileformdata"></a>
-
-### ContractorProfileFormData
-
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
-
-Form field values for the contractor profile form.
-
 <a id="onboardingflowdefaultvalues"></a>
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorProfileFormData`](#contractorprofileformdata)\>; \}\>
+> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\>; \}\>
 
 Default pre-fill values for the contractor onboarding flow.
 At least one of `profile` or `address` must be provided.
