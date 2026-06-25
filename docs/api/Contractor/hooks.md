@@ -23,9 +23,9 @@ Form hook for editing a contractor's address.
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
+| Parameter | Type                                                              | Description                                                          |
+| --------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `props`   | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
 
 #### Returns
 
@@ -41,7 +41,7 @@ same address is labelled a "home" address for Individual contractors and a
 "business" address for Business contractors; the hook exposes `contractorType`
 so the consuming component can choose the appropriate copy.
 
-***
+---
 
 <a id="contractoraddresscityfield"></a>
 
@@ -51,15 +51,15 @@ Text input bound to the `city` field of [useContractorAddressForm](#usecontracto
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorAddressCityFieldProps`](#contractoraddresscityfieldprops) | [CityFieldProps](#contractoraddresscityfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| Parameter | Type                                                                  | Description                                                                                                                                                   |
+| --------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `props`   | [`ContractorAddressCityFieldProps`](#contractoraddresscityfieldprops) | [CityFieldProps](#contractoraddresscityfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
 
 #### Remarks
 
 Available on the hook result as `form.Fields.City`. Required.
 
-***
+---
 
 <a id="contractoraddresscityfieldprops"></a>
 
@@ -69,18 +69,18 @@ Available on the hook result as `form.Fields.City`. Required.
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.City` component.
 
-***
+---
 
 <a id="contractoraddresserrorcode"></a>
 
 ### ContractorAddressErrorCode
 
-> **ContractorAddressErrorCode** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[keyof *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\]
+> **ContractorAddressErrorCode** = _typeof_ [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[keyof _typeof_ [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\]
 
 Union of validation error code strings emitted by the contractor address
 form schema.
 
-***
+---
 
 <a id="contractoraddresserrorcodes"></a>
 
@@ -94,22 +94,22 @@ hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
+| Name          | Type            | Default value   |
+| ------------- | --------------- | --------------- |
 | `INVALID_ZIP` | `"INVALID_ZIP"` | `'INVALID_ZIP'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| `REQUIRED`    | `"REQUIRED"`    | `'REQUIRED'`    |
 
-***
+---
 
 <a id="contractoraddressfield"></a>
 
 ### ContractorAddressField
 
-> **ContractorAddressField** = keyof *typeof* `fieldValidators`
+> **ContractorAddressField** = keyof _typeof_ `fieldValidators`
 
 Field names accepted by the contractor address form.
 
-***
+---
 
 <a id="contractoraddressfields"></a>
 
@@ -119,15 +119,15 @@ Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
 
 #### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `City` | (`props`) => `Element` | City text input. Required. |
-| `State` | (`props`) => `Element` | State selector. Required. |
+| Property  | Type                   | Description                                 |
+| --------- | ---------------------- | ------------------------------------------- |
+| `City`    | (`props`) => `Element` | City text input. Required.                  |
+| `State`   | (`props`) => `Element` | State selector. Required.                   |
 | `Street1` | (`props`) => `Element` | Street address line 1 text input. Required. |
 | `Street2` | (`props`) => `Element` | Street address line 2 text input. Optional. |
-| `Zip` | (`props`) => `Element` | ZIP code text input. Required. |
+| `Zip`     | (`props`) => `Element` | ZIP code text input. Required.              |
 
-***
+---
 
 <a id="contractoraddressfieldsmetadata"></a>
 
@@ -137,7 +137,7 @@ Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
 
 Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontractoraddressform).
 
-***
+---
 
 <a id="contractoraddressformdata"></a>
 
@@ -147,7 +147,7 @@ Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontrac
 
 Shape of the values managed by the contractor address form.
 
-***
+---
 
 <a id="contractoraddressformfields"></a>
 
@@ -157,7 +157,7 @@ Shape of the values managed by the contractor address form.
 
 Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
 
-***
+---
 
 <a id="contractoraddressformoutputs"></a>
 
@@ -168,24 +168,24 @@ Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddre
 Shape of the validated values produced by the contractor address form on
 submit.
 
-***
+---
 
 <a id="contractoraddressoptionalfieldstorequire"></a>
 
 ### ContractorAddressOptionalFieldsToRequire
 
-> **ContractorAddressOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
+> **ContractorAddressOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<_typeof_ `requiredFieldsConfig`\>
 
 Keys of optional contractor address fields that can be promoted to required
 via the hook's `optionalFieldsToRequire` option.
 
-***
+---
 
 <a id="contractoraddressrequiredvalidation"></a>
 
 ### ContractorAddressRequiredValidation
 
-> **ContractorAddressRequiredValidation** = *typeof* `ContractorAddressErrorCodes.REQUIRED`
+> **ContractorAddressRequiredValidation** = _typeof_ `ContractorAddressErrorCodes.REQUIRED`
 
 The required-field error code produced by [useContractorAddressForm](#usecontractoraddressform) fields that only emit `REQUIRED`.
 
@@ -194,7 +194,7 @@ The required-field error code produced by [useContractorAddressForm](#usecontrac
 Used as the `validationMessages` key for the street, city, and state fields.
 See [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
-***
+---
 
 <a id="contractoraddressstatefield"></a>
 
@@ -204,16 +204,16 @@ Select bound to the `state` field of [useContractorAddressForm](#usecontractorad
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorAddressStateFieldProps`](#contractoraddressstatefieldprops) | [StateFieldProps](#contractoraddressstatefieldprops) — accepts the standard hook field props plus `getOptionLabel` to localize state names. |
+| Parameter | Type                                                                    | Description                                                                                                                                 |
+| --------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `props`   | [`ContractorAddressStateFieldProps`](#contractoraddressstatefieldprops) | [StateFieldProps](#contractoraddressstatefieldprops) — accepts the standard hook field props plus `getOptionLabel` to localize state names. |
 
 #### Remarks
 
 Available on the hook result as `form.Fields.State`. Options are the
 standard two-letter US state abbreviations. Required.
 
-***
+---
 
 <a id="contractoraddressstatefieldprops"></a>
 
@@ -223,7 +223,7 @@ standard two-letter US state abbreviations. Required.
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
 
-***
+---
 
 <a id="contractoraddressstreet1field"></a>
 
@@ -233,15 +233,15 @@ Text input bound to the `street1` field of [useContractorAddressForm](#usecontra
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorAddressStreet1FieldProps`](#contractoraddressstreet1fieldprops) | [Street1FieldProps](#contractoraddressstreet1fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| Parameter | Type                                                                        | Description                                                                                                                                                         |
+| --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `props`   | [`ContractorAddressStreet1FieldProps`](#contractoraddressstreet1fieldprops) | [Street1FieldProps](#contractoraddressstreet1fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
 
 #### Remarks
 
 Available on the hook result as `form.Fields.Street1`. Required.
 
-***
+---
 
 <a id="contractoraddressstreet1fieldprops"></a>
 
@@ -251,7 +251,7 @@ Available on the hook result as `form.Fields.Street1`. Required.
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street1` component.
 
-***
+---
 
 <a id="contractoraddressstreet2field"></a>
 
@@ -261,15 +261,15 @@ Text input bound to the `street2` field of [useContractorAddressForm](#usecontra
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorAddressStreet2FieldProps`](#contractoraddressstreet2fieldprops) | [Street2FieldProps](#contractoraddressstreet2fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| Parameter | Type                                                                        | Description                                                                                                                                                         |
+| --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `props`   | [`ContractorAddressStreet2FieldProps`](#contractoraddressstreet2fieldprops) | [Street2FieldProps](#contractoraddressstreet2fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
 
 #### Remarks
 
 Available on the hook result as `form.Fields.Street2`. Optional.
 
-***
+---
 
 <a id="contractoraddressstreet2fieldprops"></a>
 
@@ -279,7 +279,7 @@ Available on the hook result as `form.Fields.Street2`. Optional.
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
 
-***
+---
 
 <a id="contractoraddresssubmitoptions"></a>
 
@@ -289,11 +289,11 @@ Optional overrides passed to [onSubmit](#usecontractoraddressformready).
 
 #### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
+| Property        | Type     | Description                                              |
+| --------------- | -------- | -------------------------------------------------------- |
 | `contractorId?` | `string` | Override the contractor identifier supplied to the hook. |
 
-***
+---
 
 <a id="contractoraddresszipfield"></a>
 
@@ -303,16 +303,16 @@ Text input bound to the `zip` field of [useContractorAddressForm](#usecontractor
 
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorAddressZipFieldProps`](#contractoraddresszipfieldprops) | [ZipFieldProps](#contractoraddresszipfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| Parameter | Type                                                                | Description                                                                                                                                                 |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `props`   | [`ContractorAddressZipFieldProps`](#contractoraddresszipfieldprops) | [ZipFieldProps](#contractoraddresszipfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
 
 #### Remarks
 
 Available on the hook result as `form.Fields.Zip`. Required; also validates
 ZIP code format and emits `INVALID_ZIP` when the value does not match.
 
-***
+---
 
 <a id="contractoraddresszipfieldprops"></a>
 
@@ -322,13 +322,13 @@ ZIP code format and emits `INVALID_ZIP` when the value does not match.
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Zip` component.
 
-***
+---
 
 <a id="contractoraddresszipvalidation"></a>
 
 ### ContractorAddressZipValidation
 
-> **ContractorAddressZipValidation** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
+> **ContractorAddressZipValidation** = _typeof_ [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
 
 Validation error codes emitted by the `zip` field of [useContractorAddressForm](#usecontractoraddressform).
 
@@ -337,7 +337,7 @@ Validation error codes emitted by the `zip` field of [useContractorAddressForm](
 Use these as keys in `validationMessages` on `Fields.Zip`. See
 [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
-***
+---
 
 <a id="usecontractoraddressformprops"></a>
 
@@ -347,15 +347,15 @@ Configuration options for [useContractorAddressForm](#usecontractoraddressform).
 
 #### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | UUID of the contractor whose address is being edited. |
-| `defaultValues?` | `Partial`\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | Pre-fill form values. Server data takes precedence. |
-| `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| Property                   | Type                                                                                    | Description                                                                                                                                                                   |
+| -------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contractorId`             | `string`                                                                                | UUID of the contractor whose address is being edited.                                                                                                                         |
+| `defaultValues?`           | `Partial`\<[`ContractorAddressFormData`](#contractoraddressformdata)\>                  | Pre-fill form values. Server data takes precedence.                                                                                                                           |
+| `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`.                                                                  |
+| `shouldFocusError?`        | `boolean`                                                                               | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?`          | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"`                  | Passed through to react-hook-form. Defaults to `'onSubmit'`.                                                                                                                  |
 
-***
+---
 
 <a id="usecontractoraddressformready"></a>
 
@@ -374,26 +374,26 @@ the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` s
 
 #### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
-| `data` | `object` | Static entity data resolved from the API. |
-| `data.contractor` | `Contractor` | The full contractor entity loaded alongside the address. |
-| `data.contractorAddress` | `ContractorAddress` | The contractor address row loaded for update. |
-| `data.contractorType` | `ContractorType` \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
-| `errorHandling` | [`HookErrorHandling`](../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorAddressFields`](#contractoraddressfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult). |
-| `status` | `object` | Reactive status flags. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"update"` | - |
+| Property                       | Type                                                                                                                      | Description                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `actions`                      | `object`                                                                                                                  | Available actions.                                                                                               |
+| `actions.onSubmit`             | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | -                                                                                                                |
+| `data`                         | `object`                                                                                                                  | Static entity data resolved from the API.                                                                        |
+| `data.contractor`              | `Contractor`                                                                                                              | The full contractor entity loaded alongside the address.                                                         |
+| `data.contractorAddress`       | `ContractorAddress`                                                                                                       | The contractor address row loaded for update.                                                                    |
+| `data.contractorType`          | `ContractorType` \| `undefined`                                                                                           | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business).     |
+| `errorHandling`                | [`HookErrorHandling`](../utilities.md#hookerrorhandling)                                                                  | Error state and recovery actions.                                                                                |
+| `form`                         | `object`                                                                                                                  | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields`                  | [`ContractorAddressFields`](#contractoraddressfields)                                                                     | -                                                                                                                |
+| `form.fieldsMetadata`          | [`FieldsMetadata`](../utilities.md#fieldsmetadata)                                                                        | -                                                                                                                |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined`                                                                      | -                                                                                                                |
+| `form.hookFormInternals`       | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\>     | -                                                                                                                |
+| `isLoading`                    | `false`                                                                                                                   | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult).        |
+| `status`                       | `object`                                                                                                                  | Reactive status flags.                                                                                           |
+| `status.isPending`             | `boolean`                                                                                                                 | -                                                                                                                |
+| `status.mode`                  | `"update"`                                                                                                                | -                                                                                                                |
 
-***
+---
 
 <a id="usecontractoraddressformresult"></a>
 
