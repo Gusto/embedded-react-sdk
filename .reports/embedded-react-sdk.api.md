@@ -21,7 +21,7 @@ import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
 import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
-import { ContractorType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
@@ -5238,7 +5238,7 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsM
     data: {
         contractorAddress: ContractorAddress;
         contractor: Contractor;
-        contractorType: ContractorType | undefined;
+        contractorType: ContractorType_2 | undefined;
     };
     status: {
         isPending: boolean;
