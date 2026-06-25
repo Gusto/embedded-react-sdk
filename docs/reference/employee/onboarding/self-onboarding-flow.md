@@ -35,7 +35,7 @@ function MyApp() {
 
 Hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information. Drives a multi-step flow keyed to the employee being self-onboarded; when `withEmployeeI9` is enabled, the Document Signer step checks whether the employee has I-9 enabled and, if so, routes them through the employment-eligibility form before presenting the I-9 form alongside other required documents.
 
-Each step is also exported as a standalone block — see [Landing](blocks.md#landing), [Profile](blocks.md#profile), [FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod), [DocumentSigner](blocks.md#documentsigner), [EmploymentEligibility](blocks.md#employmenteligibility), and [OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this orchestration is the wrong fit.
+Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit.
 
 The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
 
@@ -50,10 +50,36 @@ Props for SelfOnboardingFlow.
 | `companyId` | `string` | The associated company identifier. |
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
-| `className?` | `string` | CSS class name applied to the component's root element. |
-| `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| `dictionary?` | `undefined` | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 | `withEmployeeI9?` | `boolean` | When true, the Document Signer step checks if the employee has I-9 enabled and routes to the Employment Eligibility and I-9 signature form steps. Defaults to `false`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [Landing](blocks.md#landing) | Landing page for the employee self-onboarding flow. Displays a welcome message and the list of onboarding steps the employee needs to complete. |
+| [Profile](blocks.md#profile) | Onboarding step for collecting an employee's basic profile and addresses. |
+| [FederalTaxes](blocks.md#federaltaxes) | Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding. |
+| [StateTaxes](blocks.md#statetaxes) | Onboarding step that collects an employee's per-state tax withholding answers. The set of fields is driven by the API response for each state on record. |
+| [PaymentMethod](blocks.md#paymentmethod) | Onboarding step for setting up an employee's payment method. |
+| [DocumentSigner](blocks.md#documentsigner) | Onboarding step for signing employee documents. |
+| [OnboardingSummary](blocks.md#onboardingsummary) | Displays a summary of an employee's onboarding status, listing completed and outstanding steps. Rendered as a standalone step inside `OnboardingFlow`. |
+
+<!-- guide-source: src/components/Employee/SelfOnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The employee completes their own onboarding, starting from the self-onboarding landing page.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> Landing
+  Landing -->|"employee/selfOnboarding/start"| Profile
+  Profile -->|"employee/profile/done"| FederalTaxes
+  FederalTaxes -->|"employee/federalTaxes/done"| StateTaxes
+  StateTaxes -->|"employee/stateTaxes/done"| PaymentMethod
+  PaymentMethod -->|"employee/paymentMethod/done"| DocumentSigner
+  DocumentSigner -->|"employee/forms/done"| OnboardingSummary
+  OnboardingSummary -->|"employee/onboarding/done"| done@{ shape: fr-circ, label: " " }
+```
+<!-- /guide-source (slot: appendix) -->
