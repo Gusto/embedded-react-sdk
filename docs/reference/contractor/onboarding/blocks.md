@@ -91,21 +91,11 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Form for creating or editing a contractor profile, supporting both individual and business contractor types.
 
-### ContractorProfileProps
+### Parameters
 
-<a id="contractorprofileprops"></a>
-
-Props for [ContractorProfile](#contractorprofile).
-
-| Property | Type | Description |
+| Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<\{ `contractorType`: `"Business"` \| `"Individual"`; `selfOnboarding`: `boolean`; `startDate`: `Date`; `wageType`: `"Fixed"` \| `"Hourly"`; `businessName?`: `string`; `ein?`: `string`; `email?`: `string`; `firstName?`: `string`; `hourlyRate?`: `number`; `lastName?`: `string`; `middleInitial?`: `string`; `ssn?`: `string`; \}\> | Initial values for the contractor profile form fields. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+| `props` | [`ContractorProfileProps`](#contractorprofileprops) & [`BaseComponentInterface`](../../index.md#basecomponentinterface)\<`"common"` \| `"Company.Addresses"` \| `"Company.AssignSignatory"` \| `"Company.BankAccount"` \| `"Company.DocumentList"` \| `"Company.FederalTaxes"` \| `"Company.Industry"` \| `"Company.Locations"` \| `"Company.OnboardingOverview"` \| `"Company.PaySchedule"` \| `"Company.SignatureForm"` \| `"Company.StateTaxes"` \| `"Company.TimeOff.CreateTimeOffPolicy"` \| `"Company.TimeOff.EmployeeTable"` \| `"Company.TimeOff.HolidayPolicy"` \| `"Company.TimeOff.PolicyDetail"` \| `"Company.TimeOff.SelectEmployees"` \| `"Company.TimeOff.SelectPolicyType"` \| `"Company.TimeOff.TimeOffPolicies"` \| `"Company.TimeOff.TimeOffPolicyDetails"` \| `"Company.TimeOff.TimeOffRequests"` \| `"Contractor.Address"` \| `"Contractor.ContractorList"` \| `"Contractor.NewHireReport"` \| `"Contractor.PaymentMethod"` \| `"Contractor.Payments.CreatePayment"` \| `"Contractor.Payments.PaymentHistory"` \| `"Contractor.Payments.PaymentStatement"` \| `"Contractor.Payments.PaymentSummary"` \| `"Contractor.Payments.PaymentsList"` \| `"Contractor.Profile"` \| `"Contractor.Submit"` \| `"Employee.BankAccount"` \| `"Employee.BankFormBody"` \| `"Employee.Compensation"` \| `"Employee.Dashboard"` \| `"Employee.Deductions"` \| `"Employee.DeductionsForm"` \| `"Employee.DocumentManager"` \| `"Employee.DocumentSigner"` \| `"Employee.EmployeeDocuments"` \| `"Employee.EmployeeList"` \| `"Employee.EmploymentEligibility"` \| `"Employee.FederalTaxes"` \| `"Employee.FederalTaxesView"` \| `"Employee.HomeAddress"` \| `"Employee.I9SignatureForm"` \| `"Employee.Landing"` \| `"Employee.Management.Compensation"` \| `"Employee.Management.Deductions"` \| `"Employee.Management.Documents"` \| `"Employee.Management.FederalTaxes"` \| `"Employee.Management.HomeAddress"` \| `"Employee.Management.PaymentMethod"` \| `"Employee.Management.PaymentMethodBankForm"` \| `"Employee.Management.PaymentMethodSplitForm"` \| `"Employee.Management.Paystubs"` \| `"Employee.Management.Profile"` \| `"Employee.Management.StateTaxes"` \| `"Employee.Management.WorkAddress"` \| `"Employee.ManagementEmployeeList"` \| `"Employee.OnboardingSummary"` \| `"Employee.PaySchedules"` \| `"Employee.PaymentMethod"` \| `"Employee.Profile"` \| `"Employee.SplitPaycheck"` \| `"Employee.SplitPaymentsFormBody"` \| `"Employee.StateTaxes"` \| `"Employee.StateTaxesView"` \| `"Employee.Terminations.TerminateEmployee"` \| `"Employee.Terminations.TerminationFlow"` \| `"Employee.Terminations.TerminationSummary"` \| `"InformationRequests.InformationRequestForm"` \| `"InformationRequests.InformationRequestList"` \| `"InformationRequests"` \| `"Payroll.Common"` \| `"Payroll.ConfirmWireDetailsBanner"` \| `"Payroll.ConfirmWireDetailsForm"` \| `"Payroll.Dismissal"` \| `"Payroll.EmployeeSelection"` \| `"Payroll.GrossUpModal"` \| `"Payroll.OffCycle"` \| `"Payroll.OffCycleCreation"` \| `"Payroll.OffCycleDeductionsSetting"` \| `"Payroll.OffCyclePayPeriodDateForm"` \| `"Payroll.OffCycleReasonSelection"` \| `"Payroll.OffCycleTaxWithholding"` \| `"Payroll.PayrollBlocker"` \| `"Payroll.PayrollConfiguration"` \| `"Payroll.PayrollEditEmployee"` \| `"Payroll.PayrollFlow"` \| `"Payroll.PayrollHistory"` \| `"Payroll.PayrollLanding"` \| `"Payroll.PayrollList"` \| `"Payroll.PayrollOverview"` \| `"Payroll.PayrollReceipts"` \| `"Payroll.RecoveryCasesList"` \| `"Payroll.RecoveryCasesResubmit"` \| `"Payroll.Transition"` \| `"Payroll.TransitionCreation"` \| `"Payroll.TransitionPayrollAlert"` \| `"Payroll.WireInstructions"`\> | See [ContractorProfileProps](#contractorprofileprops). |
 
 ### Remarks
 
@@ -256,19 +246,32 @@ function PaymentMethodStep() {
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
 
-<a id="contractorprofileformdata"></a>
+<a id="contractorprofileprops"></a>
 
-### ContractorProfileFormData
+### ContractorProfileProps
 
-> **ContractorProfileFormData** = `z.infer`\<*typeof* `ContractorProfileSchema`\>
+Props for [ContractorProfile](#contractorprofile).
 
-Form field values for the contractor profile form.
+#### Extends
+
+- [`CommonComponentInterface`](../../index.md#commoncomponentinterface)\<`"Contractor.Profile"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 <a id="onboardingflowdefaultvalues"></a>
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorProfileFormData`](#contractorprofileformdata)\>; \}\>
+> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `address?`: [`AddressDefaultValues`](#addressdefaultvalues); `profile?`: `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\>; \}\>
 
 Default pre-fill values for the contractor onboarding flow.
 At least one of `profile` or `address` must be provided.

@@ -92,7 +92,7 @@ record. The values mirror the strings returned by the API.
 
 ### ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`"self_onboarding_invited"` \| `"self_onboarding_not_invited"` \| `"self_onboarding_started"` \| `"self_onboarding_review"`\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`ContractorOnboardingStatus1`\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.
@@ -356,7 +356,6 @@ shape mixed into every public SDK feature component.
 - [`InviteSignatoryProps`](company/onboarding/blocks.md#invitesignatoryprops)
 - [`OnboardingFlowProps`](contractor/onboarding/onboarding-flow.md#onboardingflowprops)
 - [`ContractorListProps`](contractor/onboarding/blocks.md#contractorlistprops)
-- [`ContractorProfileProps`](contractor/onboarding/blocks.md#contractorprofileprops)
 - [`AddressProps`](contractor/onboarding/blocks.md#addressprops)
 - [`PaymentMethodProps`](contractor/onboarding/blocks.md#paymentmethodprops)
 - [`NewHireReportProps`](contractor/onboarding/blocks.md#newhirereportprops)
@@ -401,6 +400,7 @@ Props common to all SDK feature components, including children, an optional clas
 - [`CompensationEditFormProps`](employee/management/blocks.md#compensationeditformprops)
 - [`CompensationAddJobFormProps`](employee/management/blocks.md#compensationaddjobformprops)
 - [`CompensationAddAnotherJobFormProps`](employee/management/blocks.md#compensationaddanotherjobformprops)
+- [`ContractorProfileProps`](contractor/onboarding/blocks.md#contractorprofileprops)
 
 #### Type Parameters
 
