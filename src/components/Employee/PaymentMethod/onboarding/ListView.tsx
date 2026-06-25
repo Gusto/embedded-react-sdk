@@ -179,11 +179,11 @@ function ListViewReady({
               }
               FieldComponent={TypeFieldComponent}
             />
-            {bankAccounts.length > 0 && (
+            {watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 0 && (
               <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
             )}
             <ActionsLayout>
-              {bankAccounts.length > 1 && (
+              {watchedType === PAYMENT_METHODS.directDeposit && bankAccounts.length > 1 && (
                 <Components.Button
                   variant="secondary"
                   type="button"

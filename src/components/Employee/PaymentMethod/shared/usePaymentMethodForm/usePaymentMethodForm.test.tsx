@@ -105,6 +105,42 @@ describe('usePaymentMethodForm', () => {
     expect(submitResult).toMatchObject({ mode: 'update', data: { type: 'Check' } })
   })
 
+  it('does not call delete-bank-account when switching to Check', async () => {
+    const deleteResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 204 }),
+    )
+
+    server.use(
+      http.put(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+        HttpResponse.json({ version: 'next-version', type: 'Check' }),
+      ),
+      http.delete(
+        `${API_BASE_URL}/v1/employees/:employee_id/bank_accounts/:bank_account_id`,
+        deleteResolver,
+      ),
+    )
+
+    const { result } = renderHook(
+      () =>
+        usePaymentMethodForm({
+          employeeId: 'employee-123',
+          defaultValues: { type: 'Check' },
+        }),
+      { wrapper: GustoTestProvider },
+    )
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    await act(async () => {
+      assertReady(result.current)
+      await result.current.actions.onSubmit()
+    })
+
+    expect(deleteResolver).not.toHaveBeenCalled()
+  })
+
   it('preserves splits and splitBy in the PUT body when staying on Direct Deposit', async () => {
     let putBody: Record<string, unknown> | null = null
     const putResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {

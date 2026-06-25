@@ -117,6 +117,22 @@ describe('PaymentMethod onboarding ListView', () => {
     expect(screen.queryByRole('button', { name: /add.*bank account/i })).not.toBeInTheDocument()
   })
 
+  it('hides bank account list when Check is selected even if accounts exist server-side', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Chase')).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    await user.click(screen.getByRole('radio', { name: /check/i }))
+
+    expect(screen.queryByText('Chase')).not.toBeInTheDocument()
+  })
+
   it('navigates to BankForm when Add bank account is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
@@ -285,6 +301,23 @@ describe('PaymentMethod onboarding ListView', () => {
       )
 
       expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+    })
+
+    it('hides Split paycheck button when Check is selected even with 2+ accounts', async () => {
+      const user = userEvent.setup()
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('radio', { name: /check/i }))
+
+      expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
     })
   })
 
