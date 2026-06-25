@@ -12,32 +12,28 @@ The typical step sequence when composing the subcomponents manually:
 4. [`PaymentHistory`](./blocks.md#paymenthistory) — inspect a payment group's details and cancel individual payments.
 5. [`PaymentStatement`](./blocks.md#paymentstatement) — see the full breakdown for one contractor's payment.
 
-The flow is a hub: the payments list is the landing screen, and each action branches into its own path before returning to the list. Breadcrumbs navigate back to any prior step. The three paths are shown separately below.
+## Step flow <!-- slot: appendix -->
 
-### Create a payment
+The flow is a hub-and-spoke loop with no terminal state — the payments list is the landing screen, and every path returns to it:
 
-```mermaid
-flowchart
-  PaymentsList -->|"contractor/payments/create"| CreatePayment
-  CreatePayment -->|"contractor/payments/created"| PaymentSummary
-  PaymentSummary -->|"contractor/payments/exit"| PaymentsList
-```
+- **Create a payment** — `PaymentsList` → `CreatePayment` → `PaymentSummary`, then back to the list.
+- **View history** — `PaymentsList` → `PaymentHistory` → `PaymentStatement`; the history view can also cancel a payment and return to the list.
+- **Respond to a request** — `PaymentsList` opens the embedded `InformationRequestsFlow`, returning to the list once the request is submitted or cancelled.
 
-### View payment history
+Breadcrumbs navigate back to any prior step, and submitting wire-transfer details surfaces a success alert on the list and summary screens. The diagram below shows the topology; the event behind each transition is listed in the events table above.
 
 ```mermaid
-flowchart
-  PaymentsList -->|"contractor/payments/view"| PaymentHistory
-  PaymentHistory -->|"contractor/payments/view/details"| PaymentStatement
-  PaymentHistory -->|"contractor/payments/cancel"| PaymentsList
-```
+flowchart LR
+  start@{ shape: sm-circ } --> PaymentsList
 
-### Respond to an information request
+  PaymentsList --> CreatePayment --> PaymentSummary --> PaymentsList
 
-```mermaid
-flowchart
-  PaymentsList -->|"contractor/payments/rfi/respond"| InformationRequests
-  InformationRequests -->|"informationRequest/form/done, informationRequest/form/cancel"| PaymentsList
+  PaymentsList --> PaymentHistory --> PaymentStatement
+  PaymentHistory --> PaymentsList
+
+  PaymentsList --> InformationRequests["InformationRequests.<br/>InformationRequestsFlow"] --> PaymentsList
+
+  class InformationRequests flow
 ```
 
 ## Important Notes <!-- slot: appendix -->

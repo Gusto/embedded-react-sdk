@@ -37,6 +37,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * - {@link PaymentSummary}
  * - {@link PaymentHistory}
  * - {@link PaymentStatement}
+ * - {@link InformationRequests.InformationRequestsFlow | InformationRequestsFlow}
  *
  * @param props - See {@link PaymentFlowProps}.
  * @returns The multi-step contractor payments workflow.
