@@ -60,7 +60,7 @@ import { Flow } from '@/components/Flow/Flow'
  * @public
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

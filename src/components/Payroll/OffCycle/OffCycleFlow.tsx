@@ -36,7 +36,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @public
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { Payroll } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

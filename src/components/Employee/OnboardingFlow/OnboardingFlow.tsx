@@ -78,7 +78,7 @@ export interface OnboardingFlowProps extends BaseComponentInterface<never> {
  * @group Flow Components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

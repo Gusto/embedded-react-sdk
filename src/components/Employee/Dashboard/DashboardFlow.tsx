@@ -117,7 +117,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * @group Flow Components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

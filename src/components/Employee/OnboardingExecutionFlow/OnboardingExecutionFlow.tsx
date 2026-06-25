@@ -65,7 +65,7 @@ export interface OnboardingExecutionFlowProps {
  * @group Flow Components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

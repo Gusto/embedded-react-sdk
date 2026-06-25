@@ -48,7 +48,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @group Flow Components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

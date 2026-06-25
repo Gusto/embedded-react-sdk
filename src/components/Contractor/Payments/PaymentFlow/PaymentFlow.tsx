@@ -44,7 +44,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @public
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { ContractorManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
