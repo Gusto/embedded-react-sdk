@@ -40,7 +40,7 @@ export interface OnboardingExecutionFlowProps {
 }
 
 /**
- * The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary.
+ * Guided flow to onboard an employee.
  *
  * @remarks
  * Drives the per-employee, admin-led onboarding steps used by {@link OnboardingFlow} and {@link EmployeeManagement.EmployeeListFlow}. ({@link SelfOnboardingFlow} is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit.

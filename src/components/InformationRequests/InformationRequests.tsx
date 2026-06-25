@@ -44,7 +44,7 @@ export interface InformationRequestsFlowProps extends Omit<
 const ALERT_TYPE = 'informationRequestResponded' as const
 
 /**
- * Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+ * Hub for viewing and responding to outstanding information requests from Gusto.
  *
  * @remarks
  * Renders the list of open and submitted information requests for a company and hosts the response form in a modal.

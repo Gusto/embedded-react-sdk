@@ -48,7 +48,7 @@ export interface OnboardingFlowProps extends BaseComponentInterface<never> {
 }
 
 /**
- * Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
+ * Guided flow to onboard multiple employees, one at a time.
  *
  * @remarks
  * Renders a multi-step experience that collects every piece of information

@@ -10,7 +10,7 @@ import { Flow } from '@/components/Flow/Flow'
 
 export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './OnboardingFlowComponents'
 /**
- * Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+ * Guided flow to onboard a company to Gusto.
  *
  * @remarks
  * The flow begins on the overview screen and steps through locations, federal taxes, industry,

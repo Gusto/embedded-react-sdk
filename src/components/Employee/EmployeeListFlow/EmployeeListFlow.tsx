@@ -9,7 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 
 /**
- * Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
+ * Hub for viewing and managing all employees, including onboarding new ones.
  *
  * @remarks
  * Drop-in entry point for managing all employees in a company. Begins on the

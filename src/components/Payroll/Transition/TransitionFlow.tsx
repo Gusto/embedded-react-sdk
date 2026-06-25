@@ -11,7 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule.
+ * Guided flow to run a transition payroll between pay schedules.
  *
  * @remarks
  * Starts on the creation step (configure check date, deductions, and tax withholding for the

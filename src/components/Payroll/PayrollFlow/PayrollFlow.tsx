@@ -11,7 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided workflow for selecting and running a company's payroll end to end.
+ * Hub for running and managing all payrolls across a company's pay schedules.
  *
  * @remarks
  * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.

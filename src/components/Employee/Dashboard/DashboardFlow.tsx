@@ -16,7 +16,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
 }
 
 /**
- * The main entry point for the employee dashboard.
+ * Hub for viewing and managing a single employee's profile, pay, and documents.
  *
  * @remarks
  * Renders a tabbed view of an employee's profile (Basic details, Job and pay,

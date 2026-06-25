@@ -76,8 +76,7 @@ const INITIAL_NAMESPACE_MAP = {
 } as const
 
 /**
- * Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
- * single payroll.
+ * Guided flow to configure, review, and submit a single payroll.
  *
  * @remarks
  * This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused

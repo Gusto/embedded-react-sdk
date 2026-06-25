@@ -10,7 +10,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
+ * Guided flow to terminate an employee and arrange their final paycheck.
  *
  * @remarks
  * Provides a complete experience for terminating an employee — guides the user through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process. Drives a multi-step flow with breadcrumb navigation between the termination form, the summary, and the dismissal payroll flow (when the partner selects the dismissal payroll option).

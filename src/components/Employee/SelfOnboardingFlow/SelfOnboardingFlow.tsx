@@ -11,7 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 export type { SelfOnboardingFlowProps } from './SelfOnboardingComponents'
 
 /**
- * Employee-driven onboarding workflow — landing, profile, taxes, payment method, and document signing.
+ * Guided flow for employees to complete their own onboarding.
  *
  * @remarks
  * Hands the employee responsibility for submitting their own profile, tax, payment, and document-signing information. Drives a multi-step flow keyed to the employee being self-onboarded; when `withEmployeeI9` is enabled, the Document Signer step checks whether the employee has I-9 enabled and, if so, routes them through the employment-eligibility form before presenting the I-9 form alongside other required documents.

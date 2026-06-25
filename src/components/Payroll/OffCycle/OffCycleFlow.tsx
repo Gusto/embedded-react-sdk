@@ -10,7 +10,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
+ * Guided flow to create and run a bonus or correction payroll.
  *
  * @remarks
  * Guides the user through configuring pay period dates, selecting a reason, choosing

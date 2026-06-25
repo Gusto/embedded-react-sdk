@@ -10,23 +10,23 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 
 ### Available Workflows
 
-| Workflow                                                                                       | Description                                                             |
-| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Company Onboarding](../reference/company/onboarding/onboarding-flow.md)                       | Guide a company through the full onboarding sequence.                   |
-| [Information Requests](../reference/company/information-requests/information-requests-flow.md) | Surface and respond to documents and inputs Gusto needs from employers. |
-| [Employee Onboarding](../reference/employee/onboarding/onboarding-flow.md)                     | Add employees and complete their profile, tax, and payment setup.       |
-| [Employee Self-Onboarding](../reference/employee/onboarding/self-onboarding-flow.md)           | Invite employees to complete their own taxes and payment method.        |
-| [Employee Dashboard](../reference/employee/management/dashboard-flow.md)                       | View and manage an employee's details, compensation, and documents.     |
-| [Employee List](../reference/employee/management/employee-list-flow.md)                        | Browse the employee roster and navigate to individual employee flows.   |
-| [Employee Termination](../reference/employee/management/termination-flow.md)                   | Run dismissal payroll and complete the offboarding sequence.            |
-| [Contractor Onboarding](../reference/contractor/onboarding/onboarding-flow.md)                 | Onboard a contractor with profile, tax, and payment details.            |
-| [Contractor Payments](../reference/contractor/management/payment-flow.md)                      | Create and manage contractor payment groups.                            |
-| [Payroll Processing](../reference/payroll/payroll-flow.md)                                     | Run regular payroll end-to-end.                                         |
-| [Payroll Execution](../reference/payroll/payroll-execution-flow.md)                            | Run the payroll-execution steps as a standalone sub-flow.               |
-| [Off-Cycle Payroll](../reference/payroll/off-cycle-flow.md)                                    | Run a bonus or correction payroll outside the normal schedule.          |
-| [Dismissal Payroll](../reference/payroll/dismissal-flow.md)                                    | Run a final payroll for a terminated employee.                          |
-| [Transition Payroll](../reference/payroll/transition-flow.md)                                  | Run a payroll that transitions an employee between pay schedules.       |
-| [Time Off](../reference/time-off/time-off-flow.md)                                             | Manage time off policies, holiday schedules, and employee assignments.  |
+| Workflow                                                                                       | Description                                                                |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Company Onboarding](../reference/company/onboarding/onboarding-flow.md)                       | Guided flow to onboard a company to Gusto.                                 |
+| [Information Requests](../reference/company/information-requests/information-requests-flow.md) | Hub for responding to outstanding requests from Gusto.                     |
+| [Employee Onboarding](../reference/employee/onboarding/onboarding-flow.md)                     | Guided flow to onboard multiple employees, one at a time.                  |
+| [Employee Self-Onboarding](../reference/employee/onboarding/self-onboarding-flow.md)           | Guided flow for employee self-onboarding.                                  |
+| [Employee Dashboard](../reference/employee/management/dashboard-flow.md)                       | Hub for viewing and managing an employee's details.                        |
+| [Employee List](../reference/employee/management/employee-list-flow.md)                        | Hub for viewing and managing all employees, including onboarding new ones. |
+| [Employee Termination](../reference/employee/management/termination-flow.md)                   | Guided flow to terminate an employee.                                      |
+| [Contractor Onboarding](../reference/contractor/onboarding/onboarding-flow.md)                 | Guided flow to onboard a contractor.                                       |
+| [Contractor Payments](../reference/contractor/management/payment-flow.md)                      | Hub for managing contractor payments.                                      |
+| [Payroll Processing](../reference/payroll/payroll-flow.md)                                     | Hub for running and managing payroll.                                      |
+| [Payroll Execution](../reference/payroll/payroll-execution-flow.md)                            | Guided flow for a single payroll run.                                      |
+| [Off-Cycle Payroll](../reference/payroll/off-cycle-flow.md)                                    | Guided flow for off-cycle payroll.                                         |
+| [Dismissal Payroll](../reference/payroll/dismissal-flow.md)                                    | Guided flow for dismissal payroll.                                         |
+| [Transition Payroll](../reference/payroll/transition-flow.md)                                  | Guided flow for transition payroll.                                        |
+| [Time Off](../reference/time-off/time-off-flow.md)                                             | Hub for managing time off policies and schedules.                          |
 
 ### Why should I use a Workflow?
 

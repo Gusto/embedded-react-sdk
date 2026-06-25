@@ -12,7 +12,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided workflow for running a terminated employee's final payroll.
+ * Guided flow to run a dismissed employee's final payroll.
  *
  * @remarks
  * Presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period with the `"Dismissed employee"` off-cycle reason, and then transitions into the standard payroll execution flow for configuration, review, submission, and receipts.

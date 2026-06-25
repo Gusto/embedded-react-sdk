@@ -9,7 +9,7 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 
 /**
- * Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+ * Guided flow for admins to onboard a contractor to the company.
  *
  * @remarks
  * Renders a multi-step experience that collects every piece of information
