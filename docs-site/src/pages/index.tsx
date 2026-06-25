@@ -182,7 +182,7 @@ const bigFeatures: BigFeature[] = [
     title: 'Pre-built Workflows',
     description:
       'Complete multi-step flows for employee onboarding, payroll, contractor management, and more — ready to drop into your app.',
-    to: '/docs/workflows-overview',
+    to: '/docs/reference',
     Icon: WorkflowIcon,
   },
   {
