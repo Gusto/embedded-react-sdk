@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # InformationRequestsFlow
 
-Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+Hub for viewing and responding to outstanding information requests from Gusto.
 
 ## Example
 

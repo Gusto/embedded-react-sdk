@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # DashboardFlow
 
-The main entry point for the employee dashboard.
+Hub for viewing and managing a single employee's profile, pay, and documents.
 
 ## Example
 

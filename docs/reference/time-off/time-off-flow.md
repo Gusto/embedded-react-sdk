@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # TimeOffFlow
 
-End-to-end workflow for creating and managing a company's sick, vacation, and holiday time off policies.
+Hub for creating and managing a company's time off policies.
 
 ## Example
 

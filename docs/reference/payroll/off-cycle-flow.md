@@ -12,15 +12,24 @@ custom_edit_url: null
 
 # OffCycleFlow
 
-Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
+Guided flow to create and run a bonus or correction payroll.
 
 ## Example
 
 ```tsx title="App.tsx"
-import { Payroll } from '@gusto/embedded-react-sdk'
+import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+  return (
+    <Payroll.OffCycleFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'runPayroll/submitted') {
+          // Payroll submitted — navigate to your next screen
+        }
+      }}
+    />
+  )
 }
 ```
 
@@ -58,7 +67,7 @@ Props for OffCycleFlow.
 | Component | Description |
 | ------ | ------ |
 | [OffCycleCreation](blocks.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
-| [PayrollExecutionFlow](payroll-execution-flow.md) | Shared execution flow that runs the configuration, overview, submission, and receipt steps for a single payroll. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 
 <!-- guide-source: src/components/Payroll/OffCycle/GUIDE.md (slot: appendix) -->
 ## Step flow

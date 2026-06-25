@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # PaymentFlow
 
-Guided workflow for creating, managing, and viewing contractor payment groups for a company.
+Hub for creating and managing contractor payments for a company.
 
 ## Example
 
@@ -83,7 +83,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
 | [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
 | [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
-| [InformationRequests.InformationRequestsFlow](../../company/information-requests/information-requests-flow.md) | Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company. |
+| [InformationRequests.InformationRequestsFlow](../../company/information-requests/information-requests-flow.md) | Hub for viewing and responding to outstanding information requests from Gusto. |
 
 <!-- guide-source: src/components/Contractor/Payments/PaymentFlow/GUIDE.md (slot: appendix) -->
 ## Step flow

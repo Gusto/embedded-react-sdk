@@ -16,7 +16,7 @@ custom_edit_url: null
 
 | Component | Description |
 | --------- | ----------- |
-| [OnboardingFlow](onboarding-flow.md) | Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll. |
+| [OnboardingFlow](onboarding-flow.md) | Guided flow to onboard a company to Gusto. |
 
 ## 🧩 Blocks
 

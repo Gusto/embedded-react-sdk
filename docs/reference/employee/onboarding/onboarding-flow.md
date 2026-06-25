@@ -12,19 +12,23 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
+Guided flow to onboard multiple employees, one at a time.
 
 ## Example
 
 ```tsx title="App.tsx"
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <EmployeeOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       withEmployeeI9
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'employee/onboarding/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -71,7 +75,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 | Component | Description |
 | ------ | ------ |
 | [EmployeeList](blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
-| [OnboardingExecutionFlow](onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | Guided flow to onboard an employee. |
 
 <!-- guide-source: src/components/Employee/OnboardingFlow/GUIDE.md (slot: appendix) -->
 ## Step flow

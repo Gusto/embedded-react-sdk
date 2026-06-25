@@ -12,18 +12,22 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+Guided flow for admins to onboard a contractor to the company.
 
 ## Example
 
 ```tsx title="App.tsx"
-import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <ContractorOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'contractor/submit/done') {
+          // Contractor onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }

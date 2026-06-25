@@ -12,19 +12,23 @@ custom_edit_url: null
 
 # TerminationFlow
 
-Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding.
+Guided flow to terminate an employee and arrange their final paycheck.
 
 ## Example
 
 ```tsx title="App.tsx"
-import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <EmployeeManagement.TerminationFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'employee/termination/done') {
+          // Termination complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -75,7 +79,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | ------ | ------ |
 | [TerminateEmployee](blocks.md#terminateemployee) | Standalone form for capturing an employee's termination details — last day of work and how to process final payroll. |
 | [TerminationSummary](blocks.md#terminationsummary) | Termination summary with edit, cancel, and run-payroll actions plus an offboarding checklist. |
-| [Payroll.DismissalFlow](../../payroll/dismissal-flow.md) | Guided workflow for running a terminated employee's final payroll. |
+| [Payroll.DismissalFlow](../../payroll/dismissal-flow.md) | Guided flow to run a dismissed employee's final payroll. |
 | [Payroll.PayrollLanding](../../payroll/blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
 
 <!-- guide-source: src/components/Employee/Terminations/TerminationFlow/GUIDE.md (slot: appendix) -->

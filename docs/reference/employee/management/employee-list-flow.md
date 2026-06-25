@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # EmployeeListFlow
 
-Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
+Hub for viewing and managing all employees, including onboarding new ones.
 
 ## Example
 
@@ -60,9 +60,9 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | Component | Description |
 | ------ | ------ |
 | [EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
-| [DashboardFlow](dashboard-flow.md) | The main entry point for the employee dashboard. |
-| [TerminationFlow](termination-flow.md) | Guided workflow for terminating an employee — pick termination date, choose how to process final payroll, review details, and manage offboarding. |
-| [EmployeeOnboarding.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | The multi-step onboarding execution flow — profile, compensation, taxes, payment method, deductions, documents, and summary. |
+| [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single employee's profile, pay, and documents. |
+| [TerminationFlow](termination-flow.md) | Guided flow to terminate an employee and arrange their final paycheck. |
+| [EmployeeOnboarding.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | Guided flow to onboard an employee. |
 
 <!-- guide-source: src/components/Employee/EmployeeListFlow/GUIDE.md (slot: appendix) -->
 ## Step flow

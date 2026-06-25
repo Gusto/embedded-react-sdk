@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # PayrollFlow
 
-Guided workflow for selecting and running a company's payroll end to end.
+Hub for running and managing all payrolls across a company's pay schedules.
 
 ## Example
 
@@ -20,7 +20,7 @@ Guided workflow for selecting and running a company's payroll end to end.
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function RunPayrollPage() {
-  return <Payroll.PayrollFlow companyId="company-uuid" onEvent={() => {}} />
+  return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -67,9 +67,9 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | Component | Description |
 | ------ | ------ |
 | [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
-| [PayrollExecutionFlow](payroll-execution-flow.md) | Shared execution flow that runs the configuration, overview, submission, and receipt steps for a single payroll. |
-| [OffCycleFlow](off-cycle-flow.md) | Multi-step flow for creating and running an off-cycle payroll (bonus or correction). |
-| [TransitionFlow](transition-flow.md) | Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+| [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll between pay schedules. |
 | [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 | [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |

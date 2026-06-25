@@ -12,18 +12,22 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+Guided flow to onboard a company to Gusto.
 
 ## Example
 
 ```tsx title="App.tsx"
-import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <CompanyOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'company/overview/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -77,7 +81,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 | [FederalTaxes](blocks.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
 | [Industry](blocks.md#industry) | Selects and saves the company's industry classification (NAICS code). |
 | [BankAccount](blocks.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
-| [EmployeeOnboarding.OnboardingFlow](../../employee/onboarding/onboarding-flow.md) | Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing. |
+| [EmployeeOnboarding.OnboardingFlow](../../employee/onboarding/onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
 | [PaySchedule](blocks.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
 | [StateTaxes](blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
 | [DocumentSigner](blocks.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
