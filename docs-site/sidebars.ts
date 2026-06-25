@@ -15,6 +15,7 @@ const sidebars: SidebarsConfig = {
         'getting-started/example-app',
       ],
     },
+    'workflows-overview/workflows-overview',
     {
       type: 'category',
       label: 'Component Adapter',
