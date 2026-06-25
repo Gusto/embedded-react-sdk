@@ -309,6 +309,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 
 | Component | Method | Path |
 | --- | --- | --- |
+| **ContractorOnboarding.Landing** | GET | `/v1/companies/:companyId` |
+|  | GET | `/v1/contractors/:contractorUuid` |
 | **ContractorOnboarding.ContractorList** | GET | `/v1/companies/:companyUuid/contractors` |
 |  | DELETE | `/v1/contractors/:contractorUuid` |
 | **ContractorOnboarding.ContractorProfile** | POST | `/v1/companies/:companyUuid/contractors` |
