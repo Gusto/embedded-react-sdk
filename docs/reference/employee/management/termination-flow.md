@@ -93,7 +93,7 @@ The last two both run `Payroll.DismissalFlow` (with an existing `payrollId` for 
 flowchart
   start@{ shape: sm-circ } --> terminated{{"already terminated?"}}
   terminated -.->|"no"| TerminateEmployee
-  terminated -.->|"yes"| viewExisting@{ shape: sm-circ }
+  terminated -.->|"yes"| viewExisting@{ shape: f-circ }
   viewExisting -->|"employee/termination/viewSummary"| TerminationSummary
   TerminateEmployee -->|"employee/termination/done"| TerminationSummary
   TerminateEmployee -->|"CANCEL"| done@{ shape: fr-circ, label: " " }
