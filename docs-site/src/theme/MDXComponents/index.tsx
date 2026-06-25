@@ -3,7 +3,7 @@ import MDXComponents from '@theme-original/MDXComponents'
 import DocCardList from '@theme/DocCardList'
 
 const Table = (props: ComponentProps<'table'>) => (
-  <div className="markdownTableWrapper">
+  <div className="markdownTableWrapper" tabIndex={0}>
     <table {...props} />
   </div>
 )
