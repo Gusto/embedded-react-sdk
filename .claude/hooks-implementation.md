@@ -9,7 +9,7 @@ Reference implementations:
 
 Each hook lives in its own folder following the feature module pattern: `src/components/{Domain}/{Feature}/shared/use{Name}Form/`
 
-```
+```text
 src/components/{Domain}/{Feature}/shared/use{Name}Form/
 ├── use{Name}Form.tsx        # Main hook: data fetching, form setup, return shape
 ├── {domain}Schema.ts        # Zod schema, error codes, form data/output types
@@ -246,6 +246,18 @@ await createJobMutation.mutateAsync({ request: { employeeId: resolvedEmployeeId,
 - Use `values` + `resetOptions: { keepDirtyValues: true }` on `useForm` — NOT manual `useEffect` + `reset()`
 - This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
 
+**Type the `defaultValues` prop as the form-data shape, never as a `Pick` of the API entity.** Partner pre-fill is form input, so it should be `Partial<{Domain}FormData>` (every field a plain `string`/`number`/etc.), the same type the schema produces. API entity types (`@gusto/embedded-api-v-2025-11-15/models/components/*`) declare nullable fields as `string | null | undefined`; if the prop is a `Pick` of one of those, `null` leaks into the partner-facing type and forces a `?? undefined` mapping at every call site. The form-data type carries no `null`, so the component passes `defaultValues` straight through.
+
+`null`-normalization belongs in **one place only — `resolvedDefaults` inside the hook** — where you read the server entity. `?? partnerDefaults?.field ?? ''` already coalesces `null` from both sources, so no caller ever needs to normalize. `useContractorProfile` (`defaultValues?: Partial<ContractorProfileFormData>`, with `existingContractor.firstName || undefined` internally) is the reference.
+
+```typescript
+// Good — form-shaped, no null
+defaultValues?: Partial<{Domain}FormData>
+
+// Bad — drags `string | null` into the partner type and forces call-site mapping
+defaultValues?: Pick<{Entity}, 'street1' | 'city' | 'state' | 'zip'>
+```
+
 ```typescript
 const [schema, metadataConfig] = useMemo(
   () => create{Domain}Schema({ mode, optionalFieldsToRequire }),
@@ -454,6 +466,7 @@ The `gws-flows` repo has side-by-side comparison pages that render the stable co
 Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies from each form column, then diff them:
 
 1. Install route interception via `browser_run_code`:
+
    ```javascript
    page.__capturedBodies = []
    await page.route('**/fe_sdk/**', async route => {
@@ -468,6 +481,7 @@ Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies
      await route.continue()
    })
    ```
+
 2. Submit each form column, reading captured bodies between submissions
 3. Compare request URLs, methods, and JSON bodies across columns
 

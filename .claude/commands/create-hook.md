@@ -18,7 +18,7 @@ For the rest of this doc, `{Domain}` is the entity name (e.g. `EmployeeDetails`,
 
 Hooks live in their feature module's `shared/` directory, one directory per hook:
 
-```
+```text
 src/components/{Domain}/{Feature}/shared/use{Name}Form/
 ├── use{Name}Form.tsx        # Main hook
 ├── {camelDomain}Schema.ts   # Zod schema, error codes, form data/output types
@@ -245,7 +245,11 @@ export interface Use{Domain}FormProps {
   // arguments (see "Optional Entity IDs and Submit-Time Resolution" in
   // hooks-implementation.md). Pass through:
   // - optionalFieldsToRequire (partner promotion of optional fields)
-  // - defaultValues (partner pre-fill, server data wins on update)
+  // - defaultValues (partner pre-fill, server data wins on update). Type this
+  //   as Partial<{Domain}FormData> — the form-data shape, NOT a Pick of the API
+  //   entity. Entity types carry `string | null`; reusing them leaks `null`
+  //   into the partner type and forces `?? undefined` at every call site. The
+  //   only place null gets normalized is resolvedDefaults inside the hook.
   // - validationMode (react-hook-form's `mode`)
   // - shouldFocusError (composeSubmitHandler sets this to false externally)
   // - any with*Field flags that gate fields out of the schema

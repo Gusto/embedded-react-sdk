@@ -113,6 +113,25 @@ const homeAddress = useHomeAddressForm({
 })
 ```
 
+### Pre-Fill Default Values
+
+When the component accepts partner pre-fill values and forwards them to the hook's `defaultValues`, pass them **straight through** — do not map field-by-field:
+
+```tsx
+// Good — the hook's defaultValues is the form-data shape; pass it through
+const address = useContractorAddressForm({ contractorId, defaultValues })
+
+// Bad — per-field `?? undefined` mapping to launder `null` out of the prop type
+const address = useContractorAddressForm({
+  contractorId,
+  defaultValues: defaultValues
+    ? { street1: defaultValues.street1 ?? undefined /* ...every field... */ }
+    : undefined,
+})
+```
+
+If you find yourself writing that mapping, the root cause is the **public pre-fill type**, not the call site. Type any component-level pre-fill type (e.g. `AddressDefaultValues`) off the hook's form-data type — `RequireAtLeastOne<{Domain}FormData>` or `Partial<{Domain}FormData>` — not off a `Pick` of the API entity. Entity types declare nullable fields as `string | null | undefined`; deriving the prop from them drags `null` into the partner type and forces the mapping. The form-data shape carries only `string`, so it's directly assignable to the hook's `defaultValues`. See `.claude/hooks-implementation.md` → "Form Defaults and Data Sync" for the hook-side rule (null is normalized once, inside `resolvedDefaults`).
+
 ### Partial Update Recovery (Create Mode)
 
 When composing hooks that create entities sequentially (e.g. create employee → create home address → create work address), a mid-sequence failure can leave the first entity created and the downstream ones not. Without recovery, a retry would create a second root entity.
@@ -547,7 +566,7 @@ Verify hook placement:
 
 All form hooks live inside a `shared/` directory scoped to the domain feature, one directory per hook:
 
-```
+```text
 src/components/<Domain>/<Feature>/shared/
 └── use<Name>Form/
     ├── use<Name>Form.tsx       # hook implementation
