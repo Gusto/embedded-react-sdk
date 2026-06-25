@@ -3,6 +3,7 @@ export type {
   OnboardingFlowProps,
   OnboardingFlowDefaultValues,
 } from '../OnboardingFlow/OnboardingFlowComponents'
+export { Landing, type LandingProps } from '../Landing'
 export { ContractorList, type ContractorListProps } from '../ContractorList'
 export { ContractorProfile, type ContractorProfileProps } from '../Profile'
 export type { ContractorDetailsFormData as ContractorProfileFormData } from '../Profile/shared'
