@@ -50,19 +50,10 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * @example
  * ```tsx title="App.tsx"
- * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+ * import { Payroll } from '@gusto/embedded-react-sdk'
  *
  * function RunPayrollPage() {
- *   return (
- *     <Payroll.PayrollFlow
- *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={(eventType: EventType) => {
- *         if (eventType === 'runPayroll/submitted') {
- *           // Payroll submitted — navigate to your next screen
- *         }
- *       }}
- *     />
- *   )
+ *   return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
  * }
  * ```
  */

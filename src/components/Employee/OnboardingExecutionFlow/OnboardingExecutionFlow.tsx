@@ -66,13 +66,17 @@ export interface OnboardingExecutionFlowProps {
  *
  * @example
  * ```tsx title="App.tsx"
- * import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+ * import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <EmployeeOnboarding.OnboardingExecutionFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'employee/onboarding/done') {
+ *           // Onboarding complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }
