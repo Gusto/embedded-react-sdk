@@ -18,8 +18,15 @@ import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
+/**
+ * Props for {@link StateTaxesForm}.
+ *
+ * @public
+ */
+export interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
+  /** The associated company identifier. */
   companyId: string
+  /** Two-letter code of the state whose tax requirements are edited. */
   state: string
 }
 

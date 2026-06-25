@@ -191,7 +191,20 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
 boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
-case it defaults to basic details.
+case it defaults to basic details. Each tab composes the read-only section cards listed below.
+
+### Components
+
+- [ProfileCard](#profilecard)
+- [HomeAddressCard](#homeaddresscard)
+- [WorkAddressCard](#workaddresscard)
+- [CompensationCard](#compensationcard)
+- [PaymentMethodCard](#paymentmethodcard)
+- [DeductionsCard](#deductionscard)
+- [PaystubsCard](#paystubscard)
+- [FederalTaxesCard](#federaltaxescard)
+- [StateTaxesCard](#statetaxescard)
+- [DocumentsCard](#documentscard)
 
 <a id="deductions"></a>
 

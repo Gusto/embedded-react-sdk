@@ -227,8 +227,9 @@ export function buildFormSchema<
   if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(
       (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
+        const typedData = data as FormDataFromValidators<T>
         const excludedNow = excludeFieldsFn
-          ? new Set(excludeFieldsFn(data as { [K in keyof T]: z.infer<T[K]> }, mode).map(String))
+          ? new Set(excludeFieldsFn(typedData, mode).map(String))
           : undefined
 
         for (const { name, predicate } of dynamicRequired) {
@@ -242,7 +243,7 @@ export function buildFormSchema<
           }
         }
 
-        options.superRefine?.(data as { [K in keyof T]: z.infer<T[K]> }, ctx)
+        options.superRefine?.(typedData, ctx)
       },
     )
   }

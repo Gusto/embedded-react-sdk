@@ -61,7 +61,16 @@ export interface CreatePaymentProps extends BaseComponentInterface<'Contractor.P
  * Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers.
  *
  * @remarks
- * Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+ * Active, fully onboarded contractors are listed for the given company. Hours and bonuses apply to hourly contractors; wages apply to fixed contractors; reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+ *
+ * Features:
+ *
+ * - **Payment date selection** — choose the payment date; a notice shows the resulting payment speed.
+ * - **Per-contractor editing** — edit hours and bonus (hourly contractors), wage (fixed contractors), and reimbursement (all) in a modal, with a running total.
+ * - **Payment method** — choose Check or Direct Deposit per contractor.
+ * - **Live totals** — wage, bonus, reimbursement, and overall totals update as amounts change.
+ * - **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
+ * - **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |

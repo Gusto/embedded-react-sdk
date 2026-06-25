@@ -1,1 +1,1 @@
-export { StateTaxesForm } from './StateTaxesForm'
+export { StateTaxesForm, type StateTaxesFormProps } from './StateTaxesForm'

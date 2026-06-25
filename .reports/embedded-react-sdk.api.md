@@ -223,10 +223,13 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
     status?: 'success' | 'warning' | 'error' | 'info';
 }
 
-// Warning: (ae-forgotten-export) The symbol "BankAccountProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function BankAccount(props: BankAccountProps): JSX;
+
+// @public
+interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
+    companyId: string;
+}
 
 // @public
 export type BankFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
@@ -552,15 +555,22 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
+        OnboardingFlowProps_2 as OnboardingFlowProps,
+        OnboardingFlowDefaultValues,
         OnboardingOverview,
+        OnboardingOverviewProps,
         DocumentSigner_2 as DocumentSigner,
+        DocumentSignerProps_2 as DocumentSignerProps,
         DocumentList_2 as DocumentList,
+        DocumentListProps_2 as DocumentListProps,
         SignatureForm_2 as SignatureForm,
         SignatureFormProps_2 as SignatureFormProps,
         Industry,
         IndustryProps,
         BankAccount,
+        BankAccountProps,
         Locations,
+        LocationsProps,
         LocationForm,
         LocationFormProps,
         LocationsList,
@@ -573,8 +583,11 @@ declare namespace CompanyOnboarding {
         FederalTaxesProps_3 as FederalTaxesProps,
         FederalTaxesDefaultValues,
         StateTaxes_3 as StateTaxes,
+        StateTaxesProps_3 as StateTaxesProps,
         StateTaxesForm,
+        StateTaxesFormProps,
         StateTaxesList,
+        StateTaxesListProps,
         AssignSignatory,
         AssignSignatoryProps,
         AssignSignatoryDefaultValues,
@@ -1963,14 +1976,18 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
 // @public
 function DocumentList(props: DocumentListProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentListProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentList_2(props: DocumentListProps_2): JSX;
 
 // @public
 interface DocumentListProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
+}
+
+// @public
+interface DocumentListProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
 }
 
 // @public
@@ -1997,8 +2014,6 @@ interface DocumentsCardProps {
 // @public
 function DocumentSigner(props: DocumentSignerProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
@@ -2006,6 +2021,12 @@ function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     withEmployeeI9?: boolean;
+}
+
+// @public
+interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
 }
 
 // @public
@@ -2211,6 +2232,7 @@ declare namespace EmployeeOnboarding {
         OnboardingExecutionInitialState,
         OnboardingDefaultValues,
         SelfOnboardingFlow,
+        SelfOnboardingFlowProps,
         EmployeeList,
         EmployeeListProps,
         OnboardingSummary,
@@ -3072,8 +3094,6 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
     locationId?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "LocationsProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function Locations(input: LocationsProps): JSX;
 
@@ -3082,6 +3102,11 @@ function LocationsList(props: LocationsListProps): JSX;
 
 // @public
 interface LocationsListProps extends BaseComponentInterface<'Company.Locations'> {
+    companyId: string;
+}
+
+// @public
+interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
 }
 
@@ -3384,13 +3409,17 @@ type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 // @public
 const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
 // @public
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
+
+// @public
+type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+    federalTaxes?: FederalTaxesDefaultValues;
+    paySchedule?: PayScheduleDefaultValues;
+}>;
 
 // @public
 type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
@@ -3408,15 +3437,24 @@ interface OnboardingFlowProps extends BaseComponentInterface<never> {
 }
 
 // @public
+interface OnboardingFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+    defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>;
+}
+
+// @public
 interface OnboardingFlowProps_3 extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues_2>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function OnboardingOverview(props: OnboardingOverviewProps): JSX;
+
+// @public
+interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+    companyId: string;
+}
 
 // @public
 function OnboardingSummary(props: OnboardingSummaryProps): JSX;
@@ -4324,10 +4362,15 @@ export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
 // @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
-// Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
+
+// @public
+interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+    employeeId: string;
+    withEmployeeI9?: boolean;
+}
 
 // @public
 export interface SharedFieldLayoutProps extends DataAttributes {
@@ -4544,8 +4587,6 @@ function StateTaxes(input: StateTaxesProps): JSX;
 // @public
 function StateTaxes_2(input: StateTaxesProps_2): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
-//
 // @public
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
@@ -4566,15 +4607,22 @@ interface StateTaxesEditFormProps extends BaseComponentInterface<'Employee.Manag
     employeeId: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function StateTaxesForm(props: StateTaxesFormProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesListProps" needs to be exported by the entry point index.d.ts
-//
+// @public
+interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+    state: string;
+}
+
 // @public
 function StateTaxesList(props: StateTaxesListProps): JSX;
+
+// @public
+interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+}
 
 // @public
 interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> {
@@ -4585,6 +4633,11 @@ interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> 
 // @public
 interface StateTaxesProps_2 extends BaseComponentInterface<'Employee.Management.StateTaxes'> {
     employeeId: string;
+}
+
+// @public
+interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
 }
 
 // @public

@@ -10,7 +10,7 @@ import {
   type UseContractorDetailsFormReady,
 } from './shared/useContractorDetailsForm'
 import styles from './ContractorProfile.module.scss'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { Form } from '@/components/Common/Form'
@@ -34,7 +34,7 @@ const CONTRACTOR_PROFILE_REQUIRED_FIELDS: ContractorDetailsOptionalFieldsToRequi
  *
  * @public
  */
-export interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+export interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
   /** UUID of the company the contractor belongs to. */
   companyId: string
   /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
@@ -62,7 +62,7 @@ export interface ContractorProfileProps extends CommonComponentInterface<'Contra
  * @returns The rendered contractor profile form.
  * @public
  */
-export function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface) {
+export function ContractorProfile(props: ContractorProfileProps) {
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
     <BaseBoundaries componentName="Contractor.Profile" FallbackComponent={props.FallbackComponent}>
@@ -77,7 +77,7 @@ function ContractorProfileRoot({
   defaultValues,
   className,
   onEvent,
-}: ContractorProfileProps & BaseComponentInterface) {
+}: ContractorProfileProps) {
   useI18n('Contractor.Profile')
 
   const resolvedDefaults = useMemo<Partial<ContractorDetailsFormData>>(
@@ -109,7 +109,7 @@ function ContractorProfileRoot({
 
 interface ContractorProfileReadyProps {
   contractor: UseContractorDetailsFormReady
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: ContractorProfileProps['onEvent']
   className?: string
 }
 

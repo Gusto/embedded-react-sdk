@@ -32,7 +32,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ### Remarks
 
-Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+Active, fully onboarded contractors are listed for the given company. Hours and bonuses apply to hourly contractors; wages apply to fixed contractors; reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+
+Features:
+
+- **Payment date selection** — choose the payment date; a notice shows the resulting payment speed.
+- **Per-contractor editing** — edit hours and bonus (hourly contractors), wage (fixed contractors), and reimbursement (all) in a modal, with a running total.
+- **Payment method** — choose Check or Direct Deposit per contractor.
+- **Live totals** — wage, bonus, reimbursement, and overall totals update as amounts change.
+- **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
+- **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -79,6 +88,12 @@ Props for [PaymentHistory](#paymenthistory).
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
+
+Features:
+
+- **Payment group overview** — debit date and group context in the header.
+- **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
+- **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -167,6 +182,13 @@ Props for [PaymentSummary](#paymentsummary).
 | `paymentGroupId` | `string` | UUID of the contractor payment group to summarize. |
 
 ### Remarks
+
+Features:
+
+- **Success confirmation** — confirms the number of payments scheduled.
+- **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+- **Debit account** — shows the company bank account used for the debit.
+- **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

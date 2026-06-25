@@ -122,7 +122,19 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
  * @remarks
  * Renders a tabbed overview of the employee, wrapped in the SDK's standard error and suspense
  * boundaries. The active tab may be controlled via `selectedTab` or left uncontrolled, in which
- * case it defaults to basic details.
+ * case it defaults to basic details. Each tab composes the read-only section cards listed below.
+ *
+ * @components
+ * - {@link ProfileCard}
+ * - {@link HomeAddressCard}
+ * - {@link WorkAddressCard}
+ * - {@link CompensationCard}
+ * - {@link PaymentMethodCard}
+ * - {@link DeductionsCard}
+ * - {@link PaystubsCard}
+ * - {@link FederalTaxesCard}
+ * - {@link StateTaxesCard}
+ * - {@link DocumentsCard}
  *
  * @param props - Component props. See {@link DashboardProps}.
  * @returns A React element rendering the employee dashboard.

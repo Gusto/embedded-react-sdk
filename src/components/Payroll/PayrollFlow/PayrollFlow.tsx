@@ -11,7 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Guided workflow for selecting and running a company's payroll end to end.
+ * Hub for running and managing all payrolls across a company's pay schedules.
  *
  * @remarks
  * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
@@ -35,16 +35,25 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * | `transition/runPayroll` | The user starts a pending transition payroll | — |
  * | `payroll/saveAndExit` | The user clicks Save and Exit | — |
  *
+ * @components
+ * - {@link PayrollLanding}
+ * - {@link PayrollExecutionFlow}
+ * - {@link OffCycleFlow}
+ * - {@link TransitionFlow}
+ * - {@link PayrollBlockerList}
+ * - {@link PayrollOverview}
+ * - {@link PayrollReceipts}
+ *
  * @param props - {@link PayrollFlowProps} with the company, optional reimbursements toggle, optional wire-details override, and event handler.
  * @returns The composed payroll flow.
  * @public
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { Payroll } from '@gusto/embedded-react-sdk'
  *
  * function RunPayrollPage() {
- *   return <Payroll.PayrollFlow companyId="company-uuid" onEvent={() => {}} />
+ *   return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
  * }
  * ```
  */
