@@ -37,10 +37,19 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * @example
  * ```tsx title="App.tsx"
- * import { Payroll } from '@gusto/embedded-react-sdk'
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
- *   return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+ *   return (
+ *     <Payroll.OffCycleFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
  * }
  * ```
  */

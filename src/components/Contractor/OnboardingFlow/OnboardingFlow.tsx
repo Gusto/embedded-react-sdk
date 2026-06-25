@@ -61,13 +61,17 @@ import { Flow } from '@/components/Flow/Flow'
  *
  * @example
  * ```tsx title="App.tsx"
- * import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+ * import { ContractorOnboarding, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <ContractorOnboarding.OnboardingFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'contractor/submit/done') {
+ *           // Contractor onboarding complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }

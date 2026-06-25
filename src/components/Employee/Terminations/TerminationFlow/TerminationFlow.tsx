@@ -49,14 +49,18 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * @example
  * ```tsx title="App.tsx"
- * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+ * import { EmployeeManagement, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
  *     <EmployeeManagement.TerminationFlow
  *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
  *       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'employee/termination/done') {
+ *           // Termination complete — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }

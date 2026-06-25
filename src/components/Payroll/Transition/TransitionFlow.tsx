@@ -37,7 +37,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * @example
  * ```tsx title="App.tsx"
- * import { Payroll } from '@gusto/embedded-react-sdk'
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {
  *   return (
@@ -46,7 +46,11 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *       startDate="2025-01-16"
  *       endDate="2025-01-31"
  *       payScheduleUuid="c75c1ef6-2ec0-4cca-94a5-8b4cf7e5ea21"
- *       onEvent={() => {}}
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
  *     />
  *   )
  * }
