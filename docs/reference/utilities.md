@@ -240,6 +240,7 @@ parsed values (or `undefined` if invalid).
 - [`UseContractorDetailsFormReady`](contractor/hooks/use-contractor-details-form.md#usecontractordetailsformready)
 - [`UseWorkAddressFormReady`](employee/hooks/use-work-address-form.md#useworkaddressformready)
 - [`UseHomeAddressFormReady`](employee/hooks/use-home-address-form.md#usehomeaddressformready)
+- [`UseContractorAddressFormReady`](contractor/hooks/use-contractor-address-form.md#usecontractoraddressformready)
 - [`UseBankFormReady`](employee/hooks/use-bank-form.md#usebankformready)
 - [`UsePaymentMethodFormReady`](employee/hooks/use-payment-method-form.md#usepaymentmethodformready)
 - [`UseSplitPaymentsFormReady`](employee/hooks/use-split-payments-form.md#usesplitpaymentsformready)

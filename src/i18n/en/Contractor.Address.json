@@ -14,6 +14,7 @@
     "street1": "Street address is required",
     "city": "Please provide valid city name",
     "state": "Please select a state",
-    "zip": "Please provide valid zip code"
+    "zip": "Please provide valid zip code",
+    "zipInvalid": "Please enter a valid ZIP code"
   }
 }

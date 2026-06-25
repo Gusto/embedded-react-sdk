@@ -914,6 +914,7 @@ export interface ContractorAddress{
 "city":string;
 "state":string;
 "zip":string;
+"zipInvalid":string;
 };
 };
 export interface ContractorContractorList{
