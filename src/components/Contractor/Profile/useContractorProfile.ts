@@ -209,8 +209,7 @@ export function useContractorProfile({
       // Override with existing contractor data if available
       ...(existingContractor && {
         selfOnboarding: existingContractor.onboardingStatus
-          ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-            ContractorSelfOnboardingStatuses.has(existingContractor.onboardingStatus)
+          ? ContractorSelfOnboardingStatuses.has(existingContractor.onboardingStatus)
           : false,
         contractorType: existingContractor.type || ContractorType.Business,
         wageType: existingContractor.wageType || WageType.Fixed,
