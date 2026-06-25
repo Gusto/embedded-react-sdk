@@ -26,7 +26,7 @@ Hooks let you own the layout while the SDK manages data fetching, validation, su
 | `useSplitPaymentsForm`           | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)          | [useSplitPaymentsForm](./useSplitPaymentsForm.md)                     |
 | `useDeductionForm`               | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)         | [useDeductionForm](./useDeductionForm.md)                             |
 | `useChildSupportGarnishmentForm` | Create or update a child-support garnishment (agency-keyed required attributes, county selection)     | [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md) |
-| `useContractorDetailsForm`       | Create or update a contractor profile (individual/business type, wage type, SSN/EIN, self-onboarding) | [useContractorDetailsForm](./useContractorDetailsForm.md)             |
+| `useContractorDetailsForm`       | Create or update a contractor profile (individual/business type, wage type, SSN/EIN, self-onboarding) | [useContractorDetailsForm](../reference/contractor/hooks/use-contractor-details-form.md)             |
 
 ## Available Data Hooks
 
