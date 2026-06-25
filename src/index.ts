@@ -286,7 +286,6 @@ export {
   ContractorType,
   WageType,
   ContractorDetailsErrorCodes,
-  createContractorDetailsSchema,
   TypeField as ContractorTypeField,
   WageTypeField as ContractorWageTypeField,
   StartDateField as ContractorStartDateField,

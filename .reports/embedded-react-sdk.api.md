@@ -1446,33 +1446,6 @@ adjustForMinimumWage: z.ZodBoolean;
 minimumWageId: z.ZodString;
 }>;
 
-// Warning: (ae-forgotten-export) The symbol "ContractorDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createContractorDetailsSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createContractorDetailsSchema(options?: ContractorDetailsSchemaOptions): BuildFormSchemaResult<    {
-type: z.ZodEnum<{
-Business: "Business";
-Individual: "Individual";
-}>;
-wageType: z.ZodEnum<{
-Fixed: "Fixed";
-Hourly: "Hourly";
-}>;
-startDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodISODate>;
-hourlyRate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-selfOnboarding: z.ZodBoolean;
-fileNewHireReport: z.ZodBoolean;
-email: z.ZodEmail;
-firstName: z.ZodString;
-lastName: z.ZodString;
-middleInitial: z.ZodString;
-businessName: z.ZodString;
-workState: z.ZodString;
-ssn: z.ZodString;
-ein: z.ZodString;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
