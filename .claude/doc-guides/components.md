@@ -16,8 +16,7 @@ Every exported React component's `@remarks` must include an events table listing
 
 ## @example
 
-- **Skip** for components documented in `docs/workflows-overview/` — that page is the canonical integration example. Add a `@see` tag pointing to it instead.
-- **Include** for standalone blocks and utilities without a workflow page.
+Include for all public block components. For components typically consumed via a flow rather than standalone, a minimal usage example (component with required props) is still useful — it shows the basic API without requiring full flow context.
 
 ## Release tags
 

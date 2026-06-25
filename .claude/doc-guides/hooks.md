@@ -41,7 +41,7 @@ This is not inferrable from the hook alone. Read `fields.tsx` before writing `@r
 
 ## Usage patterns
 
-Two integration patterns exist — use the one that matches `docs/workflows-overview/` for this hook:
+Two integration patterns exist — use the one that matches existing usage in `src/components/` or the flow's GUIDE.md for this hook:
 
 **`SDKFormProvider` pattern** — partner wraps a group of fields from one hook:
 
@@ -71,7 +71,7 @@ These cannot be inferred from code alone and need human context before writing `
 **Sources in priority order:**
 
 1. Jira ticket or PR description in the current conversation
-2. `docs/workflows-overview/` for established patterns
+2. GUIDE.md colocated with the flow that uses this hook
 3. MCP: Jira, Confluence, or Notion if linked
 4. Ask the human — do not invent business rules
 
@@ -83,4 +83,4 @@ If none are available, write the structural parts (`@param`, `@returns`, release
 
 ## Long-form prose: GUIDE.md
 
-Like flows, each hook directory can carry a `GUIDE.md` whose authored prose the doc engine slots into the hook's generated reference page. Keep `@remarks` to concise observable behavior; longer walkthroughs go in `GUIDE.md`. Don't create or backfill `GUIDE.md` speculatively — its authoring conventions are still being established in the guide-content PRs.
+Like flows, each hook directory can carry a `GUIDE.md` whose authored prose the doc engine slots into the hook's generated reference page. Keep `@remarks` to concise observable behavior; longer walkthroughs go in `GUIDE.md`. Don't create or backfill `GUIDE.md` speculatively without direction.

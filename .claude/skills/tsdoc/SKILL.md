@@ -101,11 +101,11 @@ Always `@internal`, no prose needed: `createXxxSchema`, `XxxSchemaOptions`, `Xxx
 
 For more depth, Read the relevant guide before writing:
 
-| Symbol type                          | When to load                                           |
-| ------------------------------------ | ------------------------------------------------------ |
-| `.claude/tsdoc-guides/hooks.md`      | Any hook, hook props, hook return types, form fields   |
-| `.claude/tsdoc-guides/components.md` | React components — events table format, @example rules |
-| `.claude/tsdoc-guides/flows.md`      | Flow components and FlowComponents props               |
+| Symbol type                        | When to load                                           |
+| ---------------------------------- | ------------------------------------------------------ |
+| `.claude/doc-guides/hooks.md`      | Any hook, hook props, hook return types, form fields   |
+| `.claude/doc-guides/components.md` | React components — events table format, @example rules |
+| `.claude/doc-guides/flows.md`      | Flow components and FlowComponents props               |
 
 Load the guide when you'd otherwise be guessing: hook field patterns, events table format, what belongs in `@remarks` vs. what to skip.
 
