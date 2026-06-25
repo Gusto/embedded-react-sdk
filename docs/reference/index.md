@@ -92,7 +92,7 @@ record. The values mirror the strings returned by the API.
 
 ### ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`"self_onboarding_invited"` \| `"self_onboarding_not_invited"` \| `"self_onboarding_started"` \| `"self_onboarding_review"`\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`ContractorOnboardingStatus1`\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.
