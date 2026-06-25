@@ -16,7 +16,7 @@ The main entry point for the employee dashboard.
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

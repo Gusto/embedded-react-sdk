@@ -16,7 +16,7 @@ The multi-step onboarding execution flow — profile, compensation, taxes, payme
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

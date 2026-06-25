@@ -15,6 +15,22 @@ custom_edit_url: null
 Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
 single payroll.
 
+## Example
+
+```tsx title="App.tsx"
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <Payroll.PayrollExecutionFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      payrollId="0987fcea-7b59-4907-a301-f232b5aff508"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
 ## Remarks
 
 This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused

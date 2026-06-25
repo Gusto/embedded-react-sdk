@@ -16,7 +16,7 @@ Multi-step flow for creating and running an off-cycle payroll (bonus or correcti
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

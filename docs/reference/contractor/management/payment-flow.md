@@ -16,7 +16,7 @@ Guided workflow for creating, managing, and viewing contractor payment groups fo
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

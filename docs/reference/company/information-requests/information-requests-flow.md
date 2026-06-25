@@ -14,6 +14,21 @@ custom_edit_url: null
 
 Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
 
+## Example
+
+```tsx title="App.tsx"
+import { InformationRequests } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <InformationRequests.InformationRequestsFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
 ## Remarks
 
 Renders the list of open and submitted information requests for a company and hosts the response form in a modal.

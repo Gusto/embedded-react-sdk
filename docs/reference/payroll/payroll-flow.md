@@ -16,7 +16,7 @@ Guided workflow for selecting and running a company's payroll end to end.
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function RunPayrollPage() {

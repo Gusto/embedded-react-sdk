@@ -16,7 +16,7 @@ Top-level workflow that renders the employee list and transitions into the dashb
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

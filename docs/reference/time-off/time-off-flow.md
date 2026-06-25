@@ -14,6 +14,21 @@ custom_edit_url: null
 
 End-to-end workflow for creating and managing a company's sick, vacation, and holiday time off policies.
 
+## Example
+
+```tsx title="App.tsx"
+import { TimeOff } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <TimeOff.TimeOffFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
 ## Remarks
 
 Composes the time off list, policy-type selection, configuration, settings, employee assignment, and policy detail screens into a single multi-step flow. Sick and vacation policies share a common creation path (configure → settings → add employees); holiday policies follow a separate path (select federal holidays → add employees). All policy types can be viewed, edited, and removed from the unified policy list.

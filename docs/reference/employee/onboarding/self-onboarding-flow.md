@@ -16,7 +16,7 @@ Employee-driven onboarding workflow — landing, profile, taxes, payment method,
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

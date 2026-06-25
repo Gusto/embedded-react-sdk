@@ -14,6 +14,21 @@ custom_edit_url: null
 
 Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
 
+## Example
+
+```tsx title="App.tsx"
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <CompanyOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
 ## Remarks
 
 The flow begins on the overview screen and steps through locations, federal taxes, industry,

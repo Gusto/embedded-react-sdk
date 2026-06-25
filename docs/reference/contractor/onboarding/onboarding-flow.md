@@ -16,7 +16,7 @@ Complete workflow for onboarding a contractor — profile, address, payment meth
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
