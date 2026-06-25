@@ -32,6 +32,21 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @param props - {@link DismissalFlowProps} with the company, employee, optional payroll, and event handler.
  * @returns The composed dismissal payroll flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.DismissalFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       employeeId="8e5c8492-3bb3-4b6b-8003-bb8c6aefca0d"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: DismissalFlowProps) {
   const dismissalFlowMachine = useMemo(() => {

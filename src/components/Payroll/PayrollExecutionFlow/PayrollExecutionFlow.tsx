@@ -114,6 +114,21 @@ const INITIAL_NAMESPACE_MAP = {
  * @param input - {@link PayrollExecutionFlowProps}
  * @returns The rendered execution flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.PayrollExecutionFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       payrollId="0987fcea-7b59-4907-a301-f232b5aff508"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function PayrollExecutionFlow({
   companyId,

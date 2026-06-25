@@ -58,6 +58,20 @@ import { Flow } from '@/components/Flow/Flow'
  * @param props - {@link TimeOffFlowProps} with the company identifier and event handler.
  * @returns The composed time off policy management flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { TimeOff } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <TimeOff.TimeOffFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export const TimeOffFlow = ({ companyId, onEvent }: TimeOffFlowProps) => {
   const timeOffFlow = useMemo(

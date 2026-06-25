@@ -72,6 +72,20 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * @param props - See {@link InformationRequestsFlowProps}.
  * @returns The information requests flow surface.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { InformationRequests } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <InformationRequests.InformationRequestsFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function InformationRequestsFlow({
   companyId,

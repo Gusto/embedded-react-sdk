@@ -34,6 +34,23 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @param props - See {@link TransitionFlowProps}.
  * @returns The transition payroll flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.TransitionFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       startDate="2025-01-16"
+ *       endDate="2025-01-31"
+ *       payScheduleUuid="c75c1ef6-2ec0-4cca-94a5-8b4cf7e5ea21"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function TransitionFlow({
   companyId,

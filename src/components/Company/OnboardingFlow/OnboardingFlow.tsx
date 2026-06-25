@@ -50,6 +50,20 @@ export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './Onboard
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step company onboarding flow with internal navigation between the overview and the per-step screens.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <CompanyOnboarding.OnboardingFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
   const onboardingFlow = useMemo(
