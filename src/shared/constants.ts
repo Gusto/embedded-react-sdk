@@ -600,7 +600,7 @@ export const ContractorOnboardingStatus = {
  *
  * @public
  */
-export const ContractorSelfOnboardingStatuses = new Set([
+export const ContractorSelfOnboardingStatuses = new Set<ContractorOnboardingStatus1>([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,
