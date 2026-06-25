@@ -1,0 +1,101 @@
+{
+  "skill_name": "api-version-upgrade",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Hey - we need to upgrade the SDK from the unversioned @gusto/embedded-api package (v0.13.0) to the new dated @gusto/embedded-api-v-2025-11-15 package. This is the first time we're moving to the dated-version model. Can you handle it end-to-end? Use --dry-run since I want to inspect the proposed PR before anything pushes.",
+      "expected_output": "Breaking-change matrix containing at minimum: (a) autoPilot field renamed to autoPayroll, (b) PaymentType.Payroll enum case changed from 'Payroll' to lowercase 'payroll', (c) useDataView<T> requires explicit type argument at 4 call sites (RecoveryCasesList, PayScheduleList, DeductionsList, InformationRequestList). The codemod should swap import paths across ~305 files and update the package.json. Cache namespace key in createSdkQueryClient.ts must flip to the new prefix. PR description should follow the template in references/pr-template.md.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "identifies-autopilot-rename",
+          "text": "Matrix identifies the autoPilot → autoPayroll field rename as a real breaking change with SDK consumers"
+        },
+        {
+          "id": "identifies-payment-type-enum-change",
+          "text": "Matrix identifies the PaymentType.Payroll → 'payroll' lowercase enum value change with SDK consumers"
+        },
+        {
+          "id": "identifies-usedataview-type-arg",
+          "text": "Matrix identifies the useDataView<T> explicit-type-argument requirement at 4 call sites"
+        },
+        {
+          "id": "cache-namespace-swept",
+          "text": "Codemod sweep updates the cache namespace string literal in createSdkQueryClient.ts and ApiProvider.tsx docstrings, not just import paths"
+        },
+        {
+          "id": "single-base-pr",
+          "text": "Proposes a single base PR rather than per-domain sub-PRs (this was the lesson learned from the historical migration which used 6 per-domain PRs unnecessarily)"
+        },
+        {
+          "id": "dry-run-respected",
+          "text": "No actual git push or gh pr create commands are executed; output describes what would be done"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Run the @gusto/embedded-api v2025-11-15 → v2026-02-01 upgrade. The base SDK is currently on v2025-11-15. Do this in --dry-run mode for now.",
+      "expected_output": "Breaking-change matrix matching PR #2233's analysis. The only 🔴 real-fix item should be the QueryParamSortBy import removal in usePreparedPayrollData.ts:6. All other items (migration_status string→boolean, migration_blocker categories, migrate-success warnings, ToS endpoint changes, payroll version 422→409, Simple IRA elective, reverse_wire_detail_id deprecation) should be classified as ✅ with no SDK consumer — verified by typecheck CI. The self-onboarding email requirement should be ⚠️ verify-only with an E2E spec proposed.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "identifies-queryparamsortby-removal",
+          "text": "Matrix correctly identifies QueryParamSortBy removal in usePreparedPayrollData.ts as the only real code fix required"
+        },
+        {
+          "id": "no-conflation-migration-blocker",
+          "text": "Matrix correctly classifies migration_blocker/migration_warning as residing on partner_managed_companies/migration_readiness (NOT on payroll submission_blockers) — does not conflate with the PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES whitelist"
+        },
+        {
+          "id": "no-consumer-classification",
+          "text": "Endpoints with no SDK consumer (migrate, migration_readiness, ToS, Simple IRA, reverse_wire_detail_id) are classified ✅ verified-by-typecheck, not ⚠️"
+        },
+        {
+          "id": "self-onboarding-email-classified-error-pipeline",
+          "text": "Self-onboarding email requirement is classified as ✅ trust-the-error-pipeline (server-side validation tightening), NOT 🔴 or ⚠️. The SDK's normalizeToSDKError → form-hook errorHandling pipeline already renders the server's 422 field error inline. Adding an E2E for this would be testing the error pipeline, not the upgrade."
+        },
+        {
+          "id": "cache-namespace-17-sites",
+          "text": "Codemod sweep accounts for the 17 hardcoded cache-namespace string literal sites across createSdkQueryClient.ts, ApiProvider.tsx, TimeOff, Company/Locations, and sdk-app contractor-management"
+        },
+        {
+          "id": "single-pr-no-empty-subprs",
+          "text": "Proposes a single base PR. Does not scaffold sub-PRs for verify-only items (avoids the empty-sub-PR antipattern from the historical execution)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Time to do the next upgrade: v2026-02-01 → v2026-06-15. Run the full upgrade in --dry-run so I can preview before pushing. Per the prior plan, this version's biggest known change is reimbursements being removed from fixed_compensation_types and fixed_compensations.",
+      "expected_output": "Breaking-change matrix should identify reimbursement-related test refactor needs in helpers.test.ts (~28 test sites) and PayrollEditEmployeePresentation.test.tsx as 🔴. Production code is mostly forward-compatible (getReimbursements in helpers.ts already prefers compensation.reimbursements[] with fallback). Currency-as-strings should be ⚠️ verify-first (direction-ambiguous; parseFloat tolerates strings). UUID standardization should be ⚠️ verify-only (call sites already use .uuid). Pagination on Payrolls and peopleBatches exclusions should be ✅ (already wired / not integrated). New E2E specs should target Payroll reimbursement rendering against shared/onboarded scenario.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "identifies-reimbursement-test-refactor",
+          "text": "Matrix identifies the ~28 test fixture sites in helpers.test.ts using {name: 'Reimbursement', amount: ...} inside fixedCompensations as 🔴 work"
+        },
+        {
+          "id": "production-code-forward-compatible",
+          "text": "Recognizes that getReimbursements() in helpers.ts is already forward-compatible (prefers reimbursements[], falls back to fixedCompensations) and does NOT propose changing the production code unnecessarily"
+        },
+        {
+          "id": "currency-verify-first",
+          "text": "Classifies currency-as-strings change as ⚠️ verify-first, proposes logging typeof on numeric fields during testing rather than proactively changing parseFloat sites"
+        },
+        {
+          "id": "pagination-already-wired",
+          "text": "Recognizes Payroll pagination params are already wired (PayrollList.tsx passes page/per, usePagination reads x-page headers) and classifies as ✅"
+        },
+        {
+          "id": "peoplebatches-not-integrated",
+          "text": "Confirms peopleBatches exclusions[] shape change has no SDK consumer (not integrated in src/) and classifies as ✅"
+        },
+        {
+          "id": "e2e-spec-for-reimbursement-rendering",
+          "text": "Proposes an E2E spec exercising payroll reimbursement rendering against shared/onboarded — minimal interactions, not a full payroll-submit flow"
+        }
+      ]
+    }
+  ]
+}

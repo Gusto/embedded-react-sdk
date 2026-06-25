@@ -29,6 +29,13 @@
     "Annualization",
     "autogeneration",
     "Chakra",
+    "codemod",
+    "networkidle",
+    "putv",
+    "getv",
+    "postv",
+    "deletev",
+    "patchv",
     "easyops",
     "FLSA",
     "FSLA",
@@ -50,6 +57,7 @@
     "summarising",
     "themable",
     "themself",
+    "worktrees",
     "zenpayroll"
   ]
 }
