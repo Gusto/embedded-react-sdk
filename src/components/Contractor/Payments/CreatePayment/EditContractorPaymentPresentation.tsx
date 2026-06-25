@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
@@ -55,13 +55,12 @@ export const EditContractorPaymentPresentation = ({
     })
   }
 
-  const [hoursPayDescription, setHoursPayDescription] = useState('')
-
-  useEffect(() => {
-    if (isOpen) {
-      setHoursPayDescription(computeHoursPayDescription(formMethods.getValues('hours') ?? 0))
-    }
-  }, [isOpen, hourlyRate, computeHoursPayDescription, formMethods.getValues])
+  const initialHours = formMethods.getValues('hours')
+  const [hoursPayDescription, setHoursPayDescription] = useState(
+    computeHoursPayDescription(
+      typeof initialHours === 'undefined' || Number.isNaN(initialHours) ? 0 : initialHours,
+    ),
+  )
 
   const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
 
