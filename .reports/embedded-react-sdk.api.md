@@ -1264,7 +1264,7 @@ declare namespace ContractorOnboarding {
         ContractorListProps,
         ContractorProfile,
         ContractorProfileProps,
-        ContractorProfileFormData,
+        ContractorDetailsFormData as ContractorProfileFormData,
         Address,
         AddressProps,
         AddressDefaultValues,
@@ -1289,18 +1289,13 @@ export const ContractorOnboardingStatus: {
 };
 
 // @public
-function ContractorProfile(props: ContractorProfileProps): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileSchema" needs to be exported by the entry point index.d.ts
-//
-// @public
-type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
+function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
 
 // @public
-interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
+interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
     companyId: string;
     contractorId?: string;
-    defaultValues?: Partial<ContractorProfileFormData>;
+    defaultValues?: Partial<ContractorDetailsFormData>;
 }
 
 // @public
@@ -3399,7 +3394,7 @@ const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
 // @public
 type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
-    profile?: Partial<ContractorProfileFormData>;
+    profile?: Partial<ContractorDetailsFormData>;
     address?: AddressDefaultValues;
 }>;
 
