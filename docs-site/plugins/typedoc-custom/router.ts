@@ -75,6 +75,7 @@ const SYNTHETIC_GROUP_ORDER = [
   'Variables',
   'Interfaces',
   'Type Aliases',
+  'Utility Types',
   'Enumerations',
 ]
 

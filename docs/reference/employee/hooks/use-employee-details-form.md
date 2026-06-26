@@ -405,30 +405,9 @@ hook.
 | `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
-## Interfaces
-
-<a id="employeedetailssubmitcallbacks"></a>
-
-### EmployeeDetailsSubmitCallbacks
-
-Optional callbacks passed to [onSubmit](#useemployeedetailsformready).
-
-#### Remarks
-
-Only the callback matching the submit mode fires —
-`onEmployeeCreated` on create, `onEmployeeUpdated` on update.
-`onOnboardingStatusUpdated` fires when toggling the self-onboarding
-switch changes the employee's onboarding status as part of an update.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `onEmployeeCreated?` | (`employee`) => `void` | Fired after a new employee is successfully created. |
-| `onEmployeeUpdated?` | (`employee`) => `void` | Fired after an existing employee is successfully updated. |
-| `onOnboardingStatusUpdated?` | (`status`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
-
 ## Type Aliases
+## Utility Types
+
 <a id="employeedetailserrorcode"></a>
 
 ### EmployeeDetailsErrorCode
@@ -463,8 +442,6 @@ Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployee
 <a id="employeedetailsformdata"></a>
 
 ### EmployeeDetailsFormData
-
-> **EmployeeDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the employee details form.
 
@@ -514,6 +491,29 @@ The required-field error code produced by [useEmployeeDetailsForm](#useemployeed
 
 Used as the `validationMessages` key for the middle initial and date of
 birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
+
+***
+
+<a id="employeedetailssubmitcallbacks"></a>
+
+### EmployeeDetailsSubmitCallbacks
+
+Optional callbacks passed to [onSubmit](#useemployeedetailsformready).
+
+#### Remarks
+
+Only the callback matching the submit mode fires —
+`onEmployeeCreated` on create, `onEmployeeUpdated` on update.
+`onOnboardingStatusUpdated` fires when toggling the self-onboarding
+switch changes the employee's onboarding status as part of an update.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `onEmployeeCreated?` | (`employee`) => `void` | Fired after a new employee is successfully created. |
+| `onEmployeeUpdated?` | (`employee`) => `void` | Fired after an existing employee is successfully updated. |
+| `onOnboardingStatusUpdated?` | (`status`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
 
 ***
 

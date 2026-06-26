@@ -51,6 +51,7 @@ export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSc
  * switch changes the employee's onboarding status as part of an update.
  *
  * @public
+ * @group Utility Types
  */
 export interface EmployeeDetailsSubmitCallbacks {
   /** Fired after a new employee is successfully created. */
@@ -88,6 +89,7 @@ export type UseEmployeeDetailsFormSharedProps = {
  * `companyId`).
  *
  * @public
+ * @group Utility Types
  */
 export type UseEmployeeDetailsFormProps =
   | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
@@ -437,6 +439,7 @@ export function useEmployeeDetailsForm({
  * Return type of {@link useEmployeeDetailsForm}.
  *
  * @public
+ * @group Utility Types
  */
 export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady
 
@@ -444,6 +447,7 @@ export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetail
  * Shape of `form.fieldsMetadata` returned by {@link useEmployeeDetailsForm}.
  *
  * @public
+ * @group Utility Types
  */
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata']
 
@@ -451,5 +455,6 @@ export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form'][
  * Shape of `form.Fields` returned by {@link useEmployeeDetailsForm}.
  *
  * @public
+ * @group Utility Types
  */
 export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields']

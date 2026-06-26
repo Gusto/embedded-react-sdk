@@ -186,6 +186,232 @@ Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a dist
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
+## Utility Types
+
+<a id="baselistprops"></a>
+
+### BaseListProps
+
+Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
+
+#### Extended by
+
+- [`OrderedListProps`](#orderedlistprops)
+- [`UnorderedListProps`](#unorderedlistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `items` | `ReactNode`[] | The list items to render |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+
+***
+
+<a id="breadcrumb"></a>
+
+### Breadcrumb
+
+Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+
+***
+
+<a id="checkboxgroupoption"></a>
+
+### CheckboxGroupOption
+
+Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text or content for the checkbox option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
+
+***
+
+<a id="comboboxoption"></a>
+
+### ComboBoxOption
+
+Option entry for the ComboBox dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="daterange"></a>
+
+### DateRange
+
+Inclusive start/end pair representing a selected date range.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `end` | `Date` | Last date in the range, inclusive. |
+| `start` | `Date` | First date in the range, inclusive. |
+
+***
+
+<a id="descriptionlistitem"></a>
+
+### DescriptionListItem
+
+Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
+| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
+
+***
+
+<a id="menuitem"></a>
+
+### MenuItem
+
+Action entry your `Menu` implementation must accept for each entry in its `items` array
+from the component adapter.
+
+#### Extends
+
+- `DataAttributes`
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Text label for the menu item |
+| `onClick` | () => `void` | Callback function when the menu item is clicked |
+| `href?` | `string` | Optional URL to navigate to when clicked |
+| `icon?` | `ReactNode` | Optional icon to display before the label |
+| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
+
+***
+
+<a id="multiselectcomboboxoption"></a>
+
+### MultiSelectComboBoxOption
+
+Option entry for a `MultiSelectComboBox` dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="paginationitemsperpage"></a>
+
+### PaginationItemsPerPage
+
+> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
+
+***
+
+<a id="radiogroupoption"></a>
+
+### RadioGroupOption
+
+Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text or content for the radio option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the radio option |
+| `isDisabled?` | `boolean` | Disables this specific radio option |
+
+***
+
+<a id="selectoption"></a>
+
+### SelectOption
+
+Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="tabledata"></a>
+
+### TableData
+
+Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to be displayed in the table cell |
+| `key` | `string` | Unique identifier for the table cell |
+
+***
+
+<a id="tablerow"></a>
+
+### TableRow
+
+Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
+| `key` | `string` | Unique identifier for the table row |
+
+***
+
+<a id="tabprops"></a>
+
+### TabProps
+
+Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `content` | `ReactNode` | Content to display in the tab panel |
+| `id` | `string` | Unique identifier for the tab |
+| `label` | `ReactNode` | Label to display in the tab button |
+| `isDisabled?` | `boolean` | Whether the tab is disabled |
+
 ## Component Props
 
 <a id="alertprops"></a>
@@ -1173,229 +1399,3 @@ Renders an unordered (bulleted) list of items.
 | `aria-label?` | `string` | Accessibility label for the list |
 | `aria-labelledby?` | `string` | ID of an element that labels this list |
 | `className?` | `string` | Optional custom class name |
-
-## Utility Types
-
-<a id="baselistprops"></a>
-
-### BaseListProps
-
-Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
-
-#### Extended by
-
-- [`OrderedListProps`](#orderedlistprops)
-- [`UnorderedListProps`](#unorderedlistprops)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `items` | `ReactNode`[] | The list items to render |
-| `aria-describedby?` | `string` | ID of an element that describes this list |
-| `aria-label?` | `string` | Accessibility label for the list |
-| `aria-labelledby?` | `string` | ID of an element that labels this list |
-| `className?` | `string` | Optional custom class name |
-
-***
-
-<a id="breadcrumb"></a>
-
-### Breadcrumb
-
-Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
-| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
-| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
-
-***
-
-<a id="checkboxgroupoption"></a>
-
-### CheckboxGroupOption
-
-Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text or content for the checkbox option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
-
-***
-
-<a id="comboboxoption"></a>
-
-### ComboBoxOption
-
-Option entry for the ComboBox dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="daterange"></a>
-
-### DateRange
-
-Inclusive start/end pair representing a selected date range.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `end` | `Date` | Last date in the range, inclusive. |
-| `start` | `Date` | First date in the range, inclusive. |
-
-***
-
-<a id="descriptionlistitem"></a>
-
-### DescriptionListItem
-
-Single term/description pair rendered as a row within a [DescriptionList](#descriptionlistprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `description` | `ReactNode` \| `ReactNode`[] | Description content (the `<dd>`). Pass an array to render multiple `<dd>` elements for the same term. |
-| `term` | `ReactNode` \| `ReactNode`[] | Term content (the `<dt>`). Pass an array to render multiple `<dt>` elements for the same description. |
-
-***
-
-<a id="menuitem"></a>
-
-### MenuItem
-
-Action entry your `Menu` implementation must accept for each entry in its `items` array
-from the component adapter.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Text label for the menu item |
-| `onClick` | () => `void` | Callback function when the menu item is clicked |
-| `href?` | `string` | Optional URL to navigate to when clicked |
-| `icon?` | `ReactNode` | Optional icon to display before the label |
-| `isDisabled?` | `boolean` | Disables the menu item and prevents interaction |
-
-***
-
-<a id="multiselectcomboboxoption"></a>
-
-### MultiSelectComboBoxOption
-
-Option entry for a `MultiSelectComboBox` dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="paginationitemsperpage"></a>
-
-### PaginationItemsPerPage
-
-> **PaginationItemsPerPage** = `5` \| `10` \| `25` \| `50`
-
-***
-
-<a id="radiogroupoption"></a>
-
-### RadioGroupOption
-
-Option entry your `RadioGroup` implementation receives in the `options` array when rendering each radio button.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text or content for the radio option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-| `description?` | `ReactNode` | Optional description text for the radio option |
-| `isDisabled?` | `boolean` | Disables this specific radio option |
-
-***
-
-<a id="selectoption"></a>
-
-### SelectOption
-
-Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-
-***
-
-<a id="tabledata"></a>
-
-### TableData
-
-Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to be displayed in the table cell |
-| `key` | `string` | Unique identifier for the table cell |
-
-***
-
-<a id="tablerow"></a>
-
-### TableRow
-
-Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `data` | [`TableData`](#tabledata)[] | Array of cells to be displayed in the row |
-| `key` | `string` | Unique identifier for the table row |
-
-***
-
-<a id="tabprops"></a>
-
-### TabProps
-
-Shape of a single tab configuration your `Tabs` implementation receives in its `tabs` prop.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `content` | `ReactNode` | Content to display in the tab panel |
-| `id` | `string` | Unique identifier for the tab |
-| `label` | `ReactNode` | Label to display in the tab button |
-| `isDisabled?` | `boolean` | Whether the tab is disabled |
