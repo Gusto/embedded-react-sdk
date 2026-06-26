@@ -52,6 +52,7 @@ export interface ContractorProfileProps extends BaseComponentInterface<'Contract
  * own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
  * submit; otherwise it creates a new contractor under `companyId`.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/created` | A new contractor was created successfully. | The created contractor entity |

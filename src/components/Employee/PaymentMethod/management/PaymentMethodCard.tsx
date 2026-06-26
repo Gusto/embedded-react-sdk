@@ -40,6 +40,7 @@ export interface PaymentMethodCardProps {
  * The card has no alert API — alert rendering is the orchestrator's
  * responsibility.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/paymentMethod/card/addRequested` | Fired when the user clicks the add-account CTA | — |

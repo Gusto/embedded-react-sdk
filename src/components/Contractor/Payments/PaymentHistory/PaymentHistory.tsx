@@ -27,6 +27,7 @@ export interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.
  * - **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
  * - **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |

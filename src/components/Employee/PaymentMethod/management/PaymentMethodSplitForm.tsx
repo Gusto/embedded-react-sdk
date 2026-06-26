@@ -25,6 +25,7 @@ export interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormPr
  * `Employee.Management.PaymentMethodSplitForm` namespace so partner overrides
  * on the management split form don't leak into the onboarding form.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/paymentMethod/splitForm/submitted` | Fired after the splits are successfully saved | The updated payment method |

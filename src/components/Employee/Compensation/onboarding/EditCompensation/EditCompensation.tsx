@@ -48,6 +48,7 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
  * `employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
  * fires once the compensation is saved and signals the full save is complete.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/job_created` | Fired when a new job is saved. | The saved {@link https://docs.gusto.com/embedded-payroll/reference/get-v1-jobs-job_id | Job}. |

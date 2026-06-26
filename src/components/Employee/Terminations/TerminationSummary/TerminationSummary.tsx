@@ -43,6 +43,7 @@ export interface TerminationSummaryProps extends BaseComponentInterface<'Employe
  * - **Run termination payroll** is shown for the `dismissalPayroll` option and navigates to the dismissal payroll flow.
  * - **Run off-cycle payroll** is shown for the `anotherWay` option and navigates to the off-cycle payroll creation flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |

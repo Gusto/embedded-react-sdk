@@ -64,7 +64,7 @@ function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddres
 /**
  * Standalone employee home address edit form for creating, updating, and deleting addresses.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/homeAddress/created` | A new home address was created | {@link EmployeeAddress} |

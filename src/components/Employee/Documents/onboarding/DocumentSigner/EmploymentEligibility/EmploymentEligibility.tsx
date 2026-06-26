@@ -31,6 +31,7 @@ export interface EmploymentEligibilityProps extends BaseComponentInterface<'Empl
  * document details required for that status. Updates the employee's I-9
  * authorization record on submit.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |

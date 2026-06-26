@@ -42,6 +42,7 @@ function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
  * Emits events on the supplied `onEvent` handler when the user requests an
  * edit, saves changes, or cancels.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ employeeId: string }` |

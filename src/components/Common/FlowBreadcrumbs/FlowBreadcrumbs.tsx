@@ -21,6 +21,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
  * defined. Switches to a condensed mobile layout when the container only
  * contains the base breakpoint.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `breadcrumb/navigate` | Emitted when a clickable breadcrumb is selected | `{ key: string; onNavigate: (ctx: unknown) => unknown }` |

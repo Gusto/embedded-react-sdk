@@ -36,6 +36,7 @@ export interface SignatureFormProps extends BaseComponentInterface<'Company.Sign
  * Use this component directly when you need full control over navigation between the document
  * list and the signature form (e.g. routing the user yourself after they select a form).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/forms/sign/signForm` | Fired when a form is successfully signed | Response from the sign company form API request |

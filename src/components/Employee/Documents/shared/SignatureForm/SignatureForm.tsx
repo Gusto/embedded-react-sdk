@@ -30,6 +30,7 @@ export interface SignatureFormProps extends BaseComponentInterface<'Employee.Doc
  * Renders the form's PDF and collects the employee's signature. On successful
  * submission the signed form is emitted; cancelling returns to the document list.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/forms/sign` | Fired after the form is successfully signed | {@link Form} |

@@ -54,6 +54,7 @@ function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
  * the component renders the add-account form; once one is on file it renders the list view
  * with controls to change or verify the account via micro-deposits.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |

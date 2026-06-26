@@ -73,6 +73,7 @@ export interface InformationRequestFormProps extends BaseComponentInterface<'Inf
  * @remarks
  * Events emitted via `onEvent`:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `informationRequest/form/done` | Fired when the form is successfully submitted | The `informationRequest` field from the Submit information request response |

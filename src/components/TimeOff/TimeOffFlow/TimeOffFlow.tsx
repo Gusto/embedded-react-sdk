@@ -13,6 +13,7 @@ import { Flow } from '@/components/Flow/Flow'
  *
  * The flow emits these events as users navigate:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/createPolicy` | User initiates policy creation | — |

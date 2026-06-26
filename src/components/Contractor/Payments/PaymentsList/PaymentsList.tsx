@@ -30,7 +30,7 @@ export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Pa
  * Supports viewing payment history, creating new payments, and filtering by date range.
  * Surfaces alerts for pending information requests and wire transfer requirements.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/create` | User chooses to create a new payment | — |

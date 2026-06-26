@@ -53,6 +53,7 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * Information requests can also block payroll processing; in that case they are surfaced inline within
  * `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |

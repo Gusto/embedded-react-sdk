@@ -36,7 +36,7 @@ function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
 /**
  * Standalone employee home address management flow.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/homeAddress/editRequested` | Manage button on the home address card clicked | `{ employeeId: string }` |

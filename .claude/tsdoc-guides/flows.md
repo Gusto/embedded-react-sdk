@@ -16,7 +16,7 @@ Flows are thin orchestrators. They compose independently-consumable blocks and s
 
 ## Events table
 
-The flow's events table in `@remarks` must aggregate events from all child blocks — a partner consuming the flow sees one unified event surface. List every event the flow can emit, even if it originates in a child block.
+The flow's `@events` block must aggregate events from all child blocks — a partner consuming the flow sees one unified event surface. List every event the flow can emit, even if it originates in a child block.
 
 ## @components tag
 
@@ -28,7 +28,7 @@ Flows are the primary user of the `@components` block tag — it documents the b
 {@link CompensationForm} - Sets pay rate and schedule.
 ```
 
-Place it after `@remarks` and before `@param`/`@returns` (the `tsdoc-sort-tags` rule enforces this grouping). Link names must resolve to documented exports for the table to link them; unresolved names still render as plain text rows.
+Place `@components` after `@events` and before `@param`/`@returns` (the `tsdoc-sort-tags` rule enforces this grouping). Link names must resolve to documented exports for the table to link them; unresolved names still render as plain text rows.
 
 ## @example
 

@@ -48,6 +48,7 @@ export interface CompensationCardProps {
  * @remarks
  * The card owns its own data fetch, the pending-change alerts and review modal, and the delete-job confirm dialog. It does not render the compensation edit or add-job forms — instead, it emits a distinct request event for each action, and the consumer routes those to {@link CompensationEditForm}, {@link CompensationAddJobForm}, or {@link CompensationAddAnotherJobForm} and renders any post-save success alerts. {@link Compensation} bundles the card, the three form surfaces, and the swap and alert wiring as a single drop-in; reach for the card directly only when that orchestration is the wrong fit (for example, when a form needs to render in a modal or drawer, or when the swap is driven by a router).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job | `{ employeeId: string, jobId: string }` |

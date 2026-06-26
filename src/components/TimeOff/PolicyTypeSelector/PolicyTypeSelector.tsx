@@ -24,6 +24,7 @@ export interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company
  * The holiday option is omitted when the company already has a holiday pay policy, since a company
  * can only have one.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |

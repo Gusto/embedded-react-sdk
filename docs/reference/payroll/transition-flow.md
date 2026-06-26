@@ -44,13 +44,6 @@ payroll execution experience — configure compensation, review, submit, and vie
 
 If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
-| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
-
-Once execution begins, all standard run-payroll events are emitted as well.
-
 ## TransitionFlowProps
 
 <a id="transitionflowprops"></a>
@@ -65,6 +58,15 @@ Props for TransitionFlow.
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
 | `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
+| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+
+Once execution begins, all standard run-payroll events are emitted as well.
 
 ## Sub-components
 

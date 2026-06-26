@@ -27,6 +27,7 @@ export interface AddEmployeesToPolicyProps extends BaseComponentInterface<never>
  * reassignment warning is shown, and removing a previously enrolled employee requires
  * confirmation.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |

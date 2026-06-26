@@ -15,6 +15,7 @@ type DeductionsValue = 'include' | 'skip'
  * deductions and contributions except 401(k); selecting "Include" runs all regular deductions
  * and contributions normally.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/deductionsChange` | Fired when the deduction preference changes | {@link OffCycleDeductionsSettingChangePayload} |

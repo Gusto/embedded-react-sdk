@@ -34,7 +34,7 @@ Props for the [ConfirmWireDetails](#confirmwiredetails) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -89,6 +89,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Events:
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |
@@ -118,7 +120,7 @@ Props for the [OffCycleCreation](#offcyclecreation) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -154,6 +156,8 @@ Taxes are always included regardless of the selection. Selecting "Skip" blocks a
 deductions and contributions except 401(k); selecting "Include" runs all regular deductions
 and contributions normally.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `offCycle/deductionsChange` | Fired when the deduction preference changes | [OffCycleDeductionsSettingChangePayload](#offcycledeductionssettingchangepayload) |
@@ -182,6 +186,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
 so a surrounding form can update its state to match.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -242,6 +248,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Emits the following events:
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |
@@ -279,7 +287,7 @@ Props for [PayrollEditEmployee](#payrolleditemployee).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -330,6 +338,8 @@ check date (3 months, 6 months, or 1 year), viewing payroll summaries and receip
 cancelling processed payrolls when they remain within the cancellation window. Each row shows
 the pay period, payroll type, pay date, status, and total pay amount.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |
@@ -360,7 +370,7 @@ Props for [PayrollLanding](#payrolllanding).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -421,6 +431,8 @@ list with an alert that lets users run or skip the pending transition; when
 using `PayrollList` directly, render an equivalent resolution surface
 alongside it.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
@@ -462,6 +474,8 @@ uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH thres
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
 polls until success or failure and emits the corresponding event.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -528,6 +542,8 @@ payrolls can run cleanly. This component is also embedded inside
 [PayrollBlockerList](#payrollblockerlist), but can be used standalone when you want a
 dedicated recovery cases surface.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
@@ -561,7 +577,7 @@ Props for the [TransitionCreation](#transitioncreation) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

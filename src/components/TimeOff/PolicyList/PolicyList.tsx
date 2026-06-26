@@ -42,7 +42,7 @@ export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff
  * the holiday pay policy (if one exists) is merged into the same list and is deleted via the
  * holiday pay policy API. Both flows go through a confirmation dialog and show a success alert.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/createPolicy` | The user clicked the create-policy action. | — |

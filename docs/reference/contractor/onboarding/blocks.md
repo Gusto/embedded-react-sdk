@@ -31,7 +31,7 @@ Props for [Address](#address).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> | Overrides for the component's i18n strings. |
 | `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -74,7 +74,7 @@ Props for [ContractorList](#contractorlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -112,6 +112,8 @@ Renders different field sets depending on the contractor type (individual vs. bu
 own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
 submit; otherwise it creates a new contractor under `companyId`.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/created` | A new contractor was created successfully. | The created contractor entity |
@@ -139,7 +141,7 @@ Props for [ContractorSubmit](#contractorsubmit).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -198,6 +200,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
 own self-onboarding flow rather than admin onboarding.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
@@ -243,7 +247,7 @@ Props for the [PaymentMethod](#paymentmethod) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
