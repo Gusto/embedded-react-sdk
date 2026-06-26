@@ -195,6 +195,10 @@
     {
       "tagName": "@components",
       "syntaxKind": "block"
+    },
+    {
+      "tagName": "@events",
+      "syntaxKind": "block"
     }
   ]
 }
