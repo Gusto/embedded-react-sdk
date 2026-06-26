@@ -25,13 +25,11 @@ Props for [Address](#address).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `children?` | `ReactNode` | Custom composition slot. When provided, replaces the default Head, Form, and Actions layout — use the bundled subcomponents alongside useAddress to read form context. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event. |
 | `className?` | `string` | Optional class applied to the wrapping `<section>`. |
 | `defaultValues?` | [`AddressDefaultValues`](#addressdefaultvalues) | Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> | Overrides for the component's i18n strings. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
 
 ### Remarks
 
@@ -274,7 +272,7 @@ function PaymentMethodStep() {
 
 ### AddressDefaultValues
 
-> **AddressDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`ContractorAddress`, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\>\>
+> **AddressDefaultValues** = `RequireAtLeastOne`\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
 

@@ -368,7 +368,6 @@ shape mixed into every public SDK feature component.
 - [`LandingProps`](contractor/onboarding/blocks.md#landingprops)
 - [`ContractorListProps`](contractor/onboarding/blocks.md#contractorlistprops)
 - [`ContractorProfileProps`](contractor/onboarding/blocks.md#contractorprofileprops)
-- [`AddressProps`](contractor/onboarding/blocks.md#addressprops)
 - [`PaymentMethodProps`](contractor/onboarding/blocks.md#paymentmethodprops)
 - [`NewHireReportProps`](contractor/onboarding/blocks.md#newhirereportprops)
 - [`ContractorSubmitProps`](contractor/onboarding/blocks.md#contractorsubmitprops)

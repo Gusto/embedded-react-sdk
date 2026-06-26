@@ -34,6 +34,7 @@ import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/c
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
 import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
 import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
+import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
@@ -117,19 +118,22 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function Address(props: AddressProps): JSX;
+function Address(input: AddressProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
 //
 // @public
-type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
+type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
 
 // @public
-interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
-    children?: ReactNode;
+interface AddressProps {
     className?: string;
     contractorId: string;
     defaultValues?: AddressDefaultValues;
+    dictionary?: ResourceDictionary<'Contractor.Address'>;
+    // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
+    FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
