@@ -2,11 +2,13 @@ import {
   useState,
   useEffect,
   useRef,
-  useCallback,
   useMemo,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react'
+import { buildEntityInspectRequest } from './entity-config'
+import { CopyTextButton } from './CopyTextButton'
+import { InspectIdButton } from './InspectResponseModal'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
@@ -48,11 +50,6 @@ const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolea
   { key: 'requestId', label: 'Request ID' },
 ]
 
-const TEXT_FIELDS: { key: keyof EntityIds; label: string }[] = [
-  { key: 'requestId', label: 'Request ID' },
-  { key: 'formId', label: 'Form ID' },
-]
-
 interface EntityComboboxProps {
   label: string
   value: string
@@ -80,40 +77,8 @@ interface CopyIdButtonProps {
 }
 
 function CopyIdButton({ value, ariaLabel }: CopyIdButtonProps) {
-  const [status, setStatus] = useState<'idle' | 'copied'>('idle')
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(
-    () => () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    },
-    [],
-  )
-
-  const handleClick = useCallback(async () => {
-    if (!value) return
-    try {
-      await navigator.clipboard.writeText(value)
-      setStatus('copied')
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-      timeoutRef.current = setTimeout(() => {
-        setStatus('idle')
-      }, 1500)
-    } catch {
-      // Clipboard unavailable
-    }
-  }, [value])
-
   return (
-    <button
-      type="button"
-      className={styles.btn}
-      onClick={handleClick}
-      disabled={!value}
-      aria-label={ariaLabel}
-    >
-      {status === 'copied' ? 'Copied' : 'Copy ID'}
-    </button>
+    <CopyTextButton value={value} ariaLabel={ariaLabel} idleLabel="Copy ID" copiedLabel="Copied!" />
   )
 }
 
@@ -401,7 +366,6 @@ export function DemoSettingsPanel({
   const [selectedSaveName, setSelectedSaveName] = useState<string>('')
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveDialogName, setSaveDialogName] = useState('')
-
   const saveNames = Object.keys(manualSaves).sort((a, b) => a.localeCompare(b))
 
   useEffect(() => {
@@ -426,7 +390,8 @@ export function DemoSettingsPanel({
     entities.employeeId !== confirmedSnapshot.current.employeeId ||
     entities.contractorId !== confirmedSnapshot.current.contractorId ||
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
-    TEXT_FIELDS.some(({ key }) => entities[key] !== confirmedSnapshot.current[key])
+    entities.requestId !== confirmedSnapshot.current.requestId ||
+    entities.formId !== confirmedSnapshot.current.formId
 
   const displayEnv = env === 'localzp' ? 'local' : env
 
@@ -724,6 +689,14 @@ export function DemoSettingsPanel({
                   className={styles.readOnly}
                 />
                 <CopyIdButton value={entities.companyId} ariaLabel="Copy company ID" />
+                <InspectIdButton
+                  label="Company"
+                  request={buildEntityInspectRequest(
+                    'companyId',
+                    entities.companyId,
+                    entities.companyId,
+                  )}
+                />
               </div>
             </div>
 
@@ -737,7 +710,19 @@ export function DemoSettingsPanel({
               onChange={value => {
                 onUpdateEntity('employeeId', value)
               }}
-              trailing={<CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />
+                  <InspectIdButton
+                    label="Employee"
+                    request={buildEntityInspectRequest(
+                      'employeeId',
+                      entities.employeeId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
             />
 
             <EntityCombobox
@@ -751,7 +736,17 @@ export function DemoSettingsPanel({
                 onUpdateEntity('contractorId', value)
               }}
               trailing={
-                <CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />
+                <>
+                  <CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />
+                  <InspectIdButton
+                    label="Contractor"
+                    request={buildEntityInspectRequest(
+                      'contractorId',
+                      entities.contractorId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
               }
             />
 
@@ -765,29 +760,70 @@ export function DemoSettingsPanel({
               onChange={value => {
                 onUpdateEntity('payrollId', value)
               }}
-              trailing={<CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />
+                  <InspectIdButton
+                    label="Payroll"
+                    request={buildEntityInspectRequest(
+                      'payrollId',
+                      entities.payrollId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
             />
 
-            {TEXT_FIELDS.map(({ key, label }) => {
-              const inputId = `entity-${key}-input`
-              return (
-                <div key={key} className={styles.field}>
-                  <label htmlFor={inputId}>{label}</label>
-                  <div className={styles.copyRow}>
-                    <input
-                      id={inputId}
-                      type="text"
-                      value={entities[key]}
-                      onChange={e => {
-                        onUpdateEntity(key, e.target.value)
-                      }}
-                      placeholder={`Enter ${label.toLowerCase()}...`}
-                    />
-                    <CopyIdButton value={entities[key]} ariaLabel={`Copy ${label.toLowerCase()}`} />
-                  </div>
-                </div>
-              )
-            })}
+            <EntityCombobox
+              label="Request"
+              value={entities.requestId}
+              options={entityCatalog.informationRequests}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a request id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('requestId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.requestId} ariaLabel="Copy request ID" />
+                  <InspectIdButton
+                    label="Request"
+                    request={buildEntityInspectRequest(
+                      'requestId',
+                      entities.requestId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
+            />
+
+            <EntityCombobox
+              label="Form"
+              value={entities.formId}
+              options={entityCatalog.forms}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a form id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('formId', value)
+              }}
+              trailing={
+                <>
+                  <CopyIdButton value={entities.formId} ariaLabel="Copy form ID" />
+                  <InspectIdButton
+                    label="Form"
+                    request={buildEntityInspectRequest(
+                      'formId',
+                      entities.formId,
+                      entities.companyId,
+                    )}
+                  />
+                </>
+              }
+            />
 
             <div className={styles.actions}>
               {hasChanges && (

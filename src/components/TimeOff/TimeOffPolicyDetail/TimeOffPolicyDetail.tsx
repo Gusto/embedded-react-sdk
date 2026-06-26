@@ -34,7 +34,7 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
  *
  * @public
  */
-export interface TimeOffPolicyDetailProps extends BaseComponentInterface {
+export interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicyDetails'> {
   /** UUID of the time-off policy to display. */
   policyId: string
 }

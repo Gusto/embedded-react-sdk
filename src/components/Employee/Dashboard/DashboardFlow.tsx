@@ -10,13 +10,13 @@ import type { BaseComponentInterface } from '@/components/Base'
  *
  * @public
  */
-export interface DashboardFlowProps extends BaseComponentInterface {
+export interface DashboardFlowProps extends BaseComponentInterface<never> {
   /** The associated employee identifier. */
   employeeId: string
 }
 
 /**
- * The main entry point for the employee dashboard.
+ * Hub for viewing and managing a single employee's profile, pay, and documents.
  *
  * @remarks
  * Renders a tabbed view of an employee's profile (Basic details, Job and pay,
@@ -27,17 +27,7 @@ export interface DashboardFlowProps extends BaseComponentInterface {
  *
  * Every tab section of the dashboard is also exported as a self-contained
  * block that can be dropped into a custom layout without the surrounding
- * dashboard chrome:
- *
- * - {@link Compensation} — Job &amp; Pay tab (jobs, pay type, wage, effective date)
- * - {@link Profile} — Basic details tab (name, start date, SSN, DOB, email)
- * - {@link FederalTaxes} — Taxes tab, federal withholding settings
- * - {@link StateTaxes} — Taxes tab, state withholding settings
- * - {@link PaymentMethod} — direct-deposit bank accounts and split-paycheck configuration
- * - {@link Deductions} — post-tax deductions (garnishments)
- * - {@link HomeAddress} — home address management
- * - {@link WorkAddress} — work address management
- * - {@link Documents} — documents and forms (read-only viewer)
+ * dashboard chrome (see the sub-components below).
  *
  * Each block wraps its read-only card, its edit form, and the card↔form
  * transitions as a single drop-in. For cases where that built-in orchestration
@@ -106,13 +96,28 @@ export interface DashboardFlowProps extends BaseComponentInterface {
  * | `employee/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }` |
  * | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
  *
+ * @components
+ * - {@link Dashboard}
+ * - {@link ProfileEditForm}
+ * - {@link HomeAddressEditForm}
+ * - {@link WorkAddressEditForm}
+ * - {@link FederalTaxesEditForm}
+ * - {@link StateTaxesEditForm}
+ * - {@link PaymentMethodBankForm}
+ * - {@link PaymentMethodSplitForm}
+ * - {@link CompensationAddJobForm}
+ * - {@link CompensationEditForm}
+ * - {@link CompensationAddAnotherJobForm}
+ * - {@link DeductionsEditForm}
+ * - {@link DocumentManager}
+ *
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
  * @public
  * @group Flow Components
  *
  * @example
- * ```tsx
+ * ```tsx title="App.tsx"
  * import { EmployeeManagement } from '@gusto/embedded-react-sdk'
  *
  * function MyApp() {

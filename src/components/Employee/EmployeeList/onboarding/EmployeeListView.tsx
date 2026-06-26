@@ -24,6 +24,7 @@ export interface EmployeeListViewProps extends Pick<
   onReview: (employeeId: string) => Promise<void>
   onAddEmployee: () => void
   onSkip: () => void
+  showContinueButton: boolean
 }
 
 /** @internal */
@@ -38,6 +39,7 @@ export function EmployeeListView({
   onReview,
   onAddEmployee,
   onSkip,
+  showContinueButton,
 }: EmployeeListViewProps) {
   const { t } = useTranslation('Employee.EmployeeList')
   const Components = useComponentContext()
@@ -117,9 +119,11 @@ export function EmployeeListView({
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
         <ActionsLayout justifyContent="center">
-          <Components.Button variant="secondary" onClick={onSkip}>
-            {t('skipCta')}
-          </Components.Button>
+          {showContinueButton && (
+            <Components.Button variant="secondary" onClick={onSkip}>
+              {t('skipCta')}
+            </Components.Button>
+          )}
           <Components.Button variant="primary" onClick={onAddEmployee} icon={<PlusCircleIcon />}>
             {t('addEmployeeCta')}
           </Components.Button>
@@ -147,7 +151,7 @@ export function EmployeeListView({
 
         <DataView label={t('employeeListLabel')} {...dataViewProps} />
 
-        {employees.length > 0 && (
+        {showContinueButton && employees.length > 0 && (
           <ActionsLayout>
             <Components.Button onClick={onSkip}>{t('continueCta')}</Components.Button>
           </ActionsLayout>

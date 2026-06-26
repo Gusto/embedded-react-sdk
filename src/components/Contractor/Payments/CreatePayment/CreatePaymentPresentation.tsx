@@ -12,6 +12,11 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import {
+  formatDateToStringDate,
+  normalizeDateToLocal,
+  normalizeToDate,
+} from '@/helpers/dateFormatting'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
@@ -50,7 +55,7 @@ export const CreatePaymentPresentation = ({
   isLoading,
   paymentSpeedDays,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
-  const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
+  const { Button, Text, Heading, DatePicker, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
@@ -58,7 +63,7 @@ export const CreatePaymentPresentation = ({
   const formatWageType = (contractor?: Contractor) => {
     if (!contractor) return ''
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
+      return ` ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -110,10 +115,12 @@ export const CreatePaymentPresentation = ({
       ))}
 
       <Flex flexDirection="column" gap={8}>
-        <TextInput
-          type="date"
-          value={paymentDate}
-          onChange={onPaymentDateChange}
+        <DatePicker
+          value={paymentDate ? normalizeToDate(paymentDate) : null}
+          onChange={date => {
+            const normalized = normalizeDateToLocal(date)
+            onPaymentDateChange(normalized ? (formatDateToStringDate(normalized) ?? '') : '')
+          }}
           label={t('dateLabel')}
           isRequired
         />
@@ -137,33 +144,34 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.hours'),
+              justify: 'end',
               render: paymentData => {
+                if (paymentData.contractorDetails?.wageType === 'Fixed') return t('na')
                 const hours = Number(paymentData.hours || '0')
-                return paymentData.contractorDetails?.wageType === 'Hourly' && hours
-                  ? formatHoursDisplay(hours)
-                  : ZERO_HOURS_DISPLAY
+                return hours ? formatHoursDisplay(hours) : ZERO_HOURS_DISPLAY
               },
             },
             {
               title: t('contractorTableHeaders.wage'),
+              justify: 'end',
               render: paymentData => {
-                const amount =
-                  paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
-                    ? Number(paymentData.wage || '0')
-                    : 0
-                return currencyFormatter(amount)
+                if (paymentData.contractorDetails?.wageType === 'Hourly') return t('na')
+                return currencyFormatter(Number(paymentData.wage || '0'))
               },
             },
             {
               title: t('contractorTableHeaders.bonus'),
+              justify: 'end',
               render: paymentData => currencyFormatter(Number(paymentData.bonus || '0')),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
+              justify: 'end',
               render: paymentData => currencyFormatter(Number(paymentData.reimbursement || '0')),
             },
             {
               title: t('contractorTableHeaders.total'),
+              justify: 'end',
               render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
                 const totalAmount =
                   Number(bonus || '0') +

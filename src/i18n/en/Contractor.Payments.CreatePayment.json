@@ -9,10 +9,10 @@
   "hoursAndPaymentsLabel": "Hours and payments",
   "contractorTableHeaders": {
     "contractor": "Contractor",
-    "wageType": "Wage type",
+    "wageType": "Wage",
     "paymentMethod": "Payment method",
     "hours": "Hours",
-    "wage": "Wage",
+    "wage": "Fixed amount",
     "bonus": "Bonus",
     "reimbursement": "Reimbursement",
     "total": "Total"
@@ -39,16 +39,13 @@
   "editContractorPayment": {
     "title": "Edit contractor pay",
     "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
-    "hoursSection": "Hours",
     "hoursLabel": "Hours",
     "hoursAdornment": "hrs",
-    "fixedPaySection": "Fixed pay",
-    "wageLabel": "Wage",
-    "additionalEarningsSection": "Additional earnings",
+    "hoursPayDescription": "{{rate}}/hr × hours = {{total}}",
+    "wageLabel": "Fixed amount",
     "bonusLabel": "Bonus",
     "reimbursementLabel": "Reimbursement",
     "paymentMethodLabel": "Payment Method",
-    "totalPay": "Total pay",
     "cancelCta": "Cancel",
     "saveCta": "Done",
     "paymentMethods": {
@@ -90,10 +87,10 @@
     "whatYourCompanyPays": "What your company pays",
     "contractorTableHeaders": {
       "contractor": "Contractor",
-      "wageType": "Wage type",
+      "wageType": "Wage",
       "paymentMethod": "Payment method",
       "hours": "Hours",
-      "wage": "Wage",
+      "wage": "Fixed amount",
       "bonus": "Bonus",
       "reimbursement": "Reimbursement",
       "total": "Total"
@@ -102,6 +99,7 @@
     "editButton": "Edit",
     "submitButton": "Submit",
     "perHour": "/hr",
+    "na": "N/A",
     "wageTypes": {
       "fixed": "Fixed",
       "hourly": "Hourly"

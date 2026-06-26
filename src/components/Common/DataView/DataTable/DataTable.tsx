@@ -204,7 +204,7 @@ export const DataTable = <T,>({
       const columnKey = typeof column.key === 'string' ? column.key : `column-${index}`
       footerCells.push({
         key: `footer-${columnKey}`,
-        content: footerContent[columnKey] || '',
+        content: withJustify(footerContent[columnKey] || '', column.justify),
       })
     })
 

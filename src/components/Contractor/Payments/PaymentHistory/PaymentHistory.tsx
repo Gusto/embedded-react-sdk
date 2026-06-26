@@ -21,6 +21,12 @@ export interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.
  * Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel.
  *
  * @remarks
+ * Features:
+ *
+ * - **Payment group overview** — debit date and group context in the header.
+ * - **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
+ * - **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
+ *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |

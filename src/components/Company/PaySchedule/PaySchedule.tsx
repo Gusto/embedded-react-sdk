@@ -5,8 +5,9 @@ import { payScheduleStateMachine } from './payScheduleStateMachine'
 import type { PayScheduleContextInterface } from './PayScheduleComponents'
 import { PayScheduleFormContextual, PayScheduleListContextual } from './PayScheduleComponents'
 import type { PayScheduleFormData } from './shared/usePayScheduleForm/payScheduleSchema'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
+import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
+import type { BaseComponentKeys } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { Flow } from '@/components/Flow/Flow'
@@ -37,7 +38,7 @@ export type PayScheduleDefaultValues = RequireAtLeastOne<Partial<PayScheduleDefa
  *
  * @public
  */
-export interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
+export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
   /** Identifier of the company whose pay schedules are managed. */
   companyId: string
   /** Default values used to pre-fill the create form. Ignored fields not listed in {@link PayScheduleDefaultValues}. */
@@ -65,7 +66,7 @@ export const PaySchedule = ({
   defaultValues,
   dictionary,
   ...props
-}: PayScheduleProps & BaseComponentInterface) => {
+}: PayScheduleProps) => {
   useI18n('Company.PaySchedule')
   useComponentDictionary('Company.PaySchedule', dictionary)
   return (
@@ -75,7 +76,7 @@ export const PaySchedule = ({
   )
 }
 
-function Root({ companyId, defaultValues }: PayScheduleProps) {
+function Root({ companyId, defaultValues }: Omit<PayScheduleProps, BaseComponentKeys>) {
   const { onEvent } = useBase()
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
 

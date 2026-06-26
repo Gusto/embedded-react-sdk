@@ -38,6 +38,7 @@ export interface OnboardingContextInterface extends FlowContextInterface {
   defaultValues?: OnboardingDefaultValues
   isSelfOnboardingEnabled?: boolean
   withEmployeeI9?: boolean
+  showContinueButton?: boolean
 }
 
 /** @internal */

@@ -4,7 +4,7 @@
 
 To install:
 
-```
+```bash
 npm add @gusto/embedded-react-sdk
 ```
 
@@ -29,7 +29,7 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
 - [Integration Guide](docs/integration-guide/integration-guide.md)
   - [Versioning](docs/integration-guide/versioning.md)
   - [Event Handling](docs/integration-guide/event-handling.md)
-  - [Event Types](docs/integration-guide/event-types.md)
+  - [Event Types](docs/reference/events.md)
   - [Error Handling](docs/integration-guide/error-handling.md)
   - [Composition](docs/integration-guide/composition.md)
   - [Providing your own data](docs/integration-guide/providing-your-own-data.md)
@@ -41,17 +41,17 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
   - [Observability Examples](docs/integration-guide/observability-examples.md)
 - [Theming](docs/theming/theming.md)
   - [Theming Guide](docs/theming/theming-guide.md)
-  - [Theme Variables](docs/theming/theme-variables.md)
+  - [Theme Variables](docs/reference/theme-variables.md)
 - [Component Adapter](docs/component-adapter/component-adapter.md)
   - [How the Component Adapter Works](docs/component-adapter/how-the-component-adapter-works.md)
   - [Component Adapter Types](docs/component-adapter/component-adapter-types.md)
   - [Setting up your Component Adapter](docs/component-adapter/setting-up-your-component-adapter.md)
-  - [Component Inventory](docs/component-adapter/component-inventory.md)
+  - [Component Inventory](docs/reference/component-inventory.md)
   - [Component Adapter FAQ](docs/component-adapter/component-adapter-faq.md)
-- [Reference](docs/reference/endpoint-reference.md)
-  - [Endpoint Reference](docs/reference/endpoint-reference.md)
-  - [Jobs and Compensations](docs/reference/jobs-and-compensations.md)
-  - [Proxy Examples](docs/reference/proxy-examples.md)
+- [Appendix](docs/appendix/endpoint-reference.md)
+  - [Endpoint Reference](docs/appendix/endpoint-reference.md)
+  - [Jobs and Compensations](docs/appendix/jobs-and-compensations.md)
+  - [Proxy Examples](docs/appendix/proxy-examples.md)
 - [Workflows Overview](docs/workflows-overview/workflows-overview.md)
   - [Company Onboarding](docs/workflows-overview/company-onboarding.md)
   - [Contractor Onboarding](docs/workflows-overview/contractor-onboarding.md)

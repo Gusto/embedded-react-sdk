@@ -196,6 +196,35 @@ describe('PayrollOverview polling', () => {
   })
 })
 
+describe('PayrollOverview submit-in-progress overlay', () => {
+  const mockOnEvent = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPayrollData = { ...basePayrollData }
+  })
+
+  it('renders the review UI with active Submit and Edit controls when loading a payroll whose server-side status is already submitting', async () => {
+    mockPayrollData = {
+      ...basePayrollData,
+      processed: false,
+      processingRequest: { status: 'submitting', errors: [] },
+    }
+
+    renderWithProviders(
+      <PayrollOverview companyId="company-uuid" payrollId="payroll-uuid" onEvent={mockOnEvent} />,
+    )
+
+    // The "Submitting payroll" overlay is only correct when the current user
+    // just clicked Submit. A page load against an already-processing payroll
+    // must keep the interactive review UI on screen — the Edit/Submit
+    // action buttons are the load-bearing controls that the overlay would
+    // otherwise replace.
+    expect(await screen.findByRole('button', { name: 'Submit' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+  })
+})
+
 describe('PayrollOverview tax totals', () => {
   beforeEach(() => {
     vi.clearAllMocks()

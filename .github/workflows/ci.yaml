@@ -168,8 +168,8 @@ jobs:
       - name: Check for stale derived files
         id: check
         run: |
+          git add docs/appendix
           git add docs/reference
-          git add docs/api
           if git diff --staged --quiet; then
             echo "stale=false" >> $GITHUB_OUTPUT
           else
@@ -185,8 +185,8 @@ jobs:
         with:
           name: derived-src
           path: |
+            docs/appendix
             docs/reference
-            docs/api
           retention-days: 1
           if-no-files-found: error
 
@@ -270,6 +270,17 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
+      # Clear the derived directories before applying the artifacts. The
+      # checkout restores every committed file, including any that the
+      # generators no longer produce (e.g. a page whose path changed). The
+      # artifacts only contain freshly-generated files and download-artifact
+      # overlays rather than replaces, so without this `git add` below would
+      # never see the orphans as deleted and they'd linger forever. Wiping
+      # first means the post-download tree is exactly the generator output, so
+      # `git add` stages the deletions (git rm) alongside the additions.
+      - name: Clear derived directories before applying artifacts
+        run: rm -rf docs/appendix docs/reference
+
       - name: Download derived src files
         uses: actions/download-artifact@v6
         with:
@@ -284,8 +295,8 @@ jobs:
 
       - name: Commit and push derived files
         run: |
+          git add docs/appendix
           git add docs/reference
-          git add docs/api
           git add .reports
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

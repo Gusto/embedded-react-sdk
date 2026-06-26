@@ -1,208 +1,139 @@
 import { fn } from 'storybook/test'
-import { type Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import { MockBaseProvider } from '../../../../.storybook/helpers/MockBaseProvider'
-import { ContractorProfileForm } from './ContractorProfileForm'
-import { ContractorType, WageType, useContractorProfile } from './useContractorProfile'
+import { ContractorProfile } from './ContractorProfile'
+import type { ContractorDetailsFormData } from './shared/useContractorDetailsForm'
 
 export default {
   title: 'Domain/Contractor/Profile',
 }
 
-interface InteractiveStoryProps {
-  initialValues?: Record<string, unknown>
-  existingContractor?: Contractor
-}
+const companyId = 'mock-company-id'
 
-function InteractiveStoryContent({
-  initialValues = {},
-  existingContractor,
-}: InteractiveStoryProps) {
-  const contractorProfileData = useContractorProfile({
-    companyId: 'mock-company-id',
-    defaultValues: initialValues,
-    existingContractor,
-  })
-
-  const mockSubmitAction = fn().mockName('form submitted')
-  const handleSubmit = contractorProfileData.formMethods.handleSubmit(data => {
-    mockSubmitAction(data)
-  })
-
-  return (
-    <ContractorProfileForm
-      {...contractorProfileData}
-      handleSubmit={handleSubmit}
-      existingContractor={existingContractor}
-    />
-  )
-}
-
-function InteractiveStory(props: InteractiveStoryProps) {
-  return (
-    <MockBaseProvider>
-      <InteractiveStoryContent {...props} />
-    </MockBaseProvider>
-  )
+function Story({ defaultValues }: { defaultValues?: Partial<ContractorDetailsFormData> }) {
+  return <ContractorProfile companyId={companyId} onEvent={fn()} defaultValues={defaultValues} />
 }
 
 // Default empty form state
-export const Default = () => <InteractiveStory />
+export const Default = () => <Story />
 
 // Invite + Individual + Hourly
 export const InviteIndividualHourly = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: true,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Hourly,
+      type: 'Individual',
+      wageType: 'Hourly',
       email: 'john.doe@example.com',
       firstName: 'John',
       lastName: 'Doe',
       hourlyRate: 50,
-      startDate: new Date('2024-02-15'),
+      startDate: '2024-02-15',
     }}
   />
 )
 
 // Invite + Individual + Fixed
 export const InviteIndividualFixed = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: true,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Fixed,
+      type: 'Individual',
+      wageType: 'Fixed',
       email: 'jane.smith@example.com',
       firstName: 'Jane',
       lastName: 'Smith',
-      startDate: new Date('2024-03-01'),
+      startDate: '2024-03-01',
     }}
   />
 )
 
 // Invite + Business + Hourly
 export const InviteBusinessHourly = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: true,
-      contractorType: ContractorType.Business,
-      wageType: WageType.Hourly,
+      type: 'Business',
+      wageType: 'Hourly',
       email: 'contact@acmecorp.com',
       businessName: 'Acme Consulting LLC',
       ein: '12-3456789',
       hourlyRate: 125,
-      startDate: new Date('2024-01-22'),
+      startDate: '2024-01-22',
     }}
   />
 )
 
 // Invite + Business + Fixed
 export const InviteBusinessFixed = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: true,
-      contractorType: ContractorType.Business,
-      wageType: WageType.Fixed,
+      type: 'Business',
+      wageType: 'Fixed',
       email: 'billing@techsolutions.com',
       businessName: 'Tech Solutions Inc',
       ein: '98-7654321',
-      startDate: new Date('2024-04-10'),
+      startDate: '2024-04-10',
     }}
   />
 )
 
 // No Invite + Individual + Hourly
 export const NoInviteIndividualHourly = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: false,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Hourly,
+      type: 'Individual',
+      wageType: 'Hourly',
       firstName: 'Michael',
       lastName: 'Johnson',
       middleInitial: 'R',
       ssn: '123-45-6789',
       hourlyRate: 75,
-      startDate: new Date('2024-02-05'),
+      startDate: '2024-02-05',
     }}
   />
 )
 
 // No Invite + Individual + Fixed
 export const NoInviteIndividualFixed = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: false,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Fixed,
+      type: 'Individual',
+      wageType: 'Fixed',
       firstName: 'Sarah',
       lastName: 'Williams',
       ssn: '987-65-4321',
-      startDate: new Date('2024-03-18'),
+      startDate: '2024-03-18',
     }}
   />
 )
 
 // No Invite + Business + Hourly
 export const NoInviteBusinessHourly = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: false,
-      contractorType: ContractorType.Business,
-      wageType: WageType.Hourly,
+      type: 'Business',
+      wageType: 'Hourly',
       businessName: 'Design Studio Pro',
       ein: '55-9876543',
       hourlyRate: 95,
-      startDate: new Date('2024-01-08'),
+      startDate: '2024-01-08',
     }}
   />
 )
 
 // No Invite + Business + Fixed
 export const NoInviteBusinessFixed = () => (
-  <InteractiveStory
-    initialValues={{
+  <Story
+    defaultValues={{
       selfOnboarding: false,
-      contractorType: ContractorType.Business,
-      wageType: WageType.Fixed,
+      type: 'Business',
+      wageType: 'Fixed',
       businessName: 'Marketing Experts Corp',
       ein: '44-1234567',
-      startDate: new Date('2024-04-01'),
-    }}
-  />
-)
-
-// === TESTING VALIDATION ERRORS ===
-// To test validation errors:
-// 1. Use any of the above stories
-// 2. Clear required fields (firstName, lastName, etc.)
-// 3. Enter invalid formats (SSN: 123-45-678, EIN: 12-345)
-// 4. Try to submit the form to see validation messages
-
-// Example: Empty Individual Contractor for Error Testing
-export const EmptyIndividualForErrorTesting = () => (
-  <InteractiveStory
-    initialValues={{
-      selfOnboarding: false,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Hourly,
-      firstName: '',
-      lastName: '',
-      ssn: '',
-      hourlyRate: undefined,
-    }}
-  />
-)
-
-// Example: Empty Business Contractor for Error Testing
-export const EmptyBusinessForErrorTesting = () => (
-  <InteractiveStory
-    initialValues={{
-      selfOnboarding: false,
-      contractorType: ContractorType.Business,
-      wageType: WageType.Hourly,
-      businessName: '',
-      ein: '',
-      hourlyRate: undefined,
+      startDate: '2024-04-01',
     }}
   />
 )

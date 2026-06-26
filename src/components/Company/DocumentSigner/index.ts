@@ -1,1 +1,1 @@
-export { DocumentSigner } from './DocumentSigner'
+export { DocumentSigner, type DocumentSignerProps } from './DocumentSigner'

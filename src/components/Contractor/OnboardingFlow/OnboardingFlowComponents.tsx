@@ -5,8 +5,8 @@ import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
 import { NewHireReport } from '../NewHireReport/NewHireReport'
 import { ContractorSubmit } from '../Submit/Submit'
-import type { ContractorProfileFormData } from '../Profile/useContractorProfile'
-import type { AddressDefaultValues } from '../Address/types'
+import type { ContractorDetailsFormData } from '../Profile/shared'
+import type { AddressDefaultValues } from '../Address'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -22,7 +22,7 @@ import { componentEvents } from '@/shared/constants'
  * @public
  */
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
-  profile?: Partial<ContractorProfileFormData>
+  profile?: Partial<ContractorDetailsFormData>
   address?: AddressDefaultValues
 }>
 /**
@@ -30,7 +30,7 @@ export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
  *
  * @public
  */
-export interface OnboardingFlowProps extends BaseComponentInterface {
+export interface OnboardingFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
   /** Default values for individual flow step components — `profile` and/or `address` sub-objects. */

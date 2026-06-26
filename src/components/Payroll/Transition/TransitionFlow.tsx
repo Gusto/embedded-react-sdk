@@ -11,7 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 /**
- * Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule.
+ * Guided flow to run a transition payroll between pay schedules.
  *
  * @remarks
  * Starts on the creation step (configure check date, deductions, and tax withholding for the
@@ -27,9 +27,34 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * Once execution begins, all standard run-payroll events are emitted as well.
  *
+ * @components
+ * - {@link TransitionCreation}
+ * - {@link PayrollExecutionFlow}
+ *
  * @param props - See {@link TransitionFlowProps}.
  * @returns The transition payroll flow.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <Payroll.TransitionFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       startDate="2025-01-16"
+ *       endDate="2025-01-31"
+ *       payScheduleUuid="c75c1ef6-2ec0-4cca-94a5-8b4cf7e5ea21"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'runPayroll/submitted') {
+ *           // Payroll submitted — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function TransitionFlow({
   companyId,

@@ -43,14 +43,18 @@
   },
   "validations": {
     "email": "Email is required when inviting contractor",
+    "emailFormat": "Email must be a valid email address",
     "firstName": "First name is required for individual contractors",
+    "firstNameFormat": "First name is not valid",
     "lastName": "Last name is required for individual contractors",
+    "lastNameFormat": "Last name is not valid",
     "ssn": "SSN is required for individual contractors",
     "ssnFormat": "SSN must be valid format",
     "businessName": "Business name is required for business contractors",
     "ein": "EIN is required for business contractors",
     "einFormat": "EIN must be valid format (XX-XXXXXXX)",
-    "hourlyRate": "Hourly rate is required for hourly contractors"
+    "hourlyRate": "Hourly rate is required for hourly contractors",
+    "startDate": "Start date is required"
   },
   "buttons": {
     "cancel": "Cancel",

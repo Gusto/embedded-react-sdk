@@ -3,9 +3,10 @@ export type {
   OnboardingFlowProps,
   OnboardingFlowDefaultValues,
 } from '../OnboardingFlow/OnboardingFlowComponents'
+export { Landing, type LandingProps } from '../Landing'
 export { ContractorList, type ContractorListProps } from '../ContractorList'
 export { ContractorProfile, type ContractorProfileProps } from '../Profile'
-export type { ContractorProfileFormData } from '../Profile/useContractorProfile'
+export type { ContractorDetailsFormData as ContractorProfileFormData } from '../Profile/shared'
 export { Address, type AddressProps } from '../Address'
 export type { AddressDefaultValues } from '../Address/types'
 export { PaymentMethod } from '../PaymentMethod/PaymentMethod'

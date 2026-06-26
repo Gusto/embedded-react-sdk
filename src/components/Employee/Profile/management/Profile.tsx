@@ -3,26 +3,18 @@ import { useMemo } from 'react'
 import { CardContextual, type ProfileContextInterface } from './ProfileComponents'
 import { profileStateMachine } from './profileStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link Profile}.
  *
  * @public
  */
-export interface ProfileProps extends CommonComponentInterface<'Employee.Management.Profile'> {
+export interface ProfileProps extends BaseComponentInterface<'Employee.Management.Profile'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
@@ -60,11 +52,7 @@ function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
  * @returns The employee profile management surface.
  * @public
  */
-export function Profile({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: ProfileProps & BaseComponentInterface<'Employee.Management.Profile'>) {
+export function Profile({ dictionary, FallbackComponent, ...props }: ProfileProps) {
   useComponentDictionary('Employee.Management.Profile', dictionary)
   return (
     <BaseBoundaries

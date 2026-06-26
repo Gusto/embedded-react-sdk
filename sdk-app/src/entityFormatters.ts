@@ -20,6 +20,19 @@ export interface RawPayroll {
   processed?: boolean
 }
 
+export interface RawForm {
+  uuid?: string
+  name?: string | null
+  title?: string | null
+}
+
+export interface RawInformationRequest {
+  uuid?: string
+  type?: string | null
+  status?: string
+  blocking_payroll?: boolean
+}
+
 export interface EntityOption {
   value: string
   primary: string
@@ -46,4 +59,17 @@ export function formatContractor(contractor: RawContractor): string {
 export function formatEmployee(employee: RawEmployee): string {
   const name = [employee.first_name, employee.last_name].filter(Boolean).join(' ').trim()
   return name || 'Employee'
+}
+
+export function formatForm(form: RawForm): string {
+  return form.title || form.name || 'Form'
+}
+
+export function formatInformationRequestType(type: string | null | undefined): string {
+  if (!type) return 'Information request'
+  return type
+    .split(/[_\s]+/)
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
 }

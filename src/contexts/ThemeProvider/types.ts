@@ -64,6 +64,25 @@ export interface GustoSDKThemeColors {
  * token not supplied falls back to the SDK default.
  *
  * @public
+ *
+ * @example
+ * ```tsx
+ * import { GustoProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function App() {
+ *   return (
+ *     <GustoProvider
+ *       theme={{
+ *         colorPrimary: '#007bff',
+ *         fontSizeRegular: '18px',
+ *         inputRadius: '12px',
+ *       }}
+ *     >
+ *       {/* your app *\/}
+ *     </GustoProvider>
+ *   )
+ * }
+ * ```
  */
 export interface GustoSDKTheme extends GustoSDKThemeColors {
   /**
