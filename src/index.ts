@@ -338,6 +338,40 @@ export type {
 } from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
 
 export {
+  useContractorPaymentMethodForm,
+  ContractorPaymentMethodErrorCodes,
+  PAYMENT_METHOD_TYPES as ContractorPaymentMethodTypes,
+  ACCOUNT_TYPES as ContractorAccountTypes,
+  TypeField as ContractorPaymentMethodTypeField,
+  NameField as ContractorPaymentMethodNameField,
+  RoutingNumberField as ContractorPaymentMethodRoutingNumberField,
+  AccountNumberField as ContractorPaymentMethodAccountNumberField,
+  AccountTypeField as ContractorPaymentMethodAccountTypeField,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+export type {
+  ContractorPaymentMethodSubmitOptions,
+  UseContractorPaymentMethodFormProps,
+  UseContractorPaymentMethodFormResult,
+  UseContractorPaymentMethodFormReady,
+  ContractorPaymentMethodFormFields,
+  ContractorPaymentMethodFieldsMetadata,
+  ContractorPaymentMethodErrorCode,
+  ContractorPaymentMethodFormType,
+  ContractorAccountType,
+  ContractorPaymentMethodFormData,
+  ContractorPaymentMethodFormOutputs,
+  ContractorPaymentMethodOptionalFieldsToRequire,
+  ContractorPaymentMethodRequiredValidation,
+  ContractorPaymentMethodRoutingNumberValidation,
+  ContractorPaymentMethodAccountNumberValidation,
+  TypeFieldProps as ContractorPaymentMethodTypeFieldProps,
+  NameFieldProps as ContractorPaymentMethodNameFieldProps,
+  RoutingNumberFieldProps as ContractorPaymentMethodRoutingNumberFieldProps,
+  AccountNumberFieldProps as ContractorPaymentMethodAccountNumberFieldProps,
+  AccountTypeFieldProps as ContractorPaymentMethodAccountTypeFieldProps,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+
+export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,

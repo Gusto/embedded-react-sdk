@@ -28,6 +28,12 @@ export const updateContractorPaymentMethod = http.put<
   return HttpResponse.json(responseFixture)
 })
 
+export function handleUpdateContractorPaymentMethod(
+  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorIdPaymentMethodType>,
+) {
+  return http.put(`${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`, resolver)
+}
+
 export function handleGetContractorBankAccounts(
   resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidBankAccountsRequest>,
 ) {
@@ -48,6 +54,12 @@ export const createContractorBankAccount = http.post<
   const responseFixture = await getFixture('get-v1-contractors-contractor_id-bank_accounts')
   return HttpResponse.json(responseFixture[0], { status: 201 })
 })
+
+export function handleCreateContractorBankAccount(
+  resolver: HttpResponseResolver<PathParams, ContractorBankAccountCreateRequestBody>,
+) {
+  return http.post(`${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`, resolver)
+}
 
 export default [
   getContractorPaymentMethod,
