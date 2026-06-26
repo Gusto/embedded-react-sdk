@@ -83,6 +83,20 @@ form's title and description, and `data.pdfUrl` to render the document for
 review before signing. Both `signature` and `confirmSignature` are always
 required.
 
+## UseSignCompanyFormProps
+
+<a id="usesigncompanyformprops"></a>
+
+Props for [useSignCompanyForm](#usesigncompanyform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `formId` | `string` | UUID of the company form to sign. |
+| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
+| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
@@ -113,12 +127,6 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
-
 ## Variables
 
 <a id="signcompanyformerrorcodes"></a>
@@ -135,39 +143,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="signcompanyformfields"></a>
-
-### SignCompanyFormFields
-
-Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`: [`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
-| `Signature` | (`props`: [`SignatureFieldProps`](#signaturefieldprops)) => `Element` | Text input for the signer's typed name; always required. |
-
-***
-
-<a id="usesigncompanyformprops"></a>
-
-### UseSignCompanyFormProps
-
-Props for [useSignCompanyForm](#usesigncompanyform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `formId` | `string` | UUID of the company form to sign. |
-| `defaultValues?` | `Partial`\<[`SignCompanyFormData`](#signcompanyformdata)\> | Pre-fill form values (for example, pre-populate the signature field). |
-| `optionalFieldsToRequire?` | [`SignCompanyFormOptionalFieldsToRequire`](#signcompanyformoptionalfieldstorequire) | Promote optional fields to required. Both fields are already required by default, so this is typically unnecessary. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
 
 ## Type Aliases
 
@@ -279,3 +254,13 @@ See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 > **UseSignCompanyFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
 
 Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
+
+## SignCompanyFormFields
+<a id="signcompanyformfields"></a>
+
+Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `ConfirmSignature` | — | — |
+| `Signature` | — | — |

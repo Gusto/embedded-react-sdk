@@ -62,6 +62,20 @@ sends a minimal request body; switching to or staying on Direct Deposit
 preserves the existing splits and version so split allocations are not lost
 when only the type changes.
 
+## UsePaymentMethodFormProps
+
+<a id="usepaymentmethodformprops"></a>
+
+Props for [usePaymentMethodForm](#usepaymentmethodform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | Employee whose payment method is being edited. |
+| `defaultValues?` | `Partial`\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | Pre-fill form values. Server data (the current payment method) is used when no override is supplied. |
+| `optionalFieldsToRequire?` | [`PaymentMethodFormOptionalFieldsToRequire`](#paymentmethodformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — `type` is always required and always has a default. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
@@ -91,11 +105,14 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## Parameters
+## PaymentMethodFormFields
+<a id="paymentmethodformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePaymentMethodFormProps`](#usepaymentmethodformprops) | See [UsePaymentMethodFormProps](#usepaymentmethodformprops). |
+Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `Type` | — | — |
 
 <a id="paymentmethodtypefield"></a>
 
@@ -151,38 +168,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="paymentmethodformfields"></a>
-
-### PaymentMethodFormFields
-
-Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Type` | (`props`: [`TypeFieldProps`](#typefieldprops)) => `Element` | Bound to `type` — see [TypeField](#paymentmethodtypefield). |
-
-***
-
-<a id="usepaymentmethodformprops"></a>
-
-### UsePaymentMethodFormProps
-
-Props for [usePaymentMethodForm](#usepaymentmethodform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | Employee whose payment method is being edited. |
-| `defaultValues?` | `Partial`\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | Pre-fill form values. Server data (the current payment method) is used when no override is supplied. |
-| `optionalFieldsToRequire?` | [`PaymentMethodFormOptionalFieldsToRequire`](#paymentmethodformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — `type` is always required and always has a default. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
 <a id="paymentmethodformdata"></a>

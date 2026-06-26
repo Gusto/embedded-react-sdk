@@ -335,59 +335,9 @@ function renderFunctionPropsTable(
   const component = param.parent?.parent
   if (!(component instanceof DeclarationReflection)) return fallback(params)
 
-  // Hook: find UseXxxFormSharedProps by naming convention and inline it.
-  // The hook's input is typed as UseXxxFormProps (a union alias), not a direct interface,
-  // so the standard ReferenceType check below won't fire. We reach into the page model
-  // to find the SharedProps interface by name.
-  if (/^use[A-Z]/.test(component.name)) {
-    const hookNsModel = context.page?.model
-    if (hookNsModel instanceof DeclarationReflection) {
-      const sharedPropsName =
-        component.name.charAt(0).toUpperCase() + component.name.slice(1) + 'SharedProps'
-      const sharedProps = (hookNsModel.children ?? []).find(
-        (c): c is DeclarationReflection =>
-          c instanceof DeclarationReflection &&
-          c.name === sharedPropsName &&
-          (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
-      )
-      if (sharedProps) {
-        const parts: string[] = []
-        if (context.router.hasUrl(sharedProps) && context.options.getValue('useHTMLAnchors')) {
-          parts.push(`<a id="${context.router.getAnchor(sharedProps)}"></a>`)
-        }
-        if (sharedProps.comment) {
-          const commentMd = context.partials.comment(sharedProps.comment, {
-            showSummary: true,
-            showTags: true,
-          })
-          if (commentMd.trim()) parts.push(commentMd)
-        }
-        // For TypeAlias `= { ... }`, properties live on type.declaration.children.
-        // For Interface, they live directly on children.
-        const typeAliasDeclaration =
-          sharedProps.kind === ReflectionKind.TypeAlias &&
-          sharedProps.type instanceof ReflectionType
-            ? sharedProps.type.declaration
-            : null
-        const allProps = (
-          typeAliasDeclaration?.children ?? sharedProps.children ?? []
-        ).filter(c => c.isDeclaration())
-        if (allProps.length > 0) {
-          parts.push(
-            context.partials.propertiesTable(allProps, {
-              isEventProps: false,
-              kind: ReflectionKind.Interface,
-            }),
-          )
-        }
-        return parts.join('\n\n')
-      }
-    }
-    return fallback(params)
-  }
-
-  // Component: existing logic below (unchanged)
-  if (!isComponent(component) || !(param.type instanceof ReferenceType)) {
+  // Component or hook: inline the props interface when the parameter directly references one.
+  const isHook = /^use[A-Z]/.test(component.name)
+  if ((!isComponent(component) && !isHook) || !(param.type instanceof ReferenceType)) {
     return fallback(params)
   }
 
@@ -586,7 +536,7 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 
 /**
  * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
- * sequence: Example → Remarks → SharedProps → Returns → everything else
+ * sequence: Example → Remarks → Props → Returns → everything else
  * (EmployeeDetailsFields, Variables, Interfaces, Type Aliases — kept in their
  * original relative order).
  */
@@ -609,7 +559,7 @@ function reorderHookSections(rendered: string): string {
   const rank = (title: string): number => {
     if (/^Examples?/.test(title)) return 0
     if (title === 'Remarks') return 1
-    if (title.endsWith('SharedProps')) return 2
+    if (title.endsWith('Props')) return 2
     if (title === 'Returns') return 3
     return 99
   }
@@ -701,15 +651,29 @@ function addExampleTitles(rendered: string): string {
  * interface is not found or has no children.
  */
 function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection): string | null {
-  // Find the Fields interface by naming convention: hookName → XxxFields
-  const fieldsInterfaceName = model.name.replace(/^use/, '').replace(/Form$/, '') + 'Fields'
-  const fieldsInterface = (model.children ?? []).find(
+  // Find the Fields interface by tracing UseXxxFormReady → form.Fields → referenced type.
+  const readyInterface = (model.children ?? []).find(
     (c): c is DeclarationReflection =>
       c instanceof DeclarationReflection &&
-      c.name === fieldsInterfaceName &&
-      (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
+      c.name.endsWith('Ready') &&
+      c.kind === ReflectionKind.Interface,
   )
-  if (!fieldsInterface) return null
+  if (!readyInterface) return null
+
+  const formProp = (readyInterface.children ?? []).find(
+    c => c.isDeclaration() && c.name === 'form',
+  )
+  const formDecl =
+    formProp?.type instanceof ReflectionType ? formProp.type.declaration : null
+  if (!formDecl) return null
+
+  const fieldsProp = (formDecl.children ?? []).find(
+    c => c.isDeclaration() && c.name === 'Fields',
+  )
+  if (!(fieldsProp?.type instanceof ReferenceType)) return null
+
+  const fieldsInterface = fieldsProp.type.reflection
+  if (!(fieldsInterface instanceof DeclarationReflection)) return null
 
   // Get field keys from the Fields interface children
   const fieldKeys = (fieldsInterface.children ?? [])
@@ -792,7 +756,7 @@ function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection
 
   if (rows.length === 0) return null
 
-  const parts: string[] = [`## ${fieldsInterfaceName}`]
+  const parts: string[] = [`## ${fieldsInterface.name}`]
   if (context.router.hasUrl(fieldsInterface) && context.options.getValue('useHTMLAnchors')) {
     parts.push(`<a id="${context.router.getAnchor(fieldsInterface)}"></a>`)
   }
@@ -1080,28 +1044,6 @@ export class SDKTheme extends MarkdownTheme {
       )
         continue
 
-      if (/^Use[A-Z][a-zA-Z]*SharedProps$/.test(reflection.name)) {
-        if (!reflection.comment) {
-          reflection.comment = new Comment([
-            {
-              kind: 'text',
-              text: `Shared options for \`${reflection.name.replace(/SharedProps$/, '').replace(/^Use/, 'use')}\`.`,
-            },
-          ])
-        }
-        // For TypeAlias `= { ... }`, properties live on type.declaration.children.
-        const children =
-          reflection.kind === ReflectionKind.TypeAlias &&
-          reflection.type instanceof ReflectionType
-            ? (reflection.type.declaration.children ?? [])
-            : (reflection.children ?? [])
-        for (const child of children) {
-          if (!child.comment) {
-            child.comment = new Comment()
-          }
-        }
-      }
-
       if (/^Use[A-Z][a-zA-Z]*Ready$/.test(reflection.name)) {
         if (!reflection.comment) {
           reflection.comment = new Comment([
@@ -1216,23 +1158,21 @@ export class SDKThemeContext extends MarkdownThemeContext {
           return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
         }
 
-        // Hook: rename "Parameters" heading to the SharedProps type name.
+        // Hook: rename "Parameters" heading to the direct Props interface name.
         const hookFn = model.parent
         if (hookFn instanceof DeclarationReflection && /^use[A-Z]/.test(hookFn.name)) {
           if ((model.parameters?.length ?? 0) !== 1) return result
-          const hookNsModel = this.page?.model
-          if (!(hookNsModel instanceof DeclarationReflection)) return result
-          const sharedPropsName =
-            hookFn.name.charAt(0).toUpperCase() + hookFn.name.slice(1) + 'SharedProps'
-          const hasSharedProps = (hookNsModel.children ?? []).some(
-            c =>
-              c instanceof DeclarationReflection &&
-              c.name === sharedPropsName &&
-              (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
-          )
-          if (hasSharedProps) {
-            const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
-            return result.replace(`${hashes} Parameters`, `${hashes} ${sharedPropsName}`)
+          const param = model.parameters![0]!
+          if (param.type instanceof ReferenceType) {
+            const propsRef = param.type.reflection
+            if (
+              propsRef instanceof DeclarationReflection &&
+              propsRef.kind === ReflectionKind.Interface &&
+              (propsRef.parent === hookFn.parent || propsRef.parent === hookFn)
+            ) {
+              const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
+              return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
+            }
           }
         }
 

@@ -73,6 +73,25 @@ POST a new garnishment, supply it to PUT updates against the existing row.
 For non-child-support deductions (court-ordered garnishments and post-tax
 custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
 
+## UseChildSupportGarnishmentFormProps
+
+<a id="usechildsupportgarnishmentformprops"></a>
+
+Configuration options for [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+
+**Remarks**
+
+Presence or absence of `garnishmentId` selects the API verb — see the
+`garnishmentId` field description.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | UUID of the employee whose child-support garnishment is being created or edited. |
+| `defaultValues?` | `Partial`\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
@@ -107,11 +126,21 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 | `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
 | `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
 
-## Parameters
+## ChildSupportGarnishmentFormFields
+<a id="childsupportgarnishmentformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseChildSupportGarnishmentFormProps`](#usechildsupportgarnishmentformprops) | See [UseChildSupportGarnishmentFormProps](#usechildsupportgarnishmentformprops). |
+Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `Amount` | — | — |
+| [`CaseNumber`](#casenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
+| [`FipsCode`](#fipscodefield) | [Select](../../utilities.md#selecthookfieldprops) | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
+| [`OrderNumber`](#ordernumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
+| [`PaymentPeriod`](#paymentperiodfield) | [Select](../../utilities.md#selecthookfieldprops) | Always rendered. Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`. |
+| [`PayPeriodMaximum`](#payperiodmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Carries the per-pay-period currency cap for the garnishment. |
+| [`RemittanceNumber`](#remittancenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
+| `State` | — | — |
 
 <a id="casenumberfield"></a>
 
@@ -378,57 +407,6 @@ Child support attribute keys that the form recognizes. Each state agency
 declares which of these keys it requires; the hook exposes the resolved
 subset via `requiredAttrKeys` so callers can drive their own UI on which
 `caseNumber` / `orderNumber` / `remittanceNumber` fields are required.
-
-## Interfaces
-
-<a id="childsupportgarnishmentformfields"></a>
-
-### ChildSupportGarnishmentFormFields
-
-Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.
-
-#### Remarks
-
-Each property is either the field component or `undefined`. A field is
-`undefined` when conditions for rendering it aren't met — see each member
-for its visibility rule. Always null-check conditional fields (e.g.
-`{Fields.FipsCode && <Fields.FipsCode ... />}`) before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Amount` | (`props`: [`ChildSupportGarnishmentAmountFieldProps`](#childsupportgarnishmentamountfieldprops)) => `Element` | Percent-of-paycheck input (0–100). Always available. |
-| `CaseNumber` | ((`props`: [`CaseNumberFieldProps`](#casenumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `case_number`. |
-| `FipsCode` | ((`props`: [`FipsCodeFieldProps`](#fipscodefieldprops)) => `Element`) \| `undefined` | Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
-| `OrderNumber` | ((`props`: [`OrderNumberFieldProps`](#ordernumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `order_number`. |
-| `PaymentPeriod` | (`props`: [`PaymentPeriodFieldProps`](#paymentperiodfieldprops)) => `Element` | Payment period select. Always available. |
-| `PayPeriodMaximum` | (`props`: [`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops)) => `Element` | Per-pay-period currency cap input. Always available. |
-| `RemittanceNumber` | ((`props`: [`RemittanceNumberFieldProps`](#remittancenumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `remittance_number`. |
-| `State` | (`props`: [`ChildSupportGarnishmentStateFieldProps`](#childsupportgarnishmentstatefieldprops)) => `Element` | Agency (state) select. Always available. |
-
-***
-
-<a id="usechildsupportgarnishmentformprops"></a>
-
-### UseChildSupportGarnishmentFormProps
-
-Configuration options for [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
-
-#### Remarks
-
-Presence or absence of `garnishmentId` selects the API verb — see the
-`garnishmentId` field description.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | UUID of the employee whose child-support garnishment is being created or edited. |
-| `defaultValues?` | `Partial`\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
 <a id="childsupportgarnishmentamountfieldprops"></a>

@@ -67,20 +67,6 @@ pending status, submit action, error handling, and bound `Fields`.
 Self-onboarding is only toggleable when the employee's onboarding status
 allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
 
-## UseEmployeeDetailsFormSharedProps
-
-<a id="useemployeedetailsformsharedprops"></a>
-
-Shared options merged into both branches of [UseEmployeeDetailsFormProps](#useemployeedetailsformprops).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | Initial values applied before any employee data loads. |
-| `optionalFieldsToRequire?` | [`EmployeeDetailsOptionalFieldsToRequire`](#employeedetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
-| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
-| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
-| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
-
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
@@ -109,6 +95,12 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | `status` | `object` | Submit status and form mode. |
 | `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseEmployeeDetailsFormProps`](#useemployeedetailsformprops) | See [UseEmployeeDetailsFormProps](#useemployeedetailsformprops). |
 
 ## EmployeeDetailsFields
 <a id="employeedetailsfields"></a>
@@ -406,6 +398,20 @@ hook.
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ## Type Aliases
+<a id="useemployeedetailsformprops"></a>
+
+### UseEmployeeDetailsFormProps
+
+> **UseEmployeeDetailsFormProps** = [`UseEmployeeDetailsFormSharedProps`](#useemployeedetailsformsharedprops) & `object` \| [`UseEmployeeDetailsFormSharedProps`](#useemployeedetailsformsharedprops) & `object`
+
+Options for [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+Discriminated by mode: in create mode supply `companyId` and omit
+`employeeId`; in update mode supply `employeeId` (and optionally
+`companyId`).
+
 ## Utility Types
 
 <a id="employeedetailserrorcode"></a>
@@ -456,16 +462,6 @@ Shape of the values managed by the employee details form.
 | `middleInitial` | `string` |
 | `selfOnboarding` | `boolean` |
 | `ssn` | `string` |
-
-***
-
-<a id="employeedetailsformfields"></a>
-
-### EmployeeDetailsFormFields
-
-> **EmployeeDetailsFormFields** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
 
 ***
 
@@ -542,22 +538,6 @@ Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#u
 Use these as keys in `validationMessages` on `Fields.FirstName` and
 `Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
 description of each code.
-
-***
-
-<a id="useemployeedetailsformprops"></a>
-
-### UseEmployeeDetailsFormProps
-
-> **UseEmployeeDetailsFormProps** = [`UseEmployeeDetailsFormSharedProps`](#useemployeedetailsformsharedprops) & `object` \| [`UseEmployeeDetailsFormSharedProps`](#useemployeedetailsformsharedprops) & `object`
-
-Options for [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-Discriminated by mode: in create mode supply `companyId` and omit
-`employeeId`; in update mode supply `employeeId` (and optionally
-`companyId`).
 
 ***
 

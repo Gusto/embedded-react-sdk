@@ -72,6 +72,28 @@ child-support garnishments, use [useChildSupportGarnishmentForm](use-child-suppo
 instead — those require agency-keyed required attributes (case number,
 order number, remittance number, county) that this hook doesn't model.
 
+## UseDeductionFormProps
+
+<a id="usedeductionformprops"></a>
+
+Configuration options for [useDeductionForm](#usedeductionform).
+
+**Remarks**
+
+Presence or absence of `garnishmentId` selects the API verb — see the
+`garnishmentId` field description. `courtOrdered` selects between the
+post-tax custom variant and the court-ordered garnishment variant.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `courtOrdered` | `boolean` | Court-ordered deductions are stored as garnishments with `courtOrdered: true` and require a `garnishmentType` (Federal Tax Lien, Student Loan, etc.). When `false`, the form is for a "custom" post-tax deduction — `garnishmentType` is excluded from the schema and submit payload. Note: this hook does NOT handle `garnishmentType: 'child_support'`. Use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform) for child-support agency-keyed payloads. |
+| `employeeId` | `string` | UUID of the employee whose deduction is being created or edited. |
+| `defaultValues?` | `Partial`\<[`DeductionFormData`](#deductionformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
+| `optionalFieldsToRequire?` | [`DeductionFormOptionalFieldsToRequire`](#deductionformoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [DeductionFormOptionalFieldsToRequire](#deductionformoptionalfieldstorequire). |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`UseDeductionFormResult`](#usedeductionformresult)
@@ -102,11 +124,20 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
 
-## Parameters
+## DeductionFormFields
+<a id="deductionformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseDeductionFormProps`](#usedeductionformprops) | See [UseDeductionFormProps](#usedeductionformprops). |
+Pre-bound field components exposed on `useDeductionForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `Amount` | — | — |
+| [`AnnualMaximum`](#annualmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
+| [`DeductAsPercentage`](#deductaspercentagefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Always rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency amount when `false`, or as a percentage of paycheck when `true`. |
+| [`Description`](#descriptionfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always rendered. |
+| [`GarnishmentType`](#garnishmenttypefield) | [Select](../../utilities.md#selecthookfieldprops) | Always null-check before rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`, `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For child-support garnishments, use {@link useChildSupportGarnishmentForm}. |
+| [`Recurring`](#recurringfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Always rendered. Picks between a recurring deduction (taken every paycheck) and a one-time deduction. The cap fields (`Fields.TotalAmount` and `Fields.AnnualMaximum`) are exposed only when this is set to recurring. |
+| [`TotalAmount`](#totalamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
 
 <a id="annualmaximumfield"></a>
 
@@ -334,59 +365,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 | ------ | ------ | ------ |
 | `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="deductionformfields"></a>
-
-### DeductionFormFields
-
-Pre-bound field components exposed on `useDeductionForm().form.Fields`.
-
-#### Remarks
-
-Each property is either the field component or `undefined`. A field is
-`undefined` when conditions for rendering it aren't met — see each member
-for its visibility rule. Always null-check conditional fields (e.g.
-`{Fields.TotalAmount && <Fields.TotalAmount ... />}`) before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Amount` | (`props`: [`DeductionAmountFieldProps`](#deductionamountfieldprops)) => `Element` | Deduction amount input. Always available. |
-| `AnnualMaximum` | ((`props`: [`AnnualMaximumFieldProps`](#annualmaximumfieldprops)) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
-| `DeductAsPercentage` | (`props`: [`DeductAsPercentageFieldProps`](#deductaspercentagefieldprops)) => `Element` | Fixed-amount vs percentage radio group. Always available. |
-| `Description` | (`props`: [`DescriptionFieldProps`](#descriptionfieldprops)) => `Element` | Description text input. Always available. |
-| `GarnishmentType` | ((`props`: [`GarnishmentTypeFieldProps`](#garnishmenttypefieldprops)) => `Element`) \| `undefined` | Only available when `courtOrdered: true`. |
-| `Recurring` | (`props`: [`RecurringFieldProps`](#recurringfieldprops)) => `Element` | Recurring vs one-time radio group. Always available. |
-| `TotalAmount` | ((`props`: [`TotalAmountFieldProps`](#totalamountfieldprops)) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
-
-***
-
-<a id="usedeductionformprops"></a>
-
-### UseDeductionFormProps
-
-Configuration options for [useDeductionForm](#usedeductionform).
-
-#### Remarks
-
-Presence or absence of `garnishmentId` selects the API verb — see the
-`garnishmentId` field description. `courtOrdered` selects between the
-post-tax custom variant and the court-ordered garnishment variant.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `courtOrdered` | `boolean` | Court-ordered deductions are stored as garnishments with `courtOrdered: true` and require a `garnishmentType` (Federal Tax Lien, Student Loan, etc.). When `false`, the form is for a "custom" post-tax deduction — `garnishmentType` is excluded from the schema and submit payload. Note: this hook does NOT handle `garnishmentType: 'child_support'`. Use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform) for child-support agency-keyed payloads. |
-| `employeeId` | `string` | UUID of the employee whose deduction is being created or edited. |
-| `defaultValues?` | `Partial`\<[`DeductionFormData`](#deductionformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
-| `optionalFieldsToRequire?` | [`DeductionFormOptionalFieldsToRequire`](#deductionformoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [DeductionFormOptionalFieldsToRequire](#deductionformoptionalfieldstorequire). |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
 <a id="deductionformamountvalidation"></a>

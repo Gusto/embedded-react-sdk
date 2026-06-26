@@ -99,6 +99,19 @@ hook is always in update mode. When the form has no states with submittable
 answers (e.g. an employee in a no-income-tax state), submit resolves with
 the existing record list without making a network request.
 
+## UseEmployeeStateTaxesFormProps
+
+<a id="useemployeestatetaxesformprops"></a>
+
+Options accepted by [useEmployeeStateTaxesForm](#useemployeestatetaxesform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The UUID of the employee whose state taxes are being updated. |
+| `isAdmin?` | `boolean` | When `true`, admin-only questions are visible and submitted. When `false`, they are filtered out and the surfaced answer for those questions is preserved unchanged on submit. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
@@ -125,12 +138,6 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseEmployeeStateTaxesFormProps`](#useemployeestatetaxesformprops) | Hook options. |
 
 ## Utility Hooks
 
@@ -209,23 +216,6 @@ Group of state-tax questions for a single jurisdiction returned by
 | `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
 | `state` | `string` | Two-letter state code. |
 
-***
-
-<a id="useemployeestatetaxesformprops"></a>
-
-### UseEmployeeStateTaxesFormProps
-
-Options accepted by [useEmployeeStateTaxesForm](#useemployeestatetaxesform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The UUID of the employee whose state taxes are being updated. |
-| `isAdmin?` | `boolean` | When `true`, admin-only questions are visible and submitted. When `false`, they are filtered out and the surfaced answer for those questions is preserved unchanged on submit. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
 ## Type Aliases
 
 <a id="currencystatetaxfieldprops"></a>
@@ -279,17 +269,6 @@ form schema.
 
 Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
 with `isRequired` / `isDisabled` and option lists.
-
-***
-
-<a id="employeestatetaxesformfields"></a>
-
-### EmployeeStateTaxesFormFields
-
-> **EmployeeStateTaxesFormFields** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"Fields"`\]
-
-The array of per-state field groups exposed by
-[useEmployeeStateTaxesForm](#useemployeestatetaxesform) on `form.Fields`.
 
 ***
 

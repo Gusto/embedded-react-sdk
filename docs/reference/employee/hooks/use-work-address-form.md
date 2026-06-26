@@ -73,6 +73,30 @@ When `workAddressUuid` is supplied the hook loads that address and issues a PUT 
 when omitted it operates in create mode and issues a POST. The hook requires `companyId`
 to fetch the company's location list — it stays in loading state until `companyId` is known.
 
+## UseWorkAddressFormProps
+
+<a id="useworkaddressformprops"></a>
+
+Configuration options for [useWorkAddressForm](#useworkaddressform).
+
+**Remarks**
+
+Presence or absence of `workAddressUuid` selects the API verb — see the
+`workAddressUuid` field description. `companyId` is required to fetch
+the location list; pass it when it is known.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | UUID of the employee whose work address is being created or edited. |
+| `companyId?` | `string` | Company UUID for locations; omit or leave unset while resolving from the employee record. |
+| `defaultValues?` | `Partial`\<[`WorkAddressFormData`](#workaddressformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `initialAddress?` | `EmployeeWorkAddress` | Pre-loaded address matching `workAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
+| `optionalFieldsToRequire?` | [`WorkAddressOptionalFieldsToRequire`](#workaddressoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `WorkAddressOptionalFieldsToRequire`. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `withEffectiveDateField?` | `boolean` | When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. |
+| `workAddressUuid?` | `string` | When set, loads that work address via GET `/v1/work_addresses/{work_address_uuid}` and updates it (PUT). When omitted, the form is in create mode (POST). |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
@@ -102,12 +126,6 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseWorkAddressFormProps`](#useworkaddressformprops) | See [UseWorkAddressFormProps](#useworkaddressformprops). |
 
 ## WorkAddressFields
 <a id="workaddressfields"></a>
@@ -175,34 +193,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ## Interfaces
-
-<a id="useworkaddressformprops"></a>
-
-### UseWorkAddressFormProps
-
-Configuration options for [useWorkAddressForm](#useworkaddressform).
-
-#### Remarks
-
-Presence or absence of `workAddressUuid` selects the API verb — see the
-`workAddressUuid` field description. `companyId` is required to fetch
-the location list; pass it when it is known.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | UUID of the employee whose work address is being created or edited. |
-| `companyId?` | `string` | Company UUID for locations; omit or leave unset while resolving from the employee record. |
-| `defaultValues?` | `Partial`\<[`WorkAddressFormData`](#workaddressformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `initialAddress?` | `EmployeeWorkAddress` | Pre-loaded address matching `workAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
-| `optionalFieldsToRequire?` | [`WorkAddressOptionalFieldsToRequire`](#workaddressoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `WorkAddressOptionalFieldsToRequire`. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-| `withEffectiveDateField?` | `boolean` | When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. |
-| `workAddressUuid?` | `string` | When set, loads that work address via GET `/v1/work_addresses/{work_address_uuid}` and updates it (PUT). When omitted, the form is in create mode (POST). |
-
-***
 
 <a id="workaddresssubmitcallbacks"></a>
 
@@ -321,16 +311,6 @@ Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressfo
 > **WorkAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the work address form.
-
-***
-
-<a id="workaddressformfields"></a>
-
-### WorkAddressFormFields
-
-> **WorkAddressFormFields** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useWorkAddressForm](#useworkaddressform).
 
 ***
 

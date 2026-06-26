@@ -55,6 +55,20 @@ the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
 discriminated union; in practice the hook transitions to the ready state
 immediately because it does not fetch any server data.
 
+## UseBankFormProps
+
+<a id="usebankformprops"></a>
+
+Props for [useBankForm](#usebankform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`BankFormData`](#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
+| `employeeId?` | `string` | Employee for whom to create the bank account. May be supplied later via `BankFormSubmitOptions.employeeId`. |
+| `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
@@ -83,11 +97,17 @@ Ready-state return value of [useBankForm](#usebankform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
 
-## Parameters
+## BankFormFields
+<a id="bankformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
+Field components exposed by [useBankForm](#usebankform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| [`AccountNumber`](#accountnumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Validates the value against a 1–17 digit numeric pattern. |
+| [`AccountType`](#accounttypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Options are `Checking` and `Savings`; defaults to `Checking` when no value is supplied. Supply `getOptionLabel` to translate the option labels. |
+| [`Name`](#namefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Captures the account nickname. |
+| [`RoutingNumber`](#routingnumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Validates the value against a 9-digit numeric pattern. |
 
 <a id="accountnumberfield"></a>
 
@@ -230,6 +250,8 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component
 
 > **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
 
+**`Expand`**
+
 Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
 
 ***
@@ -265,20 +287,20 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ## Interfaces
 
-<a id="bankformfields"></a>
+<a id="bankformdata"></a>
 
-### BankFormFields
+### BankFormData
 
-Field components exposed by [useBankForm](#usebankform) on `form.Fields`.
+Shape of the values managed by the bank account form.
 
 #### Properties
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AccountNumber` | (`props`: [`AccountNumberFieldProps`](#accountnumberfieldprops)) => `Element` | Bound to `accountNumber` — see [AccountNumberField](#accountnumberfield). |
-| `AccountType` | (`props`: [`AccountTypeFieldProps`](#accounttypefieldprops)) => `Element` | Bound to `accountType` — see [AccountTypeField](#accounttypefield). |
-| `Name` | (`props`: [`NameFieldProps`](#namefieldprops)) => `Element` | Bound to `name` — see [NameField](#namefield). |
-| `RoutingNumber` | (`props`: [`RoutingNumberFieldProps`](#routingnumberfieldprops)) => `Element` | Bound to `routingNumber` — see [RoutingNumberField](#routingnumberfield). |
+| Property | Type |
+| ------ | ------ |
+| `accountNumber` | `string` |
+| `accountType` | `"Checking"` \| `"Savings"` |
+| `name` | `string` |
+| `routingNumber` | `string` |
 
 ***
 
@@ -294,35 +316,7 @@ Optional submit-time overrides for [useBankForm](#usebankform)'s `onSubmit`.
 | ------ | ------ | ------ |
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 
-***
-
-<a id="usebankformprops"></a>
-
-### UseBankFormProps
-
-Props for [useBankForm](#usebankform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`BankFormData`](#bankformdata)\> | Pre-fill form values. `accountType` defaults to `'Checking'` when not supplied. |
-| `employeeId?` | `string` | Employee for whom to create the bank account. May be supplied later via `BankFormSubmitOptions.employeeId`. |
-| `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
 ## Type Aliases
-<a id="bankformdata"></a>
-
-### BankFormData
-
-> **BankFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the bank account form.
-
-***
-
 <a id="bankformerrorcode"></a>
 
 ### BankFormErrorCode

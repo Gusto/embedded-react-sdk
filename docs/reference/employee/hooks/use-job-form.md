@@ -62,6 +62,30 @@ into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensation
 When the primary job's `hireDate` changes, secondary compensation effective
 dates are corrected after the PUT; `isPending` stays `true` through that.
 
+## UseJobFormProps
+
+<a id="usejobformprops"></a>
+
+Configuration options for [useJobForm](#usejobform).
+
+**Remarks**
+
+Presence or absence of `jobId` selects the API verb — see the `jobId` field
+description. `employeeId` is optional so the hook can be composed alongside
+an employee-creation step; supply it at submit time via
+[JobSubmitOptions.employeeId](#jobsubmitoptions) in that case.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`JobFormData`](#jobformdata)\> | Pre-fill form values. Server data takes precedence on update mode. |
+| `employeeId?` | `string` | UUID of the employee whose job is being created or edited. May be omitted when the employee is created in the same submit chain — supply the value via [JobSubmitOptions.employeeId](#jobsubmitoptions) at submit time. |
+| `jobId?` | `string` | Present → update mode (PUT /v1/jobs/:id with `version`). Omitted → create mode (POST /v1/employees/:id/jobs). |
+| `optionalFieldsToRequire?` | [`JobOptionalFieldsToRequire`](#joboptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [JobOptionalFieldsToRequire](#joboptionalfieldstorequire). |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `withHireDateField?` | `boolean` | When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes `hireDate` from schema validation. Supply the value via [JobSubmitOptions.hireDate](#jobsubmitoptions) at submit time, or rely on the loaded job's existing value on update. Use this when the date is driven by external context rather than user input (e.g. the employee's `startDate`). Defaults to `true`. |
+| `withTitleField?` | `boolean` | When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
@@ -96,11 +120,18 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## Parameters
+## JobFormFields
+<a id="jobformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
+Pre-bound field components exposed on `useJobForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| [`HireDate`](#hiredatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | When `false`, supply the value via `JobSubmitOptions.hireDate` at submit time — useful when the hire date is derived from external context (e.g. the employee's `startDate` during onboarding). |
+| [`StateWcClassCode`](#statewcclasscodefield) | [Select](../../utilities.md#selecthookfieldprops) | Populated with Washington state workers' compensation risk class codes. Available on the hook result as `form.Fields.StateWcClassCode` only when the active work address is in Washington and `stateWcCovered` is `true`. The schema enforces this field as required whenever it is rendered, independent of `optionalFieldsToRequire`. |
+| [`StateWcCovered`](#statewccoveredfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Captures whether the employee is covered by Washington state workers' compensation. Available on the hook result as `form.Fields.StateWcCovered` only when the employee's active work address is in Washington (see `data.showStateWc`). |
+| `Title` | — | — |
+| [`TwoPercentShareholder`](#twopercentshareholderfield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | Indicates whether the employee is a 2% shareholder in an S-Corporation. Available on the hook result as `form.Fields.TwoPercentShareholder` only when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
 
 <a id="hiredatefield"></a>
 
@@ -316,32 +347,6 @@ input (the schema preprocessor coerces them).
 
 ***
 
-<a id="jobformfields"></a>
-
-### JobFormFields
-
-Pre-bound field components exposed on `useJobForm().form.Fields`.
-
-#### Remarks
-
-Each property is either the field component or `undefined`. A field is
-`undefined` when conditions for rendering it aren't met — see each member
-for its visibility rule. Always null-check conditional fields (e.g.
-`{Fields.TwoPercentShareholder && <Fields.TwoPercentShareholder ... />}`)
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `HireDate` | ((`props`: [`HireDateFieldProps`](#hiredatefieldprops)) => `Element`) \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`. |
-| `StateWcClassCode` | ((`props`: [`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops)) => `Element`) \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
-| `StateWcCovered` | ((`props`: [`StateWcCoveredFieldProps`](#statewccoveredfieldprops)) => `Element`) \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
-| `Title` | ((`props`: [`JobTitleFieldProps`](#jobtitlefieldprops)) => `Element`) \| `undefined` | Job title text input. `undefined` when `withTitleField: false`. |
-| `TwoPercentShareholder` | ((`props`: [`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops)) => `Element`) \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
-
-***
-
 <a id="joboptionalfieldstorequire"></a>
 
 ### JobOptionalFieldsToRequire
@@ -402,34 +407,6 @@ the employee being saved was created in the same submit chain and the
 | ------ | ------ | ------ |
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 | `hireDate?` | `string` | Supply `hireDate` at submit time rather than via a rendered field. Use with `withHireDateField: false` for screens that derive hireDate from external context (e.g. the employee's `startDate` during onboarding). Falls back to the loaded job's `hireDate` on update mode when omitted; required (or sourced from a default) on create mode. |
-
-***
-
-<a id="usejobformprops"></a>
-
-### UseJobFormProps
-
-Configuration options for [useJobForm](#usejobform).
-
-#### Remarks
-
-Presence or absence of `jobId` selects the API verb — see the `jobId` field
-description. `employeeId` is optional so the hook can be composed alongside
-an employee-creation step; supply it at submit time via
-[JobSubmitOptions.employeeId](#jobsubmitoptions) in that case.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`JobFormData`](#jobformdata)\> | Pre-fill form values. Server data takes precedence on update mode. |
-| `employeeId?` | `string` | UUID of the employee whose job is being created or edited. May be omitted when the employee is created in the same submit chain — supply the value via [JobSubmitOptions.employeeId](#jobsubmitoptions) at submit time. |
-| `jobId?` | `string` | Present → update mode (PUT /v1/jobs/:id with `version`). Omitted → create mode (POST /v1/employees/:id/jobs). |
-| `optionalFieldsToRequire?` | [`JobOptionalFieldsToRequire`](#joboptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [JobOptionalFieldsToRequire](#joboptionalfieldstorequire). |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-| `withHireDateField?` | `boolean` | When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes `hireDate` from schema validation. Supply the value via [JobSubmitOptions.hireDate](#jobsubmitoptions) at submit time, or rely on the loaded job's existing value on update. Use this when the date is driven by external context rather than user input (e.g. the employee's `startDate`). Defaults to `true`. |
-| `withTitleField?` | `boolean` | When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body. |
 
 ## Type Aliases
 <a id="joberrorcode"></a>

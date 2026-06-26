@@ -76,6 +76,19 @@ The Percentage sum-to-100 invariant is surfaced via
 `validationMode: 'onSubmit'`, the imbalance flag appears after the first
 failed Save and clears live as the user corrects the total.
 
+## UseSplitPaymentsFormProps
+
+<a id="usesplitpaymentsformprops"></a>
+
+Props for [useSplitPaymentsForm](#usesplitpaymentsform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | Employee whose payment splits are being edited. |
+| `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
@@ -111,12 +124,6 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.mode` | `"update"` | Always `'update'` — the hook always edits an existing payment method. |
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops) | See [UseSplitPaymentsFormProps](#usesplitpaymentsformprops). |
 
 ## Variables
 
@@ -193,38 +200,6 @@ required by the hook; the rest are required.
 | `min?` | `string` \| `number` | Forwarded to the underlying number input. |
 | `placeholder?` | `string` | Forwarded to the underlying number input. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
-
-***
-
-<a id="splitpaymentsformfields"></a>
-
-### SplitPaymentsFormFields
-
-Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `SplitBy` | `ComponentType`\<[`SplitByFieldProps`](#splitbyfieldprops)\> | Bound to `splitBy` — see SplitByField. |
-| `splits` | [`SplitFieldEntry`](#splitfieldentry)[] | One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount. |
-
-***
-
-<a id="usesplitpaymentsformprops"></a>
-
-### UseSplitPaymentsFormProps
-
-Props for [useSplitPaymentsForm](#usesplitpaymentsform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | Employee whose payment splits are being edited. |
-| `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ***
 
@@ -375,3 +350,13 @@ Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) 
 > **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
+
+## SplitPaymentsFormFields
+<a id="splitpaymentsformfields"></a>
+
+Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `SplitBy` | — | — |
+| `splits` | — | — |

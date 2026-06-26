@@ -28,20 +28,6 @@ driven by the current `type`, `wageType`, and self-onboarding selection;
 fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
 is only toggleable when the contractor's onboarding status allows it.
 
-## UseContractorDetailsFormSharedProps
-
-<a id="usecontractordetailsformsharedprops"></a>
-
-Shared options merged into both branches of [UseContractorDetailsFormProps](#usecontractordetailsformprops).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
-| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
-| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
-| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
-| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
-
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
@@ -70,6 +56,12 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `status` | `object` | Submit status and form mode. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseContractorDetailsFormProps`](#usecontractordetailsformprops) | See [UseContractorDetailsFormProps](#usecontractordetailsformprops). |
 
 ## ContractorDetailsFields
 <a id="contractordetailsfields"></a>
@@ -636,16 +628,6 @@ Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontra
 > **ContractorDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the contractor details form.
-
-***
-
-<a id="contractordetailsformfields"></a>
-
-### ContractorDetailsFormFields
-
-> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
 
 ***
 

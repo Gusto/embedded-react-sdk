@@ -54,6 +54,25 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
 
 The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
 
+## UseFederalTaxesFormProps
+
+<a id="usefederaltaxesformprops"></a>
+
+Configuration options for [useFederalTaxesForm](#usefederaltaxesform).
+
+**Remarks**
+
+The federal tax record is created automatically with the employee, so the
+hook is always in update mode and only `employeeId` is required.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | UUID of the employee whose federal tax record is being updated. |
+| `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
+| `optionalFieldsToRequire?` | [`FederalTaxesOptionalFieldsToRequire`](#federaltaxesoptionalfieldstorequire) | Override fields that are optional on update to be required. By default only `filingStatus` is required; pass `{ update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'] }` to require any subset. See [FederalTaxesOptionalFieldsToRequire](#federaltaxesoptionalfieldstorequire). |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
@@ -82,12 +101,6 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
 | `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
 
 ## FederalTaxesFields
 <a id="federaltaxesfields"></a>
@@ -320,29 +333,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 Supported W-4 filing status values: single, married filing jointly, head of
 household, and exempt from withholding.
 
-## Interfaces
-
-<a id="usefederaltaxesformprops"></a>
-
-### UseFederalTaxesFormProps
-
-Configuration options for [useFederalTaxesForm](#usefederaltaxesform).
-
-#### Remarks
-
-The federal tax record is created automatically with the employee, so the
-hook is always in update mode and only `employeeId` is required.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | UUID of the employee whose federal tax record is being updated. |
-| `defaultValues?` | `Partial`\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | Pre-fill form values. Server data takes precedence when the employee already has values on file. |
-| `optionalFieldsToRequire?` | [`FederalTaxesOptionalFieldsToRequire`](#federaltaxesoptionalfieldstorequire) | Override fields that are optional on update to be required. By default only `filingStatus` is required; pass `{ update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'] }` to require any subset. See [FederalTaxesOptionalFieldsToRequire](#federaltaxesoptionalfieldstorequire). |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
 ## Type Aliases
 <a id="federaltaxeserrorcode"></a>
 
@@ -387,22 +377,6 @@ for select and radio fields (`filingStatus`, `twoJobs`).
 > **FederalTaxesFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the federal taxes form.
-
-***
-
-<a id="federaltaxesformfields"></a>
-
-### FederalTaxesFormFields
-
-> **FederalTaxesFormFields** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"Fields"`\]
-
-Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
-
-#### Remarks
-
-Alias for the `Fields` shape on [UseFederalTaxesFormReady](#usefederaltaxesformready). Use this
-type when typing a presentational component that consumes the hook's
-fields.
 
 ***
 

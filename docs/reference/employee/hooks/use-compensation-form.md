@@ -72,6 +72,33 @@ commission-only and owner classifications). When
 the `effectiveDate` field (forces to today, renders disabled) until the
 FLSA selection is reverted.
 
+## UseCompensationFormProps
+
+<a id="usecompensationformprops"></a>
+
+Configuration options for [useCompensationForm](#usecompensationform).
+
+**Remarks**
+
+Presence or absence of `compensationId` selects the API verb — see the
+`compensationId` field description. `employeeId` is optional so the hook
+can be composed alongside an employee-creation step. `jobId` is optional in
+update mode (derived from the loaded compensation) and required in create
+mode (scopes the POST); supply it at submit time via
+[CompensationSubmitOptions.jobId](#compensationsubmitoptions) when the parent job is created in
+the same submit chain.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `compensationId?` | `string` | Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). |
+| `defaultValues?` | `Partial`\<[`CompensationFormData`](#compensationformdata)\> | Pre-fill form values. Server data takes precedence on update mode. |
+| `employeeId?` | `string` | UUID of the employee whose compensation is being created or edited. Drives data fetching for derived helpers (jobs list, work address, minimum wages). May be omitted when composing alongside an employee-creation step. |
+| `jobId?` | `string` | The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation. |
+| `optionalFieldsToRequire?` | [`CompensationOptionalFieldsToRequire`](#compensationoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [CompensationOptionalFieldsToRequire](#compensationoptionalfieldstorequire). |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+| `withEffectiveDateField?` | `boolean` | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
@@ -110,11 +137,20 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
 | `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
 
-## Parameters
+## CompensationFormFields
+<a id="compensationformfields"></a>
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
+Pre-bound field components exposed on `useCompensationForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `AdjustForMinimumWage` | — | — |
+| `EffectiveDate` | — | — |
+| `FlsaStatus` | — | — |
+| `MinimumWageId` | — | — |
+| `PaymentUnit` | — | — |
+| `Rate` | — | — |
+| `Title` | — | — |
 
 <a id="compensationadjustforminimumwagefield"></a>
 
@@ -367,33 +403,6 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
 
 ## Interfaces
 
-<a id="compensationformfields"></a>
-
-### CompensationFormFields
-
-Pre-bound field components exposed on `useCompensationForm().form.Fields`.
-
-#### Remarks
-
-Each property is either the field component or `undefined`. A field is
-`undefined` when conditions for rendering it aren't met — see each member
-for its visibility rule. Always null-check conditional fields (e.g.
-`{Fields.FlsaStatus && <Fields.FlsaStatus ... />}`) before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AdjustForMinimumWage` | ((`props`: [`AdjustForMinimumWageFieldProps`](#adjustforminimumwagefieldprops)) => `Element`) \| `undefined` | Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
-| `EffectiveDate` | ((`props`: [`CompensationEffectiveDateFieldProps`](#compensationeffectivedatefieldprops)) => `Element`) \| `undefined` | Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. |
-| `FlsaStatus` | ((`props`: [`FlsaStatusFieldProps`](#flsastatusfieldprops)) => `Element`) \| `undefined` | FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). |
-| `MinimumWageId` | ((`props`: [`MinimumWageIdFieldProps`](#minimumwageidfieldprops)) => `Element`) \| `undefined` | Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. |
-| `PaymentUnit` | ((`props`: [`PaymentUnitFieldProps`](#paymentunitfieldprops)) => `Element`) \| `undefined` | Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). |
-| `Rate` | ((`props`: [`RateFieldProps`](#ratefieldprops)) => `Element`) \| `undefined` | Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. |
-| `Title` | (`props`: [`CompensationTitleFieldProps`](#compensationtitlefieldprops)) => `Element` | Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. |
-
-***
-
 <a id="compensationsubmitoptions"></a>
 
 ### CompensationSubmitOptions
@@ -416,37 +425,6 @@ stub.
 | `compensationVersion?` | `string` | Compensation version for optimistic locking on PUT. Required when forcing update routing post-create (e.g. updating the auto-created stub returned from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the version from its cached `currentCompensation`. |
 | `effectiveDate?` | `string` | Supply `effectiveDate` at submit time. When `withEffectiveDateField` is `true`, this overrides the form's value. When `withEffectiveDateField` is `false`, this is the only way to put `effective_date` on the wire — the form value is not read in that mode (matching the options-only convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`). |
 | `jobId?` | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). |
-
-***
-
-<a id="usecompensationformprops"></a>
-
-### UseCompensationFormProps
-
-Configuration options for [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Presence or absence of `compensationId` selects the API verb — see the
-`compensationId` field description. `employeeId` is optional so the hook
-can be composed alongside an employee-creation step. `jobId` is optional in
-update mode (derived from the loaded compensation) and required in create
-mode (scopes the POST); supply it at submit time via
-[CompensationSubmitOptions.jobId](#compensationsubmitoptions) when the parent job is created in
-the same submit chain.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `compensationId?` | `string` | Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). |
-| `defaultValues?` | `Partial`\<[`CompensationFormData`](#compensationformdata)\> | Pre-fill form values. Server data takes precedence on update mode. |
-| `employeeId?` | `string` | UUID of the employee whose compensation is being created or edited. Drives data fetching for derived helpers (jobs list, work address, minimum wages). May be omitted when composing alongside an employee-creation step. |
-| `jobId?` | `string` | The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation. |
-| `optionalFieldsToRequire?` | [`CompensationOptionalFieldsToRequire`](#compensationoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [CompensationOptionalFieldsToRequire](#compensationoptionalfieldstorequire). |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-| `withEffectiveDateField?` | `boolean` | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
 
 ## Type Aliases
 <a id="adjustforminimumwagefieldprops"></a>

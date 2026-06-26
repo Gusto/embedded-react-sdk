@@ -383,15 +383,33 @@ export class SDKRouter extends MemberRouter {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
-        // Remove inlined types from groups — SharedProps is inlined under the hook
-        // function's Parameters section, Ready is inlined in the Returns section,
+        // Remove inlined types from groups — the props interface is inlined under
+        // the hook's Parameters section, Ready is inlined in the Returns section,
         // and Fields is inlined as the fields quick-reference table.
         const hookPascal = hookDir.charAt(0).toUpperCase() + hookDir.slice(1)
+        const hookPascalBase = hookDir.replace(/^use/, '')
         const inlinedNames = new Set([
           `${hookPascal}SharedProps`,
           `${hookPascal}Ready`,
-          `${hookDir.replace(/^use/, '').replace(/Form$/, '')}Fields`,
+          // Fields name: try both <HookPascal>Fields and <HookPascalBase-Form>Fields
+          `${hookPascalBase}Fields`,
+          `${hookPascalBase.replace(/Form$/, '')}Fields`,
         ])
+        // Also remove the direct props interface found via the hook's parameter type.
+        for (const member of hookMembers) {
+          if (!(member instanceof DeclarationReflection) || member.name !== hookDir) continue
+          for (const sig of member.signatures ?? []) {
+            for (const param of sig.parameters ?? []) {
+              if (
+                param.type instanceof ReferenceType &&
+                param.type.reflection instanceof DeclarationReflection &&
+                param.type.reflection.kind === ReflectionKind.Interface
+              ) {
+                inlinedNames.add(param.type.reflection.name)
+              }
+            }
+          }
+        }
         for (const group of hookNs.groups) {
           group.children = group.children.filter(
             c =>

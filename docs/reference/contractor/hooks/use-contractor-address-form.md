@@ -25,6 +25,20 @@ same address is labelled a "home" address for Individual contractors and a
 "business" address for Business contractors; the hook exposes `contractorType`
 so the consuming component can choose the appropriate copy.
 
+## UseContractorAddressFormProps
+
+<a id="usecontractoraddressformprops"></a>
+
+Configuration options for [useContractorAddressForm](#usecontractoraddressform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | UUID of the contractor whose address is being edited. |
+| `defaultValues?` | `Partial`\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | Pre-fill form values. Server data takes precedence. |
+| `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
@@ -55,12 +69,6 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
 
 ## ContractorAddressFields
 <a id="contractoraddressfields"></a>
@@ -243,24 +251,6 @@ Optional overrides passed to [onSubmit](#usecontractoraddressformready).
 | ------ | ------ | ------ |
 | `contractorId?` | `string` | Override the contractor identifier supplied to the hook. |
 
-***
-
-<a id="usecontractoraddressformprops"></a>
-
-### UseContractorAddressFormProps
-
-Configuration options for [useContractorAddressForm](#usecontractoraddressform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | UUID of the contractor whose address is being edited. |
-| `defaultValues?` | `Partial`\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | Pre-fill form values. Server data takes precedence. |
-| `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
 ## Type Aliases
 <a id="contractoraddresserrorcode"></a>
 
@@ -300,16 +290,6 @@ Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontrac
 > **ContractorAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the contractor address form.
-
-***
-
-<a id="contractoraddressformfields"></a>
-
-### ContractorAddressFormFields
-
-> **ContractorAddressFormFields** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
 
 ***
 

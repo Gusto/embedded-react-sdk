@@ -72,6 +72,17 @@ Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
 `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
 fixed and all fields except preparer street-2 are required.
 
+## UseSignEmployeeFormProps
+
+<a id="usesignemployeeformprops"></a>
+
+Props for [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `formId` | `string` | The UUID of the employee form to sign. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
@@ -99,12 +110,6 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status` | `object` | Submit-state flags. |
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignEmployeeFormProps`](#usesignemployeeformprops) | See [UseSignEmployeeFormProps](#usesignemployeeformprops). |
 
 <a id="confirmsignaturefield"></a>
 
@@ -239,21 +244,6 @@ always null-check before rendering.
 | `Signature` | (`props`: [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops)) => `Element` | Text input for the employee's typed signature; always present. |
 | `UsedPreparer` | ((`props`: [`UsedPreparerFieldProps`](#usedpreparerfieldprops)) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
-***
-
-<a id="usesignemployeeformprops"></a>
-
-### UseSignEmployeeFormProps
-
-Props for [useSignEmployeeForm](#usesignemployeeform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `formId` | `string` | The UUID of the employee form to sign. |
-
 ## Type Aliases
 <a id="preparercheckboxfieldprops"></a>
 
@@ -374,16 +364,6 @@ form schema.
 > **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the I-9 sign-employee form.
-
-***
-
-<a id="signemployeeformfields"></a>
-
-### SignEmployeeFormFields
-
-> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
 
 ***
 

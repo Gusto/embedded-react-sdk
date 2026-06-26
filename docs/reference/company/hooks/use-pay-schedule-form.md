@@ -78,6 +78,25 @@ preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
 the company's payment configuration and is useful for surfacing UI hints
 about how far ahead the first pay date must be.
 
+## UsePayScheduleFormProps
+
+<a id="usepayscheduleformprops"></a>
+
+Configuration options for [usePayScheduleForm](#usepayscheduleform).
+
+**Remarks**
+
+Presence or absence of `payScheduleId` selects between update and create mode.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company that owns the pay schedule. |
+| `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
+| `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
+| `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
@@ -109,12 +128,6 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePayScheduleFormProps`](#usepayscheduleformprops) | See [UsePayScheduleFormProps](#usepayscheduleformprops). |
 
 ## PayScheduleFields
 <a id="payschedulefields"></a>
@@ -339,29 +352,6 @@ Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fiel
 
 Use these as `validationMessages` keys on the corresponding `Fields.*` components.
 
-## Interfaces
-
-<a id="usepayscheduleformprops"></a>
-
-### UsePayScheduleFormProps
-
-Configuration options for [usePayScheduleForm](#usepayscheduleform).
-
-#### Remarks
-
-Presence or absence of `payScheduleId` selects between update and create mode.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company that owns the pay schedule. |
-| `defaultValues?` | `Partial`\<[`PayScheduleFormData`](#payscheduleformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `optionalFieldsToRequire?` | [`PayScheduleOptionalFieldsToRequire`](#payscheduleoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `PayScheduleOptionalFieldsToRequire`. |
-| `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
 ## Type Aliases
 <a id="day1fieldprops"></a>
 
@@ -435,16 +425,6 @@ Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayschedulefo
 > **PayScheduleFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
 
 Shape of the values managed by the pay schedule form.
-
-***
-
-<a id="payscheduleformfields"></a>
-
-### PayScheduleFormFields
-
-> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
 
 ***
 

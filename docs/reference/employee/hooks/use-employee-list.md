@@ -22,11 +22,16 @@ custom_edit_url: null
 Fetches a paginated list of a company's employees and decorates each entry with the actions
 allowed for its current onboarding state.
 
-#### Parameters
+#### UseEmployeeListProps
 
-| Parameter | Type | Description |
+<a id="useemployeelistprops"></a>
+
+Props for [useEmployeeList](#useemployeelist).
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `input` | [`UseEmployeeListProps`](#useemployeelistprops) | Company and optional filter for the list. |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeType?` | [`EmployeeType`](#employeetype) | Filters the list and tailors the allowed actions. Omit to list all employees. |
 
 #### Returns
 
@@ -144,21 +149,6 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `twoPercentShareholder?` | `boolean` \| `null` | Whether the employee is a two percent shareholder of the company. This field only applies to companies with an S-Corp entity type. |
 | `version?` | `string` | The current version of the employee. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 | `workEmail?` | `string` \| `null` | The work email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
-
-***
-
-<a id="useemployeelistprops"></a>
-
-### UseEmployeeListProps
-
-Props for [useEmployeeList](#useemployeelist).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `employeeType?` | [`EmployeeType`](#employeetype) | Filters the list and tailors the allowed actions. Omit to list all employees. |
 
 ## Type Aliases
 
