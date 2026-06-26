@@ -28,6 +28,23 @@ function RunPayrollPage() {
 
 Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
 
+## PayrollFlowProps
+
+<a id="payrollflowprops"></a>
+
+Props accepted by PayrollFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose payroll is being run. |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
+| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/selected` | A payroll is selected to run | `{ payrollId: string }` |
@@ -46,21 +63,6 @@ Renders the payroll landing page and orchestrates the full run-payroll experienc
 | `runPayroll/offCycle/start` | The user starts an off-cycle payroll | — |
 | `transition/runPayroll` | The user starts a pending transition payroll | — |
 | `payroll/saveAndExit` | The user clicks Save and Exit | — |
-
-## PayrollFlowProps
-
-<a id="payrollflowprops"></a>
-
-Props accepted by PayrollFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Identifier of the company whose payroll is being run. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
-| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
-
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
 ## Sub-components
 

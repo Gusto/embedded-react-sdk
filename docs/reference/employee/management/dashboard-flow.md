@@ -67,6 +67,21 @@ and edit screens and to surface success alerts. The table below is the
 complete, current set of events observable from `DashboardFlow`, grouped by
 the tab that emits them.
 
+## DashboardFlowProps
+
+<a id="dashboardflowprops"></a>
+
+Props for DashboardFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when "Edit" is clicked on the Basic details (Profile) card | `{ employeeId: string }` |
@@ -118,19 +133,6 @@ the tab that emits them.
 | `CANCEL` | Fired when the user clicks Back in the document viewer; the dashboard returns to the cards | — |
 | `employee/dashboard/tabChange` | Fired when the user switches dashboard tabs | `{ tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' }` |
 | `employee/dismiss` | Fired when the user dismisses a top-of-dashboard success alert | — |
-
-## DashboardFlowProps
-
-<a id="dashboardflowprops"></a>
-
-Props for DashboardFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ## Sub-components
 
