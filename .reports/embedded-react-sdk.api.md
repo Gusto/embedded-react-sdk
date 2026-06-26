@@ -20,7 +20,8 @@ import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components
 import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
-import { ContractorType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
@@ -101,10 +102,8 @@ type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
 // @public
 function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "BaseComponentInterface" needs to be exported by the entry point index.d.ts
-//
 // @public
-interface AddEmployeesHolidayProps extends BaseComponentInterface {
+interface AddEmployeesHolidayProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -112,7 +111,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface {
 function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
 
 // @public
-interface AddEmployeesToPolicyProps extends BaseComponentInterface {
+interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
     companyId: string;
     policyId: string;
     policyType: CreatableTimeOffPolicyType;
@@ -131,11 +130,9 @@ interface AddressProps {
     className?: string;
     contractorId: string;
     defaultValues?: AddressDefaultValues;
-    // Warning: (ae-forgotten-export) The symbol "ResourceDictionary" needs to be exported by the entry point index.d.ts
     dictionary?: ResourceDictionary<'Contractor.Address'>;
     // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
     FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
     onEvent: OnEventType<EventType, unknown>;
 }
 
@@ -231,10 +228,13 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
     status?: 'success' | 'warning' | 'error' | 'info';
 }
 
-// Warning: (ae-forgotten-export) The symbol "BankAccountProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function BankAccount(props: BankAccountProps): JSX;
+
+// @public
+interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
+    companyId: string;
+}
 
 // @public
 export type BankFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
@@ -282,6 +282,15 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
     children: ReactNode;
     status?: 'warning' | 'error';
     title: ReactNode;
+}
+
+// @public
+export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources> extends CommonComponentInterface<TResourceKey> {
+    FallbackComponent?: (props: FallbackProps) => JSX.Element;
+    LoaderComponent?: (input: {
+        children?: ReactNode;
+    }) => JSX.Element;
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -540,19 +549,35 @@ export interface ComboBoxProps extends SharedFieldLayoutProps, Pick<InputHTMLAtt
     value?: string | null;
 }
 
+// @public
+export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
+    children?: ReactNode;
+    className?: string;
+    defaultValues?: unknown;
+    dictionary?: ResourceDictionary<TResourceKey>;
+}
+
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
+        OnboardingFlowProps_2 as OnboardingFlowProps,
+        OnboardingFlowDefaultValues,
         OnboardingOverview,
+        OnboardingOverviewProps,
         DocumentSigner_2 as DocumentSigner,
+        DocumentSignerProps_2 as DocumentSignerProps,
         DocumentList_2 as DocumentList,
+        DocumentListProps_2 as DocumentListProps,
         SignatureForm_2 as SignatureForm,
         SignatureFormProps_2 as SignatureFormProps,
         Industry,
         IndustryProps,
         BankAccount,
+        BankAccountProps,
         Locations,
+        LocationsProps,
         LocationForm,
+        LocationFormProps,
         LocationsList,
         LocationsListProps,
         PaySchedule,
@@ -560,9 +585,14 @@ declare namespace CompanyOnboarding {
         PayScheduleDefaultValues,
         PayScheduleDefaultFields,
         FederalTaxes_3 as FederalTaxes,
+        FederalTaxesProps_3 as FederalTaxesProps,
+        FederalTaxesDefaultValues,
         StateTaxes_3 as StateTaxes,
+        StateTaxesProps_3 as StateTaxesProps,
         StateTaxesForm,
+        StateTaxesFormProps,
         StateTaxesList,
+        StateTaxesListProps,
         AssignSignatory,
         AssignSignatoryProps,
         AssignSignatoryDefaultValues,
@@ -589,7 +619,7 @@ namespace Compensation_2 {
 }
 
 // @public
-function Compensation_3(input: CompensationProps_2 & BaseComponentInterface<'Employee.Management.Compensation'>): JSX;
+function Compensation_3(input: CompensationProps_2): JSX;
 
 // @public
 function CompensationAddAnotherJobForm(input: CompensationAddAnotherJobFormProps): JSX;
@@ -711,9 +741,8 @@ interface CompensationProps extends BaseComponentInterface<'Employee.Compensatio
 }
 
 // @public
-interface CompensationProps_2 extends CommonComponentInterface<'Employee.Management.Compensation'> {
+interface CompensationProps_2 extends BaseComponentInterface<'Employee.Management.Compensation'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -848,6 +877,7 @@ export const componentEvents: {
     readonly PAYROLL_EXIT_FLOW: "payroll/saveAndExit";
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
+    readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
     readonly CONTRACTOR_ADDRESS_UPDATED: "contractor/address/updated";
     readonly CONTRACTOR_ADDRESS_DONE: "contractor/address/done";
     readonly CONTRACTOR_PAYMENT_METHOD_UPDATED: "contractor/paymentMethod/updated";
@@ -1088,15 +1118,14 @@ export function ConfirmSignatureField(props: SignEmployeeFormConfirmSignatureFie
 export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignCompanyFormRequiredValidation>>;
 
 // @public
-function ConfirmWireDetails(input: Omit<BaseComponentInterface, 'onEvent'> & ConfirmWireDetailsProps): JSX;
+function ConfirmWireDetails(input: ConfirmWireDetailsProps): JSX;
 
 // @public
-export type ConfirmWireDetailsComponentType = ComponentType<ConfirmWireDetailsProps>;
+type ConfirmWireDetailsComponentType = ComponentType<ConfirmWireDetailsProps>;
 
 // @public
-export interface ConfirmWireDetailsProps {
+interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
     companyId: string;
-    onEvent?: BaseComponentInterface['onEvent'];
     wireInId?: string;
 }
 
@@ -1178,10 +1207,123 @@ export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldPr
 export type ContractorAddressZipValidation = (typeof ContractorAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
 
 // @public
-function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
+export function ContractorBusinessNameField(props: ContractorBusinessNameFieldProps): JSX;
 
 // @public
-interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+export type ContractorBusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
+// @public
+export type ContractorDetailsEinRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsEinValidation = typeof ContractorDetailsErrorCodes.INVALID_EIN;
+
+// @public
+export type ContractorDetailsEmailValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL'];
+
+// @public
+export type ContractorDetailsErrorCode = (typeof ContractorDetailsErrorCodes)[keyof typeof ContractorDetailsErrorCodes];
+
+// @public
+export const ContractorDetailsErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_NAME: "INVALID_NAME";
+    readonly INVALID_EMAIL: "INVALID_EMAIL";
+    readonly INVALID_SSN: "INVALID_SSN";
+    readonly INVALID_EIN: "INVALID_EIN";
+};
+
+// @public
+export interface ContractorDetailsFields {
+    BusinessName: typeof ContractorBusinessNameField | undefined;
+    Ein: typeof ContractorEinField | undefined;
+    Email: typeof ContractorEmailField | undefined;
+    FileNewHireReport: typeof ContractorFileNewHireReportField | undefined;
+    FirstName: typeof ContractorFirstNameField | undefined;
+    HourlyRate: typeof ContractorHourlyRateField | undefined;
+    LastName: typeof ContractorLastNameField | undefined;
+    MiddleInitial: typeof ContractorMiddleInitialField | undefined;
+    SelfOnboarding: typeof ContractorSelfOnboardingField | undefined;
+    Ssn: typeof ContractorSsnField | undefined;
+    StartDate: typeof ContractorStartDateField;
+    Type: typeof ContractorTypeField;
+    WageType: typeof ContractorWageTypeField;
+    WorkState: typeof ContractorWorkStateField | undefined;
+}
+
+// @public
+export type ContractorDetailsFieldsMetadata = UseContractorDetailsFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorDetailsFormData = { type: "Business" | "Individual"; wageType: "Fixed" | "Hourly"; startDate: string; hourlyRate: number; selfOnboarding: boolean; fileNewHireReport: boolean; email: string; firstName: string; lastName: string; middleInitial: string; businessName: string; workState: string; ssn: string; ein: string; };
+
+// @public
+export type ContractorDetailsFormFields = UseContractorDetailsFormReady['form']['Fields'];
+
+// @public
+export type ContractorDetailsFormOutputs = ContractorDetailsFormData;
+
+// @public
+export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
+
+// @public
+export type ContractorDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "ssn" | "ein")[] | undefined; update?: ("hourlyRate" | "startDate" | "firstName" | "lastName" | "middleInitial" | "businessName" | "workState" | "ssn" | "ein")[] | undefined; };
+
+// @public
+export type ContractorDetailsRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsSsnRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsSsnValidation = typeof ContractorDetailsErrorCodes.INVALID_SSN;
+
+// @public
+export interface ContractorDetailsSubmitOptions {
+    companyId?: string;
+}
+
+// @public
+export function ContractorEinField(props: ContractorEinFieldProps): JSX;
+
+// @public
+export type ContractorEinFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEinValidation, ContractorDetailsEinRequiredValidation>>;
+
+// @public
+export function ContractorEmailField(props: ContractorEmailFieldProps): JSX;
+
+// @public
+export type ContractorEmailFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEmailValidation>>;
+
+// @public
+export function ContractorFileNewHireReportField(props: ContractorFileNewHireReportFieldProps): JSX;
+
+// @public
+export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFieldProps>;
+
+// @public
+export function ContractorFirstNameField(props: ContractorFirstNameFieldProps): JSX;
+
+// @public
+export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
+
+// @public
+export function ContractorHourlyRateField(props: ContractorHourlyRateFieldProps): JSX;
+
+// @public
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
+// @public
+export function ContractorLastNameField(props: ContractorLastNameFieldProps): JSX;
+
+// @public
+export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
+
+// @public
+function ContractorList(props: ContractorListProps): JSX;
+
+// @public
+interface ContractorListProps extends BaseComponentInterface<'Contractor.ContractorList'> {
     companyId: string;
     successMessage?: string;
 }
@@ -1203,16 +1345,24 @@ declare namespace ContractorManagement {
     }
 }
 
+// @public
+export function ContractorMiddleInitialField(props: ContractorMiddleInitialFieldProps): JSX;
+
+// @public
+export type ContractorMiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
 declare namespace ContractorOnboarding {
     export {
         OnboardingFlow_3 as OnboardingFlow,
         OnboardingFlowProps_3 as OnboardingFlowProps,
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
+        Landing_2 as Landing,
+        LandingProps_2 as LandingProps,
         ContractorList,
         ContractorListProps,
         ContractorProfile,
         ContractorProfileProps,
-        ContractorProfileFormData,
+        ContractorDetailsFormData as ContractorProfileFormData,
         Address,
         AddressProps,
         AddressDefaultValues,
@@ -1237,31 +1387,68 @@ export const ContractorOnboardingStatus: {
 };
 
 // @public
-function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileSchema" needs to be exported by the entry point index.d.ts
-//
-// @public
-type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
+function ContractorProfile(props: ContractorProfileProps): JSX;
 
 // @public
-interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Profile'> {
+interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
     companyId: string;
     contractorId?: string;
-    defaultValues?: Partial<ContractorProfileFormData>;
+    defaultValues?: Partial<ContractorDetailsFormData>;
 }
 
 // @public
-export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
+export function ContractorSelfOnboardingField(props: ContractorSelfOnboardingFieldProps): JSX;
 
 // @public
-function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX;
+export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // @public
-interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
+export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
+
+// @public
+export function ContractorSsnField(props: ContractorSsnFieldProps): JSX;
+
+// @public
+export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
+
+// @public
+export function ContractorStartDateField(props: ContractorStartDateFieldProps): JSX;
+
+// @public
+export type ContractorStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorDetailsRequiredValidation>>;
+
+// @public
+function ContractorSubmit(props: ContractorSubmitProps): JSX;
+
+// @public
+interface ContractorSubmitProps extends BaseComponentInterface<'Contractor.Submit'> {
     contractorId: string;
     selfOnboarding?: boolean;
 }
+
+// @public
+export const ContractorType: {
+    readonly Individual: "Individual";
+    readonly Business: "Business";
+};
+
+// @public
+export function ContractorTypeField(props: ContractorTypeFieldProps): JSX;
+
+// @public
+export type ContractorTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['type']>>;
+
+// @public
+export function ContractorWageTypeField(props: ContractorWageTypeFieldProps): JSX;
+
+// @public
+export type ContractorWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>>;
+
+// @public
+export function ContractorWorkStateField(props: ContractorWorkStateFieldProps): JSX;
+
+// @public
+export type ContractorWorkStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorDetailsRequiredValidation, string>>;
 
 // @public
 export type CountyEntry = {
@@ -1471,7 +1658,7 @@ day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 }>;
 
 // @public
-function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX;
+function CreateSignatory(props: CreateSignatoryProps): JSX;
 
 // @public
 type CreateSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title' | 'phone' | 'birthday'> & Pick<NonNullable<Signatory['homeAddress']>, 'street1' | 'street2' | 'city' | 'state' | 'zip'> & {
@@ -1479,7 +1666,7 @@ type CreateSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName
 }>;
 
 // @public
-interface CreateSignatoryProps extends CommonComponentInterface {
+interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
     companyId: string;
     defaultValues?: CreateSignatoryDefaultValues;
     signatoryId?: string;
@@ -1597,24 +1784,21 @@ export function CustomTwicePerMonthField(props: CustomTwicePerMonthFieldProps): 
 // @public
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
 
-// @internal (undocumented)
-function Dashboard(input: DashboardProps & BaseComponentInterface): JSX;
+// @public
+function Dashboard(input: DashboardProps): JSX;
 
 // @public
 const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
 // @public
-interface DashboardFlowProps extends BaseComponentInterface {
+interface DashboardFlowProps extends BaseComponentInterface<never> {
     employeeId: string;
 }
 
-// @internal (undocumented)
+// @public (undocumented)
 interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
-    // (undocumented)
     employeeId: string;
     // Warning: (ae-forgotten-export) The symbol "DashboardTab" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
     selectedTab?: DashboardTab;
 }
 
@@ -1752,7 +1936,7 @@ export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQ
 function Deductions(input: DeductionsProps): JSX;
 
 // @public
-function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX;
+function Deductions_2(input: DeductionsProps_2): JSX;
 
 // @public
 function DeductionsCard(props: DeductionsCardProps): JSX;
@@ -1764,10 +1948,10 @@ interface DeductionsCardProps {
 }
 
 // @public
-function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function DeductionsEditForm(input: DeductionsEditFormProps): JSX;
 
 // @public
-interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
+interface DeductionsEditFormProps extends BaseComponentInterface<'Employee.Management.Deductions'> {
     editingDeductionId?: string;
     employeeId: string;
     onEvent: BaseComponentInterface['onEvent'];
@@ -1785,9 +1969,17 @@ interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> 
 }
 
 // @public
-interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Management.Deductions'> {
+interface DeductionsProps_2 extends BaseComponentInterface<'Employee.Management.Deductions'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+export type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends (infer U)[]
+    ? DeepPartial<U>[]
+    : T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P]
 }
 
 // @public
@@ -1854,29 +2046,31 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
 // @public
 function DocumentList(props: DocumentListProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentListProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentList_2(props: DocumentListProps_2): JSX;
 
 // @public
-interface DocumentListProps extends BaseComponentInterface {
+interface DocumentListProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
 }
 
-// @internal
-function DocumentManager(props: DocumentManagerProps & BaseComponentInterface): JSX;
+// @public
+interface DocumentListProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
+}
 
-// @internal (undocumented)
-interface DocumentManagerProps {
-    // (undocumented)
+// @public
+function DocumentManager(props: DocumentManagerProps): JSX;
+
+// @public
+interface DocumentManagerProps extends BaseComponentInterface<'Employee.DocumentManager'> {
     employeeId: string;
-    // (undocumented)
     formId: string;
 }
 
 // @public
-function Documents(input: DocumentsProps & BaseComponentInterface<'Employee.Management.Documents'>): JSX;
+function Documents(input: DocumentsProps): JSX;
 
 // @public
 function DocumentsCard(props: DocumentsCardProps): JSX;
@@ -1890,8 +2084,6 @@ interface DocumentsCardProps {
 // @public
 function DocumentSigner(props: DocumentSignerProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
@@ -1902,9 +2094,14 @@ interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentS
 }
 
 // @public
-interface DocumentsProps extends CommonComponentInterface<'Employee.Management.Documents'> {
+interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
+}
+
+// @public
+interface DocumentsProps extends BaseComponentInterface<'Employee.Management.Documents'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -1950,7 +2147,7 @@ export const EmployeeDetailsErrorCodes: {
 };
 
 // @public
-export type EmployeeDetailsField = "firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn";
+export type EmployeeDetailsField = "email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth";
 
 // @public
 export interface EmployeeDetailsFields {
@@ -1976,7 +2173,7 @@ export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fie
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
 
 // @public
-export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "email" | "dateOfBirth" | "ssn")[] | undefined; update?: ("firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn")[] | undefined; };
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("email" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; update?: ("email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -1994,23 +2191,23 @@ function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 // @public
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
-function EmployeeList(input: EmployeeListProps & BaseComponentInterface): JSX;
+function EmployeeList(input: EmployeeListProps): JSX;
 
 // @public
 const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 
 // @public
-interface EmployeeListFlowProps extends BaseComponentInterface {
+interface EmployeeListFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
 // @public
 interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
     companyId: string;
+    showContinueButton?: boolean;
 }
 
 declare namespace EmployeeManagement {
@@ -2105,10 +2302,13 @@ declare namespace EmployeeOnboarding {
         OnboardingExecutionInitialState,
         OnboardingDefaultValues,
         SelfOnboardingFlow,
+        SelfOnboardingFlowProps,
         EmployeeList,
         EmployeeListProps,
         OnboardingSummary,
+        OnboardingSummaryProps,
         Landing,
+        LandingProps,
         DocumentSigner,
         DocumentSignerProps,
         EmploymentEligibility,
@@ -2257,15 +2457,13 @@ export function ExtraWithholdingField(props: ExtraWithholdingFieldProps): JSX;
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
-function FederalTaxes(input: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function FederalTaxes(input: FederalTaxesProps): JSX;
 
 // @public
-function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
+function FederalTaxes_2(input: FederalTaxesProps_2): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesProps_3" needs to be exported by the entry point index.d.ts
-//
 // @public
-function FederalTaxes_3(props: FederalTaxesProps_3 & BaseComponentInterface): JSX;
+function FederalTaxes_3(props: FederalTaxesProps_3): JSX;
 
 // @public
 function FederalTaxesCard(props: FederalTaxesCardProps): JSX;
@@ -2277,13 +2475,19 @@ interface FederalTaxesCardProps {
 }
 
 // @public
-function FederalTaxesEditForm(input: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+type FederalTaxesDefaultValues = RequireAtLeastOne<{
+    taxPayerType?: string | undefined;
+    filingForm?: string | undefined;
+    legalName?: string;
+}>;
 
 // @public
-interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+function FederalTaxesEditForm(input: FederalTaxesEditFormProps): JSX;
+
+// @public
+interface FederalTaxesEditFormProps extends BaseComponentInterface<'Employee.Management.FederalTaxes'> {
     defaultValues?: Partial<FederalTaxesFormData>;
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
@@ -2323,16 +2527,21 @@ export type FederalTaxesFormOutputs = FederalTaxesFormData;
 export type FederalTaxesOptionalFieldsToRequire = { create?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; update?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; };
 
 // @public
-interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
+interface FederalTaxesProps extends BaseComponentInterface<'Employee.FederalTaxes'> {
     defaultValues?: Partial<FederalTaxesFormData>;
     employeeId: string;
     onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
-interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+interface FederalTaxesProps_2 extends BaseComponentInterface<'Employee.Management.FederalTaxes'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
+}
+
+// @public
+interface FederalTaxesProps_3 extends BaseComponentInterface<'Company.FederalTaxes'> {
+    companyId: string;
+    defaultValues?: FederalTaxesDefaultValues;
 }
 
 // @public
@@ -2610,13 +2819,13 @@ interface HolidayPolicyDetailPresentationProps {
 function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX;
 
 // @public
-interface HolidaySelectionFormProps extends BaseComponentInterface {
+interface HolidaySelectionFormProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy'> {
     companyId: string;
     mode?: 'create' | 'edit';
 }
 
 // @public
-function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>): JSX;
+function HomeAddress(input: HomeAddressProps): JSX;
 
 // @public
 function HomeAddressCard(props: HomeAddressCardProps): JSX;
@@ -2628,12 +2837,11 @@ interface HomeAddressCardProps {
 }
 
 // @public
-function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX;
+function HomeAddressEditForm(input: HomeAddressEditFormProps): JSX;
 
 // @public
-interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
+interface HomeAddressEditFormProps extends BaseComponentInterface<'Employee.Management.HomeAddress'> {
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
@@ -2681,9 +2889,8 @@ export type HomeAddressFormOutputs = HomeAddressFormData;
 export type HomeAddressOptionalFieldsToRequire = { create?: "street2"[] | undefined; update?: "street2"[] | undefined; };
 
 // @public
-interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
+interface HomeAddressProps extends BaseComponentInterface<'Employee.Management.HomeAddress'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -2736,18 +2943,18 @@ export const I9_FORM_NAME = "US_I-9";
 function I9SignatureForm(props: I9SignatureFormProps): JSX;
 
 // @public
-interface I9SignatureFormProps extends BaseComponentInterface {
+interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I9SignatureForm'> {
     employeeId: string;
     formId: string;
 }
 
 // @public
-function Industry<T>(props: IndustryProps<T>): JSX;
+function Industry(props: IndustryProps): JSX;
 
 // @public
-type IndustryProps<T> = Pick<BaseComponentInterface<'Company.Industry'>, 'onEvent' | 'dictionary'> & Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
+interface IndustryProps extends BaseComponentInterface<'Company.Industry'> {
     companyId: string;
-};
+}
 
 // Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2800,7 +3007,7 @@ interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'Info
 }
 
 // @public
-function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface): JSX;
+function InviteSignatory(props: InviteSignatoryProps): JSX;
 
 // @public
 type InviteSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title'> & {
@@ -2808,7 +3015,7 @@ type InviteSignatoryDefaultValues = RequireAtLeastOne<Pick<Signatory, 'firstName
 }>;
 
 // @public
-interface InviteSignatoryProps extends CommonComponentInterface {
+interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
     companyId: string;
     defaultValues?: InviteSignatoryDefaultValues;
 }
@@ -2852,10 +3059,10 @@ export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "
 export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED;
 
 // @public (undocumented)
-function JobsList(props: JobsListProps & BaseComponentInterface): JSX;
+function JobsList(props: JobsListProps): JSX;
 
 // @public (undocumented)
-interface JobsListProps extends CommonComponentInterface<'Employee.Compensation'> {
+interface JobsListProps extends BaseComponentInterface<'Employee.Compensation'> {
     employeeId: string;
 }
 
@@ -2871,10 +3078,23 @@ export function JobTitleField(props: JobTitleFieldProps): JSX;
 // @public
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequiredValidation>>;
 
-// Warning: (ae-forgotten-export) The symbol "SummaryProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
-function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX;
+function Landing(props: LandingProps): JSX;
+
+// @public
+function Landing_2(props: LandingProps_2): JSX;
+
+// @public
+interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
+    companyId: string;
+    employeeId: string;
+}
+
+// @public
+interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
+    companyId: string;
+    contractorId: string;
+}
 
 // @public
 export function LastNameField(props: LastNameFieldProps): JSX;
@@ -2944,13 +3164,15 @@ export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>
 // @public
 export type LocationFieldProps = HookFieldProps<SelectHookFieldProps<WorkAddressRequiredValidation, Location_2>>;
 
-// Warning: (ae-forgotten-export) The symbol "LocationFormProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
+function LocationForm(input: LocationFormProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "LocationsProps" needs to be exported by the entry point index.d.ts
-//
+// @public
+interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> {
+    companyId: string;
+    locationId?: string;
+}
+
 // @public
 function Locations(input: LocationsProps): JSX;
 
@@ -2958,18 +3180,22 @@ function Locations(input: LocationsProps): JSX;
 function LocationsList(props: LocationsListProps): JSX;
 
 // @public
-interface LocationsListProps extends BaseComponentInterface {
+interface LocationsListProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
 }
 
 // @public
-function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
+interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
+    companyId: string;
+}
 
 // @public
-interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+function ManagementEmployeeList(input: ManagementEmployeeListProps): JSX;
+
+// @public
+interface ManagementEmployeeListProps extends BaseComponentInterface<'Employee.ManagementEmployeeList'> {
     companyId: string;
     initialTab?: EmployeeTab;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
@@ -3095,6 +3321,7 @@ export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTML
     minimumFractionDigits?: number;
     onBlur?: () => void;
     onChange?: (value: number) => void;
+    onInputChange?: (value: string) => void;
     value?: number;
 }
 
@@ -3261,8 +3488,6 @@ type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 // @public
 const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
@@ -3270,34 +3495,57 @@ const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
 // @public
+type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+    federalTaxes?: FederalTaxesDefaultValues;
+    paySchedule?: PayScheduleDefaultValues;
+}>;
+
+// @public
 type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
-    profile?: Partial<ContractorProfileFormData>;
+    profile?: Partial<ContractorDetailsFormData>;
     address?: AddressDefaultValues;
 }>;
 
 // @public
-interface OnboardingFlowProps extends BaseComponentInterface {
+interface OnboardingFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingDefaultValues>;
     isSelfOnboardingEnabled?: boolean;
+    showContinueButton?: boolean;
     withEmployeeI9?: boolean;
 }
 
 // @public
-interface OnboardingFlowProps_3 extends BaseComponentInterface {
+interface OnboardingFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+    defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>;
+}
+
+// @public
+interface OnboardingFlowProps_3 extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues_2>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface): JSX;
+function OnboardingOverview(props: OnboardingOverviewProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "SummaryProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
+interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+    companyId: string;
+}
+
+// @public
+function OnboardingSummary(props: OnboardingSummaryProps): JSX;
+
+// @public
+interface OnboardingSummaryProps extends BaseComponentInterface<'Employee.OnboardingSummary'> {
+    employeeId: string;
+    isAdmin?: boolean;
+}
+
+// @public
+export type OnEventType<K, T> = (type: K, data?: T) => void;
 
 // @public
 export interface OrderedListProps extends BaseListProps {
@@ -3348,7 +3596,7 @@ export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
 const PaymentFlow: (input: PaymentFlowProps) => JSX;
 
 // @public
-interface PaymentFlowProps extends BaseComponentInterface {
+interface PaymentFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -3361,10 +3609,10 @@ interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.Payment
 }
 
 // @public
-function PaymentMethod(input: PaymentMethodProps & BaseComponentInterface): JSX;
+function PaymentMethod(input: PaymentMethodProps): JSX;
 
 // @public
-function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
+function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 
 // @public
 function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
@@ -3419,20 +3667,18 @@ export type PaymentMethodFormOutputs = PaymentMethodFormData;
 export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorCodes.REQUIRED;
 
 // @public
-interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
+interface PaymentMethodProps extends BaseComponentInterface<'Employee.PaymentMethod'> {
     defaultValues?: never;
     employeeId: string;
     isAdmin?: boolean;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
-interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
+interface PaymentMethodProps_2 extends BaseComponentInterface<'Employee.Management.PaymentMethod'> {
     defaultValues?: never;
     employeeId: string;
     initialState?: 'list' | 'add' | 'split';
     isAdmin?: boolean;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -3574,7 +3820,7 @@ interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.Payrol
 }
 
 // @public
-function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface): JSX;
+function PayrollConfiguration(props: PayrollConfigurationProps): JSX;
 
 // @public
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
@@ -3585,7 +3831,7 @@ interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.Payr
 }
 
 // @public
-function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface): JSX;
+function PayrollEditEmployee(props: PayrollEditEmployeeProps): JSX;
 
 // @public
 interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
@@ -3628,7 +3874,7 @@ type PayrollFlowAlert = {
 };
 
 // @public
-interface PayrollFlowProps extends BaseComponentInterface {
+interface PayrollFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType;
     withReimbursements?: boolean;
@@ -3657,7 +3903,7 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
 function PayrollList(props: PayrollListBlockProps): JSX;
 
 // @public
-interface PayrollListBlockProps extends BaseComponentInterface {
+interface PayrollListBlockProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -3692,7 +3938,7 @@ interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollRe
 }
 
 // @public
-const PaySchedule: (input: PayScheduleProps & BaseComponentInterface) => JSX;
+const PaySchedule: (input: PayScheduleProps) => JSX;
 
 // @public
 type PayScheduleDefaultFields = {
@@ -3743,10 +3989,8 @@ export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice pe
 // @public
 export type PayScheduleOptionalFieldsToRequire = { create?: "customTwicePerMonth"[] | undefined; update?: "customTwicePerMonth"[] | undefined; };
 
-// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
-//
 // @public
-interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
+interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
     companyId: string;
     defaultValues?: PayScheduleDefaultValues;
 }
@@ -3855,7 +4099,7 @@ interface PolicySettingsPresentationProps {
 }
 
 // @public
-interface PolicySettingsProps extends BaseComponentInterface {
+interface PolicySettingsProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
     mode?: 'create' | 'edit';
     policyId: string;
 }
@@ -3912,10 +4156,10 @@ export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<SignE
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
-function Profile(input: ProfileProps & BaseComponentInterface): JSX;
+function Profile(input: ProfileProps): JSX;
 
 // @public
-function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Management.Profile'>): JSX;
+function Profile_2(input: ProfileProps_2): JSX;
 
 // @public
 function ProfileCard(props: ProfileCardProps): JSX;
@@ -3946,28 +4190,25 @@ type ProfileDefaultValues = RequireAtLeastOne<{
 }>;
 
 // @public
-function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function ProfileEditForm(input: ProfileEditFormProps): JSX;
 
 // @public
-interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
+interface ProfileEditFormProps extends BaseComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
-interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
+interface ProfileProps extends BaseComponentInterface<'Employee.Profile'> {
     companyId: string;
     defaultValues?: ProfileDefaultValues;
     employeeId?: string;
     isAdmin?: boolean;
     isSelfOnboardingEnabled?: boolean;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
-interface ProfileProps_2 extends CommonComponentInterface<'Employee.Management.Profile'> {
+interface ProfileProps_2 extends BaseComponentInterface<'Employee.Management.Profile'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -4072,6 +4313,15 @@ interface RemoveDialogState {
 
 // @public
 type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
+
+// @public
+export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
+K extends keyof Resources
+? Record<SupportedLanguages, DeepPartial<Resources[K]>>
+: Record<SupportedLanguages, Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>>
+
+// @public
+export type Resources = CustomTypeOptions['resources']
 
 // @public
 export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
@@ -4191,10 +4441,15 @@ export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
 // @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
-// Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
+
+// @public
+interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+    employeeId: string;
+    withEmployeeI9?: boolean;
+}
 
 // @public
 export interface SharedFieldLayoutProps extends DataAttributes {
@@ -4221,7 +4476,7 @@ function SignatureForm(props: SignatureFormProps): JSX;
 function SignatureForm_2(props: SignatureFormProps_2): JSX;
 
 // @public
-interface SignatureFormProps extends BaseComponentInterface {
+interface SignatureFormProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     formId: string;
 }
@@ -4406,13 +4661,11 @@ export type StateFieldEntry = {
 export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressRequiredValidation, string>>;
 
 // @public
-function StateTaxes(input: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxes(input: StateTaxesProps): JSX;
 
 // @public
-function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
+function StateTaxes_2(input: StateTaxesProps_2): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
-//
 // @public
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
@@ -4426,35 +4679,44 @@ interface StateTaxesCardProps {
 }
 
 // @public
-function StateTaxesEditForm(input: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxesEditForm(input: StateTaxesEditFormProps): JSX;
 
 // @public
-type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Management.StateTaxes'>, 'children'> & {
+interface StateTaxesEditFormProps extends BaseComponentInterface<'Employee.Management.StateTaxes'> {
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
-};
+}
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JSX;
+function StateTaxesForm(props: StateTaxesFormProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesListProps" needs to be exported by the entry point index.d.ts
-//
+// @public
+interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+    state: string;
+}
+
 // @public
 function StateTaxesList(props: StateTaxesListProps): JSX;
 
 // @public
-type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
-    employeeId: string;
-    isAdmin?: boolean;
-    onEvent: BaseComponentInterface['onEvent'];
-};
+interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+}
 
 // @public
-interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
+    isAdmin?: boolean;
+}
+
+// @public
+interface StateTaxesProps_2 extends BaseComponentInterface<'Employee.Management.StateTaxes'> {
+    employeeId: string;
+}
+
+// @public
+interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
 }
 
 // @public
@@ -4526,6 +4788,9 @@ export type SubmitStateForErrorHandling = {
 
 // @public
 export const SUPPORTED_REQUIRED_ATTR_KEYS: readonly ["case_number", "order_number", "remittance_number"];
+
+// @public
+export type SupportedLanguages = 'en'
 
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];
@@ -4608,7 +4873,7 @@ interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Termin
 const TerminationFlow: (input: TerminationFlowProps) => JSX;
 
 // @public
-interface TerminationFlowProps extends BaseComponentInterface {
+interface TerminationFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     employeeId: string;
 }
@@ -4737,7 +5002,7 @@ declare namespace TimeOff {
 const TimeOffFlow: (input: TimeOffFlowProps) => JSX;
 
 // @public
-interface TimeOffFlowProps extends BaseComponentInterface {
+interface TimeOffFlowProps extends BaseComponentInterface<never> {
     companyId: string;
 }
 
@@ -4781,7 +5046,7 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
 });
 
 // @public
-interface TimeOffPolicyDetailProps extends BaseComponentInterface {
+interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicyDetails'> {
     policyId: string;
 }
 
@@ -4977,7 +5242,7 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsM
     data: {
         contractorAddress: ContractorAddress;
         contractor: Contractor;
-        contractorType: ContractorType | undefined;
+        contractorType: ContractorType_2 | undefined;
     };
     status: {
         isPending: boolean;
@@ -4987,6 +5252,44 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsM
 
 // @public
 export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
+
+// @public
+export function useContractorDetailsForm(input: UseContractorDetailsFormProps): HookLoadingResult | UseContractorDetailsFormReady;
+
+// @public
+export type UseContractorDetailsFormProps = (UseContractorDetailsFormSharedProps & {
+    companyId: string;
+    contractorId?: never;
+}) | (UseContractorDetailsFormSharedProps & {
+    contractorId: string;
+    companyId?: string;
+});
+
+// @public
+export interface UseContractorDetailsFormReady extends BaseFormHookReady<FieldsMetadata, ContractorDetailsFormData, ContractorDetailsFields> {
+    actions: {
+        onSubmit: (options?: ContractorDetailsSubmitOptions) => Promise<HookSubmitResult<Contractor> | undefined>;
+    };
+    data: {
+        contractor: Contractor | null;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create' | 'update';
+    };
+}
+
+// @public
+export type UseContractorDetailsFormResult = HookLoadingResult | UseContractorDetailsFormReady;
+
+// @public
+export type UseContractorDetailsFormSharedProps = {
+    withSelfOnboardingField?: boolean;
+    optionalFieldsToRequire?: ContractorDetailsOptionalFieldsToRequire;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    validationMode?: UseFormProps['mode'];
+    shouldFocusError?: boolean;
+};
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
@@ -5454,7 +5757,7 @@ export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode ext
 function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
 
 // @public
-interface ViewHolidayEmployeesProps extends BaseComponentInterface {
+interface ViewHolidayEmployeesProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
 }
 
@@ -5462,7 +5765,7 @@ interface ViewHolidayEmployeesProps extends BaseComponentInterface {
 function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX;
 
 // @public
-interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
+interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
     defaultTab?: 'holidays' | 'employees';
 }
@@ -5471,9 +5774,15 @@ interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
 function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 
 // @public
-interface ViewHolidayScheduleProps extends BaseComponentInterface {
+interface ViewHolidayScheduleProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
 }
+
+// @public
+export const WageType: {
+    readonly Fixed: "Fixed";
+    readonly Hourly: "Hourly";
+};
 
 // @public
 type WithholdingType = 'supplemental' | 'regular';
@@ -5487,7 +5796,7 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
 }>, entries?: readonly TEntry[]): FieldMetadataWithOptions<TEntry>;
 
 // @public
-function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX;
+function WorkAddress(input: WorkAddressProps): JSX;
 
 // @public
 function WorkAddressCard(props: WorkAddressCardProps): JSX;
@@ -5499,12 +5808,11 @@ interface WorkAddressCardProps {
 }
 
 // @public
-function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX;
+function WorkAddressEditForm(input: WorkAddressEditFormProps): JSX;
 
 // @public
-interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+interface WorkAddressEditFormProps extends BaseComponentInterface<'Employee.Management.WorkAddress'> {
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
 }
 
 // @public
@@ -5546,9 +5854,8 @@ export function WorkAddressLocationField(props: LocationFieldProps): JSX;
 export type WorkAddressOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
-interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+interface WorkAddressProps extends BaseComponentInterface<'Employee.Management.WorkAddress'> {
     employeeId: string;
-    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
