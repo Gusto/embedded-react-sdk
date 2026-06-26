@@ -53,7 +53,23 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [require.resolve('./plugins/global-docs-sidebar')],
+  plugins: [
+    require.resolve('./plugins/global-docs-sidebar'),
+    // Emits docs-site/build/mcp/ artifacts (docs.json, search-index.json,
+    // manifest.json) at build time. An MCP server adapter (Cloudflare
+    // Workers, Vercel Edge, Node, etc.) wires those artifacts into a live
+    // /mcp endpoint at deploy time — that piece lives in the downstream
+    // hosting setup, not this repo.
+    [
+      'docusaurus-plugin-mcp-server',
+      {
+        server: {
+          name: 'gusto-embedded-sdk-docs',
+          version: '1.0.0',
+        },
+      },
+    ],
+  ],
 
   themes: [
     '@docusaurus/theme-mermaid',
