@@ -658,8 +658,9 @@ function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection
   for (const fieldKey of fieldKeys) {
     const fieldComp = componentByKey.get(fieldKey)
 
-    // Column 1: Field Key
-    const fieldKeyCell = `\`${fieldKey}\``
+    // Column 1: Field Key — link to the field component's anchor below
+    const fieldKeyUrl = fieldComp && context.router.hasUrl(fieldComp) ? context.urlTo(fieldComp) : null
+    const fieldKeyCell = fieldKeyUrl ? `[\`${fieldKey}\`](${fieldKeyUrl})` : `\`${fieldKey}\``
 
     // Column 2: Component Type — extract from props type alias chain
     let componentTypeCell = '—'

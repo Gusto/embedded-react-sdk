@@ -117,13 +117,13 @@ The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `DateOfBirth` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. |
-| `Email` | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
-| `FirstName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| `LastName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| `MiddleInitial` | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
-| `SelfOnboarding` | [Switch](../../utilities.md#switchhookfieldprops) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
-| `Ssn` | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
+| [`DateOfBirth`](#dateofbirthfield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. |
+| [`Email`](#emailfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
+| [`FirstName`](#firstnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| [`LastName`](#lastnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| [`MiddleInitial`](#middleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
+| [`SelfOnboarding`](#selfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
+| [`Ssn`](#ssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
 
 ## Components
 

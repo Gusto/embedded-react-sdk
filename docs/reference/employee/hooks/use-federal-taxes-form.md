@@ -96,12 +96,12 @@ Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `Deductions` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| `DependentsAmount` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| `ExtraWithholding` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| `FilingStatus` | [Select](../../utilities.md#selecthookfieldprops) | Options are populated from `FILING_STATUS_VALUES` (`Single`, `Married`, `Head of Household`, `Exempt from withholding`). The default option label is the raw filing status value — pass `getOptionLabel` to localize. |
-| `OtherIncome` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| `TwoJobs` | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Two options for `true` and `false`. The default labels are `Yes` and `No` — pass `getOptionLabel` to localize. The form submits a boolean value. |
+| [`Deductions`](#deductionsfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`DependentsAmount`](#dependentsamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`ExtraWithholding`](#extrawithholdingfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`FilingStatus`](#filingstatusfield) | [Select](../../utilities.md#selecthookfieldprops) | Options are populated from `FILING_STATUS_VALUES` (`Single`, `Married`, `Head of Household`, `Exempt from withholding`). The default option label is the raw filing status value — pass `getOptionLabel` to localize. |
+| [`OtherIncome`](#otherincomefield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`TwoJobs`](#twojobsfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Two options for `true` and `false`. The default labels are `Yes` and `No` — pass `getOptionLabel` to localize. The form submits a boolean value. |
 
 ## Components
 

@@ -123,13 +123,13 @@ Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `AnchorEndOfPayPeriod` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the end date of the first pay period and is used to calculate future pay periods. May be the same date as the first pay date. |
-| `AnchorPayDate` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the date of the first paycheck under this schedule. |
-| `CustomName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Always required. |
-| `CustomTwicePerMonth` | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Only present when the selected frequency is `'Twice per month'`; otherwise the entry on `Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the month) and `'custom'` (manual day entry via `Day1` and `Day2`). |
-| `Day1` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
-| `Day2` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
-| `Frequency` | [Select](../../utilities.md#selecthookfieldprops) | Always required. Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed. |
+| [`AnchorEndOfPayPeriod`](#anchorendofpayperiodfield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the end date of the first pay period and is used to calculate future pay periods. May be the same date as the first pay date. |
+| [`AnchorPayDate`](#anchorpaydatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the date of the first paycheck under this schedule. |
+| [`CustomName`](#customnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always required. |
+| [`CustomTwicePerMonth`](#customtwicepermonthfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Only present when the selected frequency is `'Twice per month'`; otherwise the entry on `Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the month) and `'custom'` (manual day entry via `Day1` and `Day2`). |
+| [`Day1`](#day1field) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| [`Day2`](#day2field) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| [`Frequency`](#frequencyfield) | [Select](../../utilities.md#selecthookfieldprops) | Always required. Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed. |
 
 ## Components
 
