@@ -11,6 +11,7 @@ import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/Paymen
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { TimeOffFlow } from '@/components/TimeOff/TimeOffFlow/TimeOffFlow'
+import { StateTaxesForm } from '@/components/Company/StateTaxes/StateTaxesForm/StateTaxesForm'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -26,6 +27,7 @@ type FlowType =
   | 'termination'
   | 'dismissal'
   | 'time-off'
+  | 'state-taxes-form'
 
 interface E2EConfig {
   flow: FlowType
@@ -36,6 +38,7 @@ interface E2EConfig {
   startDate: string
   endDate: string
   payScheduleUuid: string
+  state: string
 }
 
 function getConfigFromUrl(): E2EConfig {
@@ -57,11 +60,12 @@ function getConfigFromUrl(): E2EConfig {
     startDate: params.get('startDate') || '2025-08-14',
     endDate: params.get('endDate') || '2025-08-27',
     payScheduleUuid: params.get('payScheduleUuid') || '1478a82e-b45c-4980-843a-6ddc3b78268e',
+    state: params.get('state') || 'WA',
   }
 }
 
 function FlowRenderer({ config }: { config: E2EConfig }) {
-  const { flow, companyId, employeeId, startDate, endDate, payScheduleUuid } = config
+  const { flow, companyId, employeeId, startDate, endDate, payScheduleUuid, state } = config
   const handleEvent = () => {}
 
   switch (flow) {
@@ -95,6 +99,8 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     case 'time-off':
       return <TimeOffFlow companyId={companyId} onEvent={handleEvent} />
+    case 'state-taxes-form':
+      return <StateTaxesForm companyId={companyId} state={state} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }
@@ -111,6 +117,7 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
   { value: 'termination', label: 'Termination' },
   { value: 'dismissal', label: 'Dismissal' },
   { value: 'time-off', label: 'Time Off Management' },
+  { value: 'state-taxes-form', label: 'State Taxes Form' },
 ]
 
 function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {

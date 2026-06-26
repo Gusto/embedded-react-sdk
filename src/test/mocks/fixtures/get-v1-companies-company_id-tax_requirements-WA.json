@@ -59,6 +59,17 @@
             "prefix": null
           },
           "editable": true
+        },
+        {
+          "key": "legacy_read_only_field",
+          "applicable_if": [],
+          "label": "Legacy Read-Only Identifier",
+          "description": "A non-editable identifier the API surfaces but the user cannot change.",
+          "value": "READONLY-VALUE-123",
+          "metadata": {
+            "type": "text"
+          },
+          "editable": false
         }
       ]
     },

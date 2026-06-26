@@ -119,7 +119,7 @@ export interface Scenario {
    */
   description?: string
   /**
-   * Domain the scenario belongs to. Used by the fixture to auto-tag tests with @<domain>.
+   * Domain the scenario belongs to. Used by the fixture to auto-tag tests with @<domain>. Use 'shared' for scenarios that are consumed by tests across multiple domain folders (e.g., shared/onboarded-ro is used by payroll, employee, contractor, and time-off RO tests).
    */
   domain:
     | 'payroll'
@@ -139,10 +139,11 @@ export interface Scenario {
     | 'react_sdk_demo_employee_self_onboarding'
     | 'react_sdk_demo_contractor_onboarding'
   /**
-   * Entities to create/update on top of the base demo. Order is fixed: locations -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.
+   * Entities to create/update on top of the base demo. Order is fixed: locations -> employees (+ addresses, jobs, compensations, onboarding_status) -> stateTaxes -> contractors -> paySchedule -> payrolls. stateTaxes runs after employees because Gusto only exposes state-tax requirement_sets once the company has nexus (an employee with a home address) in the state.
    */
   decorations: {
     locations?: LocationDecoration[]
+    stateTaxes?: StateTaxDecoration[]
     employees?: EmployeeDecoration[]
     contractors?: ContractorDecoration[]
     paySchedule?: PayScheduleDecoration
@@ -185,6 +186,90 @@ export interface FragmentRef {
     [k: string]: unknown
   }
   [k: string]: unknown
+}
+/**
+ * Pre-seed tax_requirements answers for a specific state. Runner PUTs the body to /companies/:id/tax_requirements/:state after locations are decorated. The state must already be relevant to the company (i.e., the company has an employee or location in that state, OR the base demo seeds the state — the demo backend returns a 404 otherwise).
+ */
+export interface StateTaxDecoration {
+  /**
+   * Two-letter state code (e.g., WA, ID).
+   */
+  state: string
+  /**
+   * @minItems 1
+   */
+  requirementSets: [
+    {
+      /**
+       * Requirement set key returned by GET /tax_requirements/:state (e.g., 'taxrates', 'registrations').
+       */
+      key: string
+      /**
+       * Optional effective-from date in YYYY-MM-DD; omit to use whatever the API surfaces.
+       */
+      effective_from?: string | null
+      /**
+       * @minItems 1
+       */
+      requirements: [
+        {
+          /**
+           * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
+           */
+          key: string
+          /**
+           * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
+           */
+          value: string | number | boolean
+        },
+        ...{
+          /**
+           * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
+           */
+          key: string
+          /**
+           * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
+           */
+          value: string | number | boolean
+        }[],
+      ]
+    },
+    ...{
+      /**
+       * Requirement set key returned by GET /tax_requirements/:state (e.g., 'taxrates', 'registrations').
+       */
+      key: string
+      /**
+       * Optional effective-from date in YYYY-MM-DD; omit to use whatever the API surfaces.
+       */
+      effective_from?: string | null
+      /**
+       * @minItems 1
+       */
+      requirements: [
+        {
+          /**
+           * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
+           */
+          key: string
+          /**
+           * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
+           */
+          value: string | number | boolean
+        },
+        ...{
+          /**
+           * Requirement key (e.g., 'usedefaultsuirates', 'suireimbursable', or a UUID).
+           */
+          key: string
+          /**
+           * Required value: string, number, or boolean — must match the metadata.type returned by the API (radio=boolean, text/account_number=string, tax_rate/percent/currency=number-as-string).
+           */
+          value: string | number | boolean
+        }[],
+      ]
+    }[],
+  ]
 }
 export interface PayScheduleDecoration {
   frequency:
