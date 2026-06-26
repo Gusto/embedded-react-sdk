@@ -13,7 +13,7 @@ const sidebars: SidebarsConfig = {
         'getting-started/proxy-security-partner-guidance',
         'getting-started/component-types',
         'getting-started/example-app',
-        'getting-started/ai-assistant',
+        'getting-started/mcp-assistant',
       ],
     },
     {

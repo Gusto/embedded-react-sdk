@@ -1,5 +1,5 @@
 ---
-title: AI Assistant
+title: MCP Assistant
 description: Install a local MCP server so AI coding tools (Claude Code, Cursor, VS Code) can search and read the Gusto Embedded React SDK docs while you're integrating.
 order: 6
 ---
