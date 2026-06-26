@@ -684,3 +684,46 @@ export type {
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
+
+// Domain data hooks - Contractor
+export { useContractorDocumentsList } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+export type {
+  UseContractorDocumentsListParams,
+  UseContractorDocumentsListResult,
+  UseContractorDocumentsListReady,
+} from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+
+export {
+  useContractorSignatureForm,
+  ContractorSignatureFormErrorCodes,
+  createContractorSignatureFormSchema,
+  buildContractorSignatureFields,
+  AGREE_FIELD,
+  W9_DOCUMENT_NAME,
+  TAX_CLASSIFICATION_FIELD,
+  LLC_CLASSIFICATION_FIELD,
+  TAX_CLASSIFICATION_OPTION_KEYS,
+  LLC_CLASSIFICATION_CODES,
+  LLC_CLASSIFICATION_OPTION,
+  OTHER_CLASSIFICATION_OPTION,
+  OTHER_TEXT_FIELD,
+  isW9Document,
+  buildW9FieldDescriptors,
+  buildW9Defaults,
+  serializeW9Fields,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+export type {
+  UseContractorSignatureFormProps,
+  UseContractorSignatureFormResult,
+  UseContractorSignatureFormReady,
+  ContractorSignatureSection,
+  ContractorSignatureFormErrorCode,
+  ContractorSignatureFields,
+  ContractorSignatureBoundField,
+  ContractorSignatureFieldProps,
+  ContractorSignatureFormData,
+  TaxClassificationOptionKey,
+  W9FieldDescriptor,
+  W9FieldVariant,
+  W9Section,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'

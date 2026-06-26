@@ -14,3 +14,9 @@ export type { PaymentMethodProps } from '../PaymentMethod/types'
 export { NewHireReport } from '../NewHireReport/NewHireReport'
 export type { NewHireReportProps } from '../NewHireReport/types'
 export { ContractorSubmit, type ContractorSubmitProps } from '../Submit/Submit'
+export {
+  ContractorDocumentSigner,
+  type ContractorDocumentSignerProps,
+} from '../Documents/ContractorDocumentSigner'
+export { DocumentsList, type DocumentsListProps } from '../Documents/DocumentsList'
+export { SignatureForm, type SignatureFormProps } from '../Documents/SignatureForm'

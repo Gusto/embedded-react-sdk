@@ -22,6 +22,8 @@ export interface FieldMetadata {
   isDisabled?: boolean
   /** Whether the server returned a redacted placeholder instead of the real value. */
   hasRedactedValue?: boolean
+  /** Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). */
+  placeholder?: string
   /** ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
   minDate?: string | null
   /** ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
