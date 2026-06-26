@@ -314,6 +314,16 @@ Shape of the values managed by the work address form.
 
 ***
 
+<a id="workaddressformfields"></a>
+
+### WorkAddressFormFields
+
+> **WorkAddressFormFields** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useWorkAddressForm](#useworkaddressform).
+
+***
+
 <a id="workaddressformoutputs"></a>
 
 ### WorkAddressFormOutputs

@@ -32,6 +32,13 @@ import {
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
 import { TYPE_EMOJIS } from './router.config.ts'
+import {
+  formHookModelForPage,
+  getFormHookModel,
+  getHookReadyInterface,
+  type FormHookModel,
+  type FormHookProps,
+} from './form-hook-model.ts'
 
 function getReflectionDescription(
   reflection: DeclarationReflection,
@@ -315,6 +322,83 @@ function baseInterfaceLink(context: SDKThemeContext, propsRef: DeclarationReflec
   return base.name
 }
 
+/** Declared (own) property reflections of an interface or `= { ... }` type alias. */
+function declaredPropsOf(refl: DeclarationReflection): DeclarationReflection[] {
+  if (refl.kind === ReflectionKind.TypeAlias && refl.type instanceof ReflectionType) {
+    return (refl.type.declaration.children ?? []).filter(c => c.isDeclaration())
+  }
+  return (refl.children ?? []).filter(c => c.isDeclaration())
+}
+
+/** Anchor + summary/remarks comment for a reflection, when present. */
+function reflectionHeaderParts(context: SDKThemeContext, refl: DeclarationReflection): string[] {
+  const parts: string[] = []
+  if (context.router.hasUrl(refl) && context.options.getValue('useHTMLAnchors')) {
+    parts.push(`<a id="${context.router.getAnchor(refl)}"></a>`)
+  }
+  if (refl.comment) {
+    const commentMd = context.partials.comment(refl.comment, { showSummary: true, showTags: true })
+    if (commentMd.trim()) parts.push(commentMd)
+  }
+  return parts
+}
+
+/**
+ * Render a form hook's props from the model. A single interface renders as one
+ * properties table; a discriminated union renders the shared base table plus a
+ * table per variant listing its discriminating fields.
+ */
+function renderHookPropsTable(context: SDKThemeContext, props: FormHookProps): string {
+  if (props.kind === 'interface') {
+    const parts = reflectionHeaderParts(context, props.interface)
+    const declared = declaredPropsOf(props.interface)
+    if (declared.length > 0) {
+      parts.push(
+        context.partials.propertiesTable(declared, {
+          isEventProps: false,
+          kind: ReflectionKind.Interface,
+        }),
+      )
+    }
+    return parts.join('\n\n')
+  }
+
+  // Derived aliases are not elevated; the caller falls back before reaching here.
+  if (props.kind === 'alias') return ''
+
+  // Discriminated union: anchor + alias remarks, shared base table, per-variant tables.
+  const parts = reflectionHeaderParts(context, props.alias)
+
+  if (props.shared) {
+    const sharedProps = declaredPropsOf(props.shared)
+    if (sharedProps.length > 0) {
+      parts.push('**Shared options** — apply to every variant.')
+      parts.push(
+        context.partials.propertiesTable(sharedProps, {
+          isEventProps: false,
+          kind: ReflectionKind.Interface,
+        }),
+      )
+    }
+  }
+
+  if (props.branches.length > 0) {
+    parts.push('Supply the fields for exactly one of the following variants:')
+    props.branches.forEach((branch, i) => {
+      if (branch.inlineProps.length === 0) return
+      parts.push(`**Variant ${i + 1}**`)
+      parts.push(
+        context.partials.propertiesTable(branch.inlineProps, {
+          isEventProps: false,
+          kind: ReflectionKind.Interface,
+        }),
+      )
+    })
+  }
+
+  return parts.join('\n\n')
+}
+
 /**
  * Render the props table for a component whose single parameter is its props
  * interface. Components take one `props` argument typed as a sibling interface
@@ -335,9 +419,16 @@ function renderFunctionPropsTable(
   const component = param.parent?.parent
   if (!(component instanceof DeclarationReflection)) return fallback(params)
 
-  // Component or hook: inline the props interface when the parameter directly references one.
-  const isHook = /^use[A-Z]/.test(component.name)
-  if ((!isComponent(component) && !isHook) || !(param.type instanceof ReferenceType)) {
+  // Form hook: render props from the model (single interface or discriminated
+  // union). A derived alias (e.g. Omit<…>) is not elevated — fall through.
+  const formModel = getFormHookModel(component)
+  if (formModel && formModel.props.kind !== 'alias') {
+    return renderHookPropsTable(context, formModel.props)
+  }
+  if (formModel) return fallback(params)
+
+  // Component: inline the props interface when the parameter directly references one.
+  if (!isComponent(component) || !(param.type instanceof ReferenceType)) {
     return fallback(params)
   }
 
@@ -536,14 +627,24 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 
 /**
  * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
- * sequence: Example → Remarks → Props → Returns → everything else
- * (EmployeeDetailsFields, Variables, Interfaces, Type Aliases — kept in their
- * original relative order).
+ * sequence: Example → Remarks → Props → Returns → everything else (Fields,
+ * Variables, Interfaces, Type Aliases — kept in their original relative order).
+ *
+ * The props section heading is matched by the model's props type name (the
+ * interface or union-alias name), not a text heuristic, so a props type that
+ * doesn't end in `Props` still ranks correctly.
  */
-function reorderHookSections(rendered: string): string {
+function reorderHookSections(rendered: string, formModel: FormHookModel | null): string {
   const lines = rendered.split('\n')
   const firstSection = lines.findIndex(l => /^##\s/.test(l))
   if (firstSection === -1) return rendered
+
+  const propsName =
+    formModel?.props.kind === 'interface'
+      ? formModel.props.interface.name
+      : formModel?.props.kind === 'union'
+        ? formModel.props.alias.name
+        : null
 
   const preamble = lines.slice(0, firstSection)
   const sections: { title: string; lines: string[] }[] = []
@@ -559,7 +660,7 @@ function reorderHookSections(rendered: string): string {
   const rank = (title: string): number => {
     if (/^Examples?/.test(title)) return 0
     if (title === 'Remarks') return 1
-    if (title.endsWith('Props')) return 2
+    if (propsName && title === propsName) return 2
     if (title === 'Returns') return 3
     return 99
   }
@@ -644,36 +745,18 @@ function addExampleTitles(rendered: string): string {
 }
 
 /**
- * Auto-generate a quick-reference fields table driven by the hook's Fields
- * interface (e.g. EmployeeDetailsFields). Each row shows the field key,
- * the component type extracted from the field component's props type alias,
- * and notes from the field component's @remarks. Returns null when the Fields
- * interface is not found or has no children.
+ * Auto-generate a quick-reference fields table from the hook model's Fields
+ * interface. Each row shows the field key, the component type extracted from
+ * the field component's props type alias, and notes from the field
+ * component's @remarks. Returns null when the Fields interface has no children.
  */
-function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection): string | null {
-  // Find the Fields interface by tracing UseXxxFormReady → form.Fields → referenced type.
-  const readyInterface = (model.children ?? []).find(
-    (c): c is DeclarationReflection =>
-      c instanceof DeclarationReflection &&
-      c.name.endsWith('Ready') &&
-      c.kind === ReflectionKind.Interface,
-  )
-  if (!readyInterface) return null
-
-  const formProp = (readyInterface.children ?? []).find(
-    c => c.isDeclaration() && c.name === 'form',
-  )
-  const formDecl =
-    formProp?.type instanceof ReflectionType ? formProp.type.declaration : null
-  if (!formDecl) return null
-
-  const fieldsProp = (formDecl.children ?? []).find(
-    c => c.isDeclaration() && c.name === 'Fields',
-  )
-  if (!(fieldsProp?.type instanceof ReferenceType)) return null
-
-  const fieldsInterface = fieldsProp.type.reflection
-  if (!(fieldsInterface instanceof DeclarationReflection)) return null
+function buildFieldsTable(
+  context: SDKThemeContext,
+  hookNs: DeclarationReflection,
+  formModel: FormHookModel,
+): string | null {
+  const fieldsInterface = formModel.fieldsInterface
+  if (!fieldsInterface) return null
 
   // Get field keys from the Fields interface children
   const fieldKeys = (fieldsInterface.children ?? [])
@@ -682,7 +765,7 @@ function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection
   if (fieldKeys.length === 0) return null
 
   // Build a map from field key (without "Field" suffix) to field component
-  const fieldsGroup = model.groups?.find(g => g.title === 'Components')
+  const fieldsGroup = hookNs.groups?.find(g => g.title === 'Components')
   const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
   const componentByKey = new Map<string, DeclarationReflection>()
   for (const comp of fieldComponents) {
@@ -1158,21 +1241,19 @@ export class SDKThemeContext extends MarkdownThemeContext {
           return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
         }
 
-        // Hook: rename "Parameters" heading to the direct Props interface name.
+        // Form hook: rename "Parameters" heading to the props type name from the
+        // model — the interface for single-interface props, or the union alias.
         const hookFn = model.parent
-        if (hookFn instanceof DeclarationReflection && /^use[A-Z]/.test(hookFn.name)) {
-          if ((model.parameters?.length ?? 0) !== 1) return result
-          const param = model.parameters![0]!
-          if (param.type instanceof ReferenceType) {
-            const propsRef = param.type.reflection
-            if (
-              propsRef instanceof DeclarationReflection &&
-              propsRef.kind === ReflectionKind.Interface &&
-              (propsRef.parent === hookFn.parent || propsRef.parent === hookFn)
-            ) {
-              const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
-              return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
-            }
+        if (hookFn instanceof DeclarationReflection) {
+          const formModel = getFormHookModel(hookFn)
+          // Derived-alias props are not elevated, so their heading is left as-is.
+          if (formModel && formModel.props.kind !== 'alias') {
+            const propsName =
+              formModel.props.kind === 'interface'
+                ? formModel.props.interface.name
+                : formModel.props.alias.name
+            const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
+            return result.replace(`${hashes} Parameters`, `${hashes} ${propsName}`)
           }
         }
 
@@ -1197,21 +1278,21 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
         const base = origSignatureReturns(model, options)
 
-        // Hook: append UseXxxFormReady properties table after the returns section.
+        // Hook: append the Ready interface properties table after the returns
+        // section. The Ready interface is the non-loading branch of the return
+        // union, found via the type graph rather than a name convention. Only the
+        // page's primary hook inlines it — secondary hooks on the same page (e.g.
+        // useCurrentHomeAddressForm) reuse the same Ready and would double-inline.
         const hookFn = model.parent
-        if (hookFn instanceof DeclarationReflection && /^use[A-Z]/.test(hookFn.name)) {
-          const hookNsModel = this.page?.model
-          if (!(hookNsModel instanceof DeclarationReflection)) return base
-
-          const readyName =
-            hookFn.name.charAt(0).toUpperCase() + hookFn.name.slice(1) + 'Ready'
-          const readyType = (hookNsModel.children ?? []).find(
-            (c): c is DeclarationReflection =>
-              c instanceof DeclarationReflection &&
-              c.name === readyName &&
-              (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
-          )
+        const pageModel = this.page?.model
+        const isPrimaryHook =
+          hookFn instanceof DeclarationReflection &&
+          pageModel instanceof DeclarationReflection &&
+          hookFn.name === pageModel.name
+        if (hookFn instanceof DeclarationReflection && isPrimaryHook) {
+          const readyType = getHookReadyInterface(hookFn)
           if (!readyType) return base
+          const readyName = readyType.name
 
           const headingLevel = (options as { headingLevel: number }).headingLevel
           const readyHashes = '#'.repeat(headingLevel + 1)
@@ -1305,12 +1386,15 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
         // Hook page: reformat section headings and inject fields table.
         if (isHookPage(page.model)) {
+          const formModel = formHookModelForPage(page.model)
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
           rendered = moveExampleToTop(rendered)
-          rendered = reorderHookSections(rendered)
-          const fieldsTable = buildFieldsTable(this, page.model)
-          if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
+          rendered = reorderHookSections(rendered, formModel)
+          if (formModel) {
+            const fieldsTable = buildFieldsTable(this, page.model, formModel)
+            if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
+          }
           rendered = removeComponentsHeader(rendered)
           rendered = nestFieldTypeAliasesUnderComponents(rendered)
         }

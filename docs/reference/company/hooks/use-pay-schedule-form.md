@@ -428,6 +428,16 @@ Shape of the values managed by the pay schedule form.
 
 ***
 
+<a id="payscheduleformfields"></a>
+
+### PayScheduleFormFields
+
+> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
 <a id="payscheduleformoutputs"></a>
 
 ### PayScheduleFormOutputs

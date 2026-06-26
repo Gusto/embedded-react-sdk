@@ -250,8 +250,6 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component
 
 > **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
 
-**`Expand`**
-
 Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
 
 ***
@@ -287,23 +285,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ## Interfaces
 
-<a id="bankformdata"></a>
-
-### BankFormData
-
-Shape of the values managed by the bank account form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `accountNumber` | `string` |
-| `accountType` | `"Checking"` \| `"Savings"` |
-| `name` | `string` |
-| `routingNumber` | `string` |
-
-***
-
 <a id="bankformsubmitoptions"></a>
 
 ### BankFormSubmitOptions
@@ -317,6 +298,16 @@ Optional submit-time overrides for [useBankForm](#usebankform)'s `onSubmit`.
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 
 ## Type Aliases
+<a id="bankformdata"></a>
+
+### BankFormData
+
+> **BankFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the bank account form.
+
+***
+
 <a id="bankformerrorcode"></a>
 
 ### BankFormErrorCode

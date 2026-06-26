@@ -293,6 +293,16 @@ Shape of the values managed by the contractor address form.
 
 ***
 
+<a id="contractoraddressformfields"></a>
+
+### ContractorAddressFormFields
+
+> **ContractorAddressFormFields** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
+
+***
+
 <a id="contractoraddressformoutputs"></a>
 
 ### ContractorAddressFormOutputs

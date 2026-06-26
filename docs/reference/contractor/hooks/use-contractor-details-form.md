@@ -28,6 +28,44 @@ driven by the current `type`, `wageType`, and self-onboarding selection;
 fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
 is only toggleable when the contractor's onboarding status allows it.
 
+## UseContractorDetailsFormProps
+
+<a id="usecontractordetailsformprops"></a>
+
+Options for [useContractorDetailsForm](#usecontractordetailsform).
+
+**Remarks**
+
+Discriminated by mode: in create mode supply `companyId` and omit
+`contractorId`; in update mode supply `contractorId` (and optionally
+`companyId`).
+
+**Shared options** — apply to every variant.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
+| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
+| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
+| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
+| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
+
+Supply the fields for exactly one of the following variants:
+
+**Variant 1**
+
+| Property | Type |
+| ------ | ------ |
+| `companyId` | `string` |
+| `contractorId?` | `never` |
+
+**Variant 2**
+
+| Property | Type |
+| ------ | ------ |
+| `contractorId` | `string` |
+| `companyId?` | `string` |
+
 ## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
@@ -56,12 +94,6 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `status` | `object` | Submit status and form mode. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
-
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseContractorDetailsFormProps`](#usecontractordetailsformprops) | See [UseContractorDetailsFormProps](#usecontractordetailsformprops). |
 
 ## ContractorDetailsFields
 <a id="contractordetailsfields"></a>
@@ -631,6 +663,16 @@ Shape of the values managed by the contractor details form.
 
 ***
 
+<a id="contractordetailsformfields"></a>
+
+### ContractorDetailsFormFields
+
+> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
 <a id="contractordetailsformoutputs"></a>
 
 ### ContractorDetailsFormOutputs
@@ -691,22 +733,6 @@ Required-field error code emitted by the `ssn` field of [useContractorDetailsFor
 > **ContractorDetailsSsnValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_SSN`
 
 Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="usecontractordetailsformprops"></a>
-
-### UseContractorDetailsFormProps
-
-> **UseContractorDetailsFormProps** = [`UseContractorDetailsFormSharedProps`](#usecontractordetailsformsharedprops) & `object` \| [`UseContractorDetailsFormSharedProps`](#usecontractordetailsformsharedprops) & `object`
-
-Options for [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Remarks
-
-Discriminated by mode: in create mode supply `companyId` and omit
-`contractorId`; in update mode supply `contractorId` (and optionally
-`companyId`).
 
 ***
 

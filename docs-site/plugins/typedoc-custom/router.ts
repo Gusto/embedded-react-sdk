@@ -17,6 +17,7 @@ import {
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
 import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
+import { getFormHookModel, getHookReadyInterface } from './form-hook-model.ts'
 import {
   componentPropsInterfaces,
   domainFromSources,
@@ -383,44 +384,37 @@ export class SDKRouter extends MemberRouter {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
-        // Remove inlined types from groups — the props interface is inlined under
-        // the hook's Parameters section, Ready is inlined in the Returns section,
-        // and Fields is inlined as the fields quick-reference table.
-        const hookPascal = hookDir.charAt(0).toUpperCase() + hookDir.slice(1)
-        const hookPascalBase = hookDir.replace(/^use/, '')
-        const inlinedNames = new Set([
-          `${hookPascal}SharedProps`,
-          `${hookPascal}Ready`,
-          // Fields name: try both <HookPascal>Fields and <HookPascalBase-Form>Fields
-          `${hookPascalBase}Fields`,
-          `${hookPascalBase.replace(/Form$/, '')}Fields`,
-        ])
-        // Also remove the direct props interface found via the hook's parameter type.
+        // Remove inlined types from groups by reflection identity, derived from
+        // the type graph: every hook's Ready interface is inlined in the Returns
+        // section; a form hook additionally inlines its props (under Parameters)
+        // and Fields (as the quick-reference table). FormData and derived-alias
+        // props stay visible as their own sections.
+        const inlined = new Set<DeclarationReflection>()
         for (const member of hookMembers) {
-          if (!(member instanceof DeclarationReflection) || member.name !== hookDir) continue
-          for (const sig of member.signatures ?? []) {
-            for (const param of sig.parameters ?? []) {
-              if (
-                param.type instanceof ReferenceType &&
-                param.type.reflection instanceof DeclarationReflection &&
-                param.type.reflection.kind === ReflectionKind.Interface
-              ) {
-                inlinedNames.add(param.type.reflection.name)
-              }
+          if (!(member instanceof DeclarationReflection) || member.kind !== ReflectionKind.Function) {
+            continue
+          }
+          const ready = getHookReadyInterface(member)
+          if (ready) inlined.add(ready)
+          const model = getFormHookModel(member)
+          if (model) {
+            if (model.fieldsInterface) inlined.add(model.fieldsInterface)
+            if (model.props.kind === 'interface') {
+              inlined.add(model.props.interface)
+            } else if (model.props.kind === 'union') {
+              inlined.add(model.props.alias)
+              if (model.props.shared) inlined.add(model.props.shared)
             }
           }
         }
-        for (const group of hookNs.groups) {
-          group.children = group.children.filter(
-            c =>
-              !(
-                c instanceof DeclarationReflection &&
-                inlinedNames.has(c.name) &&
-                (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias)
-              ),
-          )
+        if (inlined.size > 0) {
+          for (const group of hookNs.groups) {
+            group.children = group.children.filter(
+              c => !(c instanceof DeclarationReflection && inlined.has(c)),
+            )
+          }
+          hookNs.groups = hookNs.groups.filter(g => g.children.length > 0)
         }
-        hookNs.groups = hookNs.groups.filter(g => g.children.length > 0)
         const hookGuide = hookGuidesByDir.get(hookDir)
         if (hookGuide) this.hookGuides.set(hookNs, hookGuide)
         this.buildSyntheticPage(

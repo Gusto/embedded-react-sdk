@@ -380,6 +380,22 @@ Shape of the values managed by the federal taxes form.
 
 ***
 
+<a id="federaltaxesformfields"></a>
+
+### FederalTaxesFormFields
+
+> **FederalTaxesFormFields** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"Fields"`\]
+
+Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
+
+#### Remarks
+
+Alias for the `Fields` shape on [UseFederalTaxesFormReady](#usefederaltaxesformready). Use this
+type when typing a presentational component that consumes the hook's
+fields.
+
+***
+
 <a id="federaltaxesformoutputs"></a>
 
 ### FederalTaxesFormOutputs

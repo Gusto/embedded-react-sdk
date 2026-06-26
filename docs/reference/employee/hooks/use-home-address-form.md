@@ -403,6 +403,16 @@ Shape of the values managed by the home address form.
 
 ***
 
+<a id="homeaddressformfields"></a>
+
+### HomeAddressFormFields
+
+> **HomeAddressFormFields** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useHomeAddressForm](#usehomeaddressform).
+
+***
+
 <a id="homeaddressformoutputs"></a>
 
 ### HomeAddressFormOutputs

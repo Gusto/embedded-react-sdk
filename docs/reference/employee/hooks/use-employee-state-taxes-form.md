@@ -272,6 +272,17 @@ with `isRequired` / `isDisabled` and option lists.
 
 ***
 
+<a id="employeestatetaxesformfields"></a>
+
+### EmployeeStateTaxesFormFields
+
+> **EmployeeStateTaxesFormFields** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"Fields"`\]
+
+The array of per-state field groups exposed by
+[useEmployeeStateTaxesForm](#useemployeestatetaxesform) on `form.Fields`.
+
+***
+
 <a id="employeestatetaxesformoutputs"></a>
 
 ### EmployeeStateTaxesFormOutputs

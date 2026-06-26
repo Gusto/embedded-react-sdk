@@ -111,6 +111,21 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
+## SignEmployeeFormFieldComponents
+<a id="signemployeeformfieldcomponents"></a>
+
+Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| [`ConfirmSignature`](#confirmsignaturefield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | Captures the employee's electronic-signature consent; must be checked to submit. |
+| `Preparer1` | — | — |
+| `Preparer2` | — | — |
+| `Preparer3` | — | — |
+| `Preparer4` | — | — |
+| [`Signature`](#signaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The employee types their full legal name; required. |
+| [`UsedPreparer`](#usedpreparerfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
+
 <a id="confirmsignaturefield"></a>
 
 ### ConfirmSignatureField
@@ -216,33 +231,6 @@ hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="signemployeeformfieldcomponents"></a>
-
-### SignEmployeeFormFieldComponents
-
-Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
-
-#### Remarks
-
-`Signature` and `ConfirmSignature` are always present. `UsedPreparer` and
-the `Preparer1`–`Preparer4` field groups are only defined when the form
-being signed is an I-9 and the preparer count has reached that index —
-always null-check before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`: [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
-| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
-| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
-| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
-| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
-| `Signature` | (`props`: [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops)) => `Element` | Text input for the employee's typed signature; always present. |
-| `UsedPreparer` | ((`props`: [`UsedPreparerFieldProps`](#usedpreparerfieldprops)) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
 ## Type Aliases
 <a id="preparercheckboxfieldprops"></a>
@@ -364,6 +352,16 @@ form schema.
 > **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the I-9 sign-employee form.
+
+***
+
+<a id="signemployeeformfields"></a>
+
+### SignEmployeeFormFields
+
+> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
 
 ***
 
