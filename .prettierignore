@@ -8,5 +8,7 @@ docs/appendix/endpoint-reference.md
 .claude/settings.local.json
 .reports/*.md
 docs-site/build/
+docs-mcp/artifacts/
+docs-mcp/dist/
 docs/reference/
 **/GUIDE.md

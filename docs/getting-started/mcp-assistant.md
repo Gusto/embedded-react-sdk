@@ -50,10 +50,10 @@ exposes a single binary, `gusto-sdk-docs-mcp`, that speaks MCP over stdio.
 
 The server exposes two tools to the AI assistant:
 
-| Tool | Purpose |
-|---|---|
+| Tool          | Purpose                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------- |
 | `docs_search` | Full-text search across every SDK doc page. Returns titles, URLs, snippets, and relevance scores. |
-| `docs_fetch` | Returns the complete markdown content of a doc page, given its URL. |
+| `docs_fetch`  | Returns the complete markdown content of a doc page, given its URL.                               |
 
 That's enough for an agent to find the right page for a question, then read it
 in full before answering.

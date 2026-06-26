@@ -10,10 +10,10 @@ no "open the docs tab," and answers cite the version of the SDK you're on.
 
 The server exposes two tools to AI agents:
 
-| Tool | What it does |
-|---|---|
+| Tool          | What it does                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------- |
 | `docs_search` | Full-text search of every SDK doc page. Returns titles, URLs, snippets, and relevance scores. |
-| `docs_fetch` | Returns the complete markdown content of a doc page, given its URL. |
+| `docs_fetch`  | Returns the complete markdown content of a doc page, given its URL.                           |
 
 Both run **locally over stdio** — nothing leaves your machine, no network call,
 no auth.
@@ -27,7 +27,7 @@ claude mcp add gusto-sdk-docs -- npx -y @gusto/embedded-sdk-docs-mcp
 ```
 
 That's it. Restart Claude Code if it was already running. Ask it something like
-*"Use gusto-sdk-docs to find how theming works in the Embedded React SDK"* — it
+_"Use gusto-sdk-docs to find how theming works in the Embedded React SDK"_ — it
 will call `docs_search`, then `docs_fetch` to pull the full page, and answer
 from the actual docs.
 
@@ -91,7 +91,7 @@ into `build/mcp/`:
 - `search-index.json` — pre-built FlexSearch index (~19 MB)
 - `manifest.json` — server metadata
 
-These are static artifacts. No Docusaurus is needed to *use* them.
+These are static artifacts. No Docusaurus is needed to _use_ them.
 
 **`docs-mcp/`** is the runtime distribution. It's a thin CLI that:
 
