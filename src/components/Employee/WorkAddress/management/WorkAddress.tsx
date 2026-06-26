@@ -39,7 +39,7 @@ function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
 /**
  * Standalone employee work address management flow.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/workAddress/editRequested` | Manage button on the work address card clicked | `{ employeeId: string }` |

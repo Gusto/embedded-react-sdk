@@ -45,6 +45,7 @@ function stringifyRequirementValue(value: unknown): string {
  * Lower-level building block used by {@link StateTaxes} for its edit view. Use directly when
  * you need full control over navigation between the list and edit views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |

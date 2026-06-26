@@ -37,6 +37,7 @@ export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.Pay
  * cancelling processed payrolls when they remain within the cancellation window. Each row shows
  * the pay period, payroll type, pay date, status, and total pay amount.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/summary/viewed` | User views a payroll summary | `{ payrollId: string; startDate?: string; endDate?: string }` |

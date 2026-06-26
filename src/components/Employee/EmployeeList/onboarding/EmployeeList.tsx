@@ -98,8 +98,7 @@ function EmployeeListRoot({
  * Renders a paginated list of a company's employees with per-row onboarding actions (edit,
  * delete, review, cancel self-onboarding) and an "Add employee" entry point.
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/create` | Fired when the user clicks "Add employee". | — |

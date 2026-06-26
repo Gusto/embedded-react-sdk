@@ -42,7 +42,7 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Company.Feder
 /**
  * Collects company federal tax information including EIN, tax payer type, filing form, and legal name.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/federalTaxes/updated` | Federal tax details were successfully updated | {@link FederalTaxDetails} |

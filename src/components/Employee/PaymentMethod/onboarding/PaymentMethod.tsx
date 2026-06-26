@@ -54,6 +54,7 @@ function PaymentMethodFlow({ employeeId, isAdmin = false, onEvent }: PaymentMeth
  * Deposit and Check, add bank accounts, and configure split-paycheck
  * allocations across multiple accounts.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/paymentMethod/updated` | Fired after the payment method is saved | The updated payment method |

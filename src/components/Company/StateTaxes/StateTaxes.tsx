@@ -25,6 +25,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
  * For finer-grained control over navigation, use the standalone {@link StateTaxesList} and
  * {@link StateTaxesForm} building blocks directly.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A state row was selected for editing | `{ state: string }` |

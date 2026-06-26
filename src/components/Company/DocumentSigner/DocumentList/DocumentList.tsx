@@ -39,6 +39,7 @@ export interface DocumentListProps extends BaseComponentInterface<'Company.Docum
  * When `signatoryId` matches the currently saved signatory's id, the user is treated as the
  * signatory and is allowed to sign documents.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |

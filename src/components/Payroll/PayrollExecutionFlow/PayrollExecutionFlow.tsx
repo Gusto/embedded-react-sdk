@@ -85,6 +85,7 @@ const INITIAL_NAMESPACE_MAP = {
  * the user off to the standard execution experience without re-implementing it. The flow ships
  * with breadcrumb navigation and the standard wire-confirmation UX.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/edit` | Fired when user chooses to edit payroll | — |

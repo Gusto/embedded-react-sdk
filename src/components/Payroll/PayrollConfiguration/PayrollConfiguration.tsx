@@ -58,6 +58,7 @@ export interface PayrollConfigurationProps extends BaseComponentInterface<'Payro
  * @remarks
  * Emits the following events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/employee/edit` | An employee row is selected for editing | `{ employeeId, firstName, lastName }` |

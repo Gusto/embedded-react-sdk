@@ -27,6 +27,7 @@ export interface HomeAddressCardProps {
  * @remarks
  * Fetches the employee's active home address and renders it alongside a Manage button.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/homeAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |

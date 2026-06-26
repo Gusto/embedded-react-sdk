@@ -18,7 +18,7 @@ export interface ViewHolidayScheduleProps extends BaseComponentInterface<
  *
  * Shows the list of selected holidays with their next observation dates.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |

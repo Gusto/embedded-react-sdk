@@ -56,6 +56,7 @@ export interface TerminateEmployeeFormData {
  * the summary view (via the `employee/termination/viewSummary` event) when the
  * employee is already terminated.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |

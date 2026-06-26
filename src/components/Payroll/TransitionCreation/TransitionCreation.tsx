@@ -29,7 +29,7 @@ import { Form } from '@/components/Common/Form'
  * date, deduction preference, and tax withholding configuration before submitting the
  * resulting off-cycle payroll for execution.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `transition/created` | The transition payroll has been created | `{ payrollUuid: string }` |

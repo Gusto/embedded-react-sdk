@@ -38,7 +38,7 @@ export interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payrol
  * Allows modification of pay rates, hours, time off, additional earnings,
  * reimbursements, and payment method for a single employee on the specified payroll.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |

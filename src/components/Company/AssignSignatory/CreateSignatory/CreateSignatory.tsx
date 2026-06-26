@@ -38,7 +38,7 @@ export interface CreateSignatoryProps extends BaseComponentInterface<'Company.As
 /**
  * Standalone form for creating or editing a company signatory, including name, contact details, SSN, date of birth, and home address.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/signatory/created` | A new signatory was created successfully | The created signatory record |
