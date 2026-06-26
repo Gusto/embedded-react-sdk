@@ -1,0 +1,33 @@
+{
+  "name": "@gusto/embedded-sdk-docs-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "MCP server that exposes the Gusto Embedded React SDK docs to AI agents (Claude Code, Cursor, etc.) over stdio.",
+  "type": "module",
+  "bin": {
+    "gusto-sdk-docs-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "artifacts",
+    "README.md"
+  ],
+  "scripts": {
+    "copy-artifacts": "node scripts/copy-artifacts.mjs",
+    "build": "npm run copy-artifacts && tsc",
+    "start": "node dist/cli.js",
+    "dev": "npm run build && node dist/cli.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.0",
+    "docusaurus-plugin-mcp-server": "^0.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "~5.8.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
