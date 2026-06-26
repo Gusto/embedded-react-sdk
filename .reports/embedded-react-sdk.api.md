@@ -1390,11 +1390,16 @@ export const ContractorOnboardingStatus: {
 function ContractorProfile(props: ContractorProfileProps): JSX;
 
 // @public
-interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
+type ContractorProfileProps = BaseComponentInterface<'Contractor.Profile'> & {
     companyId: string;
-    contractorId?: string;
     defaultValues?: Partial<ContractorDetailsFormData>;
-}
+} & ({
+    isAdmin?: true;
+    contractorId?: string;
+} | {
+    isAdmin: false;
+    contractorId: string;
+});
 
 // @public
 export function ContractorSelfOnboardingField(props: ContractorSelfOnboardingFieldProps): JSX;

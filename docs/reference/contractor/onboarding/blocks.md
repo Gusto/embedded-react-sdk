@@ -89,28 +89,22 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Form for creating or editing a contractor profile, supporting both individual and business contractor types.
 
-### ContractorProfileProps
+### Parameters
 
-<a id="contractorprofileprops"></a>
-
-Props for [ContractorProfile](#contractorprofile).
-
-| Property | Type | Description |
+| Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+| `props` | [`ContractorProfileProps`](#contractorprofileprops) | See [ContractorProfileProps](#contractorprofileprops). |
 
 ### Remarks
 
-Renders different field sets depending on the contractor type (individual vs. business) and wage type
-(hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
-own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
-submit; otherwise it creates a new contractor under `companyId`.
+In admin mode (the default), renders different field sets depending on the contractor type (individual
+vs. business) and wage type (hourly vs. fixed), and exposes a self-onboarding toggle that invites the
+contractor to complete their own setup. When `contractorId` is provided, the form fetches the existing
+contractor and updates it on submit; otherwise it creates a new contractor under `companyId`.
+
+When `isAdmin` is `false`, renders the contractor self-onboarding profile instead: it resolves the
+existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
+fields for the contractor to complete.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -275,6 +269,28 @@ function PaymentMethodStep() {
 > **AddressDefaultValues** = `RequireAtLeastOne`\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
+<a id="contractorprofileprops"></a>
+
+### ContractorProfileProps
+
+> **ContractorProfileProps** = [`BaseComponentInterface`](../../index.md#basecomponentinterface)\<`"Contractor.Profile"`\> & `object` & \{ `contractorId?`: `string`; `isAdmin?`: `true`; \} \| \{ `contractorId`: `string`; `isAdmin`: `false`; \}
+
+Props for [ContractorProfile](#contractorprofile).
+
+#### Type Declaration
+
+| Name | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+
+#### Remarks
+
+Discriminated by `isAdmin`. In admin mode (the default) `contractorId` is
+optional — omitting it creates a new contractor. In self-onboarding mode
+(`isAdmin={false}`) `contractorId` is required, because the contractor must
+already exist for its type (individual vs. business) to be resolved.
 
 <a id="onboardingflowdefaultvalues"></a>
 
