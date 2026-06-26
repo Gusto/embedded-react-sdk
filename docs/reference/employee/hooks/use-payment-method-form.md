@@ -54,11 +54,13 @@ function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePaymentMethodFormProps`](#usepaymentmethodformprops) | See [UsePaymentMethodFormProps](#usepaymentmethodformprops). |
+Switches between Direct Deposit and Check. Always operates in update mode —
+every employee has a payment method, defaulting to Check. Switching to Check
+sends a minimal request body; switching to or staying on Direct Deposit
+preserves the existing splits and version so split allocations are not lost
+when only the type changes.
 
 ## Returns
 
@@ -68,7 +70,7 @@ A loading-state result while the current payment method is loading, or a [UsePay
 
 <a id="usepaymentmethodformready"></a>
 
-## UsePaymentMethodFormReady
+### UsePaymentMethodFormReady
 
 Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 
@@ -89,13 +91,11 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## Remarks
+## Parameters
 
-Switches between Direct Deposit and Check. Always operates in update mode —
-every employee has a payment method, defaulting to Check. Switching to Check
-sends a minimal request body; switching to or staying on Direct Deposit
-preserves the existing splits and version so split allocations are not lost
-when only the type changes.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UsePaymentMethodFormProps`](#usepaymentmethodformprops) | See [UsePaymentMethodFormProps](#usepaymentmethodformprops). |
 
 <a id="paymentmethodtypefield"></a>
 
@@ -114,6 +114,16 @@ Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmetho
 Available on the hook result as `form.Fields.Type`. Options are
 `Direct Deposit` and `Check`; defaults to the employee's existing payment
 method type. Supply `getOptionLabel` to translate the option labels.
+
+<a id="paymentmethodtype"></a>
+
+#### PaymentMethodType
+
+> **PaymentMethodType** = *typeof* [`PAYMENT_METHOD_TYPES`](#payment_method_types)\[`number`\]
+
+Union of payment method type values that the form accepts.
+
+***
 
 ## Variables
 
@@ -175,7 +185,6 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
-
 <a id="paymentmethodformdata"></a>
 
 ### PaymentMethodFormData
@@ -245,16 +254,6 @@ Shape of the validated values produced by the payment method form on submit.
 > **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
 
 Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
-
-***
-
-<a id="paymentmethodtype"></a>
-
-### PaymentMethodType
-
-> **PaymentMethodType** = *typeof* [`PAYMENT_METHOD_TYPES`](#payment_method_types)\[`number`\]
-
-Union of payment method type values that the form accepts.
 
 ***
 

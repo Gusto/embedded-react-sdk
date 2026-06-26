@@ -47,11 +47,13 @@ function AddBankAccount({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
+Captures the account nickname, routing number, account number, and account
+type. Creating a bank account also updates the employee's payment method on
+the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
+discriminated union; in practice the hook transitions to the ready state
+immediately because it does not fetch any server data.
 
 ## Returns
 
@@ -61,7 +63,7 @@ A loading-state result while the hook is initializing, or a [UseBankFormReady](#
 
 <a id="usebankformready"></a>
 
-## UseBankFormReady
+### UseBankFormReady
 
 Ready-state return value of [useBankForm](#usebankform).
 
@@ -81,13 +83,11 @@ Ready-state return value of [useBankForm](#usebankform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
 
-## Remarks
+## Parameters
 
-Captures the account nickname, routing number, account number, and account
-type. Creating a bank account also updates the employee's payment method on
-the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
-discriminated union; in practice the hook transitions to the ready state
-immediately because it does not fetch any server data.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
 
 <a id="accountnumberfield"></a>
 
@@ -105,6 +105,26 @@ Text input bound to the `accountNumber` field of [useBankForm](#usebankform).
 
 Available on the hook result as `form.Fields.AccountNumber`. Validates the
 value against a 1–17 digit numeric pattern.
+
+<a id="accountnumberfieldprops"></a>
+
+#### AccountNumberFieldProps
+
+> **AccountNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component.
+
+***
+
+<a id="accountnumbervalidation"></a>
+
+#### AccountNumberValidation
+
+> **AccountNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`\>\]
+
+Validation error codes emitted by the `accountNumber` field of [useBankForm](#usebankform).
+
+***
 
 ***
 
@@ -126,6 +146,26 @@ Available on the hook result as `form.Fields.AccountType`. Options are
 `Checking` and `Savings`; defaults to `Checking` when no value is supplied.
 Supply `getOptionLabel` to translate the option labels.
 
+<a id="accounttype"></a>
+
+#### AccountType
+
+> **AccountType** = *typeof* [`ACCOUNT_TYPES`](#account_types)\[`number`\]
+
+Union of bank account type values that the form accepts.
+
+***
+
+<a id="accounttypefieldprops"></a>
+
+#### AccountTypeFieldProps
+
+> **AccountTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
+
+***
+
 ***
 
 <a id="namefield"></a>
@@ -145,6 +185,16 @@ Text input bound to the `name` field of [useBankForm](#usebankform).
 Available on the hook result as `form.Fields.Name`. Captures the account
 nickname.
 
+<a id="namefieldprops"></a>
+
+#### NameFieldProps
+
+> **NameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
+
+***
+
 ***
 
 <a id="routingnumberfield"></a>
@@ -163,6 +213,26 @@ Text input bound to the `routingNumber` field of [useBankForm](#usebankform).
 
 Available on the hook result as `form.Fields.RoutingNumber`. Validates the
 value against a 9-digit numeric pattern.
+
+<a id="routingnumberfieldprops"></a>
+
+#### RoutingNumberFieldProps
+
+> **RoutingNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component.
+
+***
+
+<a id="routingnumbervalidation"></a>
+
+#### RoutingNumberValidation
+
+> **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
+
+Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
+
+***
 
 ## Variables
 
@@ -243,47 +313,6 @@ Props for [useBankForm](#usebankform).
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
-
-<a id="accountnumberfieldprops"></a>
-
-### AccountNumberFieldProps
-
-> **AccountNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
-
-Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component.
-
-***
-
-<a id="accountnumbervalidation"></a>
-
-### AccountNumberValidation
-
-> **AccountNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`\>\]
-
-Validation error codes emitted by the `accountNumber` field of [useBankForm](#usebankform).
-
-***
-
-<a id="accounttype"></a>
-
-### AccountType
-
-> **AccountType** = *typeof* [`ACCOUNT_TYPES`](#account_types)\[`number`\]
-
-Union of bank account type values that the form accepts.
-
-***
-
-<a id="accounttypefieldprops"></a>
-
-### AccountTypeFieldProps
-
-> **AccountTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
-
-Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
-
-***
-
 <a id="bankformdata"></a>
 
 ### BankFormData
@@ -353,36 +382,6 @@ Shape of the validated values produced by the bank account form on submit.
 > **BankFormRequiredValidation** = *typeof* `BankFormErrorCodes.REQUIRED`
 
 Validation error codes emitted by [useBankForm](#usebankform) fields that only emit `REQUIRED`.
-
-***
-
-<a id="namefieldprops"></a>
-
-### NameFieldProps
-
-> **NameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
-
-Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
-
-***
-
-<a id="routingnumberfieldprops"></a>
-
-### RoutingNumberFieldProps
-
-> **RoutingNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
-
-Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component.
-
-***
-
-<a id="routingnumbervalidation"></a>
-
-### RoutingNumberValidation
-
-> **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
-
-Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
 
 ***
 

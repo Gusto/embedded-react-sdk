@@ -55,11 +55,22 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignEmployeeFormProps`](#usesignemployeeformprops) | See [UseSignEmployeeFormProps](#usesignemployeeformprops). |
+The hook fetches the form metadata and PDF, then exposes the
+[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+`onSubmit`, and error handling. The hook inspects the form's `name` to
+detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
+`Fields.Preparer1`–`Preparer4` field groups become defined, along with
+`actions.addPreparer` / `actions.removePreparer` and `form.preparers`
+state. Selecting `usedPreparer: 'yes'` automatically reveals the first
+preparer section; switching back to `'no'` removes all preparer sections
+and unregisters their fields.
+
+Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
+`useCompensationForm`, `useWorkAddressForm`), this hook does not accept
+`defaultValues`, `requiredFields`, or `validationMode` — the form shape is
+fixed and all fields except preparer street-2 are required.
 
 ## Returns
 
@@ -69,7 +80,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 <a id="usesignemployeeformready"></a>
 
-## UseSignEmployeeFormReady
+### UseSignEmployeeFormReady
 
 Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once the form metadata and PDF have loaded.
 
@@ -89,22 +100,11 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Remarks
+## Parameters
 
-The hook fetches the form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
-`onSubmit`, and error handling. The hook inspects the form's `name` to
-detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
-`Fields.Preparer1`–`Preparer4` field groups become defined, along with
-`actions.addPreparer` / `actions.removePreparer` and `form.preparers`
-state. Selecting `usedPreparer: 'yes'` automatically reveals the first
-preparer section; switching back to `'no'` removes all preparer sections
-and unregisters their fields.
-
-Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
-`useCompensationForm`, `useWorkAddressForm`), this hook does not accept
-`defaultValues`, `requiredFields`, or `validationMode` — the form shape is
-fixed and all fields except preparer street-2 are required.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseSignEmployeeFormProps`](#usesignemployeeformprops) | See [UseSignEmployeeFormProps](#usesignemployeeformprops). |
 
 <a id="confirmsignaturefield"></a>
 
@@ -162,6 +162,16 @@ Available on the hook result as `form.Fields.UsedPreparer` only when the
 form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
 automatically reveals the first preparer field group; switching back to
 `'no'` removes all preparer sections.
+
+<a id="usedpreparerfieldprops"></a>
+
+#### UsedPreparerFieldProps
+
+> **UsedPreparerFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
+
+***
 
 ## Variables
 
@@ -245,7 +255,6 @@ Props for [useSignEmployeeForm](#usesignemployeeform).
 | `formId` | `string` | The UUID of the employee form to sign. |
 
 ## Type Aliases
-
 <a id="preparercheckboxfieldprops"></a>
 
 ### PreparerCheckboxFieldProps
@@ -421,16 +430,6 @@ See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 > **SignEmployeeFormSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
 
 Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
-
-***
-
-<a id="usedpreparerfieldprops"></a>
-
-### UsedPreparerFieldProps
-
-> **UsedPreparerFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
 
 ***
 

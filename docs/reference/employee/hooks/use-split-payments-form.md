@@ -64,11 +64,17 @@ function SplitPaycheckReady({ splitForm }: { splitForm: UseSplitPaymentsFormRead
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops) | See [UseSplitPaymentsFormProps](#usesplitpaymentsformprops). |
+Supports two split modes: Percentage (whole-number shares that sum to 100)
+and Amount (dollar amounts, with the last-priority split absorbing the
+remainder). Always operates in update mode against the employee's existing
+payment method.
+
+The Percentage sum-to-100 invariant is surfaced via
+`status.hasPercentageImbalance` (not as a per-field error). With the default
+`validationMode: 'onSubmit'`, the imbalance flag appears after the first
+failed Save and clears live as the user corrects the total.
 
 ## Returns
 
@@ -78,7 +84,7 @@ A loading-state result while the payment method and bank accounts are loading, o
 
 <a id="usesplitpaymentsformready"></a>
 
-## UseSplitPaymentsFormReady
+### UseSplitPaymentsFormReady
 
 Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 
@@ -106,17 +112,11 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
 
-## Remarks
+## Parameters
 
-Supports two split modes: Percentage (whole-number shares that sum to 100)
-and Amount (dollar amounts, with the last-priority split absorbing the
-remainder). Always operates in update mode against the employee's existing
-payment method.
-
-The Percentage sum-to-100 invariant is surfaced via
-`status.hasPercentageImbalance` (not as a per-field error). With the default
-`validationMode: 'onSubmit'`, the imbalance flag appears after the first
-failed Save and clears live as the user corrects the total.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops) | See [UseSplitPaymentsFormProps](#usesplitpaymentsformprops). |
 
 ## Variables
 

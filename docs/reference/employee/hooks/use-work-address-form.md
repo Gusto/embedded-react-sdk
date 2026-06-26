@@ -67,11 +67,11 @@ function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; comp
 
 Form hook for creating or editing an employee's work address.
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseWorkAddressFormProps`](#useworkaddressformprops) | See [UseWorkAddressFormProps](#useworkaddressformprops). |
+When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+when omitted it operates in create mode and issues a POST. The hook requires `companyId`
+to fetch the company's location list — it stays in loading state until `companyId` is known.
 
 ## Returns
 
@@ -81,7 +81,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 <a id="useworkaddressformready"></a>
 
-## UseWorkAddressFormReady
+### UseWorkAddressFormReady
 
 Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once data has loaded.
 
@@ -103,11 +103,11 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## Remarks
+## Parameters
 
-When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
-when omitted it operates in create mode and issues a POST. The hook requires `companyId`
-to fetch the company's location list — it stays in loading state until `companyId` is known.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseWorkAddressFormProps`](#useworkaddressformprops) | See [UseWorkAddressFormProps](#useworkaddressformprops). |
 
 ## WorkAddressFields
 <a id="workaddressfields"></a>
@@ -238,7 +238,6 @@ Optional overrides passed to [onSubmit](#useworkaddressformready).
 | `employeeId?` | `string` | Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). |
 
 ## Type Aliases
-
 <a id="effectivedatefieldprops"></a>
 
 ### EffectiveDateFieldProps

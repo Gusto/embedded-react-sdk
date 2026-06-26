@@ -50,11 +50,9 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
+The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
 
 ## Returns
 
@@ -64,7 +62,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loadin
 
 <a id="usefederaltaxesformready"></a>
 
-## UseFederalTaxesFormReady
+### UseFederalTaxesFormReady
 
 Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once data has loaded.
 
@@ -85,9 +83,11 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
 | `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
 
-## Remarks
+## Parameters
 
-The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
 
 ## FederalTaxesFields
 <a id="federaltaxesfields"></a>
@@ -121,6 +121,16 @@ Available on the hook result as `form.Fields.Deductions`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
+<a id="deductionsfieldprops"></a>
+
+#### DeductionsFieldProps
+
+> **DeductionsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
+
+***
+
 ***
 
 <a id="dependentsamountfield"></a>
@@ -141,6 +151,16 @@ Available on the hook result as `form.Fields.DependentsAmount`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
+<a id="dependentsamountfieldprops"></a>
+
+#### DependentsAmountFieldProps
+
+> **DependentsAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
+
+***
+
 ***
 
 <a id="extrawithholdingfield"></a>
@@ -160,6 +180,16 @@ Currency-formatted number input bound to the `extraWithholding` field of [useFed
 Available on the hook result as `form.Fields.ExtraWithholding`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
+
+<a id="extrawithholdingfieldprops"></a>
+
+#### ExtraWithholdingFieldProps
+
+> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
+
+***
 
 ***
 
@@ -182,6 +212,26 @@ populated from `FILING_STATUS_VALUES` (`Single`, `Married`,
 `Head of Household`, `Exempt from withholding`). The default option label is
 the raw filing status value — pass `getOptionLabel` to localize.
 
+<a id="filingstatusfieldprops"></a>
+
+#### FilingStatusFieldProps
+
+> **FilingStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
+
+***
+
+<a id="filingstatusvalue"></a>
+
+#### FilingStatusValue
+
+> **FilingStatusValue** = *typeof* [`FILING_STATUS_VALUES`](#filing_status_values)\[`number`\]
+
+Union of filing status values that the form accepts.
+
+***
+
 ***
 
 <a id="otherincomefield"></a>
@@ -202,6 +252,16 @@ Available on the hook result as `form.Fields.OtherIncome`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
+<a id="otherincomefieldprops"></a>
+
+#### OtherIncomeFieldProps
+
+> **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
+
+***
+
 ***
 
 <a id="twojobsfield"></a>
@@ -221,6 +281,16 @@ Radio group bound to the `twoJobs` field of [useFederalTaxesForm](#usefederaltax
 Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `true` and `false`. The default labels are `Yes` and `No` — pass
 `getOptionLabel` to localize. The form submits a boolean value.
+
+<a id="twojobsfieldprops"></a>
+
+#### TwoJobsFieldProps
+
+> **TwoJobsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.
+
+***
 
 ## Variables
 
@@ -274,37 +344,6 @@ hook is always in update mode and only `employeeId` is required.
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
-
-<a id="deductionsfieldprops"></a>
-
-### DeductionsFieldProps
-
-> **DeductionsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
-
-***
-
-<a id="dependentsamountfieldprops"></a>
-
-### DependentsAmountFieldProps
-
-> **DependentsAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
-
-***
-
-<a id="extrawithholdingfieldprops"></a>
-
-### ExtraWithholdingFieldProps
-
-> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
-
-***
-
 <a id="federaltaxeserrorcode"></a>
 
 ### FederalTaxesErrorCode
@@ -400,46 +439,6 @@ The required-field error code produced by [useFederalTaxesForm](#usefederaltaxes
 
 Used as the `validationMessages` key for every federal taxes field. See
 [FederalTaxesErrorCodes](#federaltaxeserrorcodes).
-
-***
-
-<a id="filingstatusfieldprops"></a>
-
-### FilingStatusFieldProps
-
-> **FilingStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
-
-***
-
-<a id="filingstatusvalue"></a>
-
-### FilingStatusValue
-
-> **FilingStatusValue** = *typeof* [`FILING_STATUS_VALUES`](#filing_status_values)\[`number`\]
-
-Union of filing status values that the form accepts.
-
-***
-
-<a id="otherincomefieldprops"></a>
-
-### OtherIncomeFieldProps
-
-> **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
-
-***
-
-<a id="twojobsfieldprops"></a>
-
-### TwoJobsFieldProps
-
-> **TwoJobsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.
 
 ***
 

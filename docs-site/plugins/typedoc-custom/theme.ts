@@ -585,6 +585,43 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 }
 
 /**
+ * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
+ * sequence: Example → Remarks → SharedProps → Returns → everything else
+ * (EmployeeDetailsFields, Variables, Interfaces, Type Aliases — kept in their
+ * original relative order).
+ */
+function reorderHookSections(rendered: string): string {
+  const lines = rendered.split('\n')
+  const firstSection = lines.findIndex(l => /^##\s/.test(l))
+  if (firstSection === -1) return rendered
+
+  const preamble = lines.slice(0, firstSection)
+  const sections: { title: string; lines: string[] }[] = []
+  for (const line of lines.slice(firstSection)) {
+    const heading = /^##\s+(.+?)\s*$/.exec(line)
+    if (heading) {
+      sections.push({ title: heading[1]!, lines: [line] })
+    } else {
+      sections[sections.length - 1]!.lines.push(line)
+    }
+  }
+
+  const rank = (title: string): number => {
+    if (/^Examples?/.test(title)) return 0
+    if (title === 'Remarks') return 1
+    if (title.endsWith('SharedProps')) return 2
+    if (title === 'Returns') return 3
+    return 99
+  }
+  const ordered = sections
+    .map((section, index) => ({ section, index }))
+    .sort((a, b) => rank(a.section.title) - rank(b.section.title) || a.index - b.index)
+    .map(({ section }) => section)
+
+  return [...preamble, ...ordered.flatMap(section => section.lines)].join('\n')
+}
+
+/**
  * Move the `## Example` section to the top of the hook page — before props,
  * returns, and remarks — so a reader sees a working example immediately after
  * the hook signature and description.
@@ -792,6 +829,168 @@ function injectFieldsSummary(rendered: string, summary: string): string {
     '',
     ...lines.slice(componentsSectionIndex),
   ].join('\n')
+}
+
+/**
+ * Move `XxxFieldProps` and `XxxValidation` type alias entries from the
+ * `## Type Aliases` section and nest them (at H4) under their corresponding
+ * `### XxxField` field component headings. Field keys are collected from
+ * `### XxxField` headings already in the rendered output; the longest-prefix
+ * match is used to assign each entry to its field.
+ */
+function nestFieldTypeAliasesUnderComponents(rendered: string): string {
+  const lines = rendered.split('\n')
+
+  // Step 2: Locate the ## Type Aliases section (done first so we only scan
+  // lines BEFORE it for field keys — the TA section may contain a
+  // `### EmployeeDetailsField` type-alias entry that would otherwise be
+  // misidentified as a field component key).
+  const taSectionStart = lines.findIndex(l => /^##\s+Type Aliases\s*$/.test(l))
+  if (taSectionStart === -1) return rendered
+
+  let taSectionEnd = lines.length
+  for (let i = taSectionStart + 1; i < lines.length; i++) {
+    if (/^##\s/.test(lines[i]!)) { taSectionEnd = i; break }
+  }
+
+  // Step 1: Collect field keys from ### XxxField headings that appear BEFORE
+  // the Type Aliases section (so TA entries like `### EmployeeDetailsField`
+  // are never mistaken for field component headings).
+  const fieldKeys: string[] = []
+  for (const line of lines.slice(0, taSectionStart)) {
+    const m = /^###\s+([A-Z][a-zA-Z]+)Field\s*$/.exec(line)
+    if (m) {
+      const key = m[1]!
+      if (!fieldKeys.includes(key)) fieldKeys.push(key)
+    }
+  }
+  if (fieldKeys.length === 0) return rendered
+
+  // Sort longest-first so prefixes don't shadow longer keys.
+  const sortedKeys = [...fieldKeys].sort((a, b) => b.length - a.length)
+
+  const taSectionLines = lines.slice(taSectionStart, taSectionEnd)
+
+  // Step 3: Parse type alias entries from the TA section.
+  // Each entry starts at an anchor line or ### heading (optionally preceded by blank lines).
+  // Entries are delimited by lines containing only `***`.
+  type TAEntry = {
+    entryLines: string[] // all lines including anchor, heading, content (no trailing ***)
+    fieldKey: string | null
+    startInSection: number // index into taSectionLines
+    endInSection: number   // exclusive, points to the *** line (or end)
+  }
+
+  const taEntries: TAEntry[] = []
+  let i = 1 // skip the ## Type Aliases heading line itself
+  while (i < taSectionLines.length) {
+    // Find next ### heading (possibly preceded by blank lines and an anchor)
+    if (/^###\s/.test(taSectionLines[i]!) || /^<a id=/.test(taSectionLines[i]!)) {
+      const entryStart = i
+      // Find the end: next *** separator or end of section
+      let j = i + 1
+      while (j < taSectionLines.length && !/^\*\*\*\s*$/.test(taSectionLines[j]!)) {
+        j++
+      }
+      const entryEnd = j // exclusive; taSectionLines[j] is *** or end
+      const entryLines = taSectionLines.slice(entryStart, entryEnd)
+
+      // Determine field key: find the ### heading name
+      const headingLine = entryLines.find(l => /^###\s/.test(l))
+      const headingName = headingLine ? /^###\s+(\S+)/.exec(headingLine)?.[1] ?? '' : ''
+      const matchedKey = sortedKeys.find(k => headingName.startsWith(k)) ?? null
+
+      taEntries.push({ entryLines, fieldKey: matchedKey, startInSection: entryStart, endInSection: entryEnd })
+      i = entryEnd + 1 // skip past the *** separator
+    } else {
+      i++
+    }
+  }
+
+  // Step 4: Build sets of line ranges to remove from TA section (field-matched entries + their *** sep).
+  // We'll track which taSectionLines indices to skip.
+  const taLinesToRemove = new Set<number>()
+  for (const entry of taEntries) {
+    if (entry.fieldKey === null) continue
+    for (let k = entry.startInSection; k < entry.endInSection; k++) {
+      taLinesToRemove.add(k)
+    }
+    // Also remove the *** separator that follows this entry (if it exists)
+    if (entry.endInSection < taSectionLines.length && /^\*\*\*\s*$/.test(taSectionLines[entry.endInSection]!)) {
+      taLinesToRemove.add(entry.endInSection)
+    }
+  }
+
+  // Build a map: fieldKey → entries to inject (bumped one heading level ### → ####)
+  const injectionsByField = new Map<string, string[]>()
+  for (const entry of taEntries) {
+    if (!entry.fieldKey) continue
+    const bumped = entry.entryLines.map(l => l.replace(/^###\s/, '#### '))
+    if (!injectionsByField.has(entry.fieldKey)) {
+      injectionsByField.set(entry.fieldKey, [])
+    }
+    injectionsByField.get(entry.fieldKey)!.push(...bumped, '', '***', '')
+  }
+
+  // Step 5: Rebuild the full output.
+  // Pass 1: rebuild the TA section (skip removed lines, clean up orphaned blank/*** lines at start).
+  const newTALines: string[] = []
+  // Always keep the ## Type Aliases heading
+  newTALines.push(taSectionLines[0]!)
+  for (let k = 1; k < taSectionLines.length; k++) {
+    if (!taLinesToRemove.has(k)) {
+      newTALines.push(taSectionLines[k]!)
+    }
+  }
+  // Trim leading blank lines after the heading
+  while (newTALines.length > 1 && newTALines[1]!.trim() === '') {
+    newTALines.splice(1, 1)
+  }
+
+  // Pass 2: rebuild the pre-TA portion, injecting TA entries after their field headings.
+  const beforeTA = lines.slice(0, taSectionStart)
+  const afterTA = lines.slice(taSectionEnd)
+
+  const out: string[] = []
+  for (let k = 0; k < beforeTA.length; k++) {
+    const line = beforeTA[k]!
+    out.push(line)
+    // Check if this is a ### XxxField heading
+    const fieldMatch = /^###\s+([A-Z][a-zA-Z]+)Field\s*$/.exec(line)
+    if (fieldMatch) {
+      const key = fieldMatch[1]!
+      const injections = injectionsByField.get(key)
+      if (injections && injections.length > 0) {
+        // Collect this field component's content up to the next ### or ## heading,
+        // then append the injected entries.
+        // Drain the field content first (will be emitted normally), then inject.
+        // We do injection by looking ahead — find where this field component ends,
+        // then emit all its content lines, then inject.
+        let fieldEnd = k + 1
+        while (fieldEnd < beforeTA.length && !/^##\s/.test(beforeTA[fieldEnd]!) && !/^\*\*\*\s*$/.test(beforeTA[fieldEnd]!)) {
+          fieldEnd++
+        }
+        // Emit remaining field content (already started loop, but we need to re-scan after k).
+        // Actually: we already pushed `line` (the ### heading). Just set a marker so that
+        // when the loop reaches fieldEnd, we inject.
+        // Simpler approach: emit field body lines now, then inject, then continue loop from fieldEnd.
+        for (let m = k + 1; m < fieldEnd; m++) {
+          out.push(beforeTA[m]!)
+        }
+        // Inject TA entries for this field
+        out.push('')
+        out.push(...injections)
+        // Skip ahead
+        k = fieldEnd - 1 // loop will increment to fieldEnd
+      }
+    }
+  }
+
+  // Add TA section (rebuilt) and after-TA content
+  out.push(...newTALines)
+  out.push(...afterTA)
+
+  return out.join('\n')
 }
 
 export class SDKTheme extends MarkdownTheme {
@@ -1075,14 +1274,14 @@ export class SDKThemeContext extends MarkdownThemeContext {
           if (!readyType) return base
 
           const headingLevel = (options as { headingLevel: number }).headingLevel
-          const hashes = '#'.repeat(headingLevel)
+          const readyHashes = '#'.repeat(headingLevel + 1)
 
           const parts: string[] = [base]
 
           if (this.router.hasUrl(readyType) && this.options.getValue('useHTMLAnchors')) {
             parts.push(`<a id="${this.router.getAnchor(readyType)}"></a>`)
           }
-          parts.push(`${hashes} ${readyName}`)
+          parts.push(`${readyHashes} ${readyName}`)
 
           if (readyType.comment) {
             const commentMd = this.partials.comment(readyType.comment, {
@@ -1169,9 +1368,11 @@ export class SDKThemeContext extends MarkdownThemeContext {
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
           rendered = moveExampleToTop(rendered)
+          rendered = reorderHookSections(rendered)
           const fieldsTable = buildFieldsTable(this, page.model)
           if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
           rendered = removeComponentsHeader(rendered)
+          rendered = nestFieldTypeAliasesUnderComponents(rendered)
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

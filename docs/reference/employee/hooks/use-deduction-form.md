@@ -57,11 +57,20 @@ function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseDeductionFormProps`](#usedeductionformprops) | See [UseDeductionFormProps](#usedeductionformprops). |
+Both variants — post-tax custom deductions and court-ordered garnishments —
+share the same field set (description, frequency, deduct-as-percentage,
+amount, optional caps) and differ only in whether the deduction is
+court-ordered and carries a `garnishmentType`. Set `courtOrdered: true` to
+surface the garnishment-type select; set it to `false` for a custom post-tax
+deduction.
+
+Presence or absence of `garnishmentId` selects the API verb: omit it to POST
+a new deduction, supply it to PUT updates against the existing row. For
+child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform)
+instead — those require agency-keyed required attributes (case number,
+order number, remittance number, county) that this hook doesn't model.
 
 ## Returns
 
@@ -71,7 +80,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 <a id="usedeductionformready"></a>
 
-## UseDeductionFormReady
+### UseDeductionFormReady
 
 Ready-state shape returned by [useDeductionForm](#usedeductionform) once data has loaded.
 
@@ -93,20 +102,11 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
 
-## Remarks
+## Parameters
 
-Both variants — post-tax custom deductions and court-ordered garnishments —
-share the same field set (description, frequency, deduct-as-percentage,
-amount, optional caps) and differ only in whether the deduction is
-court-ordered and carries a `garnishmentType`. Set `courtOrdered: true` to
-surface the garnishment-type select; set it to `false` for a custom post-tax
-deduction.
-
-Presence or absence of `garnishmentId` selects the API verb: omit it to POST
-a new deduction, supply it to PUT updates against the existing row. For
-child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform)
-instead — those require agency-keyed required attributes (case number,
-order number, remittance number, county) that this hook doesn't model.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseDeductionFormProps`](#usedeductionformprops) | See [UseDeductionFormProps](#usedeductionformprops). |
 
 <a id="annualmaximumfield"></a>
 
@@ -125,6 +125,16 @@ Number input bound to the `annualMaximum` field of [useDeductionForm](#usededuct
 Available on the hook result as `form.Fields.AnnualMaximum` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
+
+<a id="annualmaximumfieldprops"></a>
+
+#### AnnualMaximumFieldProps
+
+> **AnnualMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
+
+***
 
 ***
 
@@ -146,6 +156,16 @@ Available on the hook result as `form.Fields.DeductAsPercentage`. Always
 rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency
 amount when `false`, or as a percentage of paycheck when `true`.
 
+<a id="deductaspercentagefieldprops"></a>
+
+#### DeductAsPercentageFieldProps
+
+> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
+
+***
+
 ***
 
 <a id="deductionamountfield"></a>
@@ -166,6 +186,16 @@ Available on the hook result as `form.Fields.Amount`. Always rendered.
 Interpreted as a currency amount when `Fields.DeductAsPercentage` is set to
 a fixed amount, or as a percentage of paycheck when it's set to percentage.
 
+<a id="deductionamountfieldprops"></a>
+
+#### DeductionAmountFieldProps
+
+> **DeductionAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
+
+***
+
 ***
 
 <a id="descriptionfield"></a>
@@ -183,6 +213,16 @@ Text input bound to the `description` field of [useDeductionForm](#usedeductionf
 #### Remarks
 
 Available on the hook result as `form.Fields.Description`. Always rendered.
+
+<a id="descriptionfieldprops"></a>
+
+#### DescriptionFieldProps
+
+> **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
+
+***
 
 ***
 
@@ -206,6 +246,16 @@ rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`,
 `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For
 child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform).
 
+<a id="garnishmenttypefieldprops"></a>
+
+#### GarnishmentTypeFieldProps
+
+> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
+
+***
+
 ***
 
 <a id="recurringfield"></a>
@@ -227,6 +277,16 @@ Picks between a recurring deduction (taken every paycheck) and a one-time
 deduction. The cap fields (`Fields.TotalAmount` and `Fields.AnnualMaximum`)
 are exposed only when this is set to recurring.
 
+<a id="recurringfieldprops"></a>
+
+#### RecurringFieldProps
+
+> **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
+
+***
+
 ***
 
 <a id="totalamountfield"></a>
@@ -246,6 +306,16 @@ Number input bound to the `totalAmount` field of [useDeductionForm](#usedeductio
 Available on the hook result as `form.Fields.TotalAmount` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
+
+<a id="totalamountfieldprops"></a>
+
+#### TotalAmountFieldProps
+
+> **TotalAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
+
+***
 
 ## Variables
 
@@ -319,37 +389,6 @@ post-tax custom variant and the court-ordered garnishment variant.
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
 ## Type Aliases
-
-<a id="annualmaximumfieldprops"></a>
-
-### AnnualMaximumFieldProps
-
-> **AnnualMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
-
-***
-
-<a id="deductaspercentagefieldprops"></a>
-
-### DeductAsPercentageFieldProps
-
-> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
-
-***
-
-<a id="deductionamountfieldprops"></a>
-
-### DeductionAmountFieldProps
-
-> **DeductionAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
-
-***
-
 <a id="deductionformamountvalidation"></a>
 
 ### DeductionFormAmountValidation
@@ -467,46 +506,6 @@ The required-field error code produced by [useDeductionForm](#usedeductionform) 
 Used as the `validationMessages` key for the description, recurring,
 deduct-as-percentage, and garnishment-type fields. See
 [DeductionFormErrorCodes](#deductionformerrorcodes).
-
-***
-
-<a id="descriptionfieldprops"></a>
-
-### DescriptionFieldProps
-
-> **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
-
-***
-
-<a id="garnishmenttypefieldprops"></a>
-
-### GarnishmentTypeFieldProps
-
-> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
-
-***
-
-<a id="recurringfieldprops"></a>
-
-### RecurringFieldProps
-
-> **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
-
-***
-
-<a id="totalamountfieldprops"></a>
-
-### TotalAmountFieldProps
-
-> **TotalAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
 
 ***
 

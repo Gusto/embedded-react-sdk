@@ -92,11 +92,12 @@ Two per-key rules override the variant mapping:
 - Once an answer to `file_new_hire_report` has been recorded server-side it is marked `isDisabled: true` in metadata — after filing, the choice is locked.
 <!-- /guide-source (slot: overview) -->
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseEmployeeStateTaxesFormProps`](#useemployeestatetaxesformprops) | Hook options. |
+The state-tax record(s) are created automatically with the employee, so this
+hook is always in update mode. When the form has no states with submittable
+answers (e.g. an employee in a no-income-tax state), submit resolves with
+the existing record list without making a network request.
 
 ## Returns
 
@@ -107,7 +108,7 @@ form data, fields, status, actions, and error handling.
 
 <a id="useemployeestatetaxesformready"></a>
 
-## UseEmployeeStateTaxesFormReady
+### UseEmployeeStateTaxesFormReady
 
 Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesform) — the
 `isLoading: false` branch of [UseEmployeeStateTaxesFormResult](#useemployeestatetaxesformresult).
@@ -125,12 +126,11 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## Remarks
+## Parameters
 
-The state-tax record(s) are created automatically with the employee, so this
-hook is always in update mode. When the form has no states with submittable
-answers (e.g. an employee in a no-income-tax state), submit resolves with
-the existing record list without making a network request.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseEmployeeStateTaxesFormProps`](#useemployeestatetaxesformprops) | Hook options. |
 
 ## Utility Hooks
 

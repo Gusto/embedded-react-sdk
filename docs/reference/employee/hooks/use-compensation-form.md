@@ -44,11 +44,33 @@ function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: st
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
+Companion hook to `useJobForm`. Jobs and their compensations are separate
+entities in the Gusto API and this hook focuses exclusively on the
+compensation side. Presence of `compensationId` selects the verb:
+
+| Hook config / submit options | Mode | API call |
+| ---------------------------- | ---- | -------- |
+| `{ jobId, compensationId }` | update | `PUT /v1/compensations/:compensationId` (with `version`) |
+| `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:jobId/compensations` |
+| `{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }` | update | `PUT /v1/compensations/:compensationId` (with the supplied `version`) |
+| `{ employeeId }` + submit `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:options.jobId/compensations` |
+
+Use the submit-options form for the **onboarding stub-fill** chain: after
+`useJobForm.actions.onSubmit()` creates a job, capture the auto-created
+compensation's UUID and version from the response, and pass them as
+`{ jobId, compensationId, compensationVersion }` to this hook's `onSubmit`
+to PUT the stub.
+
+The hook exposes several derived helpers for driving UX — static
+entity-derived values under `data.*` (effective-date bounds, pending
+future compensations) and reactive flags under `status.*` (the
+`willDeleteSecondaryJobs` carve-out, plus FLSA-specific alerts for
+commission-only and owner classifications). When
+`willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
+the `effectiveDate` field (forces to today, renders disabled) until the
+FLSA selection is reverted.
 
 ## Returns
 
@@ -58,7 +80,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loadin
 
 <a id="usecompensationformready"></a>
 
-## UseCompensationFormReady
+### UseCompensationFormReady
 
 Ready-state shape returned by [useCompensationForm](#usecompensationform) once data has loaded.
 
@@ -88,33 +110,11 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
 | `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
 
-## Remarks
+## Parameters
 
-Companion hook to `useJobForm`. Jobs and their compensations are separate
-entities in the Gusto API and this hook focuses exclusively on the
-compensation side. Presence of `compensationId` selects the verb:
-
-| Hook config / submit options | Mode | API call |
-| ---------------------------- | ---- | -------- |
-| `{ jobId, compensationId }` | update | `PUT /v1/compensations/:compensationId` (with `version`) |
-| `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:jobId/compensations` |
-| `{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }` | update | `PUT /v1/compensations/:compensationId` (with the supplied `version`) |
-| `{ employeeId }` + submit `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:options.jobId/compensations` |
-
-Use the submit-options form for the **onboarding stub-fill** chain: after
-`useJobForm.actions.onSubmit()` creates a job, capture the auto-created
-compensation's UUID and version from the response, and pass them as
-`{ jobId, compensationId, compensationVersion }` to this hook's `onSubmit`
-to PUT the stub.
-
-The hook exposes several derived helpers for driving UX — static
-entity-derived values under `data.*` (effective-date bounds, pending
-future compensations) and reactive flags under `status.*` (the
-`willDeleteSecondaryJobs` carve-out, plus FLSA-specific alerts for
-commission-only and owner classifications). When
-`willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
-the `effectiveDate` field (forces to today, renders disabled) until the
-FLSA selection is reverted.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
 
 <a id="compensationadjustforminimumwagefield"></a>
 
@@ -162,6 +162,31 @@ automatically disabled (and the form value forced to today) while
 When `withEffectiveDateField: false`, the field is `undefined` — supply
 the value at submit time via `CompensationSubmitOptions.effectiveDate`
 instead.
+
+<a id="compensationeffectivedatefieldprops"></a>
+
+#### CompensationEffectiveDateFieldProps
+
+> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
+
+***
+
+<a id="compensationeffectivedatevalidation"></a>
+
+#### CompensationEffectiveDateValidation
+
+> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
+
+Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+***
 
 ***
 
@@ -275,6 +300,16 @@ on this compensation's `effectiveDate` (for example, a future-dated
 promotion that bundles a new title with a raise). Otherwise bind the title
 via `useJobForm.Fields.Title` instead and avoid rendering both on the same
 screen.
+
+<a id="compensationtitlefieldprops"></a>
+
+#### CompensationTitleFieldProps
+
+> **CompensationTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
+
+***
 
 ## Variables
 
@@ -414,7 +449,6 @@ the same submit chain.
 | `withEffectiveDateField?` | `boolean` | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
 
 ## Type Aliases
-
 <a id="adjustforminimumwagefieldprops"></a>
 
 ### AdjustForMinimumWageFieldProps
@@ -422,31 +456,6 @@ the same submit chain.
 > **AdjustForMinimumWageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustForMinimumWage` component.
-
-***
-
-<a id="compensationeffectivedatefieldprops"></a>
-
-### CompensationEffectiveDateFieldProps
-
-> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
-
-***
-
-<a id="compensationeffectivedatevalidation"></a>
-
-### CompensationEffectiveDateValidation
-
-> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
-
-Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
 
 ***
 
@@ -563,16 +572,6 @@ The required-field error code produced by [useCompensationForm](#usecompensation
 
 Used as the `validationMessages` key for the title, FLSA status, payment
 unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
-
-***
-
-<a id="compensationtitlefieldprops"></a>
-
-### CompensationTitleFieldProps
-
-> **CompensationTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
 
 ***
 

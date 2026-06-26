@@ -74,11 +74,14 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
+The hook fetches the company form metadata and PDF, then exposes the
+[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+`onSubmit`, and error handling. Use `data.companyForm` to display the
+form's title and description, and `data.pdfUrl` to render the document for
+review before signing. Both `signature` and `confirmSignature` are always
+required.
 
 ## Returns
 
@@ -88,7 +91,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 <a id="usesigncompanyformready"></a>
 
-## UseSignCompanyFormReady
+### UseSignCompanyFormReady
 
 Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
 
@@ -110,14 +113,11 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Remarks
+## Parameters
 
-The hook fetches the company form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
-`onSubmit`, and error handling. Use `data.companyForm` to display the
-form's title and description, and `data.pdfUrl` to render the document for
-review before signing. Both `signature` and `confirmSignature` are always
-required.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
 
 ## Variables
 

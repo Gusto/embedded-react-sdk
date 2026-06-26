@@ -42,11 +42,25 @@ function JobForm({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Parameters
+## Remarks
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
+Companion hook to `useCompensationForm`. Jobs and their compensations are
+separate entities in the Gusto API and this hook focuses exclusively on
+the job side. Presence of `jobId` selects the verb:
+
+| Hook config | Mode | API call |
+| ----------- | ---- | -------- |
+| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
+| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
+| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
+
+Creating a job auto-creates a stub compensation. To update the stub in the
+same flow, capture `currentCompensationUuid` (and the compensation's
+`version` from `compensations[]`) from the create response and thread them
+into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
+
+When the primary job's `hireDate` changes, secondary compensation effective
+dates are corrected after the PUT; `isPending` stays `true` through that.
 
 ## Returns
 
@@ -56,7 +70,7 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loadin
 
 <a id="usejobformready"></a>
 
-## UseJobFormReady
+### UseJobFormReady
 
 Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 
@@ -82,25 +96,11 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## Remarks
+## Parameters
 
-Companion hook to `useCompensationForm`. Jobs and their compensations are
-separate entities in the Gusto API and this hook focuses exclusively on
-the job side. Presence of `jobId` selects the verb:
-
-| Hook config | Mode | API call |
-| ----------- | ---- | -------- |
-| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
-| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
-| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
-
-Creating a job auto-creates a stub compensation. To update the stub in the
-same flow, capture `currentCompensationUuid` (and the compensation's
-`version` from `compensations[]`) from the create response and thread them
-into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
-
-When the primary job's `hireDate` changes, secondary compensation effective
-dates are corrected after the PUT; `isPending` stays `true` through that.
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
 
 <a id="hiredatefield"></a>
 
@@ -122,6 +122,16 @@ via `JobSubmitOptions.hireDate` at submit time — useful when the hire date
 is derived from external context (e.g. the employee's `startDate` during
 onboarding).
 
+<a id="hiredatefieldprops"></a>
+
+#### HireDateFieldProps
+
+> **HireDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
+
+***
+
 ***
 
 <a id="jobtitlefield"></a>
@@ -142,6 +152,16 @@ Available on the hook result as `form.Fields.Title` when `withTitleField` is
 `true` (the default). On update flows where another form owns the title
 (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and
 render the compensation form's title field instead.
+
+<a id="jobtitlefieldprops"></a>
+
+#### JobTitleFieldProps
+
+> **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
+
+***
 
 ***
 
@@ -165,6 +185,16 @@ the active work address is in Washington and `stateWcCovered` is `true`.
 The schema enforces this field as required whenever it is rendered,
 independent of `optionalFieldsToRequire`.
 
+<a id="statewcclasscodefieldprops"></a>
+
+#### StateWcClassCodeFieldProps
+
+> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
+
+***
+
 ***
 
 <a id="statewccoveredfield"></a>
@@ -186,6 +216,16 @@ compensation. Available on the hook result as `form.Fields.StateWcCovered`
 only when the employee's active work address is in Washington (see
 `data.showStateWc`).
 
+<a id="statewccoveredfieldprops"></a>
+
+#### StateWcCoveredFieldProps
+
+> **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
+
+***
+
 ***
 
 <a id="twopercentshareholderfield"></a>
@@ -205,6 +245,16 @@ Checkbox bound to the `twoPercentShareholder` field of [useJobForm](#usejobform)
 Indicates whether the employee is a 2% shareholder in an S-Corporation.
 Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
+
+<a id="twopercentshareholderfieldprops"></a>
+
+#### TwoPercentShareholderFieldProps
+
+> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.
+
+***
 
 ## Variables
 
@@ -382,17 +432,6 @@ an employee-creation step; supply it at submit time via
 | `withTitleField?` | `boolean` | When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body. |
 
 ## Type Aliases
-
-<a id="hiredatefieldprops"></a>
-
-### HireDateFieldProps
-
-> **HireDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
-
-***
-
 <a id="joberrorcode"></a>
 
 ### JobErrorCode
@@ -447,46 +486,6 @@ The validation error code a [useJobForm](#usejobform) field can produce.
 Currently a single literal — `'REQUIRED'` — surfaced as the key in
 `validationMessages` on each `Fields.*` component. Future schema additions
 may extend the union.
-
-***
-
-<a id="jobtitlefieldprops"></a>
-
-### JobTitleFieldProps
-
-> **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
-
-***
-
-<a id="statewcclasscodefieldprops"></a>
-
-### StateWcClassCodeFieldProps
-
-> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
-
-***
-
-<a id="statewccoveredfieldprops"></a>
-
-### StateWcCoveredFieldProps
-
-> **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
-
-***
-
-<a id="twopercentshareholderfieldprops"></a>
-
-### TwoPercentShareholderFieldProps
-
-> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.
 
 ***
 
