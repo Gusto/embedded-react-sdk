@@ -256,6 +256,18 @@ await createJobMutation.mutateAsync({ request: { employeeId: resolvedEmployeeId,
 - Use `values` + `resetOptions: { keepDirtyValues: true }` on `useForm` — NOT manual `useEffect` + `reset()`
 - This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
 
+**Type the `defaultValues` prop as the form-data shape, never as a `Pick` of the API entity.** Partner pre-fill is form input, so it should be `Partial<{Domain}FormData>` (every field a plain `string`/`number`/etc.), the same type the schema produces. API entity types (`@gusto/embedded-api-v-2025-11-15/models/components/*`) declare nullable fields as `string | null | undefined`; if the prop is a `Pick` of one of those, `null` leaks into the partner-facing type and forces a `?? undefined` mapping at every call site. The form-data type carries no `null`, so the component passes `defaultValues` straight through.
+
+`null`-normalization belongs in **one place only — `resolvedDefaults` inside the hook** — where you read the server entity. `?? partnerDefaults?.field ?? ''` already coalesces `null` from both sources, so no caller ever needs to normalize. `useContractorProfile` (`defaultValues?: Partial<ContractorProfileFormData>`, with `existingContractor.firstName || undefined` internally) is the reference.
+
+```typescript
+// Good — form-shaped, no null
+defaultValues?: Partial<{Domain}FormData>
+
+// Bad — drags `string | null` into the partner type and forces call-site mapping
+defaultValues?: Pick<{Entity}, 'street1' | 'city' | 'state' | 'zip'>
+```
+
 ```typescript
 const [schema, metadataConfig] = useMemo(
   () => create{Domain}Schema({ mode, optionalFieldsToRequire }),
