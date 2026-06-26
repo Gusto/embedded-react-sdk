@@ -1,6 +1,12 @@
 import type { TaxRequirement } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirement'
 import { toRhfKey } from './rhfKey'
 
+/**
+ * Map of `applicable_if` set key to its values, keyed by RHF-encoded field key.
+ * Internal shape used by {@link isRequirementApplicable}.
+ *
+ * @internal
+ */
 export type StateTaxesFormValues = Record<string, Record<string, unknown> | undefined>
 
 /** @internal */
