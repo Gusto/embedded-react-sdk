@@ -232,4 +232,170 @@ describe('Contractor profile component behavior', () => {
       )
     })
   })
+
+  describe('self-onboarding (isAdmin=false)', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+    })
+
+    const companyId = 'company-123'
+
+    // Self-onboarding contractors were invited by email, so the GET always
+    // includes one; the schema requires email while self_onboarding is true.
+    const individualContractor = {
+      uuid: 'contractor_id',
+      version: 'version-1',
+      type: 'Individual',
+      wage_type: 'Fixed',
+      start_date: '2024-01-01',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@example.com',
+      has_ssn: false,
+      has_ein: false,
+      is_active: true,
+      file_new_hire_report: false,
+      onboarding_status: 'self_onboarding_invited',
+    }
+
+    const businessContractor = {
+      uuid: 'contractor_id',
+      version: 'version-1',
+      type: 'Business',
+      wage_type: 'Fixed',
+      start_date: '2024-01-01',
+      business_name: 'Acme LLC',
+      email: 'billing@acme.com',
+      has_ssn: false,
+      has_ein: false,
+      is_active: true,
+      file_new_hire_report: false,
+      onboarding_status: 'self_onboarding_invited',
+    }
+
+    it('renders the individual self-onboarding profile based on contractor type', async () => {
+      server.use(handleGetContractor(() => HttpResponse.json(individualContractor)))
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId={companyId}
+          contractorId="contractor_id"
+          isAdmin={false}
+          onEvent={vi.fn()}
+        />,
+      )
+
+      await screen.findByText('Complete your profile')
+
+      expect(screen.getByLabelText('First Name')).toBeInTheDocument()
+      expect(screen.getByLabelText('Last Name')).toBeInTheDocument()
+      expect(screen.getByLabelText('Social Security Number')).toBeInTheDocument()
+      expect(screen.queryByLabelText('Business Name')).not.toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
+
+    it('submits the individual SSN and emits self-onboarding events', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      let body: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          ...individualContractor,
+          version: 'updated-version',
+        })
+      })
+      server.use(
+        handleGetContractor(() => HttpResponse.json(individualContractor)),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId={companyId}
+          contractorId="contractor_id"
+          isAdmin={false}
+          onEvent={onEvent}
+        />,
+      )
+
+      await screen.findByText('Complete your profile')
+      await user.type(screen.getByLabelText('Social Security Number'), '123-45-6789')
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(body).toMatchObject({ ssn: '123456789', self_onboarding: true })
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_UPDATED,
+        expect.objectContaining({ uuid: 'contractor_id' }),
+      )
+      expect(onEvent).toHaveBeenCalledWith(
+        contractorEvents.CONTRACTOR_PROFILE_DONE,
+        expect.objectContaining({ contractorId: 'contractor_id', selfOnboarding: true }),
+      )
+    })
+
+    it('renders the business self-onboarding profile and submits the EIN', async () => {
+      const user = userEvent.setup()
+      let body: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...businessContractor, version: 'updated-version' })
+      })
+      server.use(
+        handleGetContractor(() => HttpResponse.json(businessContractor)),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId={companyId}
+          contractorId="contractor_id"
+          isAdmin={false}
+          onEvent={vi.fn()}
+        />,
+      )
+
+      await screen.findByText('Complete your profile')
+      expect(screen.getByLabelText('Business Name')).toBeInTheDocument()
+      expect(screen.queryByLabelText('First Name')).not.toBeInTheDocument()
+
+      await user.type(screen.getByLabelText('EIN'), '12-3456789')
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(body).toMatchObject({ ein: '123456789', self_onboarding: true })
+    })
+
+    it('does not require re-entering SSN for an individual with SSN on file', async () => {
+      const user = userEvent.setup()
+      const updateResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({ ...individualContractor, version: 'updated-version' }),
+      )
+      server.use(
+        handleGetContractor(() => HttpResponse.json({ ...individualContractor, has_ssn: true })),
+        handleUpdateContractor(updateResolver),
+      )
+
+      renderWithProviders(
+        <ContractorProfile
+          companyId={companyId}
+          contractorId="contractor_id"
+          isAdmin={false}
+          onEvent={vi.fn()}
+        />,
+      )
+
+      await screen.findByText('Complete your profile')
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+    })
+  })
 })

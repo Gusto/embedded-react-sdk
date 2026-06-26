@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
 import classNames from 'classnames'
@@ -9,6 +9,7 @@ import {
   type ContractorDetailsOptionalFieldsToRequire,
   type UseContractorDetailsFormReady,
 } from './shared/useContractorDetailsForm'
+import { SelfOnboardingContractorProfile } from './SelfOnboardingContractorProfile'
 import styles from './ContractorProfile.module.scss'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
@@ -20,37 +21,69 @@ import { useI18n } from '@/i18n'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 
-// Restores the contractor profile's product requiredness on top of the hook's
-// API-aligned baseline (which leaves ssn/ein optional and create-only fields
-// optional on update). Promoting an excluded field is a no-op, and an SSN/EIN
-// already on file is still waived via redaction, so this static superset is safe.
-const CONTRACTOR_PROFILE_REQUIRED_FIELDS: ContractorDetailsOptionalFieldsToRequire = {
-  create: ['ssn', 'ein'],
-  update: ['firstName', 'lastName', 'businessName', 'hourlyRate', 'workState', 'ssn', 'ein'],
+// The admin form restores the contractor profile's product requiredness on top
+// of the hook's API-aligned baseline (which leaves ssn/ein optional and
+// create-only fields optional on update). When the admin invites the contractor
+// to self-onboard, SSN/EIN are hidden and the contractor supplies them later, so
+// they are dropped from the required set. An SSN/EIN already on file is still
+// waived via redaction, so promoting them when not inviting is safe.
+function computeRequiredFields(
+  selfOnboardingActive: boolean,
+): ContractorDetailsOptionalFieldsToRequire {
+  const base: ContractorDetailsOptionalFieldsToRequire = {
+    create: [],
+    update: ['firstName', 'lastName', 'businessName', 'hourlyRate', 'workState'],
+  }
+  if (selfOnboardingActive) return base
+  return {
+    create: [...(base.create ?? []), 'ssn', 'ein'],
+    update: [...(base.update ?? []), 'ssn', 'ein'],
+  }
 }
 
 /**
  * Props for {@link ContractorProfile}.
  *
+ * @remarks
+ * Discriminated by `isAdmin`. In admin mode (the default) `contractorId` is
+ * optional — omitting it creates a new contractor. In self-onboarding mode
+ * (`isAdmin={false}`) `contractorId` is required, because the contractor must
+ * already exist for its type (individual vs. business) to be resolved.
+ *
  * @public
  */
-export interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
+export type ContractorProfileProps = BaseComponentInterface<'Contractor.Profile'> & {
   /** UUID of the company the contractor belongs to. */
   companyId: string
-  /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
-  contractorId?: string
   /** Initial values for the contractor profile form fields. */
   defaultValues?: Partial<ContractorDetailsFormData>
-}
+} & (
+    | {
+        /** When `true` (the default), renders the admin create/edit form. */
+        isAdmin?: true
+        /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
+        contractorId?: string
+      }
+    | {
+        /** When `false`, renders the contractor self-onboarding profile. */
+        isAdmin: false
+        /** UUID of the existing contractor completing self-onboarding. Required in self-onboarding mode. */
+        contractorId: string
+      }
+  )
 
 /**
  * Form for creating or editing a contractor profile, supporting both individual and business contractor types.
  *
  * @remarks
- * Renders different field sets depending on the contractor type (individual vs. business) and wage type
- * (hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
- * own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
- * submit; otherwise it creates a new contractor under `companyId`.
+ * In admin mode (the default), renders different field sets depending on the contractor type (individual
+ * vs. business) and wage type (hourly vs. fixed), and exposes a self-onboarding toggle that invites the
+ * contractor to complete their own setup. When `contractorId` is provided, the form fetches the existing
+ * contractor and updates it on submit; otherwise it creates a new contractor under `companyId`.
+ *
+ * When `isAdmin` is `false`, renders the contractor self-onboarding profile instead: it resolves the
+ * existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
+ * fields for the contractor to complete.
  *
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
@@ -66,7 +99,15 @@ export function ContractorProfile(props: ContractorProfileProps) {
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
     <BaseBoundaries componentName="Contractor.Profile" FallbackComponent={props.FallbackComponent}>
-      <ContractorProfileRoot {...props} />
+      {props.isAdmin === false ? (
+        <SelfOnboardingContractorProfile
+          contractorId={props.contractorId}
+          onEvent={props.onEvent}
+          className={props.className}
+        />
+      ) : (
+        <ContractorProfileRoot {...props} />
+      )}
     </BaseBoundaries>
   )
 }
@@ -85,18 +126,30 @@ function ContractorProfileRoot({
     [defaultValues],
   )
 
+  // Mirrors the Employee AdminProfile loop: SSN/EIN requiredness depends on the
+  // self-onboarding toggle, which lives in the form the hook creates. Seed from
+  // the create-mode default, then sync from the watched value (see the ready child).
+  const [selfOnboardingActive, setSelfOnboardingActive] = useState(
+    !contractorId && (resolvedDefaults.selfOnboarding ?? false),
+  )
+
+  const optionalFieldsToRequire = useMemo(
+    () => computeRequiredFields(selfOnboardingActive),
+    [selfOnboardingActive],
+  )
+
   const contractor = useContractorDetailsForm(
     contractorId
       ? {
           companyId,
           contractorId,
           defaultValues: resolvedDefaults,
-          optionalFieldsToRequire: CONTRACTOR_PROFILE_REQUIRED_FIELDS,
+          optionalFieldsToRequire,
         }
       : {
           companyId,
           defaultValues: resolvedDefaults,
-          optionalFieldsToRequire: CONTRACTOR_PROFILE_REQUIRED_FIELDS,
+          optionalFieldsToRequire,
         },
   )
 
@@ -104,16 +157,29 @@ function ContractorProfileRoot({
     return <BaseLayout isLoading error={contractor.errorHandling.errors} />
   }
 
-  return <ContractorProfileReady contractor={contractor} onEvent={onEvent} className={className} />
+  return (
+    <ContractorProfileReady
+      contractor={contractor}
+      onEvent={onEvent}
+      className={className}
+      setSelfOnboardingActive={setSelfOnboardingActive}
+    />
+  )
 }
 
 interface ContractorProfileReadyProps {
   contractor: UseContractorDetailsFormReady
   onEvent: ContractorProfileProps['onEvent']
   className?: string
+  setSelfOnboardingActive: (value: boolean) => void
 }
 
-function ContractorProfileReady({ contractor, onEvent, className }: ContractorProfileReadyProps) {
+function ContractorProfileReady({
+  contractor,
+  onEvent,
+  className,
+  setSelfOnboardingActive,
+}: ContractorProfileReadyProps) {
   const { t } = useTranslation('Contractor.Profile')
   const Components = useComponentContext()
 
@@ -121,6 +187,10 @@ function ContractorProfileReady({ contractor, onEvent, className }: ContractorPr
     control: contractor.form.hookFormInternals.formMethods.control,
     name: 'selfOnboarding',
   })
+
+  useEffect(() => {
+    setSelfOnboardingActive(watchedSelfOnboarding)
+  }, [watchedSelfOnboarding, setSelfOnboardingActive])
 
   const { Fields } = contractor.form
   const mode = contractor.status.mode
@@ -204,7 +274,7 @@ function ContractorProfileReady({ contractor, onEvent, className }: ContractorPr
                       INVALID_NAME: t('validations.lastNameFormat'),
                     }}
                   />
-                  {Fields.Ssn && (
+                  {Fields.Ssn && !watchedSelfOnboarding && (
                     <Fields.Ssn
                       label={t('fields.ssn.label')}
                       validationMessages={{
@@ -222,7 +292,7 @@ function ContractorProfileReady({ contractor, onEvent, className }: ContractorPr
                     label={t('fields.businessName.label')}
                     validationMessages={{ REQUIRED: t('validations.businessName') }}
                   />
-                  {Fields.Ein && (
+                  {Fields.Ein && !watchedSelfOnboarding && (
                     <Fields.Ein
                       label={t('fields.ein.label')}
                       validationMessages={{

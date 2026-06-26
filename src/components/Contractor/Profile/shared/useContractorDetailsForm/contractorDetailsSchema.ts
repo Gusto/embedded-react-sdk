@@ -110,9 +110,11 @@ export type ContractorDetailsFormOutputs = ContractorDetailsFormData
 //
 // Requiredness mirrors the contractor create/update API contract: fields the
 // API requires on create are `'create'` (optional on update), and fields the
-// API treats as optional are `'never'`. Type/wage/self-onboarding *applicability*
-// (does a field apply to this contractor at all?) is handled separately by
-// `excludeFields` — see `getExcludedContractorFields` — not by requiredness.
+// API treats as optional are `'never'`. Type/wage *applicability* (does a field
+// apply to this contractor at all?) is handled separately by `excludeFields` —
+// see `getExcludedContractorFields` — not by requiredness. SSN/EIN are never
+// gated by `selfOnboarding`: each consumer decides whether to render and require
+// them (admins hide them when inviting; self-onboarding profiles collect them).
 //
 // `email` is the one genuinely value-conditional rule: it always applies but is
 // only required when self-onboarding is on (create and update, matching the
@@ -176,7 +178,7 @@ export function createContractorDetailsSchema(options: ContractorDetailsSchemaOp
 
 /** @internal */
 export type ContractorDiscriminators = Partial<
-  Pick<ContractorDetailsFormData, 'type' | 'wageType' | 'selfOnboarding' | 'fileNewHireReport'>
+  Pick<ContractorDetailsFormData, 'type' | 'wageType' | 'fileNewHireReport'>
 >
 
 /**
@@ -191,18 +193,15 @@ export function getExcludedContractorFields(
   values: ContractorDiscriminators,
 ): Array<keyof typeof fieldValidators> {
   const isIndividual = values.type === ContractorType.Individual
-  const selfOnboarding = Boolean(values.selfOnboarding)
   const excluded: Array<keyof typeof fieldValidators> = []
 
   if (values.wageType !== WageType.Hourly) excluded.push('hourlyRate')
 
   if (isIndividual) {
     excluded.push('businessName', 'ein')
-    if (selfOnboarding) excluded.push('ssn')
     if (!values.fileNewHireReport) excluded.push('workState')
   } else {
     excluded.push('firstName', 'lastName', 'middleInitial', 'fileNewHireReport', 'ssn', 'workState')
-    if (selfOnboarding) excluded.push('ein')
   }
 
   return excluded

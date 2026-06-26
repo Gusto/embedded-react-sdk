@@ -335,10 +335,10 @@ export type SsnFieldProps = HookFieldProps<
  * Text input bound to the `ssn` field of {@link useContractorDetailsForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.Ssn` for individual contractors
- * who are not self-onboarding. Auto-formats input with dashes
- * (`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field
- * shows a masked placeholder and the required rule is waived.
+ * Available on the hook result as `form.Fields.Ssn` for individual contractors.
+ * Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already
+ * has an SSN on file, the field shows a masked placeholder and the required
+ * rule is waived.
  *
  * @param props - {@link SsnFieldProps}.
  * @returns The rendered text input bound to `ssn`.
@@ -371,10 +371,9 @@ export type EinFieldProps = HookFieldProps<
  * Text input bound to the `ein` field of {@link useContractorDetailsForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.Ein` for business contractors
- * who are not self-onboarding. Auto-formats input as `XX-XXXXXXX`. When the
- * contractor already has an EIN on file, the field shows a masked placeholder
- * and the required rule is waived.
+ * Available on the hook result as `form.Fields.Ein` for business contractors.
+ * Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on
+ * file, the field shows a masked placeholder and the required rule is waived.
  *
  * @param props - {@link EinFieldProps}.
  * @returns The rendered text input bound to `ein`.

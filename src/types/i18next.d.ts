@@ -1239,6 +1239,13 @@ export interface ContractorPaymentsPaymentsList{
 export interface ContractorProfile{
 "title":string;
 "subtitle":string;
+"selfOnboarding":{
+"title":string;
+"individualDescription":string;
+"businessDescription":string;
+"continue":string;
+"submitting":string;
+};
 "fields":{
 "selfOnboarding":{
 "label":string;

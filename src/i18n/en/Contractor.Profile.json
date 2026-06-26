@@ -1,6 +1,13 @@
 {
   "title": "Contractor profile",
   "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
+  "selfOnboarding": {
+    "title": "Complete your profile",
+    "individualDescription": "Please verify your name and provide your Social Security Number.",
+    "businessDescription": "Please verify your business name and provide your EIN.",
+    "continue": "Continue",
+    "submitting": "Saving..."
+  },
   "fields": {
     "selfOnboarding": {
       "label": "Invite this contractor to enter some of their own details online",
