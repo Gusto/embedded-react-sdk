@@ -959,12 +959,11 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.25rem;
-  padding: 0 1.1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
   white-space: nowrap;
   flex: 0 0 auto;
   min-width: 0;
@@ -972,42 +971,44 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
     background-color 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease,
-    transform 0.12s ease,
-    box-shadow 0.12s ease;
+    transform 0.1s ease;
 }
 
 .cookie-consent-toast .cookie-consent-button-primary {
   background-color: var(--ifm-color-primary);
-  color: #ffffff;
-  border: 1px solid transparent;
+  color: #1b1b1d;
+  border: none;
 }
 
 .cookie-consent-toast .cookie-consent-button-primary:hover:not(:disabled) {
-  background-color: var(--ifm-color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(241, 94, 73, 0.25);
+  background-color: #f67660;
+  color: #1b1b1d;
 }
 
 .cookie-consent-toast .cookie-consent-button-secondary {
-  background-color: transparent;
-  color: var(--ifm-navbar-link-color);
-  border: 1px solid rgba(27, 27, 29, 0.16);
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #1b1b1d;
+  border: 1px solid rgba(27, 27, 29, 0.12);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
-  background-color: rgba(27, 27, 29, 0.05);
-  border-color: rgba(27, 27, 29, 0.24);
-  transform: translateY(-1px);
+  background-color: rgba(27, 27, 29, 0.06);
+  border-color: rgba(27, 27, 29, 0.2);
+  color: #1b1b1d;
 }
 
 [data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary {
-  color: var(--ifm-navbar-link-color);
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
   border-color: rgba(255, 255, 255, 0.18);
 }
 
 [data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
 }
 
 .cookie-consent-toast .cookie-consent-button-text {
