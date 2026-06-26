@@ -17,6 +17,48 @@ custom_edit_url: null
 
 Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
 
+## Example
+
+```tsx title="Example"
+import {
+  useEmployeeDetailsForm,
+  SDKFormProvider,
+  type UseEmployeeDetailsFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function EmployeeDetailsPage({ companyId, employeeId }: { companyId: string; employeeId?: string }) {
+  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+
+  if (employeeDetails.isLoading) return <div>Loading...</div>
+
+  return <EmployeeDetailsReady employeeDetails={employeeDetails} />
+}
+
+function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmployeeDetailsFormReady }) {
+  const { Fields } = employeeDetails.form
+
+  const handleSubmit = async () => {
+    await employeeDetails.actions.onSubmit({
+      onEmployeeCreated: emp => console.log('Created:', emp.uuid),
+      onEmployeeUpdated: emp => console.log('Updated:', emp.uuid),
+    })
+  }
+
+  return (
+    <SDKFormProvider formHookResult={employeeDetails}>
+      <form onSubmit={e => { e.preventDefault(); void handleSubmit() }}>
+        <Fields.FirstName label="First name" />
+        <Fields.LastName label="Last name" />
+        <Fields.Email label="Personal email" />
+        <Fields.DateOfBirth label="Date of birth" />
+        <Fields.Ssn label="Social Security number" />
+        <button type="submit" disabled={employeeDetails.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## UseEmployeeDetailsFormSharedProps
 
 <a id="useemployeedetailsformsharedprops"></a>
@@ -68,48 +110,6 @@ pending status, submit action, error handling, and bound `Fields`.
 Self-onboarding is only toggleable when the employee's onboarding status
 allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
 
-## Example
-
-```tsx title="Example"
-import {
-  useEmployeeDetailsForm,
-  SDKFormProvider,
-  type UseEmployeeDetailsFormReady,
-} from '@gusto/embedded-react-sdk'
-
-function EmployeeDetailsPage({ companyId, employeeId }: { companyId: string; employeeId?: string }) {
-  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
-
-  if (employeeDetails.isLoading) return <div>Loading...</div>
-
-  return <EmployeeDetailsReady employeeDetails={employeeDetails} />
-}
-
-function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmployeeDetailsFormReady }) {
-  const { Fields } = employeeDetails.form
-
-  const handleSubmit = async () => {
-    await employeeDetails.actions.onSubmit({
-      onEmployeeCreated: emp => console.log('Created:', emp.uuid),
-      onEmployeeUpdated: emp => console.log('Updated:', emp.uuid),
-    })
-  }
-
-  return (
-    <SDKFormProvider formHookResult={employeeDetails}>
-      <form onSubmit={e => { e.preventDefault(); void handleSubmit() }}>
-        <Fields.FirstName label="First name" />
-        <Fields.LastName label="Last name" />
-        <Fields.Email label="Personal email" />
-        <Fields.DateOfBirth label="Date of birth" />
-        <Fields.Ssn label="Social Security number" />
-        <button type="submit" disabled={employeeDetails.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
 ## EmployeeDetailsFields
 <a id="employeedetailsfields"></a>
 
@@ -124,8 +124,6 @@ The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform
 | [`MiddleInitial`](#middleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
 | [`SelfOnboarding`](#selfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
 | [`Ssn`](#ssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
-
-## Components
 
 <a id="dateofbirthfield"></a>
 

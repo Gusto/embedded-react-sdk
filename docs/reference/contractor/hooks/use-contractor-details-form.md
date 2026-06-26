@@ -93,8 +93,6 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 | `WageType` | — | — |
 | `WorkState` | — | — |
 
-## Components
-
 <a id="contractorbusinessnamefield"></a>
 
 ### ContractorBusinessNameField

@@ -17,6 +17,31 @@ custom_edit_url: null
 
 Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
 
+## Example
+
+```tsx title="Example"
+import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function JobForm({ employeeId }: { employeeId: string }) {
+  const job = useJobForm({ employeeId })
+  if (job.isLoading) return null
+
+  const { Fields } = job.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); job.actions.onSubmit() }}>
+      <SDKFormProvider formHookResult={job}>
+        {Fields.Title && <Fields.Title label="Job title" />}
+        {Fields.HireDate && <Fields.HireDate label="Hire date" />}
+        {Fields.TwoPercentShareholder && (
+          <Fields.TwoPercentShareholder label="2% S-Corp shareholder" />
+        )}
+      </SDKFormProvider>
+      <button type="submit" disabled={job.status.isPending}>Save</button>
+    </form>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -76,33 +101,6 @@ into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensation
 
 When the primary job's `hireDate` changes, secondary compensation effective
 dates are corrected after the PUT; `isPending` stays `true` through that.
-
-## Example
-
-```tsx title="Example"
-import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function JobForm({ employeeId }: { employeeId: string }) {
-  const job = useJobForm({ employeeId })
-  if (job.isLoading) return null
-
-  const { Fields } = job.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); job.actions.onSubmit() }}>
-      <SDKFormProvider formHookResult={job}>
-        {Fields.Title && <Fields.Title label="Job title" />}
-        {Fields.HireDate && <Fields.HireDate label="Hire date" />}
-        {Fields.TwoPercentShareholder && (
-          <Fields.TwoPercentShareholder label="2% S-Corp shareholder" />
-        )}
-      </SDKFormProvider>
-      <button type="submit" disabled={job.status.isPending}>Save</button>
-    </form>
-  )
-}
-```
-
-## Components
 
 <a id="hiredatefield"></a>
 

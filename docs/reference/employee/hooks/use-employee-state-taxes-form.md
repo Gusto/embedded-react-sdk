@@ -20,6 +20,58 @@ The set of questions is driven by the API response per state, so
 `form.Fields` is an array of state groups with discriminated, render-ready
 `Field` components rather than a fixed named object.
 
+## Example
+
+```tsx title="Example"
+import {
+  useEmployeeStateTaxesForm,
+  SDKFormProvider,
+  type UseEmployeeStateTaxesFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function StateTaxesPage({ employeeId }: { employeeId: string }) {
+  const stateTaxes = useEmployeeStateTaxesForm({ employeeId })
+
+  if (stateTaxes.isLoading) return <div>Loading...</div>
+
+  return <StateTaxesFormReady stateTaxes={stateTaxes} />
+}
+
+function StateTaxesFormReady({
+  stateTaxes,
+}: {
+  stateTaxes: UseEmployeeStateTaxesFormReady
+}) {
+  const handleSubmit = async () => {
+    const result = await stateTaxes.actions.onSubmit()
+    if (result) console.log('Updated state tax records:', result.data)
+  }
+
+  return (
+    <SDKFormProvider formHookResult={stateTaxes}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void handleSubmit()
+        }}
+      >
+        {stateTaxes.form.Fields.map(group => (
+          <section key={group.state}>
+            <h2>{group.state}</h2>
+            {group.questions.map(question => (
+              <question.Field key={question.questionId} />
+            ))}
+          </section>
+        ))}
+        <button type="submit" disabled={stateTaxes.status.isPending}>
+          Save
+        </button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 <!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: overview) -->
 ## Field variants and promotion
 
@@ -79,58 +131,6 @@ The state-tax record(s) are created automatically with the employee, so this
 hook is always in update mode. When the form has no states with submittable
 answers (e.g. an employee in a no-income-tax state), submit resolves with
 the existing record list without making a network request.
-
-## Example
-
-```tsx title="Example"
-import {
-  useEmployeeStateTaxesForm,
-  SDKFormProvider,
-  type UseEmployeeStateTaxesFormReady,
-} from '@gusto/embedded-react-sdk'
-
-function StateTaxesPage({ employeeId }: { employeeId: string }) {
-  const stateTaxes = useEmployeeStateTaxesForm({ employeeId })
-
-  if (stateTaxes.isLoading) return <div>Loading...</div>
-
-  return <StateTaxesFormReady stateTaxes={stateTaxes} />
-}
-
-function StateTaxesFormReady({
-  stateTaxes,
-}: {
-  stateTaxes: UseEmployeeStateTaxesFormReady
-}) {
-  const handleSubmit = async () => {
-    const result = await stateTaxes.actions.onSubmit()
-    if (result) console.log('Updated state tax records:', result.data)
-  }
-
-  return (
-    <SDKFormProvider formHookResult={stateTaxes}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void handleSubmit()
-        }}
-      >
-        {stateTaxes.form.Fields.map(group => (
-          <section key={group.state}>
-            <h2>{group.state}</h2>
-            {group.questions.map(question => (
-              <question.Field key={question.questionId} />
-            ))}
-          </section>
-        ))}
-        <button type="submit" disabled={stateTaxes.status.isPending}>
-          Save
-        </button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Utility Hooks
 

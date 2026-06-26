@@ -17,51 +17,6 @@ custom_edit_url: null
 
 Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox.
 
-## Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
-
-## Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignCompanyFormReady](#usesigncompanyformready) once the form is loaded.
-
-<a id="usesigncompanyformready"></a>
-
-## UseSignCompanyFormReady
-
-Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
-| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
-| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
-| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit-state flags. |
-| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
-| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
-
-## Remarks
-
-The hook fetches the company form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
-`onSubmit`, and error handling. Use `data.companyForm` to display the
-form's title and description, and `data.pdfUrl` to render the document for
-review before signing. Both `signature` and `confirmSignature` are always
-required.
-
 ## Example
 
 ```tsx title="Example"
@@ -118,6 +73,51 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
   )
 }
 ```
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseSignCompanyFormProps`](#usesigncompanyformprops) | See [UseSignCompanyFormProps](#usesigncompanyformprops). |
+
+## Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignCompanyFormReady](#usesigncompanyformready) once the form is loaded.
+
+<a id="usesigncompanyformready"></a>
+
+## UseSignCompanyFormReady
+
+Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the form metadata and PDF have loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Imperative actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
+| `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
+| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
+| `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit-state flags. |
+| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
+| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+## Remarks
+
+The hook fetches the company form metadata and PDF, then exposes the
+[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+`onSubmit`, and error handling. Use `data.companyForm` to display the
+form's title and description, and `data.pdfUrl` to render the document for
+review before signing. Both `signature` and `confirmSignature` are always
+required.
 
 ## Variables
 

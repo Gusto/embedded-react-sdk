@@ -585,6 +585,40 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 }
 
 /**
+ * Move the `## Example` section to the top of the hook page — before props,
+ * returns, and remarks — so a reader sees a working example immediately after
+ * the hook signature and description.
+ */
+function moveExampleToTop(rendered: string): string {
+  const lines = rendered.split('\n')
+  const exampleStart = lines.findIndex(l => /^## Example\s*$/.test(l))
+  if (exampleStart === -1) return rendered
+
+  let exampleEnd = lines.length
+  for (let i = exampleStart + 1; i < lines.length; i++) {
+    if (/^## /.test(lines[i]!)) { exampleEnd = i; break }
+  }
+
+  const exampleLines = lines.slice(exampleStart, exampleEnd)
+  const withoutExample = [...lines.slice(0, exampleStart), ...lines.slice(exampleEnd)]
+
+  const firstH2 = withoutExample.findIndex(l => /^## /.test(l))
+  if (firstH2 === -1) return rendered
+
+  return [...withoutExample.slice(0, firstH2), ...exampleLines, '', ...withoutExample.slice(firstH2)].join('\n')
+}
+
+/**
+ * Remove the `## Components` group heading from hook pages. The field
+ * component entries (`### XxxField`) are already at H3 and nest naturally
+ * under the preceding `## EmployeeDetailsFields` section without needing
+ * their own H2 group header.
+ */
+function removeComponentsHeader(rendered: string): string {
+  return rendered.replace(/^## Components\s*\n\n?/m, '')
+}
+
+/**
  * After `reformatHookFunctionSection` shifts headings, `#### Example` becomes
  * `## Example`. Find any opening code fence that appears after a `## Example`
  * heading (skipping blank lines) and add ` title="Example"` to it if absent.
@@ -1134,8 +1168,10 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isHookPage(page.model)) {
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
+          rendered = moveExampleToTop(rendered)
           const fieldsTable = buildFieldsTable(this, page.model)
           if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
+          rendered = removeComponentsHeader(rendered)
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

@@ -17,6 +17,43 @@ custom_edit_url: null
 
 Headless React Hook Form hook for updating an employee's payment method.
 
+## Example
+
+```tsx title="Example"
+import {
+  usePaymentMethodForm,
+  SDKFormProvider,
+  PAYMENT_METHODS,
+  type PaymentMethodType,
+} from '@gusto/embedded-react-sdk'
+
+function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
+  const paymentMethodForm = usePaymentMethodForm({ employeeId })
+
+  if (paymentMethodForm.isLoading) return null
+  const { Fields } = paymentMethodForm.form
+
+  return (
+    <SDKFormProvider formHookResult={paymentMethodForm}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void paymentMethodForm.actions.onSubmit()
+        }}
+      >
+        <Fields.Type
+          label="Select payment method"
+          getOptionLabel={(value: PaymentMethodType) =>
+            value === PAYMENT_METHODS.directDeposit ? 'Direct Deposit' : 'Check'
+          }
+        />
+        <button type="submit" disabled={paymentMethodForm.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -59,45 +96,6 @@ every employee has a payment method, defaulting to Check. Switching to Check
 sends a minimal request body; switching to or staying on Direct Deposit
 preserves the existing splits and version so split allocations are not lost
 when only the type changes.
-
-## Example
-
-```tsx title="Example"
-import {
-  usePaymentMethodForm,
-  SDKFormProvider,
-  PAYMENT_METHODS,
-  type PaymentMethodType,
-} from '@gusto/embedded-react-sdk'
-
-function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
-  const paymentMethodForm = usePaymentMethodForm({ employeeId })
-
-  if (paymentMethodForm.isLoading) return null
-  const { Fields } = paymentMethodForm.form
-
-  return (
-    <SDKFormProvider formHookResult={paymentMethodForm}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void paymentMethodForm.actions.onSubmit()
-        }}
-      >
-        <Fields.Type
-          label="Select payment method"
-          getOptionLabel={(value: PaymentMethodType) =>
-            value === PAYMENT_METHODS.directDeposit ? 'Direct Deposit' : 'Check'
-          }
-        />
-        <button type="submit" disabled={paymentMethodForm.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
-## Components
 
 <a id="paymentmethodtypefield"></a>
 

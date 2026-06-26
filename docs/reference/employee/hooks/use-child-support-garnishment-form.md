@@ -17,6 +17,48 @@ custom_edit_url: null
 
 Headless hook for creating or updating a child-support garnishment.
 
+## Example
+
+```tsx title="Example"
+import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
+  const form = useChildSupportGarnishmentForm({ employeeId, garnishmentId })
+
+  if (form.isLoading) return <p>Loading…</p>
+
+  const { Fields } = form.form
+
+  return (
+    <SDKFormProvider formHookResult={form}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void form.actions.onSubmit()
+        }}
+      >
+        <Fields.State
+          label="Agency"
+          getOptionLabel={entry => entry.name}
+          validationMessages={{ REQUIRED: 'Required' }}
+        />
+        {Fields.CaseNumber && (
+          <Fields.CaseNumber label="Case number" validationMessages={{ REQUIRED: 'Required' }} />
+        )}
+        <Fields.Amount
+          label="Percentage of paycheck"
+          validationMessages={{
+            REQUIRED: 'Required',
+            PERCENT_OUT_OF_RANGE: 'Must be between 0 and 100',
+          }}
+        />
+        <button type="submit">Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -70,50 +112,6 @@ Presence or absence of `garnishmentId` selects the API verb: omit it to
 POST a new garnishment, supply it to PUT updates against the existing row.
 For non-child-support deductions (court-ordered garnishments and post-tax
 custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
-
-## Example
-
-```tsx title="Example"
-import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
-  const form = useChildSupportGarnishmentForm({ employeeId, garnishmentId })
-
-  if (form.isLoading) return <p>Loading…</p>
-
-  const { Fields } = form.form
-
-  return (
-    <SDKFormProvider formHookResult={form}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void form.actions.onSubmit()
-        }}
-      >
-        <Fields.State
-          label="Agency"
-          getOptionLabel={entry => entry.name}
-          validationMessages={{ REQUIRED: 'Required' }}
-        />
-        {Fields.CaseNumber && (
-          <Fields.CaseNumber label="Case number" validationMessages={{ REQUIRED: 'Required' }} />
-        )}
-        <Fields.Amount
-          label="Percentage of paycheck"
-          validationMessages={{
-            REQUIRED: 'Required',
-            PERCENT_OUT_OF_RANGE: 'Must be between 0 and 100',
-          }}
-        />
-        <button type="submit">Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
-## Components
 
 <a id="casenumberfield"></a>
 

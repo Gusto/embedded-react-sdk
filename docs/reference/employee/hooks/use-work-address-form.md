@@ -119,8 +119,6 @@ Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
 | `EffectiveDate` | — | — |
 | `Location` | — | — |
 
-## Components
-
 <a id="workaddresseffectivedatefield"></a>
 
 ### WorkAddressEffectiveDateField

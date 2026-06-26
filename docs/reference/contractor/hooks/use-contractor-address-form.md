@@ -75,8 +75,6 @@ Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
 | `Street2` | — | — |
 | `Zip` | — | — |
 
-## Components
-
 <a id="contractoraddresscityfield"></a>
 
 ### ContractorAddressCityField

@@ -17,6 +17,46 @@ custom_edit_url: null
 
 Headless hook for creating or updating a non-child-support deduction.
 
+## Example
+
+```tsx title="Example"
+import { useDeductionForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
+  const form = useDeductionForm({ employeeId, garnishmentId, courtOrdered: false })
+
+  if (form.isLoading) return <p>Loading…</p>
+
+  const { Fields } = form.form
+
+  return (
+    <SDKFormProvider formHookResult={form}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void form.actions.onSubmit()
+        }}
+      >
+        <Fields.Description label="Description" validationMessages={{ REQUIRED: 'Required' }} />
+        <Fields.Recurring
+          label="Frequency"
+          getOptionLabel={v => (v ? 'Recurring' : 'One-time')}
+          validationMessages={{ REQUIRED: 'Required' }}
+        />
+        <Fields.Amount
+          label="Amount"
+          validationMessages={{ REQUIRED: 'Required', NEGATIVE_AMOUNT: 'Must be ≥ 0' }}
+        />
+        {Fields.TotalAmount && (
+          <Fields.TotalAmount label="Total cap" validationMessages={{ NEGATIVE_AMOUNT: 'Must be ≥ 0' }} />
+        )}
+        <button type="submit">Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -67,48 +107,6 @@ a new deduction, supply it to PUT updates against the existing row. For
 child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform)
 instead — those require agency-keyed required attributes (case number,
 order number, remittance number, county) that this hook doesn't model.
-
-## Example
-
-```tsx title="Example"
-import { useDeductionForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
-  const form = useDeductionForm({ employeeId, garnishmentId, courtOrdered: false })
-
-  if (form.isLoading) return <p>Loading…</p>
-
-  const { Fields } = form.form
-
-  return (
-    <SDKFormProvider formHookResult={form}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void form.actions.onSubmit()
-        }}
-      >
-        <Fields.Description label="Description" validationMessages={{ REQUIRED: 'Required' }} />
-        <Fields.Recurring
-          label="Frequency"
-          getOptionLabel={v => (v ? 'Recurring' : 'One-time')}
-          validationMessages={{ REQUIRED: 'Required' }}
-        />
-        <Fields.Amount
-          label="Amount"
-          validationMessages={{ REQUIRED: 'Required', NEGATIVE_AMOUNT: 'Must be ≥ 0' }}
-        />
-        {Fields.TotalAmount && (
-          <Fields.TotalAmount label="Total cap" validationMessages={{ NEGATIVE_AMOUNT: 'Must be ≥ 0' }} />
-        )}
-        <button type="submit">Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
-## Components
 
 <a id="annualmaximumfield"></a>
 

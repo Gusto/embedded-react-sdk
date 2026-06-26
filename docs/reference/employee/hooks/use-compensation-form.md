@@ -17,6 +17,33 @@ custom_edit_url: null
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
+## Example
+
+```tsx title="Example"
+import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
+  const comp = useCompensationForm({ employeeId, jobId })
+  if (comp.isLoading) return null
+
+  const { Fields } = comp.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
+      <SDKFormProvider formHookResult={comp}>
+        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
+        <Fields.Rate label="Compensation amount" />
+        <Fields.PaymentUnit label="Payment unit" />
+        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+      </SDKFormProvider>
+      {comp.status.willDeleteSecondaryJobs && (
+        <p>Saving will remove this employee's secondary jobs.</p>
+      )}
+      <button type="submit" disabled={comp.status.isPending}>Save</button>
+    </form>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -88,35 +115,6 @@ commission-only and owner classifications). When
 `willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
 the `effectiveDate` field (forces to today, renders disabled) until the
 FLSA selection is reverted.
-
-## Example
-
-```tsx title="Example"
-import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
-  const comp = useCompensationForm({ employeeId, jobId })
-  if (comp.isLoading) return null
-
-  const { Fields } = comp.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
-      <SDKFormProvider formHookResult={comp}>
-        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
-        <Fields.Rate label="Compensation amount" />
-        <Fields.PaymentUnit label="Payment unit" />
-        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
-      </SDKFormProvider>
-      {comp.status.willDeleteSecondaryJobs && (
-        <p>Saving will remove this employee's secondary jobs.</p>
-      )}
-      <button type="submit" disabled={comp.status.isPending}>Save</button>
-    </form>
-  )
-}
-```
-
-## Components
 
 <a id="compensationadjustforminimumwagefield"></a>
 

@@ -126,8 +126,6 @@ Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
 | [`Street2`](#street2field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
 | [`Zip`](#zipfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
 
-## Components
-
 <a id="cityfield"></a>
 
 ### CityField

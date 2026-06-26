@@ -17,6 +17,53 @@ custom_edit_url: null
 
 Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
 
+## Example
+
+```tsx title="Example"
+import {
+  useSplitPaymentsForm,
+  SDKFormProvider,
+  type SplitByValue,
+  type UseSplitPaymentsFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function SplitPaycheckScreen({ employeeId }: { employeeId: string }) {
+  const splitForm = useSplitPaymentsForm({ employeeId })
+
+  if (splitForm.isLoading) return null
+  return <SplitPaycheckReady splitForm={splitForm} />
+}
+
+function SplitPaycheckReady({ splitForm }: { splitForm: UseSplitPaymentsFormReady }) {
+  const { Fields } = splitForm.form
+  const { hasPercentageImbalance, percentageTotal } = splitForm.status
+
+  return (
+    <SDKFormProvider formHookResult={splitForm}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void splitForm.actions.onSubmit()
+        }}
+      >
+        {hasPercentageImbalance && (
+          <div role="alert">Splits must total 100%. Currently {percentageTotal}%.</div>
+        )}
+        <Fields.SplitBy label="Split by" getOptionLabel={(value: SplitByValue) => value} />
+        {Fields.splits.map(split => (
+          <split.Field
+            key={split.uuid}
+            label={split.name ?? 'Account'}
+            min={0}
+          />
+        ))}
+        <button type="submit" disabled={splitForm.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -70,53 +117,6 @@ The Percentage sum-to-100 invariant is surfaced via
 `status.hasPercentageImbalance` (not as a per-field error). With the default
 `validationMode: 'onSubmit'`, the imbalance flag appears after the first
 failed Save and clears live as the user corrects the total.
-
-## Example
-
-```tsx title="Example"
-import {
-  useSplitPaymentsForm,
-  SDKFormProvider,
-  type SplitByValue,
-  type UseSplitPaymentsFormReady,
-} from '@gusto/embedded-react-sdk'
-
-function SplitPaycheckScreen({ employeeId }: { employeeId: string }) {
-  const splitForm = useSplitPaymentsForm({ employeeId })
-
-  if (splitForm.isLoading) return null
-  return <SplitPaycheckReady splitForm={splitForm} />
-}
-
-function SplitPaycheckReady({ splitForm }: { splitForm: UseSplitPaymentsFormReady }) {
-  const { Fields } = splitForm.form
-  const { hasPercentageImbalance, percentageTotal } = splitForm.status
-
-  return (
-    <SDKFormProvider formHookResult={splitForm}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void splitForm.actions.onSubmit()
-        }}
-      >
-        {hasPercentageImbalance && (
-          <div role="alert">Splits must total 100%. Currently {percentageTotal}%.</div>
-        )}
-        <Fields.SplitBy label="Split by" getOptionLabel={(value: SplitByValue) => value} />
-        {Fields.splits.map(split => (
-          <split.Field
-            key={split.uuid}
-            label={split.name ?? 'Account'}
-            min={0}
-          />
-        ))}
-        <button type="submit" disabled={splitForm.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 

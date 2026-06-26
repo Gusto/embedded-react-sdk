@@ -17,6 +17,36 @@ custom_edit_url: null
 
 Headless React Hook Form hook for creating an employee bank account.
 
+## Example
+
+```tsx title="Example"
+import { useBankForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function AddBankAccount({ employeeId }: { employeeId: string }) {
+  const bankForm = useBankForm({ employeeId })
+
+  if (bankForm.isLoading) return null
+  const { Fields } = bankForm.form
+
+  return (
+    <SDKFormProvider formHookResult={bankForm}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void bankForm.actions.onSubmit()
+        }}
+      >
+        <Fields.Name label="Account nickname" />
+        <Fields.RoutingNumber label="Routing number" />
+        <Fields.AccountNumber label="Account number" />
+        <Fields.AccountType label="Account type" />
+        <button type="submit" disabled={bankForm.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -58,38 +88,6 @@ type. Creating a bank account also updates the employee's payment method on
 the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
 discriminated union; in practice the hook transitions to the ready state
 immediately because it does not fetch any server data.
-
-## Example
-
-```tsx title="Example"
-import { useBankForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function AddBankAccount({ employeeId }: { employeeId: string }) {
-  const bankForm = useBankForm({ employeeId })
-
-  if (bankForm.isLoading) return null
-  const { Fields } = bankForm.form
-
-  return (
-    <SDKFormProvider formHookResult={bankForm}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void bankForm.actions.onSubmit()
-        }}
-      >
-        <Fields.Name label="Account nickname" />
-        <Fields.RoutingNumber label="Routing number" />
-        <Fields.AccountNumber label="Account number" />
-        <Fields.AccountType label="Account type" />
-        <button type="submit" disabled={bankForm.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
-## Components
 
 <a id="accountnumberfield"></a>
 

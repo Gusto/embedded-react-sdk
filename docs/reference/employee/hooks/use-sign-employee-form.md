@@ -17,6 +17,44 @@ custom_edit_url: null
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
+## Example
+
+```tsx title="Example"
+import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
+  const signForm = useSignEmployeeForm({ employeeId, formId })
+
+  if (signForm.isLoading) return <div>Loading...</div>
+
+  const { Fields } = signForm.form
+
+  return (
+    <SDKFormProvider formHookResult={signForm}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void signForm.actions.onSubmit()
+        }}
+      >
+        <Fields.Signature
+          label="Signature"
+          description="Type your full, legal name."
+          validationMessages={{ REQUIRED: 'Signature is required' }}
+        />
+        <Fields.ConfirmSignature
+          label="I agree to sign electronically"
+          validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
+        />
+        <button type="submit" disabled={signForm.status.isPending}>
+          Sign form
+        </button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -67,46 +105,6 @@ Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
 `useCompensationForm`, `useWorkAddressForm`), this hook does not accept
 `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
 fixed and all fields except preparer street-2 are required.
-
-## Example
-
-```tsx title="Example"
-import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
-  const signForm = useSignEmployeeForm({ employeeId, formId })
-
-  if (signForm.isLoading) return <div>Loading...</div>
-
-  const { Fields } = signForm.form
-
-  return (
-    <SDKFormProvider formHookResult={signForm}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void signForm.actions.onSubmit()
-        }}
-      >
-        <Fields.Signature
-          label="Signature"
-          description="Type your full, legal name."
-          validationMessages={{ REQUIRED: 'Signature is required' }}
-        />
-        <Fields.ConfirmSignature
-          label="I agree to sign electronically"
-          validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
-        />
-        <button type="submit" disabled={signForm.status.isPending}>
-          Sign form
-        </button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
-
-## Components
 
 <a id="confirmsignaturefield"></a>
 
