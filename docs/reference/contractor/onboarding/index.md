@@ -23,9 +23,12 @@ custom_edit_url: null
 | Component | Description |
 | --------- | ----------- |
 | [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
+| [ContractorDocumentSigner](blocks.md#contractordocumentsigner) | Standalone flow for a contractor to review and sign their documents (W-9). |
 | [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
 | [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+| [DocumentsList](blocks.md#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
 | [Landing](blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
 | [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [SignatureForm](blocks.md#signatureform) | Standalone form for signing an individual contractor document (W-9). |

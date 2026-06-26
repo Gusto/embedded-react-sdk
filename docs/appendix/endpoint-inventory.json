@@ -1791,6 +1791,60 @@
         "contractorUuid"
       ]
     },
+    "ContractorOnboarding.ContractorDocumentSigner": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/documents/:documentUuid/sign"
+        }
+      ],
+      "variables": [
+        "contractorUuid",
+        "documentUuid"
+      ]
+    },
+    "ContractorOnboarding.DocumentsList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.SignatureForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/documents/:documentUuid/sign"
+        }
+      ],
+      "variables": [
+        "documentUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {

@@ -67,6 +67,7 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `CONTRACTOR_CREATE` | `"contractor/create"` | `'contractor/create'` |
 | `CONTRACTOR_CREATED` | `"contractor/created"` | `'contractor/created'` |
 | `CONTRACTOR_DELETED` | `"contractor/deleted"` | `'contractor/deleted'` |
+| `CONTRACTOR_DOCUMENTS_DONE` | `"contractor/documents/done"` | `'contractor/documents/done'` |
 | `CONTRACTOR_INVITE_CONTRACTOR` | `"contractor/invite/selfOnboarding"` | `'contractor/invite/selfOnboarding'` |
 | `CONTRACTOR_NEW_HIRE_REPORT_DONE` | `"contractor/newHireReport/done"` | `'contractor/newHireReport/done'` |
 | `CONTRACTOR_NEW_HIRE_REPORT_UPDATED` | `"contractor/newHireReport/updated"` | `'contractor/newHireReport/updated'` |
@@ -88,9 +89,11 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `CONTRACTOR_PAYMENT_VIEW_DETAILS` | `"contractor/payments/view/details"` | `'contractor/payments/view/details'` |
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` | `'contractor/profile/done'` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` | `'contractor/selfOnboarding/start'` |
+| `CONTRACTOR_SIGN_DOCUMENT` | `"contractor/documents/sign"` | `'contractor/documents/sign'` |
 | `CONTRACTOR_SUBMIT_DONE` | `"contractor/submit/done"` | `'contractor/submit/done'` |
 | `CONTRACTOR_UPDATE` | `"contractor/update"` | `'contractor/update'` |
 | `CONTRACTOR_UPDATED` | `"contractor/updated"` | `'contractor/updated'` |
+| `CONTRACTOR_VIEW_DOCUMENT_TO_SIGN` | `"contractor/documents/view"` | `'contractor/documents/view'` |
 | `DISMISSAL_PAY_PERIOD_SELECTED` | `"dismissal/payPeriod/selected"` | `'dismissal/payPeriod/selected'` |
 | `EMPLOYEE_BANK_ACCOUNT_CREATE` | `"employee/bankAccount/create"` | `'employee/bankAccount/create'` |
 | `EMPLOYEE_BANK_ACCOUNT_CREATED` | `"employee/bankAccount/created"` | `'employee/bankAccount/created'` |

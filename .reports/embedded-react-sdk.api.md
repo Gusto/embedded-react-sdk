@@ -25,6 +25,8 @@ import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-1
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
+import { Document as Document_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
+import { DocumentSigned } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
@@ -146,6 +148,9 @@ export { AfterErrorHook }
 export { AfterSuccessContext }
 
 export { AfterSuccessHook }
+
+// @public
+export const AGREE_FIELD = "agree";
 
 // @public
 export interface AlertProps {
@@ -375,6 +380,15 @@ export interface BreadcrumbsProps {
     isSmallContainer?: boolean;
     onClick?: (id: string) => void;
 }
+
+// @public
+export function buildContractorSignatureFields(descriptors: W9FieldDescriptor[]): ContractorSignatureFields;
+
+// @public
+export function buildW9Defaults(document: Document_2, descriptors: W9FieldDescriptor[]): ContractorSignatureFormData;
+
+// @public
+export function buildW9FieldDescriptors(document: Document_2): W9FieldDescriptor[];
 
 // @public
 export interface ButtonIconProps extends ButtonProps {
@@ -895,6 +909,9 @@ export const componentEvents: {
     readonly CONTRACTOR_ONBOARDING_STATUS_UPDATED: "contractor/onboardingStatus/updated";
     readonly CONTRACTOR_INVITE_CONTRACTOR: "contractor/invite/selfOnboarding";
     readonly CONTRACTOR_ONBOARDING_CONTINUE: "contractor/onboarding/continue";
+    readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
+    readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
+    readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1284,6 +1301,14 @@ export interface ContractorDetailsSubmitOptions {
 }
 
 // @public
+function ContractorDocumentSigner(props: ContractorDocumentSignerProps): JSX;
+
+// @public
+interface ContractorDocumentSignerProps extends BaseComponentInterface {
+    contractorId: string;
+}
+
+// @public
 export function ContractorEinField(props: ContractorEinFieldProps): JSX;
 
 // @public
@@ -1371,7 +1396,13 @@ declare namespace ContractorOnboarding {
         NewHireReport,
         NewHireReportProps,
         ContractorSubmit,
-        ContractorSubmitProps
+        ContractorSubmitProps,
+        ContractorDocumentSigner,
+        ContractorDocumentSignerProps,
+        DocumentsList,
+        DocumentsListProps,
+        SignatureForm_3 as SignatureForm,
+        SignatureFormProps_3 as SignatureFormProps
     }
 }
 
@@ -1404,6 +1435,41 @@ export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldP
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
+
+// @public
+export type ContractorSignatureBoundField = ComponentType<ContractorSignatureFieldProps>;
+
+// @public
+export interface ContractorSignatureFieldProps {
+    description?: ReactNode;
+    getOptionLabel?: (value: string) => string;
+    label: string;
+    placeholder?: string;
+    validationMessages?: ValidationMessages<ContractorSignatureFormErrorCode>;
+}
+
+// @public
+export type ContractorSignatureFields = Record<string, ContractorSignatureBoundField>;
+
+// @public
+export type ContractorSignatureFormData = Record<string, string | boolean> & {
+    agree: boolean;
+};
+
+// @public
+export type ContractorSignatureFormErrorCode = (typeof ContractorSignatureFormErrorCodes)[keyof typeof ContractorSignatureFormErrorCodes];
+
+// @public
+export const ContractorSignatureFormErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly AGREE_REQUIRED: "AGREE_REQUIRED";
+};
+
+// @public
+export interface ContractorSignatureSection {
+    fieldNames: string[];
+    section: W9Section;
+}
 
 // @public
 export function ContractorSsnField(props: ContractorSsnFieldProps): JSX;
@@ -1537,6 +1603,9 @@ city: z.ZodString;
 state: z.ZodString;
 zip: z.ZodString;
 }>;
+
+// @public
+export function createContractorSignatureFormSchema(descriptors: W9FieldDescriptor[]): z.ZodType<ContractorSignatureFormData, ContractorSignatureFormData>;
 
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
@@ -2100,6 +2169,14 @@ interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.Document
 }
 
 // @public
+function DocumentsList(props: DocumentsListProps): JSX;
+
+// @public
+interface DocumentsListProps extends BaseComponentInterface<'Contractor.DocumentsList'> {
+    contractorId: string;
+}
+
+// @public
 interface DocumentsProps extends BaseComponentInterface<'Employee.Management.Documents'> {
     employeeId: string;
 }
@@ -2555,6 +2632,7 @@ export interface FieldMetadata {
     maxDate?: string | null;
     minDate?: string | null;
     name: string;
+    placeholder?: string;
 }
 
 // @public
@@ -3021,6 +3099,9 @@ interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSig
 }
 
 // @public
+export function isW9Document(document: Document_2): boolean;
+
+// @public
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes];
 
 // @public
@@ -3154,6 +3235,15 @@ export interface LinkProps extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 | 'title'> {
     children?: ReactNode;
 }
+
+// @public
+export const LLC_CLASSIFICATION_CODES: readonly ["c", "s", "p"];
+
+// @public
+export const LLC_CLASSIFICATION_FIELD = "llcClassificationCode";
+
+// @public
+export const LLC_CLASSIFICATION_OPTION: TaxClassificationOptionKey;
 
 // @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
@@ -3556,6 +3646,12 @@ export function OrderNumberField(props: OrderNumberFieldProps): JSX;
 
 // @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
+
+// @public
+export const OTHER_CLASSIFICATION_OPTION: TaxClassificationOptionKey;
+
+// @public
+export const OTHER_TEXT_FIELD = "other_text";
 
 // @public
 export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
@@ -4451,6 +4547,11 @@ interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
     withEmployeeI9?: boolean;
 }
 
+// Warning: (ae-forgotten-export) The symbol "SignFieldValue" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function serializeW9Fields(document: Document_2, descriptors: W9FieldDescriptor[], values: ContractorSignatureFormData): SignFieldValue[];
+
 // @public
 export interface SharedFieldLayoutProps extends DataAttributes {
     description?: ReactNode;
@@ -4476,6 +4577,9 @@ function SignatureForm(props: SignatureFormProps): JSX;
 function SignatureForm_2(props: SignatureFormProps_2): JSX;
 
 // @public
+function SignatureForm_3(props: SignatureFormProps_3): JSX;
+
+// @public
 interface SignatureFormProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     formId: string;
@@ -4487,6 +4591,12 @@ interface SignatureFormProps_2 extends BaseComponentInterface<'Company.Signature
     // @override
     defaultValues?: never;
     formId: string;
+}
+
+// @public
+interface SignatureFormProps_3 extends BaseComponentInterface<'Contractor.SignatureForm'> {
+    contractorId: string;
+    documentUuid: string;
 }
 
 // @public
@@ -4859,6 +4969,15 @@ export interface TabsProps {
     selectedId?: string;
     tabs: TabProps[];
 }
+
+// @public
+export const TAX_CLASSIFICATION_FIELD = "taxClassification";
+
+// @public
+export const TAX_CLASSIFICATION_OPTION_KEYS: readonly ["individual_proprietor", "c_corporation", "s_corporation", "partnership", "trust_estate", "limited_liability_company", "other"];
+
+// @public
+export type TaxClassificationOptionKey = (typeof TAX_CLASSIFICATION_OPTION_KEYS)[number];
 
 // @public
 function TerminateEmployee(props: TerminateEmployeeProps): JSX;
@@ -5290,6 +5409,54 @@ export type UseContractorDetailsFormSharedProps = {
     validationMode?: UseFormProps['mode'];
     shouldFocusError?: boolean;
 };
+
+// @public
+export function useContractorDocumentsList(input: UseContractorDocumentsListParams): UseContractorDocumentsListResult;
+
+// @public
+export interface UseContractorDocumentsListParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorDocumentsListReady = BaseHookReady<{
+    documents: Document_2[];
+}, {
+    isFetching: boolean;
+}>;
+
+// @public
+export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
+
+// @public
+export interface UseContractorSignatureFormProps {
+    documentUuid: string;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorSignatureFormReady extends BaseFormHookReady<FieldsMetadata, ContractorSignatureFormData, ContractorSignatureFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<DocumentSigned> | undefined>;
+    };
+    data: {
+        document: Document_2;
+        pdfUrl: string | null;
+        sections: ContractorSignatureSection[];
+        hasFields: boolean;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
@@ -5779,6 +5946,27 @@ interface ViewHolidayScheduleProps extends BaseComponentInterface<'Company.TimeO
 }
 
 // @public
+export const W9_DOCUMENT_NAME = "taxpayer_identification_form_w_9";
+
+// @public
+export interface W9FieldDescriptor {
+    apiKey?: string;
+    hasRedactedValue?: boolean;
+    isRequired: boolean;
+    name: string;
+    placeholder?: string;
+    section: W9Section;
+    variant: W9FieldVariant;
+    visibleWhenClassification?: TaxClassificationOptionKey;
+}
+
+// @public
+export type W9FieldVariant = 'text' | 'checkbox' | 'radio' | 'select';
+
+// @public
+export type W9Section = 'classification' | 'exemptions' | 'address' | 'tin' | 'certification';
+
+// @public
 export const WageType: {
     readonly Fixed: "Fixed";
     readonly Hourly: "Hourly";
@@ -5893,7 +6081,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:272:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

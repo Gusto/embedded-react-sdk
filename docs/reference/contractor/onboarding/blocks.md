@@ -53,6 +53,44 @@ function MyComponent() {
 }
 ```
 
+<a id="contractordocumentsigner"></a>
+
+## ContractorDocumentSigner
+
+Standalone flow for a contractor to review and sign their documents (W-9).
+
+### ContractorDocumentSignerProps
+
+<a id="contractordocumentsignerprops"></a>
+
+Props for [ContractorDocumentSigner](#contractordocumentsigner).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`common`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyAddresses`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyAssignSignatory`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyBankAccount`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyDocumentList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyFederalTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyIndustry`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyLocations`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyOnboardingOverview`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyPaySchedule`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanySignatureForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyStateTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffCreateTimeOffPolicy`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffEmployeeTable`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffHolidayPolicy`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffPolicyDetail`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffSelectEmployees`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffSelectPolicyType`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffTimeOffPolicies`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffTimeOffPolicyDetails`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`CompanyTimeOffTimeOffRequests`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorContractorList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorDocumentsList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorLanding`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorNewHireReport`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentMethod`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsCreatePayment`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentHistory`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentStatement`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentSummary`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentsList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorSignatureForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorSubmit`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeBankAccount`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeBankFormBody`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeCompensation`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDashboard`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDeductions`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDeductionsForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDocumentManager`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeDocumentSigner`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeEmployeeDocuments`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeEmployeeList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeEmploymentEligibility`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeFederalTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeFederalTaxesView`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeHomeAddress`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeI9SignatureForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeLanding`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementCompensation`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDeductions`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementDocuments`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementFederalTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementHomeAddress`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaymentMethod`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaymentMethodBankForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaymentMethodSplitForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementPaystubs`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementProfile`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementStateTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementWorkAddress`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeManagementEmployeeList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeOnboardingSummary`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeePaySchedules`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeePaymentMethod`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeProfile`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeSplitPaycheck`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeSplitPaymentsFormBody`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeStateTaxes`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeStateTaxesView`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminateEmployee`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminationFlow`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeTerminationsTerminationSummary`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequestsInformationRequestForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequestsInformationRequestList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequests`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollCommon`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollConfirmWireDetailsBanner`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollConfirmWireDetailsForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollDismissal`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollEmployeeSelection`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollGrossUpModal`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCycle`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCycleCreation`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCycleDeductionsSetting`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCyclePayPeriodDateForm`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCycleReasonSelection`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollOffCycleTaxWithholding`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollBlocker`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollConfiguration`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollEditEmployee`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollFlow`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollHistory`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollLanding`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollOverview`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollPayrollReceipts`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollRecoveryCasesList`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollRecoveryCasesResubmit`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollTransition`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollTransitionCreation`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollTransitionPayrollAlert`\>\> \| `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`PayrollWireInstructions`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Remarks
+
+Lists the contractor's documents and routes through the signing UI for each
+one, returning to the list after a document is signed or the user navigates
+back. Composes [DocumentsList](#documentslist) and [SignatureForm](#signatureform).
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/view` | Fired when a document's "Sign" action is selected from the list | `{ uuid: string; title?: string }` |
+| `contractor/documents/sign` | Fired after a document is successfully signed | The signed document |
+| `contractor/documents/done` | Fired when the contractor completes the documents step | — |
+| `CANCEL` | Fired when the user navigates back from the signature form to the list | — |
+
+### Components
+
+- [DocumentsList](#documentslist)
+- [SignatureForm](#signatureform)
+
 <a id="contractorlist"></a>
 
 ## ContractorList
@@ -146,6 +184,37 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
+
+<a id="documentslist"></a>
+
+## DocumentsList
+
+Lists a contractor's documents and lets the contractor open each one for signing.
+
+### DocumentsListProps
+
+<a id="documentslistprops"></a>
+
+Props for [DocumentsList](#documentslist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorDocumentsList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Remarks
+
+Fetches the contractor's documents via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and
+renders them in a table. The Continue action is disabled until every document
+that requires signing has been signed.
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/view` | Fired when a document's "Sign" action is selected | `{ uuid?: string; title?: string }` |
+| `contractor/documents/done` | Fired when all required documents are signed and the user continues | — |
 
 <a id="landing"></a>
 
@@ -265,6 +334,38 @@ function PaymentMethodStep() {
   )
 }
 ```
+
+<a id="signatureform"></a>
+
+## SignatureForm
+
+Standalone form for signing an individual contractor document (W-9).
+
+### SignatureFormProps
+
+<a id="signatureformprops"></a>
+
+Props for [SignatureForm](#signatureform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `documentUuid` | `string` | The UUID of the contractor document to sign. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorSignatureForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Remarks
+
+Lower-level building block used internally by `ContractorDocumentSigner` for
+its signing view. Use this component directly when you need full control over
+navigation between the document list and the signature form.
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/sign` | Fired when the document is successfully signed | The signed document |
+| `CANCEL` | Fired when the user navigates back from the signature form | — |
 
 ## Utility types
 
