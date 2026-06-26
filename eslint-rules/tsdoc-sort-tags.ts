@@ -5,10 +5,11 @@
  * Groups (in order):
  *   1. Description / summary prose
  *   2. @remarks
- *   3. @components — the flow's composed components/hooks, its own block
- *   4. All other tags (params, returns, throws, deprecated, release tags, etc.)
+ *   3. @events — the component's onEvent surface, its own block
+ *   4. @components — the flow's composed components/hooks, its own block
+ *   5. All other tags (params, returns, throws, deprecated, release tags, etc.)
  *      sorted by TAG_ORDER; tags not in the list sort to the end (stable)
- *   5. @example — each one is its own group
+ *   6. @example — each one is its own group
  *
  * Blank lines within a group's content are preserved; blank lines between
  * tags in the same group are removed.
@@ -92,6 +93,7 @@ function buildGroups(chunks: string[][]): string[][] {
   const [description, ...tagChunks] = chunks
 
   const remarksChunks: string[][] = []
+  const eventsChunks: string[][] = []
   const componentsChunks: string[][] = []
   const otherChunks: string[][] = []
   const exampleChunks: string[][] = []
@@ -99,6 +101,7 @@ function buildGroups(chunks: string[][]): string[][] {
   for (const chunk of tagChunks) {
     const tag = firstTagName(chunk)
     if (tag === '@remarks') remarksChunks.push(chunk)
+    else if (tag === '@events') eventsChunks.push(chunk)
     else if (tag === '@components') componentsChunks.push(chunk)
     else if (tag === '@example') exampleChunks.push(chunk)
     else otherChunks.push(chunk)
@@ -107,6 +110,7 @@ function buildGroups(chunks: string[][]): string[][] {
   return [
     stripTrailingBlanks(description ?? []),
     remarksChunks.flatMap(c => stripTrailingBlanks(c)),
+    eventsChunks.flatMap(c => stripTrailingBlanks(c)),
     componentsChunks.flatMap(c => stripTrailingBlanks(c)),
     [...otherChunks]
       .sort((a, b) => tagRank(firstTagName(a)) - tagRank(firstTagName(b)))
@@ -137,7 +141,7 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     schema: [],
     messages: {
       incorrectGrouping:
-        'TSDoc tags are not correctly grouped. Expected: description, @remarks, @components, other tags, then each @example as its own group, each separated by a blank line.',
+        'TSDoc tags are not correctly grouped. Expected: description, @remarks, @events, @components, other tags, then each @example as its own group, each separated by a blank line.',
     },
   },
 
