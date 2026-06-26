@@ -940,6 +940,34 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
   color: var(--ifm-link-hover-color);
 }
 
+/* Swap the plugin's inline external-link SVG for the site's diagonal-arrow
+   icon used elsewhere (navbar GitHub link, footer external links). */
+.cookie-consent-toast .cookie-consent-description a .cookie-consent-external-link-icon {
+  display: none;
+}
+
+.cookie-consent-toast .cookie-consent-description a[href*='://']::after {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-left: 3px;
+  background-color: currentColor;
+  opacity: 0.6;
+  vertical-align: -1px;
+  -webkit-mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transition: opacity 0.15s ease;
+}
+
+.cookie-consent-toast .cookie-consent-description a[href*='://']:hover::after {
+  opacity: 1;
+}
+
 .cookie-consent-toast .cookie-consent-buttons {
   display: flex;
   flex-direction: row;
