@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usedeductionform"></a>
 
-> **useDeductionForm**(`input`): [`UseDeductionFormResult`](#usedeductionformresult)
+> **useDeductionForm**(`input`: [`UseDeductionFormProps`](#usedeductionformprops)): [`UseDeductionFormResult`](#usedeductionformresult)
 
 Headless hook for creating or updating a non-child-support deduction.
 
@@ -354,13 +354,13 @@ for its visibility rule. Always null-check conditional fields (e.g.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Amount` | (`props`) => `Element` | Deduction amount input. Always available. |
-| `AnnualMaximum` | ((`props`) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
-| `DeductAsPercentage` | (`props`) => `Element` | Fixed-amount vs percentage radio group. Always available. |
-| `Description` | (`props`) => `Element` | Description text input. Always available. |
-| `GarnishmentType` | ((`props`) => `Element`) \| `undefined` | Only available when `courtOrdered: true`. |
-| `Recurring` | (`props`) => `Element` | Recurring vs one-time radio group. Always available. |
-| `TotalAmount` | ((`props`) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
+| `Amount` | (`props`: [`DeductionAmountFieldProps`](#deductionamountfieldprops)) => `Element` | Deduction amount input. Always available. |
+| `AnnualMaximum` | ((`props`: [`AnnualMaximumFieldProps`](#annualmaximumfieldprops)) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
+| `DeductAsPercentage` | (`props`: [`DeductAsPercentageFieldProps`](#deductaspercentagefieldprops)) => `Element` | Fixed-amount vs percentage radio group. Always available. |
+| `Description` | (`props`: [`DescriptionFieldProps`](#descriptionfieldprops)) => `Element` | Description text input. Always available. |
+| `GarnishmentType` | ((`props`: [`GarnishmentTypeFieldProps`](#garnishmenttypefieldprops)) => `Element`) \| `undefined` | Only available when `courtOrdered: true`. |
+| `Recurring` | (`props`: [`RecurringFieldProps`](#recurringfieldprops)) => `Element` | Recurring vs one-time radio group. Always available. |
+| `TotalAmount` | ((`props`: [`TotalAmountFieldProps`](#totalamountfieldprops)) => `Element`) \| `undefined` | Only available when `status.isRecurring` is true. |
 
 ***
 

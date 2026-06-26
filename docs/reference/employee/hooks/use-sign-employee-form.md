@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usesignemployeeform"></a>
 
-> **useSignEmployeeForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+> **useSignEmployeeForm**(`props`: [`UseSignEmployeeFormProps`](#usesignemployeeformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
@@ -231,13 +231,13 @@ always null-check before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
+| `ConfirmSignature` | (`props`: [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)) => `Element` | Checkbox for the employee's electronic-signature consent; always present. |
 | `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
 | `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
 | `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
 | `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
-| `Signature` | (`props`) => `Element` | Text input for the employee's typed signature; always present. |
-| `UsedPreparer` | ((`props`) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
+| `Signature` | (`props`: [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops)) => `Element` | Text input for the employee's typed signature; always present. |
+| `UsedPreparer` | ((`props`: [`UsedPreparerFieldProps`](#usedpreparerfieldprops)) => `Element`) \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
 ***
 
@@ -283,15 +283,15 @@ group, e.g. `<Fields.Preparer1.FirstName />`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `City` | (`props`) => `JSX.Element` | Preparer's city. |
-| `ConfirmSignature` | (`props`) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
-| `FirstName` | (`props`) => `JSX.Element` | Preparer's first name. |
-| `LastName` | (`props`) => `JSX.Element` | Preparer's last name. |
-| `Signature` | (`props`) => `JSX.Element` | Preparer's typed signature. |
-| `State` | (`props`) => `JSX.Element` | Preparer's state. |
-| `Street1` | (`props`) => `JSX.Element` | Preparer's street address line 1. |
-| `Street2` | (`props`) => `JSX.Element` | Preparer's street address line 2. |
-| `Zip` | (`props`) => `JSX.Element` | Preparer's ZIP code. |
+| `City` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's city. |
+| `ConfirmSignature` | (`props`: [`PreparerCheckboxFieldProps`](#preparercheckboxfieldprops)) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
+| `FirstName` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's first name. |
+| `LastName` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's last name. |
+| `Signature` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's typed signature. |
+| `State` | (`props`: [`PreparerSelectFieldProps`](#preparerselectfieldprops)) => `JSX.Element` | Preparer's state. |
+| `Street1` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's street address line 1. |
+| `Street2` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's street address line 2. |
+| `Zip` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's ZIP code. |
 
 ***
 

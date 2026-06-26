@@ -15,7 +15,7 @@ custom_edit_url: null
 
 ### useCurrentWorkAddressForm()
 
-> **useCurrentWorkAddressForm**(`props`): [`UseWorkAddressFormResult`](#useworkaddressformresult)
+> **useCurrentWorkAddressForm**(`props`: [`UseCurrentWorkAddressFormProps`](#usecurrentworkaddressformprops)): [`UseWorkAddressFormResult`](#useworkaddressformresult)
 
 Convenience wrapper around [useWorkAddressForm](#useworkaddressform) that auto-resolves the employee's current work address.
 
@@ -63,7 +63,7 @@ function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; comp
 
 <a id="useworkaddressform"></a>
 
-> **useWorkAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+> **useWorkAddressForm**(`props`: [`UseWorkAddressFormProps`](#useworkaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Form hook for creating or editing an employee's work address.
 
@@ -88,7 +88,7 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`callbacks?`, `options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeWorkAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`callbacks?`: [`WorkAddressSubmitCallbacks`](#workaddresssubmitcallbacks), `options?`: [`WorkAddressSubmitOptions`](#workaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeWorkAddress`\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.companyLocations` | `Location`[] \| `undefined` | Company locations available for selection; `undefined` until the locations query resolves. |
 | `data.workAddress` | `EmployeeWorkAddress` \| `null` | The address row loaded for update; `null` in create mode. |
@@ -219,8 +219,8 @@ Only the callback matching the submit mode fires —
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onWorkAddressCreated?` | (`workAddress`) => `void` | Fired after a new work address is successfully created. |
-| `onWorkAddressUpdated?` | (`workAddress`) => `void` | Fired after an existing work address is successfully updated. |
+| `onWorkAddressCreated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after a new work address is successfully created. |
+| `onWorkAddressUpdated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after an existing work address is successfully updated. |
 
 ***
 

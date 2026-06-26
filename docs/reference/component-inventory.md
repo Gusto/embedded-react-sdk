@@ -551,7 +551,7 @@ Renders a navigation breadcrumb trail showing the user's position in a multi-ste
 | `className?` | `string` | | Additional CSS class name for the breadcrumbs container |
 | `currentBreadcrumbId?` | `string` | | Current breadcrumb id |
 | `isSmallContainer?` | `boolean` | `false` | Passed to the breadcrumbs when the container size is small (640px and below) At this size, the breadcrumb typically does not have sufficient size to render completely. In our implementation, we switch to a condensed mobile version of the breadcrumbs |
-| `onClick?` | (`id`) => `void` | | Event handler for breadcrumb navigation |
+| `onClick?` | (`id`: `string`) => `void` | | Event handler for breadcrumb navigation |
 
 ***
 
@@ -582,9 +582,9 @@ Renders an icon-only `<button>`; requires `aria-label` since there is no visible
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
 | `name?` | `string` | | - |
-| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onBlur?` | (`e`: `FocusEvent`) => `void` | | Handler for blur events |
 | `onClick?` | `MouseEventHandler`\<`HTMLButtonElement`\> | | - |
-| `onFocus?` | (`e`) => `void` | | Handler for focus events |
+| `onFocus?` | (`e`: `FocusEvent`) => `void` | | Handler for focus events |
 | `onKeyDown?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
@@ -625,9 +625,9 @@ Renders an HTML button (`<button>`) with primary, secondary, tertiary, and error
 | `isDisabled?` | `boolean` | `false` | Disables the button and prevents interaction |
 | `isLoading?` | `boolean` | `false` | Shows a loading spinner and disables the button |
 | `name?` | `string` | | - |
-| `onBlur?` | (`e`) => `void` | | Handler for blur events |
+| `onBlur?` | (`e`: `FocusEvent`) => `void` | | Handler for blur events |
 | `onClick?` | `MouseEventHandler`\<`HTMLButtonElement`\> | | - |
-| `onFocus?` | (`e`) => `void` | | Handler for focus events |
+| `onFocus?` | (`e`: `FocusEvent`) => `void` | | Handler for focus events |
 | `onKeyDown?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `onKeyUp?` | `KeyboardEventHandler`\<`HTMLButtonElement`\> | | - |
 | `tabIndex?` | `number` | | - |
@@ -702,7 +702,7 @@ Renders a form field wrapping multiple `<input type="checkbox" />` elements with
 | `isDisabled?` | `boolean` | `false` | Disables all checkbox options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates if the checkbox group is in an invalid state |
 | `isRequired?` | `boolean` | | Indicates if the field is required |
-| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `onChange?` | (`value`: `string`[]) => `void` | | Callback when selection changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | | Array of currently selected values |
 
@@ -738,7 +738,7 @@ Renders a form field wrapping an `<input type="checkbox" />` with a label, optio
 | `isRequired?` | `boolean` | | Indicates if the field is required |
 | `name?` | `string` | | - |
 | `onBlur?` | () => `void` | | Handler for blur events |
-| `onChange?` | (`value`) => `void` | | Callback when checkbox state changes |
+| `onChange?` | (`value`: `boolean`) => `void` | | Callback when checkbox state changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `boolean` | | Current checked state of the checkbox |
 
@@ -780,7 +780,7 @@ Renders a form field wrapping a filterable `<input />` for single-option selecti
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | Callback when selection changes |
+| `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
 | `placeholder?` | `string` | - |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container for the dropdown popover. Overrides the default SDK root container from context. |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
@@ -813,7 +813,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `errorMessage?` | `string` | Error message to display when the field is invalid |
 | `id?` | `string` | - |
 | `inputRef?` | `Ref`\<`HTMLInputElement`\> | React ref for the date input element |
-| `isDateDisabled?` | (`date`) => `boolean` | Callback to determine if a specific date should be disabled. Return true to disable the date. |
+| `isDateDisabled?` | (`date`: `Date`) => `boolean` | Callback to determine if a specific date should be disabled. Return true to disable the date. |
 | `isDisabled?` | `boolean` | Disables the date picker and prevents interaction |
 | `isInvalid?` | `boolean` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | Indicates if the field is required |
@@ -821,7 +821,7 @@ Renders a form field wrapping an `<input type="date" />` with a calendar picker 
 | `minDate?` | `Date` | Minimum selectable date. Dates before this will be disabled. |
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | Callback when selected date changes |
+| `onChange?` | (`value`: `Date` \| `null`) => `void` | Callback when selected date changes |
 | `placeholder?` | `string` | Placeholder text when no date is selected |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
@@ -842,7 +842,7 @@ Renders a form field wrapping paired `<input type="date" />` elements for select
 | ------ | ------ | ------ |
 | `endDateLabel` | `string` | Accessible label for the end-date input. |
 | `label` | `string` | Label text for the date range field. |
-| `onChange` | (`range`) => `void` | Callback fired when the selected range changes. Receives null when the range is cleared. |
+| `onChange` | (`range`: [`DateRange`](#daterange) \| `null`) => `void` | Callback fired when the selected range changes. Receives null when the range is cleared. |
 | `startDateLabel` | `string` | Accessible label for the start-date input. |
 | `value` | [`DateRange`](#daterange) \| `null` | Currently selected date range, or null when nothing is selected. |
 | `maxValue?` | `Date` | Latest selectable date. Dates after this are disabled. |
@@ -913,7 +913,7 @@ Renders a form field wrapping an `<input type="file" />` with a label, descripti
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `label` | `ReactNode` | | Label text for the field |
-| `onChange` | (`file`) => `void` | | Callback when file selection changes |
+| `onChange` | (`file`: `File` \| `null`) => `void` | `undefined` | Callback when file selection changes |
 | `value` | `File` \| `null` | `undefined` | Currently selected file |
 | `accept?` | `string`[] | | Accepted file types (MIME types or extensions) **Examples** `['image/jpeg', 'image/png', 'application/pdf']` `['.jpg', '.png', '.pdf']` |
 | `aria-describedby?` | `string` | | Aria-describedby attribute for accessibility |
@@ -1091,7 +1091,7 @@ Renders a form field wrapping a typeahead input for multi-option selection.
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
-| `onChange?` | (`values`) => `void` | Callback when the set of selected values changes |
+| `onChange?` | (`values`: `string`[]) => `void` | Callback when the set of selected values changes |
 | `placeholder?` | `string` | - |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string`[] | Currently selected values |
@@ -1135,8 +1135,8 @@ Renders a form field wrapping a numeric `<input />` for currency, decimal, or pe
 | `minimumFractionDigits?` | `number` | Minimum number of decimal places to display |
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | Callback when number input value changes |
-| `onInputChange?` | (`value`) => `void` | Fires on every keystroke with the raw input string (pre-commit), unlike onChange which fires on blur/Enter. |
+| `onChange?` | (`value`: `number`) => `void` | Callback when number input value changes |
+| `onInputChange?` | (`value`: `string`) => `void` | Fires on every keystroke with the raw input string (pre-commit), unlike onChange which fires on blur/Enter. |
 | `placeholder?` | `string` | - |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `number` | Current value of the number input |
@@ -1179,7 +1179,7 @@ Renders pagination controls for navigating between pages of results.
 | ------ | ------ | ------ |
 | `currentPage` | `number` | The currently active page (1-based). |
 | `handleFirstPage` | () => `void` | Navigate to the first page. |
-| `handleItemsPerPageChange` | (`n`) => `void` | Called when the user changes the number of items displayed per page. |
+| `handleItemsPerPageChange` | (`n`: [`PaginationItemsPerPage`](#paginationitemsperpage)) => `void` | Called when the user changes the number of items displayed per page. |
 | `handleLastPage` | () => `void` | Navigate to the last page. |
 | `handleNextPage` | () => `void` | Navigate to the next page. |
 | `handlePreviousPage` | () => `void` | Navigate to the previous page. |
@@ -1254,7 +1254,7 @@ Renders a form field wrapping multiple `<input type="radio" />` elements with a 
 | `isDisabled?` | `boolean` | `false` | Disables all radio options in the group |
 | `isInvalid?` | `boolean` | `false` | Indicates that the field has an error |
 | `isRequired?` | `boolean` | | Indicates if the field is required |
-| `onChange?` | (`value`) => `void` | | Callback when selection changes |
+| `onChange?` | (`value`: `string`) => `void` | | Callback when selection changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | `undefined` | Currently selected value |
 
@@ -1290,7 +1290,7 @@ Renders a form field wrapping an `<input type="radio" />` with a label, optional
 | `isRequired?` | `boolean` | | Indicates if the field is required |
 | `name?` | `string` | | - |
 | `onBlur?` | `FocusEventHandler`\<`HTMLInputElement`\> | | - |
-| `onChange?` | (`checked`) => `void` | | Callback when radio button state changes |
+| `onChange?` | (`checked`: `boolean`) => `void` | | Callback when radio button state changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `boolean` | | Current checked state of the radio button |
 
@@ -1328,7 +1328,7 @@ Renders a form field wrapping a single-select dropdown with a label, description
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `name?` | `string` | - |
 | `onBlur?` | () => `void` | Handler for blur events |
-| `onChange?` | (`value`) => `void` | Callback when selection changes |
+| `onChange?` | (`value`: `string`) => `void` | Callback when selection changes |
 | `portalContainer?` | `HTMLElement` | Element to use as the portal container |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `string` \| `null` | Currently selected value |
@@ -1366,7 +1366,7 @@ Renders a form field wrapping an `<input type="checkbox" />` styled as a boolean
 | `isRequired?` | `boolean` | | Indicates if the field is required |
 | `name?` | `string` | | - |
 | `onBlur?` | () => `void` | | Handler for blur events |
-| `onChange?` | (`checked`) => `void` | | Callback when switch state changes |
+| `onChange?` | (`checked`: `boolean`) => `void` | | Callback when switch state changes |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `value?` | `boolean` | | Current checked state of the switch |
 
@@ -1413,7 +1413,7 @@ Renders tabbed navigation with associated content panels.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onSelectionChange` | (`id`) => `void` | Callback when tab selection changes |
+| `onSelectionChange` | (`id`: `string`) => `void` | Callback when tab selection changes |
 | `tabs` | [`TabProps`](#tabprops)[] | Array of tab configuration objects |
 | `aria-label?` | `string` | Accessible label for the tabs |
 | `aria-labelledby?` | `string` | ID of element that labels the tabs |
@@ -1454,7 +1454,7 @@ Renders a form field wrapping a `<textarea>` with a label, description, and erro
 | `isRequired?` | `boolean` | | Indicates if the field is required |
 | `name?` | `string` | | - |
 | `onBlur?` | () => `void` | | Handler for blur events |
-| `onChange?` | (`value`) => `void` | | Callback when textarea value changes |
+| `onChange?` | (`value`: `string`) => `void` | | Callback when textarea value changes |
 | `placeholder?` | `string` | | - |
 | `rows?` | `number` | `4` | Number of visible text rows |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
@@ -1499,7 +1499,7 @@ Renders a form field wrapping an `<input />` with a label, description, error me
 | `min?` | `string` \| `number` | `undefined` | - |
 | `name?` | `string` | | - |
 | `onBlur?` | () => `void` | | Handler for blur events |
-| `onChange?` | (`value`) => `void` | | Callback when input value changes |
+| `onChange?` | (`value`: `string`) => `void` | | Callback when input value changes |
 | `placeholder?` | `string` | | - |
 | `shouldVisuallyHideLabel?` | `boolean` | | Hides the label visually while keeping it accessible to screen readers |
 | `type?` | `HTMLInputTypeAttribute` | | - |

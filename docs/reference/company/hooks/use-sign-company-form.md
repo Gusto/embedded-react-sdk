@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usesigncompanyform"></a>
 
-> **useSignCompanyForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+> **useSignCompanyForm**(`props`: [`UseSignCompanyFormProps`](#usesigncompanyformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
 
 Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox.
 
@@ -148,8 +148,8 @@ Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.F
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `ConfirmSignature` | (`props`) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
-| `Signature` | (`props`) => `Element` | Text input for the signer's typed name; always required. |
+| `ConfirmSignature` | (`props`: [`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)) => `Element` | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
+| `Signature` | (`props`: [`SignatureFieldProps`](#signaturefieldprops)) => `Element` | Text input for the signer's typed name; always required. |
 
 ***
 

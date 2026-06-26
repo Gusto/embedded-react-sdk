@@ -17,7 +17,7 @@ custom_edit_url: null
 
 ### useEmployeeList()
 
-> **useEmployeeList**(`input`): [`UseEmployeeListResult`](#useemployeelistresult)
+> **useEmployeeList**(`input`: [`UseEmployeeListProps`](#useemployeelistprops)): [`UseEmployeeListResult`](#useemployeelistresult)
 
 Fetches a paginated list of a company's employees and decorates each entry with the actions
 allowed for its current onboarding state.
@@ -43,9 +43,9 @@ Ready state of [useEmployeeList](#useemployeelist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
-| `actions.onCancelSelfOnboarding` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
-| `actions.onDelete` | (`employeeId`) => `Promise`\<`void`\> | Deletes the employee. |
-| `actions.onReview` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onCancelSelfOnboarding` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onDelete` | (`employeeId`: `string`) => `Promise`\<`void`\> | Deletes the employee. |
+| `actions.onReview` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
 | `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

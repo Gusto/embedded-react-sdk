@@ -52,6 +52,9 @@ export const baseOptions = {
   excludeInternal: true,
   excludePrivate: true,
   excludeProtected: true,
+  expandObjects: false,
+  expandParameters: true,
+
   strikeDeprecatedPageTitles: false,
 
   router: 'sdk-router',

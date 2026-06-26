@@ -15,7 +15,7 @@ custom_edit_url: null
 
 ### useCurrentHomeAddressForm()
 
-> **useCurrentHomeAddressForm**(`props`): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
+> **useCurrentHomeAddressForm**(`props`: [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops)): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
 
 Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
 
@@ -66,7 +66,7 @@ function HomeAddressEditor({ employeeId }: { employeeId: string }) {
 
 <a id="usehomeaddressform"></a>
 
-> **useHomeAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+> **useHomeAddressForm**(`props`: [`UseHomeAddressFormProps`](#usehomeaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Form hook for creating or editing an employee's home address.
 
@@ -91,7 +91,7 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`HomeAddressSubmitOptions`](#homeaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.homeAddress` | `EmployeeAddress` \| `null` | The address row loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

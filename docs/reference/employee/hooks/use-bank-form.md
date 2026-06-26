@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usebankform"></a>
 
-> **useBankForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+> **useBankForm**(`props`: [`UseBankFormProps`](#usebankformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Headless React Hook Form hook for creating an employee bank account.
 
@@ -70,7 +70,7 @@ Ready-state return value of [useBankForm](#usebankform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`BankFormSubmitOptions`](#bankformsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
 | `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
@@ -275,10 +275,10 @@ Field components exposed by [useBankForm](#usebankform) on `form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `AccountNumber` | (`props`) => `Element` | Bound to `accountNumber` — see [AccountNumberField](#accountnumberfield). |
-| `AccountType` | (`props`) => `Element` | Bound to `accountType` — see [AccountTypeField](#accounttypefield). |
-| `Name` | (`props`) => `Element` | Bound to `name` — see [NameField](#namefield). |
-| `RoutingNumber` | (`props`) => `Element` | Bound to `routingNumber` — see [RoutingNumberField](#routingnumberfield). |
+| `AccountNumber` | (`props`: [`AccountNumberFieldProps`](#accountnumberfieldprops)) => `Element` | Bound to `accountNumber` — see [AccountNumberField](#accountnumberfield). |
+| `AccountType` | (`props`: [`AccountTypeFieldProps`](#accounttypefieldprops)) => `Element` | Bound to `accountType` — see [AccountTypeField](#accounttypefield). |
+| `Name` | (`props`: [`NameFieldProps`](#namefieldprops)) => `Element` | Bound to `name` — see [NameField](#namefield). |
+| `RoutingNumber` | (`props`: [`RoutingNumberFieldProps`](#routingnumberfieldprops)) => `Element` | Bound to `routingNumber` — see [RoutingNumberField](#routingnumberfield). |
 
 ***
 

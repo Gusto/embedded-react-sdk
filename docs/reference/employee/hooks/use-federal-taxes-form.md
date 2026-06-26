@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usefederaltaxesform"></a>
 
-> **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+> **useFederalTaxesForm**(`props`: [`UseFederalTaxesFormProps`](#usefederaltaxesformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 

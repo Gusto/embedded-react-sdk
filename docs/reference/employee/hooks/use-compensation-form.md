@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecompensationform"></a>
 
-> **useCompensationForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+> **useCompensationForm**(`input`: [`UseCompensationFormProps`](#usecompensationformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
@@ -87,7 +87,7 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `actions.onSubmit` | (`options?`: [`CompensationSubmitOptions`](#compensationsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
 | `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
 | `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
 | `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
@@ -384,13 +384,13 @@ for its visibility rule. Always null-check conditional fields (e.g.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `AdjustForMinimumWage` | ((`props`) => `Element`) \| `undefined` | Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
-| `EffectiveDate` | ((`props`) => `Element`) \| `undefined` | Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. |
-| `FlsaStatus` | ((`props`) => `Element`) \| `undefined` | FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). |
-| `MinimumWageId` | ((`props`) => `Element`) \| `undefined` | Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. |
-| `PaymentUnit` | ((`props`) => `Element`) \| `undefined` | Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). |
-| `Rate` | ((`props`) => `Element`) \| `undefined` | Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. |
-| `Title` | (`props`) => `Element` | Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. |
+| `AdjustForMinimumWage` | ((`props`: [`AdjustForMinimumWageFieldProps`](#adjustforminimumwagefieldprops)) => `Element`) \| `undefined` | Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
+| `EffectiveDate` | ((`props`: [`CompensationEffectiveDateFieldProps`](#compensationeffectivedatefieldprops)) => `Element`) \| `undefined` | Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. |
+| `FlsaStatus` | ((`props`: [`FlsaStatusFieldProps`](#flsastatusfieldprops)) => `Element`) \| `undefined` | FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). |
+| `MinimumWageId` | ((`props`: [`MinimumWageIdFieldProps`](#minimumwageidfieldprops)) => `Element`) \| `undefined` | Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. |
+| `PaymentUnit` | ((`props`: [`PaymentUnitFieldProps`](#paymentunitfieldprops)) => `Element`) \| `undefined` | Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). |
+| `Rate` | ((`props`: [`RateFieldProps`](#ratefieldprops)) => `Element`) \| `undefined` | Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. |
+| `Title` | (`props`: [`CompensationTitleFieldProps`](#compensationtitlefieldprops)) => `Element` | Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. |
 
 ***
 

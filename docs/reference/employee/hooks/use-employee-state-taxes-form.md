@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="useemployeestatetaxesform"></a>
 
-> **useEmployeeStateTaxesForm**(`props`): [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
+> **useEmployeeStateTaxesForm**(`props`: [`UseEmployeeStateTaxesFormProps`](#useemployeestatetaxesformprops)): [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
 
 Headless form hook for updating an employee's state tax withholding answers.
 The set of questions is driven by the API response per state, so
@@ -138,7 +138,7 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 
 ### useStateFields()
 
-> **useStateFields**(`employeeStateTaxes`, `isAdmin`): [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
+> **useStateFields**(`employeeStateTaxes`: `EmployeeStateTaxesList`[], `isAdmin`: `boolean`): [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
 
 Memoizes the bound field components for a state-taxes form, avoiding unnecessary rebuilds when the data refetches but the underlying questions haven't changed.
 

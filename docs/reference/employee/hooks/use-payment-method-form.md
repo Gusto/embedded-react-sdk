@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usepaymentmethodform"></a>
 
-> **usePaymentMethodForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **usePaymentMethodForm**(`props`: [`UsePaymentMethodFormProps`](#usepaymentmethodformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Headless React Hook Form hook for updating an employee's payment method.
 
@@ -164,7 +164,7 @@ Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `fo
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Type` | (`props`) => `Element` | Bound to `type` — see [TypeField](#paymentmethodtypefield). |
+| `Type` | (`props`: [`TypeFieldProps`](#typefieldprops)) => `Element` | Bound to `type` — see [TypeField](#paymentmethodtypefield). |
 
 ***
 

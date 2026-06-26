@@ -29,7 +29,7 @@ Props for [Address](#address).
 | `className?` | `string` | Optional class applied to the wrapping `<section>`. |
 | `defaultValues?` | [`AddressDefaultValues`](#addressdefaultvalues) | Pre-fill values for address fields. Server data takes precedence when the contractor already has an address on file. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorAddress`\>\> | Overrides for the component's i18n strings. |
-| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
+| `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered when an unhandled error is caught by the component-level error boundary. |
 
 ### Events
 

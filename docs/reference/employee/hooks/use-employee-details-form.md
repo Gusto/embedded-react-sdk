@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="useemployeedetailsform"></a>
 
-> **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+> **useEmployeeDetailsForm**(`input`: [`UseEmployeeDetailsFormProps`](#useemployeedetailsformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
 
@@ -96,7 +96,7 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`callbacks?`: [`EmployeeDetailsSubmitCallbacks`](#employeedetailssubmitcallbacks)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
 | `data` | `object` | The loaded employee data, or `null` in create mode. |
 | `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
@@ -523,9 +523,9 @@ switch changes the employee's onboarding status as part of an update.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onEmployeeCreated?` | (`employee`) => `void` | Fired after a new employee is successfully created. |
-| `onEmployeeUpdated?` | (`employee`) => `void` | Fired after an existing employee is successfully updated. |
-| `onOnboardingStatusUpdated?` | (`status`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
+| `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
+| `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
+| `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
 
 ***
 

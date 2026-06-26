@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usechildsupportgarnishmentform"></a>
 
-> **useChildSupportGarnishmentForm**(`input`): [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
+> **useChildSupportGarnishmentForm**(`input`: [`UseChildSupportGarnishmentFormProps`](#usechildsupportgarnishmentformprops)): [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
 
 Headless hook for creating or updating a child-support garnishment.
 
@@ -398,14 +398,14 @@ for its visibility rule. Always null-check conditional fields (e.g.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Amount` | (`props`) => `Element` | Percent-of-paycheck input (0–100). Always available. |
-| `CaseNumber` | ((`props`) => `Element`) \| `undefined` | Only available when the selected agency requires `case_number`. |
-| `FipsCode` | ((`props`) => `Element`) \| `undefined` | Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
-| `OrderNumber` | ((`props`) => `Element`) \| `undefined` | Only available when the selected agency requires `order_number`. |
-| `PaymentPeriod` | (`props`) => `Element` | Payment period select. Always available. |
-| `PayPeriodMaximum` | (`props`) => `Element` | Per-pay-period currency cap input. Always available. |
-| `RemittanceNumber` | ((`props`) => `Element`) \| `undefined` | Only available when the selected agency requires `remittance_number`. |
-| `State` | (`props`) => `Element` | Agency (state) select. Always available. |
+| `Amount` | (`props`: [`ChildSupportGarnishmentAmountFieldProps`](#childsupportgarnishmentamountfieldprops)) => `Element` | Percent-of-paycheck input (0–100). Always available. |
+| `CaseNumber` | ((`props`: [`CaseNumberFieldProps`](#casenumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `case_number`. |
+| `FipsCode` | ((`props`: [`FipsCodeFieldProps`](#fipscodefieldprops)) => `Element`) \| `undefined` | Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
+| `OrderNumber` | ((`props`: [`OrderNumberFieldProps`](#ordernumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `order_number`. |
+| `PaymentPeriod` | (`props`: [`PaymentPeriodFieldProps`](#paymentperiodfieldprops)) => `Element` | Payment period select. Always available. |
+| `PayPeriodMaximum` | (`props`: [`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops)) => `Element` | Per-pay-period currency cap input. Always available. |
+| `RemittanceNumber` | ((`props`: [`RemittanceNumberFieldProps`](#remittancenumberfieldprops)) => `Element`) \| `undefined` | Only available when the selected agency requires `remittance_number`. |
+| `State` | (`props`: [`ChildSupportGarnishmentStateFieldProps`](#childsupportgarnishmentstatefieldprops)) => `Element` | Agency (state) select. Always available. |
 
 ***
 

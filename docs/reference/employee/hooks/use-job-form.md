@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usejobform"></a>
 
-> **useJobForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+> **useJobForm**(`input`: [`UseJobFormProps`](#usejobformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
 
@@ -77,7 +77,7 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
+| `actions.onSubmit` | (`options?`: [`JobSubmitOptions`](#jobsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
 | `data` | `object` | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields. |
 | `data.currentJob` | `Job` \| `null` | The job row loaded for update; `null` in create mode. |
 | `data.currentWorkAddress` | `EmployeeWorkAddress` \| `null` | The employee's active work address, or `null` when none is set. |
@@ -334,11 +334,11 @@ before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `HireDate` | ((`props`) => `Element`) \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`. |
-| `StateWcClassCode` | ((`props`) => `Element`) \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
-| `StateWcCovered` | ((`props`) => `Element`) \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
-| `Title` | ((`props`) => `Element`) \| `undefined` | Job title text input. `undefined` when `withTitleField: false`. |
-| `TwoPercentShareholder` | ((`props`) => `Element`) \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
+| `HireDate` | ((`props`: [`HireDateFieldProps`](#hiredatefieldprops)) => `Element`) \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`. |
+| `StateWcClassCode` | ((`props`: [`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops)) => `Element`) \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
+| `StateWcCovered` | ((`props`: [`StateWcCoveredFieldProps`](#statewccoveredfieldprops)) => `Element`) \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
+| `Title` | ((`props`: [`JobTitleFieldProps`](#jobtitlefieldprops)) => `Element`) \| `undefined` | Job title text input. `undefined` when `withTitleField: false`. |
+| `TwoPercentShareholder` | ((`props`: [`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops)) => `Element`) \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
 
 ***
 

@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usepayscheduleform"></a>
 
-> **usePayScheduleForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+> **usePayScheduleForm**(`props`: [`UsePayScheduleFormProps`](#usepayscheduleformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 Form hook for creating or updating a company pay schedule.
 

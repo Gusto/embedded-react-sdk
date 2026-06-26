@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecontractordetailsform"></a>
 
-> **useContractorDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+> **useContractorDetailsForm**(`input`: [`UseContractorDetailsFormProps`](#usecontractordetailsformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
@@ -57,7 +57,7 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Contractor`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`options?`: [`ContractorDetailsSubmitOptions`](#contractordetailssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Contractor`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
 | `data` | `object` | The loaded contractor data, or `null` in create mode. |
 | `data.contractor` | `Contractor` \| `null` | The contractor being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usecontractoraddressform"></a>
 
-> **useContractorAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+> **useContractorAddressForm**(`props`: [`UseContractorAddressFormProps`](#usecontractoraddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Form hook for editing a contractor's address.
 
@@ -40,7 +40,7 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`ContractorAddressSubmitOptions`](#contractoraddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.contractor` | `Contractor` | The full contractor entity loaded alongside the address. |
 | `data.contractorAddress` | `ContractorAddress` | The contractor address row loaded for update. |

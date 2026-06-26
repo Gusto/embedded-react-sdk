@@ -244,7 +244,7 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | ------ | ------ | ------ |
 | `accrualMethod` | [`PolicySettingsAccrualMethod`](#policysettingsaccrualmethod) | Accrual method category of the policy. Controls which fields are shown. |
 | `onBack` | () => `void` | Called when the user navigates back. |
-| `onContinue` | (`data`) => `void` | Called with the form values when the user submits. |
+| `onContinue` | (`data`: [`PolicySettingsFormData`](#policysettingsformdata)) => `void` | Called with the form values when the user submits. |
 | `defaultValues?` | `Partial`\<[`PolicySettingsFormData`](#policysettingsformdata)\> | Optional default values to prefill the form. |
 | `editingPolicyName?` | `string` | Name of the policy being edited. Shown in the heading when `mode` is `'edit'`. |
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
@@ -548,7 +548,7 @@ and an optional success alert.
 | `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`HolidayPolicyDetailEmployee`](#holidaypolicydetailemployee)\> | Employee table data and handlers for the employees tab. |
 | `holidays` | [`HolidayItem`](#holidayitem)[] | Selected holidays shown in the holidays tab. |
 | `onBack` | () => `void` | Called when the user clicks the back navigation. |
-| `onTabChange` | (`id`) => `void` | Called with the tab id when the user switches tabs. |
+| `onTabChange` | (`id`: `string`) => `void` | Called with the tab id when the user switches tabs. |
 | `removeDialog` | [`RemoveDialogState`](#removedialogstate) | State for the employee removal confirmation dialog. |
 | `selectedTabId` | `string` | The currently active tab (`'holidays'` or `'employees'`). |
 | `title` | `string` | The policy name displayed as the page heading. |
@@ -612,12 +612,12 @@ or `HolidayPolicyDetailPresentationProps`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `data` | `T`[] | Employee rows to render. |
-| `onSearchChange` | (`value`) => `void` | Called when the search input value changes. |
+| `onSearchChange` | (`value`: `string`) => `void` | Called when the search input value changes. |
 | `onSearchClear` | () => `void` | Called when the search input is cleared. |
 | `searchValue` | `string` | Current value of the search input. |
 | `emptyState?` | () => `ReactNode` | Renders a custom empty state when `data` is empty and there is no active search. |
 | `isFetching?` | `boolean` | When true, renders the loading state instead of the rows. |
-| `itemMenu?` | (`item`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
+| `itemMenu?` | (`item`: `T`) => `ReactNode` | Renders a row-level menu (e.g. a kebab menu) for the given item. |
 | `pagination?` | [`PaginationControlProps`](../component-inventory.md#paginationcontrolprops) | Pagination control props passed through to the underlying data view. |
 | `searchPlaceholder?` | `string` | Placeholder text for the search input; defaults to a localized placeholder. |
 
@@ -774,7 +774,7 @@ Shared base props for [TimeOffPolicyDetailPresentation](#timeoffpolicydetailpres
 | `backLabel` | `string` | Label for the back navigation link. |
 | `employees` | [`PolicyDetailEmployeeTableData`](#policydetailemployeetabledata)\<[`TimeOffPolicyDetailEmployee`](#timeoffpolicydetailemployee)\> | Employee table data and callbacks. |
 | `onBack` | () => `void` | Called when the back navigation is clicked. |
-| `onTabChange` | (`id`) => `void` | Called with the new tab id when the user switches tabs. |
+| `onTabChange` | (`id`: `string`) => `void` | Called with the new tab id when the user switches tabs. |
 | `removeDialog` | [`RemoveDialogState`](#removedialogstate) | State for the employee removal confirmation dialog. |
 | `selectedTabId` | `string` | The currently active tab id. |
 | `title` | `string` | Policy name displayed as the page heading. |
