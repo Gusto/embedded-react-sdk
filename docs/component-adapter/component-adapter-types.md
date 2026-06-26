@@ -8,9 +8,9 @@ The Component Adapter system uses TypeScript interfaces to ensure type safety an
 
 ## Core Types
 
-- [Component Inventory](./component-inventory.md) - Individual component prop interfaces
-- [`ComponentsContextType`](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts) - The main interface defining all customizable UI components
-- [`GustoProviderCustomUIAdapterProps`](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx) - Props for the custom UI adapter
+- [Component Inventory](../reference/component-inventory.md) - Individual component prop interfaces
+- [`ComponentsContextType`](../reference/component-inventory.md#componentscontexttype) - The main interface defining all customizable UI components
+- [`GustoProviderCustomUIAdapterProps`](../reference/index.md#gustoprovidercustomuiadapterprops) - Props for the custom UI adapter
 
 ## Importing Types
 

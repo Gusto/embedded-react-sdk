@@ -1,11 +1,7 @@
 import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import { AdminProfile } from './AdminProfile'
 import { EmployeeProfile } from './EmployeeProfile'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -56,7 +52,7 @@ export type ProfileDefaultValues = RequireAtLeastOne<{
  *
  * @public
  */
-export interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
+export interface ProfileProps extends BaseComponentInterface<'Employee.Profile'> {
   /** The associated employee identifier. Omit to create a new employee. */
   employeeId?: string
   /** The associated company identifier. */
@@ -67,8 +63,6 @@ export interface ProfileProps extends CommonComponentInterface<'Employee.Profile
   isAdmin?: boolean
   /** When `true`, the admin variant exposes the self-onboarding toggle. Defaults to `true`. */
   isSelfOnboardingEnabled?: boolean
-  /** Event handler fired on profile creation, update, and address changes. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
@@ -97,11 +91,7 @@ export interface ProfileProps extends CommonComponentInterface<'Employee.Profile
  * @returns The employee profile onboarding step.
  * @public
  */
-export function Profile({
-  FallbackComponent,
-  isAdmin = false,
-  ...props
-}: ProfileProps & BaseComponentInterface) {
+export function Profile({ FallbackComponent, isAdmin = false, ...props }: ProfileProps) {
   return (
     <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
       {isAdmin ? <AdminProfile {...props} isAdmin /> : <EmployeeProfile {...props} />}

@@ -6,26 +6,18 @@ import {
 } from './WorkAddressComponents'
 import { workAddressStateMachine } from './workAddressStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link WorkAddress}.
  *
  * @public
  */
-export interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+export interface WorkAddressProps extends BaseComponentInterface<'Employee.Management.WorkAddress'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
@@ -58,11 +50,7 @@ function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
  *
  * @public
  */
-export function WorkAddress({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>) {
+export function WorkAddress({ dictionary, FallbackComponent, ...props }: WorkAddressProps) {
   useComponentDictionary('Employee.Management.WorkAddress', dictionary)
   return (
     <BaseBoundaries

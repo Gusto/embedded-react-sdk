@@ -419,3 +419,47 @@ describe('processSourceFile — jobSchema before/after', () => {
     `)
   })
 })
+
+// ── References to @internal type aliases ─────────────────────────────────────
+// An exported @public alias that references an @internal type alias leaks it as
+// ae-forgotten-export. Those references are rewritten to their concrete types in
+// place, leaving any surrounding generic wrapper — and the @internal declaration
+// itself — untouched.
+
+describe('processSourceFile — references to @internal type aliases', () => {
+  it('rewrites an indexed access into an @internal type alias to its concrete type, preserving the generic wrapper', () => {
+    const { sf, checker } = setup(
+      'internal-ref.d.ts',
+      `/** @internal */
+export type FormInputs = { taxPayerType?: string; legalName: string };
+/** @public */
+export type DefaultValues = Partial<{
+  taxPayerType: FormInputs['taxPayerType'];
+  legalName: FormInputs['legalName'];
+}>;
+`,
+    )
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const out = sf.getText()
+    // Indexed accesses into the @internal type are resolved to concrete types...
+    expect(out).toContain('taxPayerType: string | undefined')
+    expect(out).toContain('legalName: string')
+    // ...the generic wrapper is preserved (not flattened to a union)...
+    expect(out).toContain('Partial<{')
+    // ...the @internal reference no longer appears in the public alias...
+    expect(out).not.toContain("FormInputs['")
+    // ...and the @internal declaration itself is left in place.
+    expect(out).toContain('export type FormInputs = { taxPayerType?: string; legalName: string }')
+  })
+
+  it('does not expand the @internal alias itself when nothing public references it', () => {
+    const { sf, checker } = setup(
+      'internal-only.d.ts',
+      `/** @internal */
+export type FormInputs = { a: string };
+`,
+    )
+    expect(processSourceFile(sf, checker)).toBeNull()
+    expect(sf.getText()).toContain('export type FormInputs = { a: string }')
+  })
+})

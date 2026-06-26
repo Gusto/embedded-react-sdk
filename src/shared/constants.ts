@@ -218,6 +218,7 @@ export const companyEvents = {
  * @public
  */
 export const contractorEvents = {
+  CONTRACTOR_SELF_ONBOARDING_START: 'contractor/selfOnboarding/start',
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
   CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
@@ -600,7 +601,7 @@ export const ContractorOnboardingStatus = {
  *
  * @public
  */
-export const ContractorSelfOnboardingStatuses = new Set([
+export const ContractorSelfOnboardingStatuses = new Set<ContractorOnboardingStatus1>([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,

@@ -8,22 +8,16 @@ import {
 } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link PaymentMethod}.
  *
  * @public
  */
-export interface PaymentMethodProps extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
+export interface PaymentMethodProps extends BaseComponentInterface<'Employee.Management.PaymentMethod'> {
   /** The associated employee identifier. */
   employeeId: string
   /** Not used — payment method management edits live data. */
@@ -32,8 +26,6 @@ export interface PaymentMethodProps extends CommonComponentInterface<'Employee.M
   isAdmin?: boolean
   /** Step to render first: the list card, the add-account form, or the split-paycheck form. Defaults to `'list'`. */
   initialState?: 'list' | 'add' | 'split'
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function PaymentMethodFlow({
@@ -99,11 +91,7 @@ function PaymentMethodFlow({
  * }
  * ```
  */
-export function PaymentMethod({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: PaymentMethodProps & BaseComponentInterface<'Employee.Management.PaymentMethod'>) {
+export function PaymentMethod({ dictionary, FallbackComponent, ...props }: PaymentMethodProps) {
   useComponentDictionary('Employee.Management.PaymentMethod', dictionary)
   return (
     <BaseBoundaries

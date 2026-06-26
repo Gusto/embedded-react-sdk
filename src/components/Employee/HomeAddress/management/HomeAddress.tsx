@@ -3,26 +3,18 @@ import { useMemo } from 'react'
 import { CardContextual, type HomeAddressContextInterface } from './HomeAddressComponents'
 import { homeAddressStateMachine } from './homeAddressStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link HomeAddress}.
  *
  * @public
  */
-export interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
+export interface HomeAddressProps extends BaseComponentInterface<'Employee.Management.HomeAddress'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired on flow state changes. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
@@ -55,11 +47,7 @@ function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
  *
  * @public
  */
-export function HomeAddress({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>) {
+export function HomeAddress({ dictionary, FallbackComponent, ...props }: HomeAddressProps) {
   useComponentDictionary('Employee.Management.HomeAddress', dictionary)
   return (
     <BaseBoundaries

@@ -18,7 +18,6 @@ interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInst
   companyId: string
   wireInId?: string
   selectedWireInId?: string
-  onEvent: OnEventType<EventType, unknown>
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
 

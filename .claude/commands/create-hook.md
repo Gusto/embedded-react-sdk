@@ -136,7 +136,11 @@ export function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
     requiredErrorCode: {Domain}ErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
-    // excludeFields: withFooField ? [] : ['foo'],
+    // excludeFields: withFooField ? [] : ['foo'],   // static, build-time field removal
+    // excludeFields: (data, mode) => (data.type === 'Business' ? ['ssn'] : ['ein']),
+    //   ^ value-aware form: applicability is decided per validation pass from the
+    //     current form values — use it for fields rendered conditionally on a
+    //     discriminator (see .claude/hooks-implementation.md → excludeFields)
     // fieldsWithRedactedValues: hasRedactedFoo ? ['foo'] : [],
     // superRefine: (data, ctx) => { /* cross-field rules */ },
   })
@@ -365,7 +369,7 @@ export type {Domain}FieldsMetadata = Use{Domain}FormReady['form']['fieldsMetadat
 
 #### `index.ts`
 
-Re-export the hook, the schema factory + error codes, and every field-prop type. Rename `RequiredValidation` to `{Domain}RequiredValidation` so it doesn't collide when partners import multiple hooks.
+Re-export the hook, error codes, and every field-prop type. The schema factory (`create{Domain}Schema`) is `@internal`; the inner barrel may carry it for SDK use, but it must **not** be promoted to `src/index.ts` (see Step 4). Rename `RequiredValidation` to `{Domain}RequiredValidation` so it doesn't collide when partners import multiple hooks.
 
 ```typescript
 export { use{Domain}Form } from './use{Domain}Form'
@@ -380,7 +384,7 @@ export type {
   {Domain}FormFields,
 } from './use{Domain}Form'
 export {
-  create{Domain}Schema,
+  create{Domain}Schema, // @internal — for SDK use only; do NOT re-export from src/index.ts
   {Domain}ErrorCodes,
   type {Domain}ErrorCode,
   type {Domain}FormData,
@@ -410,7 +414,6 @@ Add the new hook to barrels in this order:
    export {
      use{Domain}Form,
      {Domain}ErrorCodes,
-     create{Domain}Schema,
    } from '@/components/{Domain}/{Feature}/shared/use{Name}Form'
    export type {
      {Domain}SubmitOptions,
@@ -425,7 +428,7 @@ Add the new hook to barrels in this order:
    } from '@/components/{Domain}/{Feature}/shared/use{Name}Form'
    ```
 
-   Public surface checklist: hook function, error-codes constant, schema factory, ready/result/fields-metadata types, optional-fields-to-require type, every per-field props type, validation-type aliases, and submit-options/callbacks types if defined. Keep `buildFormSchema`, `useDeriveFieldsMetadata`, `withOptions`, `composeErrorHandler`, and other SDK-internal utilities **off** the public barrel — see `.claude/hooks-implementation.md → Exports Checklist`.
+   Public surface checklist: hook function, error-codes constant, ready/result/fields-metadata types, optional-fields-to-require type, every per-field props type, validation-type aliases, and submit-options/callbacks types if defined. Do **not** export the schema factory: `create{Domain}Schema` and `{Domain}SchemaOptions` are `@internal` — exporting them from `src/index.ts` makes api-extractor emit an `ae-internal-missing-underscore` warning, and partners build forms through the hook, not the raw factory. Keep them, along with `buildFormSchema`, `useDeriveFieldsMetadata`, `withOptions`, `composeErrorHandler`, and other SDK-internal utilities, **off** the public barrel — see `.claude/hooks-implementation.md → Exports Checklist`.
 
 ### Step 5: Verify
 
@@ -442,9 +445,8 @@ Hooks must not own translations: do **not** call `useTranslation` or `t()` insid
 
 ### Step 6: Document the hook
 
-Two doc updates are required for every public partner hook (skip when the hook is intentionally internal-only):
+Document the public surface with **inline TSDoc** and let the reference docs autogenerate. Do **not** hand-write a `docs/hooks/use{Name}Form.md` page or hand-maintain a `docs/hooks/hooks.md` row — the partner-facing reference is generated from the TSDoc, so the inline comments are the single source of truth.
 
-1. Add a row to the inventory table in `docs/hooks/hooks.md`.
-2. Create `docs/hooks/use{Name}Form.md` following the structure of `docs/hooks/useEmployeeDetailsForm.md` and `docs/hooks/useCompensationForm.md` — frontmatter, props table, return type blocks, fields reference, and both `SDKFormProvider` and `formHookResult`-prop usage examples.
+Run `/tsdoc` once the hook compiles and tests pass. It loads `.claude/tsdoc-guides/hooks.md` and writes TSDoc directly onto the exported symbols: `use{Name}Form`, `Use{Domain}FormProps`, the ready/result/outputs types, the `{Domain}ErrorCodes` constant, every per-field component, and every field-prop type. Keep `create{Domain}Schema`, `{Domain}SchemaOptions`, and other factory/internal symbols `@internal` (see Step 4) so the generator leaves them out of the reference.
 
-See `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md → 11. Documentation` for the required sections and styling conventions.
+See `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md → 11. Documentation`.

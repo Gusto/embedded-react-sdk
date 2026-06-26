@@ -44,7 +44,7 @@ export interface InformationRequestsFlowProps extends Omit<
 const ALERT_TYPE = 'informationRequestResponded' as const
 
 /**
- * Standalone surface for viewing and responding to outstanding information requests Gusto has issued for a company.
+ * Hub for viewing and responding to outstanding information requests from Gusto.
  *
  * @remarks
  * Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
@@ -59,9 +59,33 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
  * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
  *
+ * Each piece is also exported as a standalone block (see the Sub-components
+ * table) for composing a custom workflow when this orchestration is the wrong
+ * fit. See the
+ * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
+ *
+ * @components
+ * - {@link InformationRequestList}
+ * - {@link InformationRequestForm}
+ *
  * @param props - See {@link InformationRequestsFlowProps}.
  * @returns The information requests flow surface.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { InformationRequests } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <InformationRequests.InformationRequestsFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={() => {}}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export function InformationRequestsFlow({
   companyId,

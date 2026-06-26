@@ -15,12 +15,7 @@ import { CreateSignatoryProvider } from './useCreateSignatory'
 import { generateCreateSignatorySchema } from './Schema'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
-import {
-  useBase,
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -31,7 +26,7 @@ import { commonMasks, useMaskedTransform } from '@/helpers/mask'
  *
  * @public
  */
-export interface CreateSignatoryProps extends CommonComponentInterface {
+export interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
   /** Identifier of the company the signatory belongs to. */
   companyId: string
   /** Identifier of an existing signatory. When provided and matching an existing signatory on the company, the form pre-populates with their information for editing. */
@@ -54,7 +49,7 @@ export interface CreateSignatoryProps extends CommonComponentInterface {
  * @returns The create signatory form.
  * @public
  */
-export function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface) {
+export function CreateSignatory(props: CreateSignatoryProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

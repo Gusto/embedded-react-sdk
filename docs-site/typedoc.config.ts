@@ -1,4 +1,4 @@
-import { type TypeDocOptions } from 'typedoc'
+import { type TypeDocOptions, OptionDefaults } from 'typedoc'
 import { type PluginOptions } from 'typedoc-plugin-markdown'
 import {
   COMPONENT_GROUPS,
@@ -8,11 +8,11 @@ import {
 } from './typedoc-utils.mjs'
 
 export const baseOptions = {
-  plugin: ['./plugins/sdk-router.ts'],
+  plugin: ['./plugins/typedoc-custom/index.ts'],
   name: '@gusto/embedded-react-sdk',
   tsconfig: 'tsconfig.typedoc.json',
   entryPoints: ['../src/index.ts'],
-  out: '../docs/api',
+  out: '../docs/reference',
 
   groupOrder: [
     'Domains',
@@ -59,6 +59,11 @@ export const baseOptions = {
   readme: 'none',
   useHTMLAnchors: true,
   validation: { invalidLink: true },
+  formatWithPrettier: false,
+
+  // Custom block tag listing the components/hooks a flow composes; rendered as a
+  // table by the SDK theme. Spread the defaults so the built-in tags are kept.
+  blockTags: [...OptionDefaults.blockTags, '@components'],
 } satisfies TypeDocOptions & PluginOptions
 
 export default {

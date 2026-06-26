@@ -30,10 +30,18 @@ export type {
   ObservabilityMetricUnit,
   SanitizationConfig,
 } from '@/types/observability'
+
 export type {
-  ConfirmWireDetailsProps,
-  ConfirmWireDetailsComponentType,
-} from '@/components/Payroll/ConfirmWireDetails'
+  BaseComponentInterface,
+  CommonComponentInterface,
+  OnEventType,
+} from '@/components/Base'
+export type {
+  ResourceDictionary,
+  Resources,
+  DeepPartial,
+  SupportedLanguages,
+} from '@/types/Helpers'
 
 // Partner hook infrastructure
 export {
@@ -274,6 +282,62 @@ export type {
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 
 export {
+  useContractorDetailsForm,
+  ContractorType,
+  WageType,
+  ContractorDetailsErrorCodes,
+  TypeField as ContractorTypeField,
+  WageTypeField as ContractorWageTypeField,
+  StartDateField as ContractorStartDateField,
+  HourlyRateField as ContractorHourlyRateField,
+  SelfOnboardingField as ContractorSelfOnboardingField,
+  FileNewHireReportField as ContractorFileNewHireReportField,
+  EmailField as ContractorEmailField,
+  FirstNameField as ContractorFirstNameField,
+  LastNameField as ContractorLastNameField,
+  MiddleInitialField as ContractorMiddleInitialField,
+  BusinessNameField as ContractorBusinessNameField,
+  SsnField as ContractorSsnField,
+  EinField as ContractorEinField,
+  WorkStateField as ContractorWorkStateField,
+} from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
+export type {
+  ContractorDetailsSubmitOptions,
+  ContractorDetailsOptionalFieldsToRequire,
+  UseContractorDetailsFormSharedProps,
+  UseContractorDetailsFormProps,
+  UseContractorDetailsFormResult,
+  UseContractorDetailsFormReady,
+  ContractorDetailsFieldsMetadata,
+  ContractorDetailsFormFields,
+  ContractorDetailsFields,
+  ContractorDetailsErrorCode,
+  ContractorDetailsFormData,
+  ContractorDetailsFormOutputs,
+  ContractorDetailsRequiredValidation,
+  ContractorDetailsNameValidation,
+  ContractorDetailsEmailValidation,
+  ContractorDetailsSsnValidation,
+  ContractorDetailsSsnRequiredValidation,
+  ContractorDetailsEinValidation,
+  ContractorDetailsEinRequiredValidation,
+  TypeFieldProps as ContractorTypeFieldProps,
+  WageTypeFieldProps as ContractorWageTypeFieldProps,
+  StartDateFieldProps as ContractorStartDateFieldProps,
+  HourlyRateFieldProps as ContractorHourlyRateFieldProps,
+  SelfOnboardingFieldProps as ContractorSelfOnboardingFieldProps,
+  FileNewHireReportFieldProps as ContractorFileNewHireReportFieldProps,
+  EmailFieldProps as ContractorEmailFieldProps,
+  FirstNameFieldProps as ContractorFirstNameFieldProps,
+  LastNameFieldProps as ContractorLastNameFieldProps,
+  MiddleInitialFieldProps as ContractorMiddleInitialFieldProps,
+  BusinessNameFieldProps as ContractorBusinessNameFieldProps,
+  SsnFieldProps as ContractorSsnFieldProps,
+  EinFieldProps as ContractorEinFieldProps,
+  WorkStateFieldProps as ContractorWorkStateFieldProps,
+} from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
+
+export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
@@ -338,6 +402,38 @@ export type {
   HomeAddressEffectiveDateFieldProps,
   HomeAddressFields,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
+
+export {
+  useContractorAddressForm,
+  ContractorAddressErrorCodes,
+  createContractorAddressSchema,
+  Street1Field as ContractorAddressStreet1Field,
+  Street2Field as ContractorAddressStreet2Field,
+  CityField as ContractorAddressCityField,
+  StateField as ContractorAddressStateField,
+  ZipField as ContractorAddressZipField,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
+export type {
+  ContractorAddressSubmitOptions,
+  ContractorAddressOptionalFieldsToRequire,
+  UseContractorAddressFormProps,
+  UseContractorAddressFormResult,
+  UseContractorAddressFormReady,
+  ContractorAddressFieldsMetadata,
+  ContractorAddressFormFields,
+  ContractorAddressErrorCode,
+  ContractorAddressFormData,
+  ContractorAddressFormOutputs,
+  ContractorAddressField,
+  ContractorAddressRequiredValidation,
+  ContractorAddressZipValidation,
+  ContractorAddressStreet1FieldProps,
+  ContractorAddressStreet2FieldProps,
+  ContractorAddressCityFieldProps,
+  ContractorAddressStateFieldProps,
+  ContractorAddressZipFieldProps,
+  ContractorAddressFields,
+} from '@/components/Contractor/Address/shared/useContractorAddressForm'
 
 export {
   useBankForm,

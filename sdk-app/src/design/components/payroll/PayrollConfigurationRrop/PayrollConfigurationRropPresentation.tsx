@@ -59,6 +59,7 @@ export const PayrollConfigurationRropPresentation = ({
   employeeDetails,
   fixedCompensationTypes = [],
   payPeriod,
+  paySchedule,
   onCalculatePayroll,
   onViewBlockers,
   payrollCategory = PayrollCategory.Regular,
@@ -158,6 +159,8 @@ export const PayrollConfigurationRropPresentation = ({
                 isLoading={isSpreadsheetLoading}
                 rrop={rrop}
                 payPeriod={payPeriod}
+                paySchedule={paySchedule}
+                payrollCategory={payrollCategory}
               />
             </Flex>
           </>

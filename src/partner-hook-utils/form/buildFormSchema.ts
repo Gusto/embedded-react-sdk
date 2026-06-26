@@ -95,7 +95,20 @@ interface BuildFormSchemaOptions<
   requiredErrorCode?: string
   mode: FormMode
   optionalFieldsToRequire?: OptionalFieldsToRequire<TConfig>
-  excludeFields?: Array<keyof T & string>
+  /**
+   * Fields that don't apply and should be dropped from required validation.
+   *
+   * An **array** removes the fields at build time — they're absent from the
+   * schema shape entirely (use when applicability is fixed by a config flag).
+   *
+   * A **function** is evaluated against the values under validation, so a field
+   * can flip in/out of applicability as other values change. The field stays in
+   * the schema (validated as optional) but its required check is skipped while
+   * the function reports it as excluded.
+   */
+  excludeFields?:
+    | Array<keyof T & string>
+    | ((data: { [K in keyof T]: z.infer<T[K]> }, mode: FormMode) => Array<keyof T & string>)
   /** Fields with existing server-side values that are redacted in the API response
    *  (e.g. SSN, EIN). These fields remain in the schema for format validation and
    *  appear in metadata (with `hasRedactedValue: true`) but are exempt from required
@@ -166,7 +179,10 @@ export function buildFormSchema<
     requiredErrorCode = 'REQUIRED',
     excludeFields = [],
   } = options
-  const excluded = new Set(excludeFields.map(String))
+  // The array form removes fields at build time; the function form is resolved
+  // per-validation in the superRefine pass below.
+  const excludeFieldsFn = typeof excludeFields === 'function' ? excludeFields : undefined
+  const staticExcluded = new Set((Array.isArray(excludeFields) ? excludeFields : []).map(String))
   const redacted = new Set((options.fieldsWithRedactedValues ?? []).map(String))
   const partnerRequired = new Set(
     resolveOptionalFieldsToRequire(options.optionalFieldsToRequire, mode),
@@ -181,7 +197,7 @@ export function buildFormSchema<
   const config = requiredFieldsConfig as Record<string, RequiredFieldRule>
 
   for (const [name, validator] of Object.entries(fieldValidators)) {
-    if (excluded.has(name)) continue
+    if (staticExcluded.has(name)) continue
     includedFieldNames.push(name)
 
     const effectiveRule = config[name] ?? 'always'
@@ -211,7 +227,13 @@ export function buildFormSchema<
   if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(
       (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
+        const typedData = data as FormDataFromValidators<T>
+        const excludedNow = excludeFieldsFn
+          ? new Set(excludeFieldsFn(typedData, mode).map(String))
+          : undefined
+
         for (const { name, predicate } of dynamicRequired) {
+          if (excludedNow?.has(name)) continue
           if (predicate(data, mode) && isEmpty(data[name])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
@@ -221,7 +243,7 @@ export function buildFormSchema<
           }
         }
 
-        options.superRefine?.(data as { [K in keyof T]: z.infer<T[K]> }, ctx)
+        options.superRefine?.(typedData, ctx)
       },
     )
   }

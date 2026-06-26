@@ -6,12 +6,7 @@ import { SubmitDone } from './SubmitDone'
 import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
@@ -20,7 +15,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
  *
  * @public
  */
-export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
+export interface ContractorSubmitProps extends BaseComponentInterface<'Contractor.Submit'> {
   /** UUID of the contractor being submitted. */
   contractorId: string
   /** When true, adjusts the submission for the self-onboarding flow, surfacing the invite step before the contractor's onboarding status is finalized. */
@@ -41,7 +36,7 @@ export interface ContractorSubmitProps extends CommonComponentInterface<'Contrac
  * @returns The rendered submission step.
  * @public
  */
-export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface) {
+export function ContractorSubmit(props: ContractorSubmitProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

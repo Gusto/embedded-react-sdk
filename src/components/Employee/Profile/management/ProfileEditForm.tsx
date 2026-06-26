@@ -3,12 +3,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeeDetailsForm } from '../shared/useEmployeeDetailsForm'
 import styles from './Profile.module.scss'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { Grid } from '@/components/Common/Grid/Grid'
@@ -22,11 +17,9 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
+export interface ProfileEditFormProps extends BaseComponentInterface<'Employee.Management.Profile'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Event handler fired when the user saves changes or cancels editing. */
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 /**
@@ -47,10 +40,7 @@ export interface ProfileEditFormProps extends CommonComponentInterface<'Employee
  * @returns The employee profile edit form.
  * @public
  */
-export function ProfileEditForm({
-  FallbackComponent,
-  ...props
-}: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+export function ProfileEditForm({ FallbackComponent, ...props }: ProfileEditFormProps) {
   return (
     <BaseBoundaries
       componentName="Employee.Management.Profile"

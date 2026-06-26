@@ -2,18 +2,19 @@ import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2
 import { OnboardingOverviewProvider } from './context'
 import { MissingRequirements } from './MissingRequirements'
 import { Completed } from './Completed'
-import {
-  BaseComponent,
-  useBase,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { Flex } from '@/components/Common'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-interface OnboardingOverviewProps extends CommonComponentInterface<'Company.OnboardingOverview'> {
+/**
+ * Props for the {@link OnboardingOverview} component.
+ *
+ * @public
+ */
+export interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+  /** The associated company identifier. */
   companyId: string
 }
 
@@ -35,7 +36,7 @@ interface OnboardingOverviewProps extends CommonComponentInterface<'Company.Onbo
  * @returns The rendered onboarding overview section.
  * @public
  */
-export function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface) {
+export function OnboardingOverview(props: OnboardingOverviewProps) {
   useI18n('Company.OnboardingOverview')
   useComponentDictionary('Company.OnboardingOverview', props.dictionary)
   return (

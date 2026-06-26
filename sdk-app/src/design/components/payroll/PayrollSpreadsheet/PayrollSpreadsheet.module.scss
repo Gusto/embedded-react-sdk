@@ -5,7 +5,10 @@
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(toRem(200), toRem(240)) repeat(10, minmax(toRem(140), 1fr));
+  grid-template-columns:
+    minmax(toRem(200), toRem(240))
+    minmax(toRem(120), toRem(140))
+    repeat(11, minmax(toRem(140), 1fr));
   min-width: max-content;
 }
 
@@ -63,8 +66,12 @@
   gap: toRem(6);
 }
 
-.cell:not(.stickyLeft):not(.cellNa) {
+.cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):not(:has(.cellTrigger)) {
   cursor: text;
+}
+
+.cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):has(.cellTrigger) {
+  cursor: pointer;
 }
 
 /* Row hover OR row has an active (focused) cell → all cells get accent background */
@@ -74,16 +81,38 @@
 }
 
 /* The hovered or active editable cell itself stays body color (overrides row accent; bumped specificity) */
-.row .cell:not(.stickyLeft):not(.cellNa):hover,
+.row .cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):hover,
 .row .cell:not(.stickyLeft):focus-within {
   background: var(--g-colorBody);
 }
 
-/* Hover + active outline on editable data cells (employee + N/A cells excluded) */
-.cell:not(.stickyLeft):not(.cellNa):hover,
+/* Hover + active outline on editable data cells (employee, N/A, and read-only cells excluded) */
+.cell:not(.stickyLeft):not(.cellNa):not(.cellReadOnly):hover,
 .cell:not(.stickyLeft):focus-within {
   outline: toRem(2) solid var(--g-colorBodyContent);
   outline-offset: toRem(-2);
+}
+
+.cellReadOnly {
+  cursor: not-allowed;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellReadOnlyContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.lockIcon {
+  flex: 0 0 auto;
+  width: toRem(14);
+  height: toRem(14);
+  color: var(--g-colorBodySubContent);
+  visibility: hidden;
+}
+
+.cellReadOnly:hover .lockIcon {
+  visibility: visible;
 }
 
 .stickyLeft {
@@ -147,7 +176,9 @@
 }
 
 .cell:focus-within .affix,
-.cell.currencyHasValue .affix {
+.cell.currencyHasValue .affix,
+.breakdownCell:focus-within .affix,
+.breakdownCell.currencyHasValue .affix {
   visibility: visible;
 }
 
@@ -158,6 +189,7 @@
   outline: none;
   display: flex;
   align-items: center;
+  align-self: stretch;
   gap: toRem(6);
   flex: 1;
   margin: toRem(-8) toRem(-12);
@@ -170,6 +202,88 @@
 }
 
 .cellTriggerValue {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Workweek-breakdown spreadsheet, rendered inside the RRoP modal. Mirrors the main
+ * .grid aesthetic (cell borders, hover/focus outline, affix visibility) so the modal
+ * reads as a continuation of the parent spreadsheet. */
+.breakdownGrid {
+  display: grid;
+  width: 100%;
+  border: toRem(1) solid var(--g-colorBorderSecondary);
+  border-radius: toRem(6);
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdownHeaderRow,
+.breakdownRow {
+  display: contents;
+}
+
+.breakdownHeaderCell,
+.breakdownCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: toRem(6);
+  padding: toRem(8) toRem(12);
+  border-bottom: toRem(1) solid var(--g-colorBorderSecondary);
+  border-right: toRem(1) solid var(--g-colorBorderSecondary);
+  min-height: toRem(44);
+  color: var(--g-colorBodyContent);
+  font-size: var(--g-fontSizeSmall);
+  background: var(--g-colorBody);
+}
+
+.breakdownHeaderCell {
+  font-weight: 600;
+  background: var(--g-colorBodyAccent);
+}
+
+.breakdownGrid > [role='row']:last-child > .breakdownCell,
+.breakdownGrid > [role='row']:last-child > .breakdownHeaderCell {
+  border-bottom: none;
+}
+
+.breakdownGrid [role='row'] > :last-child {
+  border-right: none;
+}
+
+.breakdownCell:not(.breakdownTypeCell):not(.breakdownTotalCell) {
+  cursor: text;
+}
+
+.breakdownRow:hover .breakdownCell,
+.breakdownRow:has(.breakdownCell:focus-within) .breakdownCell {
+  background: var(--g-colorBodyAccent);
+}
+
+.breakdownRow .breakdownCell:not(.breakdownTypeCell):not(.breakdownTotalCell):hover,
+.breakdownRow .breakdownCell:focus-within {
+  background: var(--g-colorBody);
+}
+
+.breakdownCell:not(.breakdownTypeCell):not(.breakdownTotalCell):hover,
+.breakdownCell:focus-within {
+  outline: toRem(2) solid var(--g-colorBodyContent);
+  outline-offset: toRem(-2);
+}
+
+.breakdownTypeCell {
+  font-weight: 600;
+  background: var(--g-colorBodyAccent);
+}
+
+.breakdownTotalCell {
+  cursor: default;
+  background: var(--g-colorBodyAccent);
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdownTotalValue {
   flex: 1;
   min-width: 0;
 }

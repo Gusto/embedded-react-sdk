@@ -79,6 +79,34 @@ function MyComponentRoot({ onEvent, ...hookProps }: MyComponentProps) {
 }
 ```
 
+#### Props: extend `BaseComponentInterface`, never intersect with `&`
+
+A public component's props **interface** carries the base surface by extending `BaseComponentInterface<'Domain.MyComponent'>` (which itself extends `CommonComponentInterface`, providing `onEvent`, `children`, `className`, `dictionary`, `FallbackComponent`, and `LoaderComponent`). The exported function is typed with that single interface:
+
+```tsx
+export interface MyComponentProps extends BaseComponentInterface<'Domain.MyComponent'> {
+  employeeId?: string
+  // ...other inputs this component accepts
+}
+
+export function MyComponent(props: MyComponentProps) {
+  /* ... */
+}
+```
+
+Do **not** intersect the base into the function signature:
+
+```tsx
+// ❌ flagged in PR #2276 — breaks the generated docs
+export function MyComponent(props: MyComponentProps & BaseComponentInterface) {
+  /* ... */
+}
+```
+
+`&` at the signature makes the docs generator inline the entire `BaseComponentInterface<…full resource-key union…>` into the `props` row, blowing up the generated reference table. `extends` instead renders the base props as the clean _"Inherits … from BaseComponentInterface"_ line.
+
+If an internal/presentational child needs the props **without** the base-only fields, derive them with `Omit<MyComponentProps, BaseComponentKeys>` — don't strip the base off the public interface to build the child's type. (When the entry-point example above extends `UseMyFormProps`, extend `BaseComponentInterface<'Domain.MyComponent'>` alongside it to pick up `onEvent` and friends, rather than re-declaring them by hand.)
+
 `BaseBoundaries` provides:
 
 - `QueryErrorResetBoundary` — resets React Query errors on retry
@@ -406,6 +434,8 @@ const HomeAddressFields = homeAddress.form.Fields
 
 If you find yourself manually gating visibility based on another field's value, that logic almost certainly belongs inside the hook's schema or `Fields` selection. Move it there instead of reproducing it per-component.
 
+For fields whose applicability depends on another field's value (individual vs. business contractor, hourly vs. fixed wage, a self-onboarding toggle), the hook's schema gates them with a **value-aware `excludeFields` function** — `excludeFields: (data, mode) => string[]` — so requiredness checks are skipped while a field is inapplicable, and the hook returns that field as `undefined` on `form.Fields`. The component just renders whatever `Fields` exposes; it never re-derives the condition. See `.claude/hooks-implementation.md → Value-aware excludeFields` and `useContractorDetailsForm` for the canonical example.
+
 ### Validation Messages
 
 Every field has typed error codes defined in its `fields.tsx`. Without `validationMessages`, the raw error code string (e.g. "REQUIRED") is displayed to the user.
@@ -595,14 +625,9 @@ Reference examples (read the closest match before scaffolding):
 
 ## 11. Documentation
 
-Once the migration is complete and tests are passing, spawn the **`sdk-hook-documenter`** agent in the background to write the partner-facing docs. You do not need to wait for it — it runs while you move on to cleanup or open the PR.
+Once the migration is complete and tests are passing, run `/tsdoc` to document the new hook before opening the PR. The skill writes TSDoc inline in the source — no separate doc files needed.
 
-Spawn the agent (background):
-
-- **description**: `"Document $HOOK_NAME hook"`
-- **prompt**: `"Write partner-facing documentation for the new $HOOK_NAME hook at $HOOK_PATH. Add it to the docs/hooks/ inventory and create docs/hooks/$HOOK_NAME.md."`
-
-The agent will produce `docs/hooks/use<Name>Form.md` and update the inventory row in `docs/hooks/hooks.md`. You will be notified when it finishes — review the output and commit it alongside the migration or as a fast-follow.
+Key symbols to document: `useXxxForm`, `UseXxxProps`, `UseXxxFormOutputs` (or equivalent return type alias), and any other exports from the hook's `index.ts`. The `/tsdoc` session will load `.claude/tsdoc-guides/hooks.md` for hook-specific guidance.
 
 ## 12. Migration Checklist
 
@@ -622,5 +647,4 @@ The agent will produce `docs/hooks/use<Name>Form.md` and update the inventory ro
 - [ ] Dead code from old implementation removed
 - [ ] Hook placed in `src/components/<Domain>/<Feature>/shared/use<Name>Form/` and exported from barrels
 - [ ] All tests pass after migration (`npm run test -- --run`)
-- [ ] Hook row added to `docs/hooks/hooks.md` inventory table
-- [ ] `docs/hooks/use<Name>Form.md` created following existing doc structure
+- [ ] TSDoc added to all exported hook symbols — `useXxxForm`, `UseXxxProps`, `UseXxxFormOutputs`

@@ -18,13 +18,11 @@ export interface ConfirmationAlert {
  *
  * @public
  */
-export interface ConfirmWireDetailsProps {
+export interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
   /** The associated company identifier. */
   companyId: string
   /** Optional wire-in request identifier. If not provided, the first active wire-in request is used. */
   wireInId?: string
-  /** Callback invoked with wire-confirmation lifecycle events. See the events table on {@link ConfirmWireDetails}. */
-  onEvent?: BaseComponentInterface['onEvent']
 }
 
 /**

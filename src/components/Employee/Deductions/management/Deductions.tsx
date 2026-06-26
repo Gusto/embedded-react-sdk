@@ -3,26 +3,18 @@ import { useMemo } from 'react'
 import { DeductionsCardContextual, type DeductionsContextInterface } from './DeductionsComponents'
 import { deductionsStateMachine } from './deductionsStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import {
-  BaseBoundaries,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { type EventType } from '@/shared/constants'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import type { OnEventType } from '@/components/Base/useBase'
 
 /**
  * Props for {@link Deductions}.
  *
  * @public
  */
-export interface DeductionsProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
+export interface DeductionsProps extends BaseComponentInterface<'Employee.Management.Deductions'> {
   /** The associated employee identifier. */
   employeeId: string
-  /** Callback invoked when the block emits an event. See the events table on {@link Deductions} for the available event types and payloads. */
-  onEvent: OnEventType<EventType, unknown>
 }
 
 function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
@@ -65,11 +57,7 @@ function DeductionsFlow({ employeeId, onEvent }: DeductionsProps) {
  * @public
  * @group Block Components
  */
-export function Deductions({
-  dictionary,
-  FallbackComponent,
-  ...props
-}: DeductionsProps & BaseComponentInterface<'Employee.Management.Deductions'>) {
+export function Deductions({ dictionary, FallbackComponent, ...props }: DeductionsProps) {
   useComponentDictionary('Employee.Management.Deductions', dictionary)
   return (
     <BaseBoundaries

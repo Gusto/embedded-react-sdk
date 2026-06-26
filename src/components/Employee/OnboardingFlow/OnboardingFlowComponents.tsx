@@ -11,8 +11,14 @@ export type {
 
 /** @internal */
 export const EmployeeListContextual = () => {
-  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <EmployeeList companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, showContinueButton } = useFlow<OnboardingContextInterface>()
+  return (
+    <EmployeeList
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      showContinueButton={showContinueButton}
+    />
+  )
 }
 
 /** @internal */

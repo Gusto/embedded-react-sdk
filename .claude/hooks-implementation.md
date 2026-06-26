@@ -146,14 +146,24 @@ useCompensationForm({
 
 ### When to Use `superRefine` vs. `requiredFieldsConfig` vs. `optionalFieldsToRequire`
 
-| Technique                           | When to use                                                           | Example                             | Metadata-aware?                                    |
-| ----------------------------------- | --------------------------------------------------------------------- | ----------------------------------- | -------------------------------------------------- |
-| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                | Yes                                                |
-| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`          | Yes                                                |
-| `excludeFields`                     | Field conditionally absent from schema                                | `excludeFields: ['startDate']`      | Yes (field absent)                                 |
-| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']` | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
-| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage` | Yes (via Proxy auto-detection)                     |
-| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules     | No — validation only                               |
+| Technique                           | When to use                                                           | Example                                                                         | Metadata-aware?                                    |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                                                            | Yes                                                |
+| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`                                                      | Yes                                                |
+| `excludeFields` (array)             | Field statically absent from schema for a hook configuration          | `excludeFields: ['startDate']`                                                  | Yes (field absent)                                 |
+| `excludeFields` (function)          | Field applicability depends on runtime form values (conditional UI)   | `excludeFields: (data, mode) => (data.type === 'Business' ? ['ssn'] : ['ein'])` | Yes (skipped while excluded)                       |
+| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']`                                             | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
+| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage`                                             | Yes (via Proxy auto-detection)                     |
+| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules                                                 | No — validation only                               |
+
+### Value-aware `excludeFields`
+
+`excludeFields` accepts either form:
+
+- **Array** — `excludeFields: ['startDate']` removes the field from the schema shape at build time. Use it when a field is statically absent for a given hook configuration (e.g. a `withStartDateField` flag).
+- **Function** — `excludeFields: (data, mode) => string[]` is evaluated during the required-check pass with the current form values. The named fields stay in the schema shape, but their requiredness checks are skipped whenever the function excludes them. Use it for fields rendered conditionally on a discriminator (individual vs. business contractor, hourly vs. fixed wage, a self-onboarding toggle) so a hidden field never raises a phantom "required" error.
+
+The function form keeps requiredness **static and promotable**: `requiredFieldsConfig` and the partner's `optionalFieldsToRequire` still decide whether an _applicable_ field is required, while `excludeFields` only gates _applicability_. Build the schema once (no need to rebuild it per keystroke), and drive the component's render-gating from the same discriminators the function reads — the hook watches them with `useWatch` — so the UI and validation always agree on which fields are live. See `createContractorDetailsSchema` / `useContractorDetailsForm` for the canonical example.
 
 ### `z.preprocess` and Type Inference
 
@@ -418,6 +428,8 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 ### What stays internal (export from inner barrels but NOT from `src/index.ts` unless needed)
 
 Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+
+The schema factory `create{Domain}Schema` and its `{Domain}SchemaOptions` are also `@internal`. The inner hook barrel may re-export them for SDK use, but **do not** add them to `src/index.ts`: they are tagged `@internal`, so api-extractor emits an `ae-internal-missing-underscore` warning when they appear on the public entry point. Partners build forms through the hook, not the raw factory — `{Domain}FormData` / `{Domain}FormOutputs` cover the types they actually need.
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 

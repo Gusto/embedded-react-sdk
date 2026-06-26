@@ -6,13 +6,15 @@
   "files": ["docs/**/*.md", "docs-site/**/*.{md,mdx,ts,tsx}"],
   "ignorePaths": [
     "**/node_modules/**",
-    "docs/api/**",
-    "docs/reference/endpoint-reference.md",
-    "docs/reference/endpoint-inventory.json",
+    "docs/reference/**",
+    "docs/appendix/endpoint-reference.md",
+    "docs/appendix/endpoint-inventory.json",
     "docs/test-fests/**",
+    "docs-site/docusaurus.config.ts",
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
     "docs-site/versioned_docs/**",
+    "docs-site/plugins/typedoc-custom/**",
     "CHANGELOG.md"
   ],
   "ignoreRegExpList": [
@@ -23,9 +25,17 @@
   ],
   "words": [
     "affordances",
+    "frontmatter",
     "Annualization",
     "autogeneration",
     "Chakra",
+    "codemod",
+    "networkidle",
+    "putv",
+    "getv",
+    "postv",
+    "deletev",
+    "patchv",
     "easyops",
     "FLSA",
     "frontmatter",
@@ -48,6 +58,7 @@
     "summarising",
     "themable",
     "themself",
+    "worktrees",
     "zenpayroll"
   ]
 }

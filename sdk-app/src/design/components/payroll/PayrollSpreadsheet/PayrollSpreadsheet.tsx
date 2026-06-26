@@ -1,22 +1,47 @@
-import { useEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FocusEvent } from 'react'
 import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type {
+  EmployeeCompensations,
+  PayrollShowReimbursements,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
 import { Skeleton } from '../../common/Skeleton'
+import { BreakdownModal } from './BreakdownModal'
 import styles from './PayrollSpreadsheet.module.scss'
-import { firstLastName } from '@/helpers/formattedStrings'
-import { formatHoursDisplay } from '@/components/Payroll/helpers'
+import {
+  type ColumnDef,
+  type ColumnKind,
+  type Workweek,
+  formatCellValue,
+  sumBreakdown,
+} from './shared'
+import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { calculateGrossPay } from '@/components/Payroll/helpers'
+import type { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
-import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { DataView, EmptyData, Flex, Grid, useDataView } from '@/components/Common'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-type ColumnKind = 'hours' | 'currency'
-
-interface ColumnDef {
-  id: string
-  label: string
-  kind: ColumnKind
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <path d="M7 11 V7 a5 5 0 0 1 10 0 V11" />
+    </svg>
+  )
 }
 
 const COLUMNS: ColumnDef[] = [
@@ -28,6 +53,7 @@ const COLUMNS: ColumnDef[] = [
   { id: 'paycheckTips', label: 'Paycheck tips', kind: 'currency' },
   { id: 'commission', label: 'Commission', kind: 'currency' },
   { id: 'correctionPayment', label: 'Correction payment', kind: 'currency' },
+  { id: 'reimbursements', label: 'Reimbursements', kind: 'reimbursements' },
   { id: 'sickHours', label: 'Sick hrs', kind: 'hours' },
   { id: 'vacationHours', label: 'Vacation hrs', kind: 'hours' },
 ]
@@ -50,17 +76,6 @@ type CellKey = `${string}|${string}`
 
 function cellKey(employeeUuid: string, columnId: string): CellKey {
   return `${employeeUuid}|${columnId}`
-}
-
-/** Formats a stored cell value for the given column kind. Two decimals max, empty if zero/blank.
- *  Mirrors `formatHoursDisplay` (hours: integer → `40.0`, decimal → `40.25`) and
- *  `toFixed(2)` for currency (matches PayrollEditEmployee's amount submission). */
-function formatCellValue(raw: string, kind: ColumnKind): string {
-  if (raw === '') return ''
-  const num = Number(raw)
-  if (!Number.isFinite(num) || num === 0) return ''
-  if (kind === 'hours') return formatHoursDisplay(num)
-  return num.toFixed(2)
 }
 
 function getPrimaryJobFlsa(employee: Employee): string | undefined {
@@ -136,6 +151,8 @@ function isColumnApplicable(
       return isPtoApplicable(compensation, 'sick')
     case 'vacationHours':
       return isPtoApplicable(compensation, 'vacation')
+    case 'reimbursements':
+      return true
     default:
       return isFixedCompApplicable(employee, column.id, fixedCompensationTypes)
   }
@@ -151,6 +168,7 @@ function seedValues(
     const uuid = employee.uuid
     const comp = compByEmployee.get(uuid)
     for (const column of COLUMNS) {
+      if (column.kind === 'reimbursements') continue
       let value = ''
       if (column.id === 'sickHours') {
         value = findPto(comp, 'sick')
@@ -165,6 +183,39 @@ function seedValues(
     }
   }
   return seed
+}
+
+interface ReimbursementRow {
+  uuid: string | null
+  description: string
+  amount: string
+  recurring: boolean
+}
+
+function seedReimbursements(
+  employees: Employee[],
+  employeeCompensations: EmployeeCompensations[],
+): Record<string, ReimbursementRow[]> {
+  const compByEmployee = new Map(employeeCompensations.map(comp => [comp.employeeUuid ?? '', comp]))
+  const seed: Record<string, ReimbursementRow[]> = {}
+  for (const employee of employees) {
+    const comp = compByEmployee.get(employee.uuid)
+    seed[employee.uuid] = (comp?.reimbursements ?? []).map(r => ({
+      uuid: r.uuid ?? null,
+      description: r.description ?? '',
+      amount: r.amount,
+      recurring: r.recurring ?? false,
+    }))
+  }
+  return seed
+}
+
+function reimbursementTotal(rows: ReimbursementRow[] | undefined): number {
+  if (!rows) return 0
+  return rows.reduce((acc, row) => {
+    const n = parseFloat(row.amount || '0')
+    return acc + (Number.isFinite(n) ? n : 0)
+  }, 0)
 }
 
 interface PayrollSpreadsheetProps {
@@ -183,6 +234,10 @@ interface PayrollSpreadsheetProps {
   rrop?: boolean
   /** Used in RRoP mode to derive workweek date ranges shown in the breakdown modal. */
   payPeriod?: PayrollPayPeriodType
+  /** Required to compute Total pay for salaried employees (hours-in-pay-period derivation). */
+  paySchedule?: PayScheduleObject
+  /** Payroll category — switches PTO handling for off-cycle in the Total pay calculation. */
+  payrollCategory?: PayrollCategory
 }
 
 /** Columns that participate in the Regular Rate of Pay workweek breakdown.
@@ -202,11 +257,6 @@ const RROP_BREAKDOWN_COLUMNS = new Set<string>([
  *  Entering OT or 2×OT forces the other RRoP-included columns into breakdown mode for
  *  that employee. */
 const RROP_TRIGGER_COLUMNS = new Set<string>(['overtime', 'doubleOvertime'])
-
-interface Workweek {
-  startDate: string
-  endDate: string
-}
 
 /** Splits the pay period into consecutive 7-day workweeks anchored at startDate.
  *  Last week clamps to endDate. Returns [] if the pay period is missing or invalid. */
@@ -234,18 +284,12 @@ function toIsoDate(d: Date): string {
   return `${yyyy}-${mm}-${dd}`
 }
 
-function sumBreakdown(breakdown: string[]): number {
-  return breakdown.reduce((acc, v) => {
-    const n = Number(v)
-    return acc + (Number.isFinite(n) ? n : 0)
-  }, 0)
-}
-
 const SAVE_DEBOUNCE_MS = 600
 
 function buildUpdatedCompensation(
   original: EmployeeCompensations,
   values: Record<CellKey, string>,
+  reimbursements: ReimbursementRow[],
   employee: Employee,
 ): EmployeeCompensations {
   const employeeUuid = employee.uuid
@@ -302,11 +346,19 @@ function buildUpdatedCompensation(
     return { ...pto, hours: v === '' ? '0.0' : v }
   })
 
+  const nextReimbursements: PayrollShowReimbursements[] = reimbursements.map(r => ({
+    amount: r.amount,
+    description: r.description.trim() === '' ? null : r.description.trim(),
+    uuid: r.uuid ?? null,
+    recurring: r.recurring,
+  }))
+
   return {
     ...original,
     hourlyCompensations: nextHourly,
     fixedCompensations: nextFixed,
     paidTimeOff: nextPto,
+    reimbursements: nextReimbursements,
   }
 }
 
@@ -318,15 +370,19 @@ export function PayrollSpreadsheet({
   isLoading = false,
   rrop = false,
   payPeriod,
+  paySchedule,
+  payrollCategory,
 }: PayrollSpreadsheetProps) {
   const Components = useComponentContext()
-  const dateFormatter = useDateFormatter()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const stickyHeaderRef = useRef<HTMLDivElement>(null)
   const [isHorizontallyScrolled, setIsHorizontallyScrolled] = useState(false)
   const [values, setValues] = useState<Record<CellKey, string>>(() =>
     seedValues(employees, employeeCompensations),
   )
+  const [reimbursementsByEmployee, setReimbursementsByEmployee] = useState<
+    Record<string, ReimbursementRow[]>
+  >(() => seedReimbursements(employees, employeeCompensations))
 
   const workweeks = useMemo(() => deriveWorkweeks(payPeriod), [payPeriod])
 
@@ -337,11 +393,27 @@ export function PayrollSpreadsheet({
 
   const [openModal, setOpenModal] = useState<{
     employeeUuid: string
-    columnId: string
-    kind: ColumnKind
-    columnLabel: string
+    focusColumnId?: string
+    columns: ColumnDef[]
+    initialBreakdowns: Record<string, string[]>
   } | null>(null)
-  const [draftBreakdown, setDraftBreakdown] = useState<string[]>([])
+
+  const [openReimbursementsModal, setOpenReimbursementsModal] = useState<{
+    employeeUuid: string
+  } | null>(null)
+  const reimbursementsModalBackdropRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    if (!openReimbursementsModal) return
+    const backdrop = reimbursementsModalBackdropRef.current
+    if (!backdrop) return
+    // The Modal primitive caps inner .modal at 544rem; widen it for this surface so the
+    // reimbursements DataView + add form (two 320px columns) don't horizontally overflow.
+    const modalEl = backdrop.querySelector<HTMLElement>(':scope > div')
+    if (modalEl) modalEl.style.maxWidth = 'min(720px, 90vw)'
+  }, [openReimbursementsModal])
+  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
+  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+  const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     setIsHorizontallyScrolled(event.currentTarget.scrollLeft > 0)
@@ -349,6 +421,8 @@ export function PayrollSpreadsheet({
 
   const valuesRef = useRef(values)
   valuesRef.current = values
+  const reimbursementsRef = useRef(reimbursementsByEmployee)
+  reimbursementsRef.current = reimbursementsByEmployee
 
   const compensationByEmployee = useMemo(() => {
     const map = new Map<string, EmployeeCompensations>()
@@ -379,7 +453,12 @@ export function PayrollSpreadsheet({
     const original = compensationByEmployee.get(employeeUuid)
     const employee = employeeByUuid.get(employeeUuid)
     if (!original || !employee) return
-    const next = buildUpdatedCompensation(original, valuesRef.current, employee)
+    const next = buildUpdatedCompensation(
+      original,
+      valuesRef.current,
+      reimbursementsRef.current[employeeUuid] ?? [],
+      employee,
+    )
     void onSave(next)
   }
 
@@ -418,6 +497,45 @@ export function PayrollSpreadsheet({
     }
   }
 
+  // Total pay derives from the live-edited compensation so the cell updates as the user types.
+  // Uses the main SDK's calculateGrossPay so the prototype matches PayrollConfiguration's column
+  // exactly (regular + overtime + fixed earnings + PTO + minimum-wage adjustment).
+  const totalPayByEmployee = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const employee of employees) {
+      const original = compensationByEmployee.get(employee.uuid)
+      if (!original) {
+        map.set(employee.uuid, 0)
+        continue
+      }
+      const updated = buildUpdatedCompensation(
+        original,
+        values,
+        reimbursementsByEmployee[employee.uuid] ?? [],
+        employee,
+      )
+      map.set(
+        employee.uuid,
+        calculateGrossPay(
+          updated as PayrollEmployeeCompensationsType,
+          employee,
+          payPeriod?.startDate,
+          paySchedule,
+          payrollCategory,
+        ),
+      )
+    }
+    return map
+  }, [
+    employees,
+    compensationByEmployee,
+    values,
+    reimbursementsByEmployee,
+    payPeriod?.startDate,
+    paySchedule,
+    payrollCategory,
+  ])
+
   const applicabilityByEmployee = useMemo(() => {
     const compByEmployee = new Map(
       employeeCompensations.map(comp => [comp.employeeUuid ?? '', comp]),
@@ -449,41 +567,113 @@ export function PayrollSpreadsheet({
     flushSave(employeeUuid)
   }
 
-  const openBreakdownModal = (employeeUuid: string, column: ColumnDef) => {
+  // RRoP-included columns that apply to a given employee, in COLUMNS order.
+  const getModalColumns = (employeeUuid: string): ColumnDef[] => {
+    const applicability = applicabilityByEmployee.get(employeeUuid) ?? {}
+    return COLUMNS.filter(c => RROP_BREAKDOWN_COLUMNS.has(c.id) && applicability[c.id])
+  }
+
+  const seedDraftForColumn = (employeeUuid: string, column: ColumnDef): string[] => {
     const key = cellKey(employeeUuid, column.id)
     const existing = breakdowns[key]
-    const zero = column.kind === 'hours' ? '0.0' : '0.00'
     if (existing && existing.length === workweeks.length) {
-      setDraftBreakdown(existing)
-    } else {
-      // First open: seed Week 1 with the current total so the existing value isn't lost,
-      // and zero out the rest. Real API will eventually supply the per-workweek split.
-      const total = values[key] ?? ''
-      const seed = workweeks.map((_, idx) => (idx === 0 ? total || zero : zero))
-      setDraftBreakdown(seed)
+      // Existing entries may have been normalized to '0' on save; blank those so the
+      // modal matches the parent grid's "empty when zero" rule.
+      return existing.map(v => formatCellValue(v, column.kind))
+    }
+    // First open: seed Week 1 with the current total so the existing value isn't lost.
+    // Remaining weeks stay blank. Real API will eventually supply the per-workweek split.
+    const total = values[key] ?? ''
+    return workweeks.map((_, idx) => (idx === 0 ? total : ''))
+  }
+
+  const openBreakdownModal = (employeeUuid: string, focusColumn?: ColumnDef) => {
+    const modalColumns = getModalColumns(employeeUuid)
+    const initialBreakdowns: Record<string, string[]> = {}
+    for (const column of modalColumns) {
+      initialBreakdowns[column.id] = seedDraftForColumn(employeeUuid, column)
     }
     setOpenModal({
       employeeUuid,
-      columnId: column.id,
-      kind: column.kind,
-      columnLabel: column.label,
+      focusColumnId: focusColumn?.id,
+      columns: modalColumns,
+      initialBreakdowns,
     })
   }
 
   const closeBreakdownModal = () => {
     setOpenModal(null)
-    setDraftBreakdown([])
   }
 
-  const saveBreakdownModal = () => {
-    if (!openModal) return
-    const { employeeUuid, columnId, kind } = openModal
-    const key = cellKey(employeeUuid, columnId)
-    const normalized = draftBreakdown.map(v => (v === '' ? '0' : v))
-    const total = sumBreakdown(normalized)
-    setBreakdowns(prev => ({ ...prev, [key]: normalized }))
-    setValues(prev => ({ ...prev, [key]: formatCellValue(String(total), kind) }))
+  const commitBreakdowns = (
+    employeeUuid: string,
+    modalColumns: ColumnDef[],
+    drafts: Record<string, string[]>,
+  ) => {
+    const nextBreakdowns: Record<CellKey, string[]> = {}
+    const nextValues: Record<CellKey, string> = {}
+    for (const column of modalColumns) {
+      const draft = drafts[column.id] ?? []
+      const normalized = draft.map(v => (v === '' ? '0' : v))
+      const key = cellKey(employeeUuid, column.id)
+      nextBreakdowns[key] = normalized
+      nextValues[key] = formatCellValue(String(sumBreakdown(normalized)), column.kind)
+    }
+    setBreakdowns(prev => ({ ...prev, ...nextBreakdowns }))
+    setValues(prev => ({ ...prev, ...nextValues }))
     closeBreakdownModal()
+    flushSave(employeeUuid)
+  }
+
+  const resetReimbursementDraft = () => {
+    setIsAddingReimbursement(false)
+    setDraftReimbursementDescription('')
+    setDraftReimbursementAmount('')
+  }
+
+  const openReimbursementsModalFor = (employeeUuid: string) => {
+    resetReimbursementDraft()
+    setOpenReimbursementsModal({ employeeUuid })
+  }
+
+  const closeReimbursementsModal = () => {
+    setOpenReimbursementsModal(null)
+    resetReimbursementDraft()
+  }
+
+  const handleSaveReimbursementDraft = () => {
+    if (!openReimbursementsModal) return
+    const { employeeUuid } = openReimbursementsModal
+    const trimmedAmount = draftReimbursementAmount.trim()
+    const parsedAmount = parseFloat(trimmedAmount || '0')
+    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) return
+
+    setReimbursementsByEmployee(prev => ({
+      ...prev,
+      [employeeUuid]: [
+        ...(prev[employeeUuid] ?? []),
+        {
+          uuid: null,
+          description: draftReimbursementDescription.trim(),
+          amount: parsedAmount.toFixed(2),
+          recurring: false,
+        },
+      ],
+    }))
+    resetReimbursementDraft()
+    flushSave(employeeUuid)
+  }
+
+  const handleRemoveReimbursement = (employeeUuid: string, originalIndex: number) => {
+    setReimbursementsByEmployee(prev => {
+      const rows = prev[employeeUuid] ?? []
+      const target = rows[originalIndex]
+      if (!target) return prev
+      const next = target.uuid
+        ? rows.map((row, i) => (i === originalIndex ? { ...row, amount: '0' } : row))
+        : rows.filter((_, i) => i !== originalIndex)
+      return { ...prev, [employeeUuid]: next }
+    })
     flushSave(employeeUuid)
   }
 
@@ -495,7 +685,6 @@ export function PayrollSpreadsheet({
           : ''
       })()
     : ''
-  const modalColumnLabel = openModal?.columnLabel ?? ''
 
   // Per-employee: does this row have a non-empty Overtime or Double overtime value?
   // When true, the other RRoP-included columns (regular hours, bonus, commission,
@@ -528,6 +717,9 @@ export function PayrollSpreadsheet({
           >
             Employee
           </div>
+          <div role="columnheader" className={styles.headerCell}>
+            Total pay
+          </div>
           {COLUMNS.map(column => (
             <div role="columnheader" key={column.id} className={styles.headerCell}>
               {column.label}
@@ -553,6 +745,19 @@ export function PayrollSpreadsheet({
                 )}
               </div>
 
+              <div role="gridcell" className={`${styles.cell} ${styles.cellReadOnly}`}>
+                {isLoading ? (
+                  <Skeleton width="4rem" height="0.875rem" />
+                ) : (
+                  <>
+                    <span className={styles.cellReadOnlyContent}>
+                      {formatNumberAsCurrency(totalPayByEmployee.get(uuid) ?? 0)}
+                    </span>
+                    <LockIcon className={styles.lockIcon} />
+                  </>
+                )}
+              </div>
+
               {COLUMNS.map(column => {
                 if (isLoading) {
                   return (
@@ -569,6 +774,32 @@ export function PayrollSpreadsheet({
                       className={`${styles.cell} ${styles.cellNa}`}
                     >
                       <span className={styles.notApplicable}>N/A</span>
+                    </div>
+                  )
+                }
+                if (column.kind === 'reimbursements') {
+                  const rows = reimbursementsByEmployee[uuid] ?? []
+                  const total = reimbursementTotal(rows)
+                  const reimbursementCellClass = [
+                    styles.cell,
+                    total > 0 ? styles.currencyHasValue : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')
+                  return (
+                    <div role="gridcell" key={column.id} className={reimbursementCellClass}>
+                      <button
+                        type="button"
+                        className={styles.cellTrigger}
+                        aria-label={`${name} — ${column.label}`}
+                        onClick={() => {
+                          openReimbursementsModalFor(uuid)
+                        }}
+                      >
+                        <span className={styles.cellTriggerValue}>
+                          {total > 0 ? formatNumberAsCurrency(total) : ''}
+                        </span>
+                      </button>
                     </div>
                   )
                 }
@@ -640,67 +871,192 @@ export function PayrollSpreadsheet({
       </div>
 
       {openModal && (
+        <BreakdownModal
+          employeeName={modalEmployeeName}
+          payPeriod={payPeriod}
+          workweeks={workweeks}
+          columns={openModal.columns}
+          focusColumnId={openModal.focusColumnId}
+          initialBreakdowns={openModal.initialBreakdowns}
+          onClose={closeBreakdownModal}
+          onSave={drafts => {
+            commitBreakdowns(openModal.employeeUuid, openModal.columns, drafts)
+          }}
+        />
+      )}
+
+      {openReimbursementsModal && (
         <Components.Modal
           isOpen
-          onClose={closeBreakdownModal}
+          onClose={closeReimbursementsModal}
           shouldCloseOnBackdropClick
+          containerRef={reimbursementsModalBackdropRef}
           footer={
             <Flex justifyContent="flex-end" gap={8}>
-              <Components.Button variant="secondary" onClick={closeBreakdownModal}>
-                Cancel
+              <Components.Button variant="secondary" onClick={closeReimbursementsModal}>
+                Done
               </Components.Button>
-              <Components.Button onClick={saveBreakdownModal}>Save</Components.Button>
             </Flex>
           }
         >
-          <Flex flexDirection="column" gap={24}>
-            <Flex flexDirection="column" gap={4}>
-              <Components.Heading as="h3" styledAs="h4">
-                {modalColumnLabel} breakdown for {modalEmployeeName}
-              </Components.Heading>
-              {payPeriod?.startDate && payPeriod.endDate && (
-                <Components.Text variant="supporting">
-                  Pay period:{' '}
-                  {(() => {
-                    const { startDate, endDate } = dateFormatter.formatPayPeriod(
-                      payPeriod.startDate,
-                      payPeriod.endDate,
-                    )
-                    return `${startDate} – ${endDate}`
-                  })()}
-                </Components.Text>
-              )}
-            </Flex>
-            <Flex flexDirection="column" gap={16}>
-              {workweeks.map((week, idx) => {
-                const { startDate, endDate } = dateFormatter.formatPayPeriod(
-                  week.startDate,
-                  week.endDate,
-                )
-                const isHours = openModal.kind === 'hours'
-                return (
-                  <Components.NumberInput
-                    key={`${week.startDate}-${week.endDate}`}
-                    label={`Week ${idx + 1}: ${startDate} – ${endDate}`}
-                    format={isHours ? 'decimal' : 'currency'}
-                    min={0}
-                    isRequired
-                    value={Number(draftBreakdown[idx] ?? '0') || 0}
-                    onChange={value => {
-                      setDraftBreakdown(prev => {
-                        const next = [...prev]
-                        next[idx] = Number.isFinite(value) ? String(value) : '0'
-                        return next
-                      })
-                    }}
-                    adornmentEnd={isHours ? <span>hrs</span> : undefined}
-                  />
-                )
-              })}
-            </Flex>
-          </Flex>
+          <ReimbursementsModalBody
+            employeeUuid={openReimbursementsModal.employeeUuid}
+            employeeName={(() => {
+              const employee = employeeByUuid.get(openReimbursementsModal.employeeUuid)
+              return employee
+                ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
+                : ''
+            })()}
+            rows={reimbursementsByEmployee[openReimbursementsModal.employeeUuid] ?? []}
+            isAdding={isAddingReimbursement}
+            draftDescription={draftReimbursementDescription}
+            draftAmount={draftReimbursementAmount}
+            onStartAdding={() => {
+              setIsAddingReimbursement(true)
+            }}
+            onChangeDescription={setDraftReimbursementDescription}
+            onChangeAmount={setDraftReimbursementAmount}
+            onSaveDraft={handleSaveReimbursementDraft}
+            onCancelDraft={resetReimbursementDraft}
+            onRemove={originalIndex => {
+              handleRemoveReimbursement(openReimbursementsModal.employeeUuid, originalIndex)
+            }}
+          />
         </Components.Modal>
       )}
     </div>
+  )
+}
+
+interface ReimbursementsModalBodyProps {
+  employeeUuid: string
+  employeeName: string
+  rows: ReimbursementRow[]
+  isAdding: boolean
+  draftDescription: string
+  draftAmount: string
+  onStartAdding: () => void
+  onChangeDescription: (value: string) => void
+  onChangeAmount: (value: string) => void
+  onSaveDraft: () => void
+  onCancelDraft: () => void
+  onRemove: (originalIndex: number) => void
+}
+
+function ReimbursementsModalBody({
+  employeeUuid: _employeeUuid,
+  employeeName,
+  rows,
+  isAdding,
+  draftDescription,
+  draftAmount,
+  onStartAdding,
+  onChangeDescription,
+  onChangeAmount,
+  onSaveDraft,
+  onCancelDraft,
+  onRemove,
+}: ReimbursementsModalBodyProps) {
+  const { Button, ButtonIcon, Heading, TextInput } = useComponentContext()
+
+  type VisibleRow = ReimbursementRow & { originalIndex: number }
+  const visibleRows: VisibleRow[] = rows
+    .map((row, originalIndex) => ({ ...row, originalIndex }))
+    .filter(row => parseFloat(row.amount || '0') !== 0)
+
+  const dataViewProps = useDataView<VisibleRow>({
+    data: visibleRows,
+    columns: [
+      {
+        key: 'description',
+        title: 'Description',
+        render: row => row.description.trim() || 'Unnamed reimbursement',
+      },
+      {
+        key: 'amount',
+        title: 'Amount',
+        render: row => formatNumberAsCurrency(parseFloat(row.amount || '0')),
+      },
+      {
+        key: 'recurring',
+        title: 'Type',
+        render: row => (row.recurring ? 'Recurring' : 'One-time'),
+      },
+    ],
+    itemMenu: row => {
+      if (row.recurring) return null
+      const displayDescription = row.description.trim() || 'Unnamed reimbursement'
+      return (
+        <ButtonIcon
+          variant="tertiary"
+          onClick={() => {
+            onRemove(row.originalIndex)
+          }}
+          aria-label={`Remove ${displayDescription}`}
+        >
+          <TrashCanSvg aria-hidden />
+        </ButtonIcon>
+      )
+    },
+    emptyState: () => (
+      <EmptyData title="No reimbursements added yet">
+        <Button variant="secondary" onClick={onStartAdding} icon={<PlusCircleIcon aria-hidden />}>
+          Add reimbursement
+        </Button>
+      </EmptyData>
+    ),
+  })
+
+  return (
+    <Flex flexDirection="column" gap={24}>
+      <Heading as="h3" styledAs="h4">
+        Reimbursements for {employeeName}
+      </Heading>
+      {!(visibleRows.length === 0 && isAdding) && (
+        <DataView label="Reimbursements" {...dataViewProps} />
+      )}
+      {isAdding ? (
+        <Flex flexDirection="column" gap={12}>
+          <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+            <TextInput
+              name="newReimbursementDescription"
+              label="Description"
+              placeholder="e.g. Mileage"
+              value={draftDescription}
+              onChange={onChangeDescription}
+            />
+            <TextInput
+              name="newReimbursementAmount"
+              type="number"
+              min={0}
+              adornmentStart="$"
+              isRequired
+              label="Amount"
+              value={draftAmount}
+              onChange={onChangeAmount}
+            />
+          </Grid>
+          <Flex gap={12}>
+            <Button onClick={onSaveDraft}>Save reimbursement</Button>
+            <Button variant="secondary" onClick={onCancelDraft}>
+              Cancel
+            </Button>
+          </Flex>
+        </Flex>
+      ) : (
+        visibleRows.length > 0 && (
+          <div>
+            <Button
+              variant="secondary"
+              onClick={onStartAdding}
+              title="Add reimbursement"
+              icon={<PlusCircleIcon aria-hidden />}
+            >
+              Add reimbursement
+            </Button>
+          </div>
+        )
+      )}
+    </Flex>
   )
 }

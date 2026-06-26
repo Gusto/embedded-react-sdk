@@ -21,7 +21,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
  *
  * @public
  */
-export interface TimeOffFlowProps extends BaseComponentInterface {
+export interface TimeOffFlowProps extends BaseComponentInterface<never> {
   /** The associated company identifier. */
   companyId: string
 }
