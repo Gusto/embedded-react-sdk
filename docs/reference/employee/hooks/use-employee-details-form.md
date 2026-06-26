@@ -445,6 +445,18 @@ Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployee
 
 Shape of the values managed by the employee details form.
 
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `dateOfBirth` | `string` |
+| `email` | `string` |
+| `firstName` | `string` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
+
 ***
 
 <a id="employeedetailsformfields"></a>

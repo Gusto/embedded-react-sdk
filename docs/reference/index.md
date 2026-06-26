@@ -242,6 +242,30 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 ## Interfaces
 
+<a id="aftererrorhook"></a>
+
+### AfterErrorHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-aftererrorhookaftererror"></a> `afterError` | (`hookCtx`, `response`, `error`) => `Awaitable`\<\{ `error`: `unknown`; `response`: `Response` \| `null`; \}\> | A hook that is called after the SDK encounters an error, or a non-successful response. The hook can introduce instrumentation code such as logging, tracing and metrics or modify the response or error values. |
+
+***
+
+<a id="aftersuccesshook"></a>
+
+### AfterSuccessHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-aftersuccesshookaftersuccess"></a> `afterSuccess` | (`hookCtx`, `response`) => `Awaitable`\<`Response`\> | A hook that is called after the SDK receives a response. The hook can introduce instrumentation code such as logging, tracing and metrics or modify the response before it is handled or throw an error to stop the response from being handled. |
+
+***
+
 <a id="apiconfig"></a>
 
 ### APIConfig
@@ -394,6 +418,30 @@ shape mixed into every public SDK feature component.
 | <a id="property-basecomponentinterfacedictionary"></a> `dictionary?` | [`ResourceDictionary`](#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | <a id="property-basecomponentinterfacefallbackcomponent"></a> `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
 | <a id="property-basecomponentinterfaceloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+***
+
+<a id="beforecreaterequesthook"></a>
+
+### BeforeCreateRequestHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-beforecreaterequesthookbeforecreaterequest"></a> `beforeCreateRequest` | (`hookCtx`, `input`) => `RequestInput` | A hook that is called before the SDK creates a `Request` object. The hook can modify how a request is constructed since certain modifications, like changing the request URL, cannot be done on a request object directly. |
+
+***
+
+<a id="beforerequesthook"></a>
+
+### BeforeRequestHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-beforerequesthookbeforerequest"></a> `beforeRequest` | (`hookCtx`, `request`) => `Awaitable`\<`Request`\> | A hook that is called before the SDK sends a request. The hook can introduce instrumentation code such as logging, tracing and metrics or replace the request before it is sent or throw an error to stop the request from being sent. |
 
 ***
 
@@ -766,12 +814,44 @@ const hooks: SDKHooks = {
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-sdkhooksaftererror"></a> `afterError?` | `AfterErrorHook`[] | Hooks executed after error responses (4xx, 5xx) or network failures |
-| <a id="property-sdkhooksaftersuccess"></a> `afterSuccess?` | `AfterSuccessHook`[] | Hooks executed after successful responses (2xx status codes) |
-| <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | `BeforeCreateRequestHook`[] | Hooks executed before creating a Request object |
-| <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | `BeforeRequestHook`[] | Hooks executed after Request creation but before sending |
+| <a id="property-sdkhooksaftererror"></a> `afterError?` | [`AfterErrorHook`](#aftererrorhook)[] | Hooks executed after error responses (4xx, 5xx) or network failures |
+| <a id="property-sdkhooksaftersuccess"></a> `afterSuccess?` | [`AfterSuccessHook`](#aftersuccesshook)[] | Hooks executed after successful responses (2xx status codes) |
+| <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | [`BeforeCreateRequestHook`](#beforecreaterequesthook)[] | Hooks executed before creating a Request object |
+| <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | [`BeforeRequestHook`](#beforerequesthook)[] | Hooks executed after Request creation but before sending |
 
 ## Type Aliases
+
+<a id="aftererrorcontext"></a>
+
+### AfterErrorContext
+
+> **AfterErrorContext** = `HookContext` & `object`
+
+***
+
+<a id="aftersuccesscontext"></a>
+
+### AfterSuccessContext
+
+> **AfterSuccessContext** = `HookContext` & `object`
+
+***
+
+<a id="beforecreaterequestcontext"></a>
+
+### BeforeCreateRequestContext
+
+> **BeforeCreateRequestContext** = `HookContext` & `object`
+
+***
+
+<a id="beforerequestcontext"></a>
+
+### BeforeRequestContext
+
+> **BeforeRequestContext** = `HookContext` & `object`
+
+***
 
 <a id="deeppartial"></a>
 

@@ -280,6 +280,12 @@ function PaymentMethodStep() {
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
 
+<a id="contractorprofileformdata"></a>
+
+### ContractorProfileFormData
+
+Renames and re-exports [ContractorDetailsFormData](../hooks/use-contractor-details-form.md#contractordetailsformdata)
+
 <a id="onboardingflowdefaultvalues"></a>
 
 ### OnboardingFlowDefaultValues

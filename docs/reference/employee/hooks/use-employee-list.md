@@ -106,27 +106,41 @@ An employee entity extended with the actions permitted on it and a reference to 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `allowedActions` | [`EmployeeAction`](#employeeaction)[] | Actions permitted for this employee given its onboarding status and the active filter. |
+| `firstName` | `string` | - |
+| `lastName` | `string` | - |
 | `paymentMethod` | `EmployeePaymentMethod1` | The employee's payment method |
 | `uuid` | `string` | The UUID of the employee in Gusto. |
+| `applicableTaxIds?` | `number`[] | - |
 | `companyUuid?` | `string` | The UUID of the company the employee is employed by. |
 | `currentEmploymentStatus?` | `EmployeeCurrentEmploymentStatus` \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
 | `customFields?` | `EmployeeCustomField`[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
+| `dateOfBirth?` | `string` \| `null` | - |
 | `department?` | `string` \| `null` | The employee's department in the company. |
 | `departmentUuid?` | `string` \| `null` | The UUID of the department the employee is under |
+| `eligiblePaidTimeOff?` | `PaidTimeOff`[] | - |
 | `email?` | `string` \| `null` | The personal email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
 | `employeeCode?` | `string` | The short format code of the employee |
 | `flsaStatus?` | `FlsaStatusType` | The FLSA status for this compensation. Salaried ('Exempt') employees are paid a fixed salary every pay period. Salaried with overtime ('Salaried Nonexempt') employees are paid a fixed salary every pay period, and receive overtime pay when applicable. Hourly ('Nonexempt') employees are paid for the hours they work, and receive overtime pay when applicable. Commissioned employees ('Commission Only Exempt') earn wages based only on commission. Commissioned with overtime ('Commission Only Nonexempt') earn wages based on commission, and receive overtime pay when applicable. Owners ('Owner') are employees that own at least twenty percent of the company. |
+| `garnishments?` | `Garnishment`[] | - |
 | `hasSsn?` | `boolean` | Indicates whether the employee has an SSN in Gusto. |
+| `hiddenSsn?` | `string` | - |
 | `hiredAt?` | `RFCDate` | The date when the employee was hired to the company |
+| `historical?` | `boolean` | - |
+| `jobs?` | `Job`[] | - |
 | `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
 | `memberPortalInvitationStatus?` | `EmployeeMemberPortalInvitationStatus` \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
+| `middleInitial?` | `string` \| `null` | - |
 | `onboarded?` | `boolean` | Whether the employee has completed onboarding. |
 | `onboardingDocumentsConfig?` | `EmployeeOnboardingDocumentsConfig` | Configuration for an employee onboarding documents during onboarding |
 | `onboardingStatus?` | `EmployeeOnboardingStatus1` \| `null` | The current onboarding status of the employee |
 | `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
+| `phone?` | `string` \| `null` | - |
+| `preferredFirstName?` | `string` \| `null` | - |
 | `primaryJob?` | `Job` | The employee's primary job, if one is marked primary. |
 | `ssn?` | `string` | Deprecated. This field always returns an empty string. |
 | `terminated?` | `boolean` | Whether the employee is terminated. |
+| `terminations?` | `Termination`[] | - |
+| `title?` | `string` | - |
 | `twoPercentShareholder?` | `boolean` \| `null` | Whether the employee is a two percent shareholder of the company. This field only applies to companies with an S-Corp entity type. |
 | `version?` | `string` | The current version of the employee. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 | `workEmail?` | `string` \| `null` | The work email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |

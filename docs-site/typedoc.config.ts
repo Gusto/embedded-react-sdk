@@ -48,7 +48,7 @@ export const baseOptions = {
 
   sort: ['required-first', 'alphabetical'],
 
-  excludeNotDocumented: true,
+  excludeNotDocumented: false,
   excludeInternal: true,
   excludePrivate: true,
   excludeProtected: true,
