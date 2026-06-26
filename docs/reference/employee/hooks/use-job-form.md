@@ -11,29 +11,53 @@ custom_edit_url: null
 
 # useJobForm
 
-## Form Hooks
-
 <a id="usejobform"></a>
-
-### useJobForm()
 
 > **useJobForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
 
-#### Remarks
+<a id="usejobformready"></a>
+
+## UseJobFormReady
+
+Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit actions exposed by the hook. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
+| `data` | `object` | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields. |
+| `data.currentJob` | `Job` \| `null` | The job row loaded for update; `null` in create mode. |
+| `data.currentWorkAddress` | `EmployeeWorkAddress` \| `null` | The employee's active work address, or `null` when none is set. |
+| `data.employee` | `Employee` \| `null` | The loaded employee record, or `null` when `employeeId` was omitted. |
+| `data.jobs` | `Job`[] \| `undefined` | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. |
+| `data.showStateWc` | `boolean` | True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly. |
+| `data.showTwoPercentShareholder` | `boolean` | True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`JobFormFields`](#jobformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`JobFormData`](#jobformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state. `isPending` is `true` while any in-flight mutation (including the secondary-compensation correction block) hasn't settled. `mode` reflects whether the next submit will create or update. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"create"` \| `"update"` | - |
+
+## Remarks
 
 Companion hook to `useCompensationForm`. Jobs and their compensations are
 separate entities in the Gusto API and this hook focuses exclusively on
@@ -53,9 +77,9 @@ into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensation
 When the primary job's `hireDate` changes, secondary compensation effective
 dates are corrected after the PUT; `isPending` stays `true` through that.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function JobForm({ employeeId }: { employeeId: string }) {
@@ -77,16 +101,6 @@ function JobForm({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`HireDate`](#hiredatefield) | When `false`, supply the value via `JobSubmitOptions.hireDate` at submit time — useful when the hire date is derived from external context (e.g. the employee's `startDate` during onboarding). |
-| [`JobTitle`](#jobtitlefield) | On update flows where another form owns the title (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and render the compensation form's title field instead. |
-| [`StateWcClassCode`](#statewcclasscodefield) | Populated with Washington state workers' compensation risk class codes. Available on the hook result as `form.Fields.StateWcClassCode` only when the active work address is in Washington and `stateWcCovered` is `true`. The schema enforces this field as required whenever it is rendered, independent of `optionalFieldsToRequire`. |
-| [`StateWcCovered`](#statewccoveredfield) | Captures whether the employee is covered by Washington state workers' compensation. Available on the hook result as `form.Fields.StateWcCovered` only when the employee's active work address is in Washington (see `data.showStateWc`). |
-| [`TwoPercentShareholder`](#twopercentshareholderfield) | Indicates whether the employee is a 2% shareholder in an S-Corporation. Available on the hook result as `form.Fields.TwoPercentShareholder` only when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
 
 ## Components
 
@@ -368,48 +382,6 @@ an employee-creation step; supply it at submit time via
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 | `withHireDateField?` | `boolean` | When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes `hireDate` from schema validation. Supply the value via [JobSubmitOptions.hireDate](#jobsubmitoptions) at submit time, or rely on the loaded job's existing value on update. Use this when the date is driven by external context rather than user input (e.g. the employee's `startDate`). Defaults to `true`. |
 | `withTitleField?` | `boolean` | When `false`, hides `Fields.Title` (becomes `undefined`), removes `title` from schema validation, and skips sending `title` on PUT/POST. Use this when another form owns the title field — e.g. compensation edit surfaces render the title via `CompFields.Title` because title lives on compensation in the API (`job.title` is just a denormalized snapshot of the primary comp's title). Defaults to `true` so the standalone job-creation flow still gathers a title for the create body. |
-
-***
-
-<a id="usejobformready"></a>
-
-### UseJobFormReady
-
-Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends
-[BaseFormHookReady](../../utilities.md#baseformhookready) with the job-specific `data`, `status`,
-`actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`JobFormData`](#jobformdata), [`JobFormFields`](#jobformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
-| `data` | `object` | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields. |
-| `data.currentJob` | `Job` \| `null` | The job row loaded for update; `null` in create mode. |
-| `data.currentWorkAddress` | `EmployeeWorkAddress` \| `null` | The employee's active work address, or `null` when none is set. |
-| `data.employee` | `Employee` \| `null` | The loaded employee record, or `null` when `employeeId` was omitted. |
-| `data.jobs` | `Job`[] \| `undefined` | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. |
-| `data.showStateWc` | `boolean` | True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly. |
-| `data.showTwoPercentShareholder` | `boolean` | True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`JobFormFields`](#jobformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`JobFormData`](#jobformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state. `isPending` is `true` while any in-flight mutation (including the secondary-compensation correction block) hasn't settled. `mode` reflects whether the next submit will create or update. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"create"` \| `"update"` | - |
 
 ## Type Aliases
 

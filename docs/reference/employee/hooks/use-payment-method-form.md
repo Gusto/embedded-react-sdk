@@ -11,29 +11,48 @@ custom_edit_url: null
 
 # usePaymentMethodForm
 
-## Form Hooks
-
 <a id="usepaymentmethodform"></a>
-
-### usePaymentMethodForm()
 
 > **usePaymentMethodForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Headless React Hook Form hook for updating an employee's payment method.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UsePaymentMethodFormProps`](#usepaymentmethodformprops) | See [UsePaymentMethodFormProps](#usepaymentmethodformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
 
-#### Remarks
+<a id="usepaymentmethodformready"></a>
+
+## UsePaymentMethodFormReady
+
+Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | - |
+| `data` | `object` | The employee's current payment method, loaded from the API. |
+| `data.paymentMethod` | `EmployeePaymentMethod` | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"update"` | - |
+
+## Remarks
 
 Switches between Direct Deposit and Check. Always operates in update mode —
 every employee has a payment method, defaulting to Check. Switching to Check
@@ -41,9 +60,9 @@ sends a minimal request body; switching to or staying on Direct Deposit
 preserves the existing splits and version so split allocations are not lost
 when only the type changes.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   usePaymentMethodForm,
   SDKFormProvider,
@@ -77,12 +96,6 @@ function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`PaymentMethodType`](#paymentmethodtypefield) | Options are `Direct Deposit` and `Check`; defaults to the employee's existing payment method type. Supply `getOptionLabel` to translate the option labels. |
 
 ## Components
 
@@ -162,37 +175,6 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 | `optionalFieldsToRequire?` | [`PaymentMethodFormOptionalFieldsToRequire`](#paymentmethodformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — `type` is always required and always has a default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usepaymentmethodformready"></a>
-
-### UsePaymentMethodFormReady
-
-Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`PaymentMethodFormData`](#paymentmethodformdata), [`PaymentMethodFormFields`](#paymentmethodformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | - |
-| `data` | `object` | The employee's current payment method, loaded from the API. |
-| `data.paymentMethod` | `EmployeePaymentMethod` | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"update"` | - |
 
 ## Type Aliases
 

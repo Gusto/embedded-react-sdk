@@ -11,17 +11,13 @@ custom_edit_url: null
 
 # useEmployeeDetailsForm
 
-## Form Hooks
-
 <a id="useemployeedetailsform"></a>
-
-### useEmployeeDetailsForm()
 
 > **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
 
-#### UseEmployeeDetailsFormSharedProps
+## UseEmployeeDetailsFormSharedProps
 
 <a id="useemployeedetailsformsharedprops"></a>
 
@@ -35,13 +31,36 @@ Shared options merged into both branches of [UseEmployeeDetailsFormProps](#useem
 | `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
 | `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
 
-#### Remarks
+<a id="useemployeedetailsformready"></a>
+
+## UseEmployeeDetailsFormReady
+
+The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit and related actions. |
+| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
+| `data` | `object` | The loaded employee data, or `null` in create mode. |
+| `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit status and form mode. |
+| `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
+
+## Remarks
 
 Returns a discriminated union: a loading variant while the underlying
 employee fetch resolves, and a ready variant exposing the form's data,
@@ -49,9 +68,9 @@ pending status, submit action, error handling, and bound `Fields`.
 Self-onboarding is only toggleable when the employee's onboarding status
 allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   useEmployeeDetailsForm,
   SDKFormProvider,
@@ -91,17 +110,20 @@ function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmploye
 }
 ```
 
-## Fields
+## EmployeeDetailsFields
+<a id="employeedetailsfields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`DateOfBirth`](#dateofbirthfield) | Optional by default — opt in via `optionalFieldsToRequire`. |
-| [`Email`](#emailfield) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
-| [`FirstName`](#firstnamefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| [`LastName`](#lastnamefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| [`MiddleInitial`](#middleinitialfield) | Always optional. |
-| [`SelfOnboarding`](#selfonboardingfield) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
-| [`Ssn`](#ssnfield) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
+The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `DateOfBirth` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. |
+| `Email` | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
+| `FirstName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| `LastName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| `MiddleInitial` | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
+| `SelfOnboarding` | [Switch](../../utilities.md#switchhookfieldprops) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
+| `Ssn` | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
 
 ## Components
 
@@ -270,34 +292,6 @@ hook.
 
 ## Interfaces
 
-<a id="employeedetailsfields"></a>
-
-### EmployeeDetailsFields
-
-The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.
-
-#### Remarks
-
-Each entry is a component bound to a specific form field — see
-[FirstNameField](#firstnamefield), [MiddleInitialField](#middleinitialfield), [LastNameField](#lastnamefield),
-[EmailField](#emailfield), [DateOfBirthField](#dateofbirthfield), [SsnField](#ssnfield), and
-[SelfOnboardingField](#selfonboardingfield). `SelfOnboarding` may be `undefined` when
-the field is not toggleable.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `DateOfBirth` | (`props`) => `Element` | Date picker bound to `dateOfBirth`. See [DateOfBirthField](#dateofbirthfield). |
-| `Email` | (`props`) => `Element` | Text input bound to `email`. See [EmailField](#emailfield). |
-| `FirstName` | (`props`) => `Element` | Text input bound to `firstName`. See [FirstNameField](#firstnamefield). |
-| `LastName` | (`props`) => `Element` | Text input bound to `lastName`. See [LastNameField](#lastnamefield). |
-| `MiddleInitial` | (`props`) => `Element` | Text input bound to `middleInitial`. See [MiddleInitialField](#middleinitialfield). |
-| `SelfOnboarding` | ((`props`) => `Element`) \| `undefined` | Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. See [SelfOnboardingField](#selfonboardingfield). |
-| `Ssn` | (`props`) => `Element` | Text input bound to `ssn`. See [SsnField](#ssnfield). |
-
-***
-
 <a id="employeedetailssubmitcallbacks"></a>
 
 ### EmployeeDetailsSubmitCallbacks
@@ -318,42 +312,6 @@ switch changes the employee's onboarding status as part of an update.
 | `onEmployeeCreated?` | (`employee`) => `void` | Fired after a new employee is successfully created. |
 | `onEmployeeUpdated?` | (`employee`) => `void` | Fired after an existing employee is successfully updated. |
 | `onOnboardingStatusUpdated?` | (`status`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
-
-***
-
-<a id="useemployeedetailsformready"></a>
-
-### UseEmployeeDetailsFormReady
-
-The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsform) once data has loaded.
-
-#### Remarks
-
-Provides the form's `data` snapshot, pending `status`, submit `actions`,
-error handling, and the `form.Fields` map.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`EmployeeDetailsFormData`](#employeedetailsformdata), [`EmployeeDetailsFields`](#employeedetailsfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
-| `data` | `object` | The loaded employee data, or `null` in create mode. |
-| `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit status and form mode. |
-| `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
 
 ## Type Aliases
 

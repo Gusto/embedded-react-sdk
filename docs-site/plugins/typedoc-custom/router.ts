@@ -382,14 +382,23 @@ export class SDKRouter extends MemberRouter {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
-        // Remove SharedProps from groups — inlined under the hook function by renderFunctionPropsTable
-        const sharedPropsName = `${hookDir.charAt(0).toUpperCase() + hookDir.slice(1)}SharedProps`
+        // Remove inlined types from groups — SharedProps is inlined under the hook
+        // function's Parameters section, Ready is inlined in the Returns section,
+        // and Fields is inlined as the fields quick-reference table.
+        const hookPascal = hookDir.charAt(0).toUpperCase() + hookDir.slice(1)
+        const inlinedNames = new Set([
+          `${hookPascal}SharedProps`,
+          `${hookPascal}Ready`,
+          `${hookDir.replace(/^use/, '').replace(/Form$/, '')}Fields`,
+        ])
         for (const group of hookNs.groups) {
           group.children = group.children.filter(
             c =>
-              !(c instanceof DeclarationReflection &&
-                c.name === sharedPropsName &&
-                (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias)),
+              !(
+                c instanceof DeclarationReflection &&
+                inlinedNames.has(c.name) &&
+                (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias)
+              ),
           )
         }
         hookNs.groups = hookNs.groups.filter(g => g.children.length > 0)

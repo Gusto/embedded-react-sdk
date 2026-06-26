@@ -11,35 +11,54 @@ custom_edit_url: null
 
 # useFederalTaxesForm
 
-## Form Hooks
-
 <a id="usefederaltaxesform"></a>
-
-### useFederalTaxesForm()
 
 > **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
 
-#### Remarks
+<a id="usefederaltaxesformready"></a>
+
+## UseFederalTaxesFormReady
+
+Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeFederalTax`\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
+| `data` | `object` | The loaded federal tax record. |
+| `data.employeeFederalTax` | `EmployeeFederalTax` | The current federal tax record for the employee. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |
+| `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
+| `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
+
+## Remarks
 
 The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function FederalTaxesPage({ employeeId }: { employeeId: string }) {
@@ -70,16 +89,19 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Fields
+## FederalTaxesFields
+<a id="federaltaxesfields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`Deductions`](#deductionsfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| [`DependentsAmount`](#dependentsamountfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| [`ExtraWithholding`](#extrawithholdingfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| [`FilingStatus`](#filingstatusfield) | Options are populated from `FILING_STATUS_VALUES` (`Single`, `Married`, `Head of Household`, `Exempt from withholding`). The default option label is the raw filing status value — pass `getOptionLabel` to localize. |
-| [`OtherIncome`](#otherincomefield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
-| [`TwoJobs`](#twojobsfield) | Two options for `true` and `false`. The default labels are `Yes` and `No` — pass `getOptionLabel` to localize. The form submits a boolean value. |
+Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `Deductions` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| `DependentsAmount` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| `ExtraWithholding` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| `FilingStatus` | [Select](../../utilities.md#selecthookfieldprops) | Options are populated from `FILING_STATUS_VALUES` (`Single`, `Married`, `Head of Household`, `Exempt from withholding`). The default option label is the raw filing status value — pass `getOptionLabel` to localize. |
+| `OtherIncome` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| `TwoJobs` | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Two options for `true` and `false`. The default labels are `Yes` and `No` — pass `getOptionLabel` to localize. The form submits a boolean value. |
 
 ## Components
 
@@ -232,25 +254,6 @@ household, and exempt from withholding.
 
 ## Interfaces
 
-<a id="federaltaxesfields"></a>
-
-### FederalTaxesFields
-
-Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Deductions` | (`props`) => `Element` | Deductions (Step 4b) currency input. |
-| `DependentsAmount` | (`props`) => `Element` | Dependents amount (Step 3) currency input. |
-| `ExtraWithholding` | (`props`) => `Element` | Extra withholding (Step 4c) currency input. |
-| `FilingStatus` | (`props`) => `Element` | Filing status select. |
-| `OtherIncome` | (`props`) => `Element` | Other income (Step 4a) currency input. |
-| `TwoJobs` | (`props`) => `Element` | Multiple-jobs (Step 2c) radio group. |
-
-***
-
 <a id="usefederaltaxesformprops"></a>
 
 ### UseFederalTaxesFormProps
@@ -271,42 +274,6 @@ hook is always in update mode and only `employeeId` is required.
 | `optionalFieldsToRequire?` | [`FederalTaxesOptionalFieldsToRequire`](#federaltaxesoptionalfieldstorequire) | Override fields that are optional on update to be required. By default only `filingStatus` is required; pass `{ update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'] }` to require any subset. See [FederalTaxesOptionalFieldsToRequire](#federaltaxesoptionalfieldstorequire). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usefederaltaxesformready"></a>
-
-### UseFederalTaxesFormReady
-
-Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the federal-taxes specific `data`, `status`, and `actions`.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`FederalTaxesFormData`](#federaltaxesformdata), [`FederalTaxesFields`](#federaltaxesfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeFederalTax`\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
-| `data` | `object` | The loaded federal tax record. |
-| `data.employeeFederalTax` | `EmployeeFederalTax` | The current federal tax record for the employee. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |
-| `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
-| `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
 
 ## Type Aliases
 

@@ -11,29 +11,57 @@ custom_edit_url: null
 
 # useCompensationForm
 
-## Form Hooks
-
 <a id="usecompensationform"></a>
-
-### useCompensationForm()
 
 > **useCompensationForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
 
-#### Remarks
+<a id="usecompensationformready"></a>
+
+## UseCompensationFormReady
+
+Ready-state shape returned by [useCompensationForm](#usecompensationform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit actions exposed by the hook. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
+| `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
+| `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
+| `data.hasPendingFutureCompensation` | `boolean` | True when at least one future-dated compensation already exists for this job. |
+| `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
+| `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
+| `data.minimumWages` | `MinimumWage`[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings. |
+| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new compensation or PUT an existing one. |
+| `status.showCommissionFederalMinimumPayAlert` | `boolean` | True when the current `flsaStatus` is `COMMISSION_ONLY_EXEMPT` (Commission Only/No Overtime). Render the federal-minimum-pay warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values). |
+| `status.showCommissionMinimumWageAlert` | `boolean` | True when the current `flsaStatus` is `COMMISSION_ONLY_NONEXEMPT` (Commission Only/Eligible for overtime). Render the local-minimum-wage warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values). |
+| `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
+| `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
+
+## Remarks
 
 Companion hook to `useJobForm`. Jobs and their compensations are separate
 entities in the Gusto API and this hook focuses exclusively on the
@@ -61,9 +89,9 @@ commission-only and owner classifications). When
 the `effectiveDate` field (forces to today, renders disabled) until the
 FLSA selection is reverted.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
@@ -87,18 +115,6 @@ function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: st
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`CompensationAdjustForMinimumWage`](#compensationadjustforminimumwagefield) | Always null-check before rendering. |
-| [`CompensationEffectiveDate`](#compensationeffectivedatefield) | Required on create; optional on update unless `optionalFieldsToRequire.update` includes `'effectiveDate'`. The picker's min/max bounds are exposed on `data.minimumEffectiveDate` / `data.maximumEffectiveDate`. The field is automatically disabled (and the form value forced to today) while `status.willDeleteSecondaryJobs` is `true` in update mode. When `withEffectiveDateField: false`, the field is `undefined` — supply the value at submit time via `CompensationSubmitOptions.effectiveDate` instead. |
-| [`CompensationFlsaStatus`](#compensationflsastatusfield) | The field is `undefined` when the user has no meaningful choice — for example, on a secondary job whose status must match the primary's. Always null-check before rendering. Options: `Exempt`, `Salaried Nonexempt`, `Nonexempt`, `Owner`, `Commission Only Exempt`, `Commission Only Nonexempt`. |
-| [`CompensationMinimumWageId`](#compensationminimumwageidfield) | — |
-| [`CompensationPaymentUnit`](#compensationpaymentunitfield) | The field is `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`), and automatically rendered disabled when `flsaStatus === Owner` (locked to `Paycheck`). Options: `Hour`, `Week`, `Month`, `Year`, `Paycheck`. |
-| [`CompensationRate`](#compensationratefield) | The field is `undefined` for commission-only FLSA statuses (`Commission Only Exempt`, `Commission Only Nonexempt`) — those statuses don't accept a partner-supplied rate, so the hook removes the field and forces `rate=0` on the form values. Always null-check before rendering. |
-| [`CompensationTitle`](#compensationtitlefield) | Optional in both create and update modes — use this when a title change should take effect on this compensation's `effectiveDate` (for example, a future-dated promotion that bundles a new title with a raise). Otherwise bind the title via `useJobForm.Fields.Title` instead and avoid rendering both on the same screen. |
 
 ## Components
 
@@ -398,53 +414,6 @@ the same submit chain.
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 | `withEffectiveDateField?` | `boolean` | When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and removes `effectiveDate` from schema validation. In this mode the hook does not read any form value at submit time — `effective_date` is omitted from the request body unless explicitly supplied via [CompensationSubmitOptions.effectiveDate](#compensationsubmitoptions). This matches the options-only convention of other form hooks, and means the `willDeleteSecondaryJobs` carve-out's form-state side effects do not leak onto the wire (there is no field to render them in anyway). Defaults to `true`. |
-
-***
-
-<a id="usecompensationformready"></a>
-
-### UseCompensationFormReady
-
-Ready-state shape returned by [useCompensationForm](#usecompensationform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the compensation-specific `data`, `status`, `actions`, and `form.Fields`
-shape. Static, entity-derived values live under `data.*`; reactive values
-that flip with form input live under `status.*`.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`CompensationFormData`](#compensationformdata), [`CompensationFormFields`](#compensationformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
-| `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
-| `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
-| `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
-| `data.hasPendingFutureCompensation` | `boolean` | True when at least one future-dated compensation already exists for this job. |
-| `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
-| `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
-| `data.minimumWages` | `MinimumWage`[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings. |
-| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new compensation or PUT an existing one. |
-| `status.showCommissionFederalMinimumPayAlert` | `boolean` | True when the current `flsaStatus` is `COMMISSION_ONLY_EXEMPT` (Commission Only/No Overtime). Render the federal-minimum-pay warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values). |
-| `status.showCommissionMinimumWageAlert` | `boolean` | True when the current `flsaStatus` is `COMMISSION_ONLY_NONEXEMPT` (Commission Only/Eligible for overtime). Render the local-minimum-wage warning alert when this flag is true. While this flag is true, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the hook forces `rate=0`, `paymentUnit=YEAR` on the form values). |
-| `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
-| `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
 
 ## Type Aliases
 

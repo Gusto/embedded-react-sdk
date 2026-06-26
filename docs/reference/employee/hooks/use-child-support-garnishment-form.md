@@ -11,29 +11,53 @@ custom_edit_url: null
 
 # useChildSupportGarnishmentForm
 
-## Form Hooks
-
 <a id="usechildsupportgarnishmentform"></a>
-
-### useChildSupportGarnishmentForm()
 
 > **useChildSupportGarnishmentForm**(`input`): [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
 
 Headless hook for creating or updating a child-support garnishment.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`UseChildSupportGarnishmentFormProps`](#usechildsupportgarnishmentformprops) | See [UseChildSupportGarnishmentFormProps](#usechildsupportgarnishmentformprops). |
 
-#### Returns
+## Returns
 
 [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
 
-#### Remarks
+<a id="usechildsupportgarnishmentformready"></a>
+
+## UseChildSupportGarnishmentFormReady
+
+Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submission action. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `data` | `object` | Child-support-specific data payload: the available agencies, counties for the selected state, and the loaded garnishment for update mode. |
+| `data.agencies` | [`StateFieldEntry`](#statefieldentry)[] | Agencies offered as `State` options; raw entries the consumer can use with `getOptionLabel` for translated names. |
+| `data.counties` | [`CountyEntry`](#countyentry)[] | Counties for the currently selected state. Empty array when no state is selected. |
+| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state and reactive flags derived from current form input. |
+| `status.isManualPaymentRequired` | `boolean` | Mirrors `selectedAgency.manualPaymentRequired`; convenient for showing a warning alert. |
+| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new garnishment or PUT an existing one. |
+| `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
+| `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
+
+## Remarks
 
 Unlike standard garnishments, child support requires agency-specific
 attributes (case number, order number, remittance number) that vary by
@@ -47,9 +71,9 @@ POST a new garnishment, supply it to PUT updates against the existing row.
 For non-child-support deductions (court-ordered garnishments and post-tax
 custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
@@ -88,19 +112,6 @@ function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; g
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`CaseNumber`](#casenumberfield) | — |
-| [`ChildSupportAmount`](#childsupportamountfield) | Always rendered. Accepts a percentage of paycheck in the range 0–100 — the API stores child-support amounts as percentages rather than fixed currency values. |
-| [`ChildSupportState`](#childsupportstatefield) | Always rendered. The selected agency drives which subsequent fields are required and visible (`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`). |
-| [`FipsCode`](#fipscodefield) | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
-| [`OrderNumber`](#ordernumberfield) | — |
-| [`PaymentPeriod`](#paymentperiodfield) | Always rendered. Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`. |
-| [`PayPeriodMaximum`](#payperiodmaximumfield) | Always rendered. Carries the per-pay-period currency cap for the garnishment. |
-| [`RemittanceNumber`](#remittancenumberfield) | — |
 
 ## Components
 
@@ -345,49 +356,6 @@ Presence or absence of `garnishmentId` selects the API verb — see the
 | `garnishmentId?` | `string` | When set, loads that garnishment and updates it (PUT). When omitted, the form is in create mode (POST). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usechildsupportgarnishmentformready"></a>
-
-### UseChildSupportGarnishmentFormReady
-
-Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the child-support-specific `data`, `status`, `actions`, and `form.Fields`
-shape. Static, entity-derived values live under `data.*`; reactive values
-that flip with form input live under `status.*`.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata), [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
-| `data` | `object` | Child-support-specific data payload: the available agencies, counties for the selected state, and the loaded garnishment for update mode. |
-| `data.agencies` | [`StateFieldEntry`](#statefieldentry)[] | Agencies offered as `State` options; raw entries the consumer can use with `getOptionLabel` for translated names. |
-| `data.counties` | [`CountyEntry`](#countyentry)[] | Counties for the currently selected state. Empty array when no state is selected. |
-| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state and reactive flags derived from current form input. |
-| `status.isManualPaymentRequired` | `boolean` | Mirrors `selectedAgency.manualPaymentRequired`; convenient for showing a warning alert. |
-| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new garnishment or PUT an existing one. |
-| `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
-| `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
 
 ## Type Aliases
 

@@ -11,29 +11,47 @@ custom_edit_url: null
 
 # useSignEmployeeForm
 
-## Form Hooks
-
 <a id="usesignemployeeform"></a>
-
-### useSignEmployeeForm()
 
 > **useSignEmployeeForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseSignEmployeeFormProps`](#usesignemployeeformprops) | See [UseSignEmployeeFormProps](#usesignemployeeformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
 
-#### Remarks
+<a id="usesignemployeeformready"></a>
+
+## UseSignEmployeeFormReady
+
+Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once the form metadata and PDF have loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Imperative actions exposed by the hook. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
+| `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
+| `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
+| `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
+| `data.form` | `Form` | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
+| `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit-state flags. |
+| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
+| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+## Remarks
 
 The hook fetches the form metadata and PDF, then exposes the
 [BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
@@ -50,9 +68,9 @@ Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
 `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
 fixed and all fields except preparer street-2 are required.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
@@ -87,14 +105,6 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`ConfirmSignature`](#confirmsignaturefield) | Captures the employee's electronic-signature consent; must be checked to submit. |
-| [`Signature`](#signaturefield) | The employee types their full legal name; required. |
-| [`UsedPreparer`](#usedpreparerfield) | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
 
 ## Components
 
@@ -235,36 +245,6 @@ Props for [useSignEmployeeForm](#usesignemployeeform).
 | ------ | ------ | ------ |
 | `employeeId` | `string` | The associated employee identifier. |
 | `formId` | `string` | The UUID of the employee form to sign. |
-
-***
-
-<a id="usesignemployeeformready"></a>
-
-### UseSignEmployeeFormReady
-
-Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once the form metadata and PDF have loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`SignEmployeeFormData`](#signemployeeformdata), [`SignEmployeeFormFieldComponents`](#signemployeeformfieldcomponents)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
-| `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
-| `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
-| `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
-| `data.form` | `Form` | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
-| `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit-state flags. |
-| `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
-| `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
 ## Type Aliases
 

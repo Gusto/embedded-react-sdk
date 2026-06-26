@@ -11,8 +11,6 @@ custom_edit_url: null
 
 # useHomeAddressForm
 
-## Form Hooks
-
 <a id="usecurrenthomeaddressform"></a>
 
 ### useCurrentHomeAddressForm()
@@ -68,41 +66,65 @@ function HomeAddressEditor({ employeeId }: { employeeId: string }) {
 
 <a id="usehomeaddressform"></a>
 
-### useHomeAddressForm()
-
 > **useHomeAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Form hook for creating or editing an employee's home address.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseHomeAddressFormProps`](#usehomeaddressformprops) | See [UseHomeAddressFormProps](#usehomeaddressformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
 
-#### Remarks
+<a id="usehomeaddressformready"></a>
+
+## UseHomeAddressFormReady
+
+Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Available actions. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
+| `data` | `object` | Static entity data resolved from the API. |
+| `data.homeAddress` | `EmployeeAddress` \| `null` | The address row loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`HomeAddressFields`](#homeaddressfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Reactive status flags. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"create"` \| `"update"` | - |
+
+## Remarks
 
 When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
 when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
 skip the fetch when the parent already holds the row.
 
-## Fields
+## HomeAddressFields
+<a id="homeaddressfields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`City`](#cityfield) | Required. |
-| [`CourtesyWithholding`](#courtesywithholdingfield) | When checked, the employer agrees to withhold the employee's home-state taxes as a courtesy even when the work and home states differ. |
-| [`HomeAddressEffectiveDate`](#homeaddresseffectivedatefield) | Always null-check before rendering. |
-| [`HomeAddressState`](#homeaddressstatefield) | Options are the standard two-letter US state abbreviations. Required. |
-| [`Street1`](#street1field) | Required. |
-| [`Street2`](#street2field) | Optional. |
-| [`Zip`](#zipfield) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `City` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
+| `CourtesyWithholding` | [Checkbox](../../utilities.md#checkboxhookfieldprops) | When checked, the employer agrees to withhold the employee's home-state taxes as a courtesy even when the work and home states differ. |
+| `EffectiveDate` | — | — |
+| `State` | — | — |
+| `Street1` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
+| `Street2` | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
+| `Zip` | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
 
 ## Components
 
@@ -257,31 +279,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ## Interfaces
 
-<a id="homeaddressfields"></a>
-
-### HomeAddressFields
-
-Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
-
-#### Remarks
-
-`EffectiveDate` is `undefined` when `withEffectiveDateField` is `false`.
-Always null-check it before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `City` | (`props`) => `Element` | City text input. Always available. |
-| `CourtesyWithholding` | (`props`) => `Element` | Courtesy withholding checkbox. Always available. |
-| `EffectiveDate` | ((`props`) => `Element`) \| `undefined` | Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
-| `State` | (`props`) => `Element` | State selector. Always available. |
-| `Street1` | (`props`) => `Element` | Street address line 1 text input. Always available. |
-| `Street2` | (`props`) => `Element` | Street address line 2 text input. Always available. |
-| `Zip` | (`props`) => `Element` | ZIP code text input. Always available. |
-
-***
-
 <a id="homeaddresssubmitoptions"></a>
 
 ### HomeAddressSubmitOptions
@@ -320,42 +317,6 @@ Presence or absence of `homeAddressUuid` selects the API verb — see the
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 | `withEffectiveDateField?` | `boolean` | When `true`, renders `Fields.EffectiveDate`; otherwise it is `undefined`. Defaults to `true`. |
-
-***
-
-<a id="usehomeaddressformready"></a>
-
-### UseHomeAddressFormReady
-
-Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`HomeAddressFormData`](#homeaddressformdata), [`HomeAddressFields`](#homeaddressfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
-| `data` | `object` | Static entity data resolved from the API. |
-| `data.homeAddress` | `EmployeeAddress` \| `null` | The address row loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`HomeAddressFields`](#homeaddressfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Reactive status flags. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"create"` \| `"update"` | - |
 
 ## Type Aliases
 

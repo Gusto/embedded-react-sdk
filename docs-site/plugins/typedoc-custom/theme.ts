@@ -533,47 +533,216 @@ function insertComponentsTable(rendered: string, table: string): string {
 }
 
 /**
- * Auto-generate a quick-reference fields table from the hook page's Components
- * group. Each row names the field (as a link to its detailed anchor), plus the
- * key sentence from its @remarks (stripped of the boilerplate "Available on the
- * hook result as …" prefix). Returns null when no field components exist.
+ * Remove the `## Form Hooks` section heading and the `### hookName()` sub-heading,
+ * then shift H4→H2 and H5→H3 for the content inside the hook function section.
+ * Uses a state machine to identify and transform the relevant lines.
  */
-function buildFieldsSummary(context: SDKThemeContext, model: DeclarationReflection): string | null {
-  const fieldsGroup = model.groups?.find(g => g.title === 'Components')
-  const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
-  if (fieldComponents.length === 0) return null
+function reformatHookFunctionSection(rendered: string, hookName: string): string {
+  const escapedHookName = hookName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const hookFnHeadingRe = new RegExp(`^### ${escapedHookName}\\(\\)\\s*$`)
 
-  const rows: string[] = []
-  for (const field of fieldComponents) {
-    const fieldName = field.name.replace(/Field$/, '')
-    const url = context.router.hasUrl(field) ? context.urlTo(field) : null
-    const link = url ? `[\`${fieldName}\`](${url})` : `\`${fieldName}\``
+  type State = 'before' | 'in-group' | 'in-function' | 'done'
+  let state: State = 'before'
+  const out: string[] = []
 
-    const comment = field.signatures?.[0]?.comment ?? field.comment
-    const remarksTag = comment?.blockTags.find(t => t.tag === '@remarks')
-    const remarksText = remarksTag ? Comment.combineDisplayParts(remarksTag.content) : ''
-    // Strip the boilerplate first sentence: "Available on the hook result as `form.Fields.X`."
-    // Split at the first ". " boundary so cases like SelfOnboarding ("…as `form.Fields.X`
-    // when the field is toggleable. The field is…") also strip correctly — `. ` after the
-    // field reference is not guaranteed; the first sentence may run longer.
-    const strippedRemarks = remarksText.startsWith('Available on the hook result')
-      ? (() => {
-          const idx = remarksText.indexOf('. ')
-          return idx === -1 ? '' : remarksText.slice(idx + 2)
-        })()
-      : remarksText
-    const notes = strippedRemarks.replace(/\n+/g, ' ').replace(/\|/g, '\\|').trim()
-
-    rows.push(`| ${link} | ${notes || '—'} |`)
+  for (const line of rendered.split('\n')) {
+    switch (state) {
+      case 'before':
+        if (/^## Form Hooks\s*$/.test(line)) {
+          state = 'in-group'
+          // skip this line
+        } else {
+          out.push(line)
+        }
+        break
+      case 'in-group':
+        if (hookFnHeadingRe.test(line)) {
+          state = 'in-function'
+          // skip this line
+        } else {
+          out.push(line)
+        }
+        break
+      case 'in-function':
+        if (/^## /.test(line)) {
+          state = 'done'
+          out.push(line)
+        } else if (/^#####/.test(line)) {
+          out.push(line.replace(/^#####/, '###'))
+        } else if (/^####/.test(line)) {
+          out.push(line.replace(/^####/, '##'))
+        } else {
+          out.push(line)
+        }
+        break
+      case 'done':
+        out.push(line)
+        break
+    }
   }
 
-  if (rows.length === 0) return null
-  return ['## Fields', '', '| Field | Notes |', '| ----- | ----- |', ...rows].join('\n')
+  return out.join('\n')
 }
 
 /**
- * Inject the fields summary table into the rendered hook page, immediately
- * before the ## Components section that contains the detailed per-field docs.
+ * After `reformatHookFunctionSection` shifts headings, `#### Example` becomes
+ * `## Example`. Find any opening code fence that appears after a `## Example`
+ * heading (skipping blank lines) and add ` title="Example"` to it if absent.
+ */
+function addExampleTitles(rendered: string): string {
+  const lines = rendered.split('\n')
+  const out: string[] = []
+  let lookingForFence = false
+
+  for (const line of lines) {
+    if (/^## Examples?\s*$/.test(line)) {
+      lookingForFence = true
+      out.push(line)
+      continue
+    }
+    if (lookingForFence) {
+      if (line.trim() === '') {
+        out.push(line)
+        continue
+      }
+      // Non-blank line: check if it's an opening code fence
+      const fenceMatch = /^(```+)(\w+)?(.*)$/.exec(line)
+      if (fenceMatch && !line.includes('title=')) {
+        const [, ticks, lang, rest] = fenceMatch
+        out.push(`${ticks}${lang ?? ''}${rest ?? ''} title="Example"`)
+      } else {
+        out.push(line)
+      }
+      lookingForFence = false
+      continue
+    }
+    out.push(line)
+  }
+
+  return out.join('\n')
+}
+
+/**
+ * Auto-generate a quick-reference fields table driven by the hook's Fields
+ * interface (e.g. EmployeeDetailsFields). Each row shows the field key,
+ * the component type extracted from the field component's props type alias,
+ * and notes from the field component's @remarks. Returns null when the Fields
+ * interface is not found or has no children.
+ */
+function buildFieldsTable(context: SDKThemeContext, model: DeclarationReflection): string | null {
+  // Find the Fields interface by naming convention: hookName → XxxFields
+  const fieldsInterfaceName = model.name.replace(/^use/, '').replace(/Form$/, '') + 'Fields'
+  const fieldsInterface = (model.children ?? []).find(
+    (c): c is DeclarationReflection =>
+      c instanceof DeclarationReflection &&
+      c.name === fieldsInterfaceName &&
+      (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
+  )
+  if (!fieldsInterface) return null
+
+  // Get field keys from the Fields interface children
+  const fieldKeys = (fieldsInterface.children ?? [])
+    .filter(c => c.isDeclaration())
+    .map(c => c.name)
+  if (fieldKeys.length === 0) return null
+
+  // Build a map from field key (without "Field" suffix) to field component
+  const fieldsGroup = model.groups?.find(g => g.title === 'Components')
+  const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
+  const componentByKey = new Map<string, DeclarationReflection>()
+  for (const comp of fieldComponents) {
+    componentByKey.set(comp.name.replace(/Field$/, ''), comp)
+  }
+
+  const rows: string[] = []
+  for (const fieldKey of fieldKeys) {
+    const fieldComp = componentByKey.get(fieldKey)
+
+    // Column 1: Field Key
+    const fieldKeyCell = `\`${fieldKey}\``
+
+    // Column 2: Component Type — extract from props type alias chain
+    let componentTypeCell = '—'
+    if (fieldComp) {
+      try {
+        // fieldComp.signatures[0].parameters[0].type → ReferenceType(XxxFieldProps)
+        const param = fieldComp.signatures?.[0]?.parameters?.[0]
+        const propsRef =
+          param?.type instanceof ReferenceType ? param.type.reflection : null
+        if (propsRef instanceof DeclarationReflection) {
+          // propsRef.type → ReferenceType(HookFieldProps, typeArguments=[...])
+          const innerRef =
+            propsRef.type instanceof ReferenceType ? propsRef.type : null
+          if (innerRef) {
+            // typeArguments[0] → ReferenceType(DatePickerHookFieldProps, ...)
+            const firstArg = innerRef.typeArguments?.[0]
+            if (firstArg instanceof ReferenceType) {
+              const rawName = firstArg.name
+              // Strip "HookFieldProps" suffix to get component type name
+              const componentTypeName = rawName.replace(/HookFieldProps$/, '')
+              if (componentTypeName && componentTypeName !== rawName) {
+                const targetRefl = firstArg.reflection
+                if (
+                  targetRefl instanceof DeclarationReflection &&
+                  context.router.hasUrl(targetRefl)
+                ) {
+                  componentTypeCell = `[${componentTypeName}](${context.urlTo(targetRefl)})`
+                } else {
+                  componentTypeCell = componentTypeName
+                }
+              }
+            }
+          }
+        }
+      } catch {
+        componentTypeCell = '—'
+      }
+    }
+
+    // Column 3: Notes — from field component's @remarks, stripped of boilerplate
+    let notes = '—'
+    if (fieldComp) {
+      const comment = fieldComp.signatures?.[0]?.comment ?? fieldComp.comment
+      const remarksTag = comment?.blockTags.find(t => t.tag === '@remarks')
+      const remarksText = remarksTag ? Comment.combineDisplayParts(remarksTag.content) : ''
+      const strippedRemarks = remarksText.startsWith('Available on the hook result')
+        ? (() => {
+            const idx = remarksText.indexOf('. ')
+            return idx === -1 ? '' : remarksText.slice(idx + 2)
+          })()
+        : remarksText
+      const notesText = strippedRemarks.replace(/\n+/g, ' ').replace(/\|/g, '\\|').trim()
+      if (notesText) notes = notesText
+    }
+
+    rows.push(`| ${fieldKeyCell} | ${componentTypeCell} | ${notes} |`)
+  }
+
+  if (rows.length === 0) return null
+
+  const parts: string[] = [`## ${fieldsInterfaceName}`]
+  if (context.router.hasUrl(fieldsInterface) && context.options.getValue('useHTMLAnchors')) {
+    parts.push(`<a id="${context.router.getAnchor(fieldsInterface)}"></a>`)
+  }
+  if (fieldsInterface.comment) {
+    const commentMd = context.partials.comment(fieldsInterface.comment, {
+      showSummary: true,
+      showTags: false,
+    })
+    if (commentMd.trim()) parts.push(commentMd)
+  }
+  parts.push(
+    '',
+    '| Field Key | Component Type | Notes |',
+    '| --------- | -------------- | ----- |',
+    ...rows,
+  )
+  return parts.join('\n')
+}
+
+/**
+ * Inject the fields table into the rendered hook page, immediately before
+ * the ## Components section that contains the detailed per-field docs.
  * Falls back to appending if the Components section is absent.
  */
 function injectFieldsSummary(rendered: string, summary: string): string {
@@ -667,7 +836,8 @@ export class SDKTheme extends MarkdownTheme {
       }
     }
 
-    // Protect hook SharedProps types so excludeNotDocumented keeps them for inline rendering.
+    // Protect hook SharedProps and Ready types so excludeNotDocumented keeps them
+    // for inline rendering.
     for (const reflection of Object.values(context.project.reflections)) {
       if (!(reflection instanceof DeclarationReflection)) continue
       if (
@@ -675,23 +845,47 @@ export class SDKTheme extends MarkdownTheme {
         reflection.kind !== ReflectionKind.TypeAlias
       )
         continue
-      if (!/^Use[A-Z][a-zA-Z]*SharedProps$/.test(reflection.name)) continue
-      if (!reflection.comment) {
-        reflection.comment = new Comment([
-          {
-            kind: 'text',
-            text: `Shared options for \`${reflection.name.replace(/SharedProps$/, '').replace(/^Use/, 'use')}\`.`,
-          },
-        ])
+
+      if (/^Use[A-Z][a-zA-Z]*SharedProps$/.test(reflection.name)) {
+        if (!reflection.comment) {
+          reflection.comment = new Comment([
+            {
+              kind: 'text',
+              text: `Shared options for \`${reflection.name.replace(/SharedProps$/, '').replace(/^Use/, 'use')}\`.`,
+            },
+          ])
+        }
+        // For TypeAlias `= { ... }`, properties live on type.declaration.children.
+        const children =
+          reflection.kind === ReflectionKind.TypeAlias &&
+          reflection.type instanceof ReflectionType
+            ? (reflection.type.declaration.children ?? [])
+            : (reflection.children ?? [])
+        for (const child of children) {
+          if (!child.comment) {
+            child.comment = new Comment()
+          }
+        }
       }
-      // For TypeAlias `= { ... }`, properties live on type.declaration.children.
-      const children =
-        reflection.kind === ReflectionKind.TypeAlias && reflection.type instanceof ReflectionType
-          ? (reflection.type.declaration.children ?? [])
-          : (reflection.children ?? [])
-      for (const child of children) {
-        if (!child.comment) {
-          child.comment = new Comment()
+
+      if (/^Use[A-Z][a-zA-Z]*Ready$/.test(reflection.name)) {
+        if (!reflection.comment) {
+          reflection.comment = new Comment([
+            {
+              kind: 'text',
+              text: `Ready state for \`${reflection.name.replace(/Ready$/, '').replace(/^Use/, 'use')}\`.`,
+            },
+          ])
+        }
+        const children =
+          reflection.kind === ReflectionKind.TypeAlias &&
+          reflection.type instanceof ReflectionType
+            ? (reflection.type.declaration.children ?? [])
+            : (reflection.children ?? [])
+        for (const child of children) {
+          if (!child.comment) {
+            child.comment = new Comment()
+          }
         }
       }
     }
@@ -826,7 +1020,65 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (model.parent instanceof DeclarationReflection && isComponent(model.parent)) {
           return ''
         }
-        return origSignatureReturns(model, options)
+
+        const base = origSignatureReturns(model, options)
+
+        // Hook: append UseXxxFormReady properties table after the returns section.
+        const hookFn = model.parent
+        if (hookFn instanceof DeclarationReflection && /^use[A-Z]/.test(hookFn.name)) {
+          const hookNsModel = this.page?.model
+          if (!(hookNsModel instanceof DeclarationReflection)) return base
+
+          const readyName =
+            hookFn.name.charAt(0).toUpperCase() + hookFn.name.slice(1) + 'Ready'
+          const readyType = (hookNsModel.children ?? []).find(
+            (c): c is DeclarationReflection =>
+              c instanceof DeclarationReflection &&
+              c.name === readyName &&
+              (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
+          )
+          if (!readyType) return base
+
+          const headingLevel = (options as { headingLevel: number }).headingLevel
+          const hashes = '#'.repeat(headingLevel)
+
+          const parts: string[] = [base]
+
+          if (this.router.hasUrl(readyType) && this.options.getValue('useHTMLAnchors')) {
+            parts.push(`<a id="${this.router.getAnchor(readyType)}"></a>`)
+          }
+          parts.push(`${hashes} ${readyName}`)
+
+          if (readyType.comment) {
+            const commentMd = this.partials.comment(readyType.comment, {
+              showSummary: true,
+              showTags: false,
+            })
+            if (commentMd.trim()) parts.push(commentMd)
+          }
+
+          // For TypeAlias `= { ... }`, properties live on type.declaration.children.
+          const typeAliasDecl =
+            readyType.kind === ReflectionKind.TypeAlias &&
+            readyType.type instanceof ReflectionType
+              ? readyType.type.declaration
+              : null
+          const allProps = (typeAliasDecl?.children ?? readyType.children ?? []).filter(c =>
+            c.isDeclaration(),
+          )
+          if (allProps.length > 0) {
+            parts.push(
+              this.partials.propertiesTable(allProps, {
+                isEventProps: false,
+                kind: ReflectionKind.Interface,
+              }),
+            )
+          }
+
+          return parts.join('\n\n')
+        }
+
+        return base
       },
       propertiesTable: (...args: Parameters<typeof origPropertiesTable>) => {
         const result = origPropertiesTable(...args)
@@ -877,10 +1129,12 @@ export class SDKThemeContext extends MarkdownThemeContext {
         if (isComponent(page.model)) rendered = reorderComponentSections(rendered)
         if (componentsTable) rendered = insertComponentsTable(rendered, componentsTable)
 
-        // Hook page: inject a fields quick-reference table before the Components section.
+        // Hook page: reformat section headings and inject fields table.
         if (isHookPage(page.model)) {
-          const fieldsSummary = buildFieldsSummary(this, page.model)
-          if (fieldsSummary) rendered = injectFieldsSummary(rendered, fieldsSummary)
+          rendered = reformatHookFunctionSection(rendered, page.model.name)
+          rendered = addExampleTitles(rendered)
+          const fieldsTable = buildFieldsTable(this, page.model)
+          if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

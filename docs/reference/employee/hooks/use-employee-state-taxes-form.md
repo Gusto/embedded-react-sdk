@@ -11,6 +11,15 @@ custom_edit_url: null
 
 # useEmployeeStateTaxesForm
 
+<a id="useemployeestatetaxesform"></a>
+
+> **useEmployeeStateTaxesForm**(`props`): [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
+
+Headless form hook for updating an employee's state tax withholding answers.
+The set of questions is driven by the API response per state, so
+`form.Fields` is an array of state groups with discriminated, render-ready
+`Field` components rather than a fixed named object.
+
 <!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: overview) -->
 ## Field variants and promotion
 
@@ -31,42 +40,49 @@ Two per-key rules override the variant mapping:
 - Once an answer to `file_new_hire_report` has been recorded server-side it is marked `isDisabled: true` in metadata — after filing, the choice is locked.
 <!-- /guide-source (slot: overview) -->
 
-## Form Hooks
-
-<a id="useemployeestatetaxesform"></a>
-
-### useEmployeeStateTaxesForm()
-
-> **useEmployeeStateTaxesForm**(`props`): [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
-
-Headless form hook for updating an employee's state tax withholding answers.
-The set of questions is driven by the API response per state, so
-`form.Fields` is an array of state groups with discriminated, render-ready
-`Field` components rather than a fixed named object.
-
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseEmployeeStateTaxesFormProps`](#useemployeestatetaxesformprops) | Hook options. |
 
-#### Returns
+## Returns
 
 [`UseEmployeeStateTaxesFormResult`](#useemployeestatetaxesformresult)
 
 A loading result while data is fetching, or a ready result with
 form data, fields, status, actions, and error handling.
 
-#### Remarks
+<a id="useemployeestatetaxesformready"></a>
+
+## UseEmployeeStateTaxesFormReady
+
+Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesform) — the
+`isLoading: false` branch of [UseEmployeeStateTaxesFormResult](#useemployeestatetaxesformresult).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Form actions. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
+| `data` | `object` | Current per-state tax records returned by the server. |
+| `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` & `object` | Form internals plus the iterable per-state `Fields` array. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"update"` | - |
+
+## Remarks
 
 The state-tax record(s) are created automatically with the employee, so this
 hook is always in update mode. When the form has no states with submittable
 answers (e.g. an employee in a no-income-tax state), submit resolves with
 the existing record list without making a network request.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   useEmployeeStateTaxesForm,
   SDKFormProvider,
@@ -209,34 +225,6 @@ Options accepted by [useEmployeeStateTaxesForm](#useemployeestatetaxesform).
 | `isAdmin?` | `boolean` | When `true`, admin-only questions are visible and submitted. When `false`, they are filtered out and the surfaced answer for those questions is preserved unchanged on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`. Set to `false` when composing with other forms. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="useemployeestatetaxesformready"></a>
-
-### UseEmployeeStateTaxesFormReady
-
-Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesform) — the
-`isLoading: false` branch of [UseEmployeeStateTaxesFormResult](#useemployeestatetaxesformresult).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata), [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Form actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
-| `data` | `object` | Current per-state tax records returned by the server. |
-| `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` & `object` | Form internals plus the iterable per-state `Fields` array. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"update"` | - |
 
 ## Type Aliases
 

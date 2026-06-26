@@ -11,29 +11,50 @@ custom_edit_url: null
 
 # useContractorAddressForm
 
-## Form Hooks
-
 <a id="usecontractoraddressform"></a>
-
-### useContractorAddressForm()
 
 > **useContractorAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Form hook for editing a contractor's address.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
 
-#### Remarks
+<a id="usecontractoraddressformready"></a>
+
+## UseContractorAddressFormReady
+
+Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Available actions. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
+| `data` | `object` | Static entity data resolved from the API. |
+| `data.contractor` | `Contractor` | The full contractor entity loaded alongside the address. |
+| `data.contractorAddress` | `ContractorAddress` | The contractor address row loaded for update. |
+| `data.contractorType` | `ContractorType` \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`ContractorAddressFields`](#contractoraddressfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Reactive status flags. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"update"` | - |
+
+## Remarks
 
 A contractor always has exactly one address (created with the contractor),
 so this hook operates only in update mode and issues a PUT on submit. The
@@ -41,15 +62,18 @@ same address is labelled a "home" address for Individual contractors and a
 "business" address for Business contractors; the hook exposes `contractorType`
 so the consuming component can choose the appropriate copy.
 
-## Fields
+## ContractorAddressFields
+<a id="contractoraddressfields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`ContractorAddressCity`](#contractoraddresscityfield) | Required. |
-| [`ContractorAddressState`](#contractoraddressstatefield) | Options are the standard two-letter US state abbreviations. Required. |
-| [`ContractorAddressStreet1`](#contractoraddressstreet1field) | Required. |
-| [`ContractorAddressStreet2`](#contractoraddressstreet2field) | Optional. |
-| [`ContractorAddressZip`](#contractoraddresszipfield) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `City` | — | — |
+| `State` | — | — |
+| `Street1` | — | — |
+| `Street2` | — | — |
+| `Zip` | — | — |
 
 ## Components
 
@@ -164,24 +188,6 @@ hook.
 
 ## Interfaces
 
-<a id="contractoraddressfields"></a>
-
-### ContractorAddressFields
-
-Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `City` | (`props`) => `Element` | City text input. Required. |
-| `State` | (`props`) => `Element` | State selector. Required. |
-| `Street1` | (`props`) => `Element` | Street address line 1 text input. Required. |
-| `Street2` | (`props`) => `Element` | Street address line 2 text input. Optional. |
-| `Zip` | (`props`) => `Element` | ZIP code text input. Required. |
-
-***
-
 <a id="contractoraddresssubmitoptions"></a>
 
 ### ContractorAddressSubmitOptions
@@ -211,44 +217,6 @@ Configuration options for [useContractorAddressForm](#usecontractoraddressform).
 | `optionalFieldsToRequire?` | [`ContractorAddressOptionalFieldsToRequire`](#contractoraddressoptionalfieldstorequire) | Override fields that are optional by default to be required. See `ContractorAddressOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usecontractoraddressformready"></a>
-
-### UseContractorAddressFormReady
-
-Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorAddressFormData`](#contractoraddressformdata), [`ContractorAddressFields`](#contractoraddressfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
-| `data` | `object` | Static entity data resolved from the API. |
-| `data.contractor` | `Contractor` | The full contractor entity loaded alongside the address. |
-| `data.contractorAddress` | `ContractorAddress` | The contractor address row loaded for update. |
-| `data.contractorType` | `ContractorType` \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorAddressFields`](#contractoraddressfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Reactive status flags. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"update"` | - |
 
 ## Type Aliases
 

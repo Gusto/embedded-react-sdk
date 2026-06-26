@@ -11,29 +11,49 @@ custom_edit_url: null
 
 # useDeductionForm
 
-## Form Hooks
-
 <a id="usedeductionform"></a>
-
-### useDeductionForm()
 
 > **useDeductionForm**(`input`): [`UseDeductionFormResult`](#usedeductionformresult)
 
 Headless hook for creating or updating a non-child-support deduction.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`UseDeductionFormProps`](#usedeductionformprops) | See [UseDeductionFormProps](#usedeductionformprops). |
 
-#### Returns
+## Returns
 
 [`UseDeductionFormResult`](#usedeductionformresult)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
 
-#### Remarks
+<a id="usedeductionformready"></a>
+
+## UseDeductionFormReady
+
+Ready-state shape returned by [useDeductionForm](#usedeductionform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submission action. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `data` | `object` | Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. |
+| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state and reactive flags derived from current form input. |
+| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
+| `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
+| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
+
+## Remarks
 
 Both variants — post-tax custom deductions and court-ordered garnishments —
 share the same field set (description, frequency, deduct-as-percentage,
@@ -48,9 +68,9 @@ child-support garnishments, use [useChildSupportGarnishmentForm](use-child-suppo
 instead — those require agency-keyed required attributes (case number,
 order number, remittance number, county) that this hook doesn't model.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useDeductionForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
@@ -87,18 +107,6 @@ function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`AnnualMaximum`](#annualmaximumfield) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
-| [`DeductAsPercentage`](#deductaspercentagefield) | Always rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency amount when `false`, or as a percentage of paycheck when `true`. |
-| [`DeductionAmount`](#deductionamountfield) | Always rendered. Interpreted as a currency amount when `Fields.DeductAsPercentage` is set to a fixed amount, or as a percentage of paycheck when it's set to percentage. |
-| [`Description`](#descriptionfield) | Always rendered. |
-| [`GarnishmentType`](#garnishmenttypefield) | Always null-check before rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`, `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For child-support garnishments, use {@link useChildSupportGarnishmentForm}. |
-| [`Recurring`](#recurringfield) | Always rendered. Picks between a recurring deduction (taken every paycheck) and a one-time deduction. The cap fields (`Fields.TotalAmount` and `Fields.AnnualMaximum`) are exposed only when this is set to recurring. |
-| [`TotalAmount`](#totalamountfield) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
 
 ## Components
 
@@ -311,45 +319,6 @@ post-tax custom variant and the court-ordered garnishment variant.
 | `optionalFieldsToRequire?` | [`DeductionFormOptionalFieldsToRequire`](#deductionformoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See [DeductionFormOptionalFieldsToRequire](#deductionformoptionalfieldstorequire). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usedeductionformready"></a>
-
-### UseDeductionFormReady
-
-Ready-state shape returned by [useDeductionForm](#usedeductionform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
-the deduction-specific `data`, `status`, `actions`, and `form.Fields` shape.
-Static, entity-derived values live under `data.*`; reactive values that
-flip with form input live under `status.*`.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`DeductionFormData`](#deductionformdata), [`DeductionFormFields`](#deductionformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
-| `data` | `object` | Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. |
-| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state and reactive flags derived from current form input. |
-| `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
-| `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
-| `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
 
 ## Type Aliases
 

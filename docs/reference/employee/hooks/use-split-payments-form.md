@@ -11,29 +11,55 @@ custom_edit_url: null
 
 # useSplitPaymentsForm
 
-## Form Hooks
-
 <a id="usesplitpaymentsform"></a>
-
-### useSplitPaymentsForm()
 
 > **useSplitPaymentsForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops) | See [UseSplitPaymentsFormProps](#usesplitpaymentsformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 A loading-state result while the payment method and bank accounts are loading, or a [UseSplitPaymentsFormReady](#usesplitpaymentsformready) once ready.
 
-#### Remarks
+<a id="usesplitpaymentsformready"></a>
+
+## UseSplitPaymentsFormReady
+
+Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Actions that mutate the form or submit it. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
+| `actions.reorderSplits` | (`orderedUuids`) => `void` | Reorder splits by uuid (Amount mode). Pass the ordered list of split uuids; the last uuid becomes the remainder. The hook writes the new priority map and re-anchors the remainder's `splitAmount` to `null` (clearing the previous remainder to `0`). |
+| `data` | `object` | Server-fetched data and derived working values. |
+| `data.bankAccounts` | `EmployeeBankAccount`[] | All bank accounts available to allocate splits across. |
+| `data.paymentMethod` | `EmployeePaymentMethod` | The employee's current payment method. |
+| `data.remainderId` | `string` | UUID of the split that absorbs the remainder in Amount mode (always the last by priority). |
+| `data.splits` | [`WorkingSplit`](#workingsplit)[] | The current working split entries, one per bank account. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`SplitPaymentsFormFields`](#splitpaymentsformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submission state and reactive form-level flags. |
+| `status.hasPercentageImbalance` | `boolean` | `true` after a failed Percentage-mode Save when the splits don't sum to 100; clears live as the user corrects the total. Follows the standard react-hook-form validation lifecycle (controlled by `validationMode`). Only surfaces in Percentage mode. |
+| `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
+| `status.mode` | `"update"` | Always `'update'` — the hook always edits an existing payment method. |
+| `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
+| `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
+
+## Remarks
 
 Supports two split modes: Percentage (whole-number shares that sum to 100)
 and Amount (dollar amounts, with the last-priority split absorbing the
@@ -45,9 +71,9 @@ The Percentage sum-to-100 invariant is surfaced via
 `validationMode: 'onSubmit'`, the imbalance flag appears after the first
 failed Save and clears live as the user corrects the total.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   useSplitPaymentsForm,
   SDKFormProvider,
@@ -199,44 +225,6 @@ Props for [useSplitPaymentsForm](#usesplitpaymentsform).
 | `optionalFieldsToRequire?` | [`SplitPaymentsFormOptionalFieldsToRequire`](#splitpaymentsformoptionalfieldstorequire) | Override optional fields to be required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usesplitpaymentsformready"></a>
-
-### UseSplitPaymentsFormReady
-
-Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`SplitPaymentsFormData`](#splitpaymentsformdata), [`SplitPaymentsFormFields`](#splitpaymentsformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Actions that mutate the form or submit it. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.reorderSplits` | (`orderedUuids`) => `void` | Reorder splits by uuid (Amount mode). Pass the ordered list of split uuids; the last uuid becomes the remainder. The hook writes the new priority map and re-anchors the remainder's `splitAmount` to `null` (clearing the previous remainder to `0`). |
-| `data` | `object` | Server-fetched data and derived working values. |
-| `data.bankAccounts` | `EmployeeBankAccount`[] | All bank accounts available to allocate splits across. |
-| `data.paymentMethod` | `EmployeePaymentMethod` | The employee's current payment method. |
-| `data.remainderId` | `string` | UUID of the split that absorbs the remainder in Amount mode (always the last by priority). |
-| `data.splits` | [`WorkingSplit`](#workingsplit)[] | The current working split entries, one per bank account. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`SplitPaymentsFormFields`](#splitpaymentsformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submission state and reactive form-level flags. |
-| `status.hasPercentageImbalance` | `boolean` | `true` after a failed Percentage-mode Save when the splits don't sum to 100; clears live as the user corrects the total. Follows the standard react-hook-form validation lifecycle (controlled by `validationMode`). Only surfaces in Percentage mode. |
-| `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
-| `status.mode` | `"update"` | Always `'update'` — the hook always edits an existing payment method. |
-| `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
-| `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
 
 ***
 

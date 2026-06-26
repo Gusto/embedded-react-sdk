@@ -34,6 +34,27 @@ allowed for its current onboarding state.
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
 
+<a id="useemployeelistready"></a>
+
+#### UseEmployeeListReady
+
+Ready state of [useEmployeeList](#useemployeelist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
+| `actions.onCancelSelfOnboarding` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onDelete` | (`employeeId`) => `Promise`\<`void`\> | Deletes the employee. |
+| `actions.onReview` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
+| `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
+| `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `pagination` | [`PaginationControlProps`](../../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
+| `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
+| `status.isFetching` | `boolean` | - |
+| `status.isPending` | `boolean` | - |
+
 #### Remarks
 
 `employeeType` maps to a server-side filter and changes which actions appear on each row:
@@ -124,35 +145,6 @@ Props for [useEmployeeList](#useemployeelist).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `employeeType?` | [`EmployeeType`](#employeetype) | Filters the list and tailors the allowed actions. Omit to list all employees. |
-
-***
-
-<a id="useemployeelistready"></a>
-
-### UseEmployeeListReady
-
-Ready state of [useEmployeeList](#useemployeelist).
-
-#### Extends
-
-- [`BaseHookReady`](../../utilities.md#basehookready)\<\{ `employees`: [`EmployeeWithActions`](#employeewithactions)[]; \}, \{ `isFetching`: `boolean`; `isPending`: `boolean`; \}\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
-| `actions.onCancelSelfOnboarding` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
-| `actions.onDelete` | (`employeeId`) => `Promise`\<`void`\> | Deletes the employee. |
-| `actions.onReview` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
-| `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
-| `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `pagination` | [`PaginationControlProps`](../../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
-| `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
-| `status.isFetching` | `boolean` | - |
-| `status.isPending` | `boolean` | - |
 
 ## Type Aliases
 

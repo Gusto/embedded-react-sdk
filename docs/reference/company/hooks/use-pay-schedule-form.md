@@ -11,29 +11,51 @@ custom_edit_url: null
 
 # usePayScheduleForm
 
-## Form Hooks
-
 <a id="usepayscheduleform"></a>
-
-### usePayScheduleForm()
 
 > **usePayScheduleForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 Form hook for creating or updating a company pay schedule.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UsePayScheduleFormProps`](#usepayscheduleformprops) | See [UsePayScheduleFormProps](#usepayscheduleformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
 
-#### Remarks
+<a id="usepayscheduleformready"></a>
+
+## UsePayScheduleFormReady
+
+Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Available actions. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
+| `data` | `object` | Static entity data resolved from the API. |
+| `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
+| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
+| `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
+| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Reactive status flags. |
+| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
+
+## Remarks
 
 When `payScheduleId` is supplied the hook loads that schedule and issues an
 update on submit; when omitted it operates in create mode. While both anchor
@@ -42,9 +64,9 @@ preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
 the company's payment configuration and is useful for surfacing UI hints
 about how far ahead the first pay date must be.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import {
   usePayScheduleForm,
   SDKFormProvider,
@@ -94,17 +116,20 @@ function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleForm
 }
 ```
 
-## Fields
+## PayScheduleFields
+<a id="payschedulefields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`AnchorEndOfPayPeriod`](#anchorendofpayperiodfield) | Always required. Represents the end date of the first pay period and is used to calculate future pay periods. May be the same date as the first pay date. |
-| [`AnchorPayDate`](#anchorpaydatefield) | Always required. Represents the date of the first paycheck under this schedule. |
-| [`CustomName`](#customnamefield) | Always required. |
-| [`CustomTwicePerMonth`](#customtwicepermonthfield) | Only present when the selected frequency is `'Twice per month'`; otherwise the entry on `Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the month) and `'custom'` (manual day entry via `Day1` and `Day2`). |
-| [`Day1`](#day1field) | Only present when the frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
-| [`Day2`](#day2field) | Only present when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
-| [`Frequency`](#frequencyfield) | Always required. Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed. |
+Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `AnchorEndOfPayPeriod` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the end date of the first pay period and is used to calculate future pay periods. May be the same date as the first pay date. |
+| `AnchorPayDate` | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always required. Represents the date of the first paycheck under this schedule. |
+| `CustomName` | [TextInput](../../utilities.md#textinputhookfieldprops) | Always required. |
+| `CustomTwicePerMonth` | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Only present when the selected frequency is `'Twice per month'`; otherwise the entry on `Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the month) and `'custom'` (manual day entry via `Day1` and `Day2`). |
+| `Day1` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| `Day2` | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Only present when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| `Frequency` | [Select](../../utilities.md#selecthookfieldprops) | Always required. Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed. |
 
 ## Components
 
@@ -268,32 +293,6 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ## Interfaces
 
-<a id="payschedulefields"></a>
-
-### PayScheduleFields
-
-Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
-
-#### Remarks
-
-`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
-on the selected frequency and twice-per-month strategy — always null-check them
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AnchorEndOfPayPeriod` | (`props`) => `Element` | First pay period end date picker. Always available. |
-| `AnchorPayDate` | (`props`) => `Element` | First pay date picker. Always available. |
-| `CustomName` | (`props`) => `Element` | Display name text input. Always available. |
-| `CustomTwicePerMonth` | ((`props`) => `Element`) \| `undefined` | Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
-| `Day1` | ((`props`) => `Element`) \| `undefined` | First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
-| `Day2` | ((`props`) => `Element`) \| `undefined` | Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
-| `Frequency` | (`props`) => `Element` | Frequency selector. Always available. |
-
-***
-
 <a id="usepayscheduleformprops"></a>
 
 ### UsePayScheduleFormProps
@@ -314,45 +313,6 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 | `payScheduleId?` | `string` | When set, loads that pay schedule and updates it on submit. When omitted, the form is in create mode and creates a new schedule on submit. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usepayscheduleformready"></a>
-
-### UsePayScheduleFormReady
-
-Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
-
-#### Remarks
-
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with the
-pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`PayScheduleFormData`](#payscheduleformdata), [`PayScheduleFields`](#payschedulefields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Available actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
-| `data` | `object` | Static entity data resolved from the API. |
-| `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
-| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
-| `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
-| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Reactive status flags. |
-| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
 
 ## Type Aliases
 

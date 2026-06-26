@@ -11,29 +11,47 @@ custom_edit_url: null
 
 # useBankForm
 
-## Form Hooks
-
 <a id="usebankform"></a>
-
-### useBankForm()
 
 > **useBankForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 Headless React Hook Form hook for creating an employee bank account.
 
-#### Parameters
+## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
 
-#### Remarks
+<a id="usebankformready"></a>
+
+## UseBankFormReady
+
+Ready-state return value of [useBankForm](#usebankform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
+| `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`BankFormFields`](#bankformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"create"` | - |
+
+## Remarks
 
 Captures the account nickname, routing number, account number, and account
 type. Creating a bank account also updates the employee's payment method on
@@ -41,9 +59,9 @@ the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
 discriminated union; in practice the hook transitions to the ready state
 immediately because it does not fetch any server data.
 
-#### Example
+## Example
 
-```tsx
+```tsx title="Example"
 import { useBankForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function AddBankAccount({ employeeId }: { employeeId: string }) {
@@ -70,15 +88,6 @@ function AddBankAccount({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Fields
-
-| Field | Notes |
-| ----- | ----- |
-| [`AccountNumber`](#accountnumberfield) | Validates the value against a 1–17 digit numeric pattern. |
-| [`AccountType`](#accounttypefield) | Options are `Checking` and `Savings`; defaults to `Checking` when no value is supplied. Supply `getOptionLabel` to translate the option labels. |
-| [`Name`](#namefield) | Captures the account nickname. |
-| [`RoutingNumber`](#routingnumberfield) | Validates the value against a 9-digit numeric pattern. |
 
 ## Components
 
@@ -234,36 +243,6 @@ Props for [useBankForm](#usebankform).
 | `optionalFieldsToRequire?` | [`BankFormOptionalFieldsToRequire`](#bankformoptionalfieldstorequire) | Override optional fields to be required. Reserved for future schema expansion — every field is required by default. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usebankformready"></a>
-
-### UseBankFormReady
-
-Ready-state return value of [useBankForm](#usebankform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`BankFormData`](#bankformdata), [`BankFormFields`](#bankformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
-| `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`BankFormFields`](#bankformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"create"` | - |
 
 ## Type Aliases
 

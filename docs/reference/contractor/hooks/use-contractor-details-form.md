@@ -11,11 +11,7 @@ custom_edit_url: null
 
 # useContractorDetailsForm
 
-## Form Hooks
-
 <a id="usecontractordetailsform"></a>
-
-### useContractorDetailsForm()
 
 > **useContractorDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
@@ -23,7 +19,7 @@ Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
 self-onboarding preference.
 
-#### UseContractorDetailsFormSharedProps
+## UseContractorDetailsFormSharedProps
 
 <a id="usecontractordetailsformsharedprops"></a>
 
@@ -37,13 +33,36 @@ Shared options merged into both branches of [UseContractorDetailsFormProps](#use
 | `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
 | `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
 
-#### Returns
+## Returns
 
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
 
-#### Remarks
+<a id="usecontractordetailsformready"></a>
+
+## UseContractorDetailsFormReady
+
+The ready-state result returned by [useContractorDetailsForm](#usecontractordetailsform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit and related actions. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Contractor`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
+| `data` | `object` | The loaded contractor data, or `null` in create mode. |
+| `data.contractor` | `Contractor` \| `null` | The contractor being edited, or `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit status and form mode. |
+| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
+
+## Remarks
 
 Returns a discriminated union: a loading variant while the contractor fetch
 resolves, and a ready variant exposing the form's data, pending status,
@@ -52,24 +71,27 @@ driven by the current `type`, `wageType`, and self-onboarding selection;
 fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
 is only toggleable when the contractor's onboarding status allows it.
 
-## Fields
+## ContractorDetailsFields
+<a id="contractordetailsfields"></a>
 
-| Field | Notes |
-| ----- | ----- |
-| [`ContractorBusinessName`](#contractorbusinessnamefield) | — |
-| [`ContractorEin`](#contractoreinfield) | Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on file, the field shows a masked placeholder and the required rule is waived. |
-| [`ContractorEmail`](#contractoremailfield) | — |
-| [`ContractorFileNewHireReport`](#contractorfilenewhirereportfield) | When enabled, a work state must be supplied so the new-hire report can be filed. |
-| [`ContractorFirstName`](#contractorfirstnamefield) | — |
-| [`ContractorHourlyRate`](#contractorhourlyratefield) | — |
-| [`ContractorLastName`](#contractorlastnamefield) | — |
-| [`ContractorMiddleInitial`](#contractormiddleinitialfield) | Always optional. |
-| [`ContractorSelfOnboarding`](#contractorselfonboardingfield) | Always null-check before rendering. When enabled, the contractor is invited to enter their own details and SSN/EIN are no longer collected by the admin. |
-| [`ContractorSsn`](#contractorssnfield) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field shows a masked placeholder and the required rule is waived. |
-| [`ContractorStartDate`](#contractorstartdatefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| [`ContractorType`](#contractortypefield) | Selects whether the contractor is an `Individual` or a `Business`. Provide `getOptionLabel` to localize the option labels. |
-| [`ContractorWageType`](#contractorwagetypefield) | Selects whether the contractor is paid `Fixed` or `Hourly`. Provide `getOptionLabel` to localize the option labels. |
-| [`ContractorWorkState`](#contractorworkstatefield) | — |
+The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `BusinessName` | — | — |
+| `Ein` | — | — |
+| `Email` | — | — |
+| `FileNewHireReport` | — | — |
+| `FirstName` | — | — |
+| `HourlyRate` | — | — |
+| `LastName` | — | — |
+| `MiddleInitial` | — | — |
+| `SelfOnboarding` | — | — |
+| `Ssn` | — | — |
+| `StartDate` | — | — |
+| `Type` | — | — |
+| `WageType` | — | — |
+| `WorkState` | — | — |
 
 ## Components
 
@@ -405,39 +427,6 @@ Contractor wage type enum (`Fixed` / `Hourly`) re-exported from the API model.
 
 ## Interfaces
 
-<a id="contractordetailsfields"></a>
-
-### ContractorDetailsFields
-
-The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
-
-#### Remarks
-
-Conditionally-visible fields are `undefined` when they do not apply to the
-current `type`, `wageType`, or self-onboarding selection. Always null-check
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `BusinessName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
-| `Ein` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ein`; available only for business contractors who are not self-onboarding. |
-| `Email` | ((`props`) => `Element`) \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
-| `FileNewHireReport` | ((`props`) => `Element`) \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
-| `FirstName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
-| `HourlyRate` | ((`props`) => `Element`) \| `undefined` | Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`. |
-| `LastName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
-| `MiddleInitial` | ((`props`) => `Element`) \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
-| `SelfOnboarding` | ((`props`) => `Element`) \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
-| `Ssn` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ssn`; available only for individual contractors who are not self-onboarding. |
-| `StartDate` | (`props`) => `Element` | Date picker bound to `startDate`. Always available. |
-| `Type` | (`props`) => `Element` | Radio group bound to `type`. Always available. |
-| `WageType` | (`props`) => `Element` | Radio group bound to `wageType`. Always available. |
-| `WorkState` | ((`props`) => `Element`) \| `undefined` | Select bound to `workState`; available only for individual contractors filing a new-hire report. |
-
-***
-
 <a id="contractordetailssubmitoptions"></a>
 
 ### ContractorDetailsSubmitOptions
@@ -449,37 +438,6 @@ Optional overrides passed to [onSubmit](#usecontractordetailsformready).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId?` | `string` | Override the company identifier supplied to the hook (e.g. after creating the company in the same flow). Only used in create mode. |
-
-***
-
-<a id="usecontractordetailsformready"></a>
-
-### UseContractorDetailsFormReady
-
-The ready-state result returned by [useContractorDetailsForm](#usecontractordetailsform) once data has loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorDetailsFormData`](#contractordetailsformdata), [`ContractorDetailsFields`](#contractordetailsfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Contractor`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
-| `data` | `object` | The loaded contractor data, or `null` in create mode. |
-| `data.contractor` | `Contractor` \| `null` | The contractor being edited, or `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit status and form mode. |
-| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
 
 ## Type Aliases
 
