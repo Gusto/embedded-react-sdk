@@ -26,6 +26,7 @@ export interface StateTaxesListProps extends BaseComponentInterface<'Company.Sta
  * @remarks
  * Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |

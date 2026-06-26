@@ -38,6 +38,7 @@ export interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee
  * summary otherwise. Persists the selection to the employee's onboarding
  * documents configuration and advances the parent flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |

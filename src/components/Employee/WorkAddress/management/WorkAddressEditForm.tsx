@@ -64,7 +64,7 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
 /**
  * Standalone employee work address edit form for creating, updating, and deleting addresses.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/workAddress/created` | A new work address was created | {@link EmployeeWorkAddress} |

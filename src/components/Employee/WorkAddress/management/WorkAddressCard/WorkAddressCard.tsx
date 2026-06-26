@@ -26,6 +26,7 @@ export interface WorkAddressCardProps {
  * @remarks
  * Fetches the employee's active work address and renders it alongside a Manage button.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/workAddress/editRequested` | Manage button clicked | `{ employeeId: string }` |

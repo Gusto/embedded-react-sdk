@@ -33,7 +33,7 @@ export interface PayrollLandingProps extends BaseComponentInterface<'Payroll.Pay
  * Main landing surface for payroll operations, with tabs for running payroll and
  * viewing payroll history, plus inline navigation to a payroll's overview and receipt.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid: string, payPeriod: object }` |

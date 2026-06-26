@@ -41,6 +41,8 @@ has zero or one non-Nonexempt job) and a jobs-list view (when multiple
 roles need to be managed) on first mount; on subsequent refetches the user
 stays on their current step.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/job/created` | Fired after a job is successfully created | Job |
@@ -88,6 +90,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Renders the employee's current deductions as a list, with an empty state when none exist. Users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -141,6 +145,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Fetches the employee's forms and renders the list of documents that still
 require signing along with a continue action once everything is signed.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/forms/view` | Fired when a form's "Sign" action is selected | `{ uuid: string; name?: string }` |
@@ -173,6 +179,8 @@ Lists the employee's pending forms and routes through the signing UI for each
 one. When `withEmployeeI9` is `true` and the employee's I-9 has not been
 signed, the flow starts on the I-9 employment eligibility step before
 presenting the document list.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -222,6 +230,8 @@ The submit chain saves the job first, then the compensation. The `employee/job_c
 `employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
 fires once the compensation is saved and signals the full save is complete.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/job_created` | Fired when a new job is saved. | The saved [Job](https://docs.gusto.com/embedded-payroll/reference/get-v1-jobs-job_id). |
@@ -255,6 +265,8 @@ can choose whether their employer will collect I-9 verification) and a
 summary otherwise. Persists the selection to the employee's onboarding
 documents configuration and advances the parent flow.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |
@@ -282,7 +294,7 @@ Props for [EmployeeList](#employeelist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -319,6 +331,8 @@ national, permanent resident, or alien authorized to work — and any
 document details required for that status. Updates the employee's I-9
 authorization record on submit.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |
@@ -347,6 +361,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 ### Remarks
 
 The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -379,6 +395,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Renders the I-9 PDF, surfaces the current employment-eligibility status, and
 collects the employee's signature along with any preparer or translator
 details. On successful submission the signed form is emitted.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -474,6 +492,8 @@ Lets the employee (or admin acting on their behalf) choose between Direct
 Deposit and Check, add bank accounts, and configure split-paycheck
 allocations across multiple accounts.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/paymentMethod/updated` | Fired after the payment method is saved | The updated payment method |
@@ -529,6 +549,8 @@ home address only — the active work address is read-only) based on
 `isAdmin`. Both variants create the employee on submit when `employeeId`
 is omitted.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/created` | Fired after an employee is successfully created | Employee |
@@ -566,6 +588,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Renders the form's PDF and collects the employee's signature. On successful
 submission the signed form is emitted; cancelling returns to the document list.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/forms/sign` | Fired after the form is successfully signed | Form |
@@ -594,7 +618,7 @@ Props for [StateTaxes](#statetaxes).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

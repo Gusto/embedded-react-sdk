@@ -31,6 +31,7 @@ export interface StateTaxesCardProps {
  * The Edit button is hidden when no state on record has any tax-withholding
  * questions (e.g. states with no income tax), since there is nothing to edit.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/stateTaxes/editRequested` | Edit button was clicked | `{ employeeId: string }` |

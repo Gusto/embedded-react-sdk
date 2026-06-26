@@ -40,7 +40,7 @@ const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
  * employees, and setting deduction and tax withholding preferences, then submits the
  * resulting payroll for execution.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |

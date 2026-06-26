@@ -52,6 +52,7 @@ export interface PayrollListBlockProps extends BaseComponentInterface<never> {
  * using `PayrollList` directly, render an equivalent resolution surface
  * alongside it.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |

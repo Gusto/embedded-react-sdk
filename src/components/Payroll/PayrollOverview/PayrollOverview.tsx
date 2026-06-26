@@ -97,6 +97,7 @@ const findWireInRequestUuid = (
  * blocker has a selected unblock option. While the payroll is processing, the component
  * polls until success or failure and emits the corresponding event.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/edit` | User chose to edit the payroll before submitting | — |

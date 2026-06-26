@@ -42,6 +42,7 @@ function DocumentsFlow({ employeeId, onEvent }: DocumentsProps) {
  * View CTA is selected; cancelling from the document manager returns to the
  * card.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/documents/card/viewRequested` | Fired when a row's View CTA is clicked on the documents card | `{ employeeId: string; formId: string }` |

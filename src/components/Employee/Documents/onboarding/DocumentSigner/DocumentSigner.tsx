@@ -34,6 +34,7 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Employee.Do
  * signed, the flow starts on the I-9 employment eligibility step before
  * presenting the document list.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/employmentEligibility/done` | Fired after I-9 employment eligibility is captured | The updated I-9 authorization |

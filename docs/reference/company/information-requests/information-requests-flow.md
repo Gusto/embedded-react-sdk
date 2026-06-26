@@ -37,18 +37,6 @@ On successful submit, a dismissible success alert appears at the top of the list
 Information requests can also block payroll processing; in that case they are surfaced inline within
 `Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
-| `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
-| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
-
-Each piece is also exported as a standalone block (see the Sub-components
-table) for composing a custom workflow when this orchestration is the wrong
-fit. See the
-[Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
-for how to recompose these blocks into your own flow.
-
 ## InformationRequestsFlowProps
 
 <a id="informationrequestsflowprops"></a>
@@ -63,6 +51,20 @@ Props for InformationRequestsFlow.
 | `withAlert?` | `boolean` | When `true` (default), the submission success alert is rendered at the top of this component. Set to `false` when embedding in a parent that renders the alert elsewhere. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `informationRequest/respond` | Fired when the user clicks "Respond" on a request and the form modal opens | `{ requestId: string }` |
+| `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
+| `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
+
+Each piece is also exported as a standalone block (see the Sub-components
+table) for composing a custom workflow when this orchestration is the wrong
+fit. See the
+[Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
+for how to recompose these blocks into your own flow.
 
 ## Sub-components
 

@@ -27,6 +27,7 @@ export interface DocumentListProps extends BaseComponentInterface<'Employee.Docu
  * Fetches the employee's forms and renders the list of documents that still
  * require signing along with a continue action once everything is signed.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/forms/view` | Fired when a form's "Sign" action is selected | `{ uuid: string; name?: string }` |

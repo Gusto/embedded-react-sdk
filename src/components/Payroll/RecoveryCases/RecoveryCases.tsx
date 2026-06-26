@@ -27,6 +27,7 @@ interface RecoveryCasesInternalProps
  * {@link PayrollBlockerList}, but can be used standalone when you want a
  * dedicated recovery cases surface.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |

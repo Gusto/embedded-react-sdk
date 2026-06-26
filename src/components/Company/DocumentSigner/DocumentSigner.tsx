@@ -60,6 +60,7 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
  * been assigned for the company yet, the flow starts on the assign-signatory step before
  * presenting the document list.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/forms/view` | Fired when a user selects a form to sign from the document list | {@link Form} |

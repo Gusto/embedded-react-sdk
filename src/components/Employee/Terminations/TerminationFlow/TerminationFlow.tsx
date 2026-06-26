@@ -17,6 +17,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * On mount, the flow detects existing terminations: if an active termination exists, the form is pre-populated for editing; if the employee is already terminated, the user is routed to the summary view.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/termination/created` | Fired when a new termination is created | `{ employeeId: string, effectiveDate: string, payrollOption: PayrollOption }` |

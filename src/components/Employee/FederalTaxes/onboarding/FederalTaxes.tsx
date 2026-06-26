@@ -32,6 +32,7 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Employee.Fede
  * @remarks
  * The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/federalTaxes/updated` | Fired after the form is saved | The updated `EmployeeFederalTax` entity |

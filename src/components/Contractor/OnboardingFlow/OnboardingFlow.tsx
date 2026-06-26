@@ -27,6 +27,7 @@ import { Flow } from '@/components/Flow/Flow'
  * see the events table on each sub-component for the full set of events and
  * payloads observable from this flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/create` | Fired when the user chooses to add a new contractor | — |

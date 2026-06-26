@@ -76,6 +76,7 @@ export interface ProfileProps extends BaseComponentInterface<'Employee.Profile'>
  * `isAdmin`. Both variants create the employee on submit when `employeeId`
  * is omitted.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/created` | Fired after an employee is successfully created | {@link Employee} |
