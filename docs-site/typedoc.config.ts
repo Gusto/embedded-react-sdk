@@ -63,7 +63,7 @@ export const baseOptions = {
 
   // Custom block tag listing the components/hooks a flow composes; rendered as a
   // table by the SDK theme. Spread the defaults so the built-in tags are kept.
-  blockTags: [...OptionDefaults.blockTags, '@components'],
+  blockTags: [...OptionDefaults.blockTags, '@components', '@events'],
 } satisfies TypeDocOptions & PluginOptions
 
 export default {
