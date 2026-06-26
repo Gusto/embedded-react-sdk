@@ -17,7 +17,7 @@ custom_edit_url: null
 
 ### useContractorAddressForm()
 
-> **useContractorAddressForm**(`props`): [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+> **useContractorAddressForm**(`props`): [`HookLoadingResult`](../../reference/utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Form hook for editing a contractor's address.
 
@@ -29,9 +29,9 @@ Form hook for editing a contractor's address.
 
 #### Returns
 
-[`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+[`HookLoadingResult`](../../reference/utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
-A [HookLoadingResult](../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
+A [HookLoadingResult](../../reference/utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
 
 #### Remarks
 
@@ -65,7 +65,7 @@ Available on the hook result as `form.Fields.City`. Required.
 
 ### ContractorAddressCityFieldProps
 
-> **ContractorAddressCityFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> **ContractorAddressCityFieldProps** = [`HookFieldProps`](../../reference/utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../reference/utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.City` component.
 
@@ -219,7 +219,7 @@ standard two-letter US state abbreviations. Required.
 
 ### ContractorAddressStateFieldProps
 
-> **ContractorAddressStateFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
+> **ContractorAddressStateFieldProps** = [`HookFieldProps`](../../reference/utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../reference/utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
 
@@ -247,7 +247,7 @@ Available on the hook result as `form.Fields.Street1`. Required.
 
 ### ContractorAddressStreet1FieldProps
 
-> **ContractorAddressStreet1FieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> **ContractorAddressStreet1FieldProps** = [`HookFieldProps`](../../reference/utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../reference/utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street1` component.
 
@@ -275,7 +275,7 @@ Available on the hook result as `form.Fields.Street2`. Optional.
 
 ### ContractorAddressStreet2FieldProps
 
-> **ContractorAddressStreet2FieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+> **ContractorAddressStreet2FieldProps** = [`HookFieldProps`](../../reference/utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../reference/utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
 
@@ -318,7 +318,7 @@ ZIP code format and emits `INVALID_ZIP` when the value does not match.
 
 ### ContractorAddressZipFieldProps
 
-> **ContractorAddressZipFieldProps** = [`HookFieldProps`](../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../utilities.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
+> **ContractorAddressZipFieldProps** = [`HookFieldProps`](../../reference/utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../reference/utilities.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Zip` component.
 
@@ -365,30 +365,30 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 
 #### Remarks
 
-Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../utilities.md#baseformhookready) with
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../reference/utilities.md#baseformhookready) with
 the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 #### Extends
 
-- [`BaseFormHookReady`](../utilities.md#baseformhookready)\<[`FieldsMetadata`](../utilities.md#fieldsmetadata), [`ContractorAddressFormData`](#contractoraddressformdata), [`ContractorAddressFields`](#contractoraddressfields)\>
+- [`BaseFormHookReady`](../../reference/utilities.md#baseformhookready)\<[`FieldsMetadata`](../../reference/utilities.md#fieldsmetadata), [`ContractorAddressFormData`](#contractoraddressformdata), [`ContractorAddressFields`](#contractoraddressfields)\>
 
 #### Properties
 
 | Property                       | Type                                                                                                                      | Description                                                                                                      |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `actions`                      | `object`                                                                                                                  | Available actions.                                                                                               |
-| `actions.onSubmit`             | (`options?`) => `Promise`\<[`HookSubmitResult`](../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | -                                                                                                                |
+| `actions.onSubmit`             | (`options?`) => `Promise`\<[`HookSubmitResult`](../../reference/utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | -                                                                                                                |
 | `data`                         | `object`                                                                                                                  | Static entity data resolved from the API.                                                                        |
 | `data.contractor`              | `Contractor`                                                                                                              | The full contractor entity loaded alongside the address.                                                         |
 | `data.contractorAddress`       | `ContractorAddress`                                                                                                       | The contractor address row loaded for update.                                                                    |
 | `data.contractorType`          | `ContractorType` \| `undefined`                                                                                           | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business).     |
-| `errorHandling`                | [`HookErrorHandling`](../utilities.md#hookerrorhandling)                                                                  | Error state and recovery actions.                                                                                |
+| `errorHandling`                | [`HookErrorHandling`](../../reference/utilities.md#hookerrorhandling)                                                                  | Error state and recovery actions.                                                                                |
 | `form`                         | `object`                                                                                                                  | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields`                  | [`ContractorAddressFields`](#contractoraddressfields)                                                                     | -                                                                                                                |
-| `form.fieldsMetadata`          | [`FieldsMetadata`](../utilities.md#fieldsmetadata)                                                                        | -                                                                                                                |
+| `form.fieldsMetadata`          | [`FieldsMetadata`](../../reference/utilities.md#fieldsmetadata)                                                                        | -                                                                                                                |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined`                                                                      | -                                                                                                                |
-| `form.hookFormInternals`       | [`HookFormInternals`](../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\>     | -                                                                                                                |
-| `isLoading`                    | `false`                                                                                                                   | Always `false` in this branch; discriminates from [HookLoadingResult](../utilities.md#hookloadingresult).        |
+| `form.hookFormInternals`       | [`HookFormInternals`](../../reference/utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\>     | -                                                                                                                |
+| `isLoading`                    | `false`                                                                                                                   | Always `false` in this branch; discriminates from [HookLoadingResult](../../reference/utilities.md#hookloadingresult).        |
 | `status`                       | `object`                                                                                                                  | Reactive status flags.                                                                                           |
 | `status.isPending`             | `boolean`                                                                                                                 | -                                                                                                                |
 | `status.mode`                  | `"update"`                                                                                                                | -                                                                                                                |
@@ -399,6 +399,6 @@ the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` s
 
 ### UseContractorAddressFormResult
 
-> **UseContractorAddressFormResult** = [`HookLoadingResult`](../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+> **UseContractorAddressFormResult** = [`HookLoadingResult`](../../reference/utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 Discriminated union returned by [useContractorAddressForm](#usecontractoraddressform).
