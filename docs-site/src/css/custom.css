@@ -673,6 +673,17 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
   font-size: 0.8rem;
 }
 
+.breadcrumbs__item:not(.breadcrumbs__item--active) .breadcrumbs__link:any-link:hover {
+  background-color: transparent;
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark']
+  .breadcrumbs__item:not(.breadcrumbs__item--active)
+  .breadcrumbs__link:any-link:hover {
+  color: var(--ifm-color-primary);
+}
+
 .breadcrumbs__item--active .breadcrumbs__link {
   background-color: transparent;
   color: var(--ifm-color-primary-darkest);
