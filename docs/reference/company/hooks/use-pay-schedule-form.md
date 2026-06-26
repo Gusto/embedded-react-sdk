@@ -11,6 +11,101 @@ custom_edit_url: null
 
 # usePayScheduleForm
 
+## Form Hooks
+
+<a id="usepayscheduleform"></a>
+
+### usePayScheduleForm()
+
+> **usePayScheduleForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+
+Form hook for creating or updating a company pay schedule.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UsePayScheduleFormProps`](#usepayscheduleformprops) | See [UsePayScheduleFormProps](#usepayscheduleformprops). |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
+
+#### Remarks
+
+When `payScheduleId` is supplied the hook loads that schedule and issues an
+update on submit; when omitted it operates in create mode. While both anchor
+date fields are filled in, the hook fetches a live pay period calendar
+preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
+the company's payment configuration and is useful for surfacing UI hints
+about how far ahead the first pay date must be.
+
+#### Example
+
+```tsx
+import {
+  usePayScheduleForm,
+  SDKFormProvider,
+  type UsePayScheduleFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function PaySchedulePage({ companyId }: { companyId: string }) {
+  const paySchedule = usePayScheduleForm({ companyId })
+
+  if (paySchedule.isLoading) return <div>Loading...</div>
+
+  return <PayScheduleFormReady paySchedule={paySchedule} />
+}
+
+function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleFormReady }) {
+  const { Fields } = paySchedule.form
+
+  return (
+    <SDKFormProvider formHookResult={paySchedule}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void paySchedule.actions.onSubmit()
+        }}
+      >
+        <Fields.CustomName label="Name" validationMessages={{ REQUIRED: 'Name is required' }} />
+        <Fields.Frequency label="Frequency" validationMessages={{ REQUIRED: 'Frequency is required' }} />
+        {Fields.CustomTwicePerMonth && <Fields.CustomTwicePerMonth label="Frequency Options" />}
+        <Fields.AnchorPayDate label="First pay date" validationMessages={{ REQUIRED: 'Required' }} />
+        <Fields.AnchorEndOfPayPeriod label="First pay period end" validationMessages={{ REQUIRED: 'Required' }} />
+        {Fields.Day1 && (
+          <Fields.Day1
+            label="First pay day of the month"
+            validationMessages={{ REQUIRED: 'Required', DAY_RANGE: 'Must be 1–31' }}
+          />
+        )}
+        {Fields.Day2 && (
+          <Fields.Day2
+            label="Last pay day of the month"
+            validationMessages={{ REQUIRED: 'Required', DAY_RANGE: 'Must be 1–31' }}
+          />
+        )}
+        <button type="submit" disabled={paySchedule.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`AnchorEndOfPayPeriod`](#anchorendofpayperiodfield) | Always required. Represents the end date of the first pay period and is used to calculate future pay periods. May be the same date as the first pay date. |
+| [`AnchorPayDate`](#anchorpaydatefield) | Always required. Represents the date of the first paycheck under this schedule. |
+| [`CustomName`](#customnamefield) | Always required. |
+| [`CustomTwicePerMonth`](#customtwicepermonthfield) | Only present when the selected frequency is `'Twice per month'`; otherwise the entry on `Fields` is `undefined`. Options are `'1st15th'` (15th and last day of the month) and `'custom'` (manual day entry via `Day1` and `Day2`). |
+| [`Day1`](#day1field) | Only present when the frequency is `'Monthly'`, or when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| [`Day2`](#day2field) | Only present when the frequency is `'Twice per month'` and `customTwicePerMonth` is `'custom'`; otherwise the entry on `Fields` is `undefined`. Accepts integers in the range 1–31. |
+| [`Frequency`](#frequencyfield) | Always required. Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed. |
+
 ## Components
 
 <a id="anchorendofpayperiodfield"></a>
@@ -149,89 +244,6 @@ Select dropdown bound to the `frequency` field of [usePayScheduleForm](#usepaysc
 Available on the hook result as `form.Fields.Frequency`. Always required.
 Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and
 `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed.
-
-## Form Hooks
-
-<a id="usepayscheduleform"></a>
-
-### usePayScheduleForm()
-
-> **usePayScheduleForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
-
-Form hook for creating or updating a company pay schedule.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePayScheduleFormProps`](#usepayscheduleformprops) | See [UsePayScheduleFormProps](#usepayscheduleformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
-
-#### Remarks
-
-When `payScheduleId` is supplied the hook loads that schedule and issues an
-update on submit; when omitted it operates in create mode. While both anchor
-date fields are filled in, the hook fetches a live pay period calendar
-preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
-the company's payment configuration and is useful for surfacing UI hints
-about how far ahead the first pay date must be.
-
-#### Example
-
-```tsx
-import {
-  usePayScheduleForm,
-  SDKFormProvider,
-  type UsePayScheduleFormReady,
-} from '@gusto/embedded-react-sdk'
-
-function PaySchedulePage({ companyId }: { companyId: string }) {
-  const paySchedule = usePayScheduleForm({ companyId })
-
-  if (paySchedule.isLoading) return <div>Loading...</div>
-
-  return <PayScheduleFormReady paySchedule={paySchedule} />
-}
-
-function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleFormReady }) {
-  const { Fields } = paySchedule.form
-
-  return (
-    <SDKFormProvider formHookResult={paySchedule}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void paySchedule.actions.onSubmit()
-        }}
-      >
-        <Fields.CustomName label="Name" validationMessages={{ REQUIRED: 'Name is required' }} />
-        <Fields.Frequency label="Frequency" validationMessages={{ REQUIRED: 'Frequency is required' }} />
-        {Fields.CustomTwicePerMonth && <Fields.CustomTwicePerMonth label="Frequency Options" />}
-        <Fields.AnchorPayDate label="First pay date" validationMessages={{ REQUIRED: 'Required' }} />
-        <Fields.AnchorEndOfPayPeriod label="First pay period end" validationMessages={{ REQUIRED: 'Required' }} />
-        {Fields.Day1 && (
-          <Fields.Day1
-            label="First pay day of the month"
-            validationMessages={{ REQUIRED: 'Required', DAY_RANGE: 'Must be 1–31' }}
-          />
-        )}
-        {Fields.Day2 && (
-          <Fields.Day2
-            label="Last pay day of the month"
-            validationMessages={{ REQUIRED: 'Required', DAY_RANGE: 'Must be 1–31' }}
-          />
-        )}
-        <button type="submit" disabled={paySchedule.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 

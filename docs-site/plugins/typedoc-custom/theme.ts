@@ -8,6 +8,7 @@ import {
   ParameterReflection,
   ReferenceType,
   ReflectionKind,
+  ReflectionType,
   type SignatureReflection,
   type SomeType,
 } from 'typedoc'
@@ -18,6 +19,7 @@ import {
   getSidebarPosition,
   isComponent,
   isDomainHub,
+  isHookPage,
   isHooksIndex,
   isNamespaceIndex,
   NAMESPACE_PATHS,
@@ -331,11 +333,61 @@ function renderFunctionPropsTable(
 
   const param = params[0]!
   const component = param.parent?.parent
-  if (
-    !(component instanceof DeclarationReflection) ||
-    !isComponent(component) ||
-    !(param.type instanceof ReferenceType)
-  ) {
+  if (!(component instanceof DeclarationReflection)) return fallback(params)
+
+  // Hook: find UseXxxFormSharedProps by naming convention and inline it.
+  // The hook's input is typed as UseXxxFormProps (a union alias), not a direct interface,
+  // so the standard ReferenceType check below won't fire. We reach into the page model
+  // to find the SharedProps interface by name.
+  if (/^use[A-Z]/.test(component.name)) {
+    const hookNsModel = context.page?.model
+    if (hookNsModel instanceof DeclarationReflection) {
+      const sharedPropsName =
+        component.name.charAt(0).toUpperCase() + component.name.slice(1) + 'SharedProps'
+      const sharedProps = (hookNsModel.children ?? []).find(
+        (c): c is DeclarationReflection =>
+          c instanceof DeclarationReflection &&
+          c.name === sharedPropsName &&
+          (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
+      )
+      if (sharedProps) {
+        const parts: string[] = []
+        if (context.router.hasUrl(sharedProps) && context.options.getValue('useHTMLAnchors')) {
+          parts.push(`<a id="${context.router.getAnchor(sharedProps)}"></a>`)
+        }
+        if (sharedProps.comment) {
+          const commentMd = context.partials.comment(sharedProps.comment, {
+            showSummary: true,
+            showTags: true,
+          })
+          if (commentMd.trim()) parts.push(commentMd)
+        }
+        // For TypeAlias `= { ... }`, properties live on type.declaration.children.
+        // For Interface, they live directly on children.
+        const typeAliasDeclaration =
+          sharedProps.kind === ReflectionKind.TypeAlias &&
+          sharedProps.type instanceof ReflectionType
+            ? sharedProps.type.declaration
+            : null
+        const allProps = (
+          typeAliasDeclaration?.children ?? sharedProps.children ?? []
+        ).filter(c => c.isDeclaration())
+        if (allProps.length > 0) {
+          parts.push(
+            context.partials.propertiesTable(allProps, {
+              isEventProps: false,
+              kind: ReflectionKind.Interface,
+            }),
+          )
+        }
+        return parts.join('\n\n')
+      }
+    }
+    return fallback(params)
+  }
+
+  // Component: existing logic below (unchanged)
+  if (!isComponent(component) || !(param.type instanceof ReferenceType)) {
     return fallback(params)
   }
 
@@ -480,6 +532,64 @@ function insertComponentsTable(rendered: string, table: string): string {
   return `${rendered.trimEnd()}\n\n${table}\n`
 }
 
+/**
+ * Auto-generate a quick-reference fields table from the hook page's Components
+ * group. Each row names the field (as a link to its detailed anchor), plus the
+ * key sentence from its @remarks (stripped of the boilerplate "Available on the
+ * hook result as …" prefix). Returns null when no field components exist.
+ */
+function buildFieldsSummary(context: SDKThemeContext, model: DeclarationReflection): string | null {
+  const fieldsGroup = model.groups?.find(g => g.title === 'Components')
+  const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
+  if (fieldComponents.length === 0) return null
+
+  const rows: string[] = []
+  for (const field of fieldComponents) {
+    const fieldName = field.name.replace(/Field$/, '')
+    const url = context.router.hasUrl(field) ? context.urlTo(field) : null
+    const link = url ? `[\`${fieldName}\`](${url})` : `\`${fieldName}\``
+
+    const comment = field.signatures?.[0]?.comment ?? field.comment
+    const remarksTag = comment?.blockTags.find(t => t.tag === '@remarks')
+    const remarksText = remarksTag ? Comment.combineDisplayParts(remarksTag.content) : ''
+    // Strip the boilerplate first sentence: "Available on the hook result as `form.Fields.X`."
+    // Split at the first ". " boundary so cases like SelfOnboarding ("…as `form.Fields.X`
+    // when the field is toggleable. The field is…") also strip correctly — `. ` after the
+    // field reference is not guaranteed; the first sentence may run longer.
+    const strippedRemarks = remarksText.startsWith('Available on the hook result')
+      ? (() => {
+          const idx = remarksText.indexOf('. ')
+          return idx === -1 ? '' : remarksText.slice(idx + 2)
+        })()
+      : remarksText
+    const notes = strippedRemarks.replace(/\n+/g, ' ').replace(/\|/g, '\\|').trim()
+
+    rows.push(`| ${link} | ${notes || '—'} |`)
+  }
+
+  if (rows.length === 0) return null
+  return ['## Fields', '', '| Field | Notes |', '| ----- | ----- |', ...rows].join('\n')
+}
+
+/**
+ * Inject the fields summary table into the rendered hook page, immediately
+ * before the ## Components section that contains the detailed per-field docs.
+ * Falls back to appending if the Components section is absent.
+ */
+function injectFieldsSummary(rendered: string, summary: string): string {
+  const lines = rendered.split('\n')
+  const componentsSectionIndex = lines.findIndex(l => /^##\s+Components\s*$/.test(l))
+  if (componentsSectionIndex === -1) {
+    return `${rendered.trimEnd()}\n\n${summary}\n`
+  }
+  return [
+    ...lines.slice(0, componentsSectionIndex),
+    summary,
+    '',
+    ...lines.slice(componentsSectionIndex),
+  ].join('\n')
+}
+
 export class SDKTheme extends MarkdownTheme {
   override getRenderContext(
     page: ConstructorParameters<typeof MarkdownThemeContext>[1],
@@ -556,6 +666,35 @@ export class SDKTheme extends MarkdownTheme {
         }
       }
     }
+
+    // Protect hook SharedProps types so excludeNotDocumented keeps them for inline rendering.
+    for (const reflection of Object.values(context.project.reflections)) {
+      if (!(reflection instanceof DeclarationReflection)) continue
+      if (
+        reflection.kind !== ReflectionKind.Interface &&
+        reflection.kind !== ReflectionKind.TypeAlias
+      )
+        continue
+      if (!/^Use[A-Z][a-zA-Z]*SharedProps$/.test(reflection.name)) continue
+      if (!reflection.comment) {
+        reflection.comment = new Comment([
+          {
+            kind: 'text',
+            text: `Shared options for \`${reflection.name.replace(/SharedProps$/, '').replace(/^Use/, 'use')}\`.`,
+          },
+        ])
+      }
+      // For TypeAlias `= { ... }`, properties live on type.declaration.children.
+      const children =
+        reflection.kind === ReflectionKind.TypeAlias && reflection.type instanceof ReflectionType
+          ? (reflection.type.declaration.children ?? [])
+          : (reflection.children ?? [])
+      for (const child of children) {
+        if (!child.comment) {
+          child.comment = new Comment()
+        }
+      }
+    }
   }
 
   // Must run after GroupPlugin (priority -100) so that groups already exist.
@@ -627,29 +766,49 @@ export class SDKThemeContext extends MarkdownThemeContext {
       },
       signature: (model: SignatureReflection, options: Parameters<typeof origSignature>[1]) => {
         const result = origSignature(model, options)
-        // For a component whose single parameter is an interface sibling in the
-        // same namespace, replace the generated "Parameters" heading with the
-        // Props type name (e.g. "#### FederalTaxesCardProps").
-        if (!(model.parent instanceof DeclarationReflection) || !isComponent(model.parent)) {
-          return result
+
+        // Component: rename "Parameters" heading to the Props type name.
+        if (model.parent instanceof DeclarationReflection && isComponent(model.parent)) {
+          if (model.parameters?.length !== 1) return result
+          const param = model.parameters[0]!
+          if (!(param.type instanceof ReferenceType)) return result
+          const propsRef = param.type.reflection
+          // The props interface is normally a sibling of the component (shared
+          // namespace parent). On a standalone flow page the router re-parents the
+          // props onto the flow itself so cross-references resolve to a cross-page
+          // URL (see SDKRouter.buildChildPages), so also accept that case.
+          if (
+            !(propsRef instanceof DeclarationReflection) ||
+            propsRef.kind !== ReflectionKind.Interface ||
+            (propsRef.parent !== model.parent.parent && propsRef.parent !== model.parent)
+          ) {
+            return result
+          }
+          const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
+          return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
         }
-        if (model.parameters?.length !== 1) return result
-        const param = model.parameters[0]!
-        if (!(param.type instanceof ReferenceType)) return result
-        const propsRef = param.type.reflection
-        // The props interface is normally a sibling of the component (shared
-        // namespace parent). On a standalone flow page the router re-parents the
-        // props onto the flow itself so cross-references resolve to a cross-page
-        // URL (see SDKRouter.buildChildPages), so also accept that case.
-        if (
-          !(propsRef instanceof DeclarationReflection) ||
-          propsRef.kind !== ReflectionKind.Interface ||
-          (propsRef.parent !== model.parent.parent && propsRef.parent !== model.parent)
-        ) {
-          return result
+
+        // Hook: rename "Parameters" heading to the SharedProps type name.
+        const hookFn = model.parent
+        if (hookFn instanceof DeclarationReflection && /^use[A-Z]/.test(hookFn.name)) {
+          if ((model.parameters?.length ?? 0) !== 1) return result
+          const hookNsModel = this.page?.model
+          if (!(hookNsModel instanceof DeclarationReflection)) return result
+          const sharedPropsName =
+            hookFn.name.charAt(0).toUpperCase() + hookFn.name.slice(1) + 'SharedProps'
+          const hasSharedProps = (hookNsModel.children ?? []).some(
+            c =>
+              c instanceof DeclarationReflection &&
+              c.name === sharedPropsName &&
+              (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias),
+          )
+          if (hasSharedProps) {
+            const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
+            return result.replace(`${hashes} Parameters`, `${hashes} ${sharedPropsName}`)
+          }
         }
-        const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
-        return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
+
+        return result
       },
       signatureTitle: (
         model: SignatureReflection,
@@ -717,6 +876,12 @@ export class SDKThemeContext extends MarkdownThemeContext {
         // Remarks ahead of the props table for readability.
         if (isComponent(page.model)) rendered = reorderComponentSections(rendered)
         if (componentsTable) rendered = insertComponentsTable(rendered, componentsTable)
+
+        // Hook page: inject a fields quick-reference table before the Components section.
+        if (isHookPage(page.model)) {
+          const fieldsSummary = buildFieldsSummary(this, page.model)
+          if (fieldsSummary) rendered = injectFieldsSummary(rendered, fieldsSummary)
+        }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)
         if (flowGuide) return renderGuidePage(rendered, flowGuide)

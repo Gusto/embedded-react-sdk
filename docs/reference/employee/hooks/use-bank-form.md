@@ -11,6 +11,75 @@ custom_edit_url: null
 
 # useBankForm
 
+## Form Hooks
+
+<a id="usebankform"></a>
+
+### useBankForm()
+
+> **useBankForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+
+Headless React Hook Form hook for creating an employee bank account.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+
+A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
+
+#### Remarks
+
+Captures the account nickname, routing number, account number, and account
+type. Creating a bank account also updates the employee's payment method on
+the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
+discriminated union; in practice the hook transitions to the ready state
+immediately because it does not fetch any server data.
+
+#### Example
+
+```tsx
+import { useBankForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function AddBankAccount({ employeeId }: { employeeId: string }) {
+  const bankForm = useBankForm({ employeeId })
+
+  if (bankForm.isLoading) return null
+  const { Fields } = bankForm.form
+
+  return (
+    <SDKFormProvider formHookResult={bankForm}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void bankForm.actions.onSubmit()
+        }}
+      >
+        <Fields.Name label="Account nickname" />
+        <Fields.RoutingNumber label="Routing number" />
+        <Fields.AccountNumber label="Account number" />
+        <Fields.AccountType label="Account type" />
+        <button type="submit" disabled={bankForm.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`AccountNumber`](#accountnumberfield) | Validates the value against a 1–17 digit numeric pattern. |
+| [`AccountType`](#accounttypefield) | Options are `Checking` and `Savings`; defaults to `Checking` when no value is supplied. Supply `getOptionLabel` to translate the option labels. |
+| [`Name`](#namefield) | Captures the account nickname. |
+| [`RoutingNumber`](#routingnumberfield) | Validates the value against a 9-digit numeric pattern. |
+
 ## Components
 
 <a id="accountnumberfield"></a>
@@ -87,66 +156,6 @@ Text input bound to the `routingNumber` field of [useBankForm](#usebankform).
 
 Available on the hook result as `form.Fields.RoutingNumber`. Validates the
 value against a 9-digit numeric pattern.
-
-## Form Hooks
-
-<a id="usebankform"></a>
-
-### useBankForm()
-
-> **useBankForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
-
-Headless React Hook Form hook for creating an employee bank account.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseBankFormProps`](#usebankformprops) | See [UseBankFormProps](#usebankformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
-
-A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
-
-#### Remarks
-
-Captures the account nickname, routing number, account number, and account
-type. Creating a bank account also updates the employee's payment method on
-the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
-discriminated union; in practice the hook transitions to the ready state
-immediately because it does not fetch any server data.
-
-#### Example
-
-```tsx
-import { useBankForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function AddBankAccount({ employeeId }: { employeeId: string }) {
-  const bankForm = useBankForm({ employeeId })
-
-  if (bankForm.isLoading) return null
-  const { Fields } = bankForm.form
-
-  return (
-    <SDKFormProvider formHookResult={bankForm}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void bankForm.actions.onSubmit()
-        }}
-      >
-        <Fields.Name label="Account nickname" />
-        <Fields.RoutingNumber label="Routing number" />
-        <Fields.AccountNumber label="Account number" />
-        <Fields.AccountType label="Account type" />
-        <button type="submit" disabled={bankForm.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 

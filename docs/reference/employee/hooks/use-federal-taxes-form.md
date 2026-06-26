@@ -11,6 +11,76 @@ custom_edit_url: null
 
 # useFederalTaxesForm
 
+## Form Hooks
+
+<a id="usefederaltaxesform"></a>
+
+### useFederalTaxesForm()
+
+> **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+
+Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
+
+#### Remarks
+
+The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
+
+#### Example
+
+```tsx
+import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function FederalTaxesPage({ employeeId }: { employeeId: string }) {
+  const federalTaxes = useFederalTaxesForm({ employeeId })
+
+  if (federalTaxes.isLoading) return <div>Loading...</div>
+
+  const { Fields } = federalTaxes.form
+
+  return (
+    <SDKFormProvider formHookResult={federalTaxes}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void federalTaxes.actions.onSubmit()
+        }}
+      >
+        <Fields.FilingStatus label="Federal filing status" />
+        <Fields.TwoJobs label="Multiple jobs (2c)" />
+        <Fields.DependentsAmount label="Dependents" />
+        <Fields.OtherIncome label="Other income" />
+        <Fields.Deductions label="Deductions" />
+        <Fields.ExtraWithholding label="Extra withholding" />
+        <button type="submit" disabled={federalTaxes.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`Deductions`](#deductionsfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`DependentsAmount`](#dependentsamountfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`ExtraWithholding`](#extrawithholdingfield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`FilingStatus`](#filingstatusfield) | Options are populated from `FILING_STATUS_VALUES` (`Single`, `Married`, `Head of Household`, `Exempt from withholding`). The default option label is the raw filing status value — pass `getOptionLabel` to localize. |
+| [`OtherIncome`](#otherincomefield) | The field renders with `format="currency"` and `min={0}`. Empty values coerce to `0` and pass the required check. |
+| [`TwoJobs`](#twojobsfield) | Two options for `true` and `false`. The default labels are `Yes` and `No` — pass `getOptionLabel` to localize. The form submits a boolean value. |
+
 ## Components
 
 <a id="deductionsfield"></a>
@@ -131,65 +201,6 @@ Radio group bound to the `twoJobs` field of [useFederalTaxesForm](#usefederaltax
 Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `true` and `false`. The default labels are `Yes` and `No` — pass
 `getOptionLabel` to localize. The form submits a boolean value.
-
-## Form Hooks
-
-<a id="usefederaltaxesform"></a>
-
-### useFederalTaxesForm()
-
-> **useFederalTaxesForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
-
-Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseFederalTaxesFormProps`](#usefederaltaxesformprops) | See [UseFederalTaxesFormProps](#usefederaltaxesformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
-
-#### Remarks
-
-The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
-
-#### Example
-
-```tsx
-import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function FederalTaxesPage({ employeeId }: { employeeId: string }) {
-  const federalTaxes = useFederalTaxesForm({ employeeId })
-
-  if (federalTaxes.isLoading) return <div>Loading...</div>
-
-  const { Fields } = federalTaxes.form
-
-  return (
-    <SDKFormProvider formHookResult={federalTaxes}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void federalTaxes.actions.onSubmit()
-        }}
-      >
-        <Fields.FilingStatus label="Federal filing status" />
-        <Fields.TwoJobs label="Multiple jobs (2c)" />
-        <Fields.DependentsAmount label="Dependents" />
-        <Fields.OtherIncome label="Other income" />
-        <Fields.Deductions label="Deductions" />
-        <Fields.ExtraWithholding label="Extra withholding" />
-        <button type="submit" disabled={federalTaxes.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 

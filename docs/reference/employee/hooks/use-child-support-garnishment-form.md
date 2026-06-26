@@ -11,6 +11,97 @@ custom_edit_url: null
 
 # useChildSupportGarnishmentForm
 
+## Form Hooks
+
+<a id="usechildsupportgarnishmentform"></a>
+
+### useChildSupportGarnishmentForm()
+
+> **useChildSupportGarnishmentForm**(`input`): [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
+
+Headless hook for creating or updating a child-support garnishment.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseChildSupportGarnishmentFormProps`](#usechildsupportgarnishmentformprops) | See [UseChildSupportGarnishmentFormProps](#usechildsupportgarnishmentformprops). |
+
+#### Returns
+
+[`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
+
+#### Remarks
+
+Unlike standard garnishments, child support requires agency-specific
+attributes (case number, order number, remittance number) that vary by
+state, plus an optional county selection when the state has multiple
+counties. The hook loads the agency catalog from the Gusto API, derives
+which attributes the selected state requires, and exposes the right Fields
+conditionally.
+
+Presence or absence of `garnishmentId` selects the API verb: omit it to
+POST a new garnishment, supply it to PUT updates against the existing row.
+For non-child-support deductions (court-ordered garnishments and post-tax
+custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
+
+#### Example
+
+```tsx
+import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
+  const form = useChildSupportGarnishmentForm({ employeeId, garnishmentId })
+
+  if (form.isLoading) return <p>Loading…</p>
+
+  const { Fields } = form.form
+
+  return (
+    <SDKFormProvider formHookResult={form}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void form.actions.onSubmit()
+        }}
+      >
+        <Fields.State
+          label="Agency"
+          getOptionLabel={entry => entry.name}
+          validationMessages={{ REQUIRED: 'Required' }}
+        />
+        {Fields.CaseNumber && (
+          <Fields.CaseNumber label="Case number" validationMessages={{ REQUIRED: 'Required' }} />
+        )}
+        <Fields.Amount
+          label="Percentage of paycheck"
+          validationMessages={{
+            REQUIRED: 'Required',
+            PERCENT_OUT_OF_RANGE: 'Must be between 0 and 100',
+          }}
+        />
+        <button type="submit">Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`CaseNumber`](#casenumberfield) | — |
+| [`ChildSupportAmount`](#childsupportamountfield) | Always rendered. Accepts a percentage of paycheck in the range 0–100 — the API stores child-support amounts as percentages rather than fixed currency values. |
+| [`ChildSupportState`](#childsupportstatefield) | Always rendered. The selected agency drives which subsequent fields are required and visible (`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`). |
+| [`FipsCode`](#fipscodefield) | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
+| [`OrderNumber`](#ordernumberfield) | — |
+| [`PaymentPeriod`](#paymentperiodfield) | Always rendered. Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`. |
+| [`PayPeriodMaximum`](#payperiodmaximumfield) | Always rendered. Carries the per-pay-period currency cap for the garnishment. |
+| [`RemittanceNumber`](#remittancenumberfield) | — |
+
 ## Components
 
 <a id="casenumberfield"></a>
@@ -170,84 +261,6 @@ Text input bound to the `remittanceNumber` field of [useChildSupportGarnishmentF
 Available on the hook result as `form.Fields.RemittanceNumber` only when the
 selected agency requires a remittance number (`status.requiredAttrKeys.has('remittance_number')`).
 Always null-check before rendering.
-
-## Form Hooks
-
-<a id="usechildsupportgarnishmentform"></a>
-
-### useChildSupportGarnishmentForm()
-
-> **useChildSupportGarnishmentForm**(`input`): [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
-
-Headless hook for creating or updating a child-support garnishment.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseChildSupportGarnishmentFormProps`](#usechildsupportgarnishmentformprops) | See [UseChildSupportGarnishmentFormProps](#usechildsupportgarnishmentformprops). |
-
-#### Returns
-
-[`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
-
-#### Remarks
-
-Unlike standard garnishments, child support requires agency-specific
-attributes (case number, order number, remittance number) that vary by
-state, plus an optional county selection when the state has multiple
-counties. The hook loads the agency catalog from the Gusto API, derives
-which attributes the selected state requires, and exposes the right Fields
-conditionally.
-
-Presence or absence of `garnishmentId` selects the API verb: omit it to
-POST a new garnishment, supply it to PUT updates against the existing row.
-For non-child-support deductions (court-ordered garnishments and post-tax
-custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
-
-#### Example
-
-```tsx
-import { useChildSupportGarnishmentForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; garnishmentId?: string }) {
-  const form = useChildSupportGarnishmentForm({ employeeId, garnishmentId })
-
-  if (form.isLoading) return <p>Loading…</p>
-
-  const { Fields } = form.form
-
-  return (
-    <SDKFormProvider formHookResult={form}>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          void form.actions.onSubmit()
-        }}
-      >
-        <Fields.State
-          label="Agency"
-          getOptionLabel={entry => entry.name}
-          validationMessages={{ REQUIRED: 'Required' }}
-        />
-        {Fields.CaseNumber && (
-          <Fields.CaseNumber label="Case number" validationMessages={{ REQUIRED: 'Required' }} />
-        )}
-        <Fields.Amount
-          label="Percentage of paycheck"
-          validationMessages={{
-            REQUIRED: 'Required',
-            PERCENT_OUT_OF_RANGE: 'Must be between 0 and 100',
-          }}
-        />
-        <button type="submit">Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 

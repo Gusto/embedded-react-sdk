@@ -328,6 +328,16 @@ export function isComponent(reflection: DeclarationReflection): boolean {
   )
 }
 
+/**
+ * Return true when the model is an individual hook page — a synthetic namespace
+ * whose name is a hook function name (e.g. `useEmployeeDetailsForm`). Distinct
+ * from the hooks index page which is detected by `isHooksIndex`.
+ */
+export function isHookPage(model: DeclarationReflection): boolean {
+  if (isHooksIndex(model)) return false
+  return model.kind === ReflectionKind.Namespace && /^use[A-Z]/.test(model.name)
+}
+
 export function isDomainHub(model: DeclarationReflection | RouterTarget): boolean {
   if ('comment' in model) {
     return model.comment?.blockTags.some(tag => tag.tag === '@domainHub') ?? false

@@ -11,6 +11,98 @@ custom_edit_url: null
 
 # useEmployeeDetailsForm
 
+## Form Hooks
+
+<a id="useemployeedetailsform"></a>
+
+### useEmployeeDetailsForm()
+
+> **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+
+Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
+
+#### UseEmployeeDetailsFormSharedProps
+
+<a id="useemployeedetailsformsharedprops"></a>
+
+Shared options merged into both branches of [UseEmployeeDetailsFormProps](#useemployeedetailsformprops).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | Initial values applied before any employee data loads. |
+| `optionalFieldsToRequire?` | [`EmployeeDetailsOptionalFieldsToRequire`](#employeedetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
+| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
+| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
+| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
+
+#### Remarks
+
+Returns a discriminated union: a loading variant while the underlying
+employee fetch resolves, and a ready variant exposing the form's data,
+pending status, submit action, error handling, and bound `Fields`.
+Self-onboarding is only toggleable when the employee's onboarding status
+allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
+
+#### Example
+
+```tsx
+import {
+  useEmployeeDetailsForm,
+  SDKFormProvider,
+  type UseEmployeeDetailsFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function EmployeeDetailsPage({ companyId, employeeId }: { companyId: string; employeeId?: string }) {
+  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+
+  if (employeeDetails.isLoading) return <div>Loading...</div>
+
+  return <EmployeeDetailsReady employeeDetails={employeeDetails} />
+}
+
+function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmployeeDetailsFormReady }) {
+  const { Fields } = employeeDetails.form
+
+  const handleSubmit = async () => {
+    await employeeDetails.actions.onSubmit({
+      onEmployeeCreated: emp => console.log('Created:', emp.uuid),
+      onEmployeeUpdated: emp => console.log('Updated:', emp.uuid),
+    })
+  }
+
+  return (
+    <SDKFormProvider formHookResult={employeeDetails}>
+      <form onSubmit={e => { e.preventDefault(); void handleSubmit() }}>
+        <Fields.FirstName label="First name" />
+        <Fields.LastName label="Last name" />
+        <Fields.Email label="Personal email" />
+        <Fields.DateOfBirth label="Date of birth" />
+        <Fields.Ssn label="Social Security number" />
+        <button type="submit" disabled={employeeDetails.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`DateOfBirth`](#dateofbirthfield) | Optional by default — opt in via `optionalFieldsToRequire`. |
+| [`Email`](#emailfield) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
+| [`FirstName`](#firstnamefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| [`LastName`](#lastnamefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| [`MiddleInitial`](#middleinitialfield) | Always optional. |
+| [`SelfOnboarding`](#selfonboardingfield) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
+| [`Ssn`](#ssnfield) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
+
 ## Components
 
 <a id="dateofbirthfield"></a>
@@ -153,78 +245,6 @@ with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on
 file, the field shows a masked placeholder and the required rule is
 automatically waived even if `ssn` is listed in
 `optionalFieldsToRequire`.
-
-## Form Hooks
-
-<a id="useemployeedetailsform"></a>
-
-### useEmployeeDetailsForm()
-
-> **useEmployeeDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
-
-Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseEmployeeDetailsFormProps`](#useemployeedetailsformprops) | See [UseEmployeeDetailsFormProps](#useemployeedetailsformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
-
-#### Remarks
-
-Returns a discriminated union: a loading variant while the underlying
-employee fetch resolves, and a ready variant exposing the form's data,
-pending status, submit action, error handling, and bound `Fields`.
-Self-onboarding is only toggleable when the employee's onboarding status
-allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
-
-#### Example
-
-```tsx
-import {
-  useEmployeeDetailsForm,
-  SDKFormProvider,
-  type UseEmployeeDetailsFormReady,
-} from '@gusto/embedded-react-sdk'
-
-function EmployeeDetailsPage({ companyId, employeeId }: { companyId: string; employeeId?: string }) {
-  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
-
-  if (employeeDetails.isLoading) return <div>Loading...</div>
-
-  return <EmployeeDetailsReady employeeDetails={employeeDetails} />
-}
-
-function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmployeeDetailsFormReady }) {
-  const { Fields } = employeeDetails.form
-
-  const handleSubmit = async () => {
-    await employeeDetails.actions.onSubmit({
-      onEmployeeCreated: emp => console.log('Created:', emp.uuid),
-      onEmployeeUpdated: emp => console.log('Updated:', emp.uuid),
-    })
-  }
-
-  return (
-    <SDKFormProvider formHookResult={employeeDetails}>
-      <form onSubmit={e => { e.preventDefault(); void handleSubmit() }}>
-        <Fields.FirstName label="First name" />
-        <Fields.LastName label="Last name" />
-        <Fields.Email label="Personal email" />
-        <Fields.DateOfBirth label="Date of birth" />
-        <Fields.Ssn label="Social Security number" />
-        <button type="submit" disabled={employeeDetails.status.isPending}>Save</button>
-      </form>
-    </SDKFormProvider>
-  )
-}
-```
 
 ## Variables
 
@@ -581,23 +601,3 @@ Discriminated by mode: in create mode supply `companyId` and omit
 > **UseEmployeeDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 Return type of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-***
-
-<a id="useemployeedetailsformsharedprops"></a>
-
-### UseEmployeeDetailsFormSharedProps
-
-> **UseEmployeeDetailsFormSharedProps** = `object`
-
-Shared options merged into both branches of [UseEmployeeDetailsFormProps](#useemployeedetailsformprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | Initial values applied before any employee data loads. |
-| `optionalFieldsToRequire?` | [`EmployeeDetailsOptionalFieldsToRequire`](#employeedetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
-| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
-| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
-| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |

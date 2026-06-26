@@ -17,8 +17,8 @@ export const baseOptions = {
   groupOrder: [
     'Domains',
     'Namespaces',
-    ...COMPONENT_GROUPS,
     ...HOOK_GROUPS,
+    ...COMPONENT_GROUPS,
     ...VARIABLE_GROUPS,
     'Functions',
     'Variables',

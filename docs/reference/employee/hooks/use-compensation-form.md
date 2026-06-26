@@ -11,6 +11,95 @@ custom_edit_url: null
 
 # useCompensationForm
 
+## Form Hooks
+
+<a id="usecompensationform"></a>
+
+### useCompensationForm()
+
+> **useCompensationForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+
+Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
+
+#### Remarks
+
+Companion hook to `useJobForm`. Jobs and their compensations are separate
+entities in the Gusto API and this hook focuses exclusively on the
+compensation side. Presence of `compensationId` selects the verb:
+
+| Hook config / submit options | Mode | API call |
+| ---------------------------- | ---- | -------- |
+| `{ jobId, compensationId }` | update | `PUT /v1/compensations/:compensationId` (with `version`) |
+| `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:jobId/compensations` |
+| `{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }` | update | `PUT /v1/compensations/:compensationId` (with the supplied `version`) |
+| `{ employeeId }` + submit `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:options.jobId/compensations` |
+
+Use the submit-options form for the **onboarding stub-fill** chain: after
+`useJobForm.actions.onSubmit()` creates a job, capture the auto-created
+compensation's UUID and version from the response, and pass them as
+`{ jobId, compensationId, compensationVersion }` to this hook's `onSubmit`
+to PUT the stub.
+
+The hook exposes several derived helpers for driving UX — static
+entity-derived values under `data.*` (effective-date bounds, pending
+future compensations) and reactive flags under `status.*` (the
+`willDeleteSecondaryJobs` carve-out, plus FLSA-specific alerts for
+commission-only and owner classifications). When
+`willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
+the `effectiveDate` field (forces to today, renders disabled) until the
+FLSA selection is reverted.
+
+#### Example
+
+```tsx
+import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
+  const comp = useCompensationForm({ employeeId, jobId })
+  if (comp.isLoading) return null
+
+  const { Fields } = comp.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
+      <SDKFormProvider formHookResult={comp}>
+        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
+        <Fields.Rate label="Compensation amount" />
+        <Fields.PaymentUnit label="Payment unit" />
+        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+      </SDKFormProvider>
+      {comp.status.willDeleteSecondaryJobs && (
+        <p>Saving will remove this employee's secondary jobs.</p>
+      )}
+      <button type="submit" disabled={comp.status.isPending}>Save</button>
+    </form>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`CompensationAdjustForMinimumWage`](#compensationadjustforminimumwagefield) | Always null-check before rendering. |
+| [`CompensationEffectiveDate`](#compensationeffectivedatefield) | Required on create; optional on update unless `optionalFieldsToRequire.update` includes `'effectiveDate'`. The picker's min/max bounds are exposed on `data.minimumEffectiveDate` / `data.maximumEffectiveDate`. The field is automatically disabled (and the form value forced to today) while `status.willDeleteSecondaryJobs` is `true` in update mode. When `withEffectiveDateField: false`, the field is `undefined` — supply the value at submit time via `CompensationSubmitOptions.effectiveDate` instead. |
+| [`CompensationFlsaStatus`](#compensationflsastatusfield) | The field is `undefined` when the user has no meaningful choice — for example, on a secondary job whose status must match the primary's. Always null-check before rendering. Options: `Exempt`, `Salaried Nonexempt`, `Nonexempt`, `Owner`, `Commission Only Exempt`, `Commission Only Nonexempt`. |
+| [`CompensationMinimumWageId`](#compensationminimumwageidfield) | — |
+| [`CompensationPaymentUnit`](#compensationpaymentunitfield) | The field is `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`), and automatically rendered disabled when `flsaStatus === Owner` (locked to `Paycheck`). Options: `Hour`, `Week`, `Month`, `Year`, `Paycheck`. |
+| [`CompensationRate`](#compensationratefield) | The field is `undefined` for commission-only FLSA statuses (`Commission Only Exempt`, `Commission Only Nonexempt`) — those statuses don't accept a partner-supplied rate, so the hook removes the field and forces `rate=0` on the form values. Always null-check before rendering. |
+| [`CompensationTitle`](#compensationtitlefield) | Optional in both create and update modes — use this when a title change should take effect on this compensation's `effectiveDate` (for example, a future-dated promotion that bundles a new title with a raise). Otherwise bind the title via `useJobForm.Fields.Title` instead and avoid rendering both on the same screen. |
+
 ## Components
 
 <a id="compensationadjustforminimumwagefield"></a>
@@ -172,83 +261,6 @@ on this compensation's `effectiveDate` (for example, a future-dated
 promotion that bundles a new title with a raise). Otherwise bind the title
 via `useJobForm.Fields.Title` instead and avoid rendering both on the same
 screen.
-
-## Form Hooks
-
-<a id="usecompensationform"></a>
-
-### useCompensationForm()
-
-> **useCompensationForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
-
-Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseCompensationFormProps`](#usecompensationformprops) | [UseCompensationFormProps](#usecompensationformprops) — `employeeId`, `jobId`, `compensationId` (toggle create/update), required-field overrides, default values, and which fields the hook renders. |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
-
-#### Remarks
-
-Companion hook to `useJobForm`. Jobs and their compensations are separate
-entities in the Gusto API and this hook focuses exclusively on the
-compensation side. Presence of `compensationId` selects the verb:
-
-| Hook config / submit options | Mode | API call |
-| ---------------------------- | ---- | -------- |
-| `{ jobId, compensationId }` | update | `PUT /v1/compensations/:compensationId` (with `version`) |
-| `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:jobId/compensations` |
-| `{ employeeId }` + submit `{ jobId, compensationId, compensationVersion }` | update | `PUT /v1/compensations/:compensationId` (with the supplied `version`) |
-| `{ employeeId }` + submit `{ jobId }` (no `compensationId`) | create | `POST /v1/jobs/:options.jobId/compensations` |
-
-Use the submit-options form for the **onboarding stub-fill** chain: after
-`useJobForm.actions.onSubmit()` creates a job, capture the auto-created
-compensation's UUID and version from the response, and pass them as
-`{ jobId, compensationId, compensationVersion }` to this hook's `onSubmit`
-to PUT the stub.
-
-The hook exposes several derived helpers for driving UX — static
-entity-derived values under `data.*` (effective-date bounds, pending
-future compensations) and reactive flags under `status.*` (the
-`willDeleteSecondaryJobs` carve-out, plus FLSA-specific alerts for
-commission-only and owner classifications). When
-`willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
-the `effectiveDate` field (forces to today, renders disabled) until the
-FLSA selection is reverted.
-
-#### Example
-
-```tsx
-import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
-  const comp = useCompensationForm({ employeeId, jobId })
-  if (comp.isLoading) return null
-
-  const { Fields } = comp.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
-      <SDKFormProvider formHookResult={comp}>
-        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
-        <Fields.Rate label="Compensation amount" />
-        <Fields.PaymentUnit label="Payment unit" />
-        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
-      </SDKFormProvider>
-      {comp.status.willDeleteSecondaryJobs && (
-        <p>Saving will remove this employee's secondary jobs.</p>
-      )}
-      <button type="submit" disabled={comp.status.isPending}>Save</button>
-    </form>
-  )
-}
-```
 
 ## Variables
 

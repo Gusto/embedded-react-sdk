@@ -65,11 +65,11 @@ function getNamespaceIndexSlug(namespaceName: string): string {
 const SYNTHETIC_GROUP_ORDER = [
   'Flow Components',
   'Block Components',
-  'Components',
   'Form Hooks',
   'Data Hooks',
   'Utility Hooks',
   'Hooks',
+  'Components',
   'Events',
   'Functions',
   'Variables',
@@ -382,6 +382,17 @@ export class SDKRouter extends MemberRouter {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
+        // Remove SharedProps from groups — inlined under the hook function by renderFunctionPropsTable
+        const sharedPropsName = `${hookDir.charAt(0).toUpperCase() + hookDir.slice(1)}SharedProps`
+        for (const group of hookNs.groups) {
+          group.children = group.children.filter(
+            c =>
+              !(c instanceof DeclarationReflection &&
+                c.name === sharedPropsName &&
+                (c.kind === ReflectionKind.Interface || c.kind === ReflectionKind.TypeAlias)),
+          )
+        }
+        hookNs.groups = hookNs.groups.filter(g => g.children.length > 0)
         const hookGuide = hookGuidesByDir.get(hookDir)
         if (hookGuide) this.hookGuides.set(hookNs, hookGuide)
         this.buildSyntheticPage(

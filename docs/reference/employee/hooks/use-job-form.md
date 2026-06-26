@@ -11,6 +11,83 @@ custom_edit_url: null
 
 # useJobForm
 
+## Form Hooks
+
+<a id="usejobform"></a>
+
+### useJobForm()
+
+> **useJobForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+
+Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
+
+#### Remarks
+
+Companion hook to `useCompensationForm`. Jobs and their compensations are
+separate entities in the Gusto API and this hook focuses exclusively on
+the job side. Presence of `jobId` selects the verb:
+
+| Hook config | Mode | API call |
+| ----------- | ---- | -------- |
+| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
+| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
+| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
+
+Creating a job auto-creates a stub compensation. To update the stub in the
+same flow, capture `currentCompensationUuid` (and the compensation's
+`version` from `compensations[]`) from the create response and thread them
+into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
+
+When the primary job's `hireDate` changes, secondary compensation effective
+dates are corrected after the PUT; `isPending` stays `true` through that.
+
+#### Example
+
+```tsx
+import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function JobForm({ employeeId }: { employeeId: string }) {
+  const job = useJobForm({ employeeId })
+  if (job.isLoading) return null
+
+  const { Fields } = job.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); job.actions.onSubmit() }}>
+      <SDKFormProvider formHookResult={job}>
+        {Fields.Title && <Fields.Title label="Job title" />}
+        {Fields.HireDate && <Fields.HireDate label="Hire date" />}
+        {Fields.TwoPercentShareholder && (
+          <Fields.TwoPercentShareholder label="2% S-Corp shareholder" />
+        )}
+      </SDKFormProvider>
+      <button type="submit" disabled={job.status.isPending}>Save</button>
+    </form>
+  )
+}
+```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`HireDate`](#hiredatefield) | When `false`, supply the value via `JobSubmitOptions.hireDate` at submit time — useful when the hire date is derived from external context (e.g. the employee's `startDate` during onboarding). |
+| [`JobTitle`](#jobtitlefield) | On update flows where another form owns the title (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and render the compensation form's title field instead. |
+| [`StateWcClassCode`](#statewcclasscodefield) | Populated with Washington state workers' compensation risk class codes. Available on the hook result as `form.Fields.StateWcClassCode` only when the active work address is in Washington and `stateWcCovered` is `true`. The schema enforces this field as required whenever it is rendered, independent of `optionalFieldsToRequire`. |
+| [`StateWcCovered`](#statewccoveredfield) | Captures whether the employee is covered by Washington state workers' compensation. Available on the hook result as `form.Fields.StateWcCovered` only when the employee's active work address is in Washington (see `data.showStateWc`). |
+| [`TwoPercentShareholder`](#twopercentshareholderfield) | Indicates whether the employee is a 2% shareholder in an S-Corporation. Available on the hook result as `form.Fields.TwoPercentShareholder` only when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
+
 ## Components
 
 <a id="hiredatefield"></a>
@@ -116,73 +193,6 @@ Checkbox bound to the `twoPercentShareholder` field of [useJobForm](#usejobform)
 Indicates whether the employee is a 2% shareholder in an S-Corporation.
 Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
-
-## Form Hooks
-
-<a id="usejobform"></a>
-
-### useJobForm()
-
-> **useJobForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
-
-Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseJobFormProps`](#usejobformprops) | [UseJobFormProps](#usejobformprops) — `employeeId`, `jobId` (toggle create/update), and configuration for required-field overrides, default values, and which fields the hook renders. |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
-
-#### Remarks
-
-Companion hook to `useCompensationForm`. Jobs and their compensations are
-separate entities in the Gusto API and this hook focuses exclusively on
-the job side. Presence of `jobId` selects the verb:
-
-| Hook config | Mode | API call |
-| ----------- | ---- | -------- |
-| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
-| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
-| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
-
-Creating a job auto-creates a stub compensation. To update the stub in the
-same flow, capture `currentCompensationUuid` (and the compensation's
-`version` from `compensations[]`) from the create response and thread them
-into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
-
-When the primary job's `hireDate` changes, secondary compensation effective
-dates are corrected after the PUT; `isPending` stays `true` through that.
-
-#### Example
-
-```tsx
-import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function JobForm({ employeeId }: { employeeId: string }) {
-  const job = useJobForm({ employeeId })
-  if (job.isLoading) return null
-
-  const { Fields } = job.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); job.actions.onSubmit() }}>
-      <SDKFormProvider formHookResult={job}>
-        {Fields.Title && <Fields.Title label="Job title" />}
-        {Fields.HireDate && <Fields.HireDate label="Hire date" />}
-        {Fields.TwoPercentShareholder && (
-          <Fields.TwoPercentShareholder label="2% S-Corp shareholder" />
-        )}
-      </SDKFormProvider>
-      <button type="submit" disabled={job.status.isPending}>Save</button>
-    </form>
-  )
-}
-```
 
 ## Variables
 

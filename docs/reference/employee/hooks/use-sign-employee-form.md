@@ -11,65 +11,6 @@ custom_edit_url: null
 
 # useSignEmployeeForm
 
-## Components
-
-<a id="confirmsignaturefield"></a>
-
-### ConfirmSignatureField
-
-Checkbox bound to the `confirmSignature` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops) | [ConfirmSignatureFieldProps](#signemployeeformconfirmsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.ConfirmSignature`. Captures the
-employee's electronic-signature consent; must be checked to submit.
-
-***
-
-<a id="signaturefield"></a>
-
-### SignatureField
-
-Text input bound to the `signature` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops) | [SignatureFieldProps](#signemployeeformsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Signature`. The employee types
-their full legal name; required.
-
-***
-
-<a id="usedpreparerfield"></a>
-
-### UsedPreparerField
-
-Radio group bound to the `usedPreparer` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsedPreparerFieldProps`](#usedpreparerfieldprops) | [UsedPreparerFieldProps](#usedpreparerfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.UsedPreparer` only when the
-form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
-automatically reveals the first preparer field group; switching back to
-`'no'` removes all preparer sections.
-
 ## Form Hooks
 
 <a id="usesignemployeeform"></a>
@@ -146,6 +87,73 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
   )
 }
 ```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`ConfirmSignature`](#confirmsignaturefield) | Captures the employee's electronic-signature consent; must be checked to submit. |
+| [`Signature`](#signaturefield) | The employee types their full legal name; required. |
+| [`UsedPreparer`](#usedpreparerfield) | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
+
+## Components
+
+<a id="confirmsignaturefield"></a>
+
+### ConfirmSignatureField
+
+Checkbox bound to the `confirmSignature` field of [useSignEmployeeForm](#usesignemployeeform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops) | [ConfirmSignatureFieldProps](#signemployeeformconfirmsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.ConfirmSignature`. Captures the
+employee's electronic-signature consent; must be checked to submit.
+
+***
+
+<a id="signaturefield"></a>
+
+### SignatureField
+
+Text input bound to the `signature` field of [useSignEmployeeForm](#usesignemployeeform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops) | [SignatureFieldProps](#signemployeeformsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Signature`. The employee types
+their full legal name; required.
+
+***
+
+<a id="usedpreparerfield"></a>
+
+### UsedPreparerField
+
+Radio group bound to the `usedPreparer` field of [useSignEmployeeForm](#usesignemployeeform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UsedPreparerFieldProps`](#usedpreparerfieldprops) | [UsedPreparerFieldProps](#usedpreparerfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.UsedPreparer` only when the
+form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
+automatically reveals the first preparer field group; switching back to
+`'no'` removes all preparer sections.
 
 ## Variables
 

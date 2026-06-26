@@ -11,6 +11,99 @@ custom_edit_url: null
 
 # useHomeAddressForm
 
+## Form Hooks
+
+<a id="usecurrenthomeaddressform"></a>
+
+### useCurrentHomeAddressForm()
+
+> **useCurrentHomeAddressForm**(`props`): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
+
+Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
+
+#### Returns
+
+[`UseHomeAddressFormResult`](#usehomeaddressformresult)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+
+#### Remarks
+
+Lists the employee's home addresses and selects the active one (or the
+first when none are active) as the row to edit. When the employee has no
+home address on file the hook operates in create mode. The returned
+shape is identical to [useHomeAddressForm](#usehomeaddressform), so the same `Fields`,
+`actions.onSubmit`, and `errorHandling` apply.
+
+#### Example
+
+```tsx
+import { useCurrentHomeAddressForm } from '@gusto/embedded-react-sdk'
+
+function HomeAddressEditor({ employeeId }: { employeeId: string }) {
+  const homeAddress = useCurrentHomeAddressForm({ employeeId })
+
+  if (homeAddress.isLoading) return <div>Loading...</div>
+
+  const { Fields } = homeAddress.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
+      <Fields.Street1 label="Street" />
+      <Fields.City label="City" />
+      <Fields.State label="State" />
+      <Fields.Zip label="ZIP" />
+      <button type="submit">Save</button>
+    </form>
+  )
+}
+```
+
+***
+
+<a id="usehomeaddressform"></a>
+
+### useHomeAddressForm()
+
+> **useHomeAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+
+Form hook for creating or editing an employee's home address.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseHomeAddressFormProps`](#usehomeaddressformprops) | See [UseHomeAddressFormProps](#usehomeaddressformprops). |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+
+#### Remarks
+
+When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
+skip the fetch when the parent already holds the row.
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`City`](#cityfield) | Required. |
+| [`CourtesyWithholding`](#courtesywithholdingfield) | When checked, the employer agrees to withhold the employee's home-state taxes as a courtesy even when the work and home states differ. |
+| [`HomeAddressEffectiveDate`](#homeaddresseffectivedatefield) | Always null-check before rendering. |
+| [`HomeAddressState`](#homeaddressstatefield) | Options are the standard two-letter US state abbreviations. Required. |
+| [`Street1`](#street1field) | Required. |
+| [`Street2`](#street2field) | Optional. |
+| [`Zip`](#zipfield) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+
 ## Components
 
 <a id="cityfield"></a>
@@ -143,87 +236,6 @@ Text input bound to the `zip` field of [useHomeAddressForm](#usehomeaddressform)
 Available on the hook result as `form.Fields.Zip`. Required; also
 validates ZIP code format and emits `INVALID_ZIP` when the value does
 not match.
-
-## Form Hooks
-
-<a id="usecurrenthomeaddressform"></a>
-
-### useCurrentHomeAddressForm()
-
-> **useCurrentHomeAddressForm**(`props`): [`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
-
-#### Returns
-
-[`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
-
-#### Remarks
-
-Lists the employee's home addresses and selects the active one (or the
-first when none are active) as the row to edit. When the employee has no
-home address on file the hook operates in create mode. The returned
-shape is identical to [useHomeAddressForm](#usehomeaddressform), so the same `Fields`,
-`actions.onSubmit`, and `errorHandling` apply.
-
-#### Example
-
-```tsx
-import { useCurrentHomeAddressForm } from '@gusto/embedded-react-sdk'
-
-function HomeAddressEditor({ employeeId }: { employeeId: string }) {
-  const homeAddress = useCurrentHomeAddressForm({ employeeId })
-
-  if (homeAddress.isLoading) return <div>Loading...</div>
-
-  const { Fields } = homeAddress.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
-      <Fields.Street1 label="Street" />
-      <Fields.City label="City" />
-      <Fields.State label="State" />
-      <Fields.Zip label="ZIP" />
-      <button type="submit">Save</button>
-    </form>
-  )
-}
-```
-
-***
-
-<a id="usehomeaddressform"></a>
-
-### useHomeAddressForm()
-
-> **useHomeAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
-
-Form hook for creating or editing an employee's home address.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseHomeAddressFormProps`](#usehomeaddressformprops) | See [UseHomeAddressFormProps](#usehomeaddressformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
-
-#### Remarks
-
-When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
-when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
-skip the fetch when the parent already holds the row.
 
 ## Variables
 

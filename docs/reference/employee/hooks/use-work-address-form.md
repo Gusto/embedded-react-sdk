@@ -11,46 +11,6 @@ custom_edit_url: null
 
 # useWorkAddressForm
 
-## Components
-
-<a id="workaddresseffectivedatefield"></a>
-
-### WorkAddressEffectiveDateField
-
-Date picker bound to the `effectiveDate` field of [useWorkAddressForm](#useworkaddressform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`EffectiveDateFieldProps`](#effectivedatefieldprops) | [EffectiveDateFieldProps](#effectivedatefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.EffectiveDate` when
-`withEffectiveDateField` is `true`; `undefined` otherwise. Always
-null-check before rendering.
-
-***
-
-<a id="workaddresslocationfield"></a>
-
-### WorkAddressLocationField
-
-Select bound to the `locationUuid` field of [useWorkAddressForm](#useworkaddressform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`LocationFieldProps`](#locationfieldprops) | [LocationFieldProps](#locationfieldprops) — accepts the standard hook field props plus `getOptionLabel` to format location display names. |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Location`. Options are the
-company's active locations; the hook populates them from the locations
-query. Required.
-
 ## Form Hooks
 
 <a id="usecurrentworkaddressform"></a>
@@ -128,6 +88,53 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
 when omitted it operates in create mode and issues a POST. The hook requires `companyId`
 to fetch the company's location list — it stays in loading state until `companyId` is known.
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`WorkAddressEffectiveDate`](#workaddresseffectivedatefield) | Always null-check before rendering. |
+| [`WorkAddressLocation`](#workaddresslocationfield) | Options are the company's active locations; the hook populates them from the locations query. Required. |
+
+## Components
+
+<a id="workaddresseffectivedatefield"></a>
+
+### WorkAddressEffectiveDateField
+
+Date picker bound to the `effectiveDate` field of [useWorkAddressForm](#useworkaddressform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`EffectiveDateFieldProps`](#effectivedatefieldprops) | [EffectiveDateFieldProps](#effectivedatefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.EffectiveDate` when
+`withEffectiveDateField` is `true`; `undefined` otherwise. Always
+null-check before rendering.
+
+***
+
+<a id="workaddresslocationfield"></a>
+
+### WorkAddressLocationField
+
+Select bound to the `locationUuid` field of [useWorkAddressForm](#useworkaddressform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`LocationFieldProps`](#locationfieldprops) | [LocationFieldProps](#locationfieldprops) — accepts the standard hook field props plus `getOptionLabel` to format location display names. |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Location`. Options are the
+company's active locations; the hook populates them from the locations
+query. Required.
 
 ## Variables
 

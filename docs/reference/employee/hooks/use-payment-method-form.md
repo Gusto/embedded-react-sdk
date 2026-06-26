@@ -11,26 +11,6 @@ custom_edit_url: null
 
 # usePaymentMethodForm
 
-## Components
-
-<a id="paymentmethodtypefield"></a>
-
-### PaymentMethodTypeField
-
-Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmethodform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`TypeFieldProps`](#typefieldprops) | See [TypeFieldProps](#typefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Type`. Options are
-`Direct Deposit` and `Check`; defaults to the employee's existing payment
-method type. Supply `getOptionLabel` to translate the option labels.
-
 ## Form Hooks
 
 <a id="usepaymentmethodform"></a>
@@ -97,6 +77,32 @@ function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
   )
 }
 ```
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`PaymentMethodType`](#paymentmethodtypefield) | Options are `Direct Deposit` and `Check`; defaults to the employee's existing payment method type. Supply `getOptionLabel` to translate the option labels. |
+
+## Components
+
+<a id="paymentmethodtypefield"></a>
+
+### PaymentMethodTypeField
+
+Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmethodform).
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`TypeFieldProps`](#typefieldprops) | See [TypeFieldProps](#typefieldprops). |
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Type`. Options are
+`Direct Deposit` and `Check`; defaults to the employee's existing payment
+method type. Supply `getOptionLabel` to translate the option labels.
 
 ## Variables
 

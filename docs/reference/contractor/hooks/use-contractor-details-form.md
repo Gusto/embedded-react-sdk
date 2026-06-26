@@ -11,6 +11,66 @@ custom_edit_url: null
 
 # useContractorDetailsForm
 
+## Form Hooks
+
+<a id="usecontractordetailsform"></a>
+
+### useContractorDetailsForm()
+
+> **useContractorDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+
+Headless hook for creating or updating a contractor's profile details —
+individual vs. business type, wage type, names, SSN/EIN, work state, and the
+self-onboarding preference.
+
+#### UseContractorDetailsFormSharedProps
+
+<a id="usecontractordetailsformsharedprops"></a>
+
+Shared options merged into both branches of [UseContractorDetailsFormProps](#usecontractordetailsformprops).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
+| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
+| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
+| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
+| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
+
+#### Remarks
+
+Returns a discriminated union: a loading variant while the contractor fetch
+resolves, and a ready variant exposing the form's data, pending status,
+submit action, error handling, and bound `Fields`. Field visibility is
+driven by the current `type`, `wageType`, and self-onboarding selection;
+fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
+is only toggleable when the contractor's onboarding status allows it.
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`ContractorBusinessName`](#contractorbusinessnamefield) | — |
+| [`ContractorEin`](#contractoreinfield) | Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on file, the field shows a masked placeholder and the required rule is waived. |
+| [`ContractorEmail`](#contractoremailfield) | — |
+| [`ContractorFileNewHireReport`](#contractorfilenewhirereportfield) | When enabled, a work state must be supplied so the new-hire report can be filed. |
+| [`ContractorFirstName`](#contractorfirstnamefield) | — |
+| [`ContractorHourlyRate`](#contractorhourlyratefield) | — |
+| [`ContractorLastName`](#contractorlastnamefield) | — |
+| [`ContractorMiddleInitial`](#contractormiddleinitialfield) | Always optional. |
+| [`ContractorSelfOnboarding`](#contractorselfonboardingfield) | Always null-check before rendering. When enabled, the contractor is invited to enter their own details and SSN/EIN are no longer collected by the admin. |
+| [`ContractorSsn`](#contractorssnfield) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field shows a masked placeholder and the required rule is waived. |
+| [`ContractorStartDate`](#contractorstartdatefield) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
+| [`ContractorType`](#contractortypefield) | Selects whether the contractor is an `Individual` or a `Business`. Provide `getOptionLabel` to localize the option labels. |
+| [`ContractorWageType`](#contractorwagetypefield) | Selects whether the contractor is paid `Fixed` or `Hourly`. Provide `getOptionLabel` to localize the option labels. |
+| [`ContractorWorkState`](#contractorworkstatefield) | — |
+
 ## Components
 
 <a id="contractorbusinessnamefield"></a>
@@ -286,39 +346,6 @@ Select bound to the `workState` field of [useContractorDetailsForm](#usecontract
 Available on the hook result as `form.Fields.WorkState` for individual
 contractors when `fileNewHireReport` is enabled, in which case it is
 required.
-
-## Form Hooks
-
-<a id="usecontractordetailsform"></a>
-
-### useContractorDetailsForm()
-
-> **useContractorDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
-
-Headless hook for creating or updating a contractor's profile details —
-individual vs. business type, wage type, names, SSN/EIN, work state, and the
-self-onboarding preference.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseContractorDetailsFormProps`](#usecontractordetailsformprops) | See [UseContractorDetailsFormProps](#usecontractordetailsformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
-
-#### Remarks
-
-Returns a discriminated union: a loading variant while the contractor fetch
-resolves, and a ready variant exposing the form's data, pending status,
-submit action, error handling, and bound `Fields`. Field visibility is
-driven by the current `type`, `wageType`, and self-onboarding selection;
-fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
-is only toggleable when the contractor's onboarding status allows it.
 
 ## Variables
 
@@ -753,23 +780,3 @@ Discriminated by mode: in create mode supply `companyId` and omit
 > **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 Return type of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="usecontractordetailsformsharedprops"></a>
-
-### UseContractorDetailsFormSharedProps
-
-> **UseContractorDetailsFormSharedProps** = `object`
-
-Shared options merged into both branches of [UseContractorDetailsFormProps](#usecontractordetailsformprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
-| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
-| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
-| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
-| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |

@@ -11,6 +11,46 @@ custom_edit_url: null
 
 # useContractorAddressForm
 
+## Form Hooks
+
+<a id="usecontractoraddressform"></a>
+
+### useContractorAddressForm()
+
+> **useContractorAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+
+Form hook for editing a contractor's address.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
+
+#### Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
+
+#### Remarks
+
+A contractor always has exactly one address (created with the contractor),
+so this hook operates only in update mode and issues a PUT on submit. The
+same address is labelled a "home" address for Individual contractors and a
+"business" address for Business contractors; the hook exposes `contractorType`
+so the consuming component can choose the appropriate copy.
+
+## Fields
+
+| Field | Notes |
+| ----- | ----- |
+| [`ContractorAddressCity`](#contractoraddresscityfield) | Required. |
+| [`ContractorAddressState`](#contractoraddressstatefield) | Options are the standard two-letter US state abbreviations. Required. |
+| [`ContractorAddressStreet1`](#contractoraddressstreet1field) | Required. |
+| [`ContractorAddressStreet2`](#contractoraddressstreet2field) | Optional. |
+| [`ContractorAddressZip`](#contractoraddresszipfield) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+
 ## Components
 
 <a id="contractoraddresscityfield"></a>
@@ -102,36 +142,6 @@ Text input bound to the `zip` field of [useContractorAddressForm](#usecontractor
 
 Available on the hook result as `form.Fields.Zip`. Required; also validates
 ZIP code format and emits `INVALID_ZIP` when the value does not match.
-
-## Form Hooks
-
-<a id="usecontractoraddressform"></a>
-
-### useContractorAddressForm()
-
-> **useContractorAddressForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
-
-Form hook for editing a contractor's address.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseContractorAddressFormProps`](#usecontractoraddressformprops) | See [UseContractorAddressFormProps](#usecontractoraddressformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
-
-#### Remarks
-
-A contractor always has exactly one address (created with the contractor),
-so this hook operates only in update mode and issues a PUT on submit. The
-same address is labelled a "home" address for Individual contractors and a
-"business" address for Business contractors; the hook exposes `contractorType`
-so the consuming component can choose the appropriate copy.
 
 ## Variables
 
