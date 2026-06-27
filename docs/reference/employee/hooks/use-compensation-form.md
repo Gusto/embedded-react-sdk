@@ -223,16 +223,6 @@ When `withEffectiveDateField: false`, the field is `undefined` — supply
 the value at submit time via `CompensationSubmitOptions.effectiveDate`
 instead.
 
-<a id="compensationeffectivedatefieldprops"></a>
-
-#### CompensationEffectiveDateFieldProps
-
-> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
-
-***
-
 <a id="compensationeffectivedatevalidation"></a>
 
 #### CompensationEffectiveDateValidation
@@ -380,16 +370,6 @@ promotion that bundles a new title with a raise). Otherwise bind the title
 via `useJobForm.Fields.Title` instead and avoid rendering both on the same
 screen.
 
-<a id="compensationtitlefieldprops"></a>
-
-#### CompensationTitleFieldProps
-
-> **CompensationTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
-
-***
-
 ## Variables
 
 <a id="compensationerrorcodes"></a>
@@ -470,16 +450,6 @@ stub.
 | `jobId?` | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). |
 
 ## Type Aliases
-<a id="adjustforminimumwagefieldprops"></a>
-
-### AdjustForMinimumWageFieldProps
-
-> **AdjustForMinimumWageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustForMinimumWage` component.
-
-***
-
 <a id="compensationerrorcode"></a>
 
 ### CompensationErrorCode
@@ -593,46 +563,6 @@ The required-field error code produced by [useCompensationForm](#usecompensation
 
 Used as the `validationMessages` key for the title, FLSA status, payment
 unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
-
-***
-
-<a id="flsastatusfieldprops"></a>
-
-### FlsaStatusFieldProps
-
-> **FlsaStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
-
-***
-
-<a id="minimumwageidfieldprops"></a>
-
-### MinimumWageIdFieldProps
-
-> **MinimumWageIdFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
-
-***
-
-<a id="paymentunitfieldprops"></a>
-
-### PaymentUnitFieldProps
-
-> **PaymentUnitFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
-
-***
-
-<a id="ratefieldprops"></a>
-
-### RateFieldProps
-
-> **RateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
-
-Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Rate` component.
 
 ***
 

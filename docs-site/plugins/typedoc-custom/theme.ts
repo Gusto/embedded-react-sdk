@@ -1117,13 +1117,40 @@ function injectFieldsSummary(rendered: string, summary: string): string {
 }
 
 /**
- * Move `XxxFieldProps` and `XxxValidation` type alias entries from the
- * `## Type Aliases` section and nest them (at H4) under their corresponding
- * `### XxxField` field component headings. Field keys are collected from
- * `### XxxField` headings already in the rendered output; the longest-prefix
- * match is used to assign each entry to its field.
+ * Names of the `*FieldProps` type aliases that are a flat field component's
+ * props parameter — e.g. `CaseNumberFieldProps`. These are fully covered by the
+ * component's expanded Parameters table, so {@link nestFieldTypeAliasesUnderComponents}
+ * drops their standalone alias blocks. Group sub-field props (e.g.
+ * `PreparerTextFieldProps`) and `*Validation` types are deliberately excluded —
+ * they have no per-field Parameters table and are referenced as link targets.
  */
-function nestFieldTypeAliasesUnderComponents(rendered: string): string {
+function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<string> {
+  const group = hookNs.groups?.find(g => g.title === 'Components')
+  const names = new Set<string>()
+  for (const comp of (group?.children ?? []) as DeclarationReflection[]) {
+    const paramType = comp.signatures?.[0]?.parameters?.[0]?.type
+    if (paramType instanceof ReferenceType && paramType.reflection instanceof DeclarationReflection) {
+      names.add(paramType.reflection.name)
+    }
+  }
+  return names
+}
+
+/**
+ * Move `XxxValidation` type alias entries from the `## Type Aliases` section and
+ * nest them (at H4) under their corresponding `### XxxField` field component
+ * headings. Field keys are collected from `### XxxField` headings already in the
+ * rendered output; the longest-prefix match is used to assign each entry to its
+ * field.
+ *
+ * Alias entries whose name is in `dropAliasNames` (a flat field's `*FieldProps`,
+ * already covered by the component's Parameters table) are removed from the
+ * reference entirely — neither kept in `## Type Aliases` nor nested.
+ */
+function nestFieldTypeAliasesUnderComponents(
+  rendered: string,
+  dropAliasNames: Set<string>,
+): string {
   const lines = rendered.split('\n')
 
   // Step 2: Locate the ## Type Aliases section (done first so we only scan
@@ -1162,6 +1189,7 @@ function nestFieldTypeAliasesUnderComponents(rendered: string): string {
   type TAEntry = {
     entryLines: string[] // all lines including anchor, heading, content (no trailing ***)
     fieldKey: string | null
+    headingName: string
     startInSection: number // index into taSectionLines
     endInSection: number   // exclusive, points to the *** line (or end)
   }
@@ -1185,7 +1213,7 @@ function nestFieldTypeAliasesUnderComponents(rendered: string): string {
       const headingName = headingLine ? /^###\s+(\S+)/.exec(headingLine)?.[1] ?? '' : ''
       const matchedKey = sortedKeys.find(k => headingName.startsWith(k)) ?? null
 
-      taEntries.push({ entryLines, fieldKey: matchedKey, startInSection: entryStart, endInSection: entryEnd })
+      taEntries.push({ entryLines, fieldKey: matchedKey, headingName, startInSection: entryStart, endInSection: entryEnd })
       i = entryEnd + 1 // skip past the *** separator
     } else {
       i++
@@ -1194,9 +1222,11 @@ function nestFieldTypeAliasesUnderComponents(rendered: string): string {
 
   // Step 4: Build sets of line ranges to remove from TA section (field-matched entries + their *** sep).
   // We'll track which taSectionLines indices to skip.
+  // An entry leaves the Type Aliases section if it's nested under a field
+  // (has a fieldKey) or dropped outright (a flat field's `*FieldProps`).
   const taLinesToRemove = new Set<number>()
   for (const entry of taEntries) {
-    if (entry.fieldKey === null) continue
+    if (entry.fieldKey === null && !dropAliasNames.has(entry.headingName)) continue
     for (let k = entry.startInSection; k < entry.endInSection; k++) {
       taLinesToRemove.add(k)
     }
@@ -1206,10 +1236,11 @@ function nestFieldTypeAliasesUnderComponents(rendered: string): string {
     }
   }
 
-  // Build a map: fieldKey → entries to inject (bumped one heading level ### → ####)
+  // Build a map: fieldKey → entries to inject (bumped one heading level ### → ####).
+  // Dropped aliases are removed above but never re-injected.
   const injectionsByField = new Map<string, string[]>()
   for (const entry of taEntries) {
-    if (!entry.fieldKey) continue
+    if (!entry.fieldKey || dropAliasNames.has(entry.headingName)) continue
     const bumped = entry.entryLines.map(l => l.replace(/^###\s/, '#### '))
     if (!injectionsByField.has(entry.fieldKey)) {
       injectionsByField.set(entry.fieldKey, [])
@@ -1656,7 +1687,10 @@ export class SDKThemeContext extends MarkdownThemeContext {
             if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
           }
           rendered = removeComponentsHeader(rendered)
-          rendered = nestFieldTypeAliasesUnderComponents(rendered)
+          rendered = nestFieldTypeAliasesUnderComponents(
+            rendered,
+            fieldComponentPropsAliasNames(page.model),
+          )
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

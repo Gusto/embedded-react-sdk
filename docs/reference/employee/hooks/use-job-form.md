@@ -173,14 +173,6 @@ via `JobSubmitOptions.hireDate` at submit time — useful when the hire date
 is derived from external context (e.g. the employee's `startDate` during
 onboarding).
 
-<a id="hiredatefieldprops"></a>
-
-#### HireDateFieldProps
-
-> **HireDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
-
 ***
 
 <a id="jobtitlefield"></a>
@@ -204,14 +196,6 @@ Available on the hook result as `form.Fields.Title` when `withTitleField` is
 `true` (the default). On update flows where another form owns the title
 (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and
 render the compensation form's title field instead.
-
-<a id="jobtitlefieldprops"></a>
-
-#### JobTitleFieldProps
-
-> **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
 ***
 
@@ -240,14 +224,6 @@ the active work address is in Washington and `stateWcCovered` is `true`.
 The schema enforces this field as required whenever it is rendered,
 independent of `optionalFieldsToRequire`.
 
-<a id="statewcclasscodefieldprops"></a>
-
-#### StateWcClassCodeFieldProps
-
-> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
-
 ***
 
 <a id="statewccoveredfield"></a>
@@ -273,14 +249,6 @@ compensation. Available on the hook result as `form.Fields.StateWcCovered`
 only when the employee's active work address is in Washington (see
 `data.showStateWc`).
 
-<a id="statewccoveredfieldprops"></a>
-
-#### StateWcCoveredFieldProps
-
-> **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
-
 ***
 
 <a id="twopercentshareholderfield"></a>
@@ -303,16 +271,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHo
 Indicates whether the employee is a 2% shareholder in an S-Corporation.
 Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
-
-<a id="twopercentshareholderfieldprops"></a>
-
-#### TwoPercentShareholderFieldProps
-
-> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.
-
-***
 
 ## Variables
 

@@ -155,14 +155,6 @@ Available on the hook result as `form.Fields.Deductions`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
-<a id="deductionsfieldprops"></a>
-
-#### DeductionsFieldProps
-
-> **DeductionsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
-
 ***
 
 <a id="dependentsamountfield"></a>
@@ -186,14 +178,6 @@ Available on the hook result as `form.Fields.DependentsAmount`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
-<a id="dependentsamountfieldprops"></a>
-
-#### DependentsAmountFieldProps
-
-> **DependentsAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
-
 ***
 
 <a id="extrawithholdingfield"></a>
@@ -216,14 +200,6 @@ _Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`
 Available on the hook result as `form.Fields.ExtraWithholding`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
-
-<a id="extrawithholdingfieldprops"></a>
-
-#### ExtraWithholdingFieldProps
-
-> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
 
 ***
 
@@ -250,16 +226,6 @@ Available on the hook result as `form.Fields.FilingStatus`. Options are
 populated from `FILING_STATUS_VALUES` (`Single`, `Married`,
 `Head of Household`, `Exempt from withholding`). The default option label is
 the raw filing status value — pass `getOptionLabel` to localize.
-
-<a id="filingstatusfieldprops"></a>
-
-#### FilingStatusFieldProps
-
-> **FilingStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
-
-***
 
 <a id="filingstatusvalue"></a>
 
@@ -292,14 +258,6 @@ Available on the hook result as `form.Fields.OtherIncome`. The field
 renders with `format="currency"` and `min={0}`. Empty values coerce to `0`
 and pass the required check.
 
-<a id="otherincomefieldprops"></a>
-
-#### OtherIncomeFieldProps
-
-> **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
-
 ***
 
 <a id="twojobsfield"></a>
@@ -323,16 +281,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroup
 Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `true` and `false`. The default labels are `Yes` and `No` — pass
 `getOptionLabel` to localize. The form submits a boolean value.
-
-<a id="twojobsfieldprops"></a>
-
-#### TwoJobsFieldProps
-
-> **TwoJobsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.
-
-***
 
 ## Variables
 

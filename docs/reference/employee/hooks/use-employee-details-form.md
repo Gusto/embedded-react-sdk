@@ -181,14 +181,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `min
 Available on the hook result as `form.Fields.DateOfBirth`. Optional by
 default — opt in via `optionalFieldsToRequire`.
 
-<a id="dateofbirthfieldprops"></a>
-
-#### DateOfBirthFieldProps
-
-> **DateOfBirthFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.DateOfBirth` component.
-
 ***
 
 <a id="emailfield"></a>
@@ -212,16 +204,6 @@ Available on the hook result as `form.Fields.Email`. Optional by default
 — opt in via `optionalFieldsToRequire`. Also enforces a required rule
 whenever the self-onboarding toggle is enabled in create mode, reported
 via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code.
-
-<a id="emailfieldprops"></a>
-
-#### EmailFieldProps
-
-> **EmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Email` component.
-
-***
 
 <a id="emailvalidation"></a>
 
@@ -260,14 +242,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 Available on the hook result as `form.Fields.FirstName`. Required on
 create; can be made required on update via `optionalFieldsToRequire`.
 
-<a id="firstnamefieldprops"></a>
-
-#### FirstNameFieldProps
-
-> **FirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
-
 ***
 
 <a id="lastnamefield"></a>
@@ -290,14 +264,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 Available on the hook result as `form.Fields.LastName`. Required on
 create; can be made required on update via `optionalFieldsToRequire`.
 
-<a id="lastnamefieldprops"></a>
-
-#### LastNameFieldProps
-
-> **LastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.LastName` component.
-
 ***
 
 <a id="middleinitialfield"></a>
@@ -319,14 +285,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 
 Available on the hook result as `form.Fields.MiddleInitial`. Always
 optional.
-
-<a id="middleinitialfieldprops"></a>
-
-#### MiddleInitialFieldProps
-
-> **MiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
 
 ***
 
@@ -355,14 +313,6 @@ already in progress or completed). Always null-check before rendering.
 When enabled, the employee receives an invitation to enter their own
 personal, tax, and banking details.
 
-<a id="selfonboardingfieldprops"></a>
-
-#### SelfOnboardingFieldProps
-
-> **SelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
-
 ***
 
 <a id="ssnfield"></a>
@@ -387,16 +337,6 @@ with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on
 file, the field shows a masked placeholder and the required rule is
 automatically waived even if `ssn` is listed in
 `optionalFieldsToRequire`.
-
-<a id="ssnfieldprops"></a>
-
-#### SsnFieldProps
-
-> **SsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Ssn` component.
-
-***
 
 <a id="ssnrequiredvalidation"></a>
 

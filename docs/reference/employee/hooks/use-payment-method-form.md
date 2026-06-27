@@ -257,11 +257,3 @@ Shape of the validated values produced by the payment method form on submit.
 Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
 
 ***
-
-<a id="typefieldprops"></a>
-
-### TypeFieldProps
-
-> **TypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
-
-Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.

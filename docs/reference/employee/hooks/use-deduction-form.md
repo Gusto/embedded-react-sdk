@@ -178,14 +178,6 @@ Available on the hook result as `form.Fields.AnnualMaximum` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
 
-<a id="annualmaximumfieldprops"></a>
-
-#### AnnualMaximumFieldProps
-
-> **AnnualMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
-
 ***
 
 <a id="deductaspercentagefield"></a>
@@ -210,14 +202,6 @@ Available on the hook result as `form.Fields.DeductAsPercentage`. Always
 rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency
 amount when `false`, or as a percentage of paycheck when `true`.
 
-<a id="deductaspercentagefieldprops"></a>
-
-#### DeductAsPercentageFieldProps
-
-> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
-
 ***
 
 <a id="deductionamountfield"></a>
@@ -241,14 +225,6 @@ Available on the hook result as `form.Fields.Amount`. Always rendered.
 Interpreted as a currency amount when `Fields.DeductAsPercentage` is set to
 a fixed amount, or as a percentage of paycheck when it's set to percentage.
 
-<a id="deductionamountfieldprops"></a>
-
-#### DeductionAmountFieldProps
-
-> **DeductionAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
-
 ***
 
 <a id="descriptionfield"></a>
@@ -269,14 +245,6 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 #### Remarks
 
 Available on the hook result as `form.Fields.Description`. Always rendered.
-
-<a id="descriptionfieldprops"></a>
-
-#### DescriptionFieldProps
-
-> **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
 
 ***
 
@@ -305,14 +273,6 @@ rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`,
 `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For
 child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform).
 
-<a id="garnishmenttypefieldprops"></a>
-
-#### GarnishmentTypeFieldProps
-
-> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
-
 ***
 
 <a id="recurringfield"></a>
@@ -338,14 +298,6 @@ Picks between a recurring deduction (taken every paycheck) and a one-time
 deduction. The cap fields (`Fields.TotalAmount` and `Fields.AnnualMaximum`)
 are exposed only when this is set to recurring.
 
-<a id="recurringfieldprops"></a>
-
-#### RecurringFieldProps
-
-> **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
-
 ***
 
 <a id="totalamountfield"></a>
@@ -368,16 +320,6 @@ _Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`
 Available on the hook result as `form.Fields.TotalAmount` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
-
-<a id="totalamountfieldprops"></a>
-
-#### TotalAmountFieldProps
-
-> **TotalAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
-
-***
 
 ## Variables
 
