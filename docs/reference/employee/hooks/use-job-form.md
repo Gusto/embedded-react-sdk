@@ -135,7 +135,9 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## JobFormFields
+## Fields
+
+### JobFormFields
 <a id="jobformfields"></a>
 
 Pre-bound field components exposed on `useJobForm().form.Fields`.

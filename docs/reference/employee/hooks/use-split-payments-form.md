@@ -351,7 +351,9 @@ Shape of the validated values produced by the split payments form on submit.
 
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
 
-## SplitPaymentsFormFields
+## Fields
+
+### SplitPaymentsFormFields
 <a id="splitpaymentsformfields"></a>
 
 Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.

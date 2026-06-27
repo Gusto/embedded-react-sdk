@@ -137,7 +137,9 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## HomeAddressFields
+## Fields
+
+### HomeAddressFields
 <a id="homeaddressfields"></a>
 
 Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.

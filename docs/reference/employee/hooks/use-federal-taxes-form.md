@@ -118,7 +118,9 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
 | `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
 
-## FederalTaxesFields
+## Fields
+
+### FederalTaxesFields
 <a id="federaltaxesfields"></a>
 
 Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.

@@ -140,7 +140,9 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
 
-## DeductionFormFields
+## Fields
+
+### DeductionFormFields
 <a id="deductionformfields"></a>
 
 Pre-bound field components exposed on `useDeductionForm().form.Fields`.

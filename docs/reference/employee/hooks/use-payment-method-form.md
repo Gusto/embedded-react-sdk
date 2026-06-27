@@ -115,7 +115,9 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## PaymentMethodFormFields
+## Fields
+
+### PaymentMethodFormFields
 <a id="paymentmethodformfields"></a>
 
 Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.

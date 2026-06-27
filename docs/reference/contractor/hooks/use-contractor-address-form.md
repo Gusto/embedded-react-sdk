@@ -80,7 +80,9 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## ContractorAddressFields
+## Fields
+
+### ContractorAddressFields
 <a id="contractoraddressfields"></a>
 
 Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.

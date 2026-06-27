@@ -105,7 +105,9 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
 
-## ContractorDetailsFields
+## Fields
+
+### ContractorDetailsFields
 <a id="contractordetailsfields"></a>
 
 The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.

@@ -144,7 +144,9 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
 
-## EmployeeDetailsFields
+## Fields
+
+### EmployeeDetailsFields
 <a id="employeedetailsfields"></a>
 
 The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.

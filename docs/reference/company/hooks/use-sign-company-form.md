@@ -255,7 +255,9 @@ The required-field error code emitted by every field of [useSignCompanyForm](#us
 Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 
-## SignCompanyFormFields
+## Fields
+
+### SignCompanyFormFields
 <a id="signcompanyformfields"></a>
 
 Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.

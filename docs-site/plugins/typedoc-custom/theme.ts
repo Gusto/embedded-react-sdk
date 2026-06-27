@@ -836,7 +836,10 @@ function buildFieldsTable(
 
   if (rows.length === 0) return null
 
-  const parts: string[] = [`## ${fieldsInterface.name}`]
+  // A hard-coded `## Fields` parent groups the interface and its field
+  // components as siblings; the interface keeps its symbol name (and anchor,
+  // so cross-references stay valid) at H3.
+  const parts: string[] = ['## Fields', '', `### ${fieldsInterface.name}`]
   if (context.router.hasUrl(fieldsInterface) && context.options.getValue('useHTMLAnchors')) {
     parts.push(`<a id="${context.router.getAnchor(fieldsInterface)}"></a>`)
   }

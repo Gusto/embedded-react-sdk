@@ -139,7 +139,9 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
 
-## PayScheduleFields
+## Fields
+
+### PayScheduleFields
 <a id="payschedulefields"></a>
 
 Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.

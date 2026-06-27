@@ -121,7 +121,9 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## SignEmployeeFormFieldComponents
+## Fields
+
+### SignEmployeeFormFieldComponents
 <a id="signemployeeformfieldcomponents"></a>
 
 Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.

@@ -142,7 +142,9 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 | `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
 | `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
 
-## ChildSupportGarnishmentFormFields
+## Fields
+
+### ChildSupportGarnishmentFormFields
 <a id="childsupportgarnishmentformfields"></a>
 
 Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.

@@ -137,7 +137,9 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## WorkAddressFields
+## Fields
+
+### WorkAddressFields
 <a id="workaddressfields"></a>
 
 Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.

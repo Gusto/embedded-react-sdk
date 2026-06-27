@@ -153,7 +153,9 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
 | `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
 
-## CompensationFormFields
+## Fields
+
+### CompensationFormFields
 <a id="compensationformfields"></a>
 
 Pre-bound field components exposed on `useCompensationForm().form.Fields`.
