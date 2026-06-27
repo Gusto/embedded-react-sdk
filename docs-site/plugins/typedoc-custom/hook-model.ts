@@ -9,22 +9,33 @@ import {
 } from 'typedoc'
 
 /**
- * Structured model of a form hook's documentable parts, derived entirely from
- * the TypeScript type graph (never from name conventions).
+ * Structured model of the documentable parts common to every hook (form or
+ * data), derived entirely from the TypeScript type graph (never from name
+ * conventions).
  *
- * A hook is recognized as a form hook when its return type is a union with a
- * branch whose interface extends {@link https://github.com/gusto/embedded-react-sdk | `BaseFormHookReady`}.
- * Once recognized, every part below must be extractable or the build hard-fails
- * via {@link FormHookModelError} — a malformed form hook is a bug, not a
- * silently-degraded page.
+ * A hook is recognized when its return type is a union with a non-loading
+ * interface branch (the ready state). Once recognized, every part below must be
+ * extractable or the build hard-fails via {@link HookModelError} — a malformed
+ * hook is a bug, not a silently-degraded page.
+ *
+ * Form hooks carry additional parts; see {@link FormHookModel}.
  */
-export interface FormHookModel {
-  /** The hook function reflection (e.g. `useBankForm`). */
+export interface HookModel {
+  /** The hook function reflection (e.g. `useBankForm`, `useEmployeeList`). */
   hookFn: DeclarationReflection
   /** The hook's props parameter, as either a single interface or a discriminated union. */
-  props: FormHookProps
-  /** The `UseXxxFormReady` interface — the ready branch of the return union. */
+  props: HookProps
+  /** The `UseXxxReady` interface — the non-loading branch of the return union. */
   readyInterface: DeclarationReflection
+}
+
+/**
+ * A {@link HookModel} for a form hook — a hook whose ready branch extends
+ * {@link https://github.com/gusto/embedded-react-sdk | `BaseFormHookReady`}.
+ * Adds the form-specific parts (`Fields`, form data, fields metadata) on top of
+ * the common model.
+ */
+export interface FormHookModel extends HookModel {
   /**
    * The `Fields` component map interface (3rd type arg of `BaseFormHookReady`),
    * or `null` when `Fields` is not a flat interface map — e.g. an array of
@@ -53,9 +64,9 @@ export interface PropsUnionBranch {
 /** The hook's props as a discriminated union (e.g. create vs update mode). */
 export interface UnionProps {
   kind: 'union'
-  /** The `UseXxxFormProps` type alias whose declared type is the union. */
+  /** The `UseXxxProps` type alias whose declared type is the union. */
   alias: DeclarationReflection
-  /** The base props type shared by every branch (e.g. `UseXxxFormSharedProps`), if any. */
+  /** The base props type shared by every branch (e.g. `UseXxxSharedProps`), if any. */
   shared: DeclarationReflection | null
   /** The union branches, each carrying its discriminating inline props. */
   branches: PropsUnionBranch[]
@@ -63,7 +74,7 @@ export interface UnionProps {
 
 /**
  * The hook's props as a derived type alias that is neither a single interface
- * nor a discriminated union — e.g. `Omit<UseXxxFormProps, 'k'>` on a secondary
+ * nor a discriminated union — e.g. `Omit<UseXxxProps, 'k'>` on a secondary
  * hook. Not elevated; rendered with the default parameter table.
  */
 export interface AliasProps {
@@ -71,56 +82,71 @@ export interface AliasProps {
   alias: DeclarationReflection
 }
 
-export type FormHookProps = InterfaceProps | UnionProps | AliasProps
+export type HookProps = InterfaceProps | UnionProps | AliasProps
 
-/** Thrown when a recognized form hook is missing a part the renderer requires. */
-export class FormHookModelError extends Error {
+/** Thrown when a recognized hook is missing a part the renderer requires. */
+export class HookModelError extends Error {
   constructor(hookName: string, detail: string) {
-    super(`Form hook "${hookName}": ${detail}`)
-    this.name = 'FormHookModelError'
+    super(`Hook "${hookName}": ${detail}`)
+    this.name = 'HookModelError'
   }
 }
 
 const BASE_FORM_READY = 'BaseFormHookReady'
 
-const cache = new Map<DeclarationReflection, FormHookModel | null>()
+const hookModelCache = new Map<DeclarationReflection, HookModel | null>()
+const formHookModelCache = new Map<DeclarationReflection, FormHookModel | null>()
 
 /**
- * Build (or return the cached) {@link FormHookModel} for a hook function.
- * Returns `null` when the function is not a form hook. Throws
- * {@link FormHookModelError} when it is a form hook but malformed.
+ * Build (or return the cached) {@link HookModel} for a hook function. Returns
+ * `null` when the function is not a recognizable hook (no ready branch). Throws
+ * {@link HookModelError} when it is a hook but malformed (e.g. no props param).
  */
-export function getFormHookModel(hookFn: DeclarationReflection): FormHookModel | null {
-  if (cache.has(hookFn)) return cache.get(hookFn)!
-  const model = extractFormHookModel(hookFn)
-  cache.set(hookFn, model)
+export function getHookModel(hookFn: DeclarationReflection): HookModel | null {
+  if (hookModelCache.has(hookFn)) return hookModelCache.get(hookFn)!
+  const model = extractHookModel(hookFn)
+  hookModelCache.set(hookFn, model)
   return model
 }
 
 /**
- * Find the primary form hook function on a synthetic hook-page namespace and
- * return its model. Prefers the function whose name matches the namespace
- * (e.g. `useBankForm` on the `useBankForm` page), falling back to the first
- * function child that resolves to a form hook.
+ * Build (or return the cached) {@link FormHookModel} for a hook function.
+ * Returns `null` when the function is not a form hook. Throws
+ * {@link HookModelError} when it is a form hook but malformed.
  */
-export function formHookModelForPage(hookNs: DeclarationReflection): FormHookModel | null {
+export function getFormHookModel(hookFn: DeclarationReflection): FormHookModel | null {
+  if (formHookModelCache.has(hookFn)) return formHookModelCache.get(hookFn)!
+  const model = extractFormHookModel(hookFn)
+  formHookModelCache.set(hookFn, model)
+  return model
+}
+
+/**
+ * Find the primary hook function on a synthetic hook-page namespace and return
+ * the resolver's model for it. Prefers the function whose name matches the
+ * namespace (e.g. `useBankForm` on the `useBankForm` page), falling back to the
+ * first function child the resolver recognizes.
+ */
+function modelForPage<T>(
+  hookNs: DeclarationReflection,
+  resolve: (fn: DeclarationReflection) => T | null,
+): T | null {
   const functions = (hookNs.children ?? []).filter(
     (c): c is DeclarationReflection =>
       c instanceof DeclarationReflection && c.kind === ReflectionKind.Function,
   )
   const primary = functions.find(f => f.name === hookNs.name)
-  if (primary) return getFormHookModel(primary)
+  if (primary) return resolve(primary)
   for (const fn of functions) {
-    const model = getFormHookModel(fn)
+    const model = resolve(fn)
     if (model) return model
   }
   return null
 }
 
-function extendsBaseFormReady(ref: DeclarationReflection): boolean {
-  return (ref.extendedTypes ?? []).some(
-    et => et instanceof ReferenceType && et.name === BASE_FORM_READY,
-  )
+/** The {@link FormHookModel} for a hook page's primary form hook, or `null`. */
+export function formHookModelForPage(hookNs: DeclarationReflection): FormHookModel | null {
+  return modelForPage(hookNs, getFormHookModel)
 }
 
 /**
@@ -162,41 +188,60 @@ export function getHookReadyInterface(hookFn: DeclarationReflection): Declaratio
   return null
 }
 
-/** The ready branch of a hook's return-type union, or null when not a form hook. */
-function findReadyBranch(returnType: SomeType | undefined): DeclarationReflection | null {
-  const union = asReturnUnion(returnType)
-  if (!union) return null
-  for (const member of union.types) {
-    if (
-      member instanceof ReferenceType &&
-      member.reflection instanceof DeclarationReflection &&
-      member.reflection.kind === ReflectionKind.Interface &&
-      extendsBaseFormReady(member.reflection)
-    ) {
-      return member.reflection
-    }
+/**
+ * The exported return-type alias (`UseXxxResult = HookLoadingResult | UseXxxReady`)
+ * among a hook's sibling members, or `null`. Identified by structure, not name:
+ * a type alias whose declared union references both `HookLoadingResult` and the
+ * given ready interface. This holds whether the hook annotates its return inline
+ * or as the named alias, so the union is fully represented by the Returns section
+ * and the standalone alias entry is redundant.
+ */
+export function findHookResultAlias(
+  members: readonly DeclarationReflection[],
+  readyInterface: DeclarationReflection,
+): DeclarationReflection | null {
+  for (const member of members) {
+    if (member.kind !== ReflectionKind.TypeAlias || !(member.type instanceof UnionType)) continue
+    const branches = member.type.types
+    const refsReady = branches.some(t => t instanceof ReferenceType && t.reflection === readyInterface)
+    const refsLoading = branches.some(t => t instanceof ReferenceType && t.name === 'HookLoadingResult')
+    if (refsReady && refsLoading) return member
   }
   return null
 }
 
-function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | null {
+function extractHookModel(hookFn: DeclarationReflection): HookModel | null {
   const sig = hookFn.signatures?.[0]
   if (!sig) return null
 
-  const readyInterface = findReadyBranch(sig.type)
+  const readyInterface = getHookReadyInterface(hookFn)
   if (!readyInterface) return null
 
-  // From here the hook IS a form hook — any missing part is a hard error.
-  const baseRef = (readyInterface.extendedTypes ?? []).find(
+  // From here the function IS a hook — any missing part is a hard error.
+  const propParam = sig.parameters?.[0]
+  if (!propParam) {
+    throw new HookModelError(hookFn.name, 'has no props parameter')
+  }
+  const props = extractProps(hookFn.name, propParam.type)
+
+  return { hookFn, props, readyInterface }
+}
+
+function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | null {
+  const base = getHookModel(hookFn)
+  if (!base) return null
+
+  // A form hook is a hook whose ready branch extends BaseFormHookReady. Any
+  // other hook (e.g. a data hook) is not a form hook — return null.
+  const baseRef = (base.readyInterface.extendedTypes ?? []).find(
     (et): et is ReferenceType => et instanceof ReferenceType && et.name === BASE_FORM_READY,
   )
-  if (!baseRef) {
-    throw new FormHookModelError(hookFn.name, `${readyInterface.name} does not extend ${BASE_FORM_READY}`)
-  }
+  if (!baseRef) return null
 
+  // From here the hook IS a form hook — any missing part is a hard error.
   const typeArgs = baseRef.typeArguments ?? []
   if (typeArgs.length < 3) {
-    throw new FormHookModelError(
+    throw new HookModelError(
       hookFn.name,
       `${BASE_FORM_READY} has ${typeArgs.length} type arguments, expected 3`,
     )
@@ -209,7 +254,7 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
   let fieldsInterface: DeclarationReflection | null = null
   if (fieldsArg instanceof ReferenceType) {
     if (!(fieldsArg.reflection instanceof DeclarationReflection)) {
-      throw new FormHookModelError(
+      throw new HookModelError(
         hookFn.name,
         `Fields type argument references "${fieldsArg.name}" which did not resolve`,
       )
@@ -217,18 +262,12 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
     fieldsInterface = fieldsArg.reflection
   }
 
-  const propParam = sig.parameters?.[0]
-  if (!propParam) {
-    throw new FormHookModelError(hookFn.name, 'has no props parameter')
-  }
-  const props = extractProps(hookFn.name, propParam.type)
-
-  return { hookFn, props, readyInterface, fieldsInterface, formDataType, fieldsMetadataType }
+  return { ...base, fieldsInterface, formDataType, fieldsMetadataType }
 }
 
-function extractProps(hookName: string, propType: SomeType | undefined): FormHookProps {
+function extractProps(hookName: string, propType: SomeType | undefined): HookProps {
   if (!(propType instanceof ReferenceType) || !(propType.reflection instanceof DeclarationReflection)) {
-    throw new FormHookModelError(
+    throw new HookModelError(
       hookName,
       `props parameter is not a resolvable reference (got ${propType?.type ?? 'none'})`,
     )
@@ -259,7 +298,7 @@ function extractUnionProps(
 
   for (const member of union.types) {
     if (!(member instanceof IntersectionType)) {
-      throw new FormHookModelError(
+      throw new HookModelError(
         hookName,
         `union props branch is not an intersection (got ${member.type})`,
       )

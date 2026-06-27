@@ -33,12 +33,13 @@ import {
 import { SDKRouter } from './router.ts'
 import { TYPE_EMOJIS } from './router.config.ts'
 import {
+  findHookResultAlias,
   formHookModelForPage,
-  getFormHookModel,
+  getHookModel,
   getHookReadyInterface,
   type FormHookModel,
-  type FormHookProps,
-} from './form-hook-model.ts'
+  type HookProps,
+} from './hook-model.ts'
 
 function getReflectionDescription(
   reflection: DeclarationReflection,
@@ -344,11 +345,11 @@ function reflectionHeaderParts(context: SDKThemeContext, refl: DeclarationReflec
 }
 
 /**
- * Render a form hook's props from the model. A single interface renders as one
+ * Render a hook's props from the model. A single interface renders as one
  * properties table; a discriminated union renders the shared base table plus a
  * table per variant listing its discriminating fields.
  */
-function renderHookPropsTable(context: SDKThemeContext, props: FormHookProps): string {
+function renderHookPropsTable(context: SDKThemeContext, props: HookProps): string {
   if (props.kind === 'interface') {
     const parts = reflectionHeaderParts(context, props.interface)
     const declared = declaredPropsOf(props.interface)
@@ -419,13 +420,14 @@ function renderFunctionPropsTable(
   const component = param.parent?.parent
   if (!(component instanceof DeclarationReflection)) return fallback(params)
 
-  // Form hook: render props from the model (single interface or discriminated
-  // union). A derived alias (e.g. Omit<…>) is not elevated — fall through.
-  const formModel = getFormHookModel(component)
-  if (formModel && formModel.props.kind !== 'alias') {
-    return renderHookPropsTable(context, formModel.props)
+  // Hook (form or data): render props from the model (single interface or
+  // discriminated union). A derived alias (e.g. Omit<…>) is not elevated — fall
+  // through.
+  const hookModel = getHookModel(component)
+  if (hookModel && hookModel.props.kind !== 'alias') {
+    return renderHookPropsTable(context, hookModel.props)
   }
-  if (formModel) return fallback(params)
+  if (hookModel) return fallback(params)
 
   // Component: inline the props interface when the parameter directly references one.
   if (!isComponent(component) || !(param.type instanceof ReferenceType)) {
@@ -574,9 +576,12 @@ function insertComponentsTable(rendered: string, table: string): string {
 }
 
 /**
- * Remove the `## Form Hooks` section heading and the `### hookName()` sub-heading,
- * then shift H4→H2 and H5→H3 for the content inside the hook function section.
- * Uses a state machine to identify and transform the relevant lines.
+ * Remove the hook group heading (`## Hooks`, `## Form Hooks`, etc.) and the
+ * `### hookName()` sub-heading, then shift H4→H2 and H5→H3 for the content
+ * inside the hook function section. Each hook page documents exactly one primary
+ * hook, so the group heading carries no information and is dropped: it is always
+ * the first `##` section on the page (the hook group renders before Interfaces /
+ * Type Aliases). Uses a state machine to identify and transform the lines.
  */
 function reformatHookFunctionSection(rendered: string, hookName: string): string {
   const escapedHookName = hookName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -589,9 +594,9 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
   for (const line of rendered.split('\n')) {
     switch (state) {
       case 'before':
-        if (/^## Form Hooks\s*$/.test(line)) {
+        if (/^## /.test(line)) {
           state = 'in-group'
-          // skip this line
+          // skip the group heading (first `##` = the single hook's group)
         } else {
           out.push(line)
         }
@@ -630,21 +635,13 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
  * sequence: Example → Remarks → Props → Returns → everything else (Fields,
  * Variables, Interfaces, Type Aliases — kept in their original relative order).
  *
- * The props section heading is matched by the model's props type name (the
- * interface or union-alias name), not a text heuristic, so a props type that
- * doesn't end in `Props` still ranks correctly.
+ * The Props and Returns sections carry hard-coded headings, so they rank by
+ * exact title.
  */
-function reorderHookSections(rendered: string, formModel: FormHookModel | null): string {
+function reorderHookSections(rendered: string): string {
   const lines = rendered.split('\n')
   const firstSection = lines.findIndex(l => /^##\s/.test(l))
   if (firstSection === -1) return rendered
-
-  const propsName =
-    formModel?.props.kind === 'interface'
-      ? formModel.props.interface.name
-      : formModel?.props.kind === 'union'
-        ? formModel.props.alias.name
-        : null
 
   const preamble = lines.slice(0, firstSection)
   const sections: { title: string; lines: string[] }[] = []
@@ -660,7 +657,7 @@ function reorderHookSections(rendered: string, formModel: FormHookModel | null):
   const rank = (title: string): number => {
     if (/^Examples?/.test(title)) return 0
     if (title === 'Remarks') return 1
-    if (propsName && title === propsName) return 2
+    if (title === 'Props') return 2
     if (title === 'Returns') return 3
     return 99
   }
@@ -1241,19 +1238,26 @@ export class SDKThemeContext extends MarkdownThemeContext {
           return result.replace(`${hashes} Parameters`, `${hashes} ${propsRef.name}`)
         }
 
-        // Form hook: rename "Parameters" heading to the props type name from the
-        // model — the interface for single-interface props, or the union alias.
+        // Hook (form or data): replace the generic "Parameters" heading with a
+        // hard-coded "Props" section, and nest the props type name(s) one level
+        // deeper as sub-entries. The fixed section name keeps the structure
+        // uniform and scales to hooks that take more than one props input.
         const hookFn = model.parent
         if (hookFn instanceof DeclarationReflection) {
-          const formModel = getFormHookModel(hookFn)
+          const hookModel = getHookModel(hookFn)
           // Derived-alias props are not elevated, so their heading is left as-is.
-          if (formModel && formModel.props.kind !== 'alias') {
+          if (hookModel && hookModel.props.kind !== 'alias') {
             const propsName =
-              formModel.props.kind === 'interface'
-                ? formModel.props.interface.name
-                : formModel.props.alias.name
-            const hashes = '#'.repeat((options as { headingLevel: number }).headingLevel)
-            return result.replace(`${hashes} Parameters`, `${hashes} ${propsName}`)
+              hookModel.props.kind === 'interface'
+                ? hookModel.props.interface.name
+                : hookModel.props.alias.name
+            const headingLevel = (options as { headingLevel: number }).headingLevel
+            const hashes = '#'.repeat(headingLevel)
+            const subHashes = '#'.repeat(headingLevel + 1)
+            return result.replace(
+              `${hashes} Parameters`,
+              `${hashes} Props\n\n${subHashes} ${propsName}`,
+            )
           }
         }
 
@@ -1295,14 +1299,26 @@ export class SDKThemeContext extends MarkdownThemeContext {
           const readyName = readyType.name
 
           const headingLevel = (options as { headingLevel: number }).headingLevel
-          const readyHashes = '#'.repeat(headingLevel + 1)
+          const subHashes = '#'.repeat(headingLevel + 1)
 
           const parts: string[] = [base]
+
+          // The `UseXxxResult` return-union alias is removed from the Type
+          // Aliases group (router); render it here as the first Returns sub-entry
+          // so the union definition stays with the Returns section. memberContainer
+          // emits its anchor, so signature and cross-page links still resolve.
+          const siblings = (pageModel.children ?? []).filter(
+            (c): c is DeclarationReflection => c instanceof DeclarationReflection,
+          )
+          const resultAlias = findHookResultAlias(siblings, readyType)
+          if (resultAlias) {
+            parts.push(this.partials.memberContainer(resultAlias, { headingLevel: headingLevel + 1 }))
+          }
 
           if (this.router.hasUrl(readyType) && this.options.getValue('useHTMLAnchors')) {
             parts.push(`<a id="${this.router.getAnchor(readyType)}"></a>`)
           }
-          parts.push(`${readyHashes} ${readyName}`)
+          parts.push(`${subHashes} ${readyName}`)
 
           if (readyType.comment) {
             const commentMd = this.partials.comment(readyType.comment, {
@@ -1390,7 +1406,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
           rendered = moveExampleToTop(rendered)
-          rendered = reorderHookSections(rendered, formModel)
+          rendered = reorderHookSections(rendered)
           if (formModel) {
             const fieldsTable = buildFieldsTable(this, page.model, formModel)
             if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)

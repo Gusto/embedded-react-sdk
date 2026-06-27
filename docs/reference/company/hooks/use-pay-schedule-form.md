@@ -78,7 +78,9 @@ preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
 the company's payment configuration and is useful for surfacing UI hints
 about how far ahead the first pay date must be.
 
-## UsePayScheduleFormProps
+## Props
+
+### UsePayScheduleFormProps
 
 <a id="usepayscheduleformprops"></a>
 
@@ -102,6 +104,14 @@ Presence or absence of `payScheduleId` selects between update and create mode.
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UsePayScheduleFormReady](#usepayscheduleformready) once ready.
+
+<a id="usepayscheduleformresult"></a>
+
+### UsePayScheduleFormResult
+
+> **UsePayScheduleFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
+
+Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
 
 <a id="usepayscheduleformready"></a>
 
@@ -485,13 +495,3 @@ The required-field error code produced by [usePayScheduleForm](#usepayschedulefo
 
 Used as the `validationMessages` key for the custom name, frequency, anchor
 pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
-
-***
-
-<a id="usepayscheduleformresult"></a>
-
-### UsePayScheduleFormResult
-
-> **UsePayScheduleFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePayScheduleFormReady`](#usepayscheduleformready)
-
-Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).

@@ -83,7 +83,9 @@ form's title and description, and `data.pdfUrl` to render the document for
 review before signing. Both `signature` and `confirmSignature` are always
 required.
 
-## UseSignCompanyFormProps
+## Props
+
+### UseSignCompanyFormProps
 
 <a id="usesigncompanyformprops"></a>
 
@@ -102,6 +104,14 @@ Props for [useSignCompanyForm](#usesigncompanyform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignCompanyFormReady](#usesigncompanyformready) once the form is loaded.
+
+<a id="usesigncompanyformresult"></a>
+
+### UseSignCompanyFormResult
+
+> **UseSignCompanyFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
+
+Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
 
 <a id="usesigncompanyformready"></a>
 
@@ -244,16 +254,6 @@ The required-field error code emitted by every field of [useSignCompanyForm](#us
 
 Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
-
-***
-
-<a id="usesigncompanyformresult"></a>
-
-### UseSignCompanyFormResult
-
-> **UseSignCompanyFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignCompanyFormReady`](#usesigncompanyformready)
-
-Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
 
 ## SignCompanyFormFields
 <a id="signcompanyformfields"></a>

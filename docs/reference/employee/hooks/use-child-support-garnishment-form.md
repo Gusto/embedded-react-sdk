@@ -73,7 +73,9 @@ POST a new garnishment, supply it to PUT updates against the existing row.
 For non-child-support deductions (court-ordered garnishments and post-tax
 custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
 
-## UseChildSupportGarnishmentFormProps
+## Props
+
+### UseChildSupportGarnishmentFormProps
 
 <a id="usechildsupportgarnishmentformprops"></a>
 
@@ -97,6 +99,20 @@ Presence or absence of `garnishmentId` selects the API verb — see the
 [`UseChildSupportGarnishmentFormResult`](#usechildsupportgarnishmentformresult)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once ready.
+
+<a id="usechildsupportgarnishmentformresult"></a>
+
+### UseChildSupportGarnishmentFormResult
+
+> **UseChildSupportGarnishmentFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)
+
+Return value of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+
+#### Remarks
+
+Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) while the agency catalog (and,
+in update mode, the existing garnishment) is loading;
+[UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once data is ready.
 
 <a id="usechildsupportgarnishmentformready"></a>
 
@@ -593,19 +609,3 @@ localized label — the SDK's option-label fallback is the agency state code.
 > **SupportedRequiredAttrKey** = *typeof* [`SUPPORTED_REQUIRED_ATTR_KEYS`](#supported_required_attr_keys)\[`number`\]
 
 Union of child support attribute key strings recognized by the form.
-
-***
-
-<a id="usechildsupportgarnishmentformresult"></a>
-
-### UseChildSupportGarnishmentFormResult
-
-> **UseChildSupportGarnishmentFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)
-
-Return value of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
-
-#### Remarks
-
-Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) while the agency catalog (and,
-in update mode, the existing garnishment) is loading;
-[UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once data is ready.

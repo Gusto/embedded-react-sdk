@@ -62,7 +62,9 @@ sends a minimal request body; switching to or staying on Direct Deposit
 preserves the existing splits and version so split allocations are not lost
 when only the type changes.
 
-## UsePaymentMethodFormProps
+## Props
+
+### UsePaymentMethodFormProps
 
 <a id="usepaymentmethodformprops"></a>
 
@@ -81,6 +83,14 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
+
+<a id="usepaymentmethodformresult"></a>
+
+### UsePaymentMethodFormResult
+
+> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+
+Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.
 
 <a id="usepaymentmethodformready"></a>
 
@@ -249,13 +259,3 @@ Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) 
 > **TypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
 
 Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
-
-***
-
-<a id="usepaymentmethodformresult"></a>
-
-### UsePaymentMethodFormResult
-
-> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
-
-Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.

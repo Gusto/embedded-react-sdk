@@ -17,7 +17,12 @@ import {
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
 import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
-import { getFormHookModel, getHookReadyInterface } from './form-hook-model.ts'
+import {
+  findHookResultAlias,
+  getFormHookModel,
+  getHookModel,
+  getHookReadyInterface,
+} from './hook-model.ts'
 import {
   componentPropsInterfaces,
   domainFromSources,
@@ -385,20 +390,27 @@ export class SDKRouter extends MemberRouter {
         hookNs.children = hookMembers
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
         // Remove inlined types from groups by reflection identity, derived from
-        // the type graph: every hook's Ready interface is inlined in the Returns
-        // section; a form hook additionally inlines its props (under Parameters)
-        // and Fields (as the quick-reference table). FormData and derived-alias
-        // props stay visible as their own sections.
+        // the type graph: every hook's Ready interface and its `UseXxxResult`
+        // return-union alias are inlined in the Returns section, and its props
+        // are inlined under Parameters; a form hook additionally inlines its
+        // Fields (as the quick-reference table). FormData and derived-alias props
+        // stay visible as their own sections.
         const inlined = new Set<DeclarationReflection>()
+        const memberDecls = hookMembers.filter(
+          (m): m is DeclarationReflection => m instanceof DeclarationReflection,
+        )
         for (const member of hookMembers) {
           if (!(member instanceof DeclarationReflection) || member.kind !== ReflectionKind.Function) {
             continue
           }
           const ready = getHookReadyInterface(member)
-          if (ready) inlined.add(ready)
-          const model = getFormHookModel(member)
+          if (ready) {
+            inlined.add(ready)
+            const resultAlias = findHookResultAlias(memberDecls, ready)
+            if (resultAlias) inlined.add(resultAlias)
+          }
+          const model = getHookModel(member)
           if (model) {
-            if (model.fieldsInterface) inlined.add(model.fieldsInterface)
             if (model.props.kind === 'interface') {
               inlined.add(model.props.interface)
             } else if (model.props.kind === 'union') {
@@ -406,6 +418,8 @@ export class SDKRouter extends MemberRouter {
               if (model.props.shared) inlined.add(model.props.shared)
             }
           }
+          const formModel = getFormHookModel(member)
+          if (formModel?.fieldsInterface) inlined.add(formModel.fieldsInterface)
         }
         if (inlined.size > 0) {
           for (const group of hookNs.groups) {

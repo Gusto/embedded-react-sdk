@@ -99,7 +99,9 @@ hook is always in update mode. When the form has no states with submittable
 answers (e.g. an employee in a no-income-tax state), submit resolves with
 the existing record list without making a network request.
 
-## UseEmployeeStateTaxesFormProps
+## Props
+
+### UseEmployeeStateTaxesFormProps
 
 <a id="useemployeestatetaxesformprops"></a>
 
@@ -118,6 +120,16 @@ Options accepted by [useEmployeeStateTaxesForm](#useemployeestatetaxesform).
 
 A loading result while data is fetching, or a ready result with
 form data, fields, status, actions, and error handling.
+
+<a id="useemployeestatetaxesformresult"></a>
+
+### UseEmployeeStateTaxesFormResult
+
+> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
+
+Discriminated union returned by [useEmployeeStateTaxesForm](#useemployeestatetaxesform). Loading
+branch carries only `errorHandling`; ready branch carries form data,
+fields, status, and actions.
 
 <a id="useemployeestatetaxesformready"></a>
 
@@ -391,18 +403,6 @@ Props for a `Field` rendered as a single-line text input.
 | ------ | ------ | ------ |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
-
-***
-
-<a id="useemployeestatetaxesformresult"></a>
-
-### UseEmployeeStateTaxesFormResult
-
-> **UseEmployeeStateTaxesFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)
-
-Discriminated union returned by [useEmployeeStateTaxesForm](#useemployeestatetaxesform). Loading
-branch carries only `errorHandling`; ready branch carries form data,
-fields, status, and actions.
 
 <!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: appendix) -->
 ## Exported types

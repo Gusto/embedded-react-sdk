@@ -55,7 +55,9 @@ the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
 discriminated union; in practice the hook transitions to the ready state
 immediately because it does not fetch any server data.
 
-## UseBankFormProps
+## Props
+
+### UseBankFormProps
 
 <a id="usebankformprops"></a>
 
@@ -74,6 +76,14 @@ Props for [useBankForm](#usebankform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
 
 A loading-state result while the hook is initializing, or a [UseBankFormReady](#usebankformready) ready to render.
+
+<a id="usebankformresult"></a>
+
+### UseBankFormResult
+
+> **UseBankFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
+
+Return type of [useBankForm](#usebankform) — a discriminated union on `isLoading`.
 
 <a id="usebankformready"></a>
 
@@ -369,11 +379,3 @@ Shape of the validated values produced by the bank account form on submit.
 Validation error codes emitted by [useBankForm](#usebankform) fields that only emit `REQUIRED`.
 
 ***
-
-<a id="usebankformresult"></a>
-
-### UseBankFormResult
-
-> **UseBankFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseBankFormReady`](#usebankformready)
-
-Return type of [useBankForm](#usebankform) — a discriminated union on `isLoading`.

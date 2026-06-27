@@ -72,7 +72,9 @@ commission-only and owner classifications). When
 the `effectiveDate` field (forces to today, renders disabled) until the
 FLSA selection is reverted.
 
-## UseCompensationFormProps
+## Props
+
+### UseCompensationFormProps
 
 <a id="usecompensationformprops"></a>
 
@@ -104,6 +106,20 @@ the same submit chain.
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseCompensationFormReady](#usecompensationformready) once ready.
+
+<a id="usecompensationformresult"></a>
+
+### UseCompensationFormResult
+
+> **UseCompensationFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
+
+Discriminated union returned by [useCompensationForm](#usecompensationform) — either the loading state or the ready state.
+
+#### Remarks
+
+Use this type when threading the hook result through helpers (e.g.
+presentational components). Discriminate on `isLoading` to narrow to
+[UseCompensationFormReady](#usecompensationformready).
 
 <a id="usecompensationformready"></a>
 
@@ -605,19 +621,3 @@ Validation error codes emitted by the `rate` field of [useCompensationForm](#use
 
 Use these as keys in `validationMessages` on `Fields.Rate`. See
 [CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
-
-***
-
-<a id="usecompensationformresult"></a>
-
-### UseCompensationFormResult
-
-> **UseCompensationFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseCompensationFormReady`](#usecompensationformready)
-
-Discriminated union returned by [useCompensationForm](#usecompensationform) — either the loading state or the ready state.
-
-#### Remarks
-
-Use this type when threading the hook result through helpers (e.g.
-presentational components). Discriminate on `isLoading` to narrow to
-[UseCompensationFormReady](#usecompensationformready).

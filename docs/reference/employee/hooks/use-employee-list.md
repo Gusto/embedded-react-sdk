@@ -11,62 +11,16 @@ custom_edit_url: null
 
 # useEmployeeList
 
-## Hooks
-
 <a id="useemployeelist"></a>
-
-### useEmployeeList()
 
 > **useEmployeeList**(`input`: [`UseEmployeeListProps`](#useemployeelistprops)): [`UseEmployeeListResult`](#useemployeelistresult)
 
 Fetches a paginated list of a company's employees and decorates each entry with the actions
 allowed for its current onboarding state.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseEmployeeListProps`](#useemployeelistprops) | Company and optional filter for the list. |
-
-#### Returns
-
-[`UseEmployeeListResult`](#useemployeelistresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
-
-<a id="useemployeelistready"></a>
-
-##### UseEmployeeListReady
-
-Ready state of [useEmployeeList](#useemployeelist).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
-| `actions.onCancelSelfOnboarding` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
-| `actions.onDelete` | (`employeeId`: `string`) => `Promise`\<`void`\> | Deletes the employee. |
-| `actions.onReview` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
-| `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
-| `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `pagination` | [`PaginationControlProps`](../../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
-| `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
-| `status.isFetching` | `boolean` | - |
-| `status.isPending` | `boolean` | - |
-
-#### Remarks
-
-`employeeType` maps to a server-side filter and changes which actions appear on each row:
-`'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
-to list every employee.
-
-Page changes use placeholder data: the previous page stays rendered while the next one loads,
-and `status.isFetching` flips to `true` during the request.
-
-#### Example
-
-```tsx
+```tsx title="Example"
 import { useEmployeeList } from '@gusto/embedded-react-sdk'
 
 function EmployeeListPage({ companyId }: { companyId: string }) {
@@ -88,6 +42,63 @@ function EmployeeListPage({ companyId }: { companyId: string }) {
   )
 }
 ```
+
+## Remarks
+
+`employeeType` maps to a server-side filter and changes which actions appear on each row:
+`'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
+to list every employee.
+
+Page changes use placeholder data: the previous page stays rendered while the next one loads,
+and `status.isFetching` flips to `true` during the request.
+
+## Props
+
+### UseEmployeeListProps
+
+<a id="useemployeelistprops"></a>
+
+Props for [useEmployeeList](#useemployeelist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `employeeType?` | [`EmployeeType`](#employeetype) | Filters the list and tailors the allowed actions. Omit to list all employees. |
+
+## Returns
+
+[`UseEmployeeListResult`](#useemployeelistresult)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while the first page is in flight, or a [UseEmployeeListReady](#useemployeelistready) once data has arrived.
+
+<a id="useemployeelistresult"></a>
+
+### UseEmployeeListResult
+
+> **UseEmployeeListResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
+
+Return type of [useEmployeeList](#useemployeelist).
+
+<a id="useemployeelistready"></a>
+
+### UseEmployeeListReady
+
+Ready state of [useEmployeeList](#useemployeelist).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
+| `actions.onCancelSelfOnboarding` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onDelete` | (`employeeId`: `string`) => `Promise`\<`void`\> | Deletes the employee. |
+| `actions.onReview` | (`employeeId`: `string`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
+| `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
+| `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `pagination` | [`PaginationControlProps`](../../component-inventory.md#paginationcontrolprops) | Pagination controls for the current employee list page. |
+| `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
+| `status.isFetching` | `boolean` | - |
+| `status.isPending` | `boolean` | - |
 
 ## Interfaces
 
@@ -145,21 +156,6 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `version?` | `string` | The current version of the employee. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 | `workEmail?` | `string` \| `null` | The work email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
 
-***
-
-<a id="useemployeelistprops"></a>
-
-### UseEmployeeListProps
-
-Props for [useEmployeeList](#useemployeelist).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `employeeType?` | [`EmployeeType`](#employeetype) | Filters the list and tailors the allowed actions. Omit to list all employees. |
-
 ## Type Aliases
 
 <a id="employeeaction"></a>
@@ -180,13 +176,3 @@ and the `employeeType` filter passed to [useEmployeeList](#useemployeelist).
 > **EmployeeType** = `"active"` \| `"onboarding"` \| `"terminated"`
 
 Filter applied to [useEmployeeList](#useemployeelist) that scopes the result set and tailors the per-row action list.
-
-***
-
-<a id="useemployeelistresult"></a>
-
-### UseEmployeeListResult
-
-> **UseEmployeeListResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeListReady`](#useemployeelistready)
-
-Return type of [useEmployeeList](#useemployeelist).

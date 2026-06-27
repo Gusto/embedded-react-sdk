@@ -25,7 +25,9 @@ same address is labelled a "home" address for Individual contractors and a
 "business" address for Business contractors; the hook exposes `contractorType`
 so the consuming component can choose the appropriate copy.
 
-## UseContractorAddressFormProps
+## Props
+
+### UseContractorAddressFormProps
 
 <a id="usecontractoraddressformprops"></a>
 
@@ -44,6 +46,14 @@ Configuration options for [useContractorAddressForm](#usecontractoraddressform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorAddressFormReady](#usecontractoraddressformready) once ready.
+
+<a id="usecontractoraddressformresult"></a>
+
+### UseContractorAddressFormResult
+
+> **UseContractorAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
+
+Discriminated union returned by [useContractorAddressForm](#usecontractoraddressform).
 
 <a id="usecontractoraddressformready"></a>
 
@@ -359,11 +369,3 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
 
 ***
-
-<a id="usecontractoraddressformresult"></a>
-
-### UseContractorAddressFormResult
-
-> **UseContractorAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorAddressFormReady`](#usecontractoraddressformready)
-
-Discriminated union returned by [useContractorAddressForm](#usecontractoraddressform).

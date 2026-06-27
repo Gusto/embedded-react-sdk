@@ -76,7 +76,9 @@ The Percentage sum-to-100 invariant is surfaced via
 `validationMode: 'onSubmit'`, the imbalance flag appears after the first
 failed Save and clears live as the user corrects the total.
 
-## UseSplitPaymentsFormProps
+## Props
+
+### UseSplitPaymentsFormProps
 
 <a id="usesplitpaymentsformprops"></a>
 
@@ -94,6 +96,14 @@ Props for [useSplitPaymentsForm](#usesplitpaymentsform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
 
 A loading-state result while the payment method and bank accounts are loading, or a [UseSplitPaymentsFormReady](#usesplitpaymentsformready) once ready.
+
+<a id="usesplitpaymentsformresult"></a>
+
+### UseSplitPaymentsFormResult
+
+> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+
+Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
 
 <a id="usesplitpaymentsformready"></a>
 
@@ -340,16 +350,6 @@ Shape of the validated values produced by the split payments form on submit.
 > **SplitPaymentsFormRequiredValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED`
 
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
-
-***
-
-<a id="usesplitpaymentsformresult"></a>
-
-### UseSplitPaymentsFormResult
-
-> **UseSplitPaymentsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
-
-Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
 
 ## SplitPaymentsFormFields
 <a id="splitpaymentsformfields"></a>

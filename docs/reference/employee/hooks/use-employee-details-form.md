@@ -67,7 +67,9 @@ pending status, submit action, error handling, and bound `Fields`.
 Self-onboarding is only toggleable when the employee's onboarding status
 allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
 
-## UseEmployeeDetailsFormProps
+## Props
+
+### UseEmployeeDetailsFormProps
 
 <a id="useemployeedetailsformprops"></a>
 
@@ -110,6 +112,14 @@ Supply the fields for exactly one of the following variants:
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseEmployeeDetailsFormReady](#useemployeedetailsformready) once ready.
+
+<a id="useemployeedetailsformresult"></a>
+
+### UseEmployeeDetailsFormResult
+
+> **UseEmployeeDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
+
+Return type of [useEmployeeDetailsForm](#useemployeedetailsform).
 
 <a id="useemployeedetailsformready"></a>
 
@@ -566,13 +576,3 @@ Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#u
 Use these as keys in `validationMessages` on `Fields.FirstName` and
 `Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
 description of each code.
-
-***
-
-<a id="useemployeedetailsformresult"></a>
-
-### UseEmployeeDetailsFormResult
-
-> **UseEmployeeDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)
-
-Return type of [useEmployeeDetailsForm](#useemployeedetailsform).

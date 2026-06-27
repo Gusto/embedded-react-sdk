@@ -54,7 +54,9 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
 
 The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
 
-## UseFederalTaxesFormProps
+## Props
+
+### UseFederalTaxesFormProps
 
 <a id="usefederaltaxesformprops"></a>
 
@@ -78,6 +80,20 @@ hook is always in update mode and only `employeeId` is required.
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseFederalTaxesFormReady](#usefederaltaxesformready) once the federal tax record is loaded.
+
+<a id="usefederaltaxesformresult"></a>
+
+### UseFederalTaxesFormResult
+
+> **UseFederalTaxesFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
+
+Discriminated union returned by [useFederalTaxesForm](#usefederaltaxesform) — either the loading state or the ready state.
+
+#### Remarks
+
+Use this type when threading the hook result through helpers (e.g.
+presentational components). Discriminate on `isLoading` to narrow to
+[UseFederalTaxesFormReady](#usefederaltaxesformready).
 
 <a id="usefederaltaxesformready"></a>
 
@@ -431,17 +447,3 @@ Used as the `validationMessages` key for every federal taxes field. See
 [FederalTaxesErrorCodes](#federaltaxeserrorcodes).
 
 ***
-
-<a id="usefederaltaxesformresult"></a>
-
-### UseFederalTaxesFormResult
-
-> **UseFederalTaxesFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseFederalTaxesFormReady`](#usefederaltaxesformready)
-
-Discriminated union returned by [useFederalTaxesForm](#usefederaltaxesform) — either the loading state or the ready state.
-
-#### Remarks
-
-Use this type when threading the hook result through helpers (e.g.
-presentational components). Discriminate on `isLoading` to narrow to
-[UseFederalTaxesFormReady](#usefederaltaxesformready).

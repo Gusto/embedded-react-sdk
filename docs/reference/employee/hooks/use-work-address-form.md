@@ -73,7 +73,9 @@ When `workAddressUuid` is supplied the hook loads that address and issues a PUT 
 when omitted it operates in create mode and issues a POST. The hook requires `companyId`
 to fetch the company's location list — it stays in loading state until `companyId` is known.
 
-## UseWorkAddressFormProps
+## Props
+
+### UseWorkAddressFormProps
 
 <a id="useworkaddressformprops"></a>
 
@@ -102,6 +104,14 @@ the location list; pass it when it is known.
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+
+<a id="useworkaddressformresult"></a>
+
+### UseWorkAddressFormResult
+
+> **UseWorkAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
+
+Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
 <a id="useworkaddressformready"></a>
 
@@ -260,16 +270,6 @@ Options for [useCurrentWorkAddressForm](#usecurrentworkaddressform).
 
 Same shape as [UseWorkAddressFormProps](#useworkaddressformprops) minus `workAddressUuid` —
 the hook resolves the current work address itself.
-
-***
-
-<a id="useworkaddressformresult"></a>
-
-### UseWorkAddressFormResult
-
-> **UseWorkAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
-
-Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
 ***
 

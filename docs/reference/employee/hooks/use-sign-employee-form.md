@@ -72,7 +72,9 @@ Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
 `defaultValues`, `requiredFields`, or `validationMode` — the form shape is
 fixed and all fields except preparer street-2 are required.
 
-## UseSignEmployeeFormProps
+## Props
+
+### UseSignEmployeeFormProps
 
 <a id="usesignemployeeformprops"></a>
 
@@ -88,6 +90,14 @@ Props for [useSignEmployeeForm](#usesignemployeeform).
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseSignEmployeeFormReady](#usesignemployeeformready) once the form is loaded.
+
+<a id="usesignemployeeformresult"></a>
+
+### UseSignEmployeeFormResult
+
+> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
+
+Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.
 
 <a id="usesignemployeeformready"></a>
 
@@ -410,11 +420,3 @@ See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
 
 ***
-
-<a id="usesignemployeeformresult"></a>
-
-### UseSignEmployeeFormResult
-
-> **UseSignEmployeeFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSignEmployeeFormReady`](#usesignemployeeformready)
-
-Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.

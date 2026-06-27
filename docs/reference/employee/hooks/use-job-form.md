@@ -62,7 +62,9 @@ into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensation
 When the primary job's `hireDate` changes, secondary compensation effective
 dates are corrected after the PUT; `isPending` stays `true` through that.
 
-## UseJobFormProps
+## Props
+
+### UseJobFormProps
 
 <a id="usejobformprops"></a>
 
@@ -91,6 +93,19 @@ an employee-creation step; supply it at submit time via
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while data is loading, or a [UseJobFormReady](#usejobformready) once ready.
+
+<a id="usejobformresult"></a>
+
+### UseJobFormResult
+
+> **UseJobFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
+
+Discriminated union returned by [useJobForm](#usejobform).
+
+#### Remarks
+
+Branch on `isLoading` to narrow to either [HookLoadingResult](../../utilities.md#hookloadingresult) or
+[UseJobFormReady](#usejobformready).
 
 <a id="usejobformready"></a>
 
@@ -465,16 +480,3 @@ Currently a single literal — `'REQUIRED'` — surfaced as the key in
 may extend the union.
 
 ***
-
-<a id="usejobformresult"></a>
-
-### UseJobFormResult
-
-> **UseJobFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseJobFormReady`](#usejobformready)
-
-Discriminated union returned by [useJobForm](#usejobform).
-
-#### Remarks
-
-Branch on `isLoading` to narrow to either [HookLoadingResult](../../utilities.md#hookloadingresult) or
-[UseJobFormReady](#usejobformready).

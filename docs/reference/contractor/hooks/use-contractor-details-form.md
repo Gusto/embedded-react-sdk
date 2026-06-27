@@ -28,7 +28,9 @@ driven by the current `type`, `wageType`, and self-onboarding selection;
 fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
 is only toggleable when the contractor's onboarding status allows it.
 
-## UseContractorDetailsFormProps
+## Props
+
+### UseContractorDetailsFormProps
 
 <a id="usecontractordetailsformprops"></a>
 
@@ -71,6 +73,14 @@ Supply the fields for exactly one of the following variants:
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
+
+<a id="usecontractordetailsformresult"></a>
+
+### UseContractorDetailsFormResult
+
+> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+
+Return type of [useContractorDetailsForm](#usecontractordetailsform).
 
 <a id="usecontractordetailsformready"></a>
 
@@ -735,11 +745,3 @@ Required-field error code emitted by the `ssn` field of [useContractorDetailsFor
 Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
 
 ***
-
-<a id="usecontractordetailsformresult"></a>
-
-### UseContractorDetailsFormResult
-
-> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
-
-Return type of [useContractorDetailsForm](#usecontractordetailsform).

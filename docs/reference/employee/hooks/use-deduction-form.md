@@ -72,7 +72,9 @@ child-support garnishments, use [useChildSupportGarnishmentForm](use-child-suppo
 instead — those require agency-keyed required attributes (case number,
 order number, remittance number, county) that this hook doesn't model.
 
-## UseDeductionFormProps
+## Props
+
+### UseDeductionFormProps
 
 <a id="usedeductionformprops"></a>
 
@@ -99,6 +101,20 @@ post-tax custom variant and the court-ordered garnishment variant.
 [`UseDeductionFormResult`](#usedeductionformresult)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseDeductionFormReady](#usedeductionformready) once ready.
+
+<a id="usedeductionformresult"></a>
+
+### UseDeductionFormResult
+
+> **UseDeductionFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
+
+Return value of [useDeductionForm](#usedeductionform).
+
+#### Remarks
+
+Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) while the existing garnishment
+is loading (update mode only); [UseDeductionFormReady](#usedeductionformready) once data is
+ready. In create mode the hook returns the ready branch immediately.
 
 <a id="usedeductionformready"></a>
 
@@ -486,17 +502,3 @@ deduct-as-percentage, and garnishment-type fields. See
 [DeductionFormErrorCodes](#deductionformerrorcodes).
 
 ***
-
-<a id="usedeductionformresult"></a>
-
-### UseDeductionFormResult
-
-> **UseDeductionFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseDeductionFormReady`](#usedeductionformready)
-
-Return value of [useDeductionForm](#usedeductionform).
-
-#### Remarks
-
-Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) while the existing garnishment
-is loading (update mode only); [UseDeductionFormReady](#usedeductionformready) once data is
-ready. In create mode the hook returns the ready branch immediately.

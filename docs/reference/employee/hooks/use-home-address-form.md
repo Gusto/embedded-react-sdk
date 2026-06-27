@@ -76,7 +76,9 @@ When `homeAddressUuid` is supplied the hook loads that address and issues a PUT 
 when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
 skip the fetch when the parent already holds the row.
 
-## UseHomeAddressFormProps
+## Props
+
+### UseHomeAddressFormProps
 
 <a id="usehomeaddressformprops"></a>
 
@@ -103,6 +105,14 @@ Presence or absence of `homeAddressUuid` selects the API verb — see the
 [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+
+<a id="usehomeaddressformresult"></a>
+
+### UseHomeAddressFormResult
+
+> **UseHomeAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
+
+Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
 <a id="usehomeaddressformready"></a>
 
@@ -491,15 +501,5 @@ Options for [useCurrentHomeAddressForm](#usecurrenthomeaddressform).
 
 Same shape as [UseHomeAddressFormProps](#usehomeaddressformprops) minus `homeAddressUuid` —
 the hook resolves the current home address itself.
-
-***
-
-<a id="usehomeaddressformresult"></a>
-
-### UseHomeAddressFormResult
-
-> **UseHomeAddressFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
-
-Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
 ***
