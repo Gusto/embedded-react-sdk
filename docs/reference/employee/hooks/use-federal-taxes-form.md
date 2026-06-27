@@ -165,8 +165,6 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductio
 
 ***
 
-***
-
 <a id="dependentsamountfield"></a>
 
 ### DependentsAmountField
@@ -198,8 +196,6 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Dependen
 
 ***
 
-***
-
 <a id="extrawithholdingfield"></a>
 
 ### ExtraWithholdingField
@@ -228,8 +224,6 @@ and pass the required check.
 > **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
-
-***
 
 ***
 
@@ -277,8 +271,6 @@ Union of filing status values that the form accepts.
 
 ***
 
-***
-
 <a id="otherincomefield"></a>
 
 ### OtherIncomeField
@@ -307,8 +299,6 @@ and pass the required check.
 > **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
 
 Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
-
-***
 
 ***
 

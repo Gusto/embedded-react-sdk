@@ -161,8 +161,6 @@ Validation error codes emitted by the `accountNumber` field of [useBankForm](#us
 
 ***
 
-***
-
 <a id="accounttypefield"></a>
 
 ### AccountTypeField
@@ -205,8 +203,6 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
 
 ***
 
-***
-
 <a id="namefield"></a>
 
 ### NameField
@@ -234,8 +230,6 @@ nickname.
 > **NameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
 
 Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
-
-***
 
 ***
 

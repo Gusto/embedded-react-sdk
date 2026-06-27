@@ -124,8 +124,6 @@ Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Field
 
 ***
 
-***
-
 <a id="contractoraddressstatefield"></a>
 
 ### ContractorAddressStateField
@@ -155,8 +153,6 @@ standard two-letter US state abbreviations. Required.
 > **ContractorAddressStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
 
 Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
-
-***
 
 ***
 

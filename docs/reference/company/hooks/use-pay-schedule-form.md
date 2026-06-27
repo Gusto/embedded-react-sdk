@@ -187,8 +187,6 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorEndO
 
 ***
 
-***
-
 <a id="anchorpaydatefield"></a>
 
 ### AnchorPayDateField
@@ -219,8 +217,6 @@ Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.AnchorPayD
 
 ***
 
-***
-
 <a id="customnamefield"></a>
 
 ### CustomNameField
@@ -247,8 +243,6 @@ Available on the hook result as `form.Fields.CustomName`. Always required.
 > **CustomNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`PayScheduleRequiredValidation`](#payschedulerequiredvalidation)\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomName` component.
-
-***
 
 ***
 
@@ -282,8 +276,6 @@ month) and `'custom'` (manual day entry via `Day1` and `Day2`).
 > **CustomTwicePerMonthFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `string`\>\>
 
 Props accepted by [usePayScheduleForm](#usepayscheduleform)'s `Fields.CustomTwicePerMonth` component.
-
-***
 
 ***
 

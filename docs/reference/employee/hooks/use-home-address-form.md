@@ -183,8 +183,6 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` comp
 
 ***
 
-***
-
 <a id="courtesywithholdingfield"></a>
 
 ### CourtesyWithholdingField
@@ -216,8 +214,6 @@ Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWi
 
 ***
 
-***
-
 <a id="homeaddresseffectivedatefield"></a>
 
 ### HomeAddressEffectiveDateField
@@ -246,8 +242,6 @@ null-check before rendering.
 > **HomeAddressEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
 
 Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveDate` component.
-
-***
 
 ***
 

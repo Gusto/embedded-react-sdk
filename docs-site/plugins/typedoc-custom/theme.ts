@@ -1265,8 +1265,11 @@ function nestFieldTypeAliasesUnderComponents(rendered: string): string {
         // Inject TA entries for this field
         out.push('')
         out.push(...injections)
-        // Skip ahead
-        k = fieldEnd - 1 // loop will increment to fieldEnd
+        // The injected block ends with its own `***`. If the field component
+        // was itself followed by a `***`, skip that one to avoid a double
+        // divider; if `fieldEnd` is a `##` section heading instead, keep it.
+        const skippedOriginalDivider = /^\*\*\*\s*$/.test(beforeTA[fieldEnd] ?? '')
+        k = skippedOriginalDivider ? fieldEnd : fieldEnd - 1
       }
     }
   }

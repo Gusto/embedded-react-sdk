@@ -191,8 +191,6 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Da
 
 ***
 
-***
-
 <a id="emailfield"></a>
 
 ### EmailField
@@ -242,8 +240,6 @@ enabled but the email is empty (create mode only). See
 
 ***
 
-***
-
 <a id="firstnamefield"></a>
 
 ### FirstNameField
@@ -271,8 +267,6 @@ create; can be made required on update via `optionalFieldsToRequire`.
 > **FirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
-
-***
 
 ***
 
@@ -306,8 +300,6 @@ Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.La
 
 ***
 
-***
-
 <a id="middleinitialfield"></a>
 
 ### MiddleInitialField
@@ -335,8 +327,6 @@ optional.
 > **MiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
-
-***
 
 ***
 
@@ -372,8 +362,6 @@ personal, tax, and banking details.
 > **SelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
 
 Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
-
-***
 
 ***
 

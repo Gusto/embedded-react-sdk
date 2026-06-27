@@ -188,8 +188,6 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum`
 
 ***
 
-***
-
 <a id="deductaspercentagefield"></a>
 
 ### DeductAsPercentageField
@@ -219,8 +217,6 @@ amount when `false`, or as a percentage of paycheck when `true`.
 > **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
-
-***
 
 ***
 
@@ -255,8 +251,6 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` compon
 
 ***
 
-***
-
 <a id="descriptionfield"></a>
 
 ### DescriptionField
@@ -283,8 +277,6 @@ Available on the hook result as `form.Fields.Description`. Always rendered.
 > **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
-
-***
 
 ***
 
@@ -323,8 +315,6 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentTyp
 
 ***
 
-***
-
 <a id="recurringfield"></a>
 
 ### RecurringField
@@ -355,8 +345,6 @@ are exposed only when this is set to recurring.
 > **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
-
-***
 
 ***
 

@@ -159,8 +159,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractoreinfield"></a>
 
 ### ContractorEinField
@@ -190,8 +188,6 @@ and the required rule is waived.
 > **ContractorEinFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
-
-***
 
 ***
 
@@ -226,8 +222,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractorfilenewhirereportfield"></a>
 
 ### ContractorFileNewHireReportField
@@ -256,8 +250,6 @@ new-hire report can be filed.
 > **ContractorFileNewHireReportFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
-
-***
 
 ***
 
@@ -291,8 +283,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractorhourlyratefield"></a>
 
 ### ContractorHourlyRateField
@@ -320,8 +310,6 @@ Available on the hook result as `form.Fields.HourlyRate` only when
 > **ContractorHourlyRateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
-
-***
 
 ***
 
@@ -355,8 +343,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractormiddleinitialfield"></a>
 
 ### ContractorMiddleInitialField
@@ -384,8 +370,6 @@ contractors. Always optional.
 > **ContractorMiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
-
-***
 
 ***
 
@@ -422,8 +406,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractorssnfield"></a>
 
 ### ContractorSsnField
@@ -456,8 +438,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractorstartdatefield"></a>
 
 ### ContractorStartDateField
@@ -485,8 +465,6 @@ Required on create; can be made required on update via
 > **ContractorStartDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
-
-***
 
 ***
 
@@ -521,8 +499,6 @@ Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Field
 
 ***
 
-***
-
 <a id="contractorwagetypefield"></a>
 
 ### ContractorWageTypeField
@@ -551,8 +527,6 @@ Selects whether the contractor is paid `Fixed` or `Hourly`. Provide
 > **ContractorWageTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
 
 Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
-
-***
 
 ***
 

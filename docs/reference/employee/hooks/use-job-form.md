@@ -183,8 +183,6 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
 
 ***
 
-***
-
 <a id="jobtitlefield"></a>
 
 ### JobTitleField
@@ -214,8 +212,6 @@ render the compensation form's title field instead.
 > **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
-
-***
 
 ***
 
@@ -254,8 +250,6 @@ Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` componen
 
 ***
 
-***
-
 <a id="statewccoveredfield"></a>
 
 ### StateWcCoveredField
@@ -286,8 +280,6 @@ only when the employee's active work address is in Washington (see
 > **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
 
 Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
-
-***
 
 ***
 

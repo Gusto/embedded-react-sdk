@@ -191,8 +191,6 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ***
 
-***
-
 <a id="childsupportamountfield"></a>
 
 ### ChildSupportAmountField
@@ -276,8 +274,6 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ***
 
-***
-
 <a id="ordernumberfield"></a>
 
 ### OrderNumberField
@@ -306,8 +302,6 @@ Always null-check before rendering.
 > **OrderNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.OrderNumber` component.
-
-***
 
 ***
 
@@ -340,8 +334,6 @@ Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`.
 > **PaymentPeriodFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PaymentPeriod` component.
-
-***
 
 ***
 
@@ -387,8 +379,6 @@ Validation error codes emitted by the `payPeriodMaximum` field of [useChildSuppo
 
 Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
 [ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
-
-***
 
 ***
 
