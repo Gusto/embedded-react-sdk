@@ -72,26 +72,6 @@ function StateTaxesFormReady({
 }
 ```
 
-<!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: overview) -->
-## Field variants and promotion
-
-The hook resolves each question's UI variant from the API's `inputQuestionFormat.type`:
-
-| API type    | Variant    | Notes                                               |
-| ----------- | ---------- | --------------------------------------------------- |
-| `Select`    | `select`   | Renders as a dropdown with API-supplied options.    |
-| `Number`    | `number`   | Decimal number input.                               |
-| `Currency`  | `currency` | Currency-formatted number input.                    |
-| `Text`      | `text`     | Single-line text input.                             |
-| `Date`      | `date`     | Date picker.                                        |
-| _(unknown)_ | `text`     | Defensive fall-through for unrecognized wire types. |
-
-Two per-key rules override the variant mapping:
-
-- `file_new_hire_report` arrives over the wire as `Select` but is re-promoted to `radio` so it renders as a radio group.
-- Once an answer to `file_new_hire_report` has been recorded server-side it is marked `isDisabled: true` in metadata — after filing, the choice is locked.
-<!-- /guide-source (slot: overview) -->
-
 ## Remarks
 
 The state-tax record(s) are created automatically with the employee, so this
@@ -174,61 +154,7 @@ Memoizes the bound field components for a state-taxes form, avoiding unnecessary
 
 An array of [StateTaxFieldsGroup](#statetaxfieldsgroup) — one entry per state, each with a `questions` array of bound field components.
 
-## Variables
-
-<a id="employeestatetaxeserrorcodes"></a>
-
-### EmployeeStateTaxesErrorCodes
-
-> `const` **EmployeeStateTaxesErrorCodes**: `object`
-
-Validation error codes produced by the [useEmployeeStateTaxesForm](#useemployeestatetaxesform) schema.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-#### Remarks
-
-Use these constants as the keys in a field's `validationMessages` prop to
-map an error code to a user-facing message. The state-taxes form surfaces
-only a single error code: every required field that is empty emits
-`REQUIRED`.
-
-## Interfaces
-
-<a id="employeestatetaxesformdata"></a>
-
-### EmployeeStateTaxesFormData
-
-Shape of the values managed by the employee state taxes form. Keyed by
-two-letter state code, then by question key (camelCased from the API key).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `states` | `Record`\<`string`, `Record`\<`string`, [`StateTaxValue`](#statetaxvalue)\>\> | Per-state answer map: state code → (camelCased question key → value). |
-
-***
-
-<a id="statetaxfieldsgroup"></a>
-
-### StateTaxFieldsGroup
-
-Group of state-tax questions for a single jurisdiction returned by
-[useStateFields](#usestatefields).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
-| `state` | `string` | Two-letter state code. |
-
-## Type Aliases
+## Utility Types
 
 <a id="currencystatetaxfieldprops"></a>
 
@@ -273,6 +199,29 @@ form schema.
 
 ***
 
+<a id="employeestatetaxeserrorcodes"></a>
+
+### EmployeeStateTaxesErrorCodes
+
+> `const` **EmployeeStateTaxesErrorCodes**: `object`
+
+Validation error codes produced by the [useEmployeeStateTaxesForm](#useemployeestatetaxesform) schema.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+#### Remarks
+
+Use these constants as the keys in a field's `validationMessages` prop to
+map an error code to a user-facing message. The state-taxes form surfaces
+only a single error code: every required field that is empty emits
+`REQUIRED`.
+
+***
+
 <a id="employeestatetaxesfieldsmetadata"></a>
 
 ### EmployeeStateTaxesFieldsMetadata
@@ -281,6 +230,21 @@ form schema.
 
 Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
 with `isRequired` / `isDisabled` and option lists.
+
+***
+
+<a id="employeestatetaxesformdata"></a>
+
+### EmployeeStateTaxesFormData
+
+Shape of the values managed by the employee state taxes form. Keyed by
+two-letter state code, then by question key (camelCased from the API key).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `states` | `Record`\<`string`, `Record`\<`string`, [`StateTaxValue`](#statetaxvalue)\>\> | Per-state answer map: state code → (camelCased question key → value). |
 
 ***
 
@@ -355,6 +319,22 @@ Props for a `Field` rendered as a select (dropdown).
 
 ***
 
+<a id="statetaxfieldsgroup"></a>
+
+### StateTaxFieldsGroup
+
+Group of state-tax questions for a single jurisdiction returned by
+[useStateFields](#usestatefields).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
+| `state` | `string` | Two-letter state code. |
+
+***
+
 <a id="statetaxquestionfieldentry"></a>
 
 ### StateTaxQuestionFieldEntry
@@ -404,9 +384,27 @@ Props for a `Field` rendered as a single-line text input.
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
 
-<!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: appendix) -->
-## Exported types
+## Advanced
 
+<!-- guide-source: src/components/Employee/StateTaxes/shared/useEmployeeStateTaxesForm/GUIDE.md (slot: advanced) -->
+### Field variants and promotion
+The hook resolves each question's UI variant from the API's `inputQuestionFormat.type`:
+
+| API type    | Variant    | Notes                                               |
+| ----------- | ---------- | --------------------------------------------------- |
+| `Select`    | `select`   | Renders as a dropdown with API-supplied options.    |
+| `Number`    | `number`   | Decimal number input.                               |
+| `Currency`  | `currency` | Currency-formatted number input.                    |
+| `Text`      | `text`     | Single-line text input.                             |
+| `Date`      | `date`     | Date picker.                                        |
+| _(unknown)_ | `text`     | Defensive fall-through for unrecognized wire types. |
+
+Two per-key rules override the variant mapping:
+
+- `file_new_hire_report` arrives over the wire as `Select` but is re-promoted to `radio` so it renders as a radio group.
+- Once an answer to `file_new_hire_report` has been recorded server-side it is marked `isDisabled: true` in metadata — after filing, the choice is locked.
+
+### Exported types
 The non-primitive types in the ready state are all re-exported from `@gusto/embedded-react-sdk`:
 
 | Type                               | What it is |
@@ -430,8 +428,7 @@ import type {
 } from '@gusto/embedded-react-sdk'
 ```
 
-## Choosing a field component
-
+### Choosing a field component
 Each variant's `FieldComponent` must match the prop contract of the SDK UI primitive that variant renders. Discriminate on `question.type` first, then supply a component whose props satisfy the matching SDK prop type:
 
 | Variant    | Required `FieldComponent` shape   | SDK primitive it replaces |
@@ -455,8 +452,7 @@ if (question.type === 'select') {
 }
 ```
 
-## Per-question overrides
-
+### Per-question overrides
 Each `Field` accepts:
 
 - `label` and `description` to override the API-supplied defaults (the API description is otherwise rendered verbatim, sanitized via DOMPurify).
@@ -472,7 +468,7 @@ You can branch on `question.type`, `group.state`, and `question.questionId`. The
 
 > **Caution.** Branching on `questionId` or `state` is a soft coupling to the API contract. When a new state question is introduced, renamed, or split in two, hardcoded `if (question.questionId === '…')` branches silently fall through to the default render. Audit these branches as part of any state-tax-related upgrade, and prefer `type`-level overrides whenever the same change applies to a whole class of fields.
 
-### Combining `type`, `state`, and `questionId`
+#### Combining `type`, `state`, and `questionId`
 
 ```tsx
 import type { StateTaxFieldsGroup, StateTaxQuestionFieldEntry } from '@gusto/embedded-react-sdk'
@@ -554,8 +550,7 @@ A few things worth noting:
 - `currency` and `number` share the same `NumberInputProps` shape, so a single design-system Number override can collapse them: `case 'number': case 'currency': return <question.Field FieldComponent={MyNumberInput} />`.
 - `question.questionId` is the **camelCase** form of the API key (`filingStatus`, not `filing_status`); keep string comparisons in camelCase to stay aligned with the hook's contract.
 
-## Rendering without a provider
-
+### Rendering without a provider
 The example above wires the form through `SDKFormProvider`. To render without it, pass the hook result to each field via `formHookResult`:
 
 ```tsx
@@ -565,4 +560,4 @@ groups.map(group =>
   )),
 )
 ```
-<!-- /guide-source (slot: appendix) -->
+<!-- /guide-source (slot: advanced) -->

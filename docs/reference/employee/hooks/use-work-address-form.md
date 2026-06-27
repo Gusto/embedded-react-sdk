@@ -195,59 +195,28 @@ Available on the hook result as `form.Fields.Location`. Options are the
 company's active locations; the hook populates them from the locations
 query. Required.
 
-## Variables
+## Utility Types
 
-<a id="workaddresserrorcodes"></a>
+<a id="effectivedatefieldprops"></a>
 
-### WorkAddressErrorCodes
+### EffectiveDateFieldProps
 
-> `const` **WorkAddressErrorCodes**: `object`
+> **EffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
 
-Validation error codes emitted by the work address form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="workaddresssubmitcallbacks"></a>
-
-### WorkAddressSubmitCallbacks
-
-Optional callbacks passed to [onSubmit](#useworkaddressformready).
-
-#### Remarks
-
-Only the callback matching the submit mode fires —
-`onWorkAddressCreated` on create, `onWorkAddressUpdated` on update.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `onWorkAddressCreated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after a new work address is successfully created. |
-| `onWorkAddressUpdated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after an existing work address is successfully updated. |
+Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveDate` component.
 
 ***
 
-<a id="workaddresssubmitoptions"></a>
+<a id="locationfieldprops"></a>
 
-### WorkAddressSubmitOptions
+### LocationFieldProps
 
-Optional overrides passed to [onSubmit](#useworkaddressformready).
+> **LocationFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
 
-#### Properties
+Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `effectiveDate?` | `string` | Override the effective date submitted with the address. |
-| `employeeId?` | `string` | Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). |
+***
 
-## Type Aliases
 <a id="usecurrentworkaddressformprops"></a>
 
 ### UseCurrentWorkAddressFormProps
@@ -271,6 +240,23 @@ the hook resolves the current work address itself.
 
 Union of validation error code strings emitted by the work address form
 schema.
+
+***
+
+<a id="workaddresserrorcodes"></a>
+
+### WorkAddressErrorCodes
+
+> `const` **WorkAddressErrorCodes**: `object`
+
+Validation error codes emitted by the work address form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -347,3 +333,38 @@ The required-field error code produced by [useWorkAddressForm](#useworkaddressfo
 
 Used as the `validationMessages` key for the location and effective date fields.
 See `WorkAddressErrorCodes`.
+
+***
+
+<a id="workaddresssubmitcallbacks"></a>
+
+### WorkAddressSubmitCallbacks
+
+Optional callbacks passed to [onSubmit](#useworkaddressformready).
+
+#### Remarks
+
+Only the callback matching the submit mode fires —
+`onWorkAddressCreated` on create, `onWorkAddressUpdated` on update.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `onWorkAddressCreated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after a new work address is successfully created. |
+| `onWorkAddressUpdated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after an existing work address is successfully updated. |
+
+***
+
+<a id="workaddresssubmitoptions"></a>
+
+### WorkAddressSubmitOptions
+
+Optional overrides passed to [onSubmit](#useworkaddressformready).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `effectiveDate?` | `string` | Override the effective date submitted with the address. |
+| `employeeId?` | `string` | Override the employee identifier supplied to the hook (e.g. after creating a new employee in the same flow). |

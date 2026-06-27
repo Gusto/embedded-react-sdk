@@ -272,7 +272,27 @@ Indicates whether the employee is a 2% shareholder in an S-Corporation.
 Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
 
-## Variables
+## Utility Types
+
+<a id="hiredatefieldprops"></a>
+
+### HireDateFieldProps
+
+> **HireDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
+
+***
+
+<a id="joberrorcode"></a>
+
+### JobErrorCode
+
+> **JobErrorCode** = *typeof* [`JobErrorCodes`](#joberrorcodes)\[keyof *typeof* [`JobErrorCodes`](#joberrorcodes)\]
+
+Union of every error code produced by the [useJobForm](#usejobform) schema.
+
+***
 
 <a id="joberrorcodes"></a>
 
@@ -304,7 +324,23 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
 />
 ```
 
-## Interfaces
+***
+
+<a id="jobfieldsmetadata"></a>
+
+### JobFieldsMetadata
+
+> **JobFieldsMetadata** = [`UseJobFormReady`](#usejobformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of the per-field metadata exposed at `useJobForm().form.fieldsMetadata`.
+
+#### Remarks
+
+Maps each field name in [JobFormData](#jobformdata) to its presentation metadata —
+including the registered `name`, whether the field is required or disabled,
+and (for select-like fields) the option list.
+
+***
 
 <a id="jobformdata"></a>
 
@@ -329,6 +365,21 @@ input (the schema preprocessor coerces them).
 | `stateWcCovered` | `boolean` | Whether the employee is covered under Washington state workers' compensation insurance. |
 | `title` | `string` | The employee's job title (e.g. `"Software Engineer"`). |
 | `twoPercentShareholder` | `boolean` | Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. |
+
+***
+
+<a id="jobformoutputs"></a>
+
+### JobFormOutputs
+
+> **JobFormOutputs** = [`JobFormData`](#jobformdata)
+
+Validated submission shape produced by the [useJobForm](#usejobform) schema.
+
+#### Remarks
+
+Identical to [JobFormData](#jobformdata) — exposed as a separate alias so the input
+vs. output sides of the schema remain distinguishable in advanced usages.
 
 ***
 
@@ -373,6 +424,22 @@ const job = useJobForm({
 
 ***
 
+<a id="jobrequiredvalidation"></a>
+
+### JobRequiredValidation
+
+> **JobRequiredValidation** = *typeof* `JobErrorCodes.REQUIRED`
+
+The validation error code a [useJobForm](#usejobform) field can produce.
+
+#### Remarks
+
+Currently a single literal — `'REQUIRED'` — surfaced as the key in
+`validationMessages` on each `Fields.*` component. Future schema additions
+may extend the union.
+
+***
+
 <a id="jobsubmitoptions"></a>
 
 ### JobSubmitOptions
@@ -393,60 +460,42 @@ the employee being saved was created in the same submit chain and the
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 | `hireDate?` | `string` | Supply `hireDate` at submit time rather than via a rendered field. Use with `withHireDateField: false` for screens that derive hireDate from external context (e.g. the employee's `startDate` during onboarding). Falls back to the loaded job's `hireDate` on update mode when omitted; required (or sourced from a default) on create mode. |
 
-## Type Aliases
-<a id="joberrorcode"></a>
+***
 
-### JobErrorCode
+<a id="jobtitlefieldprops"></a>
 
-> **JobErrorCode** = *typeof* [`JobErrorCodes`](#joberrorcodes)\[keyof *typeof* [`JobErrorCodes`](#joberrorcodes)\]
+### JobTitleFieldProps
 
-Union of every error code produced by the [useJobForm](#usejobform) schema.
+> **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
 ***
 
-<a id="jobfieldsmetadata"></a>
+<a id="statewcclasscodefieldprops"></a>
 
-### JobFieldsMetadata
+### StateWcClassCodeFieldProps
 
-> **JobFieldsMetadata** = [`UseJobFormReady`](#usejobformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
 
-Shape of the per-field metadata exposed at `useJobForm().form.fieldsMetadata`.
-
-#### Remarks
-
-Maps each field name in [JobFormData](#jobformdata) to its presentation metadata —
-including the registered `name`, whether the field is required or disabled,
-and (for select-like fields) the option list.
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
 
 ***
 
-<a id="jobformoutputs"></a>
+<a id="statewccoveredfieldprops"></a>
 
-### JobFormOutputs
+### StateWcCoveredFieldProps
 
-> **JobFormOutputs** = [`JobFormData`](#jobformdata)
+> **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
 
-Validated submission shape produced by the [useJobForm](#usejobform) schema.
-
-#### Remarks
-
-Identical to [JobFormData](#jobformdata) — exposed as a separate alias so the input
-vs. output sides of the schema remain distinguishable in advanced usages.
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
 
 ***
 
-<a id="jobrequiredvalidation"></a>
+<a id="twopercentshareholderfieldprops"></a>
 
-### JobRequiredValidation
+### TwoPercentShareholderFieldProps
 
-> **JobRequiredValidation** = *typeof* `JobErrorCodes.REQUIRED`
+> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
 
-The validation error code a [useJobForm](#usejobform) field can produce.
-
-#### Remarks
-
-Currently a single literal — `'REQUIRED'` — surfaced as the key in
-`validationMessages` on each `Fields.*` component. Future schema additions
-may extend the union.
-
-***
+Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.

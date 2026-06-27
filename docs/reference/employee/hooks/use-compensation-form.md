@@ -223,19 +223,6 @@ When `withEffectiveDateField: false`, the field is `undefined` — supply
 the value at submit time via `CompensationSubmitOptions.effectiveDate`
 instead.
 
-<a id="compensationeffectivedatevalidation"></a>
-
-#### CompensationEffectiveDateValidation
-
-> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
-
-Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
-
 ***
 
 <a id="compensationflsastatusfield"></a>
@@ -370,7 +357,52 @@ promotion that bundles a new title with a raise). Otherwise bind the title
 via `useJobForm.Fields.Title` instead and avoid rendering both on the same
 screen.
 
-## Variables
+## Utility Types
+
+<a id="adjustforminimumwagefieldprops"></a>
+
+### AdjustForMinimumWageFieldProps
+
+> **AdjustForMinimumWageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.AdjustForMinimumWage` component.
+
+***
+
+<a id="compensationeffectivedatefieldprops"></a>
+
+### CompensationEffectiveDateFieldProps
+
+> **CompensationEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.EffectiveDate` component.
+
+***
+
+<a id="compensationeffectivedatevalidation"></a>
+
+### CompensationEffectiveDateValidation
+
+> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
+
+Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+***
+
+<a id="compensationerrorcode"></a>
+
+### CompensationErrorCode
+
+> **CompensationErrorCode** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[keyof *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\]
+
+Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
+
+***
 
 <a id="compensationerrorcodes"></a>
 
@@ -423,40 +455,6 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
   }}
 />
 ```
-
-## Interfaces
-
-<a id="compensationsubmitoptions"></a>
-
-### CompensationSubmitOptions
-
-Optional values supplied to [useCompensationForm](#usecompensationform)'s `actions.onSubmit` at submit time.
-
-#### Remarks
-
-Use these to override hook-construction props when an ID isn't known at
-mount — most commonly the **onboarding stub-fill** chain, where `useJobForm`
-creates the parent job and returns the auto-created stub compensation, and
-the IDs and version are threaded into this hook's `onSubmit` to PUT the
-stub.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `compensationId?` | `string` | Override compensationId — when present, forces update (PUT) routing regardless of hook construction. |
-| `compensationVersion?` | `string` | Compensation version for optimistic locking on PUT. Required when forcing update routing post-create (e.g. updating the auto-created stub returned from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the version from its cached `currentCompensation`. |
-| `effectiveDate?` | `string` | Supply `effectiveDate` at submit time. When `withEffectiveDateField` is `true`, this overrides the form's value. When `withEffectiveDateField` is `false`, this is the only way to put `effective_date` on the wire — the form value is not read in that mode (matching the options-only convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`). |
-| `jobId?` | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). |
-
-## Type Aliases
-<a id="compensationerrorcode"></a>
-
-### CompensationErrorCode
-
-> **CompensationErrorCode** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[keyof *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\]
-
-Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
 
 ***
 
@@ -563,6 +561,81 @@ The required-field error code produced by [useCompensationForm](#usecompensation
 
 Used as the `validationMessages` key for the title, FLSA status, payment
 unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
+
+***
+
+<a id="compensationsubmitoptions"></a>
+
+### CompensationSubmitOptions
+
+Optional values supplied to [useCompensationForm](#usecompensationform)'s `actions.onSubmit` at submit time.
+
+#### Remarks
+
+Use these to override hook-construction props when an ID isn't known at
+mount — most commonly the **onboarding stub-fill** chain, where `useJobForm`
+creates the parent job and returns the auto-created stub compensation, and
+the IDs and version are threaded into this hook's `onSubmit` to PUT the
+stub.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `compensationId?` | `string` | Override compensationId — when present, forces update (PUT) routing regardless of hook construction. |
+| `compensationVersion?` | `string` | Compensation version for optimistic locking on PUT. Required when forcing update routing post-create (e.g. updating the auto-created stub returned from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the version from its cached `currentCompensation`. |
+| `effectiveDate?` | `string` | Supply `effectiveDate` at submit time. When `withEffectiveDateField` is `true`, this overrides the form's value. When `withEffectiveDateField` is `false`, this is the only way to put `effective_date` on the wire — the form value is not read in that mode (matching the options-only convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`). |
+| `jobId?` | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). |
+
+***
+
+<a id="compensationtitlefieldprops"></a>
+
+### CompensationTitleFieldProps
+
+> **CompensationTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` component.
+
+***
+
+<a id="flsastatusfieldprops"></a>
+
+### FlsaStatusFieldProps
+
+> **FlsaStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
+
+***
+
+<a id="minimumwageidfieldprops"></a>
+
+### MinimumWageIdFieldProps
+
+> **MinimumWageIdFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
+
+***
+
+<a id="paymentunitfieldprops"></a>
+
+### PaymentUnitFieldProps
+
+> **PaymentUnitFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
+
+***
+
+<a id="ratefieldprops"></a>
+
+### RateFieldProps
+
+> **RateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`RateValidation`](#ratevalidation)\>\>
+
+Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Rate` component.
 
 ***
 

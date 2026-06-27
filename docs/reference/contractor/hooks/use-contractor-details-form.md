@@ -449,77 +449,18 @@ Available on the hook result as `form.Fields.WorkState` for individual
 contractors when `fileNewHireReport` is enabled, in which case it is
 required.
 
-## Variables
+## Utility Types
 
-<a id="contractordetailserrorcodes"></a>
+<a id="contractorbusinessnamefieldprops"></a>
 
-### ContractorDetailsErrorCodes
+### ContractorBusinessNameFieldProps
 
-> `const` **ContractorDetailsErrorCodes**: `object`
+> **ContractorBusinessNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
 
-Validation error codes emitted by the contractor details form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_EIN` | `"INVALID_EIN"` | `'INVALID_EIN'` |
-| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
-| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
-| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.BusinessName` component.
 
 ***
 
-<a id="contractortype"></a>
-
-### ContractorType
-
-> `const` **ContractorType**: `object` = `ApiContractorType`
-
-Contractor type enum (`Individual` / `Business`) re-exported from the API model.
-
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `Business` | `"Business"` |
-| `Individual` | `"Individual"` |
-
-***
-
-<a id="wagetype"></a>
-
-### WageType
-
-> `const` **WageType**: `object` = `ApiWageType`
-
-Contractor wage type enum (`Fixed` / `Hourly`) re-exported from the API model.
-
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `Fixed` | `"Fixed"` |
-| `Hourly` | `"Hourly"` |
-
-## Interfaces
-
-<a id="contractordetailssubmitoptions"></a>
-
-### ContractorDetailsSubmitOptions
-
-Optional overrides passed to [onSubmit](#usecontractordetailsformready).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId?` | `string` | Override the company identifier supplied to the hook (e.g. after creating the company in the same flow). Only used in create mode. |
-
-## Type Aliases
 <a id="contractordetailseinrequiredvalidation"></a>
 
 ### ContractorDetailsEinRequiredValidation
@@ -558,6 +499,28 @@ Validation error codes emitted by the `email` field of [useContractorDetailsForm
 
 Union of validation error code strings emitted by the contractor details
 form schema.
+
+***
+
+<a id="contractordetailserrorcodes"></a>
+
+### ContractorDetailsErrorCodes
+
+> `const` **ContractorDetailsErrorCodes**: `object`
+
+Validation error codes emitted by the contractor details form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `INVALID_EIN` | `"INVALID_EIN"` | `'INVALID_EIN'` |
+| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
+| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
+| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -653,3 +616,179 @@ Required-field error code emitted by the `ssn` field of [useContractorDetailsFor
 Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
 
 ***
+
+<a id="contractordetailssubmitoptions"></a>
+
+### ContractorDetailsSubmitOptions
+
+Optional overrides passed to [onSubmit](#usecontractordetailsformready).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId?` | `string` | Override the company identifier supplied to the hook (e.g. after creating the company in the same flow). Only used in create mode. |
+
+***
+
+<a id="contractoreinfieldprops"></a>
+
+### ContractorEinFieldProps
+
+> **ContractorEinFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
+
+***
+
+<a id="contractoremailfieldprops"></a>
+
+### ContractorEmailFieldProps
+
+> **ContractorEmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Email` component.
+
+***
+
+<a id="contractorfilenewhirereportfieldprops"></a>
+
+### ContractorFileNewHireReportFieldProps
+
+> **ContractorFileNewHireReportFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
+
+***
+
+<a id="contractorfirstnamefieldprops"></a>
+
+### ContractorFirstNameFieldProps
+
+> **ContractorFirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FirstName` component.
+
+***
+
+<a id="contractorhourlyratefieldprops"></a>
+
+### ContractorHourlyRateFieldProps
+
+> **ContractorHourlyRateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
+
+***
+
+<a id="contractorlastnamefieldprops"></a>
+
+### ContractorLastNameFieldProps
+
+> **ContractorLastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.LastName` component.
+
+***
+
+<a id="contractormiddleinitialfieldprops"></a>
+
+### ContractorMiddleInitialFieldProps
+
+> **ContractorMiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
+
+***
+
+<a id="contractorselfonboardingfieldprops"></a>
+
+### ContractorSelfOnboardingFieldProps
+
+> **ContractorSelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.SelfOnboarding` component.
+
+***
+
+<a id="contractorssnfieldprops"></a>
+
+### ContractorSsnFieldProps
+
+> **ContractorSsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ssn` component.
+
+***
+
+<a id="contractorstartdatefieldprops"></a>
+
+### ContractorStartDateFieldProps
+
+> **ContractorStartDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
+
+***
+
+<a id="contractortype"></a>
+
+### ContractorType
+
+> `const` **ContractorType**: `object` = `ApiContractorType`
+
+Contractor type enum (`Individual` / `Business`) re-exported from the API model.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `Business` | `"Business"` |
+| `Individual` | `"Individual"` |
+
+***
+
+<a id="contractortypefieldprops"></a>
+
+### ContractorTypeFieldProps
+
+> **ContractorTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Type` component.
+
+***
+
+<a id="contractorwagetypefieldprops"></a>
+
+### ContractorWageTypeFieldProps
+
+> **ContractorWageTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
+
+***
+
+<a id="contractorworkstatefieldprops"></a>
+
+### ContractorWorkStateFieldProps
+
+> **ContractorWorkStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WorkState` component.
+
+***
+
+<a id="wagetype"></a>
+
+### WageType
+
+> `const` **WageType**: `object` = `ApiWageType`
+
+Contractor wage type enum (`Fixed` / `Hourly`) re-exported from the API model.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `Fixed` | `"Fixed"` |
+| `Hourly` | `"Hourly"` |

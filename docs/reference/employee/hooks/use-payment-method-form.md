@@ -148,17 +148,7 @@ Available on the hook result as `form.Fields.Type`. Options are
 `Direct Deposit` and `Check`; defaults to the employee's existing payment
 method type. Supply `getOptionLabel` to translate the option labels.
 
-<a id="paymentmethodtype"></a>
-
-#### PaymentMethodType
-
-> **PaymentMethodType** = *typeof* [`PAYMENT_METHOD_TYPES`](#payment_method_types)\[`number`\]
-
-Union of payment method type values that the form accepts.
-
-***
-
-## Variables
+## Utility Types
 
 <a id="payment_method_types"></a>
 
@@ -170,22 +160,6 @@ Supported payment method type values: direct deposit and check.
 
 ***
 
-<a id="paymentmethodformerrorcodes"></a>
-
-### PaymentMethodFormErrorCodes
-
-> `const` **PaymentMethodFormErrorCodes**: `object`
-
-Validation error codes emitted by the payment method form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Type Aliases
 <a id="paymentmethodformdata"></a>
 
 ### PaymentMethodFormData
@@ -204,6 +178,23 @@ Shape of the values managed by the payment method form.
 
 Union of validation error code strings emitted by the payment method form
 schema.
+
+***
+
+<a id="paymentmethodformerrorcodes"></a>
+
+### PaymentMethodFormErrorCodes
+
+> `const` **PaymentMethodFormErrorCodes**: `object`
+
+Validation error codes emitted by the payment method form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -257,3 +248,21 @@ Shape of the validated values produced by the payment method form on submit.
 Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
 
 ***
+
+<a id="paymentmethodtype"></a>
+
+### PaymentMethodType
+
+> **PaymentMethodType** = *typeof* [`PAYMENT_METHOD_TYPES`](#payment_method_types)\[`number`\]
+
+Union of payment method type values that the form accepts.
+
+***
+
+<a id="typefieldprops"></a>
+
+### TypeFieldProps
+
+> **TypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
+
+Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.

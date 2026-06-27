@@ -115,11 +115,16 @@ function kindGroupName(kind: ReflectionKind): string {
  *
  * Within each hook-named group the primary hook function (member whose name
  * matches the group title) is sorted to the top.
+ *
+ * When `collapseUtilityTypes` is set (hook pages), the leftover kind-based
+ * groups — Variables, Interfaces, Type Aliases — are merged into one
+ * "Utility Types" group instead of standing as separate sections.
  */
 function groupSyntheticMembers(
   members: DeclarationReflection[],
   owner: DeclarationReflection,
   hookGroupMap?: Map<DeclarationReflection, string>,
+  collapseUtilityTypes = false,
 ): ReflectionGroup[] {
   const byTitle = new Map<string, DeclarationReflection[]>()
   for (const member of members) {
@@ -142,6 +147,24 @@ function groupSyntheticMembers(
       })
     } else {
       groupMembers.sort((a, b) => a.name.localeCompare(b.name))
+    }
+  }
+
+  // On hook pages, fold the generic kind-based buckets — everything not sorted
+  // into a named section (Props, Returns, Fields, Utility Hooks, …) — into a
+  // single "Utility Types" group, alphabetized across the merged set.
+  if (collapseUtilityTypes) {
+    const merged: DeclarationReflection[] = []
+    for (const title of ['Variables', 'Interfaces', 'Type Aliases']) {
+      const bucket = byTitle.get(title)
+      if (bucket) {
+        merged.push(...bucket)
+        byTitle.delete(title)
+      }
+    }
+    if (merged.length > 0) {
+      merged.sort((a, b) => a.name.localeCompare(b.name))
+      byTitle.set('Utility Types', [...(byTitle.get('Utility Types') ?? []), ...merged])
     }
   }
 
@@ -388,7 +411,7 @@ export class SDKRouter extends MemberRouter {
       for (const [hookDir, hookMembers] of byHookDir) {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
-        hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
+        hookNs.groups = groupSyntheticMembers(hookMembers, hookNs, undefined, true)
         // Remove inlined types from groups by reflection identity, derived from
         // the type graph: every hook's Ready interface and its `UseXxxResult`
         // return-union alias are inlined in the Returns section, and its props

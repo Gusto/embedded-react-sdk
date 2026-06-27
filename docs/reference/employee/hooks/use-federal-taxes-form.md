@@ -227,14 +227,6 @@ populated from `FILING_STATUS_VALUES` (`Single`, `Married`,
 `Head of Household`, `Exempt from withholding`). The default option label is
 the raw filing status value — pass `getOptionLabel` to localize.
 
-<a id="filingstatusvalue"></a>
-
-#### FilingStatusValue
-
-> **FilingStatusValue** = *typeof* [`FILING_STATUS_VALUES`](#filing_status_values)\[`number`\]
-
-Union of filing status values that the form accepts.
-
 ***
 
 <a id="otherincomefield"></a>
@@ -282,7 +274,48 @@ Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `true` and `false`. The default labels are `Yes` and `No` — pass
 `getOptionLabel` to localize. The form submits a boolean value.
 
-## Variables
+## Utility Types
+
+<a id="deductionsfieldprops"></a>
+
+### DeductionsFieldProps
+
+> **DeductionsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
+
+***
+
+<a id="dependentsamountfieldprops"></a>
+
+### DependentsAmountFieldProps
+
+> **DependentsAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
+
+***
+
+<a id="extrawithholdingfieldprops"></a>
+
+### ExtraWithholdingFieldProps
+
+> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
+
+***
+
+<a id="federaltaxeserrorcode"></a>
+
+### FederalTaxesErrorCode
+
+> **FederalTaxesErrorCode** = *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\[keyof *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\]
+
+Union of validation error code strings emitted by the federal taxes form
+schema.
+
+***
 
 <a id="federaltaxeserrorcodes"></a>
 
@@ -298,27 +331,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="filing_status_values"></a>
-
-### FILING\_STATUS\_VALUES
-
-> `const` **FILING\_STATUS\_VALUES**: readonly \[`"Single"`, `"Married"`, `"Head of Household"`, `"Exempt from withholding"`\]
-
-Supported W-4 filing status values: single, married filing jointly, head of
-household, and exempt from withholding.
-
-## Type Aliases
-<a id="federaltaxeserrorcode"></a>
-
-### FederalTaxesErrorCode
-
-> **FederalTaxesErrorCode** = *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\[keyof *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\]
-
-Union of validation error code strings emitted by the federal taxes form
-schema.
 
 ***
 
@@ -408,3 +420,52 @@ Used as the `validationMessages` key for every federal taxes field. See
 [FederalTaxesErrorCodes](#federaltaxeserrorcodes).
 
 ***
+
+<a id="filing_status_values"></a>
+
+### FILING\_STATUS\_VALUES
+
+> `const` **FILING\_STATUS\_VALUES**: readonly \[`"Single"`, `"Married"`, `"Head of Household"`, `"Exempt from withholding"`\]
+
+Supported W-4 filing status values: single, married filing jointly, head of
+household, and exempt from withholding.
+
+***
+
+<a id="filingstatusfieldprops"></a>
+
+### FilingStatusFieldProps
+
+> **FilingStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
+
+***
+
+<a id="filingstatusvalue"></a>
+
+### FilingStatusValue
+
+> **FilingStatusValue** = *typeof* [`FILING_STATUS_VALUES`](#filing_status_values)\[`number`\]
+
+Union of filing status values that the form accepts.
+
+***
+
+<a id="otherincomefieldprops"></a>
+
+### OtherIncomeFieldProps
+
+> **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
+
+***
+
+<a id="twojobsfieldprops"></a>
+
+### TwoJobsFieldProps
+
+> **TwoJobsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.

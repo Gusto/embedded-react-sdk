@@ -137,24 +137,7 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Variables
-
-<a id="signcompanyformerrorcodes"></a>
-
-### SignCompanyFormErrorCodes
-
-> `const` **SignCompanyFormErrorCodes**: `object`
-
-Validation error codes emitted by the sign-company-form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Type Aliases
+## Utility Types
 
 <a id="confirmsignaturefieldprops"></a>
 
@@ -194,6 +177,23 @@ Shape of the values managed by the sign-company form.
 
 Union of validation error code strings emitted by the sign-company-form
 schema.
+
+***
+
+<a id="signcompanyformerrorcodes"></a>
+
+### SignCompanyFormErrorCodes
+
+> `const` **SignCompanyFormErrorCodes**: `object`
+
+Validation error codes emitted by the sign-company-form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 

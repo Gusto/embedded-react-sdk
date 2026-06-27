@@ -135,7 +135,7 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
 
-## Variables
+## Utility Types
 
 <a id="split_by_values"></a>
 
@@ -148,26 +148,25 @@ amount per account.
 
 ***
 
-<a id="splitpaymentsformerrorcodes"></a>
+<a id="splitbyfieldprops"></a>
 
-### SplitPaymentsFormErrorCodes
+### SplitByFieldProps
 
-> `const` **SplitPaymentsFormErrorCodes**: `object`
+> **SplitByFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
 
-Validation error codes emitted by the split payments form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
+Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
 
-#### Type Declaration
+***
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `DUPLICATE_PRIORITIES` | `"DUPLICATE_PRIORITIES"` | `'DUPLICATE_PRIORITIES'` |
-| `INVALID_AMOUNT` | `"INVALID_AMOUNT"` | `'INVALID_AMOUNT'` |
-| `INVALID_PERCENTAGE` | `"INVALID_PERCENTAGE"` | `'INVALID_PERCENTAGE'` |
-| `PERCENTAGE_TOTAL_MISMATCH` | `"PERCENTAGE_TOTAL_MISMATCH"` | `'PERCENTAGE_TOTAL_MISMATCH'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+<a id="splitbyvalue"></a>
 
-## Interfaces
+### SplitByValue
+
+> **SplitByValue** = *typeof* [`SPLIT_BY_VALUES`](#split_by_values)\[`number`\]
+
+Union of split-by mode values that the form accepts.
+
+***
 
 <a id="splitfieldentry"></a>
 
@@ -213,51 +212,6 @@ required by the hook; the rest are required.
 
 ***
 
-<a id="workingsplit"></a>
-
-### WorkingSplit
-
-A single split entry — pairs a bank account identifier with its current split allocation.
-
-#### Remarks
-
-Surfaced on `data.splits` from [useSplitPaymentsForm](#usesplitpaymentsform). Derived from
-`paymentMethod.splits` when present, otherwise from the employee's bank
-accounts (one entry per account, no allocated amount). Carries the raw
-domain data — use it for label construction or lookups by uuid.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `hiddenAccountNumber` | `string` \| `null` | Masked account number suffix, when available. |
-| `name` | `string` \| `null` | Account nickname, when available. |
-| `priority` | `number` | Ordering value — splits are processed in ascending priority; the highest priority is the remainder. |
-| `splitAmount` | `number` \| `null` | Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. |
-| `uuid` | `string` | UUID of the underlying bank account. |
-
-## Type Aliases
-
-<a id="splitbyfieldprops"></a>
-
-### SplitByFieldProps
-
-> **SplitByFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
-
-Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
-
-***
-
-<a id="splitbyvalue"></a>
-
-### SplitByValue
-
-> **SplitByValue** = *typeof* [`SPLIT_BY_VALUES`](#split_by_values)\[`number`\]
-
-Union of split-by mode values that the form accepts.
-
-***
-
 <a id="splitfieldvalidation"></a>
 
 ### SplitFieldValidation
@@ -299,6 +253,27 @@ Shape of the values managed by the split payments form. `splitAmount` and
 
 Union of validation error code strings emitted by the split payments form
 schema.
+
+***
+
+<a id="splitpaymentsformerrorcodes"></a>
+
+### SplitPaymentsFormErrorCodes
+
+> `const` **SplitPaymentsFormErrorCodes**: `object`
+
+Validation error codes emitted by the split payments form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `DUPLICATE_PRIORITIES` | `"DUPLICATE_PRIORITIES"` | `'DUPLICATE_PRIORITIES'` |
+| `INVALID_AMOUNT` | `"INVALID_AMOUNT"` | `'INVALID_AMOUNT'` |
+| `INVALID_PERCENTAGE` | `"INVALID_PERCENTAGE"` | `'INVALID_PERCENTAGE'` |
+| `PERCENTAGE_TOTAL_MISMATCH` | `"PERCENTAGE_TOTAL_MISMATCH"` | `'PERCENTAGE_TOTAL_MISMATCH'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -350,6 +325,31 @@ Shape of the validated values produced by the split payments form on submit.
 > **SplitPaymentsFormRequiredValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED`
 
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
+
+***
+
+<a id="workingsplit"></a>
+
+### WorkingSplit
+
+A single split entry — pairs a bank account identifier with its current split allocation.
+
+#### Remarks
+
+Surfaced on `data.splits` from [useSplitPaymentsForm](#usesplitpaymentsform). Derived from
+`paymentMethod.splits` when present, otherwise from the employee's bank
+accounts (one entry per account, no allocated amount). Carries the raw
+domain data — use it for label construction or lookups by uuid.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `hiddenAccountNumber` | `string` \| `null` | Masked account number suffix, when available. |
+| `name` | `string` \| `null` | Account nickname, when available. |
+| `priority` | `number` | Ordering value — splits are processed in ascending priority; the highest priority is the remainder. |
+| `splitAmount` | `number` \| `null` | Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. |
+| `uuid` | `string` | UUID of the underlying bank account. |
 
 ## Fields
 

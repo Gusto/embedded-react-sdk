@@ -100,7 +100,7 @@ export function pathToSourceDir(domainPath: string): string {
  * naming its purpose; the theme decides where each slot lands in the generated
  * page. These are the recognized slots — extend deliberately.
  */
-export const GUIDE_SLOTS = ['overview', 'appendix'] as const
+export const GUIDE_SLOTS = ['overview', 'appendix', 'advanced'] as const
 export type GuideSlot = (typeof GUIDE_SLOTS)[number]
 export type GuideSlots = Partial<Record<GuideSlot, string>>
 
@@ -139,7 +139,9 @@ export function readFlowGuide(sourceFilePath: string): Guide | null {
 export function readHookGuide(sourceFilePath: string, hookDir: string): Guide | null {
   let dir = dirname(sourceFilePath)
   while (dir !== dirname(dir)) {
-    if (basename(dir) === hookDir) return readGuideFile(join(dir, 'GUIDE.md'))
+    // Hook guides use a single `advanced` slot: all prose nests under one
+    // section, so the whole file is collected regardless of any slot tags.
+    if (basename(dir) === hookDir) return readGuideFile(join(dir, 'GUIDE.md'), 'advanced')
     dir = dirname(dir)
   }
   return null
@@ -152,12 +154,25 @@ export function readHookGuide(sourceFilePath: string, hookDir: string): Guide | 
  * `<!-- slot: name -->` tag, with the tag stripped from the rendered heading.
  * Untagged or unknown-slot sections are routed to `appendix` with a warning so
  * content is never silently lost. Returns null if the file is missing or empty.
+ *
+ * When `forcedSlot` is given, slot tags are ignored: the entire body (minus the
+ * h1) is collected into that one slot, with any `<!-- slot: … -->` tags stripped
+ * from headings. Used by hook guides, which carry a single `advanced` slot.
  */
-function readGuideFile(guidePath: string): Guide | null {
+function readGuideFile(guidePath: string, forcedSlot?: GuideSlot): Guide | null {
   if (!existsSync(guidePath)) return null
   const lines = readFileSync(guidePath, 'utf-8').split('\n')
   const h1Index = lines.findIndex(l => /^#\s/.test(l))
   const body = h1Index === -1 ? lines : lines.slice(h1Index + 1)
+
+  if (forcedSlot) {
+    const text = body
+      .map(l => l.replace(SLOT_TAG, '').trimEnd())
+      .join('\n')
+      .trim()
+    if (!text) return null
+    return { source: relative(join(process.cwd(), '..'), guidePath), slots: { [forcedSlot]: text } }
+  }
 
   const slots: GuideSlots = {}
   let current: GuideSlot | null = null

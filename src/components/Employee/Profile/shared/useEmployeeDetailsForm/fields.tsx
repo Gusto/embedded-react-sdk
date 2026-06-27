@@ -19,7 +19,6 @@ import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
  * birth fields. See {@link EmployeeDetailsErrorCodes}.
  *
  * @public
- * @group Utility Types
  */
 export type RequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED
 
@@ -32,7 +31,6 @@ export type RequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED
  * description of each code.
  *
  * @public
- * @group Utility Types
  */
 export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME']
 

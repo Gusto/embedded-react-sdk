@@ -100,7 +100,28 @@ Ready state of [useEmployeeList](#useemployeelist).
 | `status.isFetching` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
 
-## Interfaces
+## Utility Types
+
+<a id="employeeaction"></a>
+
+### EmployeeAction
+
+> **EmployeeAction** = `"edit"` \| `"delete"` \| `"cancel_self_onboarding"` \| `"review"` \| `"dismiss"` \| `"rehire"`
+
+Action that may be performed on an employee row, determined by the employee's onboarding state
+and the `employeeType` filter passed to [useEmployeeList](#useemployeelist).
+
+***
+
+<a id="employeetype"></a>
+
+### EmployeeType
+
+> **EmployeeType** = `"active"` \| `"onboarding"` \| `"terminated"`
+
+Filter applied to [useEmployeeList](#useemployeelist) that scopes the result set and tailors the per-row action list.
+
+***
 
 <a id="employeewithactions"></a>
 
@@ -155,24 +176,3 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `twoPercentShareholder?` | `boolean` \| `null` | Whether the employee is a two percent shareholder of the company. This field only applies to companies with an S-Corp entity type. |
 | `version?` | `string` | The current version of the employee. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 | `workEmail?` | `string` \| `null` | The work email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
-
-## Type Aliases
-
-<a id="employeeaction"></a>
-
-### EmployeeAction
-
-> **EmployeeAction** = `"edit"` \| `"delete"` \| `"cancel_self_onboarding"` \| `"review"` \| `"dismiss"` \| `"rehire"`
-
-Action that may be performed on an employee row, determined by the employee's onboarding state
-and the `employeeType` filter passed to [useEmployeeList](#useemployeelist).
-
-***
-
-<a id="employeetype"></a>
-
-### EmployeeType
-
-> **EmployeeType** = `"active"` \| `"onboarding"` \| `"terminated"`
-
-Filter applied to [useEmployeeList](#useemployeelist) that scopes the result set and tailors the per-row action list.

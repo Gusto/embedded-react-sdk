@@ -28,7 +28,6 @@ export const EmployeeDetailsErrorCodes = {
  * schema.
  *
  * @public
- * @group Utility Types
  */
 export type EmployeeDetailsErrorCode =
   (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes]
@@ -64,7 +63,6 @@ const fieldValidators = {
  * Field names accepted by the employee details form.
  *
  * @public
- * @group Utility Types
  */
 export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
 
@@ -72,8 +70,6 @@ export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOn
  * Shape of the values managed by the employee details form.
  *
  * @public
- * @group Utility Types
- * @interface
  */
 export type EmployeeDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
@@ -83,7 +79,6 @@ export type EmployeeDetailsFormData = {
  * submit.
  *
  * @public
- * @group Utility Types
  */
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
@@ -105,7 +100,6 @@ const requiredFieldsConfig = {
  * via the hook's `optionalFieldsToRequire` option.
  *
  * @public
- * @group Utility Types
  */
 export type EmployeeDetailsOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig

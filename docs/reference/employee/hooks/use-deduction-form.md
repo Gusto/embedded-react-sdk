@@ -321,25 +321,38 @@ Available on the hook result as `form.Fields.TotalAmount` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
 
-## Variables
+## Utility Types
 
-<a id="deductionformerrorcodes"></a>
+<a id="annualmaximumfieldprops"></a>
 
-### DeductionFormErrorCodes
+### AnnualMaximumFieldProps
 
-> `const` **DeductionFormErrorCodes**: `object`
+> **AnnualMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
 
-Validation error codes emitted by the deduction form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
 
-#### Type Declaration
+***
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+<a id="deductaspercentagefieldprops"></a>
 
-## Type Aliases
+### DeductAsPercentageFieldProps
+
+> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
+
+***
+
+<a id="deductionamountfieldprops"></a>
+
+### DeductionAmountFieldProps
+
+> **DeductionAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
+
+***
+
 <a id="deductionformamountvalidation"></a>
 
 ### DeductionFormAmountValidation
@@ -388,6 +401,24 @@ Shape of the values managed by the deduction form.
 > **DeductionFormErrorCode** = *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\[keyof *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\]
 
 Union of validation error code strings emitted by the deduction form schema.
+
+***
+
+<a id="deductionformerrorcodes"></a>
+
+### DeductionFormErrorCodes
+
+> `const` **DeductionFormErrorCodes**: `object`
+
+Validation error codes emitted by the deduction form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -459,3 +490,41 @@ deduct-as-percentage, and garnishment-type fields. See
 [DeductionFormErrorCodes](#deductionformerrorcodes).
 
 ***
+
+<a id="descriptionfieldprops"></a>
+
+### DescriptionFieldProps
+
+> **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
+
+***
+
+<a id="garnishmenttypefieldprops"></a>
+
+### GarnishmentTypeFieldProps
+
+> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
+
+***
+
+<a id="recurringfieldprops"></a>
+
+### RecurringFieldProps
+
+> **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
+
+***
+
+<a id="totalamountfieldprops"></a>
+
+### TotalAmountFieldProps
+
+> **TotalAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
+
+Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.

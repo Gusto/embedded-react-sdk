@@ -205,21 +205,6 @@ Available on the hook result as `form.Fields.Email`. Optional by default
 whenever the self-onboarding toggle is enabled in create mode, reported
 via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code.
 
-<a id="emailvalidation"></a>
-
-#### EmailValidation
-
-> **EmailValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`\]
-
-Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Email`. The
-`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
-enabled but the email is empty (create mode only). See
-[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
-
 ***
 
 <a id="firstnamefield"></a>
@@ -338,37 +323,78 @@ file, the field shows a masked placeholder and the required rule is
 automatically waived even if `ssn` is listed in
 `optionalFieldsToRequire`.
 
-<a id="ssnrequiredvalidation"></a>
+## Utility Types
 
-#### SsnRequiredValidation
+<a id="employeedetailssubmitcallbacks"></a>
 
-> **SsnRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+### EmployeeDetailsSubmitCallbacks
 
-The required-field error code for the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+Optional callbacks passed to [onSubmit](#useemployeedetailsformready).
 
 #### Remarks
 
-The required rule is automatically waived when the employee already has
-an SSN on file, even if `ssn` is included in `optionalFieldsToRequire`.
+Only the callback matching the submit mode fires —
+`onEmployeeCreated` on create, `onEmployeeUpdated` on update.
+`onOnboardingStatusUpdated` fires when toggling the self-onboarding
+switch changes the employee's onboarding status as part of an update.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
+| `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
+| `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
 
 ***
 
-<a id="ssnvalidation"></a>
+<a id="dateofbirthfieldprops"></a>
 
-#### SsnValidation
+### DateOfBirthFieldProps
 
-> **SsnValidation** = *typeof* `EmployeeDetailsErrorCodes.INVALID_SSN`
+> **DateOfBirthFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
 
-The format-validation error code emitted by the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.DateOfBirth` component.
+
+***
+
+<a id="emailfieldprops"></a>
+
+### EmailFieldProps
+
+> **EmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Email` component.
+
+***
+
+<a id="emailvalidation"></a>
+
+### EmailValidation
+
+> **EmailValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`\]
+
+Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
 
 #### Remarks
 
-Use as a key in `validationMessages` on `Fields.Ssn`. See
+Use these as keys in `validationMessages` on `Fields.Email`. The
+`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
+enabled but the email is empty (create mode only). See
 [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ***
 
-## Variables
+<a id="employeedetailserrorcode"></a>
+
+### EmployeeDetailsErrorCode
+
+> **EmployeeDetailsErrorCode** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[keyof *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\]
+
+Union of validation error code strings emitted by the employee details form
+schema.
+
+***
 
 <a id="employeedetailserrorcodes"></a>
 
@@ -389,18 +415,6 @@ hook.
 | `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
 | `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Type Aliases
-## Utility Types
-
-<a id="employeedetailserrorcode"></a>
-
-### EmployeeDetailsErrorCode
-
-> **EmployeeDetailsErrorCode** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[keyof *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\]
-
-Union of validation error code strings emitted by the employee details form
-schema.
 
 ***
 
@@ -428,19 +442,9 @@ Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployee
 
 ### EmployeeDetailsFormData
 
+> **EmployeeDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
 Shape of the values managed by the employee details form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `dateOfBirth` | `string` |
-| `email` | `string` |
-| `firstName` | `string` |
-| `lastName` | `string` |
-| `middleInitial` | `string` |
-| `selfOnboarding` | `boolean` |
-| `ssn` | `string` |
 
 ***
 
@@ -491,26 +495,33 @@ birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ***
 
-<a id="employeedetailssubmitcallbacks"></a>
+<a id="firstnamefieldprops"></a>
 
-### EmployeeDetailsSubmitCallbacks
+### FirstNameFieldProps
 
-Optional callbacks passed to [onSubmit](#useemployeedetailsformready).
+> **FirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
 
-#### Remarks
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
 
-Only the callback matching the submit mode fires —
-`onEmployeeCreated` on create, `onEmployeeUpdated` on update.
-`onOnboardingStatusUpdated` fires when toggling the self-onboarding
-switch changes the employee's onboarding status as part of an update.
+***
 
-#### Properties
+<a id="lastnamefieldprops"></a>
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
-| `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
-| `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
+### LastNameFieldProps
+
+> **LastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.LastName` component.
+
+***
+
+<a id="middleinitialfieldprops"></a>
+
+### MiddleInitialFieldProps
+
+> **MiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
 
 ***
 
@@ -527,3 +538,53 @@ Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#u
 Use these as keys in `validationMessages` on `Fields.FirstName` and
 `Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
 description of each code.
+
+***
+
+<a id="selfonboardingfieldprops"></a>
+
+### SelfOnboardingFieldProps
+
+> **SelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
+
+***
+
+<a id="ssnfieldprops"></a>
+
+### SsnFieldProps
+
+> **SsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Ssn` component.
+
+***
+
+<a id="ssnrequiredvalidation"></a>
+
+### SsnRequiredValidation
+
+> **SsnRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+
+The required-field error code for the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+The required rule is automatically waived when the employee already has
+an SSN on file, even if `ssn` is included in `optionalFieldsToRequire`.
+
+***
+
+<a id="ssnvalidation"></a>
+
+### SsnValidation
+
+> **SsnValidation** = *typeof* `EmployeeDetailsErrorCodes.INVALID_SSN`
+
+The format-validation error code emitted by the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+Use as a key in `validationMessages` on `Fields.Ssn`. See
+[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
