@@ -944,6 +944,16 @@ function fieldCallSignature(type: SomeType | undefined): SignatureReflection | u
 }
 
 /**
+ * Whether a `Fields` interface member is conditionally exposed — its declared
+ * type is `typeof XxxField | undefined` (a {@link UnionType}) rather than the
+ * bare `typeof XxxField`. Such fields are `undefined` until their visibility
+ * rule is met and must be null-checked before rendering.
+ */
+function isConditionalField(member: DeclarationReflection): boolean {
+  return member.type instanceof UnionType || member.flags.isOptional
+}
+
+/**
  * Reflection id of a field component's props parameter. A component and the
  * `Fields` property that exposes it both reference the same `XxxFieldProps`
  * type, so this id pairs key↔component by identity — no reliance on the public
@@ -969,7 +979,15 @@ function buildFieldsTable(
   const fieldsInterface = formModel.fieldsInterface
   if (!fieldsInterface) return null
 
-  const fieldChildren = (fieldsInterface.children ?? []).filter(c => c.isDeclaration())
+  // Always-defined fields first, then conditional ones; alphabetical by key
+  // within each group. Mirrors the "null-check before rendering" boundary.
+  const fieldChildren = (fieldsInterface.children ?? [])
+    .filter(c => c.isDeclaration())
+    .sort(
+      (a, b) =>
+        Number(isConditionalField(a)) - Number(isConditionalField(b)) ||
+        a.name.localeCompare(b.name),
+    )
   if (fieldChildren.length === 0) return null
 
   // Pair each exposed field with its component by props-type identity.
@@ -1043,6 +1061,12 @@ function buildFieldsTable(
         : remarksText
       const notesText = strippedRemarks.replace(/\n+/g, ' ').replace(/\|/g, '\\|').trim()
       if (notesText) notes = notesText
+    }
+
+    // Conditional fields are typed `typeof XxxField | undefined`; reflect that
+    // in the Component Type column (escaping the pipe for the markdown table).
+    if (isConditionalField(child) && componentTypeCell !== '—') {
+      componentTypeCell = `${componentTypeCell} \\| \`undefined\``
     }
 
     rows.push(`| ${fieldKeyCell} | ${componentTypeCell} | ${notes} |`)

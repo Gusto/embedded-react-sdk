@@ -114,20 +114,20 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| [`BusinessName`](#contractorbusinessnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
-| [`Ein`](#contractoreinfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on file, the field shows a masked placeholder and the required rule is waived. |
-| [`Email`](#contractoremailfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
-| [`FileNewHireReport`](#contractorfilenewhirereportfield) | [Switch](../../utilities.md#switchhookfieldprops) | When enabled, a work state must be supplied so the new-hire report can be filed. |
-| [`FirstName`](#contractorfirstnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
-| [`HourlyRate`](#contractorhourlyratefield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | — |
-| [`LastName`](#contractorlastnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
-| [`MiddleInitial`](#contractormiddleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
-| [`SelfOnboarding`](#contractorselfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) | Always null-check before rendering. When enabled, the contractor is invited to enter their own details and SSN/EIN are no longer collected by the admin. |
-| [`Ssn`](#contractorssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field shows a masked placeholder and the required rule is waived. |
 | [`StartDate`](#contractorstartdatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
 | [`Type`](#contractortypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Selects whether the contractor is an `Individual` or a `Business`. Provide `getOptionLabel` to localize the option labels. |
 | [`WageType`](#contractorwagetypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Selects whether the contractor is paid `Fixed` or `Hourly`. Provide `getOptionLabel` to localize the option labels. |
-| [`WorkState`](#contractorworkstatefield) | [Select](../../utilities.md#selecthookfieldprops) | — |
+| [`BusinessName`](#contractorbusinessnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`Ein`](#contractoreinfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on file, the field shows a masked placeholder and the required rule is waived. |
+| [`Email`](#contractoremailfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`FileNewHireReport`](#contractorfilenewhirereportfield) | [Switch](../../utilities.md#switchhookfieldprops) \| `undefined` | When enabled, a work state must be supplied so the new-hire report can be filed. |
+| [`FirstName`](#contractorfirstnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`HourlyRate`](#contractorhourlyratefield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) \| `undefined` | — |
+| [`LastName`](#contractorlastnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`MiddleInitial`](#contractormiddleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | Always optional. |
+| [`SelfOnboarding`](#contractorselfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) \| `undefined` | Always null-check before rendering. When enabled, the contractor is invited to enter their own details and SSN/EIN are no longer collected by the admin. |
+| [`Ssn`](#contractorssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field shows a masked placeholder and the required rule is waived. |
+| [`WorkState`](#contractorworkstatefield) | [Select](../../utilities.md#selecthookfieldprops) \| `undefined` | — |
 
 <a id="contractorbusinessnamefield"></a>
 

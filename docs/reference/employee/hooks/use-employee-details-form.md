@@ -158,8 +158,8 @@ The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform
 | [`FirstName`](#firstnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
 | [`LastName`](#lastnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
 | [`MiddleInitial`](#middleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
-| [`SelfOnboarding`](#selfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
 | [`Ssn`](#ssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
+| [`SelfOnboarding`](#selfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) \| `undefined` | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
 
 <a id="dateofbirthfield"></a>
 

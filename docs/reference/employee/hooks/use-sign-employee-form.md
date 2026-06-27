@@ -131,12 +131,12 @@ Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
 | [`ConfirmSignature`](#confirmsignaturefield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | Captures the employee's electronic-signature consent; must be checked to submit. |
+| [`Signature`](#signaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The employee types their full legal name; required. |
 | `Preparer1` | — | — |
 | `Preparer2` | — | — |
 | `Preparer3` | — | — |
 | `Preparer4` | — | — |
-| [`Signature`](#signaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The employee types their full legal name; required. |
-| [`UsedPreparer`](#usedpreparerfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
+| [`UsedPreparer`](#usedpreparerfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) \| `undefined` | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
 
 <a id="confirmsignaturefield"></a>
 

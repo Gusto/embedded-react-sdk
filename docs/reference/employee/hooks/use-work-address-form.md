@@ -146,8 +146,8 @@ Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| [`EffectiveDate`](#workaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always null-check before rendering. |
 | [`Location`](#workaddresslocationfield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the company's active locations; the hook populates them from the locations query. Required. |
+| [`EffectiveDate`](#workaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) \| `undefined` | Always null-check before rendering. |
 
 <a id="workaddresseffectivedatefield"></a>
 

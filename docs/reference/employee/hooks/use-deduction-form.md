@@ -150,12 +150,12 @@ Pre-bound field components exposed on `useDeductionForm().form.Fields`.
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
 | [`Amount`](#deductionamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Interpreted as a currency amount when `Fields.DeductAsPercentage` is set to a fixed amount, or as a percentage of paycheck when it's set to percentage. |
-| [`AnnualMaximum`](#annualmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
 | [`DeductAsPercentage`](#deductaspercentagefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Always rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency amount when `false`, or as a percentage of paycheck when `true`. |
 | [`Description`](#descriptionfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always rendered. |
-| [`GarnishmentType`](#garnishmenttypefield) | [Select](../../utilities.md#selecthookfieldprops) | Always null-check before rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`, `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For child-support garnishments, use {@link useChildSupportGarnishmentForm}. |
 | [`Recurring`](#recurringfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Always rendered. Picks between a recurring deduction (taken every paycheck) and a one-time deduction. The cap fields (`Fields.TotalAmount` and `Fields.AnnualMaximum`) are exposed only when this is set to recurring. |
-| [`TotalAmount`](#totalamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
+| [`AnnualMaximum`](#annualmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) \| `undefined` | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
+| [`GarnishmentType`](#garnishmenttypefield) | [Select](../../utilities.md#selecthookfieldprops) \| `undefined` | Always null-check before rendering. Options: `Federal Tax Lien`, `State Tax Lien`, `Student Loan`, `Creditor Garnishment`, `Federal Loan`, `Other Garnishment`. For child-support garnishments, use {@link useChildSupportGarnishmentForm}. |
+| [`TotalAmount`](#totalamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) \| `undefined` | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
 
 <a id="annualmaximumfield"></a>
 

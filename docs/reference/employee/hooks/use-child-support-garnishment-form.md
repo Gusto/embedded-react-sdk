@@ -152,13 +152,13 @@ Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fie
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
 | [`Amount`](#childsupportamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Accepts a percentage of paycheck in the range 0–100 — the API stores child-support amounts as percentages rather than fixed currency values. |
-| [`CaseNumber`](#casenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
-| [`FipsCode`](#fipscodefield) | [Select](../../utilities.md#selecthookfieldprops) | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
-| [`OrderNumber`](#ordernumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
 | [`PaymentPeriod`](#paymentperiodfield) | [Select](../../utilities.md#selecthookfieldprops) | Always rendered. Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`. |
 | [`PayPeriodMaximum`](#payperiodmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Carries the per-pay-period currency cap for the garnishment. |
-| [`RemittanceNumber`](#remittancenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | — |
 | [`State`](#childsupportstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Always rendered. The selected agency drives which subsequent fields are required and visible (`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`). |
+| [`CaseNumber`](#casenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`FipsCode`](#fipscodefield) | [Select](../../utilities.md#selecthookfieldprops) \| `undefined` | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
+| [`OrderNumber`](#ordernumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
+| [`RemittanceNumber`](#remittancenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
 
 <a id="casenumberfield"></a>
 

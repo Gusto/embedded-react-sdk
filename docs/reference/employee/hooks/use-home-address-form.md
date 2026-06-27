@@ -148,11 +148,11 @@ Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
 | --------- | -------------- | ----- |
 | [`City`](#cityfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
 | [`CourtesyWithholding`](#courtesywithholdingfield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | When checked, the employer agrees to withhold the employee's home-state taxes as a courtesy even when the work and home states differ. |
-| [`EffectiveDate`](#homeaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Always null-check before rendering. |
 | [`State`](#homeaddressstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the standard two-letter US state abbreviations. Required. |
 | [`Street1`](#street1field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
 | [`Street2`](#street2field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
 | [`Zip`](#zipfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+| [`EffectiveDate`](#homeaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) \| `undefined` | Always null-check before rendering. |
 
 <a id="cityfield"></a>
 
