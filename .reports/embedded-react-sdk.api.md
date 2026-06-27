@@ -4720,6 +4720,9 @@ interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'>
 }
 
 // @public
+export type StateTaxFields = StateTaxFieldsGroup[];
+
+// @public
 export interface StateTaxFieldsGroup {
     questions: StateTaxQuestionFieldEntry[];
     state: string;
@@ -5423,15 +5426,12 @@ export interface UseEmployeeStateTaxesFormProps {
 }
 
 // @public
-export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]> {
+export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>;
     };
     data: {
         employeeStateTaxes: EmployeeStateTaxesList[];
-    };
-    form: BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]>['form'] & {
-        Fields: StateTaxFieldsGroup[];
     };
     status: {
         isPending: boolean;

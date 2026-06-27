@@ -551,6 +551,7 @@ export type {
   StateTaxValue,
   StateTaxQuestionVariant,
   StateTaxFieldsGroup,
+  StateTaxFields,
   StateTaxQuestionFieldEntry,
   CreateStateFieldsOptions,
   SelectStateTaxFieldProps,

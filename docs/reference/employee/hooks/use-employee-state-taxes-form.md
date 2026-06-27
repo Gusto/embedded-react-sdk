@@ -125,7 +125,11 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `data` | `object` | Current per-state tax records returned by the server. |
 | `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` & `object` | Form internals plus the iterable per-state `Fields` array. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`StateTaxFields`](#statetaxfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |
 | `status.isPending` | `boolean` | - |
@@ -316,6 +320,16 @@ Props for a `Field` rendered as a select (dropdown).
 | ------ | ------ | ------ |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
+
+***
+
+<a id="statetaxfields"></a>
+
+### StateTaxFields
+
+> **StateTaxFields** = [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
+
+Iterable, render-ready group + question entries with bound Field components.
 
 ***
 

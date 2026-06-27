@@ -1,4 +1,5 @@
 import {
+  ArrayType,
   DeclarationReflection,
   IntersectionType,
   ReferenceType,
@@ -13,12 +14,14 @@ import {
  * data), derived entirely from the TypeScript type graph (never from name
  * conventions).
  *
- * A hook is recognized when its return type is a union with a non-loading
- * interface branch (the ready state). Once recognized, every part below must be
- * extractable or the build hard-fails via {@link HookModelError} — a malformed
- * hook is a bug, not a silently-degraded page.
+ * A hook is recognized when its return type is a union that includes the
+ * `HookLoadingResult` loading branch. Once recognized, all three pillars —
+ * `props`, the `returns` (ready) interface, and an `@example` — must resolve or
+ * the build hard-fails via {@link HookModelError}; a malformed hook is a bug,
+ * not a silently-degraded page.
  *
- * Form hooks carry additional parts; see {@link FormHookModel}.
+ * Form hooks carry an additional required part (`fields`); see
+ * {@link FormHookModel}.
  */
 export interface HookModel {
   /** The hook function reflection (e.g. `useBankForm`, `useEmployeeList`). */
@@ -93,14 +96,16 @@ export class HookModelError extends Error {
 }
 
 const BASE_FORM_READY = 'BaseFormHookReady'
+const HOOK_LOADING_RESULT = 'HookLoadingResult'
 
 const hookModelCache = new Map<DeclarationReflection, HookModel | null>()
 const formHookModelCache = new Map<DeclarationReflection, FormHookModel | null>()
 
 /**
  * Build (or return the cached) {@link HookModel} for a hook function. Returns
- * `null` when the function is not a recognizable hook (no ready branch). Throws
- * {@link HookModelError} when it is a hook but malformed (e.g. no props param).
+ * `null` when the function is not a recognizable hook (its return union has no
+ * `HookLoadingResult` branch). Throws {@link HookModelError} when it is a hook
+ * but cannot resolve its props, returns (ready interface), or `@example`.
  */
 export function getHookModel(hookFn: DeclarationReflection): HookModel | null {
   if (hookModelCache.has(hookFn)) return hookModelCache.get(hookFn)!
@@ -112,7 +117,8 @@ export function getHookModel(hookFn: DeclarationReflection): HookModel | null {
 /**
  * Build (or return the cached) {@link FormHookModel} for a hook function.
  * Returns `null` when the function is not a form hook. Throws
- * {@link HookModelError} when it is a form hook but malformed.
+ * {@link HookModelError} when it is a form hook but cannot resolve any required
+ * part — the common {@link HookModel} pillars plus its `fields`.
  */
 export function getFormHookModel(hookFn: DeclarationReflection): FormHookModel | null {
   if (formHookModelCache.has(hookFn)) return formHookModelCache.get(hookFn)!
@@ -210,19 +216,66 @@ export function findHookResultAlias(
   return null
 }
 
+/**
+ * Whether a return union includes the `HookLoadingResult` loading branch — the
+ * unambiguous, name-stable marker that a function is a documented hook (every
+ * SDK hook returns `HookLoadingResult | …Ready`). Used for recognition so that
+ * a hook with a *malformed* ready branch still fails loudly rather than being
+ * silently treated as a non-hook.
+ */
+function referencesHookLoadingResult(union: UnionType): boolean {
+  return union.types.some(t => t instanceof ReferenceType && t.name === HOOK_LOADING_RESULT)
+}
+
+/** Whether the hook function carries an `@example` block tag. */
+function hasExample(hookFn: DeclarationReflection): boolean {
+  const comment = hookFn.signatures?.[0]?.comment ?? hookFn.comment
+  return comment?.blockTags.some(tag => tag.tag === '@example') ?? false
+}
+
+/**
+ * Whether a type is an array whose element resolves to a declared reflection —
+ * i.e. a valid `Fields` array shape (`XxxFieldsGroup[]`). Callers pass either an
+ * inline array type or a type alias's declared type.
+ */
+function isResolvableArray(type: SomeType | undefined): boolean {
+  return (
+    type instanceof ArrayType &&
+    type.elementType instanceof ReferenceType &&
+    type.elementType.reflection instanceof DeclarationReflection
+  )
+}
+
 function extractHookModel(hookFn: DeclarationReflection): HookModel | null {
   const sig = hookFn.signatures?.[0]
   if (!sig) return null
 
-  const readyInterface = getHookReadyInterface(hookFn)
-  if (!readyInterface) return null
+  const union = asReturnUnion(sig.type)
+  if (!union || !referencesHookLoadingResult(union)) return null
 
-  // From here the function IS a hook — any missing part is a hard error.
+  // From here the function IS a hook — every pillar must resolve or the build
+  // hard-fails. (A malformed hook is a bug, not a silently-degraded page.)
+
+  // Returns: the non-loading branch must resolve to a ready-state interface.
+  const readyInterface = getHookReadyInterface(hookFn)
+  if (!readyInterface) {
+    throw new HookModelError(
+      hookFn.name,
+      'returns: could not resolve a ready-state interface from its return union',
+    )
+  }
+
+  // Props: a resolvable first parameter.
   const propParam = sig.parameters?.[0]
   if (!propParam) {
     throw new HookModelError(hookFn.name, 'has no props parameter')
   }
   const props = extractProps(hookFn.name, propParam.type)
+
+  // Example: a usage example for the page.
+  if (!hasExample(hookFn)) {
+    throw new HookModelError(hookFn.name, 'has no @example')
+  }
 
   return { hookFn, props, readyInterface }
 }
@@ -248,18 +301,34 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
   }
   const [fieldsMetadataType, formDataType, fieldsArg] = typeArgs
 
-  // Fields is a flat interface map for most hooks, but some expose an array of
-  // per-group bundles (e.g. StateTaxFieldsGroup[]) — a valid shape with no flat
-  // table. Only a reference that fails to resolve is an integrity error.
+  // Fields must resolve to one of two valid shapes, or the build hard-fails:
+  //  - a flat interface map (the common case) → drives the quick-reference table.
+  //  - an array of per-group bundles, inline (`StateTaxFieldsGroup[]`) or via a
+  //    named alias (`StateTaxFields = StateTaxFieldsGroup[]`) → no flat table.
+  //    fieldsInterface stays null so the array (or its alias) is documented in
+  //    its own right rather than inlined into the page.
   let fieldsInterface: DeclarationReflection | null = null
   if (fieldsArg instanceof ReferenceType) {
-    if (!(fieldsArg.reflection instanceof DeclarationReflection)) {
+    const refl = fieldsArg.reflection
+    if (!(refl instanceof DeclarationReflection)) {
       throw new HookModelError(
         hookFn.name,
         `Fields type argument references "${fieldsArg.name}" which did not resolve`,
       )
     }
-    fieldsInterface = fieldsArg.reflection
+    if (refl.kind === ReflectionKind.Interface) {
+      fieldsInterface = refl
+    } else if (!(refl.kind === ReflectionKind.TypeAlias && isResolvableArray(refl.type))) {
+      throw new HookModelError(
+        hookFn.name,
+        `Fields type argument "${fieldsArg.name}" is neither an interface nor an array of field groups`,
+      )
+    }
+  } else if (!isResolvableArray(fieldsArg)) {
+    throw new HookModelError(
+      hookFn.name,
+      `Fields type argument did not resolve to an interface or an array of field groups (got ${fieldsArg?.type ?? 'none'})`,
+    )
   }
 
   return { ...base, fieldsInterface, formDataType, fieldsMetadataType }

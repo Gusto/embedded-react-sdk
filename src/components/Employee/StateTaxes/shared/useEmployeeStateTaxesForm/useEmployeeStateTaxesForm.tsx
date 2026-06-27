@@ -62,7 +62,7 @@ export interface UseEmployeeStateTaxesFormProps {
 export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
   FieldsMetadata,
   EmployeeStateTaxesFormData,
-  StateTaxFieldsGroup[]
+  StateTaxFields
 > {
   /** Current per-state tax records returned by the server. */
   data: {
@@ -75,16 +75,14 @@ export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
     /** Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>
   }
-  /** Form internals plus the iterable per-state `Fields` array. */
-  form: BaseFormHookReady<
-    FieldsMetadata,
-    EmployeeStateTaxesFormData,
-    StateTaxFieldsGroup[]
-  >['form'] & {
-    /** Iterable, render-ready group + question entries with bound Field components. */
-    Fields: StateTaxFieldsGroup[]
-  }
 }
+
+/**
+ * Iterable, render-ready group + question entries with bound Field components.
+ *
+ * @public
+ */
+export type StateTaxFields = StateTaxFieldsGroup[]
 
 /**
  * Discriminated union returned by {@link useEmployeeStateTaxesForm}. Loading

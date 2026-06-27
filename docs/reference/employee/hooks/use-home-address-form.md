@@ -70,6 +70,43 @@ function HomeAddressEditor({ employeeId }: { employeeId: string }) {
 
 Form hook for creating or editing an employee's home address.
 
+## Example
+
+```tsx title="Example"
+import {
+  useHomeAddressForm,
+  SDKFormProvider,
+  type UseHomeAddressFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function HomeAddressPage({ employeeId }: { employeeId: string }) {
+  const homeAddress = useHomeAddressForm({ employeeId })
+
+  if (homeAddress.isLoading) return <div>Loading...</div>
+
+  return <HomeAddressReady homeAddress={homeAddress} />
+}
+
+function HomeAddressReady({ homeAddress }: { homeAddress: UseHomeAddressFormReady }) {
+  const { Fields } = homeAddress.form
+
+  return (
+    <SDKFormProvider formHookResult={homeAddress}>
+      <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
+        <Fields.Street1 label="Street address" />
+        <Fields.Street2 label="Apt, suite, etc. (optional)" />
+        <Fields.City label="City" />
+        <Fields.State label="State" />
+        <Fields.Zip label="ZIP code" />
+        <Fields.CourtesyWithholding label="Courtesy withholding" />
+        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+        <button type="submit" disabled={homeAddress.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Remarks
 
 When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;

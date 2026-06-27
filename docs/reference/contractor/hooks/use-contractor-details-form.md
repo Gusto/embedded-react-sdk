@@ -19,6 +19,52 @@ Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
 self-onboarding preference.
 
+## Example
+
+```tsx title="Example"
+import {
+  useContractorDetailsForm,
+  SDKFormProvider,
+  type UseContractorDetailsFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function ContractorDetailsPage({
+  companyId,
+  contractorId,
+}: {
+  companyId: string
+  contractorId: string
+}) {
+  const contractorDetails = useContractorDetailsForm({ companyId, contractorId })
+
+  if (contractorDetails.isLoading) return <div>Loading...</div>
+
+  return <ContractorDetailsReady contractorDetails={contractorDetails} />
+}
+
+function ContractorDetailsReady({
+  contractorDetails,
+}: {
+  contractorDetails: UseContractorDetailsFormReady
+}) {
+  const { Fields } = contractorDetails.form
+
+  return (
+    <SDKFormProvider formHookResult={contractorDetails}>
+      <form onSubmit={e => { e.preventDefault(); void contractorDetails.actions.onSubmit() }}>
+        <Fields.Type label="Contractor type" />
+        <Fields.WageType label="Wage type" />
+        {Fields.FirstName && <Fields.FirstName label="First name" />}
+        {Fields.LastName && <Fields.LastName label="Last name" />}
+        {Fields.BusinessName && <Fields.BusinessName label="Business name" />}
+        <Fields.StartDate label="Start date" />
+        <button type="submit" disabled={contractorDetails.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Remarks
 
 Returns a discriminated union: a loading variant while the contractor fetch

@@ -5,6 +5,7 @@ export type {
   UseEmployeeStateTaxesFormReady,
   EmployeeStateTaxesFieldsMetadata,
   EmployeeStateTaxesFormFields,
+  StateTaxFields,
 } from './useEmployeeStateTaxesForm'
 export {
   createEmployeeStateTaxesSchema,

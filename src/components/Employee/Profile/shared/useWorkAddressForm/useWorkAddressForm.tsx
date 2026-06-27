@@ -157,6 +157,37 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
  * @param props - See {@link UseWorkAddressFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseWorkAddressFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useWorkAddressForm,
+ *   SDKFormProvider,
+ *   type UseWorkAddressFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function WorkAddressPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+ *   const workAddress = useWorkAddressForm({ companyId, employeeId })
+ *
+ *   if (workAddress.isLoading) return <div>Loading...</div>
+ *
+ *   return <WorkAddressReady workAddress={workAddress} />
+ * }
+ *
+ * function WorkAddressReady({ workAddress }: { workAddress: UseWorkAddressFormReady }) {
+ *   const { Fields } = workAddress.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={workAddress}>
+ *       <form onSubmit={e => { e.preventDefault(); void workAddress.actions.onSubmit() }}>
+ *         <Fields.Location label="Work address" />
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *         <button type="submit" disabled={workAddress.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
  */
 export function useWorkAddressForm({
   companyId,

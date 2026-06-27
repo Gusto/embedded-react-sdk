@@ -17,6 +17,45 @@ custom_edit_url: null
 
 Form hook for editing a contractor's address.
 
+## Example
+
+```tsx title="Example"
+import {
+  useContractorAddressForm,
+  SDKFormProvider,
+  type UseContractorAddressFormReady,
+} from '@gusto/embedded-react-sdk'
+
+function ContractorAddressPage({ contractorId }: { contractorId: string }) {
+  const contractorAddress = useContractorAddressForm({ contractorId })
+
+  if (contractorAddress.isLoading) return <div>Loading...</div>
+
+  return <ContractorAddressReady contractorAddress={contractorAddress} />
+}
+
+function ContractorAddressReady({
+  contractorAddress,
+}: {
+  contractorAddress: UseContractorAddressFormReady
+}) {
+  const { Fields } = contractorAddress.form
+
+  return (
+    <SDKFormProvider formHookResult={contractorAddress}>
+      <form onSubmit={e => { e.preventDefault(); void contractorAddress.actions.onSubmit() }}>
+        <Fields.Street1 label="Street address" />
+        <Fields.Street2 label="Apt, suite, etc. (optional)" />
+        <Fields.City label="City" />
+        <Fields.State label="State" />
+        <Fields.Zip label="ZIP code" />
+        <button type="submit" disabled={contractorAddress.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
 ## Remarks
 
 A contractor always has exactly one address (created with the contractor),
