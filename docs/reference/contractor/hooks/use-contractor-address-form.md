@@ -103,9 +103,12 @@ Text input bound to the `city` field of [useContractorAddressForm](#usecontracto
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorAddressCityFieldProps`](#contractoraddresscityfieldprops) | [CityFieldProps](#contractoraddresscityfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -131,9 +134,14 @@ Select bound to the `state` field of [useContractorAddressForm](#usecontractorad
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorAddressStateFieldProps`](#contractoraddressstatefieldprops) | [StateFieldProps](#contractoraddressstatefieldprops) — accepts the standard hook field props plus `getOptionLabel` to localize state names. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -160,9 +168,12 @@ Text input bound to the `street1` field of [useContractorAddressForm](#usecontra
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorAddressStreet1FieldProps`](#contractoraddressstreet1fieldprops) | [Street1FieldProps](#contractoraddressstreet1fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -178,9 +189,12 @@ Text input bound to the `street2` field of [useContractorAddressForm](#usecontra
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorAddressStreet2FieldProps`](#contractoraddressstreet2fieldprops) | [Street2FieldProps](#contractoraddressstreet2fieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -196,9 +210,12 @@ Text input bound to the `zip` field of [useContractorAddressForm](#usecontractor
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorAddressZipFieldProps`](#contractoraddresszipfieldprops) | [ZipFieldProps](#contractoraddresszipfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 

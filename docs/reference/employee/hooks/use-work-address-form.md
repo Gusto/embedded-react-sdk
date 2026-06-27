@@ -157,9 +157,12 @@ Date picker bound to the `effectiveDate` field of [useWorkAddressForm](#useworka
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`EffectiveDateFieldProps`](#effectivedatefieldprops) | [EffectiveDateFieldProps](#effectivedatefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 #### Remarks
 
@@ -177,9 +180,14 @@ Select bound to the `locationUuid` field of [useWorkAddressForm](#useworkaddress
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`LocationFieldProps`](#locationfieldprops) | [LocationFieldProps](#locationfieldprops) — accepts the standard hook field props plus `getOptionLabel` to format location display names. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `Location`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 

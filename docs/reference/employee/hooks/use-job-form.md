@@ -158,9 +158,12 @@ Date picker bound to the `hireDate` field of [useJobForm](#usejobform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`HireDateFieldProps`](#hiredatefieldprops) | [HireDateFieldProps](#hiredatefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 #### Remarks
 
@@ -190,9 +193,12 @@ Text input bound to the `title` field of [useJobForm](#usejobform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`JobTitleFieldProps`](#jobtitlefieldprops) | [JobTitleFieldProps](#jobtitlefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -221,9 +227,14 @@ Select dropdown bound to the `stateWcClassCode` field of [useJobForm](#usejobfor
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops) | [StateWcClassCodeFieldProps](#statewcclasscodefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `WARiskClassCode`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -253,9 +264,13 @@ Radio group bound to the `stateWcCovered` field of [useJobForm](#usejobform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`StateWcCoveredFieldProps`](#statewccoveredfieldprops) | [StateWcCoveredFieldProps](#statewccoveredfieldprops) — accepts the standard hook field props (label, description, getOptionLabel, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -284,9 +299,12 @@ Checkbox bound to the `twoPercentShareholder` field of [useJobForm](#usejobform)
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops) | [TwoPercentShareholderFieldProps](#twopercentshareholderfieldprops) — accepts the standard hook field props (label, description, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 #### Remarks
 

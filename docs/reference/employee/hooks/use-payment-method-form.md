@@ -134,9 +134,13 @@ Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmetho
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`TypeFieldProps`](#typefieldprops) | See [TypeFieldProps](#typefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: [`PaymentMethodType`](#paymentmethodtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 

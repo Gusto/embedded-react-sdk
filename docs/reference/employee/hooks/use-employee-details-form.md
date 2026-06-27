@@ -169,9 +169,12 @@ Date picker bound to the `dateOfBirth` field of [useEmployeeDetailsForm](#useemp
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DateOfBirthFieldProps`](#dateofbirthfieldprops) | [DateOfBirthFieldProps](#dateofbirthfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 #### Remarks
 
@@ -198,9 +201,12 @@ Text input bound to the `email` field of [useEmployeeDetailsForm](#useemployeede
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`EmailFieldProps`](#emailfieldprops) | [EmailFieldProps](#emailfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmailValidation`](#emailvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -246,9 +252,12 @@ Text input bound to the `firstName` field of [useEmployeeDetailsForm](#useemploy
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`FirstNameFieldProps`](#firstnamefieldprops) | [FirstNameFieldProps](#firstnamefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`NameValidation`](#namevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -275,9 +284,12 @@ Text input bound to the `lastName` field of [useEmployeeDetailsForm](#useemploye
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`LastNameFieldProps`](#lastnamefieldprops) | [LastNameFieldProps](#lastnamefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`NameValidation`](#namevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -304,9 +316,12 @@ Text input bound to the `middleInitial` field of [useEmployeeDetailsForm](#useem
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`MiddleInitialFieldProps`](#middleinitialfieldprops) | [MiddleInitialFieldProps](#middleinitialfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -333,9 +348,12 @@ Switch bound to the `selfOnboarding` field of [useEmployeeDetailsForm](#useemplo
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`SelfOnboardingFieldProps`](#selfonboardingfieldprops) | [SelfOnboardingFieldProps](#selfonboardingfieldprops) — accepts the standard hook field props (label, description, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
 
 #### Remarks
 
@@ -367,9 +385,12 @@ Text input bound to the `ssn` field of [useEmployeeDetailsForm](#useemployeedeta
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`SsnFieldProps`](#ssnfieldprops) | [SsnFieldProps](#ssnfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 

@@ -168,9 +168,12 @@ Text input bound to the `caseNumber` field of [useChildSupportGarnishmentForm](#
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`CaseNumberFieldProps`](#casenumberfieldprops) | [CaseNumberFieldProps](#casenumberfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -198,9 +201,12 @@ Number input bound to the `amount` field of [useChildSupportGarnishmentForm](#us
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ChildSupportGarnishmentAmountFieldProps`](#childsupportgarnishmentamountfieldprops) | [AmountFieldProps](#childsupportgarnishmentamountfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -218,9 +224,14 @@ Select bound to the `state` field of [useChildSupportGarnishmentForm](#usechilds
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ChildSupportGarnishmentStateFieldProps`](#childsupportgarnishmentstatefieldprops) | [StateFieldProps](#childsupportgarnishmentstatefieldprops) — accepts the standard hook field props plus `getOptionLabel` for agency display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: [`StateFieldEntry`](#statefieldentry)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -238,9 +249,14 @@ Select bound to the `fipsCode` field of [useChildSupportGarnishmentForm](#usechi
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`FipsCodeFieldProps`](#fipscodefieldprops) | [FipsCodeFieldProps](#fipscodefieldprops) — accepts the standard hook field props plus `getOptionLabel` for county display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: [`CountyEntry`](#countyentry)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -270,9 +286,12 @@ Text input bound to the `orderNumber` field of [useChildSupportGarnishmentForm](
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`OrderNumberFieldProps`](#ordernumberfieldprops) | [OrderNumberFieldProps](#ordernumberfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -300,9 +319,14 @@ Select bound to the `paymentPeriod` field of [useChildSupportGarnishmentForm](#u
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`PaymentPeriodFieldProps`](#paymentperiodfieldprops) | [PaymentPeriodFieldProps](#paymentperiodfieldprops) — accepts the standard hook field props plus `getOptionLabel` for payment-period display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `PaymentPeriod`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -329,9 +353,12 @@ Number input bound to the `payPeriodMaximum` field of [useChildSupportGarnishmen
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops) | [PayPeriodMaximumFieldProps](#payperiodmaximumfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -373,9 +400,12 @@ Text input bound to the `remittanceNumber` field of [useChildSupportGarnishmentF
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`RemittanceNumberFieldProps`](#remittancenumberfieldprops) | [RemittanceNumberFieldProps](#remittancenumberfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 

@@ -137,9 +137,12 @@ Text input bound to the `businessName` field of [useContractorDetailsForm](#usec
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorBusinessNameFieldProps`](#contractorbusinessnamefieldprops) | [BusinessNameFieldProps](#contractorbusinessnamefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -166,9 +169,12 @@ Text input bound to the `ein` field of [useContractorDetailsForm](#usecontractor
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorEinFieldProps`](#contractoreinfieldprops) | [EinFieldProps](#contractoreinfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -197,9 +203,12 @@ Text input bound to the `email` field of [useContractorDetailsForm](#usecontract
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorEmailFieldProps`](#contractoremailfieldprops) | [EmailFieldProps](#contractoremailfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -227,9 +236,12 @@ Switch bound to the `fileNewHireReport` field of [useContractorDetailsForm](#use
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorFileNewHireReportFieldProps`](#contractorfilenewhirereportfieldprops) | [FileNewHireReportFieldProps](#contractorfilenewhirereportfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
 
 #### Remarks
 
@@ -257,9 +269,12 @@ Text input bound to the `firstName` field of [useContractorDetailsForm](#usecont
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorFirstNameFieldProps`](#contractorfirstnamefieldprops) | [FirstNameFieldProps](#contractorfirstnamefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -286,9 +301,12 @@ Number input bound to the `hourlyRate` field of [useContractorDetailsForm](#usec
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorHourlyRateFieldProps`](#contractorhourlyratefieldprops) | [HourlyRateFieldProps](#contractorhourlyratefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -315,9 +333,12 @@ Text input bound to the `lastName` field of [useContractorDetailsForm](#usecontr
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorLastNameFieldProps`](#contractorlastnamefieldprops) | [LastNameFieldProps](#contractorlastnamefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -344,9 +365,12 @@ Text input bound to the `middleInitial` field of [useContractorDetailsForm](#use
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorMiddleInitialFieldProps`](#contractormiddleinitialfieldprops) | [MiddleInitialFieldProps](#contractormiddleinitialfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -373,9 +397,12 @@ Switch bound to the `selfOnboarding` field of [useContractorDetailsForm](#usecon
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorSelfOnboardingFieldProps`](#contractorselfonboardingfieldprops) | [SelfOnboardingFieldProps](#contractorselfonboardingfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
 
 #### Remarks
 
@@ -405,9 +432,12 @@ Text input bound to the `ssn` field of [useContractorDetailsForm](#usecontractor
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorSsnFieldProps`](#contractorssnfieldprops) | [SsnFieldProps](#contractorssnfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -436,9 +466,12 @@ Date picker bound to the `startDate` field of [useContractorDetailsForm](#usecon
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorStartDateFieldProps`](#contractorstartdatefieldprops) | [StartDateFieldProps](#contractorstartdatefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 #### Remarks
 
@@ -465,9 +498,13 @@ Radio group bound to the `type` field of [useContractorDetailsForm](#usecontract
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorTypeFieldProps`](#contractortypefieldprops) | [TypeFieldProps](#contractortypefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -494,9 +531,13 @@ Radio group bound to the `wageType` field of [useContractorDetailsForm](#usecont
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorWageTypeFieldProps`](#contractorwagetypefieldprops) | [WageTypeFieldProps](#contractorwagetypefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -523,9 +564,14 @@ Select bound to the `workState` field of [useContractorDetailsForm](#usecontract
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ContractorWorkStateFieldProps`](#contractorworkstatefieldprops) | [WorkStateFieldProps](#contractorworkstatefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 

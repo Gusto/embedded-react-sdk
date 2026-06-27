@@ -146,9 +146,12 @@ Checkbox bound to the `confirmSignature` field of [useSignEmployeeForm](#usesign
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops) | [ConfirmSignatureFieldProps](#signemployeeformconfirmsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 #### Remarks
 
@@ -165,9 +168,12 @@ Text input bound to the `signature` field of [useSignEmployeeForm](#usesignemplo
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`SignEmployeeFormSignatureFieldProps`](#signemployeeformsignaturefieldprops) | [SignatureFieldProps](#signemployeeformsignaturefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -184,9 +190,13 @@ Radio group bound to the `usedPreparer` field of [useSignEmployeeForm](#usesigne
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`UsedPreparerFieldProps`](#usedpreparerfieldprops) | [UsedPreparerFieldProps](#usedpreparerfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: `unknown`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 

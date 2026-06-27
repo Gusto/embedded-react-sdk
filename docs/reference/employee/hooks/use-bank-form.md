@@ -129,9 +129,12 @@ Text input bound to the `accountNumber` field of [useBankForm](#usebankform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`AccountNumberFieldProps`](#accountnumberfieldprops) | See [AccountNumberFieldProps](#accountnumberfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`AccountNumberValidation`](#accountnumbervalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -168,9 +171,13 @@ Radio group bound to the `accountType` field of [useBankForm](#usebankform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`AccountTypeFieldProps`](#accounttypefieldprops) | See [AccountTypeFieldProps](#accounttypefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: [`AccountType`](#accounttype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -208,9 +215,12 @@ Text input bound to the `name` field of [useBankForm](#usebankform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`NameFieldProps`](#namefieldprops) | See [NameFieldProps](#namefieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -237,9 +247,12 @@ Text input bound to the `routingNumber` field of [useBankForm](#usebankform).
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`RoutingNumberFieldProps`](#routingnumberfieldprops) | See [RoutingNumberFieldProps](#routingnumberfieldprops). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`RoutingNumberValidation`](#routingnumbervalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 

@@ -142,9 +142,12 @@ Currency-formatted number input bound to the `deductions` field of [useFederalTa
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DeductionsFieldProps`](#deductionsfieldprops) | [DeductionsFieldProps](#deductionsfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -172,9 +175,12 @@ Currency-formatted number input bound to the `dependentsAmount` field of [useFed
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DependentsAmountFieldProps`](#dependentsamountfieldprops) | [DependentsAmountFieldProps](#dependentsamountfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -202,9 +208,12 @@ Currency-formatted number input bound to the `extraWithholding` field of [useFed
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`ExtraWithholdingFieldProps`](#extrawithholdingfieldprops) | [ExtraWithholdingFieldProps](#extrawithholdingfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -232,9 +241,14 @@ Select bound to the `filingStatus` field of [useFederalTaxesForm](#usefederaltax
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`FilingStatusFieldProps`](#filingstatusfieldprops) | [FilingStatusFieldProps](#filingstatusfieldprops) — accepts the standard hook field props plus `getOptionLabel` for filing-status display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: [`FilingStatusValue`](#filingstatusvalue)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -273,9 +287,12 @@ Currency-formatted number input bound to the `otherIncome` field of [useFederalT
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`OtherIncomeFieldProps`](#otherincomefieldprops) | [OtherIncomeFieldProps](#otherincomefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -303,9 +320,13 @@ Radio group bound to the `twoJobs` field of [useFederalTaxesForm](#usefederaltax
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`TwoJobsFieldProps`](#twojobsfieldprops) | [TwoJobsFieldProps](#twojobsfieldprops) — accepts the standard hook field props plus `getOptionLabel` for option display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 

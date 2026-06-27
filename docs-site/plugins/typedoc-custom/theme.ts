@@ -1,9 +1,11 @@
 import { posix } from 'path'
 import {
+  ArrayType,
   Comment,
   type CommentTag,
   type Context,
   DeclarationReflection,
+  IntersectionType,
   IntrinsicType,
   ParameterReflection,
   ReferenceType,
@@ -11,6 +13,7 @@ import {
   ReflectionType,
   type SignatureReflection,
   type SomeType,
+  TupleType,
   UnionType,
 } from 'typedoc'
 import { MarkdownPageEvent, MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown'
@@ -307,6 +310,95 @@ function isInertType(type: SomeType | undefined): boolean {
   return type instanceof IntrinsicType && (type.name === 'undefined' || type.name === 'unknown')
 }
 
+/** True when `type`, anywhere in its tree, references one of the named type parameters. */
+function referencesTypeParam(type: SomeType | undefined, names: Set<string>): boolean {
+  if (type instanceof ReferenceType) {
+    if (names.has(type.name)) return true
+    return (type.typeArguments ?? []).some(t => referencesTypeParam(t, names))
+  }
+  if (type instanceof UnionType || type instanceof IntersectionType) {
+    return type.types.some(t => referencesTypeParam(t, names))
+  }
+  if (type instanceof ArrayType) return referencesTypeParam(type.elementType, names)
+  if (type instanceof TupleType) {
+    return type.elements.some(t => referencesTypeParam(t, names))
+  }
+  if (type instanceof ReflectionType) {
+    return (type.declaration.signatures ?? []).some(
+      sig =>
+        referencesTypeParam(sig.type, names) ||
+        (sig.parameters ?? []).some(p => referencesTypeParam(p.type, names)),
+    )
+  }
+  return false
+}
+
+/**
+ * Replace type-parameter references inside `type` with the field's actual type
+ * arguments, mutating in place and pushing an undo onto `restores` for each
+ * swap so the caller can revert after rendering. A trailing `never` argument
+ * (an unfilled defaulted parameter, e.g. `ValidationMessages<Code, never>`) is
+ * dropped so it renders as `ValidationMessages<Code>`.
+ */
+function substituteTypeParams(
+  type: SomeType | undefined,
+  subMap: Map<string, SomeType>,
+  restores: Array<() => void>,
+): void {
+  const swap = <T extends { type?: SomeType }>(holder: T): void => {
+    const current = holder.type
+    const replacement = current instanceof ReferenceType ? subMap.get(current.name) : undefined
+    if (replacement) {
+      holder.type = replacement
+      restores.push(() => {
+        holder.type = current
+      })
+    } else {
+      substituteTypeParams(current, subMap, restores)
+    }
+  }
+
+  if (type instanceof ReferenceType && type.typeArguments) {
+    const original = type.typeArguments
+    let next = original.map(arg =>
+      arg instanceof ReferenceType ? (subMap.get(arg.name) ?? arg) : arg,
+    )
+    next.forEach(arg => {
+      if (!(arg instanceof ReferenceType) || !subMap.has(arg.name)) {
+        substituteTypeParams(arg, subMap, restores)
+      }
+    })
+    while (next.length > 0 && next[next.length - 1] instanceof IntrinsicType && (next[next.length - 1] as IntrinsicType).name === 'never') {
+      next = next.slice(0, -1)
+    }
+    if (next.length !== original.length || next.some((arg, i) => arg !== original[i])) {
+      type.typeArguments = next
+      restores.push(() => {
+        type.typeArguments = original
+      })
+    }
+    return
+  }
+  if (type instanceof UnionType || type instanceof IntersectionType) {
+    type.types.forEach(t => substituteTypeParams(t, subMap, restores))
+    return
+  }
+  if (type instanceof ArrayType) {
+    substituteTypeParams(type.elementType, subMap, restores)
+    return
+  }
+  if (type instanceof TupleType) {
+    type.elements.forEach(t => substituteTypeParams(t, subMap, restores))
+    return
+  }
+  if (type instanceof ReflectionType) {
+    for (const sig of type.declaration.signatures ?? []) {
+      swap(sig)
+      for (const param of sig.parameters ?? []) swap(param)
+    }
+  }
+}
+
 /**
  * Markdown link to the props interface's base type, without type arguments —
  * e.g. `[BaseComponentInterface](…)`. Falls back to the bare name when the base
@@ -410,6 +502,87 @@ function renderHookPropsTable(context: SDKThemeContext, props: HookProps): strin
  * Props type stays co-located with the component that uses it. Anything that
  * isn't this shape falls back to the default parameters table.
  */
+/**
+ * Inline + expand a field component's props in place of the bare `props:
+ * XxxFieldProps` parameter row. Field props are type aliases of the shape
+ * `HookFieldProps<SomeHookFieldProps<ValidationCode, …>>` = `Omit<…, 'name'>`,
+ * so the underlying field-props interface (e.g. `NumberInputHookFieldProps`)
+ * holds the real properties. Field-specific and required props get a table row;
+ * props identical on every field collapse to a footer (mirroring how
+ * `BaseComponentInterface` props are summarized), and the parent-provided
+ * `formHookResult` / hook-bound `name` are called out. `validationMessages` is
+ * promoted with the field's own error codes substituted for the generic.
+ * Returns null when `propsRef` is not a field-props alias.
+ */
+function renderFieldPropsTable(
+  context: SDKThemeContext,
+  propsRef: DeclarationReflection,
+): string | null {
+  if (propsRef.kind !== ReflectionKind.TypeAlias || !(propsRef.type instanceof ReferenceType)) {
+    return null
+  }
+  const hookFieldRef = propsRef.type
+  if (hookFieldRef.name !== 'HookFieldProps') return null
+  const underlyingRef = hookFieldRef.typeArguments?.[0]
+  if (!(underlyingRef instanceof ReferenceType)) return null
+  const underlying = underlyingRef.reflection
+  if (!(underlying instanceof DeclarationReflection) || underlying.kind !== ReflectionKind.Interface) {
+    return null
+  }
+
+  // Map each of the underlying interface's type parameters to the field's
+  // actual type argument (by position), falling back to the parameter default.
+  // e.g. SelectHookFieldProps<TErrorCode, TEntry> on a field typed
+  // <DeductionFormRequiredValidation, GarnishmentType>.
+  const typeParams = underlying.typeParameters ?? []
+  const subMap = new Map<string, SomeType>()
+  typeParams.forEach((param, index) => {
+    const actual = underlyingRef.typeArguments?.[index] ?? param.default
+    if (actual) subMap.set(param.name, actual)
+  })
+  const paramNames = new Set(typeParams.map(p => p.name))
+
+  // HookFieldProps<T> = Omit<T, 'name'> — the hook binds `name` internally.
+  const props = (underlying.children ?? []).filter(c => c.isDeclaration() && c.name !== 'name')
+
+  // A prop earns a row when it is required (e.g. `label`) or when its type
+  // references a type parameter (e.g. `validationMessages`, `getOptionLabel`),
+  // so the field's real codes/entry type can be substituted. The rest are
+  // forwarded unchanged from the base field-props interface and are summarized
+  // — each is documented by following the base-interface link.
+  const isPromoted = (c: DeclarationReflection) =>
+    !c.flags.isOptional || referencesTypeParam(c.type, paramNames)
+  const mainProps = props.filter(isPromoted)
+  const forwarded = props.filter(c => !isPromoted(c))
+
+  const parts: string[] = []
+
+  if (mainProps.length > 0) {
+    // Substitute type parameters with the field's actual type arguments. Child
+    // reflections are shared across every field of this component type, so the
+    // swaps are applied only for the duration of this synchronous render.
+    const restores: Array<() => void> = []
+    for (const c of mainProps) substituteTypeParams(c.type, subMap, restores)
+    parts.push(
+      context.partials.propertiesTable(mainProps, {
+        isEventProps: false,
+        kind: ReflectionKind.Interface,
+      }),
+    )
+    for (const restore of restores) restore()
+  }
+
+  if (forwarded.length > 0) {
+    const names = forwarded.map(c => `\`${c.name}\``).join(', ')
+    const baseLink = context.router.hasUrl(underlying)
+      ? `[${underlying.name}](${context.urlTo(underlying)})`
+      : underlying.name
+    parts.push(`_Also accepts ${names} from ${baseLink}._`)
+  }
+
+  return parts.join('\n\n')
+}
+
 function renderFunctionPropsTable(
   context: SDKThemeContext,
   params: ParameterReflection[],
@@ -436,6 +609,17 @@ function renderFunctionPropsTable(
   }
 
   const propsRef = param.type.reflection
+
+  // Field component: props are a `HookFieldProps<…>` type alias, not an
+  // interface. Inline the underlying field-props interface instead. The
+  // separate `#### XxxFieldProps` alias section (moved here by
+  // nestFieldTypeAliasesUnderComponents) keeps the canonical type + anchor, so
+  // this table omits the anchor to avoid a duplicate.
+  if (propsRef instanceof DeclarationReflection) {
+    const fieldTable = renderFieldPropsTable(context, propsRef)
+    if (fieldTable) return fieldTable
+  }
+
   // The props interface is normally a sibling of the component (shared
   // namespace parent). On a standalone flow page the router re-parents the
   // props onto the flow itself so cross-references resolve to a cross-page

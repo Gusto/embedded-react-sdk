@@ -165,9 +165,12 @@ Number input bound to the `annualMaximum` field of [useDeductionForm](#usededuct
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`AnnualMaximumFieldProps`](#annualmaximumfieldprops) | [AnnualMaximumFieldProps](#annualmaximumfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -195,9 +198,13 @@ Radio group bound to the `deductAsPercentage` field of [useDeductionForm](#usede
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DeductAsPercentageFieldProps`](#deductaspercentagefieldprops) | [DeductAsPercentageFieldProps](#deductaspercentagefieldprops) — accepts the standard hook field props plus `getOptionLabel` for boolean display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -225,9 +232,12 @@ Number input bound to the `amount` field of [useDeductionForm](#usedeductionform
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DeductionAmountFieldProps`](#deductionamountfieldprops) | [AmountFieldProps](#deductionamountfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -255,9 +265,12 @@ Text input bound to the `description` field of [useDeductionForm](#usedeductionf
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`DescriptionFieldProps`](#descriptionfieldprops) | [DescriptionFieldProps](#descriptionfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
@@ -283,9 +296,14 @@ Select bound to the `garnishmentType` field of [useDeductionForm](#usedeductionf
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`GarnishmentTypeFieldProps`](#garnishmenttypefieldprops) | [GarnishmentTypeFieldProps](#garnishmenttypefieldprops) — accepts the standard hook field props plus `getOptionLabel` for garnishment-type display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `GarnishmentType`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -315,9 +333,13 @@ Radio group bound to the `recurring` field of [useDeductionForm](#usedeductionfo
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`RecurringFieldProps`](#recurringfieldprops) | [RecurringFieldProps](#recurringfieldprops) — accepts the standard hook field props plus `getOptionLabel` for boolean display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 #### Remarks
 
@@ -346,9 +368,12 @@ Number input bound to the `totalAmount` field of [useDeductionForm](#usedeductio
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`TotalAmountFieldProps`](#totalamountfieldprops) | [TotalAmountFieldProps](#totalamountfieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 

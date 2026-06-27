@@ -178,9 +178,12 @@ Checkbox bound to the `adjustForMinimumWage` field of [useCompensationForm](#use
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`AdjustForMinimumWageFieldProps`](#adjustforminimumwagefieldprops) | [AdjustForMinimumWageFieldProps](#adjustforminimumwagefieldprops) — accepts the standard hook field props (label, description, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 #### Remarks
 
@@ -199,9 +202,12 @@ Date picker bound to the `effectiveDate` field of [useCompensationForm](#usecomp
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`CompensationEffectiveDateFieldProps`](#compensationeffectivedatefieldprops) | [EffectiveDateFieldProps](#compensationeffectivedatefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationEffectiveDateValidation`](#compensationeffectivedatevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 #### Remarks
 
@@ -252,9 +258,14 @@ Select bound to the `flsaStatus` field of [useCompensationForm](#usecompensation
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`FlsaStatusFieldProps`](#flsastatusfieldprops) | [FlsaStatusFieldProps](#flsastatusfieldprops) — accepts the standard hook field props plus `getOptionLabel` for FLSA status display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `FlsaStatusType`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -275,9 +286,14 @@ Select bound to the `minimumWageId` field of [useCompensationForm](#usecompensat
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`MinimumWageIdFieldProps`](#minimumwageidfieldprops) | [MinimumWageIdFieldProps](#minimumwageidfieldprops) — accepts the standard hook field props plus `getOptionLabel` for minimum-wage display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `MinimumWage`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -296,9 +312,14 @@ Select bound to the `paymentUnit` field of [useCompensationForm](#usecompensatio
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`PaymentUnitFieldProps`](#paymentunitfieldprops) | [PaymentUnitFieldProps](#paymentunitfieldprops) — accepts the standard hook field props plus `getOptionLabel` for payment-unit display. |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `getOptionLabel?` | (`entry`: `PaymentUnit`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 #### Remarks
 
@@ -319,9 +340,12 @@ Currency-formatted number input bound to the `rate` field of [useCompensationFor
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`RateFieldProps`](#ratefieldprops) | [RateFieldProps](#ratefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`RateValidation`](#ratevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 #### Remarks
 
@@ -342,9 +366,12 @@ Text input bound to the `title` field of [useCompensationForm](#usecompensationf
 
 #### Parameters
 
-| Parameter | Type | Description |
+| Property | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`CompensationTitleFieldProps`](#compensationtitlefieldprops) | [TitleFieldProps](#compensationtitlefieldprops) — accepts the standard hook field props (label, description, validationMessages, FieldComponent override). |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 #### Remarks
 
