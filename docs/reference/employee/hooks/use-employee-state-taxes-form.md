@@ -143,7 +143,183 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 
 > **StateTaxFields** = [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
 
-Iterable, render-ready group + question entries with bound Field components.
+Iterable, render-ready group + question entries with bound Field components,
+grouped by state.
+
+#### Example
+
+The value exposed on `form.Fields`: one entry per state, each carrying its
+questions as pre-bound `Field` components you render directly.
+
+```tsx
+function StateTaxQuestions({ fields }: { fields: StateTaxFields }) {
+  return fields.map(group => (
+    <section key={group.state}>
+      <h3>{group.state}</h3>
+      {group.questions.map(question => (
+        <question.Field key={question.questionId} />
+      ))}
+    </section>
+  ))
+}
+```
+
+<a id="statetaxfieldsgroup"></a>
+
+### StateTaxFieldsGroup
+
+Group of state-tax questions for a single jurisdiction returned by
+[useStateFields](#usestatefields).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
+| `state` | `string` | Two-letter state code. |
+
+<a id="statetaxquestionfieldentry"></a>
+
+### StateTaxQuestionFieldEntry
+
+> **StateTaxQuestionFieldEntry** = [`SelectStateTaxQuestion`](#selectstatetaxquestion) \| [`RadioStateTaxQuestion`](#radiostatetaxquestion) \| [`TextStateTaxQuestion`](#textstatetaxquestion) \| [`NumberStateTaxQuestion`](#numberstatetaxquestion) \| [`CurrencyStateTaxQuestion`](#currencystatetaxquestion) \| [`DateStateTaxQuestion`](#datestatetaxquestion)
+
+One question entry within a [StateTaxFieldsGroup](#statetaxfieldsgroup), discriminated by
+`type` to identify which input variant the question uses. Each entry carries
+a `Field` component pre-bound to its API-supplied metadata so callers can
+render the input directly.
+
+<a id="currencystatetaxquestion"></a>
+
+### CurrencyStateTaxQuestion
+
+A state-tax question that renders as a currency-formatted number input. Includes
+read-only question metadata from the API and a bound currency field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`CurrencyStateTaxFieldProps`](#currencystatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"currency"` | Discriminant identifying the currency variant. |
+
+<a id="datestatetaxquestion"></a>
+
+### DateStateTaxQuestion
+
+A state-tax question that renders as a date picker. Includes read-only
+question metadata from the API and a bound date field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`DateStateTaxFieldProps`](#datestatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"date"` | Discriminant identifying the date variant. |
+
+<a id="numberstatetaxquestion"></a>
+
+### NumberStateTaxQuestion
+
+A state-tax question that renders as a decimal number input. Includes
+read-only question metadata from the API and a bound number field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`NumberStateTaxFieldProps`](#numberstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"number"` | Discriminant identifying the number variant. |
+
+<a id="radiostatetaxquestion"></a>
+
+### RadioStateTaxQuestion
+
+A state-tax question that renders as a radio group. Includes read-only
+question metadata from the API and a bound radio field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`RadioStateTaxFieldProps`](#radiostatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"radio"` | Discriminant identifying the radio variant. |
+
+<a id="selectstatetaxquestion"></a>
+
+### SelectStateTaxQuestion
+
+A state-tax question that renders as a select (dropdown). Includes read-only
+question metadata from the API and a bound select field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`SelectStateTaxFieldProps`](#selectstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"select"` | Discriminant identifying the select variant. |
+
+<a id="textstatetaxquestion"></a>
+
+### TextStateTaxQuestion
+
+A state-tax question that renders as a single-line text input. Includes
+read-only question metadata from the API and a bound text field, exposed as
+`<question.Field />`.
+
+#### Extends
+
+- [`SharedQuestionMetadata`](#sharedquestionmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `Field` | `ComponentType`\<[`TextStateTaxFieldProps`](#textstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
+| `type` | `"text"` | Discriminant identifying the text variant. |
 
 ## Utility Hooks
 
@@ -174,15 +350,24 @@ An array of [StateTaxFieldsGroup](#statetaxfieldsgroup) — one entry per state,
 
 ### CurrencyStateTaxFieldProps
 
-> **CurrencyStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a currency-formatted number input.
 
-Props for a `Field` rendered as a currency-formatted number input.
+Override the user-visible text for this field — its label, description, and
+validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `BaseStateTaxFieldProps`
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ***
 
@@ -190,15 +375,24 @@ Props for a `Field` rendered as a currency-formatted number input.
 
 ### DateStateTaxFieldProps
 
-> **DateStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a date picker.
 
-Props for a `Field` rendered as a date picker.
+Override the user-visible text for this field — its label, description, and
+validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `BaseStateTaxFieldProps`
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ***
 
@@ -288,15 +482,24 @@ submit.
 
 ### NumberStateTaxFieldProps
 
-> **NumberStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a decimal number input.
 
-Props for a `Field` rendered as a decimal number input.
+Override the user-visible text for this field — its label, description, and
+validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `BaseStateTaxFieldProps`
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ***
 
@@ -304,15 +507,24 @@ Props for a `Field` rendered as a decimal number input.
 
 ### RadioStateTaxFieldProps
 
-> **RadioStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a radio group.
 
-Props for a `Field` rendered as a radio group.
+Override the user-visible text for this field — its label, description, and
+validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `BaseStateTaxFieldProps`
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ***
 
@@ -320,45 +532,51 @@ Props for a `Field` rendered as a radio group.
 
 ### SelectStateTaxFieldProps
 
-> **SelectStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a select (dropdown).
 
-Props for a `Field` rendered as a select (dropdown).
+Override the user-visible text for this field — its label, description,
+placeholder, and validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
-| `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
-
-***
-
-<a id="statetaxfieldsgroup"></a>
-
-### StateTaxFieldsGroup
-
-Group of state-tax questions for a single jurisdiction returned by
-[useStateFields](#usestatefields).
+- `BaseStateTaxFieldProps`
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
-| `state` | `string` | Two-letter state code. |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ***
 
-<a id="statetaxquestionfieldentry"></a>
+<a id="sharedquestionmetadata"></a>
 
-### StateTaxQuestionFieldEntry
+### SharedQuestionMetadata
 
-> **StateTaxQuestionFieldEntry** = `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata` \| `object` & `SharedQuestionMetadata`
+Metadata shared by every [StateTaxQuestionFieldEntry](#statetaxquestionfieldentry) variant,
+independent of which input the question renders.
 
-One question entry within a [StateTaxFieldsGroup](#statetaxfieldsgroup), discriminated by
-`type` to identify which input variant the question uses. Each entry carries
-a `Field` component pre-bound to its API-supplied metadata so callers can
-render the input directly.
+#### Extended by
+
+- [`SelectStateTaxQuestion`](#selectstatetaxquestion)
+- [`RadioStateTaxQuestion`](#radiostatetaxquestion)
+- [`TextStateTaxQuestion`](#textstatetaxquestion)
+- [`NumberStateTaxQuestion`](#numberstatetaxquestion)
+- [`CurrencyStateTaxQuestion`](#currencystatetaxquestion)
+- [`DateStateTaxQuestion`](#datestatetaxquestion)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
+| `label` | `string` | API-supplied label; default text for the rendered Field. |
+| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 
 ***
 
@@ -387,16 +605,25 @@ shape depends on the API-provided question variant.
 
 ### TextStateTaxFieldProps
 
-> **TextStateTaxFieldProps** = `BaseStateTaxFieldProps` & `object`
+Props for an API-supplied state-tax question rendered as a single-line text input.
 
-Props for a `Field` rendered as a single-line text input.
+Override the user-visible text for this field — its label, description,
+placeholder, and validation messages.
 
-#### Type Declaration
+#### Extends
 
-| Name | Type | Description |
+- `BaseStateTaxFieldProps`
+
+#### Properties
+
+| Property | Type | Description |
 | ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replace the underlying SDK TextInput primitive with a component of your own. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
+| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
 
 ## Advanced
 

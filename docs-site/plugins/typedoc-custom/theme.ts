@@ -21,6 +21,8 @@ import {
   componentPropsInterfaces,
   getDomainPath,
   getSidebarPosition,
+  groupWithTarget,
+  hasGroup,
   isComponent,
   isDomainHub,
   isHookPage,
@@ -1151,16 +1153,65 @@ function injectFieldsSummary(rendered: string, summary: string): string {
 }
 
 /**
+ * Order field-section members alphabetically by name, except that a member
+ * carrying `@groupWith {@link X}` is pulled out of the alphabetical run and
+ * rendered immediately after `X` (chained — a follower can itself be a target).
+ * `pinnedFirst`, when given, always leads the list regardless of name and may
+ * itself be a `@groupWith` target (e.g. the fields source-of-truth alias).
+ *
+ * A `@groupWith` pointing at a name that isn't in this set degrades to a plain
+ * alphabetical anchor; a cycle can't drop members — the trailing safety pass
+ * emits anything left over.
+ */
+function orderByGroupWith(
+  members: DeclarationReflection[],
+  pinnedFirst?: DeclarationReflection,
+): DeclarationReflection[] {
+  const present = new Set([...(pinnedFirst ? [pinnedFirst.name] : []), ...members.map(m => m.name)])
+  const followersByTarget = new Map<string, DeclarationReflection[]>()
+  const anchors: DeclarationReflection[] = []
+  for (const member of members) {
+    const target = groupWithTarget(member)
+    if (target && target !== member.name && present.has(target)) {
+      const list = followersByTarget.get(target) ?? []
+      list.push(member)
+      followersByTarget.set(target, list)
+    } else {
+      anchors.push(member)
+    }
+  }
+  const byName2 = (a: DeclarationReflection, b: DeclarationReflection): number =>
+    a.name.localeCompare(b.name)
+  anchors.sort(byName2)
+  for (const list of followersByTarget.values()) list.sort(byName2)
+
+  const emitted = new Set<DeclarationReflection>()
+  const ordered: DeclarationReflection[] = []
+  const emit = (member: DeclarationReflection): void => {
+    if (emitted.has(member)) return
+    emitted.add(member)
+    ordered.push(member)
+    for (const follower of followersByTarget.get(member.name) ?? []) emit(follower)
+  }
+  if (pinnedFirst) emit(pinnedFirst)
+  for (const anchor of anchors) emit(anchor)
+  for (const member of members) emit(member) // safety: emit any left by a cycle
+  return pinnedFirst ? ordered.filter(m => m !== pinnedFirst) : ordered
+}
+
+/**
  * Build a `## Fields` section for a form hook whose `Fields` is an array alias
  * (`StateTaxFields = StateTaxFieldsGroup[]`) rather than a flat interface map.
  * There's no per-key quick-reference table to build, so the alias is documented
  * in its own right under the same `## Fields` heading the flat case uses — at
- * H3, keeping its symbol name and anchor so cross-references stay valid. The
- * caller must only invoke this when `fieldsArrayAlias` is set; a missing alias
- * is a hard {@link HookModelError}, never a silently field-less page.
+ * H3, keeping its symbol name and anchor so cross-references stay valid — with
+ * its `@group Fields` companion types following it in {@link orderByGroupWith}
+ * order. The caller must only invoke this when `fieldsArrayAlias` is set; a
+ * missing alias is a hard {@link HookModelError}, never a silently field-less page.
  */
 function buildFieldsArraySection(
   context: SDKThemeContext,
+  hookNs: DeclarationReflection,
   formModel: FormHookModel,
 ): string {
   const alias = formModel.fieldsArrayAlias
@@ -1170,8 +1221,22 @@ function buildFieldsArraySection(
       'buildFieldsArraySection called without an array-shaped fields alias',
     )
   }
-  const body = context.partials.memberContainer(alias, { headingLevel: 3 })
-  return `## Fields\n\n${body.trimEnd()}`
+  const companions = (hookNs.children ?? [])
+    .filter((c): c is DeclarationReflection => c instanceof DeclarationReflection)
+    .filter(c => hasGroup(c, 'Fields'))
+  const ordered = [alias, ...orderByGroupWith(companions, alias)]
+  // `@groupWith` is a layout directive consumed by orderByGroupWith above, not
+  // documentation — drop it so it doesn't render as a "Group With" block on the
+  // member (mirrors how `@components` is stripped after it's consumed).
+  for (const member of ordered) {
+    if (member.comment) {
+      member.comment.blockTags = member.comment.blockTags.filter(t => t.tag !== '@groupWith')
+    }
+  }
+  const body = ordered
+    .map(m => context.partials.memberContainer(m, { headingLevel: 3 }).trimEnd())
+    .join('\n\n')
+  return `## Fields\n\n${body}`
 }
 
 /**
@@ -1658,7 +1723,10 @@ export class SDKThemeContext extends MarkdownThemeContext {
               }
               rendered = injectFieldsSummary(rendered, fieldsTable)
             } else if (formModel.fieldsArrayAlias) {
-              rendered = injectAfterReturns(rendered, buildFieldsArraySection(this, formModel))
+              rendered = injectAfterReturns(
+                rendered,
+                buildFieldsArraySection(this, page.model, formModel),
+              )
             } else {
               throw new HookModelError(
                 formModel.hookFn.name,

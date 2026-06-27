@@ -64,6 +64,40 @@ export function isHookSourceFile(reflection: Reflection): boolean {
 }
 
 /**
+ * Whether a reflection carries an `@group <name>` block tag with the given
+ * name. Used to route companion types into a section by their authored group
+ * (e.g. the per-variant field types tagged `@group Fields`).
+ */
+export function hasGroup(reflection: Reflection, group: string): boolean {
+  return (
+    (reflection as DeclarationReflection).comment?.blockTags.some(
+      t => t.tag === '@group' && Comment.combineDisplayParts(t.content).trim() === group,
+    ) ?? false
+  )
+}
+
+/**
+ * The type name a reflection's `@groupWith {@link X}` tag points at — the
+ * sibling it should render immediately after — or `null` when the tag is
+ * absent. Prefers the resolved `{@link}` target's name; falls back to the raw
+ * link text (stripping any `#member` or `| display` suffix).
+ */
+export function groupWithTarget(reflection: Reflection): string | null {
+  const tag = (reflection as DeclarationReflection).comment?.blockTags.find(
+    t => t.tag === '@groupWith',
+  )
+  if (!tag) return null
+  for (const part of tag.content) {
+    if (part.kind === 'inline-tag' && part.tag === '@link') {
+      if (part.target instanceof DeclarationReflection) return part.target.name
+      return part.text.trim().split(/[|#]/)[0]!.trim() || null
+    }
+  }
+  const text = Comment.combineDisplayParts(tag.content).trim()
+  return text || null
+}
+
+/**
  * Return the standalone page key for a project-level reflection, based on its
  * source file path matching a key in STANDALONE_PAGES. Returns null when no
  * key matches.

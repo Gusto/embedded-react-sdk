@@ -15,7 +15,8 @@ import {
   type EmployeeStateTaxesFormOutputs,
   type EmployeeStateTaxesMetadataConfig,
 } from './employeeStateTaxesSchema'
-import { createStateFields, type StateTaxFieldsGroup } from './fields'
+import type { StateTaxFields } from './fields'
+import { createStateFields } from './fields'
 import { getQuestionVariant } from './fieldMapping'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
@@ -76,13 +77,6 @@ export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
     onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>
   }
 }
-
-/**
- * Iterable, render-ready group + question entries with bound Field components.
- *
- * @public
- */
-export type StateTaxFields = StateTaxFieldsGroup[]
 
 /**
  * Discriminated union returned by {@link useEmployeeStateTaxesForm}. Loading

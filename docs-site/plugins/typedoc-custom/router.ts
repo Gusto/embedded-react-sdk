@@ -26,6 +26,7 @@ import {
 import {
   componentPropsInterfaces,
   domainFromSources,
+  hasGroup,
   hookDirFromSources,
   isHookSourceFile,
   NAMESPACE_PATHS,
@@ -75,6 +76,7 @@ const SYNTHETIC_GROUP_ORDER = [
   'Data Hooks',
   'Utility Hooks',
   'Hooks',
+  'Fields',
   'Components',
   'Events',
   'Functions',
@@ -445,6 +447,12 @@ export class SDKRouter extends MemberRouter {
           const formModel = getFormHookModel(member)
           if (formModel?.fieldsInterface) inlined.add(formModel.fieldsInterface)
           if (formModel?.fieldsArrayAlias) inlined.add(formModel.fieldsArrayAlias)
+        }
+        // Companion types tagged `@group Fields` (e.g. the per-variant
+        // `StateTaxQuestion*Field` aliases) render inside the page's `## Fields`
+        // section after the fields source-of-truth, not as their own group.
+        for (const member of memberDecls) {
+          if (hasGroup(member, 'Fields')) inlined.add(member)
         }
         if (inlined.size > 0) {
           for (const group of hookNs.groups) {
