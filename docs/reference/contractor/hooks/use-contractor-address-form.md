@@ -89,11 +89,11 @@ Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `City` | — | — |
-| `State` | — | — |
-| `Street1` | — | — |
-| `Street2` | — | — |
-| `Zip` | — | — |
+| [`City`](#contractoraddresscityfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
+| [`State`](#contractoraddressstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the standard two-letter US state abbreviations. Required. |
+| [`Street1`](#contractoraddressstreet1field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
+| [`Street2`](#contractoraddressstreet2field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
+| [`Zip`](#contractoraddresszipfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
 
 <a id="contractoraddresscityfield"></a>
 

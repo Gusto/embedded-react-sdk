@@ -149,7 +149,7 @@ Pre-bound field components exposed on `useDeductionForm().form.Fields`.
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `Amount` | — | — |
+| [`Amount`](#deductionamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Interpreted as a currency amount when `Fields.DeductAsPercentage` is set to a fixed amount, or as a percentage of paycheck when it's set to percentage. |
 | [`AnnualMaximum`](#annualmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | A zero value means "no cap" — the hook drops it on the wire. Always null-check before rendering. |
 | [`DeductAsPercentage`](#deductaspercentagefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Always rendered. Toggles how `Fields.Amount` is interpreted — as a fixed currency amount when `false`, or as a percentage of paycheck when `true`. |
 | [`Description`](#descriptionfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always rendered. |

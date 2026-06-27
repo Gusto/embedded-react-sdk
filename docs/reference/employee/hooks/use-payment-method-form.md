@@ -124,7 +124,7 @@ Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `fo
 
 | Field Key | Component Type | Notes |
 | --------- | -------------- | ----- |
-| `Type` | — | — |
+| [`Type`](#paymentmethodtypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Options are `Direct Deposit` and `Check`; defaults to the employee's existing payment method type. Supply `getOptionLabel` to translate the option labels. |
 
 <a id="paymentmethodtypefield"></a>
 

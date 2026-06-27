@@ -11,6 +11,7 @@ import {
   ReflectionType,
   type SignatureReflection,
   type SomeType,
+  UnionType,
 } from 'typedoc'
 import { MarkdownPageEvent, MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown'
 import {
@@ -742,6 +743,35 @@ function addExampleTitles(rendered: string): string {
 }
 
 /**
+ * The call signature carried by a `Fields` interface property type. With
+ * `expandParameters` on, `typeof XxxField` is expanded to its call signature
+ * `(props: XxxFieldProps) => Element` (a {@link ReflectionType}); a
+ * conditionally-exposed field is a {@link UnionType} of that with `undefined`.
+ */
+function fieldCallSignature(type: SomeType | undefined): SignatureReflection | undefined {
+  if (type instanceof ReflectionType) return type.declaration.signatures?.[0]
+  if (type instanceof UnionType) {
+    for (const member of type.types) {
+      const sig = fieldCallSignature(member)
+      if (sig) return sig
+    }
+  }
+  return undefined
+}
+
+/**
+ * Reflection id of a field component's props parameter. A component and the
+ * `Fields` property that exposes it both reference the same `XxxFieldProps`
+ * type, so this id pairs key↔component by identity — no reliance on the public
+ * export name matching `<FieldKey>Field` (it doesn't when an export is aliased,
+ * e.g. `AmountField` → `DeductionAmountField`).
+ */
+function fieldPropsId(sig: SignatureReflection | undefined): number | undefined {
+  const paramType = sig?.parameters?.[0]?.type
+  return paramType instanceof ReferenceType ? paramType.reflection?.id : undefined
+}
+
+/**
  * Auto-generate a quick-reference fields table from the hook model's Fields
  * interface. Each row shows the field key, the component type extracted from
  * the field component's props type alias, and notes from the field
@@ -755,23 +785,23 @@ function buildFieldsTable(
   const fieldsInterface = formModel.fieldsInterface
   if (!fieldsInterface) return null
 
-  // Get field keys from the Fields interface children
-  const fieldKeys = (fieldsInterface.children ?? [])
-    .filter(c => c.isDeclaration())
-    .map(c => c.name)
-  if (fieldKeys.length === 0) return null
+  const fieldChildren = (fieldsInterface.children ?? []).filter(c => c.isDeclaration())
+  if (fieldChildren.length === 0) return null
 
-  // Build a map from field key (without "Field" suffix) to field component
+  // Pair each exposed field with its component by props-type identity.
   const fieldsGroup = hookNs.groups?.find(g => g.title === 'Components')
   const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
-  const componentByKey = new Map<string, DeclarationReflection>()
+  const componentByPropsId = new Map<number, DeclarationReflection>()
   for (const comp of fieldComponents) {
-    componentByKey.set(comp.name.replace(/Field$/, ''), comp)
+    const propsId = fieldPropsId(comp.signatures?.[0])
+    if (propsId !== undefined) componentByPropsId.set(propsId, comp)
   }
 
   const rows: string[] = []
-  for (const fieldKey of fieldKeys) {
-    const fieldComp = componentByKey.get(fieldKey)
+  for (const child of fieldChildren) {
+    const fieldKey = child.name
+    const propsId = fieldPropsId(fieldCallSignature(child.type))
+    const fieldComp = propsId !== undefined ? componentByPropsId.get(propsId) : undefined
 
     // Column 1: Field Key — link to the field component's anchor below
     const fieldKeyUrl = fieldComp && context.router.hasUrl(fieldComp) ? context.urlTo(fieldComp) : null
