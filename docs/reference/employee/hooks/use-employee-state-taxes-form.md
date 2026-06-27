@@ -164,6 +164,8 @@ function StateTaxQuestions({ fields }: { fields: StateTaxFields }) {
 }
 ```
 
+***
+
 <a id="statetaxfieldsgroup"></a>
 
 ### StateTaxFieldsGroup
@@ -178,6 +180,8 @@ Group of state-tax questions for a single jurisdiction returned by
 | `questions` | [`StateTaxQuestionFieldEntry`](#statetaxquestionfieldentry)[] | Ordered list of question entries for this state, post admin-only filtering. |
 | `state` | `string` | Two-letter state code. |
 
+***
+
 <a id="statetaxquestionfieldentry"></a>
 
 ### StateTaxQuestionFieldEntry
@@ -189,6 +193,8 @@ One question entry within a [StateTaxFieldsGroup](#statetaxfieldsgroup), discrim
 a `Field` component pre-bound to its API-supplied metadata so callers can
 render the input directly.
 
+***
+
 <a id="currencystatetaxquestion"></a>
 
 ### CurrencyStateTaxQuestion
@@ -197,19 +203,16 @@ A state-tax question that renders as a currency-formatted number input. Includes
 read-only question metadata from the API and a bound currency field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`CurrencyStateTaxFieldProps`](#currencystatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"currency"` | Discriminant identifying the currency variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
+
+***
 
 <a id="datestatetaxquestion"></a>
 
@@ -219,19 +222,16 @@ A state-tax question that renders as a date picker. Includes read-only
 question metadata from the API and a bound date field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`DateStateTaxFieldProps`](#datestatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"date"` | Discriminant identifying the date variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
+
+***
 
 <a id="numberstatetaxquestion"></a>
 
@@ -241,19 +241,16 @@ A state-tax question that renders as a decimal number input. Includes
 read-only question metadata from the API and a bound number field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`NumberStateTaxFieldProps`](#numberstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"number"` | Discriminant identifying the number variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
+
+***
 
 <a id="radiostatetaxquestion"></a>
 
@@ -263,19 +260,16 @@ A state-tax question that renders as a radio group. Includes read-only
 question metadata from the API and a bound radio field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`RadioStateTaxFieldProps`](#radiostatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"radio"` | Discriminant identifying the radio variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
+
+***
 
 <a id="selectstatetaxquestion"></a>
 
@@ -285,19 +279,16 @@ A state-tax question that renders as a select (dropdown). Includes read-only
 question metadata from the API and a bound select field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`SelectStateTaxFieldProps`](#selectstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"select"` | Discriminant identifying the select variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
+
+***
 
 <a id="textstatetaxquestion"></a>
 
@@ -307,19 +298,14 @@ A state-tax question that renders as a single-line text input. Includes
 read-only question metadata from the API and a bound text field, exposed as
 `<question.Field />`.
 
-#### Extends
-
-- [`SharedQuestionMetadata`](#sharedquestionmetadata)
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `description` | `string` \| `null` | API-supplied description (raw HTML, sanitized internally before render). |
 | `Field` | `ComponentType`\<[`TextStateTaxFieldProps`](#textstatetaxfieldprops)\> | Field component pre-bound to this question's API-supplied metadata. |
-| `label` | `string` | API-supplied label; default text for the rendered Field. |
-| `questionId` | `string` | Stable identifier for this question (camelCase form of the API key). |
 | `type` | `"text"` | Discriminant identifying the text variant. |
+
+_Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
 
 ## Utility Hooks
 

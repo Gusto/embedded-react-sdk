@@ -1200,6 +1200,46 @@ function orderByGroupWith(
 }
 
 /**
+ * Render a Fields-section interface that extends a base (e.g. each
+ * `*StateTaxQuestion` extends {@link SharedQuestionMetadata}) with the common
+ * props treatment: drop the `#### Extends` block, table only the interface's own
+ * props (the `type`/`Field` unique to each variant), and summarize every
+ * inherited prop in an "Also includes … from Base" footer. Returns `null` when
+ * the member has no inherited props, so the caller falls back to the default
+ * `memberContainer` rendering.
+ */
+function renderFieldsMemberWithInheritance(
+  context: SDKThemeContext,
+  refl: DeclarationReflection,
+): string | null {
+  if (refl.kind !== ReflectionKind.Interface) return null
+  const declared = (refl.children ?? []).filter(c => c.isDeclaration())
+  const inherited = declared.filter(c => c.inheritedFrom)
+  if (inherited.length === 0) return null
+  const own = declared.filter(c => !c.inheritedFrom)
+
+  const parts: string[] = []
+  if (context.router.hasUrl(refl) && context.options.getValue('useHTMLAnchors')) {
+    parts.push(`<a id="${context.router.getAnchor(refl)}"></a>`)
+  }
+  parts.push(`### ${refl.name}`)
+  if (refl.comment) {
+    const commentMd = context.partials.comment(refl.comment, { showSummary: true, showTags: false })
+    if (commentMd.trim()) parts.push(commentMd)
+  }
+  if (own.length > 0) {
+    parts.push('#### Properties')
+    parts.push(
+      context.partials.propertiesTable(own, { isEventProps: false, kind: ReflectionKind.Interface }),
+    )
+  }
+  const names = inherited.map(c => `\`${c.name}\``).join(', ')
+  const base = baseInterfaceLink(context, refl)
+  parts.push(base ? `_Also includes ${names} from ${base}._` : `_Also includes ${names}._`)
+  return parts.join('\n\n')
+}
+
+/**
  * Build a `## Fields` section for a form hook whose `Fields` is an array alias
  * (`StateTaxFields = StateTaxFieldsGroup[]`) rather than a flat interface map.
  * There's no per-key quick-reference table to build, so the alias is documented
@@ -1233,9 +1273,16 @@ function buildFieldsArraySection(
       member.comment.blockTags = member.comment.blockTags.filter(t => t.tag !== '@groupWith')
     }
   }
+  // Separate entries with the same `***` divider the standard `members` partial
+  // inserts between sibling members (memberContainer alone doesn't add it).
   const body = ordered
-    .map(m => context.partials.memberContainer(m, { headingLevel: 3 }).trimEnd())
-    .join('\n\n')
+    .map(m =>
+      (
+        renderFieldsMemberWithInheritance(context, m) ??
+        context.partials.memberContainer(m, { headingLevel: 3 })
+      ).trimEnd(),
+    )
+    .join('\n\n***\n\n')
   return `## Fields\n\n${body}`
 }
 
