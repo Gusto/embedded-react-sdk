@@ -40,12 +40,24 @@ export interface HookModel {
  */
 export interface FormHookModel extends HookModel {
   /**
-   * The `Fields` component map interface (3rd type arg of `BaseFormHookReady`),
-   * or `null` when `Fields` is not a flat interface map — e.g. an array of
-   * per-group field bundles (`StateTaxFieldsGroup[]`). A `null` here means no
-   * flat fields quick-reference table is generated for the hook.
+   * The `Fields` component map interface (3rd type arg of `BaseFormHookReady`)
+   * when `Fields` is a flat interface map — the common case, driving the
+   * quick-reference table. `null` when `Fields` is instead an array of per-group
+   * bundles, in which case {@link FormHookModel.fieldsArrayAlias} carries the
+   * type. **Exactly one** of `fieldsInterface` / `fieldsArrayAlias` is non-null
+   * for a valid form hook — a form hook whose `Fields` resolves to neither a
+   * renderable interface nor a named array alias is a hard {@link HookModelError},
+   * never a silently field-less page.
    */
   fieldsInterface: DeclarationReflection | null
+  /**
+   * The named type alias backing an array-shaped `Fields`
+   * (`StateTaxFields = StateTaxFieldsGroup[]`), documented under its own
+   * `## Fields` section. `null` when `Fields` is a flat interface map (see
+   * {@link FormHookModel.fieldsInterface}). Exactly one of the two is non-null;
+   * see the invariant noted there.
+   */
+  fieldsArrayAlias: DeclarationReflection | null
   /** The form data type (2nd type arg of `BaseFormHookReady`); interface or alias. */
   formDataType: SomeType
   /** The fields-metadata type (1st type arg of `BaseFormHookReady`). */
@@ -301,13 +313,17 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
   }
   const [fieldsMetadataType, formDataType, fieldsArg] = typeArgs
 
-  // Fields must resolve to one of two valid shapes, or the build hard-fails:
+  // Fields must resolve to one of two *renderable* shapes, or the build
+  // hard-fails — a form hook always gets a `## Fields` section, never a silent
+  // skip:
   //  - a flat interface map (the common case) → drives the quick-reference table.
-  //  - an array of per-group bundles, inline (`StateTaxFieldsGroup[]`) or via a
-  //    named alias (`StateTaxFields = StateTaxFieldsGroup[]`) → no flat table.
-  //    fieldsInterface stays null so the array (or its alias) is documented in
-  //    its own right rather than inlined into the page.
+  //  - a named type alias for an array of per-group bundles
+  //    (`StateTaxFields = StateTaxFieldsGroup[]`) → documented under its own
+  //    `## Fields` heading. The alias name is required: an inline, unnamed
+  //    `StateTaxFieldsGroup[]` has nothing to title the section with, so it too
+  //    is a hard error.
   let fieldsInterface: DeclarationReflection | null = null
+  let fieldsArrayAlias: DeclarationReflection | null = null
   if (fieldsArg instanceof ReferenceType) {
     const refl = fieldsArg.reflection
     if (!(refl instanceof DeclarationReflection)) {
@@ -318,20 +334,24 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
     }
     if (refl.kind === ReflectionKind.Interface) {
       fieldsInterface = refl
-    } else if (!(refl.kind === ReflectionKind.TypeAlias && isResolvableArray(refl.type))) {
+    } else if (refl.kind === ReflectionKind.TypeAlias && isResolvableArray(refl.type)) {
+      fieldsArrayAlias = refl
+    } else {
       throw new HookModelError(
         hookFn.name,
-        `Fields type argument "${fieldsArg.name}" is neither an interface nor an array of field groups`,
+        `Fields type argument "${fieldsArg.name}" is neither an interface nor a named array-of-field-groups alias`,
       )
     }
-  } else if (!isResolvableArray(fieldsArg)) {
+  } else {
     throw new HookModelError(
       hookFn.name,
-      `Fields type argument did not resolve to an interface or an array of field groups (got ${fieldsArg?.type ?? 'none'})`,
+      isResolvableArray(fieldsArg)
+        ? 'Fields type argument is an inline array; it must be a named type alias (e.g. `StateTaxFields = StateTaxFieldsGroup[]`) so a Fields section can be rendered'
+        : `Fields type argument did not resolve to an interface or a named array-of-field-groups alias (got ${fieldsArg?.type ?? 'none'})`,
     )
   }
 
-  return { ...base, fieldsInterface, formDataType, fieldsMetadataType }
+  return { ...base, fieldsInterface, fieldsArrayAlias, formDataType, fieldsMetadataType }
 }
 
 function extractProps(hookName: string, propType: SomeType | undefined): HookProps {

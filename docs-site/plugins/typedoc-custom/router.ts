@@ -416,8 +416,9 @@ export class SDKRouter extends MemberRouter {
         // the type graph: every hook's Ready interface and its `UseXxxResult`
         // return-union alias are inlined in the Returns section, and its props
         // are inlined under Parameters; a form hook additionally inlines its
-        // Fields (as the quick-reference table). FormData and derived-alias props
-        // stay visible as their own sections.
+        // Fields — the flat interface as the quick-reference table, or the
+        // array alias (`StateTaxFields`) under its own `## Fields` section.
+        // FormData and derived-alias props stay visible as their own sections.
         const inlined = new Set<DeclarationReflection>()
         const memberDecls = hookMembers.filter(
           (m): m is DeclarationReflection => m instanceof DeclarationReflection,
@@ -443,6 +444,7 @@ export class SDKRouter extends MemberRouter {
           }
           const formModel = getFormHookModel(member)
           if (formModel?.fieldsInterface) inlined.add(formModel.fieldsInterface)
+          if (formModel?.fieldsArrayAlias) inlined.add(formModel.fieldsArrayAlias)
         }
         if (inlined.size > 0) {
           for (const group of hookNs.groups) {

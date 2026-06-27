@@ -135,6 +135,16 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
+## Fields
+
+<a id="statetaxfields"></a>
+
+### StateTaxFields
+
+> **StateTaxFields** = [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
+
+Iterable, render-ready group + question entries with bound Field components.
+
 ## Utility Hooks
 
 <a id="usestatefields"></a>
@@ -320,16 +330,6 @@ Props for a `Field` rendered as a select (dropdown).
 | ------ | ------ | ------ |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replace the underlying SDK Select primitive with a component of your own. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
-
-***
-
-<a id="statetaxfields"></a>
-
-### StateTaxFields
-
-> **StateTaxFields** = [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
-
-Iterable, render-ready group + question entries with bound Field components.
 
 ***
 

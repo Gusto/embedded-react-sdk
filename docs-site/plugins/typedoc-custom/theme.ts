@@ -41,6 +41,7 @@ import {
   formHookModelForPage,
   getHookModel,
   getHookReadyInterface,
+  HookModelError,
   type FormHookModel,
   type HookProps,
 } from './hook-model.ts'
@@ -1150,6 +1151,50 @@ function injectFieldsSummary(rendered: string, summary: string): string {
 }
 
 /**
+ * Build a `## Fields` section for a form hook whose `Fields` is an array alias
+ * (`StateTaxFields = StateTaxFieldsGroup[]`) rather than a flat interface map.
+ * There's no per-key quick-reference table to build, so the alias is documented
+ * in its own right under the same `## Fields` heading the flat case uses — at
+ * H3, keeping its symbol name and anchor so cross-references stay valid. The
+ * caller must only invoke this when `fieldsArrayAlias` is set; a missing alias
+ * is a hard {@link HookModelError}, never a silently field-less page.
+ */
+function buildFieldsArraySection(
+  context: SDKThemeContext,
+  formModel: FormHookModel,
+): string {
+  const alias = formModel.fieldsArrayAlias
+  if (!alias) {
+    throw new HookModelError(
+      formModel.hookFn.name,
+      'buildFieldsArraySection called without an array-shaped fields alias',
+    )
+  }
+  const body = context.partials.memberContainer(alias, { headingLevel: 3 })
+  return `## Fields\n\n${body.trimEnd()}`
+}
+
+/**
+ * Inject a section immediately after the `## Returns` section (before the next
+ * `##` heading). Used for the array-fields `## Fields` section, which has no
+ * `## Components` section to anchor against. Falls back to appending when there
+ * is no Returns section.
+ */
+function injectAfterReturns(rendered: string, section: string): string {
+  const lines = rendered.split('\n')
+  const returnsIndex = lines.findIndex(l => /^##\s+Returns\s*$/.test(l))
+  if (returnsIndex === -1) return `${rendered.trimEnd()}\n\n${section}\n`
+  let nextSection = lines.length
+  for (let i = returnsIndex + 1; i < lines.length; i++) {
+    if (/^##\s/.test(lines[i]!)) {
+      nextSection = i
+      break
+    }
+  }
+  return [...lines.slice(0, nextSection), section, '', ...lines.slice(nextSection)].join('\n')
+}
+
+/**
  * Names of the `*FieldProps` type aliases that are a flat field component's
  * props parameter — e.g. `CaseNumberFieldProps`. These are fully covered by the
  * component's expanded Parameters table, so {@link nestFieldTypeAliasesUnderComponents}
@@ -1601,8 +1646,25 @@ export class SDKThemeContext extends MarkdownThemeContext {
           rendered = moveExampleToTop(rendered)
           rendered = reorderHookSections(rendered)
           if (formModel) {
-            const fieldsTable = buildFieldsTable(this, page.model, formModel)
-            if (fieldsTable) rendered = injectFieldsSummary(rendered, fieldsTable)
+            // A form hook always gets a `## Fields` section — if neither shape
+            // renders, that's a hard error, never a silently field-less page.
+            if (formModel.fieldsInterface) {
+              const fieldsTable = buildFieldsTable(this, page.model, formModel)
+              if (!fieldsTable) {
+                throw new HookModelError(
+                  formModel.hookFn.name,
+                  `Fields interface "${formModel.fieldsInterface.name}" produced no documentable fields`,
+                )
+              }
+              rendered = injectFieldsSummary(rendered, fieldsTable)
+            } else if (formModel.fieldsArrayAlias) {
+              rendered = injectAfterReturns(rendered, buildFieldsArraySection(this, formModel))
+            } else {
+              throw new HookModelError(
+                formModel.hookFn.name,
+                'form hook resolved no Fields interface or array alias to render',
+              )
+            }
           }
           rendered = removeComponentsHeader(rendered)
           rendered = dropFieldPropsAliases(rendered, fieldComponentPropsAliasNames(page.model))
