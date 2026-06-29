@@ -126,86 +126,248 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 ## Fields
 
 ### SignEmployeeFormFieldComponents
+
 <a id="signemployeeformfieldcomponents"></a>
 
 Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`ConfirmSignature`](#confirmsignaturefield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | Captures the employee's electronic-signature consent; must be checked to submit. |
-| [`Signature`](#signaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The employee types their full legal name; required. |
-| `Preparer1` | — | — |
-| `Preparer2` | — | — |
-| `Preparer3` | — | — |
-| `Preparer4` | — | — |
-| [`UsedPreparer`](#usedpreparerfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) \| `undefined` | Selecting `'yes'` automatically reveals the first preparer field group; switching back to `'no'` removes all preparer sections. |
-
-<a id="confirmsignaturefield"></a>
-
-### ConfirmSignatureField
-
-Checkbox bound to the `confirmSignature` field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Parameters
-
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
-
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.ConfirmSignature`. Captures the
-employee's electronic-signature consent; must be checked to submit.
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)\> | Checkbox for the employee's electronic-signature consent; always present. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signemployeeformsignaturefieldprops)\> | Text input for the employee's typed signature; always present. |
+| `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
+| `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
+| `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
+| `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
+| `UsedPreparer` | `ComponentType`\<[`UsedPreparerFieldProps`](#usedpreparerfieldprops)\> \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
 ***
 
-<a id="signaturefield"></a>
+### ConfirmSignature
 
-### SignatureField
+Checkbox for the employee's electronic-signature consent; always present.
 
-Text input bound to the `signature` field of [useSignEmployeeForm](#usesignemployeeform).
+```tsx
+<form.Fields.ConfirmSignature
+  label="Confirm signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="signemployeeformconfirmsignaturefieldprops"></a>
+
+#### SignEmployeeFormConfirmSignatureFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmSignature` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Signature`. The employee types
-their full legal name; required.
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 ***
 
-<a id="usedpreparerfield"></a>
+### Preparer1
 
-### UsedPreparerField
+First preparer field group; defined only for I-9 forms when `preparers.count >= 1`.
 
-Radio group bound to the `usedPreparer` field of [useSignEmployeeForm](#usesignemployeeform).
+```tsx
+{form.Fields.Preparer1 && (
+  <form.Fields.Preparer1.City
+    label="City"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer2
+
+Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`.
+
+```tsx
+{form.Fields.Preparer2 && (
+  <form.Fields.Preparer2.City
+    label="City"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer3
+
+Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`.
+
+```tsx
+{form.Fields.Preparer3 && (
+  <form.Fields.Preparer3.City
+    label="City"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Preparer4
+
+Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`.
+
+```tsx
+{form.Fields.Preparer4 && (
+  <form.Fields.Preparer4.City
+    label="City"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
+
+***
+
+### Signature
+
+Text input for the employee's typed signature; always present.
+
+```tsx
+<form.Fields.Signature
+  label="Signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="signemployeeformsignaturefieldprops"></a>
+
+#### SignEmployeeFormSignatureFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### UsedPreparer
+
+Radio group asking whether a preparer/translator assisted; defined only for I-9 forms.
+
+```tsx
+{form.Fields.UsedPreparer && (
+  <form.Fields.UsedPreparer
+    label="Used preparer"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="usedpreparerfieldprops"></a>
+
+#### UsedPreparerFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `unknown`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
-#### Remarks
+***
 
-Available on the hook result as `form.Fields.UsedPreparer` only when the
-form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
-automatically reveals the first preparer field group; switching back to
-`'no'` removes all preparer sections.
+### PreparerFieldGroup
+
+<a id="preparerfieldgroup"></a>
+
+Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
+
+| Field | Component |
+| ------ | ------ |
+| `City` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `ConfirmSignature` | `ComponentType`\<[`PreparerCheckboxFieldProps`](#preparercheckboxfieldprops)\> |
+| `FirstName` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `LastName` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Signature` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `State` | `ComponentType`\<[`PreparerSelectFieldProps`](#preparerselectfieldprops)\> |
+| `Street1` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Street2` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+| `Zip` | `ComponentType`\<[`PreparerTextFieldProps`](#preparertextfieldprops)\> |
+
+<a id="preparertextfieldprops"></a>
+
+#### PreparerTextFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesignemployeeform) (name, address, signature).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+<a id="preparercheckboxfieldprops"></a>
+
+#### PreparerCheckboxFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
+
+Props accepted by the confirmation checkbox preparer field of [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+
+<a id="preparerselectfieldprops"></a>
+
+#### PreparerSelectFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
+
+Props accepted by the state-select preparer field of [useSignEmployeeForm](#usesignemployeeform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ## Validations
 
@@ -273,46 +435,6 @@ iterating every field that belongs to a single preparer.
 
 ***
 
-<a id="preparercheckboxfieldprops"></a>
-
-### PreparerCheckboxFieldProps
-
-> **PreparerCheckboxFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by the confirmation checkbox preparer field of [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="preparerfieldgroup"></a>
-
-### PreparerFieldGroup
-
-> **PreparerFieldGroup** = `object`
-
-Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
-
-#### Remarks
-
-Each preparer (1–4) exposes the same nine sub-fields covering name,
-address, signature, and consent. Render the sub-fields directly on the
-group, e.g. `<Fields.Preparer1.FirstName />`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `City` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's city. |
-| `ConfirmSignature` | (`props`: [`PreparerCheckboxFieldProps`](#preparercheckboxfieldprops)) => `JSX.Element` | Preparer's electronic-signature consent checkbox. |
-| `FirstName` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's first name. |
-| `LastName` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's last name. |
-| `Signature` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's typed signature. |
-| `State` | (`props`: [`PreparerSelectFieldProps`](#preparerselectfieldprops)) => `JSX.Element` | Preparer's state. |
-| `Street1` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's street address line 1. |
-| `Street2` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's street address line 2. |
-| `Zip` | (`props`: [`PreparerTextFieldProps`](#preparertextfieldprops)) => `JSX.Element` | Preparer's ZIP code. |
-
-***
-
 <a id="preparerfieldsuffix"></a>
 
 ### PreparerFieldSuffix
@@ -331,26 +453,6 @@ Suffix segment of a preparer field name — the part that follows
 > **PreparerIndex** = `1` \| `2` \| `3` \| `4`
 
 One-based preparer index used to reference preparer field groups (1–4).
-
-***
-
-<a id="preparerselectfieldprops"></a>
-
-### PreparerSelectFieldProps
-
-> **PreparerSelectFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation), `string`\>\>
-
-Props accepted by the state-select preparer field of [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="preparertextfieldprops"></a>
-
-### PreparerTextFieldProps
-
-> **PreparerTextFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesignemployeeform) (name, address, signature).
 
 ***
 

@@ -13,7 +13,7 @@ custom_edit_url: null
 
 <a id="usesplitpaymentsform"></a>
 
-> **useSplitPaymentsForm**(`props`: [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+> **useSplitPaymentsForm**(`props`: [`UseSplitPaymentsFormProps`](#usesplitpaymentsformprops)): [`UseSplitPaymentsFormResult`](#usesplitpaymentsformresult)
 
 Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
 
@@ -93,7 +93,7 @@ Props for [useSplitPaymentsForm](#usesplitpaymentsform).
 
 ## Returns
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)
+[`UseSplitPaymentsFormResult`](#usesplitpaymentsformresult)
 
 A loading-state result while the payment method and bank accounts are loading, or a [UseSplitPaymentsFormReady](#usesplitpaymentsformready) once ready.
 
@@ -136,6 +136,105 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.mode` | `"update"` | Always `'update'` — the hook always edits an existing payment method. |
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
+
+## Fields
+
+### SplitPaymentsFormFields
+
+<a id="splitpaymentsformfields"></a>
+
+Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `SplitBy` | `ComponentType`\<[`SplitByFieldProps`](#splitbyfieldprops)\> | Radio group bound to `splitBy`; selects Percentage or Amount split mode. |
+| `splits` | [`SplitFieldEntry`](#splitfieldentry)[] | One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount. |
+
+***
+
+### SplitBy
+
+Radio group bound to `splitBy`; selects Percentage or Amount split mode.
+
+```tsx
+<form.Fields.SplitBy
+  label="Split by"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="splitbyfieldprops"></a>
+
+#### SplitByFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
+
+Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`SplitByValue`](#splitbyvalue)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+***
+
+### splits
+
+One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount.
+
+```tsx
+{form.Fields.splits.map(entry => (
+  <entry.Field
+    key={entry.uuid}
+    label={entry.name ?? '…'}
+    validationMessages={{
+      REQUIRED: '…',
+      INVALID_AMOUNT: '…',
+      INVALID_PERCENTAGE: '…',
+    }}
+  />
+))}
+```
+
+#### SplitFieldEntry
+
+<a id="splitfieldentry"></a>
+
+Single per-account entry surfaced on `form.Fields.splits`. Each entry
+carries identifying metadata for the underlying bank account plus the bound
+Field component for its split amount.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Field` | `ComponentType`\<[`SplitFieldProps`](#splitfieldprops)\> | Bound Field component for this split's amount input. |
+| `hiddenAccountNumber` | `string` \| `null` | Last-four masking string for the bank account number, when available. |
+| `name` | `string` \| `null` | Display name of the bank account, when available. |
+| `uuid` | `string` | Bank account uuid that this split targets. |
+
+#### SplitFieldProps
+
+<a id="splitfieldprops"></a>
+
+Props accepted by a bound split-amount Field exposed on
+`form.Fields.splits[i].Field`. The Field is pre-bound to its split; it
+formats values as currency in Amount mode and as a percentage in
+Percentage mode. The remainder split is auto-disabled and treated as not
+required by the hook; the rest are required.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Label shown above the input. |
+| `description?` | `ReactNode` | Optional descriptive text rendered below the label. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Override the rendered number input component. |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
+| `max?` | `string` \| `number` | Forwarded to the underlying number input. |
+| `min?` | `string` \| `number` | Forwarded to the underlying number input. |
+| `placeholder?` | `string` | Forwarded to the underlying number input. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
 
 ## Validations
 
@@ -194,7 +293,6 @@ schema.
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
 
 ## Utility Types
-
 <a id="split_by_values"></a>
 
 ### SPLIT\_BY\_VALUES
@@ -206,16 +304,6 @@ amount per account.
 
 ***
 
-<a id="splitbyfieldprops"></a>
-
-### SplitByFieldProps
-
-> **SplitByFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SplitPaymentsFormRequiredValidation`](#splitpaymentsformrequiredvalidation), [`SplitByValue`](#splitbyvalue)\>\>
-
-Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitBy` component.
-
-***
-
 <a id="splitbyvalue"></a>
 
 ### SplitByValue
@@ -223,50 +311,6 @@ Props accepted by [useSplitPaymentsForm](#usesplitpaymentsform)'s `Fields.SplitB
 > **SplitByValue** = *typeof* [`SPLIT_BY_VALUES`](#split_by_values)\[`number`\]
 
 Union of split-by mode values that the form accepts.
-
-***
-
-<a id="splitfieldentry"></a>
-
-### SplitFieldEntry
-
-Single per-account entry surfaced on `form.Fields.splits`. Each entry
-carries identifying metadata for the underlying bank account plus the bound
-Field component for its split amount.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Field` | `ComponentType`\<[`SplitFieldProps`](#splitfieldprops)\> | Bound Field component for this split's amount input. |
-| `hiddenAccountNumber` | `string` \| `null` | Last-four masking string for the bank account number, when available. |
-| `name` | `string` \| `null` | Display name of the bank account, when available. |
-| `uuid` | `string` | Bank account uuid that this split targets. |
-
-***
-
-<a id="splitfieldprops"></a>
-
-### SplitFieldProps
-
-Props accepted by a bound split-amount Field exposed on
-`form.Fields.splits[i].Field`. The Field is pre-bound to its split; it
-formats values as currency in Amount mode and as a percentage in
-Percentage mode. The remainder split is auto-disabled and treated as not
-required by the hook; the rest are required.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Label shown above the input. |
-| `description?` | `ReactNode` | Optional descriptive text rendered below the label. |
-| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Override the rendered number input component. |
-| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | Pass-through of the parent form hook result for cross-field validation context. |
-| `max?` | `string` \| `number` | Forwarded to the underlying number input. |
-| `min?` | `string` \| `number` | Forwarded to the underlying number input. |
-| `placeholder?` | `string` | Forwarded to the underlying number input. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SplitFieldValidation`](#splitfieldvalidation)\> | Override the default localized validation message(s). |
 
 ***
 
@@ -352,15 +396,3 @@ domain data — use it for label construction or lookups by uuid.
 | `priority` | `number` | Ordering value — splits are processed in ascending priority; the highest priority is the remainder. |
 | `splitAmount` | `number` \| `null` | Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. |
 | `uuid` | `string` | UUID of the underlying bank account. |
-
-## Fields
-
-### SplitPaymentsFormFields
-<a id="splitpaymentsformfields"></a>
-
-Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
-
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| `SplitBy` | — | — |
-| `splits` | — | — |

@@ -149,181 +149,225 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 ## Fields
 
 ### EmployeeDetailsFields
+
 <a id="employeedetailsfields"></a>
 
 The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`DateOfBirth`](#dateofbirthfield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. |
-| [`Email`](#emailfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional by default — opt in via `optionalFieldsToRequire`. Also enforces a required rule whenever the self-onboarding toggle is enabled in create mode, reported via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code. |
-| [`FirstName`](#firstnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| [`LastName`](#lastnamefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required on create; can be made required on update via `optionalFieldsToRequire`. |
-| [`MiddleInitial`](#middleinitialfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Always optional. |
-| [`Ssn`](#ssnfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Auto-formats input with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on file, the field shows a masked placeholder and the required rule is automatically waived even if `ssn` is listed in `optionalFieldsToRequire`. |
-| [`SelfOnboarding`](#selfonboardingfield) | [Switch](../../utilities.md#switchhookfieldprops) \| `undefined` | The field is `undefined` when `withSelfOnboardingField` is `false`, or when the employee's onboarding status no longer allows toggling (e.g. self-onboarding is already in progress or completed). Always null-check before rendering. When enabled, the employee receives an invitation to enter their own personal, tax, and banking details. |
-
-<a id="dateofbirthfield"></a>
-
-### DateOfBirthField
-
-Date picker bound to the `dateOfBirth` field of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Parameters
-
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
-
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.DateOfBirth`. Optional by
-default — opt in via `optionalFieldsToRequire`.
+| `DateOfBirth` | `ComponentType`\<[`DateOfBirthFieldProps`](#dateofbirthfieldprops)\> | Date picker bound to `dateOfBirth`. |
+| `Email` | `ComponentType`\<[`EmailFieldProps`](#emailfieldprops)\> | Text input bound to `email`. |
+| `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#firstnamefieldprops)\> | Text input bound to `firstName`. |
+| `LastName` | `ComponentType`\<[`LastNameFieldProps`](#lastnamefieldprops)\> | Text input bound to `lastName`. |
+| `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#middleinitialfieldprops)\> | Text input bound to `middleInitial`. |
+| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#ssnfieldprops)\> | Text input bound to `ssn`. |
+| `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#selfonboardingfieldprops)\> \| `undefined` | Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. |
 
 ***
 
-<a id="emailfield"></a>
+### DateOfBirth
 
-### EmailField
+Date picker bound to `dateOfBirth`.
 
-Text input bound to the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+<form.Fields.DateOfBirth
+  label="Date of birth"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="dateofbirthfieldprops"></a>
+
+#### DateOfBirthFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.DateOfBirth` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+
+***
+
+### Email
+
+Text input bound to `email`.
+
+```tsx
+<form.Fields.Email
+  label="Email"
+  validationMessages={{
+    REQUIRED: '…',
+    INVALID_EMAIL: '…',
+    EMAIL_REQUIRED_FOR_SELF_ONBOARDING: '…',
+  }}
+/>
+```
+
+<a id="emailfieldprops"></a>
+
+#### EmailFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Email` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmailValidation`](#emailvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Email`. Optional by default
-— opt in via `optionalFieldsToRequire`. Also enforces a required rule
-whenever the self-onboarding toggle is enabled in create mode, reported
-via the `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="firstnamefield"></a>
+### FirstName
 
-### FirstNameField
+Text input bound to `firstName`.
 
-Text input bound to the `firstName` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+<form.Fields.FirstName
+  label="First name"
+  validationMessages={{ REQUIRED: '…', INVALID_NAME: '…' }}
+/>
+```
 
-#### Parameters
+<a id="firstnamefieldprops"></a>
+
+#### FirstNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`NameValidation`](#namevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.FirstName`. Required on
-create; can be made required on update via `optionalFieldsToRequire`.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="lastnamefield"></a>
+### LastName
 
-### LastNameField
+Text input bound to `lastName`.
 
-Text input bound to the `lastName` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+<form.Fields.LastName
+  label="Last name"
+  validationMessages={{ REQUIRED: '…', INVALID_NAME: '…' }}
+/>
+```
 
-#### Parameters
+<a id="lastnamefieldprops"></a>
+
+#### LastNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.LastName` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`NameValidation`](#namevalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.LastName`. Required on
-create; can be made required on update via `optionalFieldsToRequire`.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="middleinitialfield"></a>
+### MiddleInitial
 
-### MiddleInitialField
+Text input bound to `middleInitial`.
 
-Text input bound to the `middleInitial` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+<form.Fields.MiddleInitial
+  label="Middle initial"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="middleinitialfieldprops"></a>
+
+#### MiddleInitialFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.MiddleInitial`. Always
-optional.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="selfonboardingfield"></a>
+### SelfOnboarding
 
-### SelfOnboardingField
+Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable.
 
-Switch bound to the `selfOnboarding` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+{form.Fields.SelfOnboarding && (
+  <form.Fields.SelfOnboarding label="Self onboarding" />
+)}
+```
 
-#### Parameters
+<a id="selfonboardingfieldprops"></a>
+
+#### SelfOnboardingFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](../../component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.SelfOnboarding` when the
-field is toggleable. The field is `undefined` when
-`withSelfOnboardingField` is `false`, or when the employee's
-onboarding status no longer allows toggling (e.g. self-onboarding is
-already in progress or completed). Always null-check before rendering.
-When enabled, the employee receives an invitation to enter their own
-personal, tax, and banking details.
+_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
 
 ***
 
-<a id="ssnfield"></a>
+### Ssn
 
-### SsnField
+Text input bound to `ssn`.
 
-Text input bound to the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+```tsx
+<form.Fields.Ssn
+  label="Ssn"
+  validationMessages={{ INVALID_SSN: '…', REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="ssnfieldprops"></a>
+
+#### SsnFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
+
+Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Ssn` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Ssn`. Auto-formats input
-with dashes (`XXX-XX-XXXX`). When the employee already has an SSN on
-file, the field shows a masked placeholder and the required rule is
-automatically waived even if `ssn` is listed in
-`optionalFieldsToRequire`.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ## Validations
 

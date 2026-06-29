@@ -179,173 +179,227 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 ## Fields
 
 ### HomeAddressFields
+
 <a id="homeaddressfields"></a>
 
 Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`City`](#cityfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
-| [`CourtesyWithholding`](#courtesywithholdingfield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | When checked, the employer agrees to withhold the employee's home-state taxes as a courtesy even when the work and home states differ. |
-| [`State`](#homeaddressstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the standard two-letter US state abbreviations. Required. |
-| [`Street1`](#street1field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
-| [`Street2`](#street2field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
-| [`Zip`](#zipfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
-| [`EffectiveDate`](#homeaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) \| `undefined` | Always null-check before rendering. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `City` | `ComponentType`\<[`CityFieldProps`](#cityfieldprops)\> | City text input. Always available. |
+| `CourtesyWithholding` | `ComponentType`\<[`CourtesyWithholdingFieldProps`](#courtesywithholdingfieldprops)\> | Courtesy withholding checkbox. Always available. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#statefieldprops)\> | State selector. Always available. |
+| `Street1` | `ComponentType`\<[`Street1FieldProps`](#street1fieldprops)\> | Street address line 1 text input. Always available. |
+| `Street2` | `ComponentType`\<[`Street2FieldProps`](#street2fieldprops)\> | Street address line 2 text input. Always available. |
+| `Zip` | `ComponentType`\<[`ZipFieldProps`](#zipfieldprops)\> | ZIP code text input. Always available. |
+| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#homeaddresseffectivedatefieldprops)\> \| `undefined` | Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
 
-<a id="cityfield"></a>
+***
 
-### CityField
+### City
 
-Text input bound to the `city` field of [useHomeAddressForm](#usehomeaddressform).
+City text input. Always available.
 
-#### Parameters
+```tsx
+<form.Fields.City
+  label="City"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="cityfieldprops"></a>
+
+#### CityFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.City`. Required.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="courtesywithholdingfield"></a>
+### CourtesyWithholding
 
-### CourtesyWithholdingField
+Courtesy withholding checkbox. Always available.
 
-Checkbox bound to the `courtesyWithholding` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+<form.Fields.CourtesyWithholding
+  label="Courtesy withholding"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="courtesywithholdingfieldprops"></a>
+
+#### CourtesyWithholdingFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWithholding` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CourtesyWithholding`. When
-checked, the employer agrees to withhold the employee's home-state taxes
-as a courtesy even when the work and home states differ.
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 ***
 
-<a id="homeaddresseffectivedatefield"></a>
+### EffectiveDate
 
-### HomeAddressEffectiveDateField
+Effective-date picker. Only available when `withEffectiveDateField` is `true`.
 
-Date picker bound to the `effectiveDate` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+{form.Fields.EffectiveDate && (
+  <form.Fields.EffectiveDate
+    label="Effective date"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="homeaddresseffectivedatefieldprops"></a>
+
+#### HomeAddressEffectiveDateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveDate` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.EffectiveDate` when
-`withEffectiveDateField` is `true`; `undefined` otherwise. Always
-null-check before rendering.
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 ***
 
-<a id="homeaddressstatefield"></a>
+### State
 
-### HomeAddressStateField
+State selector. Always available.
 
-Select bound to the `state` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+<form.Fields.State
+  label="State"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="statefieldprops"></a>
+
+#### StateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.State`. Options are the
-standard two-letter US state abbreviations. Required.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ***
 
-<a id="street1field"></a>
+### Street1
 
-### Street1Field
+Street address line 1 text input. Always available.
 
-Text input bound to the `street1` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+<form.Fields.Street1
+  label="Street1"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="street1fieldprops"></a>
+
+#### Street1FieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Street1`. Required.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="street2field"></a>
+### Street2
 
-### Street2Field
+Street address line 2 text input. Always available.
 
-Text input bound to the `street2` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+<form.Fields.Street2
+  label="Street2"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="street2fieldprops"></a>
+
+#### Street2FieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street2` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Street2`. Optional.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="zipfield"></a>
+### Zip
 
-### ZipField
+ZIP code text input. Always available.
 
-Text input bound to the `zip` field of [useHomeAddressForm](#usehomeaddressform).
+```tsx
+<form.Fields.Zip
+  label="Zip"
+  validationMessages={{ REQUIRED: '…', INVALID_ZIP: '…' }}
+/>
+```
 
-#### Parameters
+<a id="zipfieldprops"></a>
+
+#### ZipFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
+
+Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Zip` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ZipValidation`](#zipvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Zip`. Required; also
-validates ZIP code format and emits `INVALID_ZIP` when the value does
-not match.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ## Validations
 

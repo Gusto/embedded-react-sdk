@@ -5742,7 +5742,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady;
 
 // @public
-export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady;
+export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): UseSplitPaymentsFormResult;
 
 // @public
 export interface UseSplitPaymentsFormProps {

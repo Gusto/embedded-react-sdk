@@ -124,124 +124,165 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 ## Fields
 
 ### ContractorAddressFields
+
 <a id="contractoraddressfields"></a>
 
 Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`City`](#contractoraddresscityfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
-| [`State`](#contractoraddressstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the standard two-letter US state abbreviations. Required. |
-| [`Street1`](#contractoraddressstreet1field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required. |
-| [`Street2`](#contractoraddressstreet2field) | [TextInput](../../utilities.md#textinputhookfieldprops) | Optional. |
-| [`Zip`](#contractoraddresszipfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Required; also validates ZIP code format and emits `INVALID_ZIP` when the value does not match. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `City` | `ComponentType`\<[`CityFieldProps`](#contractoraddresscityfieldprops)\> | City text input. Required. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#contractoraddressstatefieldprops)\> | State selector. Required. |
+| `Street1` | `ComponentType`\<[`Street1FieldProps`](#contractoraddressstreet1fieldprops)\> | Street address line 1 text input. Required. |
+| `Street2` | `ComponentType`\<[`Street2FieldProps`](#contractoraddressstreet2fieldprops)\> | Street address line 2 text input. Optional. |
+| `Zip` | `ComponentType`\<[`ZipFieldProps`](#contractoraddresszipfieldprops)\> | ZIP code text input. Required. |
 
-<a id="contractoraddresscityfield"></a>
+***
 
-### ContractorAddressCityField
+### City
 
-Text input bound to the `city` field of [useContractorAddressForm](#usecontractoraddressform).
+City text input. Required.
 
-#### Parameters
+```tsx
+<form.Fields.City
+  label="City"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="contractoraddresscityfieldprops"></a>
+
+#### ContractorAddressCityFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+
+Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.City` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.City`. Required.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="contractoraddressstatefield"></a>
+### State
 
-### ContractorAddressStateField
+State selector. Required.
 
-Select bound to the `state` field of [useContractorAddressForm](#usecontractoraddressform).
+```tsx
+<form.Fields.State
+  label="State"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="contractoraddressstatefieldprops"></a>
+
+#### ContractorAddressStateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
+
+Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.State`. Options are the
-standard two-letter US state abbreviations. Required.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ***
 
-<a id="contractoraddressstreet1field"></a>
+### Street1
 
-### ContractorAddressStreet1Field
+Street address line 1 text input. Required.
 
-Text input bound to the `street1` field of [useContractorAddressForm](#usecontractoraddressform).
+```tsx
+<form.Fields.Street1
+  label="Street1"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="contractoraddressstreet1fieldprops"></a>
+
+#### ContractorAddressStreet1FieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+
+Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street1` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Street1`. Required.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="contractoraddressstreet2field"></a>
+### Street2
 
-### ContractorAddressStreet2Field
+Street address line 2 text input. Optional.
 
-Text input bound to the `street2` field of [useContractorAddressForm](#usecontractoraddressform).
+```tsx
+<form.Fields.Street2
+  label="Street2"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="contractoraddressstreet2fieldprops"></a>
+
+#### ContractorAddressStreet2FieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
+
+Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Street2`. Optional.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="contractoraddresszipfield"></a>
+### Zip
 
-### ContractorAddressZipField
+ZIP code text input. Required.
 
-Text input bound to the `zip` field of [useContractorAddressForm](#usecontractoraddressform).
+```tsx
+<form.Fields.Zip
+  label="Zip"
+  validationMessages={{ REQUIRED: '…', INVALID_ZIP: '…' }}
+/>
+```
 
-#### Parameters
+<a id="contractoraddresszipfieldprops"></a>
+
+#### ContractorAddressZipFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
+
+Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Zip` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Zip`. Required; also validates
-ZIP code format and emits `INVALID_ZIP` when the value does not match.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ## Validations
 

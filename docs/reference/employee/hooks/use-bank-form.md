@@ -112,104 +112,134 @@ Ready-state return value of [useBankForm](#usebankform).
 ## Fields
 
 ### BankFormFields
+
 <a id="bankformfields"></a>
 
 Field components exposed by [useBankForm](#usebankform) on `form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`AccountNumber`](#accountnumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Validates the value against a 1–17 digit numeric pattern. |
-| [`AccountType`](#accounttypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Options are `Checking` and `Savings`; defaults to `Checking` when no value is supplied. Supply `getOptionLabel` to translate the option labels. |
-| [`Name`](#namefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Captures the account nickname. |
-| [`RoutingNumber`](#routingnumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) | Validates the value against a 9-digit numeric pattern. |
-
-<a id="accountnumberfield"></a>
-
-### AccountNumberField
-
-Text input bound to the `accountNumber` field of [useBankForm](#usebankform).
-
-#### Parameters
-
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`AccountNumberValidation`](#accountnumbervalidation)\> | Custom error text keyed by validation error code. |
-
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AccountNumber`. Validates the
-value against a 1–17 digit numeric pattern.
+| `AccountNumber` | `ComponentType`\<[`AccountNumberFieldProps`](#accountnumberfieldprops)\> | Bound to `accountNumber`. |
+| `AccountType` | `ComponentType`\<[`AccountTypeFieldProps`](#accounttypefieldprops)\> | Bound to `accountType`. |
+| `Name` | `ComponentType`\<[`NameFieldProps`](#namefieldprops)\> | Bound to `name`. |
+| `RoutingNumber` | `ComponentType`\<[`RoutingNumberFieldProps`](#routingnumberfieldprops)\> | Bound to `routingNumber`. |
 
 ***
 
-<a id="accounttypefield"></a>
+### AccountNumber
 
-### AccountTypeField
+Bound to `accountNumber`.
 
-Radio group bound to the `accountType` field of [useBankForm](#usebankform).
+```tsx
+<form.Fields.AccountNumber
+  label="Account number"
+  validationMessages={{ REQUIRED: '…', INVALID_ACCOUNT_NUMBER: '…' }}
+/>
+```
 
-#### Parameters
+<a id="accountnumberfieldprops"></a>
+
+#### AccountNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`AccountNumberValidation`](#accountnumbervalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.AccountNumber` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`AccountNumberValidation`](#accountnumbervalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### AccountType
+
+Bound to `accountType`.
+
+```tsx
+<form.Fields.AccountType
+  label="Account type"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="accounttypefieldprops"></a>
+
+#### AccountTypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation), [`AccountType`](#accounttype)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`AccountType`](#accounttype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AccountType`. Options are
-`Checking` and `Savings`; defaults to `Checking` when no value is supplied.
-Supply `getOptionLabel` to translate the option labels.
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 ***
 
-<a id="namefield"></a>
+### Name
 
-### NameField
+Bound to `name`.
 
-Text input bound to the `name` field of [useBankForm](#usebankform).
+```tsx
+<form.Fields.Name
+  label="Name"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="namefieldprops"></a>
+
+#### NameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.Name` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`BankFormRequiredValidation`](#bankformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Name`. Captures the account
-nickname.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="routingnumberfield"></a>
+### RoutingNumber
 
-### RoutingNumberField
+Bound to `routingNumber`.
 
-Text input bound to the `routingNumber` field of [useBankForm](#usebankform).
+```tsx
+<form.Fields.RoutingNumber
+  label="Routing number"
+  validationMessages={{ REQUIRED: '…', INVALID_ROUTING_NUMBER: '…' }}
+/>
+```
 
-#### Parameters
+<a id="routingnumberfieldprops"></a>
+
+#### RoutingNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`RoutingNumberValidation`](#routingnumbervalidation)\>\>
+
+Props accepted by [useBankForm](#usebankform)'s `Fields.RoutingNumber` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`RoutingNumberValidation`](#routingnumbervalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.RoutingNumber`. Validates the
-value against a 9-digit numeric pattern.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ## Validations
 

@@ -120,35 +120,44 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 ## Fields
 
 ### PaymentMethodFormFields
+
 <a id="paymentmethodformfields"></a>
 
 Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`Type`](#paymentmethodtypefield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) | Options are `Direct Deposit` and `Check`; defaults to the employee's existing payment method type. Supply `getOptionLabel` to translate the option labels. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Type` | `ComponentType`\<[`TypeFieldProps`](#typefieldprops)\> | Bound to `type`. |
 
-<a id="paymentmethodtypefield"></a>
+***
 
-### PaymentMethodTypeField
+### Type
 
-Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmethodform).
+Bound to `type`.
 
-#### Parameters
+```tsx
+<form.Fields.Type
+  label="Type"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="typefieldprops"></a>
+
+#### TypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
+
+Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: [`PaymentMethodType`](#paymentmethodtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Type`. Options are
-`Direct Deposit` and `Check`; defaults to the employee's existing payment
-method type. Supply `getOptionLabel` to translate the option labels.
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 ## Validations
 

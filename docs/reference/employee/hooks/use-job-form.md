@@ -140,139 +140,168 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 ## Fields
 
 ### JobFormFields
+
 <a id="jobformfields"></a>
 
 Pre-bound field components exposed on `useJobForm().form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`HireDate`](#hiredatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) \| `undefined` | When `false`, supply the value via `JobSubmitOptions.hireDate` at submit time — useful when the hire date is derived from external context (e.g. the employee's `startDate` during onboarding). |
-| [`StateWcClassCode`](#statewcclasscodefield) | [Select](../../utilities.md#selecthookfieldprops) \| `undefined` | Populated with Washington state workers' compensation risk class codes. Available on the hook result as `form.Fields.StateWcClassCode` only when the active work address is in Washington and `stateWcCovered` is `true`. The schema enforces this field as required whenever it is rendered, independent of `optionalFieldsToRequire`. |
-| [`StateWcCovered`](#statewccoveredfield) | [RadioGroup](../../utilities.md#radiogrouphookfieldprops) \| `undefined` | Captures whether the employee is covered by Washington state workers' compensation. Available on the hook result as `form.Fields.StateWcCovered` only when the employee's active work address is in Washington (see `data.showStateWc`). |
-| [`Title`](#jobtitlefield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | On update flows where another form owns the title (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and render the compensation form's title field instead. |
-| [`TwoPercentShareholder`](#twopercentshareholderfield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) \| `undefined` | Indicates whether the employee is a 2% shareholder in an S-Corporation. Available on the hook result as `form.Fields.TwoPercentShareholder` only when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `HireDate` | `ComponentType`\<[`HireDateFieldProps`](#hiredatefieldprops)\> \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`. |
+| `StateWcClassCode` | `ComponentType`\<[`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops)\> \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
+| `StateWcCovered` | `ComponentType`\<[`StateWcCoveredFieldProps`](#statewccoveredfieldprops)\> \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
+| `Title` | `ComponentType`\<[`JobTitleFieldProps`](#jobtitlefieldprops)\> \| `undefined` | Job title text input. `undefined` when `withTitleField: false`. |
+| `TwoPercentShareholder` | `ComponentType`\<[`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops)\> \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
 
-<a id="hiredatefield"></a>
+***
 
-### HireDateField
+### HireDate
 
-Date picker bound to the `hireDate` field of [useJobForm](#usejobform).
+Hire date picker. `undefined` when `withHireDateField: false`.
 
-#### Parameters
+```tsx
+{form.Fields.HireDate && (
+  <form.Fields.HireDate
+    label="Hire date"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="hiredatefieldprops"></a>
+
+#### HireDateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.HireDate` when
-`withHireDateField` is `true` (the default). When `false`, supply the value
-via `JobSubmitOptions.hireDate` at submit time — useful when the hire date
-is derived from external context (e.g. the employee's `startDate` during
-onboarding).
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 ***
 
-<a id="jobtitlefield"></a>
+### StateWcClassCode
 
-### JobTitleField
+Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`.
 
-Text input bound to the `title` field of [useJobForm](#usejobform).
+```tsx
+{form.Fields.StateWcClassCode && (
+  <form.Fields.StateWcClassCode
+    label="State wc class code"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="statewcclasscodefieldprops"></a>
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
+#### StateWcClassCodeFieldProps
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
 
-#### Remarks
-
-Available on the hook result as `form.Fields.Title` when `withTitleField` is
-`true` (the default). On update flows where another form owns the title
-(e.g. compensation edits), set `withTitleField: false` on `useJobForm` and
-render the compensation form's title field instead.
-
-***
-
-<a id="statewcclasscodefield"></a>
-
-### StateWcClassCodeField
-
-Select dropdown bound to the `stateWcClassCode` field of [useJobForm](#usejobform).
-
-#### Parameters
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `WARiskClassCode`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Populated with Washington state workers' compensation risk class codes.
-Available on the hook result as `form.Fields.StateWcClassCode` only when
-the active work address is in Washington and `stateWcCovered` is `true`.
-The schema enforces this field as required whenever it is rendered,
-independent of `optionalFieldsToRequire`.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ***
 
-<a id="statewccoveredfield"></a>
+### StateWcCovered
 
-### StateWcCoveredField
+Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`).
 
-Radio group bound to the `stateWcCovered` field of [useJobForm](#usejobform).
+```tsx
+{form.Fields.StateWcCovered && (
+  <form.Fields.StateWcCovered label="State wc covered" />
+)}
+```
 
-#### Parameters
+<a id="statewccoveredfieldprops"></a>
+
+#### StateWcCoveredFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `getOptionLabel?` | (`entry`: `boolean`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
-
-#### Remarks
-
-Captures whether the employee is covered by Washington state workers'
-compensation. Available on the hook result as `form.Fields.StateWcCovered`
-only when the employee's active work address is in Washington (see
-`data.showStateWc`).
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
 ***
 
-<a id="twopercentshareholderfield"></a>
+### Title
 
-### TwoPercentShareholderField
+Job title text input. `undefined` when `withTitleField: false`.
 
-Checkbox bound to the `twoPercentShareholder` field of [useJobForm](#usejobform).
+```tsx
+{form.Fields.Title && (
+  <form.Fields.Title
+    label="Title"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="jobtitlefieldprops"></a>
+
+#### JobTitleFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages) | Custom error text keyed by validation error code. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`JobRequiredValidation`](#jobrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
-#### Remarks
+***
 
-Indicates whether the employee is a 2% shareholder in an S-Corporation.
-Available on the hook result as `form.Fields.TwoPercentShareholder` only
-when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
+### TwoPercentShareholder
+
+S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`).
+
+```tsx
+{form.Fields.TwoPercentShareholder && (
+  <form.Fields.TwoPercentShareholder label="Two percent shareholder" />
+)}
+```
+
+<a id="twopercentshareholderfieldprops"></a>
+
+#### TwoPercentShareholderFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
+
+Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
+
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
 ## Validations
 

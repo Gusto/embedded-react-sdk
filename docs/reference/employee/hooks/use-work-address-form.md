@@ -174,60 +174,77 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 ## Fields
 
 ### WorkAddressFields
+
 <a id="workaddressfields"></a>
 
 Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`Location`](#workaddresslocationfield) | [Select](../../utilities.md#selecthookfieldprops) | Options are the company's active locations; the hook populates them from the locations query. Required. |
-| [`EffectiveDate`](#workaddresseffectivedatefield) | [DatePicker](../../utilities.md#datepickerhookfieldprops) \| `undefined` | Always null-check before rendering. |
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Location` | `ComponentType`\<[`LocationFieldProps`](#locationfieldprops)\> | Location selector. Always available. |
+| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#effectivedatefieldprops)\> \| `undefined` | Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
 
-<a id="workaddresseffectivedatefield"></a>
+***
 
-### WorkAddressEffectiveDateField
+### EffectiveDate
 
-Date picker bound to the `effectiveDate` field of [useWorkAddressForm](#useworkaddressform).
+Effective-date picker. Only available when `withEffectiveDateField` is `true`.
 
-#### Parameters
+```tsx
+{form.Fields.EffectiveDate && (
+  <form.Fields.EffectiveDate
+    label="Effective date"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="effectivedatefieldprops"></a>
+
+#### EffectiveDateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
+
+Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveDate` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.EffectiveDate` when
-`withEffectiveDateField` is `true`; `undefined` otherwise. Always
-null-check before rendering.
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
 
 ***
 
-<a id="workaddresslocationfield"></a>
+### Location
 
-### WorkAddressLocationField
+Location selector. Always available.
 
-Select bound to the `locationUuid` field of [useWorkAddressForm](#useworkaddressform).
+```tsx
+<form.Fields.Location
+  label="Location"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="locationfieldprops"></a>
+
+#### LocationFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
+
+Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `Location`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Location`. Options are the
-company's active locations; the hook populates them from the locations
-query. Required.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ## Validations
 

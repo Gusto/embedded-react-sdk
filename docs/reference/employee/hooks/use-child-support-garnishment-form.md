@@ -147,208 +147,268 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 ## Fields
 
 ### ChildSupportGarnishmentFormFields
+
 <a id="childsupportgarnishmentformfields"></a>
 
 Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`Amount`](#childsupportamountfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Accepts a percentage of paycheck in the range 0–100 — the API stores child-support amounts as percentages rather than fixed currency values. |
-| [`PaymentPeriod`](#paymentperiodfield) | [Select](../../utilities.md#selecthookfieldprops) | Always rendered. Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`. |
-| [`PayPeriodMaximum`](#payperiodmaximumfield) | [NumberInput](../../utilities.md#numberinputhookfieldprops) | Always rendered. Carries the per-pay-period currency cap for the garnishment. |
-| [`State`](#childsupportstatefield) | [Select](../../utilities.md#selecthookfieldprops) | Always rendered. The selected agency drives which subsequent fields are required and visible (`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`). |
-| [`CaseNumber`](#casenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
-| [`FipsCode`](#fipscodefield) | [Select](../../utilities.md#selecthookfieldprops) \| `undefined` | When the agency has a single "all counties" code, the hook auto-fills the value and exposes the field as `undefined` — always null-check before rendering. Options are dynamically populated from the FIPS codes the selected agency declares. |
-| [`OrderNumber`](#ordernumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
-| [`RemittanceNumber`](#remittancenumberfield) | [TextInput](../../utilities.md#textinputhookfieldprops) \| `undefined` | — |
-
-<a id="casenumberfield"></a>
-
-### CaseNumberField
-
-Text input bound to the `caseNumber` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
-
-#### Parameters
-
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
-
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.CaseNumber` only when the
-selected agency requires a case number (`status.requiredAttrKeys.has('case_number')`).
-Always null-check before rendering.
+| `Amount` | `ComponentType`\<[`AmountFieldProps`](#childsupportgarnishmentamountfieldprops)\> | Percent-of-paycheck input (0–100). Always available. |
+| `PaymentPeriod` | `ComponentType`\<[`PaymentPeriodFieldProps`](#paymentperiodfieldprops)\> | Payment period select. Always available. |
+| `PayPeriodMaximum` | `ComponentType`\<[`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops)\> | Per-pay-period currency cap input. Always available. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#childsupportgarnishmentstatefieldprops)\> | Agency (state) select. Always available. |
+| `CaseNumber` | `ComponentType`\<[`CaseNumberFieldProps`](#casenumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `case_number`. |
+| `FipsCode` | `ComponentType`\<[`FipsCodeFieldProps`](#fipscodefieldprops)\> \| `undefined` | Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
+| `OrderNumber` | `ComponentType`\<[`OrderNumberFieldProps`](#ordernumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `order_number`. |
+| `RemittanceNumber` | `ComponentType`\<[`RemittanceNumberFieldProps`](#remittancenumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `remittance_number`. |
 
 ***
 
-<a id="childsupportamountfield"></a>
+### Amount
 
-### ChildSupportAmountField
+Percent-of-paycheck input (0–100). Always available.
 
-Number input bound to the `amount` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+<form.Fields.Amount
+  label="Amount"
+  validationMessages={{ REQUIRED: '…', PERCENT_OUT_OF_RANGE: '…' }}
+/>
+```
 
-#### Parameters
+<a id="childsupportgarnishmentamountfieldprops"></a>
+
+#### ChildSupportGarnishmentAmountFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.Amount` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Amount`. Always rendered.
-Accepts a percentage of paycheck in the range 0–100 — the API stores
-child-support amounts as percentages rather than fixed currency values.
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 ***
 
-<a id="childsupportstatefield"></a>
+### CaseNumber
 
-### ChildSupportStateField
+Only available when the selected agency requires `case_number`.
 
-Select bound to the `state` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+{form.Fields.CaseNumber && (
+  <form.Fields.CaseNumber
+    label="Case number"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="casenumberfieldprops"></a>
+
+#### CaseNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.CaseNumber` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
-| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
-| `getOptionLabel?` | (`entry`: [`StateFieldEntry`](#statefieldentry)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.State`. Always rendered. The
-selected agency drives which subsequent fields are required and visible
-(`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`).
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="fipscodefield"></a>
+### FipsCode
 
-### FipsCodeField
+Only available when the selected agency has more than one fips code, or the
+ sole code is county-scoped (not an "all counties" auto-pick).
 
-Select bound to the `fipsCode` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+{form.Fields.FipsCode && (
+  <form.Fields.FipsCode
+    label="Fips code"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="fipscodefieldprops"></a>
+
+#### FipsCodeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`CountyEntry`](#countyentry)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.FipsCode` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: [`CountyEntry`](#countyentry)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.FipsCode` only when the selected
-agency offers multiple counties. When the agency has a single "all counties"
-code, the hook auto-fills the value and exposes the field as `undefined` —
-always null-check before rendering. Options are dynamically populated from
-the FIPS codes the selected agency declares.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ***
 
-<a id="ordernumberfield"></a>
+### OrderNumber
 
-### OrderNumberField
+Only available when the selected agency requires `order_number`.
 
-Text input bound to the `orderNumber` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+{form.Fields.OrderNumber && (
+  <form.Fields.OrderNumber
+    label="Order number"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="ordernumberfieldprops"></a>
+
+#### OrderNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.OrderNumber` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.OrderNumber` only when the
-selected agency requires an order number (`status.requiredAttrKeys.has('order_number')`).
-Always null-check before rendering.
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ***
 
-<a id="paymentperiodfield"></a>
+### PaymentPeriod
 
-### PaymentPeriodField
+Payment period select. Always available.
 
-Select bound to the `paymentPeriod` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+<form.Fields.PaymentPeriod
+  label="Payment period"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="paymentperiodfieldprops"></a>
+
+#### PaymentPeriodFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PaymentPeriod` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `getOptionLabel?` | (`entry`: `PaymentPeriod`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.PaymentPeriod`. Always rendered.
-Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`.
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ***
 
-<a id="payperiodmaximumfield"></a>
+### PayPeriodMaximum
 
-### PayPeriodMaximumField
+Per-pay-period currency cap input. Always available.
 
-Number input bound to the `payPeriodMaximum` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+<form.Fields.PayPeriodMaximum
+  label="Pay period maximum"
+  validationMessages={{ REQUIRED: '…', NEGATIVE_AMOUNT: '…' }}
+/>
+```
 
-#### Parameters
+<a id="payperiodmaximumfieldprops"></a>
+
+#### PayPeriodMaximumFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PayPeriodMaximum` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.PayPeriodMaximum`. Always
-rendered. Carries the per-pay-period currency cap for the garnishment.
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
 
 ***
 
-<a id="remittancenumberfield"></a>
+### RemittanceNumber
 
-### RemittanceNumberField
+Only available when the selected agency requires `remittance_number`.
 
-Text input bound to the `remittanceNumber` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+```tsx
+{form.Fields.RemittanceNumber && (
+  <form.Fields.RemittanceNumber
+    label="Remittance number"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
 
-#### Parameters
+<a id="remittancenumberfieldprops"></a>
+
+#### RemittanceNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.RemittanceNumber` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
-#### Remarks
+***
 
-Available on the hook result as `form.Fields.RemittanceNumber` only when the
-selected agency requires a remittance number (`status.requiredAttrKeys.has('remittance_number')`).
-Always null-check before rendering.
+### State
+
+Agency (state) select. Always available.
+
+```tsx
+<form.Fields.State
+  label="State"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="childsupportgarnishmentstatefieldprops"></a>
+
+#### ChildSupportGarnishmentStateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`StateFieldEntry`](#statefieldentry)\>\>
+
+Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.State` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: [`StateFieldEntry`](#statefieldentry)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
 
 ## Validations
 

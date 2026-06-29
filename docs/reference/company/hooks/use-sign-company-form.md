@@ -142,56 +142,73 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 ## Fields
 
 ### SignCompanyFormFields
+
 <a id="signcompanyformfields"></a>
 
 Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
 
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| [`ConfirmSignature`](#signcompanyconfirmsignaturefield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | The checkbox must be checked to submit; it captures consent to the form's terms. |
-| [`Signature`](#signcompanysignaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The signer types their full legal name; always required. |
-
-<a id="signcompanyconfirmsignaturefield"></a>
-
-### SignCompanyConfirmSignatureField
-
-Checkbox bound to the `confirmSignature` field of [useSignCompanyForm](#usesigncompanyform).
-
-#### Parameters
-
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
-
-_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
-
-#### Remarks
-
-Available on the hook result as `form.Fields.ConfirmSignature`. The checkbox
-must be checked to submit; it captures consent to the form's terms.
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)\> | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signaturefieldprops)\> | Text input for the signer's typed name; always required. |
 
 ***
 
-<a id="signcompanysignaturefield"></a>
+### ConfirmSignature
 
-### SignCompanySignatureField
+Checkbox for confirming the signature and agreeing to the form's terms; always required.
 
-Text input bound to the `signature` field of [useSignCompanyForm](#usesigncompanyform).
+```tsx
+<form.Fields.ConfirmSignature
+  label="Confirm signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
 
-#### Parameters
+<a id="confirmsignaturefieldprops"></a>
+
+#### ConfirmSignatureFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
+
+Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.ConfirmSignature` component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`CheckboxProps`](../../component-inventory.md#checkboxprops)\> | Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
-_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+_Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
 
-#### Remarks
+***
 
-Available on the hook result as `form.Fields.Signature`. The signer types
-their full legal name; always required.
+### Signature
+
+Text input for the signer's typed name; always required.
+
+```tsx
+<form.Fields.Signature
+  label="Signature"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="signaturefieldprops"></a>
+
+#### SignatureFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
+
+Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.Signature` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
 
 ## Validations
 
