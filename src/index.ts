@@ -338,6 +338,36 @@ export type {
 } from '@/components/Contractor/Profile/shared/useContractorDetailsForm'
 
 export {
+  useContractorBankAccountForm,
+  ContractorBankAccountErrorCodes,
+  ACCOUNT_TYPES as ContractorBankAccountTypes,
+  NameField as ContractorBankAccountNameField,
+  RoutingNumberField as ContractorBankAccountRoutingNumberField,
+  AccountNumberField as ContractorBankAccountAccountNumberField,
+  AccountTypeField as ContractorBankAccountAccountTypeField,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
+export type {
+  UseContractorBankAccountFormProps,
+  UseContractorBankAccountFormResult,
+  UseContractorBankAccountFormReady,
+  ContractorBankAccountFormFields,
+  ContractorBankAccountFieldsMetadata,
+  ContractorBankAccountErrorCode,
+  ContractorAccountType,
+  ContractorBankAccountFormData,
+  ContractorBankAccountFormOutputs,
+  ContractorBankAccountFormField,
+  ContractorBankAccountOptionalFieldsToRequire,
+  ContractorBankAccountRequiredValidation,
+  ContractorBankAccountRoutingNumberValidation,
+  ContractorBankAccountAccountNumberValidation,
+  NameFieldProps as ContractorBankAccountNameFieldProps,
+  RoutingNumberFieldProps as ContractorBankAccountRoutingNumberFieldProps,
+  AccountNumberFieldProps as ContractorBankAccountAccountNumberFieldProps,
+  AccountTypeFieldProps as ContractorBankAccountAccountTypeFieldProps,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
+
+export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,

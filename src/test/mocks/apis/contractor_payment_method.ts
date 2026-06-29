@@ -49,6 +49,12 @@ export const createContractorBankAccount = http.post<
   return HttpResponse.json(responseFixture[0], { status: 201 })
 })
 
+export function handleCreateContractorBankAccount(
+  resolver: HttpResponseResolver<PathParams, ContractorBankAccountCreateRequestBody>,
+) {
+  return http.post(`${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`, resolver)
+}
+
 export default [
   getContractorPaymentMethod,
   getContractorBankAccounts,
