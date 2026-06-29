@@ -24,7 +24,7 @@ npm run sdk-app # Dev build with HMR
 
 Or for a production SDK build:
 
-```
+```bash
 npm run sdk-app-prod # Production build (uses built dist/)
 ```
 
@@ -64,7 +64,7 @@ Use Field components from `src/components/Common/Fields/` inside `FormProvider`.
 
 ### Component Organization
 
-```
+```text
 src/components/
 ├── Common/ # Shared UI primitives and Field components
 │ ├── Fields/ # Form-connected Field components (use for forms)
@@ -102,7 +102,7 @@ Implications when writing SDK code:
 
 ### Provider Stack
 
-```
+```text
 GustoProvider → ComponentsProvider → ThemeProvider → LocaleProvider / I18nextProvider → ApiProvider → {children}
 ```
 
@@ -136,7 +136,7 @@ Durable conventions that apply SDK-wide to any component or feature:
 
 Three-repo architecture with sibling directories:
 
-```
+```text
 ~/workspace/
 ├── zenpayroll/ # Core Rails app
 ├── gws-flows/ # Rails API proxy for local SDK testing
@@ -198,9 +198,7 @@ Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — 
 let updateJobPath: string | null = null
 const updateJobResolver = vi.fn<HttpResponseResolver>(({ request }) => {
   updateJobPath = new URL(request.url).pathname
-  return HttpResponse.json({
-    /* ... */
-  })
+  return HttpResponse.json({/* ... */})
 })
 
 // ...

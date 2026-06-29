@@ -1791,6 +1791,17 @@
         "contractorUuid"
       ]
     },
+    "ContractorOnboarding.DocumentsList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
     "ContractorManagement.PaymentsList": {
       "endpoints": [
         {

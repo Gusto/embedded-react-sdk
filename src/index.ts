@@ -694,3 +694,11 @@ export type {
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
+
+// Domain data hooks - Contractor
+export { useContractorDocumentsList } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+export type {
+  UseContractorDocumentsListParams,
+  UseContractorDocumentsListResult,
+  UseContractorDocumentsListReady,
+} from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
