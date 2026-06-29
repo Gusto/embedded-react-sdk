@@ -263,8 +263,8 @@ Manages a contractor's payment method, capturing a bank account for direct depos
 
 Displays the current payment type, lets the user switch between direct deposit and check, and
 collects bank account details (account holder name, routing number, account number, and account
-type) when direct deposit is selected. Submitting creates the bank account if needed and then
-updates the contractor's payment method.
+type) when direct deposit is selected. Direct deposit creates the bank account (which updates the
+payment method server-side); check updates the contractor's payment method type directly.
 
 ### PaymentMethodProps
 
@@ -284,8 +284,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The API response object; access the created bank account at `.contractorBankAccount` |
-| `contractor/paymentMethod/updated` | Fired after the payment method is updated | The API response object; access the updated payment method at `.contractorPaymentMethod` |
+| `contractor/bankAccount/created` | Fired on the direct deposit path after the bank account is created | The created bank account at `.contractorBankAccount` |
+| `contractor/paymentMethod/updated` | Fired on the check path after the payment method type is updated | The updated payment method at `.contractorPaymentMethod` |
 | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
 
 ### Example

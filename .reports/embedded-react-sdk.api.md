@@ -20,7 +20,9 @@ import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components
 import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
+import { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount';
 import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorPaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod';
 import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
@@ -1133,6 +1135,9 @@ interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.Confir
 }
 
 // @public
+export type ContractorAccountType = (typeof ContractorBankAccountTypes)[number];
+
+// @public
 export function ContractorAddressCityField(props: ContractorAddressCityFieldProps): JSX;
 
 // @public
@@ -1208,6 +1213,75 @@ export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldPr
 
 // @public
 export type ContractorAddressZipValidation = (typeof ContractorAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
+
+// @public
+export function ContractorBankAccountAccountNumberField(props: ContractorBankAccountAccountNumberFieldProps): JSX;
+
+// @public
+export type ContractorBankAccountAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountAccountNumberValidation>>;
+
+// @public
+export type ContractorBankAccountAccountNumberValidation = (typeof ContractorBankAccountErrorCodes)[keyof Pick<typeof ContractorBankAccountErrorCodes, 'REQUIRED' | 'INVALID_ACCOUNT_NUMBER'>];
+
+// @public
+export function ContractorBankAccountAccountTypeField(props: ContractorBankAccountAccountTypeFieldProps): JSX;
+
+// @public
+export type ContractorBankAccountAccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorBankAccountRequiredValidation, ContractorAccountType>>;
+
+// @public
+export type ContractorBankAccountErrorCode = (typeof ContractorBankAccountErrorCodes)[keyof typeof ContractorBankAccountErrorCodes];
+
+// @public
+export const ContractorBankAccountErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_ROUTING_NUMBER: "INVALID_ROUTING_NUMBER";
+    readonly INVALID_ACCOUNT_NUMBER: "INVALID_ACCOUNT_NUMBER";
+};
+
+// @public
+export type ContractorBankAccountFieldsMetadata = UseContractorBankAccountFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorBankAccountFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
+
+// @public
+export type ContractorBankAccountFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+
+// @public
+export interface ContractorBankAccountFormFields {
+    AccountNumber: typeof ContractorBankAccountAccountNumberField;
+    AccountType: typeof ContractorBankAccountAccountTypeField;
+    Name: typeof ContractorBankAccountNameField;
+    RoutingNumber: typeof ContractorBankAccountRoutingNumberField;
+}
+
+// @public
+export type ContractorBankAccountFormOutputs = ContractorBankAccountFormData;
+
+// @public
+export function ContractorBankAccountNameField(props: ContractorBankAccountNameFieldProps): JSX;
+
+// @public
+export type ContractorBankAccountNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRequiredValidation>>;
+
+// @public
+export type ContractorBankAccountOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
+
+// @public
+export type ContractorBankAccountRequiredValidation = typeof ContractorBankAccountErrorCodes.REQUIRED;
+
+// @public
+export function ContractorBankAccountRoutingNumberField(props: ContractorBankAccountRoutingNumberFieldProps): JSX;
+
+// @public
+export type ContractorBankAccountRoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRoutingNumberValidation>>;
+
+// @public
+export type ContractorBankAccountRoutingNumberValidation = (typeof ContractorBankAccountErrorCodes)[keyof Pick<typeof ContractorBankAccountErrorCodes, 'REQUIRED' | 'INVALID_ROUTING_NUMBER'>];
+
+// @public
+export const ContractorBankAccountTypes: readonly ["Checking", "Savings"];
 
 // @public
 export function ContractorBusinessNameField(props: ContractorBusinessNameFieldProps): JSX;
@@ -1390,6 +1464,43 @@ export const ContractorOnboardingStatus: {
     readonly SELF_ONBOARDING_REVIEW: "self_onboarding_review";
     readonly ONBOARDING_COMPLETED: "onboarding_completed";
 };
+
+// @public
+export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
+
+// @public
+export const ContractorPaymentMethodErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorPaymentMethodFieldsMetadata = UseContractorPaymentMethodFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
+
+// @public
+export type ContractorPaymentMethodFormField = "type";
+
+// @public
+export interface ContractorPaymentMethodFormFields {
+    Type: typeof ContractorPaymentMethodTypeField;
+}
+
+// @public
+export type ContractorPaymentMethodFormOutputs = ContractorPaymentMethodFormData;
+
+// @public
+export type ContractorPaymentMethodFormType = (typeof ContractorPaymentMethodTypes)[number];
+
+// @public
+export function ContractorPaymentMethodTypeField(props: ContractorPaymentMethodTypeFieldProps): JSX;
+
+// @public
+export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
+
+// @public
+export const ContractorPaymentMethodTypes: readonly ["Direct Deposit", "Check"];
 
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
@@ -3628,7 +3739,7 @@ function PaymentMethod(input: PaymentMethodProps): JSX;
 function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 
 // @public
-function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
+function PaymentMethod_3(input: PaymentMethodProps_3): JSX;
 
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
@@ -5267,6 +5378,35 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsM
 export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
 
 // @public
+export function useContractorBankAccountForm(input: UseContractorBankAccountFormProps): HookLoadingResult | UseContractorBankAccountFormReady;
+
+// @public
+export interface UseContractorBankAccountFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorBankAccountFormData>;
+    optionalFieldsToRequire?: ContractorBankAccountOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorBankAccountFormReady extends BaseFormHookReady<FieldsMetadata, ContractorBankAccountFormData, ContractorBankAccountFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorBankAccount> | undefined>;
+    };
+    data: {
+        bankAccount: ContractorBankAccount | undefined;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorBankAccountFormResult = HookLoadingResult | UseContractorBankAccountFormReady;
+
+// @public
 export function useContractorDetailsForm(input: UseContractorDetailsFormProps): HookLoadingResult | UseContractorDetailsFormReady;
 
 // @public
@@ -5321,6 +5461,35 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 
 // @public
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorPaymentMethodForm(input: UseContractorPaymentMethodFormProps): HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @public
+export interface UseContractorPaymentMethodFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorPaymentMethodFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+    };
+    data: {
+        paymentMethod: ContractorPaymentMethod;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+        isDirectDeposit: boolean;
+    };
+}
+
+// @public
+export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
