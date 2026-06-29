@@ -21,6 +21,69 @@ documented here in the SDK reference.
 
 ## Variables
 
+<a id="accounttype"></a>
+
+### AccountType
+
+> `const` **AccountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L15)
+
+Bank account type
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-accounttypechecking"></a> `Checking` | `"Checking"` |
+| <a id="property-accounttypesavings"></a> `Savings` | `"Savings"` |
+
+***
+
+<a id="accrualmethod"></a>
+
+### AccrualMethod
+
+> `const` **AccrualMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicyrequest.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicyrequest.ts#L26)
+
+Accrual method of the time off policy
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-accrualmethodperanniversaryyear"></a> `PerAnniversaryYear` | `"per_anniversary_year"` |
+| <a id="property-accrualmethodpercalendaryear"></a> `PerCalendarYear` | `"per_calendar_year"` |
+| <a id="property-accrualmethodperhourpaid"></a> `PerHourPaid` | `"per_hour_paid"` |
+| <a id="property-accrualmethodperhourpaidnoovertime"></a> `PerHourPaidNoOvertime` | `"per_hour_paid_no_overtime"` |
+| <a id="property-accrualmethodperhourworked"></a> `PerHourWorked` | `"per_hour_worked"` |
+| <a id="property-accrualmethodperhourworkednoovertime"></a> `PerHourWorkedNoOvertime` | `"per_hour_worked_no_overtime"` |
+| <a id="property-accrualmethodperpayperiod"></a> `PerPayPeriod` | `"per_pay_period"` |
+| <a id="property-accrualmethodunlimited"></a> `Unlimited` | `"unlimited"` |
+
+***
+
+<a id="amounttype"></a>
+
+### AmountType
+
+> `const` **AmountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemployeecompensationstype.ts:106](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollemployeecompensationstype.ts#L106)
+
+The amount type of the deduction for the pay period. Only present for unprocessed payrolls.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-amounttypefixed"></a> `Fixed` | `"fixed"` |
+| <a id="property-amounttypepercent"></a> `Percent` | `"percent"` |
+
+***
+
 <a id="authorizationstatus"></a>
 
 ### AuthorizationStatus
@@ -39,6 +102,112 @@ The employee's authorization status
 | <a id="property-authorizationstatuscitizen"></a> `Citizen` | `"citizen"` |
 | <a id="property-authorizationstatusnoncitizen"></a> `Noncitizen` | `"noncitizen"` |
 | <a id="property-authorizationstatuspermanentresident"></a> `PermanentResident` | `"permanent_resident"` |
+
+***
+
+<a id="childsupportdatakey"></a>
+
+### ChildSupportDataKey
+
+> `const` **ChildSupportDataKey**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupportdata.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/childsupportdata.ts#L26)
+
+A required attribute when creating a garnishment for this state agency. The current values are listed as an enum; though unlikely, values could be added if state agency requirements change in the future.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-childsupportdatakeycasenumber"></a> `CaseNumber` | `"case_number"` |
+| <a id="property-childsupportdatakeyordernumber"></a> `OrderNumber` | `"order_number"` |
+| <a id="property-childsupportdatakeyremittancenumber"></a> `RemittanceNumber` | `"remittance_number"` |
+
+***
+
+<a id="companyonboardingstatusrequirements"></a>
+
+### CompanyOnboardingStatusRequirements
+
+> `const` **CompanyOnboardingStatusRequirements**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companyonboardingstatus.ts:32](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companyonboardingstatus.ts#L32)
+
+`CompanyOnboardingStatusRequirements` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-companyonboardingstatusrequirementsaddaddresses"></a> `AddAddresses` | `"add_addresses"` |
+| <a id="property-companyonboardingstatusrequirementsaddbankinfo"></a> `AddBankInfo` | `"add_bank_info"` |
+| <a id="property-companyonboardingstatusrequirementsaddemployees"></a> `AddEmployees` | `"add_employees"` |
+| <a id="property-companyonboardingstatusrequirementsexternalpayroll"></a> `ExternalPayroll` | `"external_payroll"` |
+| <a id="property-companyonboardingstatusrequirementsfederaltaxsetup"></a> `FederalTaxSetup` | `"federal_tax_setup"` |
+| <a id="property-companyonboardingstatusrequirementspayrollschedule"></a> `PayrollSchedule` | `"payroll_schedule"` |
+| <a id="property-companyonboardingstatusrequirementsselectindustry"></a> `SelectIndustry` | `"select_industry"` |
+| <a id="property-companyonboardingstatusrequirementssignallforms"></a> `SignAllForms` | `"sign_all_forms"` |
+| <a id="property-companyonboardingstatusrequirementsstatesetup"></a> `StateSetup` | `"state_setup"` |
+| <a id="property-companyonboardingstatusrequirementsverifybankinfo"></a> `VerifyBankInfo` | `"verify_bank_info"` |
+
+***
+
+<a id="contractorbankaccountaccounttype"></a>
+
+### ContractorBankAccountAccountType
+
+> `const` **ContractorBankAccountAccountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorbankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorbankaccount.ts#L15)
+
+Bank account type
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorbankaccountaccounttypechecking"></a> `Checking` | `"Checking"` |
+| <a id="property-contractorbankaccountaccounttypesavings"></a> `Savings` | `"Savings"` |
+
+***
+
+<a id="contractorcreaterequestbodytype"></a>
+
+### ContractorCreateRequestBodyType
+
+> `const` **ContractorCreateRequestBodyType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorcreaterequestbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorcreaterequestbody.ts#L12)
+
+The contractor type.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorcreaterequestbodytypebusiness"></a> `Business` | `"Business"` |
+| <a id="property-contractorcreaterequestbodytypeindividual"></a> `Individual` | `"Individual"` |
+
+***
+
+<a id="contractorcreaterequestbodywagetype"></a>
+
+### ContractorCreateRequestBodyWageType
+
+> `const` **ContractorCreateRequestBodyWageType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorcreaterequestbody.ts:28](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorcreaterequestbody.ts#L28)
+
+The contractor’s wage type.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorcreaterequestbodywagetypefixed"></a> `Fixed` | `"Fixed"` |
+| <a id="property-contractorcreaterequestbodywagetypehourly"></a> `Hourly` | `"Hourly"` |
+
+#### Remarks
 
 ***
 
@@ -66,6 +235,243 @@ One of the "onboarding_status" enum values.
 
 ***
 
+<a id="contractorpaymentforgrouppaymentmethod"></a>
+
+### ContractorPaymentForGroupPaymentMethod
+
+> `const` **ContractorPaymentForGroupPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L15)
+
+The payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgrouppaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-contractorpaymentforgrouppaymentmethodcorrectionpayment"></a> `CorrectionPayment` | `"Correction Payment"` |
+| <a id="property-contractorpaymentforgrouppaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+| <a id="property-contractorpaymentforgrouppaymentmethodhistoricalpayment"></a> `HistoricalPayment` | `"Historical Payment"` |
+
+***
+
+<a id="contractorpaymentforgrouppreviewpaymentmethod"></a>
+
+### ContractorPaymentForGroupPreviewPaymentMethod
+
+> `const` **ContractorPaymentForGroupPreviewPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L15)
+
+The payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgrouppreviewpaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-contractorpaymentforgrouppreviewpaymentmethodcorrectionpayment"></a> `CorrectionPayment` | `"Correction Payment"` |
+| <a id="property-contractorpaymentforgrouppreviewpaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+| <a id="property-contractorpaymentforgrouppreviewpaymentmethodhistoricalpayment"></a> `HistoricalPayment` | `"Historical Payment"` |
+
+***
+
+<a id="contractorpaymentforgrouppreviewstatus"></a>
+
+### ContractorPaymentForGroupPreviewStatus
+
+> `const` **ContractorPaymentForGroupPreviewStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:31](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L31)
+
+The status of the contractor payment.  Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgrouppreviewstatusfunded"></a> `Funded` | `"Funded"` |
+| <a id="property-contractorpaymentforgrouppreviewstatusunfunded"></a> `Unfunded` | `"Unfunded"` |
+
+***
+
+<a id="contractorpaymentforgrouppreviewwagetype"></a>
+
+### ContractorPaymentForGroupPreviewWageType
+
+> `const` **ContractorPaymentForGroupPreviewWageType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:45](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L45)
+
+The wage type for the payment.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgrouppreviewwagetypefixed"></a> `Fixed` | `"Fixed"` |
+| <a id="property-contractorpaymentforgrouppreviewwagetypehourly"></a> `Hourly` | `"Hourly"` |
+
+***
+
+<a id="contractorpaymentforgroupstatus"></a>
+
+### ContractorPaymentForGroupStatus
+
+> `const` **ContractorPaymentForGroupStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:31](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L31)
+
+The status of the contractor payment.  Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgroupstatusfunded"></a> `Funded` | `"Funded"` |
+| <a id="property-contractorpaymentforgroupstatusunfunded"></a> `Unfunded` | `"Unfunded"` |
+
+***
+
+<a id="contractorpaymentforgroupwagetype"></a>
+
+### ContractorPaymentForGroupWageType
+
+> `const` **ContractorPaymentForGroupWageType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:45](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L45)
+
+The wage type for the payment.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentforgroupwagetypefixed"></a> `Fixed` | `"Fixed"` |
+| <a id="property-contractorpaymentforgroupwagetypehourly"></a> `Hourly` | `"Hourly"` |
+
+***
+
+<a id="contractorpaymentgrouppreviewstatus"></a>
+
+### ContractorPaymentGroupPreviewStatus
+
+> `const` **ContractorPaymentGroupPreviewStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgrouppreview.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgrouppreview.ts#L27)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentgrouppreviewstatusfunded"></a> `Funded` | `"Funded"` |
+| <a id="property-contractorpaymentgrouppreviewstatusunfunded"></a> `Unfunded` | `"Unfunded"` |
+
+***
+
+<a id="contractorpaymentgroupstatus"></a>
+
+### ContractorPaymentGroupStatus
+
+> `const` **ContractorPaymentGroupStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroup.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroup.ts#L27)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentgroupstatusfunded"></a> `Funded` | `"Funded"` |
+| <a id="property-contractorpaymentgroupstatusunfunded"></a> `Unfunded` | `"Unfunded"` |
+
+***
+
+<a id="contractorpaymentgroupwithblockersstatus"></a>
+
+### ContractorPaymentGroupWithBlockersStatus
+
+> `const` **ContractorPaymentGroupWithBlockersStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroupwithblockers.ts:23](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroupwithblockers.ts#L23)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentgroupwithblockersstatusfunded"></a> `Funded` | `"Funded"` |
+| <a id="property-contractorpaymentgroupwithblockersstatusunfunded"></a> `Unfunded` | `"Unfunded"` |
+
+***
+
+<a id="contractorpaymentmethod1"></a>
+
+### ContractorPaymentMethod1
+
+> `const` **ContractorPaymentMethod1**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:67](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L67)
+
+`ContractorPaymentMethod1` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentmethod1check"></a> `Check` | `"Check"` |
+| <a id="property-contractorpaymentmethod1directdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="contractorpaymentreceiptpaymentmethod"></a>
+
+### ContractorPaymentReceiptPaymentMethod
+
+> `const` **ContractorPaymentReceiptPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentreceipt.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentreceipt.ts#L26)
+
+The payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentreceiptpaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-contractorpaymentreceiptpaymentmethodcorrectionpayment"></a> `CorrectionPayment` | `"Correction Payment"` |
+| <a id="property-contractorpaymentreceiptpaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+| <a id="property-contractorpaymentreceiptpaymentmethodhistoricalpayment"></a> `HistoricalPayment` | `"Historical Payment"` |
+
+***
+
+<a id="contractorstatus"></a>
+
+### ContractorStatus
+
+> `const` **ContractorStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:92](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L92)
+
+The current status of the member portal invitation.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorstatuscancelled"></a> `Cancelled` | `"cancelled"` |
+| <a id="property-contractorstatuscomplete"></a> `Complete` | `"complete"` |
+| <a id="property-contractorstatuspending"></a> `Pending` | `"pending"` |
+| <a id="property-contractorstatussent"></a> `Sent` | `"sent"` |
+| <a id="property-contractorstatusverified"></a> `Verified` | `"verified"` |
+
+***
+
 <a id="contractortype"></a>
 
 ### ContractorType
@@ -82,6 +488,68 @@ The contractor's type, either "Individual" or "Business".
 | ------ | ------ |
 | <a id="property-contractortypebusiness"></a> `Business` | `"Business"` |
 | <a id="property-contractortypeindividual"></a> `Individual` | `"Individual"` |
+
+***
+
+<a id="contractorupdaterequestbodytype"></a>
+
+### ContractorUpdateRequestBodyType
+
+> `const` **ContractorUpdateRequestBodyType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorupdaterequestbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorupdaterequestbody.ts#L12)
+
+The contractor type.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorupdaterequestbodytypebusiness"></a> `Business` | `"Business"` |
+| <a id="property-contractorupdaterequestbodytypeindividual"></a> `Individual` | `"Individual"` |
+
+***
+
+<a id="contractorupdaterequestbodywagetype"></a>
+
+### ContractorUpdateRequestBodyWageType
+
+> `const` **ContractorUpdateRequestBodyWageType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorupdaterequestbody.ts:28](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorupdaterequestbody.ts#L28)
+
+The contractor’s wage type.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorupdaterequestbodywagetypefixed"></a> `Fixed` | `"Fixed"` |
+| <a id="property-contractorupdaterequestbodywagetypehourly"></a> `Hourly` | `"Hourly"` |
+
+#### Remarks
+
+***
+
+<a id="customfieldtype"></a>
+
+### CustomFieldType
+
+> `const` **CustomFieldType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/customfieldtype.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/customfieldtype.ts#L11)
+
+Input type for the custom field.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-customfieldtypecurrency"></a> `Currency` | `"currency"` |
+| <a id="property-customfieldtypedate"></a> `Date` | `"date"` |
+| <a id="property-customfieldtypenumber"></a> `Number` | `"number"` |
+| <a id="property-customfieldtyperadio"></a> `Radio` | `"radio"` |
+| <a id="property-customfieldtypetext"></a> `Text` | `"text"` |
 
 ***
 
@@ -102,6 +570,177 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/i9authorizat
 | <a id="property-documenttypeforeignpassport"></a> `ForeignPassport` | `"foreign_passport"` |
 | <a id="property-documenttypeformi94"></a> `FormI94` | `"form_i94"` |
 | <a id="property-documenttypeuscisalienregistrationnumber"></a> `UscisAlienRegistrationNumber` | `"uscis_alien_registration_number"` |
+
+***
+
+<a id="employeebankaccountaccounttype"></a>
+
+### EmployeeBankAccountAccountType
+
+> `const` **EmployeeBankAccountAccountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeebankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeebankaccount.ts#L15)
+
+Bank account type
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeebankaccountaccounttypechecking"></a> `Checking` | `"Checking"` |
+| <a id="property-employeebankaccountaccounttypesavings"></a> `Savings` | `"Savings"` |
+
+***
+
+<a id="employeecurrentemploymentstatus"></a>
+
+### EmployeeCurrentEmploymentStatus
+
+> `const` **EmployeeCurrentEmploymentStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:65](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L65)
+
+`EmployeeCurrentEmploymentStatus` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeecurrentemploymentstatusfulltime"></a> `FullTime` | `"full_time"` |
+| <a id="property-employeecurrentemploymentstatusparttimetwentyplushours"></a> `PartTimeTwentyPlusHours` | `"part_time_twenty_plus_hours"` |
+| <a id="property-employeecurrentemploymentstatusparttimeundertwentyhours"></a> `PartTimeUnderTwentyHours` | `"part_time_under_twenty_hours"` |
+| <a id="property-employeecurrentemploymentstatusseasonal"></a> `Seasonal` | `"seasonal"` |
+| <a id="property-employeecurrentemploymentstatusvariable"></a> `Variable` | `"variable"` |
+
+***
+
+<a id="employeeonboardingstatus1"></a>
+
+### EmployeeOnboardingStatus1
+
+> `const` **EmployeeOnboardingStatus1**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:25](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L25)
+
+`EmployeeOnboardingStatus1` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeeonboardingstatus1adminonboardingincomplete"></a> `AdminOnboardingIncomplete` | `"admin_onboarding_incomplete"` |
+| <a id="property-employeeonboardingstatus1onboardingcompleted"></a> `OnboardingCompleted` | `"onboarding_completed"` |
+| <a id="property-employeeonboardingstatus1selfonboardingawaitingadminreview"></a> `SelfOnboardingAwaitingAdminReview` | `"self_onboarding_awaiting_admin_review"` |
+| <a id="property-employeeonboardingstatus1selfonboardingcompletedbyemployee"></a> `SelfOnboardingCompletedByEmployee` | `"self_onboarding_completed_by_employee"` |
+| <a id="property-employeeonboardingstatus1selfonboardinginvited"></a> `SelfOnboardingInvited` | `"self_onboarding_invited"` |
+| <a id="property-employeeonboardingstatus1selfonboardinginvitedoverdue"></a> `SelfOnboardingInvitedOverdue` | `"self_onboarding_invited_overdue"` |
+| <a id="property-employeeonboardingstatus1selfonboardinginvitedstarted"></a> `SelfOnboardingInvitedStarted` | `"self_onboarding_invited_started"` |
+| <a id="property-employeeonboardingstatus1selfonboardingpendinginvite"></a> `SelfOnboardingPendingInvite` | `"self_onboarding_pending_invite"` |
+
+***
+
+<a id="employeepaymentmethod1"></a>
+
+### EmployeePaymentMethod1
+
+> `const` **EmployeePaymentMethod1**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:56](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L56)
+
+The employee's payment method
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeepaymentmethod1check"></a> `Check` | `"Check"` |
+| <a id="property-employeepaymentmethod1directdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="employeepaymentmethodsplitby"></a>
+
+### EmployeePaymentMethodSplitBy
+
+> `const` **EmployeePaymentMethodSplitBy**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeepaymentmethod.ts:30](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeepaymentmethod.ts#L30)
+
+`EmployeePaymentMethodSplitBy` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeepaymentmethodsplitbyamount"></a> `Amount` | `"Amount"` |
+| <a id="property-employeepaymentmethodsplitbypercentage"></a> `Percentage` | `"Percentage"` |
+
+***
+
+<a id="employeepaymentmethodtype"></a>
+
+### EmployeePaymentMethodType
+
+> `const` **EmployeePaymentMethodType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeepaymentmethod.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeepaymentmethod.ts#L19)
+
+The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeepaymentmethodtypecheck"></a> `Check` | `"Check"` |
+| <a id="property-employeepaymentmethodtypedirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="employeestatus"></a>
+
+### EmployeeStatus
+
+> `const` **EmployeeStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:79](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L79)
+
+The current status of the member portal invitation.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-employeestatuscancelled"></a> `Cancelled` | `"cancelled"` |
+| <a id="property-employeestatuscomplete"></a> `Complete` | `"complete"` |
+| <a id="property-employeestatuspending"></a> `Pending` | `"pending"` |
+| <a id="property-employeestatussent"></a> `Sent` | `"sent"` |
+| <a id="property-employeestatusverified"></a> `Verified` | `"verified"` |
+
+***
+
+<a id="federaltaxdetailsstatus"></a>
+
+### FederalTaxDetailsStatus
+
+> `const` **FederalTaxDetailsStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxdetails.ts:56](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/federaltaxdetails.ts#L56)
+
+The status of EIN verification:
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-federaltaxdetailsstatusfailed"></a> `Failed` | `"failed"` |
+| <a id="property-federaltaxdetailsstatuspending"></a> `Pending` | `"pending"` |
+| <a id="property-federaltaxdetailsstatusverified"></a> `Verified` | `"verified"` |
+
+#### Remarks
+
+- `pending`: The EIN verification process has not completed (or the company does not yet have an EIN).
+- `verified`: The EIN has been successfully verified as a valid EIN with the IRS.
+- `failed`: The company's EIN did not pass verification. Common issues are being entered incorrectly or not matching the company's legal name.
 
 ***
 
@@ -176,6 +815,53 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/garnishment.
 
 ***
 
+<a id="id"></a>
+
+### Id
+
+> `const` **Id**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companyonboardingstatus.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companyonboardingstatus.ts#L15)
+
+The string identifier for each onboarding step
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-idaddaddresses"></a> `AddAddresses` | `"add_addresses"` |
+| <a id="property-idaddbankinfo"></a> `AddBankInfo` | `"add_bank_info"` |
+| <a id="property-idaddemployees"></a> `AddEmployees` | `"add_employees"` |
+| <a id="property-idexternalpayroll"></a> `ExternalPayroll` | `"external_payroll"` |
+| <a id="property-idfederaltaxsetup"></a> `FederalTaxSetup` | `"federal_tax_setup"` |
+| <a id="property-idpayrollschedule"></a> `PayrollSchedule` | `"payroll_schedule"` |
+| <a id="property-idselectindustry"></a> `SelectIndustry` | `"select_industry"` |
+| <a id="property-idsignallforms"></a> `SignAllForms` | `"sign_all_forms"` |
+| <a id="property-idstatesetup"></a> `StateSetup` | `"state_setup"` |
+| <a id="property-idverifybankinfo"></a> `VerifyBankInfo` | `"verify_bank_info"` |
+
+***
+
+<a id="identityverificationstatus"></a>
+
+### IdentityVerificationStatus
+
+> `const` **IdentityVerificationStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/signatory.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/signatory.ts#L12)
+
+`IdentityVerificationStatus` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-identityverificationstatusfail"></a> `Fail` | `"Fail"` |
+| <a id="property-identityverificationstatuspass"></a> `Pass` | `"Pass"` |
+| <a id="property-identityverificationstatusskipped"></a> `Skipped` | `"Skipped"` |
+
+***
+
 <a id="informationrequeststatus"></a>
 
 ### InformationRequestStatus
@@ -214,6 +900,26 @@ The type of information request
 | <a id="property-informationrequesttypecompanyonboarding"></a> `CompanyOnboarding` | `"company_onboarding"` |
 | <a id="property-informationrequesttypepaymenterror"></a> `PaymentError` | `"payment_error"` |
 | <a id="property-informationrequesttypepaymentrequest"></a> `PaymentRequest` | `"payment_request"` |
+
+***
+
+<a id="name"></a>
+
+### Name
+
+> `const` **Name**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/paidtimeoff.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/paidtimeoff.ts#L15)
+
+The name of the paid time off type.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-nameholidayhours"></a> `HolidayHours` | `"Holiday Hours"` |
+| <a id="property-namesickhours"></a> `SickHours` | `"Sick Hours"` |
+| <a id="property-namevacationhours"></a> `VacationHours` | `"Vacation Hours"` |
 
 ***
 
@@ -292,6 +998,25 @@ Payment speed. READ-ONLY.
 
 ***
 
+<a id="paymenttype"></a>
+
+### PaymentType
+
+> `const` **PaymentType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/wireinrequest.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/wireinrequest.ts#L29)
+
+Type of payment for the wire in
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-paymenttypecontractorpaymentgroup"></a> `ContractorPaymentGroup` | `"ContractorPaymentGroup"` |
+| <a id="property-paymenttypepayroll"></a> `Payroll` | `"Payroll"` |
+
+***
+
 <a id="paymentunit"></a>
 
 ### PaymentUnit
@@ -311,6 +1036,27 @@ The unit accompanying the compensation rate. If the employee is an owner, rate s
 | <a id="property-paymentunitpaycheck"></a> `Paycheck` | `"Paycheck"` |
 | <a id="property-paymentunitweek"></a> `Week` | `"Week"` |
 | <a id="property-paymentunityear"></a> `Year` | `"Year"` |
+
+***
+
+<a id="payrollcreditblockertypestatus"></a>
+
+### PayrollCreditBlockerTypeStatus
+
+> `const` **PayrollCreditBlockerTypeStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockertype.ts:37](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockertype.ts#L37)
+
+The status of the credit blocker
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollcreditblockertypestatusfailed"></a> `Failed` | `"failed"` |
+| <a id="property-payrollcreditblockertypestatuspendingreview"></a> `PendingReview` | `"pending_review"` |
+| <a id="property-payrollcreditblockertypestatusresolved"></a> `Resolved` | `"resolved"` |
+| <a id="property-payrollcreditblockertypestatusunresolved"></a> `Unresolved` | `"unresolved"` |
 
 ***
 
@@ -356,6 +1102,217 @@ The status of the payroll processing request
 
 ***
 
+<a id="payrollreceiptpaymentmethod"></a>
+
+### PayrollReceiptPaymentMethod
+
+> `const` **PayrollReceiptPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollreceipt.ts:52](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollreceipt.ts#L52)
+
+The employee's compensation payment method.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollreceiptpaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-payrollreceiptpaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="payrollshowamounttype"></a>
+
+### PayrollShowAmountType
+
+> `const` **PayrollShowAmountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:382](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L382)
+
+The amount type of the deduction for the pay period. Only present for unprocessed payrolls.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollshowamounttypefixed"></a> `Fixed` | `"fixed"` |
+| <a id="property-payrollshowamounttypepercent"></a> `Percent` | `"percent"` |
+
+***
+
+<a id="payrollshowpaymentmethod"></a>
+
+### PayrollShowPaymentMethod
+
+> `const` **PayrollShowPaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:291](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L291)
+
+The employee's compensation payment method. Is *only* `Historical` when retrieving external payrolls initially run outside of Gusto, then put into Gusto.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollshowpaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-payrollshowpaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+| <a id="property-payrollshowpaymentmethodhistorical"></a> `Historical` | `"Historical"` |
+
+***
+
+<a id="payrollsubmissionblockertypestatus"></a>
+
+### PayrollSubmissionBlockerTypeStatus
+
+> `const` **PayrollSubmissionBlockerTypeStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollsubmissionblockertype.ts:30](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollsubmissionblockertype.ts#L30)
+
+The status of the submission blocker.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollsubmissionblockertypestatusresolved"></a> `Resolved` | `"resolved"` |
+| <a id="property-payrollsubmissionblockertypestatusunresolved"></a> `Unresolved` | `"unresolved"` |
+
+***
+
+<a id="payrolltype"></a>
+
+### PayrollType
+
+> `const` **PayrollType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payperiod.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payperiod.ts#L15)
+
+Whether it is regular pay period or transition pay period.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrolltyperegular"></a> `Regular` | `"regular"` |
+| <a id="property-payrolltypetransition"></a> `Transition` | `"transition"` |
+
+***
+
+<a id="payrollupdateamounttype"></a>
+
+### PayrollUpdateAmountType
+
+> `const` **PayrollUpdateAmountType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:62](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L62)
+
+The amount type of the deduction for the pay period.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollupdateamounttypefixed"></a> `Fixed` | `"fixed"` |
+| <a id="property-payrollupdateamounttypepercent"></a> `Percent` | `"percent"` |
+
+***
+
+<a id="payrollupdatepaymentmethod"></a>
+
+### PayrollUpdatePaymentMethod
+
+> `const` **PayrollUpdatePaymentMethod**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L12)
+
+The employee's compensation payment method. Invalid values will be ignored.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollupdatepaymentmethodcheck"></a> `Check` | `"Check"` |
+| <a id="property-payrollupdatepaymentmethoddirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
+<a id="payrollwithholdingpayperiodtype"></a>
+
+### PayrollWithholdingPayPeriodType
+
+> `const` **PayrollWithholdingPayPeriodType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:78](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L78)
+
+`PayrollWithholdingPayPeriodType` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payrollwithholdingpayperiodtypeannually"></a> `Annually` | `"Annually"` |
+| <a id="property-payrollwithholdingpayperiodtypeeveryotherweek"></a> `EveryOtherWeek` | `"Every other week"` |
+| <a id="property-payrollwithholdingpayperiodtypeeveryweek"></a> `EveryWeek` | `"Every week"` |
+| <a id="property-payrollwithholdingpayperiodtypemonthly"></a> `Monthly` | `"Monthly"` |
+| <a id="property-payrollwithholdingpayperiodtypequarterly"></a> `Quarterly` | `"Quarterly"` |
+| <a id="property-payrollwithholdingpayperiodtypesemiannually"></a> `Semiannually` | `"Semiannually"` |
+| <a id="property-payrollwithholdingpayperiodtypetwicepermonth"></a> `TwicePerMonth` | `"Twice per month"` |
+
+***
+
+<a id="payschedulefrequency"></a>
+
+### PayScheduleFrequency
+
+> `const` **PayScheduleFrequency**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payschedulefrequency.ts:22](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payschedulefrequency.ts#L22)
+
+The frequency that employees on this pay schedule are paid with Gusto.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payschedulefrequencyannually"></a> `Annually` | `"Annually"` |
+| <a id="property-payschedulefrequencyeveryotherweek"></a> `EveryOtherWeek` | `"Every other week"` |
+| <a id="property-payschedulefrequencyeveryweek"></a> `EveryWeek` | `"Every week"` |
+| <a id="property-payschedulefrequencymonthly"></a> `Monthly` | `"Monthly"` |
+| <a id="property-payschedulefrequencyquarterly"></a> `Quarterly` | `"Quarterly"` |
+| <a id="property-payschedulefrequencytwicepermonth"></a> `TwicePerMonth` | `"Twice per month"` |
+
+#### Remarks
+
+READ-ONLY in responses. Possible values:
+
+- `Every week`: Employees are paid weekly.
+- `Every other week`: Employees are paid bi-weekly (every two weeks).
+- `Twice per month`: Employees are paid on two fixed days each month (e.g. 1st and 15th); use day_1 and day_2.
+- `Monthly`: Employees are paid once per month; use day_1 for the pay day.
+- `Quarterly`: Employees are paid every three months.
+- `Annually`: Employees are paid once per year.
+
+***
+
+<a id="plaidstatus"></a>
+
+### PlaidStatus
+
+> `const` **PlaidStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:72](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L72)
+
+`PlaidStatus` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-plaidstatusconnected"></a> `Connected` | `"connected"` |
+| <a id="property-plaidstatusdisconnected"></a> `Disconnected` | `"disconnected"` |
+
+***
+
 <a id="policytype"></a>
 
 ### PolicyType
@@ -381,6 +1338,50 @@ Type of the time off policy. Only "vacation" and "sick" can be created through t
 | <a id="property-policytypevacation"></a> `Vacation` | `"vacation"` |
 | <a id="property-policytypevolunteer"></a> `Volunteer` | `"volunteer"` |
 | <a id="property-policytypeweather"></a> `Weather` | `"weather"` |
+
+***
+
+<a id="ratetype"></a>
+
+### RateType
+
+> `const` **RateType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:81](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L81)
+
+[for `workers_compensation_rate`] The type of rate being collected. Either:
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-ratetypecurrencyperhour"></a> `CurrencyPerHour` | `"currency_per_hour"` |
+| <a id="property-ratetypepercent"></a> `Percent` | `"percent"` |
+
+#### Remarks
+
+- `percent`: A percentage formatted as a decimal, e.g. `0.01` for 1%
+  - `currency_per_hour`: A dollar amount per hour, e.g. `3.24` for $3.24/hr
+
+***
+
+<a id="recipienttype"></a>
+
+### RecipientType
+
+> `const` **RecipientType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/document.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/document.ts#L15)
+
+The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-recipienttypecompany"></a> `Company` | `"Company"` |
+| <a id="property-recipienttypecontractor"></a> `Contractor` | `"Contractor"` |
+| <a id="property-recipienttypeemployee"></a> `Employee` | `"Employee"` |
 
 ***
 
@@ -482,6 +1483,131 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxde
 
 ***
 
+<a id="taxrequirementmetadatatype"></a>
+
+### TaxRequirementMetadataType
+
+> `const` **TaxRequirementMetadataType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L26)
+
+Describes the type of requirement - each type may have additional metadata properties to describe possible values, formats, etc.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-taxrequirementmetadatatypeaccountnumber"></a> `AccountNumber` | `"account_number"` |
+| <a id="property-taxrequirementmetadatatypecurrency"></a> `Currency` | `"currency"` |
+| <a id="property-taxrequirementmetadatatypepercent"></a> `Percent` | `"percent"` |
+| <a id="property-taxrequirementmetadatatyperadio"></a> `Radio` | `"radio"` |
+| <a id="property-taxrequirementmetadatatypeselect"></a> `Select` | `"select"` |
+| <a id="property-taxrequirementmetadatatypetaxrate"></a> `TaxRate` | `"tax_rate"` |
+| <a id="property-taxrequirementmetadatatypetext"></a> `Text` | `"text"` |
+| <a id="property-taxrequirementmetadatatypeworkerscompensationrate"></a> `WorkersCompensationRate` | `"workers_compensation_rate"` |
+
+#### Remarks
+
+- `text`: free-text input, no additional requirements
+- `currency`: a value representing a dollar amount, e.g. `374.55` representing `$374.55`
+- `radio`: choose one of options provided, see `options`
+- `select`: choose one of options provided, see `options`
+- `percent`: A decimal value representing a percentage, e.g. `0.034` representing `3.4%`
+- `account_number`: An account number for a tax agency, more information provided by `mask` and `prefix`
+- `tax_rate`: A decimal value representing a tax rate, e.g. `0.034` representing a tax rate of `3.4%`, see `validation` for additional validation guidance
+- `workers_compensation_rate`: A decimal value representing a percentage, see `risk_class_code`, `risk_class_description`, and `rate_type`
+
+***
+
+<a id="taxrequirementmetadatavalidationtype"></a>
+
+### TaxRequirementMetadataValidationType
+
+> `const` **TaxRequirementMetadataValidationType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:97](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L97)
+
+Describes the type of tax_rate validation rule
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-taxrequirementmetadatavalidationtypeminmax"></a> `MinMax` | `"min_max"` |
+| <a id="property-taxrequirementmetadatavalidationtypeoneof"></a> `OneOf` | `"one_of"` |
+
+***
+
+<a id="timeoffpolicyrequestpolicytype"></a>
+
+### TimeOffPolicyRequestPolicyType
+
+> `const` **TimeOffPolicyRequestPolicyType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicyrequest.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicyrequest.ts#L12)
+
+Type of the time off policy. Currently only "vacation" and "sick" are supported
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-timeoffpolicyrequestpolicytypesick"></a> `Sick` | `"sick"` |
+| <a id="property-timeoffpolicyrequestpolicytypevacation"></a> `Vacation` | `"vacation"` |
+
+***
+
+<a id="verificationstatus"></a>
+
+### VerificationStatus
+
+> `const` **VerificationStatus**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:33](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L33)
+
+The verification status of the bank account.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-verificationstatusawaitingdeposits"></a> `AwaitingDeposits` | `"awaiting_deposits"` |
+| <a id="property-verificationstatusreadyforverification"></a> `ReadyForVerification` | `"ready_for_verification"` |
+| <a id="property-verificationstatusverified"></a> `Verified` | `"verified"` |
+
+#### Remarks
+
+'awaiting_deposits' means the bank account is just created and money is being transferred.
+'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint.
+'verified' means the bank account is verified.
+
+***
+
+<a id="verificationtype"></a>
+
+### VerificationType
+
+> `const` **VerificationType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:57](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L57)
+
+The verification type of the bank account.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-verificationtypebankdeposits"></a> `BankDeposits` | `"bank_deposits"` |
+| <a id="property-verificationtypeplaid"></a> `Plaid` | `"plaid"` |
+| <a id="property-verificationtypeplaidexternal"></a> `PlaidExternal` | `"plaid_external"` |
+
+#### Remarks
+
+'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits.
+'plaid' means the bank account is connected through Plaid.
+
+***
+
 <a id="wagetype"></a>
 
 ### WageType
@@ -522,6 +1648,42 @@ Status of the wire in
 
 ## Type Aliases
 
+<a id="accounttype-1"></a>
+
+### AccountType
+
+> **AccountType** = `ClosedEnum`\<*typeof* [`AccountType`](#accounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L15)
+
+Bank account type
+
+***
+
+<a id="accrualmethod-1"></a>
+
+### AccrualMethod
+
+> **AccrualMethod** = `ClosedEnum`\<*typeof* [`AccrualMethod`](#accrualmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicyrequest.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicyrequest.ts#L26)
+
+Accrual method of the time off policy
+
+***
+
+<a id="address"></a>
+
+### Address
+
+> **Address** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:39](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L39)
+
+The contractor’s home address.
+
+***
+
 <a id="agencies"></a>
 
 ### Agencies
@@ -536,11 +1698,54 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupport
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-agenciesfipscodes"></a> `fipsCodes?` | `FipsCodes`[] | FIPS codes for state or county child support orders |
+| <a id="property-agenciesfipscodes"></a> `fipsCodes?` | [`FipsCodes`](#fipscodes)[] | FIPS codes for state or county child support orders |
 | <a id="property-agenciesmanualpaymentrequired"></a> `manualPaymentRequired?` | `boolean` | Specifies if remitting payment to the agency is required outside of Gusto. If true, Gusto includes garnishment amounts for this agency in payroll calculation, but does not debit for or remit payment to the agency automatically. As of September 2024, only garnishments for South Carolina Integrated Child Support Services require manual payment. |
 | <a id="property-agenciesname"></a> `name?` | `string` | Name of state child support agency |
-| <a id="property-agenciesrequiredattributes"></a> `requiredAttributes?` | `RequiredAttributes`[] | Describes which child support case identifying attributes are required for this agency. While most agencies only require a single identifier, some (e.g. OH) require multiple identifiers. |
+| <a id="property-agenciesrequiredattributes"></a> `requiredAttributes?` | [`RequiredAttributes`](#requiredattributes)[] | Describes which child support case identifying attributes are required for this agency. While most agencies only require a single identifier, some (e.g. OH) require multiple identifiers. |
 | <a id="property-agenciesstate"></a> `state?` | `string` | Two letter state abbreviation |
+
+***
+
+<a id="amounttype-1"></a>
+
+### AmountType
+
+> **AmountType** = `ClosedEnum`\<*typeof* [`AmountType`](#amounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemployeecompensationstype.ts:106](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollemployeecompensationstype.ts#L106)
+
+The amount type of the deduction for the pay period. Only present for unprocessed payrolls.
+
+***
+
+<a id="answers"></a>
+
+### Answers
+
+> **Answers** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestatetaxesrequest.ts:10](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeestatetaxesrequest.ts#L10)
+
+`Answers` entity from the Gusto Embedded API.
+
+***
+
+<a id="applicableif"></a>
+
+### ApplicableIf
+
+> **ApplicableIf** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirement.ts:24](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirement.ts#L24)
+
+`ApplicableIf` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-applicableifkey"></a> `key?` | `string` | An identifier for an individual requirement. Uniqueness is guaranteed within a requirement set. |
+| <a id="property-applicableifvalue"></a> `value?` | `boolean` \| `string` \| `number` \| `null` | The required value of the requirement identified by `key` |
 
 ***
 
@@ -553,6 +1758,42 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupport
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/i9authorization.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/i9authorization.ts#L15)
 
 The employee's authorization status
+
+***
+
+<a id="childsupportdatakey-1"></a>
+
+### ChildSupportDataKey
+
+> **ChildSupportDataKey** = `ClosedEnum`\<*typeof* [`ChildSupportDataKey`](#childsupportdatakey)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupportdata.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/childsupportdata.ts#L26)
+
+A required attribute when creating a garnishment for this state agency. The current values are listed as an enum; though unlikely, values could be added if state agency requirements change in the future.
+
+***
+
+<a id="christmasday"></a>
+
+### ChristmasDay
+
+> **ChristmasDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:71](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L71)
+
+`ChristmasDay` entity from the Gusto Embedded API.
+
+***
+
+<a id="columbusday"></a>
+
+### ColumbusDay
+
+> **ColumbusDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:53](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L53)
+
+`ColumbusDay` entity from the Gusto Embedded API.
 
 ***
 
@@ -571,17 +1812,29 @@ The company bank account
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-companybankaccountuuid"></a> `uuid` | `string` | UUID of the bank account |
-| <a id="property-companybankaccountaccounttype"></a> `accountType?` | `AccountType` | Bank account type |
+| <a id="property-companybankaccountaccounttype"></a> `accountType?` | [`AccountType`](#accounttype-1) | Bank account type |
 | <a id="property-companybankaccountbalancefetcheddate"></a> `balanceFetchedDate?` | `string` \| `null` | The balance fetch date associated with the last_cached_balance. Only applies when verification type is Plaid. |
 | <a id="property-companybankaccountcompanyuuid"></a> `companyUuid?` | `string` | UUID of the company |
 | <a id="property-companybankaccounthiddenaccountnumber"></a> `hiddenAccountNumber?` | `string` | Masked bank account number |
 | <a id="property-companybankaccountlastcachedbalance"></a> `lastCachedBalance?` | `string` \| `null` | The last fetch balance for the bank account. Please be aware that this amount does not reflect the most up-to-date balance and only applies when the verification type is Plaid. |
 | <a id="property-companybankaccountname"></a> `name?` | `string` | Name of bank account |
-| <a id="property-companybankaccountplaidstatus"></a> `plaidStatus?` | `PlaidStatus` \| `null` | The Plaid connection status of the bank account. Only applies when verification type is Plaid. |
+| <a id="property-companybankaccountplaidstatus"></a> `plaidStatus?` | [`PlaidStatus`](#plaidstatus-1) \| `null` | The Plaid connection status of the bank account. Only applies when verification type is Plaid. |
 | <a id="property-companybankaccountreversewireenabled"></a> `reverseWireEnabled?` | `boolean` \| `null` | Whether the company has at least one bank account with active reverse-wire **Remarks** funding. The same value is returned on every bank-account row in this response. |
 | <a id="property-companybankaccountroutingnumber"></a> `routingNumber?` | `string` | The bank account's routing number |
-| <a id="property-companybankaccountverificationstatus"></a> `verificationStatus?` | `VerificationStatus` | The verification status of the bank account. **Remarks** 'awaiting_deposits' means the bank account is just created and money is being transferred. 'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint. 'verified' means the bank account is verified. |
-| <a id="property-companybankaccountverificationtype"></a> `verificationType?` | `VerificationType` | The verification type of the bank account. **Remarks** 'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits. 'plaid' means the bank account is connected through Plaid. |
+| <a id="property-companybankaccountverificationstatus"></a> `verificationStatus?` | [`VerificationStatus`](#verificationstatus-1) | The verification status of the bank account. **Remarks** 'awaiting_deposits' means the bank account is just created and money is being transferred. 'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint. 'verified' means the bank account is verified. |
+| <a id="property-companybankaccountverificationtype"></a> `verificationType?` | [`VerificationType`](#verificationtype-1) | The verification type of the bank account. **Remarks** 'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits. 'plaid' means the bank account is connected through Plaid. |
+
+***
+
+<a id="companyonboardingstatusrequirements-1"></a>
+
+### CompanyOnboardingStatusRequirements
+
+> **CompanyOnboardingStatusRequirements** = `ClosedEnum`\<*typeof* [`CompanyOnboardingStatusRequirements`](#companyonboardingstatusrequirements)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companyonboardingstatus.ts:32](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companyonboardingstatus.ts#L32)
+
+`CompanyOnboardingStatusRequirements` entity from the Gusto Embedded API.
 
 ***
 
@@ -629,7 +1882,7 @@ The representation of a contractor (individual or business) in Gusto.
 | ------ | ------ | ------ |
 | <a id="property-contractorisactive"></a> `isActive` | `boolean` | The status of the contractor with the company. |
 | <a id="property-contractoruuid"></a> `uuid` | `string` | The UUID of the contractor in Gusto. |
-| <a id="property-contractoraddress"></a> `address?` | `Address` \| `null` | The contractor’s home address. |
+| <a id="property-contractoraddress"></a> `address?` | [`Address`](#address) \| `null` | The contractor’s home address. |
 | <a id="property-contractorbusinessname"></a> `businessName?` | `string` \| `null` | The name of the contractor business. This attribute is required for “Business” contractors and will be ignored for “Individual” contractors. |
 | <a id="property-contractorcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company the contractor is employed by. |
 | <a id="property-contractordepartment"></a> `department?` | `string` \| `null` | The contractor's department in the company. |
@@ -645,16 +1898,16 @@ The representation of a contractor (individual or business) in Gusto.
 | <a id="property-contractorhasssn"></a> `hasSsn?` | `boolean` | Indicates whether the contractor has an SSN in Gusto. |
 | <a id="property-contractorhourlyrate"></a> `hourlyRate?` | `string` | The contractor’s hourly rate. This attribute is required if the wage_type is “Hourly”. |
 | <a id="property-contractorlastname"></a> `lastName?` | `string` \| `null` | The contractor’s last name. This attribute is required for “Individual” contractors and will be ignored for “Business” contractors. |
-| <a id="property-contractormemberportalinvitationstatus"></a> `memberPortalInvitationStatus?` | `ContractorMemberPortalInvitationStatus` \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
+| <a id="property-contractormemberportalinvitationstatus"></a> `memberPortalInvitationStatus?` | [`ContractorMemberPortalInvitationStatus`](#contractormemberportalinvitationstatus) \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
 | <a id="property-contractormiddleinitial"></a> `middleInitial?` | `string` \| `null` | The contractor’s middle initial. This attribute is optional for “Individual” contractors and will be ignored for “Business” contractors. |
 | <a id="property-contractoronboarded"></a> `onboarded?` | `boolean` | The updated onboarding status for the contractor |
 | <a id="property-contractoronboardingstatus"></a> `onboardingStatus?` | [`ContractorOnboardingStatus1`](#contractoronboardingstatus1-1) | One of the "onboarding_status" enum values. |
 | <a id="property-contractorpartnerportalinvitationsent"></a> `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this contractor. Only included when the include param has the portal_invitations value set. |
-| <a id="property-contractorpaymentmethod"></a> `paymentMethod?` | `ContractorPaymentMethod1` \| `null` | The contractor's payment method. |
+| <a id="property-contractorpaymentmethod"></a> `paymentMethod?` | [`ContractorPaymentMethod1`](#contractorpaymentmethod1-1) \| `null` | The contractor's payment method. |
 | <a id="property-contractorrehirecancellationeligible"></a> `rehireCancellationEligible?` | `boolean` | Whether the contractor's pending rehire can be cancelled. |
 | <a id="property-contractorstartdate"></a> `startDate?` | `string` | The contractor's start date. |
 | <a id="property-contractortype"></a> `type?` | [`ContractorType`](#contractortype-1) | The contractor's type, either "Individual" or "Business". |
-| <a id="property-contractorupcomingemployment"></a> `upcomingEmployment?` | `UpcomingEmployment` \| `null` | The contractor's upcoming employment details, if a rehire is scheduled. |
+| <a id="property-contractorupcomingemployment"></a> `upcomingEmployment?` | [`UpcomingEmployment`](#upcomingemployment) \| `null` | The contractor's upcoming employment details, if a rehire is scheduled. |
 | <a id="property-contractorversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 | <a id="property-contractorwagetype"></a> `wageType?` | [`WageType`](#wagetype-1) | The contractor's wage type, either "Fixed" or "Hourly". |
 | <a id="property-contractorworkstate"></a> `workState?` | `string` \| `null` | State where the contractor will be conducting the majority of their work for the company. **Remarks** This value is used when generating the new hire report. |
@@ -695,12 +1948,24 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorba
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-contractorbankaccountaccounttype"></a> `accountType` | `ContractorBankAccountAccountType` | Bank account type |
+| <a id="property-contractorbankaccountaccounttype"></a> `accountType` | [`ContractorBankAccountAccountType`](#contractorbankaccountaccounttype-1) | Bank account type |
 | <a id="property-contractorbankaccountcontractoruuid"></a> `contractorUuid` | `string` | UUID of the contractor |
 | <a id="property-contractorbankaccounthiddenaccountnumber"></a> `hiddenAccountNumber` | `string` | Masked bank account number |
 | <a id="property-contractorbankaccountname"></a> `name` | `string` | Name for the bank account |
 | <a id="property-contractorbankaccountroutingnumber"></a> `routingNumber` | `string` | The bank account's routing number |
 | <a id="property-contractorbankaccountuuid"></a> `uuid` | `string` | UUID of the bank account |
+
+***
+
+<a id="contractorbankaccountaccounttype-1"></a>
+
+### ContractorBankAccountAccountType
+
+> **ContractorBankAccountAccountType** = `ClosedEnum`\<*typeof* [`ContractorBankAccountAccountType`](#contractorbankaccountaccounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorbankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorbankaccount.ts#L15)
+
+Bank account type
 
 ***
 
@@ -719,7 +1984,7 @@ Request body for creating a contractor.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-contractorcreaterequestbodystartdate"></a> `startDate` | `string` | The day when the contractor will start working for the company. **Remarks** |
-| <a id="property-contractorcreaterequestbodywagetype"></a> `wageType` | `ContractorCreateRequestBodyWageType` | The contractor’s wage type. **Remarks** |
+| <a id="property-contractorcreaterequestbodywagetype"></a> `wageType` | [`ContractorCreateRequestBodyWageType`](#contractorcreaterequestbodywagetype-1) | The contractor’s wage type. **Remarks** |
 | <a id="property-contractorcreaterequestbodybusinessname"></a> `businessName?` | `string` | The name of the contractor business. This attribute is required for `Business` contractors and will be ignored for `Individual` contractors. |
 | <a id="property-contractorcreaterequestbodyein"></a> `ein?` | `string` | The employer identification number of the contractor business. **Remarks** This attribute is optional for `Business` contractors and will be ignored for `Individual` contractors. |
 | <a id="property-contractorcreaterequestbodyemail"></a> `email?` | `string` | The contractor’s email address. |
@@ -731,8 +1996,55 @@ Request body for creating a contractor.
 | <a id="property-contractorcreaterequestbodymiddleinitial"></a> `middleInitial?` | `string` | The contractor’s middle initial. **Remarks** This attribute is optional for `Individual` contractors and will be ignored for `Business` contractors. |
 | <a id="property-contractorcreaterequestbodyselfonboarding"></a> `selfOnboarding?` | `boolean` | Whether the contractor or the payroll admin will complete onboarding in Gusto. **Remarks** Self-onboarding is recommended so that contractors receive Gusto accounts. If self_onboarding is true, then email is required. |
 | <a id="property-contractorcreaterequestbodyssn"></a> `ssn?` | `string` | This attribute is optional for `Individual` contractors and will be ignored for `Business` contractors. **Remarks** Social security number is needed to file the annual 1099 tax form. |
-| <a id="property-contractorcreaterequestbodytype"></a> `type?` | `ContractorCreateRequestBodyType` | The contractor type. |
+| <a id="property-contractorcreaterequestbodytype"></a> `type?` | [`ContractorCreateRequestBodyType`](#contractorcreaterequestbodytype-1) | The contractor type. |
 | <a id="property-contractorcreaterequestbodyworkstate"></a> `workState?` | `string` \| `null` | State where the contractor will be conducting the majority of their work for the company. **Remarks** This value is used when generating the new hire report. This attribute is required for `Individual` contractors if `file_new_hire_report` is true and will be ignored for `Business` contractors. |
+
+***
+
+<a id="contractorcreaterequestbodytype-1"></a>
+
+### ContractorCreateRequestBodyType
+
+> **ContractorCreateRequestBodyType** = `ClosedEnum`\<*typeof* [`ContractorCreateRequestBodyType`](#contractorcreaterequestbodytype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorcreaterequestbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorcreaterequestbody.ts#L12)
+
+The contractor type.
+
+***
+
+<a id="contractorcreaterequestbodywagetype-1"></a>
+
+### ContractorCreateRequestBodyWageType
+
+> **ContractorCreateRequestBodyWageType** = `ClosedEnum`\<*typeof* [`ContractorCreateRequestBodyWageType`](#contractorcreaterequestbodywagetype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorcreaterequestbody.ts:28](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorcreaterequestbody.ts#L28)
+
+The contractor’s wage type.
+
+#### Remarks
+
+***
+
+<a id="contractormemberportalinvitationstatus"></a>
+
+### ContractorMemberPortalInvitationStatus
+
+> **ContractorMemberPortalInvitationStatus** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:107](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L107)
+
+Member portal invitation status information. Only included when the include param has the portal_invitations value set.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractormemberportalinvitationstatuslastpasswordresentat"></a> `lastPasswordResentAt?` | `Date` \| `null` | The date and time when the password reset was last resent. |
+| <a id="property-contractormemberportalinvitationstatusstatus"></a> `status?` | [`ContractorStatus`](#contractorstatus-1) | The current status of the member portal invitation. |
+| <a id="property-contractormemberportalinvitationstatustokenexpired"></a> `tokenExpired?` | `boolean` \| `null` | Whether the invitation token has expired. |
+| <a id="property-contractormemberportalinvitationstatuswelcomeemailsentat"></a> `welcomeEmailSentAt?` | `Date` \| `null` | The date and time when the welcome email was sent. |
 
 ***
 
@@ -767,13 +2079,25 @@ The representation of a single contractor payment.
 | <a id="property-contractorpaymentforgrouphourlyrate"></a> `hourlyRate?` | `string` | The rate per hour worked for the payment. |
 | <a id="property-contractorpaymentforgrouphours"></a> `hours?` | `string` | The number of hours worked for the payment. |
 | <a id="property-contractorpaymentforgroupmaycancel"></a> `mayCancel?` | `boolean` | Determine if the contractor payment can be cancelled. |
-| <a id="property-contractorpaymentforgrouppaymentmethod"></a> `paymentMethod?` | `ContractorPaymentForGroupPaymentMethod` | The payment method. |
+| <a id="property-contractorpaymentforgrouppaymentmethod"></a> `paymentMethod?` | [`ContractorPaymentForGroupPaymentMethod`](#contractorpaymentforgrouppaymentmethod-1) | The payment method. |
 | <a id="property-contractorpaymentforgroupreimbursement"></a> `reimbursement?` | `string` | The reimbursement amount in the payment. |
-| <a id="property-contractorpaymentforgroupstatus"></a> `status?` | `ContractorPaymentForGroupStatus` | The status of the contractor payment. Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`. |
+| <a id="property-contractorpaymentforgroupstatus"></a> `status?` | [`ContractorPaymentForGroupStatus`](#contractorpaymentforgroupstatus-1) | The status of the contractor payment. Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`. |
 | <a id="property-contractorpaymentforgroupuuid"></a> `uuid?` | `string` | The unique identifier of the contractor payment in Gusto. |
 | <a id="property-contractorpaymentforgroupwage"></a> `wage?` | `string` | The fixed wage of the payment, regardless of hours worked. |
 | <a id="property-contractorpaymentforgroupwagetotal"></a> `wageTotal?` | `string` | (hours * hourly_rate) + wage + bonus |
-| <a id="property-contractorpaymentforgroupwagetype"></a> `wageType?` | `ContractorPaymentForGroupWageType` | The wage type for the payment. |
+| <a id="property-contractorpaymentforgroupwagetype"></a> `wageType?` | [`ContractorPaymentForGroupWageType`](#contractorpaymentforgroupwagetype-1) | The wage type for the payment. |
+
+***
+
+<a id="contractorpaymentforgrouppaymentmethod-1"></a>
+
+### ContractorPaymentForGroupPaymentMethod
+
+> **ContractorPaymentForGroupPaymentMethod** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupPaymentMethod`](#contractorpaymentforgrouppaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L15)
+
+The payment method.
 
 ***
 
@@ -796,13 +2120,73 @@ Preview representation of a single contractor payment with nullable uuid.
 | <a id="property-contractorpaymentforgrouppreviewhourlyrate"></a> `hourlyRate?` | `string` | The rate per hour worked for the payment. |
 | <a id="property-contractorpaymentforgrouppreviewhours"></a> `hours?` | `string` | The number of hours worked for the payment. |
 | <a id="property-contractorpaymentforgrouppreviewmaycancel"></a> `mayCancel?` | `boolean` | Determine if the contractor payment can be cancelled. |
-| <a id="property-contractorpaymentforgrouppreviewpaymentmethod"></a> `paymentMethod?` | `ContractorPaymentForGroupPreviewPaymentMethod` | The payment method. |
+| <a id="property-contractorpaymentforgrouppreviewpaymentmethod"></a> `paymentMethod?` | [`ContractorPaymentForGroupPreviewPaymentMethod`](#contractorpaymentforgrouppreviewpaymentmethod-1) | The payment method. |
 | <a id="property-contractorpaymentforgrouppreviewreimbursement"></a> `reimbursement?` | `string` | The reimbursement amount in the payment. |
-| <a id="property-contractorpaymentforgrouppreviewstatus"></a> `status?` | `ContractorPaymentForGroupPreviewStatus` | The status of the contractor payment. Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`. |
+| <a id="property-contractorpaymentforgrouppreviewstatus"></a> `status?` | [`ContractorPaymentForGroupPreviewStatus`](#contractorpaymentforgrouppreviewstatus-1) | The status of the contractor payment. Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`. |
 | <a id="property-contractorpaymentforgrouppreviewuuid"></a> `uuid?` | `string` \| `null` | The unique identifier of the contractor payment in Gusto. |
 | <a id="property-contractorpaymentforgrouppreviewwage"></a> `wage?` | `string` | The fixed wage of the payment, regardless of hours worked. |
 | <a id="property-contractorpaymentforgrouppreviewwagetotal"></a> `wageTotal?` | `string` | (hours * hourly_rate) + wage + bonus |
-| <a id="property-contractorpaymentforgrouppreviewwagetype"></a> `wageType?` | `ContractorPaymentForGroupPreviewWageType` | The wage type for the payment. |
+| <a id="property-contractorpaymentforgrouppreviewwagetype"></a> `wageType?` | [`ContractorPaymentForGroupPreviewWageType`](#contractorpaymentforgrouppreviewwagetype-1) | The wage type for the payment. |
+
+***
+
+<a id="contractorpaymentforgrouppreviewpaymentmethod-1"></a>
+
+### ContractorPaymentForGroupPreviewPaymentMethod
+
+> **ContractorPaymentForGroupPreviewPaymentMethod** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupPreviewPaymentMethod`](#contractorpaymentforgrouppreviewpaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L15)
+
+The payment method.
+
+***
+
+<a id="contractorpaymentforgrouppreviewstatus-1"></a>
+
+### ContractorPaymentForGroupPreviewStatus
+
+> **ContractorPaymentForGroupPreviewStatus** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupPreviewStatus`](#contractorpaymentforgrouppreviewstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:31](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L31)
+
+The status of the contractor payment.  Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`.
+
+***
+
+<a id="contractorpaymentforgrouppreviewwagetype-1"></a>
+
+### ContractorPaymentForGroupPreviewWageType
+
+> **ContractorPaymentForGroupPreviewWageType** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupPreviewWageType`](#contractorpaymentforgrouppreviewwagetype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgrouppreview.ts:45](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgrouppreview.ts#L45)
+
+The wage type for the payment.
+
+***
+
+<a id="contractorpaymentforgroupstatus-1"></a>
+
+### ContractorPaymentForGroupStatus
+
+> **ContractorPaymentForGroupStatus** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupStatus`](#contractorpaymentforgroupstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:31](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L31)
+
+The status of the contractor payment.  Will transition to `Funded` during payments processing if the payment should be funded, i.e. has `Direct Deposit` for payment method. Contractors payments with `Check` payment method will remain `Unfunded`.
+
+***
+
+<a id="contractorpaymentforgroupwagetype-1"></a>
+
+### ContractorPaymentForGroupWageType
+
+> **ContractorPaymentForGroupWageType** = `ClosedEnum`\<*typeof* [`ContractorPaymentForGroupWageType`](#contractorpaymentforgroupwagetype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentforgroup.ts:45](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentforgroup.ts#L45)
+
+The wage type for the payment.
 
 ***
 
@@ -826,7 +2210,7 @@ The full contractor payment group, including associated contractor payments.
 | <a id="property-contractorpaymentgroupcreditblockers"></a> `creditBlockers?` | [`PayrollCreditBlockerType`](#payrollcreditblockertype)[] | List of credit blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgroupdebitdate"></a> `debitDate?` | `string` | The debit date of the contractor payment group. |
 | <a id="property-contractorpaymentgrouppartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Whether the disbursement is partner owned. |
-| <a id="property-contractorpaymentgroupstatus"></a> `status?` | `ContractorPaymentGroupStatus` | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
+| <a id="property-contractorpaymentgroupstatus"></a> `status?` | [`ContractorPaymentGroupStatus`](#contractorpaymentgroupstatus-1) | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
 | <a id="property-contractorpaymentgroupsubmissionblockers"></a> `submissionBlockers?` | [`PayrollSubmissionBlockerType`](#payrollsubmissionblockertype)[] | List of submission blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgroupuuid"></a> `uuid?` | `string` | The unique identifier of the contractor payment group. |
 
@@ -852,9 +2236,77 @@ Preview of a contractor payment group
 | <a id="property-contractorpaymentgrouppreviewcreditblockers"></a> `creditBlockers?` | [`PayrollCreditBlockerType`](#payrollcreditblockertype)[] | List of credit blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgrouppreviewdebitdate"></a> `debitDate?` | `string` | The debit date of the contractor payment group. |
 | <a id="property-contractorpaymentgrouppreviewpartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Whether the disbursement is partner owned. |
-| <a id="property-contractorpaymentgrouppreviewstatus"></a> `status?` | `ContractorPaymentGroupPreviewStatus` | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
+| <a id="property-contractorpaymentgrouppreviewstatus"></a> `status?` | [`ContractorPaymentGroupPreviewStatus`](#contractorpaymentgrouppreviewstatus-1) | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
 | <a id="property-contractorpaymentgrouppreviewsubmissionblockers"></a> `submissionBlockers?` | [`PayrollSubmissionBlockerType`](#payrollsubmissionblockertype)[] | List of submission blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgrouppreviewuuid"></a> `uuid?` | `string` \| `null` | The unique identifier of the contractor payment group. |
+
+***
+
+<a id="contractorpaymentgrouppreviewstatus-1"></a>
+
+### ContractorPaymentGroupPreviewStatus
+
+> **ContractorPaymentGroupPreviewStatus** = `ClosedEnum`\<*typeof* [`ContractorPaymentGroupPreviewStatus`](#contractorpaymentgrouppreviewstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgrouppreview.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgrouppreview.ts#L27)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+***
+
+<a id="contractorpaymentgrouppreviewtotals"></a>
+
+### ContractorPaymentGroupPreviewTotals
+
+> **ContractorPaymentGroupPreviewTotals** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgrouppreview.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgrouppreview.ts#L38)
+
+`ContractorPaymentGroupPreviewTotals` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentgrouppreviewtotalsamount"></a> `amount?` | `string` | The total amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouppreviewtotalscheckamount"></a> `checkAmount?` | `string` | The total check amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouppreviewtotalsdebitamount"></a> `debitAmount?` | `string` | The total debit amount for the group of contractor payments. Sum of wage & reimbursement amount. |
+| <a id="property-contractorpaymentgrouppreviewtotalsreimbursementamount"></a> `reimbursementAmount?` | `string` | The total reimbursement amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouppreviewtotalswageamount"></a> `wageAmount?` | `string` | The total wage amount for the group of contractor payments. |
+
+***
+
+<a id="contractorpaymentgroupstatus-1"></a>
+
+### ContractorPaymentGroupStatus
+
+> **ContractorPaymentGroupStatus** = `ClosedEnum`\<*typeof* [`ContractorPaymentGroupStatus`](#contractorpaymentgroupstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroup.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroup.ts#L27)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+***
+
+<a id="contractorpaymentgrouptotals"></a>
+
+### ContractorPaymentGroupTotals
+
+> **ContractorPaymentGroupTotals** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroup.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroup.ts#L38)
+
+`ContractorPaymentGroupTotals` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentgrouptotalsamount"></a> `amount?` | `string` | The total amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouptotalscheckamount"></a> `checkAmount?` | `string` | The total check amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouptotalsdebitamount"></a> `debitAmount?` | `string` | The total debit amount for the group of contractor payments. Sum of wage & reimbursement amount. |
+| <a id="property-contractorpaymentgrouptotalsreimbursementamount"></a> `reimbursementAmount?` | `string` | The total reimbursement amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgrouptotalswageamount"></a> `wageAmount?` | `string` | The total wage amount for the group of contractor payments. |
 
 ***
 
@@ -878,9 +2330,55 @@ Contractor payment group with submission and credit blockers, but without indivi
 | <a id="property-contractorpaymentgroupwithblockerscreditblockers"></a> `creditBlockers?` | [`PayrollCreditBlockerType`](#payrollcreditblockertype)[] | List of credit blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgroupwithblockersdebitdate"></a> `debitDate?` | `string` | The debit date of the contractor payment group. |
 | <a id="property-contractorpaymentgroupwithblockerspartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Whether the disbursement is partner owned. |
-| <a id="property-contractorpaymentgroupwithblockersstatus"></a> `status?` | `ContractorPaymentGroupWithBlockersStatus` | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
+| <a id="property-contractorpaymentgroupwithblockersstatus"></a> `status?` | [`ContractorPaymentGroupWithBlockersStatus`](#contractorpaymentgroupwithblockersstatus-1) | The status of the contractor payment group. Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded. A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method. |
 | <a id="property-contractorpaymentgroupwithblockerssubmissionblockers"></a> `submissionBlockers?` | [`PayrollSubmissionBlockerType`](#payrollsubmissionblockertype)[] | List of submission blockers for the contractor payment group. |
 | <a id="property-contractorpaymentgroupwithblockersuuid"></a> `uuid?` | `string` | The unique identifier of the contractor payment group. |
+
+***
+
+<a id="contractorpaymentgroupwithblockersstatus-1"></a>
+
+### ContractorPaymentGroupWithBlockersStatus
+
+> **ContractorPaymentGroupWithBlockersStatus** = `ClosedEnum`\<*typeof* [`ContractorPaymentGroupWithBlockersStatus`](#contractorpaymentgroupwithblockersstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroupwithblockers.ts:23](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroupwithblockers.ts#L23)
+
+The status of the contractor payment group.  Will be `Funded` if all payments that should be funded (i.e. have `Direct Deposit` for payment method) are funded.  A group can have status `Funded` while having associated payments that have status `Unfunded`, i.e. payment with `Check` payment method.
+
+***
+
+<a id="contractorpaymentgroupwithblockerstotals"></a>
+
+### ContractorPaymentGroupWithBlockersTotals
+
+> **ContractorPaymentGroupWithBlockersTotals** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentgroupwithblockers.ts:34](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentgroupwithblockers.ts#L34)
+
+`ContractorPaymentGroupWithBlockersTotals` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentgroupwithblockerstotalsamount"></a> `amount?` | `string` | The total amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgroupwithblockerstotalscheckamount"></a> `checkAmount?` | `string` | The total check amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgroupwithblockerstotalsdebitamount"></a> `debitAmount?` | `string` | The total debit amount for the group of contractor payments. Sum of wage & reimbursement amount. |
+| <a id="property-contractorpaymentgroupwithblockerstotalsreimbursementamount"></a> `reimbursementAmount?` | `string` | The total reimbursement amount for the group of contractor payments. |
+| <a id="property-contractorpaymentgroupwithblockerstotalswageamount"></a> `wageAmount?` | `string` | The total wage amount for the group of contractor payments. |
+
+***
+
+<a id="contractorpaymentmethod1-1"></a>
+
+### ContractorPaymentMethod1
+
+> **ContractorPaymentMethod1** = `ClosedEnum`\<*typeof* [`ContractorPaymentMethod1`](#contractorpaymentmethod1)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:67](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L67)
+
+`ContractorPaymentMethod1` entity from the Gusto Embedded API.
 
 ***
 
@@ -899,17 +2397,108 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpa
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-contractorpaymentreceiptcompanyuuid"></a> `companyUuid?` | `string` | A unique identifier of the company making the contractor payment. |
-| <a id="property-contractorpaymentreceiptcontractorpayments"></a> `contractorPayments?` | `ContractorPayments`[] | An array of contractor payments for this contractor payment. |
+| <a id="property-contractorpaymentreceiptcontractorpayments"></a> `contractorPayments?` | [`ContractorPayments`](#contractorpayments)[] | An array of contractor payments for this contractor payment. |
 | <a id="property-contractorpaymentreceiptcontractorpaymentuuid"></a> `contractorPaymentUuid?` | `string` | A unique identifier of the contractor payment receipt. |
 | <a id="property-contractorpaymentreceiptdebitdate"></a> `debitDate?` | `RFCDate` | The debit date for the contractor payment. |
 | <a id="property-contractorpaymentreceiptliabilityoflicensee"></a> `liabilityOfLicensee?` | `string` | URL for information related to right to liability of licensee. Always the fixed string "https://gusto.com/about/licenses" |
 | <a id="property-contractorpaymentreceiptlicense"></a> `license?` | `string` | Always the fixed string "Your payroll provider partners with Gusto Inc. for payments processing. Gusto Inc. is a licensed money transmitter. Learn more on our license page." |
-| <a id="property-contractorpaymentreceiptlicensee"></a> `licensee?` | `ContractorPaymentReceiptLicensee` | The licensed payroll processor |
+| <a id="property-contractorpaymentreceiptlicensee"></a> `licensee?` | [`ContractorPaymentReceiptLicensee`](#contractorpaymentreceiptlicensee) | The licensed payroll processor |
 | <a id="property-contractorpaymentreceiptlicenseuri"></a> `licenseUri?` | `string` | URL for the license information for the licensed payroll processor. Always the fixed string "https://gusto.com/about/licenses" |
 | <a id="property-contractorpaymentreceiptnameofrecipient"></a> `nameOfRecipient?` | `string` | The individual or company name of the contractor receiving payment. |
 | <a id="property-contractorpaymentreceiptnameofsender"></a> `nameOfSender?` | `string` | The name of the company making the contractor payment. |
 | <a id="property-contractorpaymentreceiptrighttorefund"></a> `rightToRefund?` | `string` | URL for information related to right to refund. Always the fixed string "https://gusto.com/about/licenses" |
-| <a id="property-contractorpaymentreceipttotals"></a> `totals?` | `ContractorPaymentReceiptTotals` | The subtotals for the contractor payment. |
+| <a id="property-contractorpaymentreceipttotals"></a> `totals?` | [`ContractorPaymentReceiptTotals`](#contractorpaymentreceipttotals) | The subtotals for the contractor payment. |
+
+***
+
+<a id="contractorpaymentreceiptlicensee"></a>
+
+### ContractorPaymentReceiptLicensee
+
+> **ContractorPaymentReceiptLicensee** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentreceipt.ts:85](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentreceipt.ts#L85)
+
+The licensed payroll processor
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentreceiptlicenseeaddress"></a> `address?` | `string` | Always the fixed string "525 20th St" |
+| <a id="property-contractorpaymentreceiptlicenseecity"></a> `city?` | `string` | Always the fixed string "San Francisco" |
+| <a id="property-contractorpaymentreceiptlicenseename"></a> `name?` | `string` | Always the fixed string "Gusto, Zenpayroll Inc." |
+| <a id="property-contractorpaymentreceiptlicenseephonenumber"></a> `phoneNumber?` | `string` | Always the fixed string "4157778888" |
+| <a id="property-contractorpaymentreceiptlicenseepostalcode"></a> `postalCode?` | `string` | Always the fixed string "94107" |
+| <a id="property-contractorpaymentreceiptlicenseestate"></a> `state?` | `string` | Always the fixed string "CA" |
+
+***
+
+<a id="contractorpaymentreceiptpaymentmethod-1"></a>
+
+### ContractorPaymentReceiptPaymentMethod
+
+> **ContractorPaymentReceiptPaymentMethod** = `ClosedEnum`\<*typeof* [`ContractorPaymentReceiptPaymentMethod`](#contractorpaymentreceiptpaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentreceipt.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentreceipt.ts#L26)
+
+The payment method.
+
+***
+
+<a id="contractorpaymentreceipttotals"></a>
+
+### ContractorPaymentReceiptTotals
+
+> **ContractorPaymentReceiptTotals** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentreceipt.ts:16](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentreceipt.ts#L16)
+
+The subtotals for the contractor payment.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentreceipttotalscompanydebit"></a> `companyDebit?` | `string` | The total company debit for the contractor payment. |
+
+***
+
+<a id="contractorpayments"></a>
+
+### ContractorPayments
+
+> **ContractorPayments** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentreceipt.ts:39](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentreceipt.ts#L39)
+
+`ContractorPayments` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentsbonus"></a> `bonus?` | `string` | The bonus amount in the payment. |
+| <a id="property-contractorpaymentscontractorbusinessname"></a> `contractorBusinessName?` | `string` | The business name of the contractor. Applies when `contractor_type` is `Business`. |
+| <a id="property-contractorpaymentscontractorfirstname"></a> `contractorFirstName?` | `string` | The first name of the contractor. Applies when `contractor_type` is `Individual`. |
+| <a id="property-contractorpaymentscontractorlastname"></a> `contractorLastName?` | `string` | The last name of the contractor. Applies when `contractor_type` is `Individual`. |
+| <a id="property-contractorpaymentscontractortype"></a> `contractorType?` | `string` | The type of contractor. **Remarks** `Individual` `Business` |
+| <a id="property-contractorpaymentscontractoruuid"></a> `contractorUuid?` | `string` | The UUID of the contractor. |
+| <a id="property-contractorpaymentspaymentmethod"></a> `paymentMethod?` | [`ContractorPaymentReceiptPaymentMethod`](#contractorpaymentreceiptpaymentmethod-1) | The payment method. |
+| <a id="property-contractorpaymentsreimbursement"></a> `reimbursement?` | `string` | The reimbursement amount in the payment. |
+| <a id="property-contractorpaymentswage"></a> `wage?` | `string` | The fixed wage of the payment, regardless of hours worked. |
+
+***
+
+<a id="contractorstatus-1"></a>
+
+### ContractorStatus
+
+> **ContractorStatus** = `ClosedEnum`\<*typeof* [`ContractorStatus`](#contractorstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:92](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L92)
+
+The current status of the member portal invitation.
 
 ***
 
@@ -952,32 +2541,69 @@ Request body for updating a contractor.
 | <a id="property-contractorupdaterequestbodyselfonboarding"></a> `selfOnboarding?` | `boolean` | Whether the contractor or the payroll admin will complete onboarding in Gusto. **Remarks** Self-onboarding is recommended so that contractors receive Gusto accounts. If self_onboarding is true, then email is required. |
 | <a id="property-contractorupdaterequestbodyssn"></a> `ssn?` | `string` | This attribute is optional for `Individual` contractors and will be ignored for `Business` contractors. **Remarks** Social security number is needed to file the annual 1099 tax form. |
 | <a id="property-contractorupdaterequestbodystartdate"></a> `startDate?` | `string` | The day when the contractor will start working for the company. **Remarks** |
-| <a id="property-contractorupdaterequestbodytype"></a> `type?` | `ContractorUpdateRequestBodyType` | The contractor type. |
-| <a id="property-contractorupdaterequestbodywagetype"></a> `wageType?` | `ContractorUpdateRequestBodyWageType` | The contractor’s wage type. **Remarks** |
+| <a id="property-contractorupdaterequestbodytype"></a> `type?` | [`ContractorUpdateRequestBodyType`](#contractorupdaterequestbodytype-1) | The contractor type. |
+| <a id="property-contractorupdaterequestbodywagetype"></a> `wageType?` | [`ContractorUpdateRequestBodyWageType`](#contractorupdaterequestbodywagetype-1) | The contractor’s wage type. **Remarks** |
 | <a id="property-contractorupdaterequestbodyworkstate"></a> `workState?` | `string` \| `null` | State where the contractor will be conducting the majority of their work for the company. **Remarks** This value is used when generating the new hire report. This attribute is required for `Individual` contractors if `file_new_hire_report` is true and will be ignored for `Business` contractors. |
 
 ***
 
-<a id="department"></a>
+<a id="contractorupdaterequestbodytype-1"></a>
 
-### Department
+### ContractorUpdateRequestBodyType
 
-> **Department** = `object`
+> **ContractorUpdateRequestBodyType** = `ClosedEnum`\<*typeof* [`ContractorUpdateRequestBodyType`](#contractorupdaterequestbodytype)\>
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/department.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/department.ts#L19)
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorupdaterequestbody.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorupdaterequestbody.ts#L12)
 
-`Department` entity from the Gusto Embedded API.
+The contractor type.
+
+***
+
+<a id="contractorupdaterequestbodywagetype-1"></a>
+
+### ContractorUpdateRequestBodyWageType
+
+> **ContractorUpdateRequestBodyWageType** = `ClosedEnum`\<*typeof* [`ContractorUpdateRequestBodyWageType`](#contractorupdaterequestbodywagetype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorupdaterequestbody.ts:28](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorupdaterequestbody.ts#L28)
+
+The contractor’s wage type.
+
+#### Remarks
+
+***
+
+<a id="customfieldtype-1"></a>
+
+### CustomFieldType
+
+> **CustomFieldType** = `ClosedEnum`\<*typeof* [`CustomFieldType`](#customfieldtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/customfieldtype.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/customfieldtype.ts#L11)
+
+Input type for the custom field.
+
+***
+
+<a id="deductions"></a>
+
+### Deductions
+
+> **Deductions** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemployeecompensationstype.ts:115](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollemployeecompensationstype.ts#L115)
+
+`Deductions` entity from the Gusto Embedded API.
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-departmentcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company |
-| <a id="property-departmentcontractors"></a> `contractors?` | `Contractors`[] | Array of contractors assigned to the department. |
-| <a id="property-departmentemployees"></a> `employees?` | `DepartmentEmployees`[] | Array of employees assigned to the department. |
-| <a id="property-departmenttitle"></a> `title?` | `string` | Name of the department |
-| <a id="property-departmentuuid"></a> `uuid?` | `string` | The UUID of the department |
-| <a id="property-departmentversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+| <a id="property-deductionsamount"></a> `amount?` | `number` | The amount of the deduction for the pay period. |
+| <a id="property-deductionsamounttype"></a> `amountType?` | [`AmountType`](#amounttype-1) | The amount type of the deduction for the pay period. Only present for unprocessed payrolls. |
+| <a id="property-deductionsname"></a> `name?` | `string` | The name of the deduction. |
+| <a id="property-deductionsupdatableviapayroll"></a> `updatableViaPayroll?` | `boolean` | Whether the deduction can be updated via the payroll update endpoint. Only present for unprocessed payrolls. |
+| <a id="property-deductionsuuid"></a> `uuid?` | `string` | The UUID of the deduction. Only present for unprocessed payrolls. |
 
 ***
 
@@ -997,11 +2623,11 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/document.ts:
 | ------ | ------ | ------ |
 | <a id="property-documentdescription"></a> `description?` | `string` | The description of the document |
 | <a id="property-documentdraft"></a> `draft?` | `boolean` | If the document is in a draft state |
-| <a id="property-documentfields"></a> `fields?` | `Fields`[] | List of the document's fields and associated data. Values are set for auto-filled fields. This is only returned for documents with `required_signing` = `true`, and can be used for signing preparation. |
+| <a id="property-documentfields"></a> `fields?` | [`Fields`](#fields)[] | List of the document's fields and associated data. Values are set for auto-filled fields. This is only returned for documents with `required_signing` = `true`, and can be used for signing preparation. |
 | <a id="property-documentname"></a> `name?` | `string` | The type identifier of the document |
-| <a id="property-documentpages"></a> `pages?` | `Pages`[] | List of the document's pages and associated image URLs. This is only returned for documents with `required_signing` = `true`, and can be used for signing preparation. |
+| <a id="property-documentpages"></a> `pages?` | [`Pages`](#pages)[] | List of the document's pages and associated image URLs. This is only returned for documents with `required_signing` = `true`, and can be used for signing preparation. |
 | <a id="property-documentquarter"></a> `quarter?` | `number` \| `null` | The quarter of this document. This value is nullable and will not be present on all documents. |
-| <a id="property-documentrecipienttype"></a> `recipientType?` | `RecipientType` | The type of recipient associated with the document (will be `Contractor` for Contractor Documents) |
+| <a id="property-documentrecipienttype"></a> `recipientType?` | [`RecipientType`](#recipienttype-1) | The type of recipient associated with the document (will be `Contractor` for Contractor Documents) |
 | <a id="property-documentrecipientuuid"></a> `recipientUuid?` | `string` | Unique identifier for the recipient associated with the document |
 | <a id="property-documentrequiressigning"></a> `requiresSigning?` | `boolean` | A boolean flag that indicates whether the document needs signing or not. Note that this value will change after the document is signed. |
 | <a id="property-documentsignedat"></a> `signedAt?` | `string` \| `null` | When the document was signed (will be `null` if unsigned) |
@@ -1023,6 +2649,24 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/i9authorizat
 
 ***
 
+<a id="einverification"></a>
+
+### EinVerification
+
+> **EinVerification** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxdetails.ts:76](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/federaltaxdetails.ts#L76)
+
+Information about the status of verifying the company's Employer Identification Number (EIN)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-einverificationstatus"></a> `status?` | [`FederalTaxDetailsStatus`](#federaltaxdetailsstatus-1) | The status of EIN verification: **Remarks** - `pending`: The EIN verification process has not completed (or the company does not yet have an EIN). - `verified`: The EIN has been successfully verified as a valid EIN with the IRS. - `failed`: The company's EIN did not pass verification. Common issues are being entered incorrectly or not matching the company's legal name. |
+
+***
+
 <a id="employee"></a>
 
 ### Employee
@@ -1041,11 +2685,11 @@ The representation of an employee in Gusto.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-employeepaymentmethod"></a> `paymentMethod` | `EmployeePaymentMethod1` | The employee's payment method |
+| <a id="property-employeepaymentmethod"></a> `paymentMethod` | [`EmployeePaymentMethod1`](#employeepaymentmethod1-1) | The employee's payment method |
 | <a id="property-employeeuuid"></a> `uuid` | `string` | The UUID of the employee in Gusto. |
 | <a id="property-employeecompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company the employee is employed by. |
-| <a id="property-employeecurrentemploymentstatus"></a> `currentEmploymentStatus?` | `EmployeeCurrentEmploymentStatus` \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
-| <a id="property-employeecustomfields"></a> `customFields?` | `EmployeeCustomField`[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
+| <a id="property-employeecurrentemploymentstatus"></a> `currentEmploymentStatus?` | [`EmployeeCurrentEmploymentStatus`](#employeecurrentemploymentstatus-1) \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
+| <a id="property-employeecustomfields"></a> `customFields?` | [`EmployeeCustomField`](#employeecustomfield)[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
 | <a id="property-employeedepartment"></a> `department?` | `string` \| `null` | The employee's department in the company. |
 | <a id="property-employeedepartmentuuid"></a> `departmentUuid?` | `string` \| `null` | The UUID of the department the employee is under |
 | <a id="property-employeeemail"></a> `email?` | `string` \| `null` | The personal email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
@@ -1054,10 +2698,10 @@ The representation of an employee in Gusto.
 | <a id="property-employeehasssn"></a> `hasSsn?` | `boolean` | Indicates whether the employee has an SSN in Gusto. |
 | <a id="property-employeehiredat"></a> `hiredAt?` | `RFCDate` | The date when the employee was hired to the company |
 | <a id="property-employeemanageruuid"></a> `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
-| <a id="property-employeememberportalinvitationstatus"></a> `memberPortalInvitationStatus?` | `EmployeeMemberPortalInvitationStatus` \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
+| <a id="property-employeememberportalinvitationstatus"></a> `memberPortalInvitationStatus?` | [`EmployeeMemberPortalInvitationStatus`](#employeememberportalinvitationstatus) \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
 | <a id="property-employeeonboarded"></a> `onboarded?` | `boolean` | Whether the employee has completed onboarding. |
-| <a id="property-employeeonboardingdocumentsconfig"></a> `onboardingDocumentsConfig?` | `EmployeeOnboardingDocumentsConfig` | Configuration for an employee onboarding documents during onboarding |
-| <a id="property-employeeonboardingstatus"></a> `onboardingStatus?` | `EmployeeOnboardingStatus1` \| `null` | The current onboarding status of the employee |
+| <a id="property-employeeonboardingdocumentsconfig"></a> `onboardingDocumentsConfig?` | [`EmployeeOnboardingDocumentsConfig`](#employeeonboardingdocumentsconfig) | Configuration for an employee onboarding documents during onboarding |
+| <a id="property-employeeonboardingstatus"></a> `onboardingStatus?` | [`EmployeeOnboardingStatus1`](#employeeonboardingstatus1-1) \| `null` | The current onboarding status of the employee |
 | <a id="property-employeepartnerportalinvitationsent"></a> `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
 | <a id="property-employeessn"></a> `ssn?` | `string` | Deprecated. This field always returns an empty string. |
 | <a id="property-employeeterminated"></a> `terminated?` | `boolean` | Whether the employee is terminated. |
@@ -1105,11 +2749,23 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeebank
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-employeebankaccountuuid"></a> `uuid` | `string` | UUID of the bank account |
-| <a id="property-employeebankaccountaccounttype"></a> `accountType?` | `EmployeeBankAccountAccountType` | Bank account type |
+| <a id="property-employeebankaccountaccounttype"></a> `accountType?` | [`EmployeeBankAccountAccountType`](#employeebankaccountaccounttype-1) | Bank account type |
 | <a id="property-employeebankaccountemployeeuuid"></a> `employeeUuid?` | `string` | UUID of the employee |
 | <a id="property-employeebankaccounthiddenaccountnumber"></a> `hiddenAccountNumber?` | `string` | Masked bank account number |
 | <a id="property-employeebankaccountname"></a> `name?` | `string` | Name for the bank account |
 | <a id="property-employeebankaccountroutingnumber"></a> `routingNumber?` | `string` | The bank account's routing number |
+
+***
+
+<a id="employeebankaccountaccounttype-1"></a>
+
+### EmployeeBankAccountAccountType
+
+> **EmployeeBankAccountAccountType** = `ClosedEnum`\<*typeof* [`EmployeeBankAccountAccountType`](#employeebankaccountaccounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeebankaccount.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeebankaccount.ts#L15)
+
+Bank account type
 
 ***
 
@@ -1127,24 +2783,56 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:4
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-employeecompensationsbenefits"></a> `benefits?` | `PayrollShowBenefits`[] | An array of employee benefits for the pay period. Benefits are only included for processed payroll when the include parameter is present. |
+| <a id="property-employeecompensationsbenefits"></a> `benefits?` | [`PayrollShowBenefits`](#payrollshowbenefits)[] | An array of employee benefits for the pay period. Benefits are only included for processed payroll when the include parameter is present. |
 | <a id="property-employeecompensationscheckamount"></a> `checkAmount?` | `number` \| `null` | The employee's check amount, equal to net_pay + reimbursements. This value is only available for processed payrolls. |
-| <a id="property-employeecompensationsdeductions"></a> `deductions?` | `PayrollShowDeductions`[] | An array of employee deductions for the pay period. Only included when `deductions` is present in the `include` parameter. |
+| <a id="property-employeecompensationsdeductions"></a> `deductions?` | [`PayrollShowDeductions`](#payrollshowdeductions)[] | An array of employee deductions for the pay period. Only included when `deductions` is present in the `include` parameter. |
 | <a id="property-employeecompensationsemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
 | <a id="property-employeecompensationsexcluded"></a> `excluded?` | `boolean` | This employee will be excluded (skipped) from payroll calculation and will not be paid for the payroll. Cancelling a payroll would reset all employees' excluded back to false. |
 | <a id="property-employeecompensationsfirstname"></a> `firstName?` | `string` \| `null` | The first name of the employee. Requires `employees:read` scope. |
 | <a id="property-employeecompensationsfixedcompensations"></a> `fixedCompensations?` | [`PayrollShowFixedCompensations`](#payrollshowfixedcompensations)[] | An array of fixed compensations for the employee. Fixed compensations include tips, bonuses, and one time reimbursements. If this payroll has been processed, only fixed compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active fixed compensations are returned. |
 | <a id="property-employeecompensationsgrosspay"></a> `grossPay?` | `number` \| `null` | The employee's gross pay, equal to regular wages + cash tips + payroll tips + any other additional earnings, excluding imputed income. This value is only available for processed payrolls. |
-| <a id="property-employeecompensationshourlycompensations"></a> `hourlyCompensations?` | `PayrollShowHourlyCompensations`[] | An array of hourly compensations for the employee. Hourly compensations include regular, overtime, and double overtime hours. If this payroll has been processed, only hourly compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active hourly compensations are returned. |
+| <a id="property-employeecompensationshourlycompensations"></a> `hourlyCompensations?` | [`PayrollShowHourlyCompensations`](#payrollshowhourlycompensations)[] | An array of hourly compensations for the employee. Hourly compensations include regular, overtime, and double overtime hours. If this payroll has been processed, only hourly compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active hourly compensations are returned. |
 | <a id="property-employeecompensationslastname"></a> `lastName?` | `string` \| `null` | The last name of the employee. Requires `employees:read` scope. |
 | <a id="property-employeecompensationsmemo"></a> `memo?` | `string` \| `null` | Custom text that will be printed as a personal note to the employee on a paystub. |
 | <a id="property-employeecompensationsnetpay"></a> `netPay?` | `number` \| `null` | The employee's net pay, equal to gross_pay - employee taxes - employee deductions or garnishments - cash tips. This value is only available for processed payrolls. |
-| <a id="property-employeecompensationspaidtimeoff"></a> `paidTimeOff?` | `PayrollShowPaidTimeOff`[] | An array of all paid time off the employee is eligible for this pay period. |
-| <a id="property-employeecompensationspaymentmethod"></a> `paymentMethod?` | `PayrollShowPaymentMethod` \| `null` | The employee's compensation payment method. Is *only* `Historical` when retrieving external payrolls initially run outside of Gusto, then put into Gusto. |
+| <a id="property-employeecompensationspaidtimeoff"></a> `paidTimeOff?` | [`PayrollShowPaidTimeOff`](#payrollshowpaidtimeoff)[] | An array of all paid time off the employee is eligible for this pay period. |
+| <a id="property-employeecompensationspaymentmethod"></a> `paymentMethod?` | [`PayrollShowPaymentMethod`](#payrollshowpaymentmethod-1) \| `null` | The employee's compensation payment method. Is *only* `Historical` when retrieving external payrolls initially run outside of Gusto, then put into Gusto. |
 | <a id="property-employeecompensationspreferredfirstname"></a> `preferredFirstName?` | `string` \| `null` | The preferred first name of the employee. Requires `employees:read` scope. |
-| <a id="property-employeecompensationsreimbursements"></a> `reimbursements?` | `PayrollShowReimbursements`[] | An array of reimbursements for the employee. |
-| <a id="property-employeecompensationstaxes"></a> `taxes?` | `PayrollShowTaxes`[] | An array of employer and employee taxes for the pay period. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
+| <a id="property-employeecompensationsreimbursements"></a> `reimbursements?` | [`PayrollShowReimbursements`](#payrollshowreimbursements)[] | An array of reimbursements for the employee. |
+| <a id="property-employeecompensationstaxes"></a> `taxes?` | [`PayrollShowTaxes`](#payrollshowtaxes)[] | An array of employer and employee taxes for the pay period. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
 | <a id="property-employeecompensationsversion"></a> `version?` | `any` | The current version of this employee compensation. This field is only available for prepared payrolls. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="employeecurrentemploymentstatus-1"></a>
+
+### EmployeeCurrentEmploymentStatus
+
+> **EmployeeCurrentEmploymentStatus** = `ClosedEnum`\<*typeof* [`EmployeeCurrentEmploymentStatus`](#employeecurrentemploymentstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:65](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L65)
+
+`EmployeeCurrentEmploymentStatus` entity from the Gusto Embedded API.
+
+***
+
+<a id="employeecustomfield"></a>
+
+### EmployeeCustomField
+
+> **EmployeeCustomField** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeecustomfield.ts:18](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeecustomfield.ts#L18)
+
+A custom field of an employee
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeecustomfieldcompanycustomfieldid"></a> `companyCustomFieldId` | `string` | This is the id of the response object from when you get the company custom fields |
+| <a id="property-employeecustomfieldtype"></a> `type` | [`CustomFieldType`](#customfieldtype-1) | Input type for the custom field. |
+| <a id="property-employeecustomfieldselectionoptions"></a> `selectionOptions?` | `string`[] \| `null` | An array of options for fields of type radio. Otherwise, null. |
 
 ***
 
@@ -1152,11 +2840,36 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:4
 
 ### EmployeeFederalTax
 
-> **EmployeeFederalTax** = `EmployeeFederalTaxPre2020` \| [`EmployeeFederalTaxRev2020`](#employeefederaltaxrev2020)
+> **EmployeeFederalTax** = [`EmployeeFederalTaxPre2020`](#employeefederaltaxpre2020) \| [`EmployeeFederalTaxRev2020`](#employeefederaltaxrev2020)
 
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeefederaltax.ts:21](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeefederaltax.ts#L21)
 
 Federal tax information for an employee. The response structure varies based on the w4_data_type field.
+
+***
+
+<a id="employeefederaltaxpre2020"></a>
+
+### EmployeeFederalTaxPre2020
+
+> **EmployeeFederalTaxPre2020** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeefederaltaxpre2020.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeefederaltaxpre2020.ts#L14)
+
+Federal tax information for employees using the pre-2020 W4 form.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeefederaltaxpre2020additionalwithholding"></a> `additionalWithholding` | `string` | An additional withholding dollar amount. |
+| <a id="property-employeefederaltaxpre2020version"></a> `version` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+| <a id="property-employeefederaltaxpre2020w4datatype"></a> `w4DataType` | `"pre_2020_w4"` | The version of w4 form. |
+| <a id="property-employeefederaltaxpre2020companyid"></a> `companyId?` | `number` | The internal ID of the company. |
+| <a id="property-employeefederaltaxpre2020employeeid"></a> `employeeId?` | `number` | The internal ID of the employee. |
+| <a id="property-employeefederaltaxpre2020employeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
+| <a id="property-employeefederaltaxpre2020federalwithholdingallowance"></a> `federalWithholdingAllowance?` | `number` \| `null` | An exemption from paying a certain amount of income tax. May be null when filing_status is "Exempt from withholding". |
+| <a id="property-employeefederaltaxpre2020filingstatus"></a> `filingStatus?` | `string` \| `null` | It determines which tax return form an individual will use and is an important factor in computing taxable income. One of: **Remarks** - Single - Married - Head of Household - Exempt from withholding - Married, but withhold as Single |
 
 ***
 
@@ -1188,6 +2901,46 @@ Federal tax information for employees using the revised 2020 W4 form.
 
 ***
 
+<a id="employeememberportalinvitationstatus"></a>
+
+### EmployeeMemberPortalInvitationStatus
+
+> **EmployeeMemberPortalInvitationStatus** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:94](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L94)
+
+Member portal invitation status information. Only included when the include param has the portal_invitations value set.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeememberportalinvitationstatuslastpasswordresentat"></a> `lastPasswordResentAt?` | `Date` \| `null` | The date and time when the password reset was last resent. |
+| <a id="property-employeememberportalinvitationstatusstatus"></a> `status?` | [`EmployeeStatus`](#employeestatus-1) | The current status of the member portal invitation. |
+| <a id="property-employeememberportalinvitationstatustokenexpired"></a> `tokenExpired?` | `boolean` \| `null` | Whether the invitation token has expired. |
+| <a id="property-employeememberportalinvitationstatuswelcomeemailsentat"></a> `welcomeEmailSentAt?` | `Date` \| `null` | The date and time when the welcome email was sent. |
+
+***
+
+<a id="employeeonboardingdocumentsconfig"></a>
+
+### EmployeeOnboardingDocumentsConfig
+
+> **EmployeeOnboardingDocumentsConfig** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:42](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L42)
+
+Configuration for an employee onboarding documents during onboarding
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeeonboardingdocumentsconfigi9document"></a> `i9Document?` | `boolean` | Whether to include Form I-9 for an employee during onboarding |
+| <a id="property-employeeonboardingdocumentsconfiguuid"></a> `uuid?` | `string` \| `null` | The UUID of the onboarding documents config |
+
+***
+
 <a id="employeeonboardingstatus"></a>
 
 ### EmployeeOnboardingStatus
@@ -1204,7 +2957,41 @@ The representation of an employee's onboarding status.
 | ------ | ------ | ------ |
 | <a id="property-employeeonboardingstatusuuid"></a> `uuid` | `string` | Unique identifier for this employee. |
 | <a id="property-employeeonboardingstatusonboardingstatus"></a> `onboardingStatus?` | `string` | One of the "onboarding_status" enum values. |
-| <a id="property-employeeonboardingstatusonboardingsteps"></a> `onboardingSteps?` | `EmployeeOnboardingStatusOnboardingStep`[] | List of steps required to onboard an employee. |
+| <a id="property-employeeonboardingstatusonboardingsteps"></a> `onboardingSteps?` | [`EmployeeOnboardingStatusOnboardingStep`](#employeeonboardingstatusonboardingstep)[] | List of steps required to onboard an employee. |
+
+***
+
+<a id="employeeonboardingstatus1-1"></a>
+
+### EmployeeOnboardingStatus1
+
+> **EmployeeOnboardingStatus1** = `ClosedEnum`\<*typeof* [`EmployeeOnboardingStatus1`](#employeeonboardingstatus1)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:25](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L25)
+
+`EmployeeOnboardingStatus1` entity from the Gusto Embedded API.
+
+***
+
+<a id="employeeonboardingstatusonboardingstep"></a>
+
+### EmployeeOnboardingStatusOnboardingStep
+
+> **EmployeeOnboardingStatusOnboardingStep** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeeonboardingstatus.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeeonboardingstatus.ts#L11)
+
+`EmployeeOnboardingStatusOnboardingStep` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeeonboardingstatusonboardingstepcompleted"></a> `completed?` | `boolean` | When true, this step has been completed. |
+| <a id="property-employeeonboardingstatusonboardingstepid"></a> `id?` | `string` | String identifier for the onboarding step. |
+| <a id="property-employeeonboardingstatusonboardingsteprequired"></a> `required?` | `boolean` | When true, this step is required. |
+| <a id="property-employeeonboardingstatusonboardingsteprequirements"></a> `requirements?` | `string`[] | A list of onboarding steps required to begin this step. |
+| <a id="property-employeeonboardingstatusonboardingsteptitle"></a> `title?` | `string` | User-friendly description of the onboarding step. |
 
 ***
 
@@ -1222,9 +3009,65 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeepaym
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-employeepaymentmethodsplitby"></a> `splitBy?` | `EmployeePaymentMethodSplitBy` \| `null` | Describes how the payment will be split. If `split_by` is Percentage, then the split amounts must add up to exactly 100. If `split_by` is Amount, then the last split `amount` must be `null` to capture the remainder. |
-| <a id="property-employeepaymentmethodtype"></a> `type?` | `EmployeePaymentMethodType` | The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required. |
+| <a id="property-employeepaymentmethodsplitby"></a> `splitBy?` | [`EmployeePaymentMethodSplitBy`](#employeepaymentmethodsplitby-1) \| `null` | Describes how the payment will be split. If `split_by` is Percentage, then the split amounts must add up to exactly 100. If `split_by` is Amount, then the last split `amount` must be `null` to capture the remainder. |
+| <a id="property-employeepaymentmethodtype"></a> `type?` | [`EmployeePaymentMethodType`](#employeepaymentmethodtype-1) | The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required. |
 | <a id="property-employeepaymentmethodversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="employeepaymentmethod1-1"></a>
+
+### EmployeePaymentMethod1
+
+> **EmployeePaymentMethod1** = `ClosedEnum`\<*typeof* [`EmployeePaymentMethod1`](#employeepaymentmethod1)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:56](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L56)
+
+The employee's payment method
+
+***
+
+<a id="employeepaymentmethodsplitby-1"></a>
+
+### EmployeePaymentMethodSplitBy
+
+> **EmployeePaymentMethodSplitBy** = `ClosedEnum`\<*typeof* [`EmployeePaymentMethodSplitBy`](#employeepaymentmethodsplitby)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeepaymentmethod.ts:30](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeepaymentmethod.ts#L30)
+
+`EmployeePaymentMethodSplitBy` entity from the Gusto Embedded API.
+
+***
+
+<a id="employeepaymentmethodtype-1"></a>
+
+### EmployeePaymentMethodType
+
+> **EmployeePaymentMethodType** = `ClosedEnum`\<*typeof* [`EmployeePaymentMethodType`](#employeepaymentmethodtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeepaymentmethod.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeepaymentmethod.ts#L19)
+
+The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required.
+
+***
+
+<a id="employeestatetaxanswer"></a>
+
+### EmployeeStateTaxAnswer
+
+> **EmployeeStateTaxAnswer** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestatetaxanswer.ts:16](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeestatetaxanswer.ts#L16)
+
+`EmployeeStateTaxAnswer` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeestatetaxanswervalidfrom"></a> `validFrom?` | `string` | The effective date of the answer - currently always “2010-01-01”. |
+| <a id="property-employeestatetaxanswervalidupto"></a> `validUpTo?` | `string` \| `null` | The effective end date of the answer - currently always null. |
+| <a id="property-employeestatetaxanswervalue"></a> `value?` | `string` \| `number` \| `boolean` \| `null` | The answer to the corresponding question - this may be a string, number, boolean, or null. |
 
 ***
 
@@ -1259,6 +3102,25 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestat
 
 ***
 
+<a id="employeestatetaxinputquestionformat"></a>
+
+### EmployeeStateTaxInputQuestionFormat
+
+> **EmployeeStateTaxInputQuestionFormat** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestatetaxinputquestionformat.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeestatetaxinputquestionformat.ts#L29)
+
+`EmployeeStateTaxInputQuestionFormat` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-employeestatetaxinputquestionformattype"></a> `type` | `string` | Describes the type of question - Text, Number, Select, Currency, Date |
+| <a id="property-employeestatetaxinputquestionformatoptions"></a> `options?` | [`Options`](#options)[] | For "Select" type questions, the allowed values and display labels. |
+
+***
+
 <a id="employeestatetaxquestion"></a>
 
 ### EmployeeStateTaxQuestion
@@ -1276,6 +3138,18 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestat
 | <a id="property-employeestatetaxquestiondescription"></a> `description` | `string` \| `null` | An explaination of the question - this may contain inline html formatted links. |
 | <a id="property-employeestatetaxquestionkey"></a> `key` | `string` | A unique identifier of the question (for the given state) - used for updating the answer. |
 | <a id="property-employeestatetaxquestionlabel"></a> `label` | `string` | A short title for the question |
+
+***
+
+<a id="employeestatus-1"></a>
+
+### EmployeeStatus
+
+> **EmployeeStatus** = `ClosedEnum`\<*typeof* [`EmployeeStatus`](#employeestatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employee.ts:79](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employee.ts#L79)
+
+The current status of the member portal invitation.
 
 ***
 
@@ -1320,7 +3194,19 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/entityerroro
 | <a id="property-entityerrorobjecterrorkey"></a> `errorKey` | `string` | Specifies where the error occurs. Typically this key identifies the attribute/parameter related to the error. |
 | <a id="property-entityerrorobjecterrors"></a> `errors?` | [`EntityErrorObject`](#entityerrorobject)[] | Will only exist if category is `nested_errors`. It is possible to have multiple levels of nested errors. |
 | <a id="property-entityerrorobjectmessage"></a> `message?` | `string` | Provides details about the error - generally this message can be surfaced to an end user. |
-| <a id="property-entityerrorobjectmetadata"></a> `metadata?` | `MetadataWithMultipleEntities` \| `MetadataWithOneEntity` | Contains relevant data to identify the resource in question when applicable. For example, to identify an entity `entity_type` and `entity_uuid` will be provided. |
+| <a id="property-entityerrorobjectmetadata"></a> `metadata?` | [`MetadataWithMultipleEntities`](#metadatawithmultipleentities) \| [`MetadataWithOneEntity`](#metadatawithoneentity) | Contains relevant data to identify the resource in question when applicable. For example, to identify an entity `entity_type` and `entity_uuid` will be provided. |
+
+***
+
+<a id="federalholidays"></a>
+
+### FederalHolidays
+
+> **FederalHolidays** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:80](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L80)
+
+List of the eleven supported federal holidays and their details
 
 ***
 
@@ -1340,7 +3226,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxde
 | ------ | ------ | ------ |
 | <a id="property-federaltaxdetailsdepositschedule"></a> `depositSchedule?` | `string` | How often the company sends money to the IRS. One of: **Remarks** - Semiweekly - Monthly |
 | <a id="property-federaltaxdetailseffectivedate"></a> `effectiveDate?` | `string` | The date that these details took effect. |
-| <a id="property-federaltaxdetailseinverification"></a> `einVerification?` | `EinVerification` | Information about the status of verifying the company's Employer Identification Number (EIN) |
+| <a id="property-federaltaxdetailseinverification"></a> `einVerification?` | [`EinVerification`](#einverification) | Information about the status of verifying the company's Employer Identification Number (EIN) |
 | <a id="property-federaltaxdetailseinverified"></a> `einVerified?` | `boolean` | Whether the EIN has been successfully verified as a valid EIN with the IRS. |
 | <a id="property-federaltaxdetailsfilingform"></a> `filingForm?` | [`FilingForm`](#filingform-1) | The form used by the company for federal tax filing. One of: **Remarks** - 941 (Quarterly federal tax return form) - 944 (Annual federal tax return form) |
 | <a id="property-federaltaxdetailshasein"></a> `hasEin?` | `boolean` | Whether company's Employer Identification Number (EIN) is present |
@@ -1348,6 +3234,50 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxde
 | <a id="property-federaltaxdetailstaxableasscorp"></a> `taxableAsScorp?` | `boolean` | Whether the company is taxed as an S-Corporation. Tax payer types that may be taxed as an S-Corporation include: **Remarks** - S-Corporation - C-Corporation - LLC |
 | <a id="property-federaltaxdetailstaxpayertype"></a> `taxPayerType?` | [`TaxPayerType`](#taxpayertype-1) \| `null` | What type of tax entity the company is. One of: **Remarks** - C-Corporation - S-Corporation - Sole proprietor - LLC - LLP - Limited partnership - Co-ownership - Association - Trusteeship - General partnership - Joint venture - Non-Profit |
 | <a id="property-federaltaxdetailsversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="federaltaxdetailsstatus-1"></a>
+
+### FederalTaxDetailsStatus
+
+> **FederalTaxDetailsStatus** = `ClosedEnum`\<*typeof* [`FederalTaxDetailsStatus`](#federaltaxdetailsstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/federaltaxdetails.ts:56](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/federaltaxdetails.ts#L56)
+
+The status of EIN verification:
+
+#### Remarks
+
+- `pending`: The EIN verification process has not completed (or the company does not yet have an EIN).
+- `verified`: The EIN has been successfully verified as a valid EIN with the IRS.
+- `failed`: The company's EIN did not pass verification. Common issues are being entered incorrectly or not matching the company's legal name.
+
+***
+
+<a id="fields"></a>
+
+### Fields
+
+> **Fields** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/document.ts:36](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/document.ts#L36)
+
+`Fields` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-fieldsdatatype"></a> `dataType?` | `string` | The field's data type |
+| <a id="property-fieldsheight"></a> `height?` | `number` \| `null` | Height of the field. May be null when the field has no positioning information. |
+| <a id="property-fieldskey"></a> `key?` | `string` \| `null` | Unique identifier of the field. May be null for custom fields that do not correspond to a known Gusto-managed key mapping. |
+| <a id="property-fieldspagenumber"></a> `pageNumber?` | `number` \| `null` | Page number of the field. May be null when the field has no positioning information. |
+| <a id="property-fieldsrequired"></a> `required?` | `boolean` | Whether the field is required |
+| <a id="property-fieldsvalue"></a> `value?` | `string` \| `null` | Auto-filled value of the field |
+| <a id="property-fieldswidth"></a> `width?` | `number` \| `null` | Width of the field. May be null when the field has no positioning information. |
+| <a id="property-fieldsx"></a> `x?` | `number` \| `null` | X-coordinate location of the field on the page. May be null when the field has no positioning information. |
+| <a id="property-fieldsy"></a> `y?` | `number` \| `null` | Y-coordinate location of the field on the page. May be null when the field has no positioning information. |
 
 ***
 
@@ -1365,6 +3295,25 @@ The form used by the company for federal tax filing. One of:
 
 - 941 (Quarterly federal tax return form)
 - 944 (Annual federal tax return form)
+
+***
+
+<a id="fipscodes"></a>
+
+### FipsCodes
+
+> **FipsCodes** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupportdata.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/childsupportdata.ts#L12)
+
+`FipsCodes` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-fipscodescode"></a> `code?` | `string` | FIPS code for state or county |
+| <a id="property-fipscodescounty"></a> `county?` | `string` \| `null` | Name of county in the state for the corresponding FIPS code. When `null` the FIPS code applies state wide. |
 
 ***
 
@@ -1430,12 +3379,35 @@ Garnishments, or employee deductions, are fixed amounts or percentages deducted 
 | <a id="property-garnishmenttotalamount"></a> `totalAmount` | `string` \| `null` | A maximum total deduction for the lifetime of this garnishment. A null value indicates no maximum. |
 | <a id="property-garnishmentuuid"></a> `uuid` | `string` | The UUID of the garnishment in Gusto. |
 | <a id="property-garnishmentamount"></a> `amount?` | `string` | The amount of the garnishment. Either a percentage or a fixed dollar amount. Represented as a float, e.g. "8.00". |
-| <a id="property-garnishmentchildsupport"></a> `childSupport?` | `GarnishmentChildSupport` \| `null` | Additional child support order details |
+| <a id="property-garnishmentchildsupport"></a> `childSupport?` | [`GarnishmentChildSupport`](#garnishmentchildsupport) \| `null` | Additional child support order details |
 | <a id="property-garnishmentcourtordered"></a> `courtOrdered?` | `boolean` | Whether the garnishment is court ordered. |
 | <a id="property-garnishmentdescription"></a> `description?` | `string` | The description of the garnishment. |
 | <a id="property-garnishmentemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee to which this garnishment belongs. |
 | <a id="property-garnishmentgarnishmenttype"></a> `garnishmentType?` | [`GarnishmentType`](#garnishmenttype-1) \| `null` | The specific type of garnishment for court ordered garnishments. |
 | <a id="property-garnishmentversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="garnishmentchildsupport"></a>
+
+### GarnishmentChildSupport
+
+> **GarnishmentChildSupport** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/garnishmentchildsupport.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/garnishmentchildsupport.ts#L29)
+
+Additional child support order details
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-garnishmentchildsupportcasenumber"></a> `caseNumber?` | `string` \| `null` | Child Support Enforcement Case Number associated with this child support obligation - required for most states. Agency specific requirements are available in the `GET /v1/garnishments/child_support` API. |
+| <a id="property-garnishmentchildsupportfipscode"></a> `fipsCode?` | `string` | The FIPS code associated with the state or county agency issuing the child support order. Agency data is available in the `GET /v1/garnishments/child_support` API. |
+| <a id="property-garnishmentchildsupportordernumber"></a> `orderNumber?` | `string` \| `null` | Order Identifier or Order ID associated with this child support obligation - required for some states. Agency specific requirements are available in the `GET /v1/garnishments/child_support` API. |
+| <a id="property-garnishmentchildsupportpaymentperiod"></a> `paymentPeriod?` | [`PaymentPeriod`](#paymentperiod-1) | How often the agency collects the withholding amount. e.g. $500 monthly -> `Monthly`. |
+| <a id="property-garnishmentchildsupportremittancenumber"></a> `remittanceNumber?` | `string` \| `null` | Child Support Enforcement Remittance ID associated with this child support obligation - required for some states. Agency specific requirements are available in the `GET /v1/garnishments/child_support` API. |
+| <a id="property-garnishmentchildsupportstate"></a> `state?` | `string` | The two letter state abbreviation for the state issuing the child support order. Agency data is available in the `GET /v1/garnishments/child_support` API. |
 
 ***
 
@@ -1466,9 +3438,69 @@ Representation of a Holiday Pay Policy
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-holidaypaypolicycompanyuuid"></a> `companyUuid` | `string` | A unique identifier for the company owning the holiday pay policy |
-| <a id="property-holidaypaypolicyemployees"></a> `employees` | `HolidayPayPolicyEmployees`[] | List of employee uuids under a holiday pay policy |
-| <a id="property-holidaypaypolicyfederalholidays"></a> `federalHolidays` | `FederalHolidays` | List of the eleven supported federal holidays and their details |
+| <a id="property-holidaypaypolicyemployees"></a> `employees` | [`HolidayPayPolicyEmployees`](#holidaypaypolicyemployees)[] | List of employee uuids under a holiday pay policy |
+| <a id="property-holidaypaypolicyfederalholidays"></a> `federalHolidays` | [`FederalHolidays`](#federalholidays) | List of the eleven supported federal holidays and their details |
 | <a id="property-holidaypaypolicyversion"></a> `version` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/versioning#object-layer) for information on how to use this field. |
+
+***
+
+<a id="holidaypaypolicyemployees"></a>
+
+### HolidayPayPolicyEmployees
+
+> **HolidayPayPolicyEmployees** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:94](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L94)
+
+`HolidayPayPolicyEmployees` entity from the Gusto Embedded API.
+
+***
+
+<a id="homeaddress"></a>
+
+### HomeAddress
+
+> **HomeAddress** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/signatory.ts:21](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/signatory.ts#L21)
+
+`HomeAddress` entity from the Gusto Embedded API.
+
+***
+
+<a id="id-1"></a>
+
+### Id
+
+> **Id** = `ClosedEnum`\<*typeof* [`Id`](#id)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companyonboardingstatus.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companyonboardingstatus.ts#L15)
+
+The string identifier for each onboarding step
+
+***
+
+<a id="identityverificationstatus-1"></a>
+
+### IdentityVerificationStatus
+
+> **IdentityVerificationStatus** = `ClosedEnum`\<*typeof* [`IdentityVerificationStatus`](#identityverificationstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/signatory.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/signatory.ts#L12)
+
+`IdentityVerificationStatus` entity from the Gusto Embedded API.
+
+***
+
+<a id="independenceday"></a>
+
+### IndependenceDay
+
+> **IndependenceDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:41](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L41)
+
+`IndependenceDay` entity from the Gusto Embedded API.
 
 ***
 
@@ -1551,6 +3583,53 @@ The representation of a job in Gusto.
 
 ***
 
+<a id="juneteenth"></a>
+
+### Juneteenth
+
+> **Juneteenth** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:35](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L35)
+
+`Juneteenth` entity from the Gusto Embedded API.
+
+***
+
+<a id="laborday"></a>
+
+### LaborDay
+
+> **LaborDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:47](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L47)
+
+`LaborDay` entity from the Gusto Embedded API.
+
+***
+
+<a id="licensee"></a>
+
+### Licensee
+
+> **Licensee** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollreceipt.ts:105](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollreceipt.ts#L105)
+
+The licensed payroll processor
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-licenseeaddress"></a> `address?` | `string` | Always the fixed string "525 20th St" |
+| <a id="property-licenseecity"></a> `city?` | `string` | Always the fixed string "San Francisco" |
+| <a id="property-licenseename"></a> `name?` | `string` | Always the fixed string "Gusto, Zenpayroll Inc." |
+| <a id="property-licenseephonenumber"></a> `phoneNumber?` | `string` | Always the fixed string "4157778888" |
+| <a id="property-licenseepostalcode"></a> `postalCode?` | `string` | Always the fixed string "94107" |
+| <a id="property-licenseestate"></a> `state?` | `string` | Always the fixed string "CA" |
+
+***
+
 <a id="location"></a>
 
 ### Location
@@ -1575,6 +3654,49 @@ The representation of an address in Gusto.
 | <a id="property-locationphonenumber"></a> `phoneNumber?` | `string` | The phone number for the location. Required for company locations. Optional for employee locations. |
 | <a id="property-locationupdatedat"></a> `updatedAt?` | `string` | Datetime for when location is updated |
 | <a id="property-locationversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="memorialday"></a>
+
+### MemorialDay
+
+> **MemorialDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L29)
+
+`MemorialDay` entity from the Gusto Embedded API.
+
+***
+
+<a id="metadatawithmultipleentities"></a>
+
+### MetadataWithMultipleEntities
+
+> **MetadataWithMultipleEntities** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/metadatawithmultipleentities.ts:17](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/metadatawithmultipleentities.ts#L17)
+
+multiple entities
+
+***
+
+<a id="metadatawithoneentity"></a>
+
+### MetadataWithOneEntity
+
+> **MetadataWithOneEntity** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/metadatawithoneentity.ts:17](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/metadatawithoneentity.ts#L17)
+
+single entity
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-metadatawithoneentityentitytype"></a> `entityType?` | `string` | Name of the entity that the error corresponds to. |
+| <a id="property-metadatawithoneentityentityuuid"></a> `entityUuid?` | `string` | Unique identifier for the entity. |
 
 ***
 
@@ -1621,6 +3743,42 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/compensation
 
 ***
 
+<a id="mlkday"></a>
+
+### MlkDay
+
+> **MlkDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:17](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L17)
+
+`MlkDay` entity from the Gusto Embedded API.
+
+***
+
+<a id="name-1"></a>
+
+### Name
+
+> **Name** = `ClosedEnum`\<*typeof* [`Name`](#name)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/paidtimeoff.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/paidtimeoff.ts#L15)
+
+The name of the paid time off type.
+
+***
+
+<a id="newyearsday"></a>
+
+### NewYearsDay
+
+> **NewYearsDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L11)
+
+`NewYearsDay` entity from the Gusto Embedded API.
+
+***
+
 <a id="offcyclereasontype-1"></a>
 
 ### OffCycleReasonType
@@ -1649,11 +3807,49 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companyonboa
 | ------ | ------ | ------ |
 | <a id="property-onboardingstepcompleted"></a> `completed?` | `boolean` | The boolean flag indicating whether the step is completed or not. |
 | <a id="property-onboardingstepcompletedat"></a> `completedAt?` | `string` \| `null` | The ISO 8601 timestamp indicating when the onboarding step was completed. |
-| <a id="property-onboardingstepid"></a> `id?` | `Id` | The string identifier for each onboarding step |
+| <a id="property-onboardingstepid"></a> `id?` | [`Id`](#id-1) | The string identifier for each onboarding step |
 | <a id="property-onboardingsteprequired"></a> `required?` | `boolean` | The boolean flag indicating whether the step is required or optional |
-| <a id="property-onboardingsteprequirements"></a> `requirements?` | `CompanyOnboardingStatusRequirements`[] | A list of onboarding steps that are required to be completed in order to proceed with the current onboarding step. |
+| <a id="property-onboardingsteprequirements"></a> `requirements?` | [`CompanyOnboardingStatusRequirements`](#companyonboardingstatusrequirements-1)[] | A list of onboarding steps that are required to be completed in order to proceed with the current onboarding step. |
 | <a id="property-onboardingstepskippable"></a> `skippable?` | `boolean` | The boolean flag indicating whether the step can be skipped or not. |
 | <a id="property-onboardingsteptitle"></a> `title?` | `string` | The display name of the onboarding step |
+
+***
+
+<a id="options"></a>
+
+### Options
+
+> **Options** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestatetaxinputquestionformat.ts:18](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeestatetaxinputquestionformat.ts#L18)
+
+`Options` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-optionslabel"></a> `label` | `string` | A display label that corresponds to the answer value |
+| <a id="property-optionsvalue"></a> `value?` | `string` \| `boolean` \| `number` | An allowed value to answer the question |
+
+***
+
+<a id="pages"></a>
+
+### Pages
+
+> **Pages** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/document.ts:25](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/document.ts#L25)
+
+`Pages` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-pagesimageurl"></a> `imageUrl?` | `string` | Image URL for the page |
+| <a id="property-pagespagenumber"></a> `pageNumber?` | `number` | Page number |
 
 ***
 
@@ -1677,7 +3873,7 @@ The representation of paid time off in Gusto.
 | <a id="property-paidtimeoffaccrualrate"></a> `accrualRate?` | `string` \| `null` | The number of accrual units accrued per accrual period. |
 | <a id="property-paidtimeoffaccrualunit"></a> `accrualUnit?` | `string` \| `null` | The unit the PTO type is accrued in. |
 | <a id="property-paidtimeoffmaximumaccrualbalance"></a> `maximumAccrualBalance?` | `string` \| `null` | The maximum number of accrual units allowed. A null value signifies no maximum. |
-| <a id="property-paidtimeoffname"></a> `name?` | `Name` \| `null` | The name of the paid time off type. |
+| <a id="property-paidtimeoffname"></a> `name?` | [`Name`](#name-1) \| `null` | The name of the paid time off type. |
 | <a id="property-paidtimeoffpaidattermination"></a> `paidAtTermination?` | `boolean` | Whether the accrual balance is paid to the employee upon termination. |
 | <a id="property-paidtimeoffpolicyname"></a> `policyName?` | `string` \| `null` | The name of the time off policy. |
 | <a id="property-paidtimeoffpolicyuuid"></a> `policyUuid?` | `string` \| `null` | The UUID of the time off policy. |
@@ -1736,6 +3932,18 @@ Payment speed. READ-ONLY.
 
 ***
 
+<a id="paymenttype-1"></a>
+
+### PaymentType
+
+> **PaymentType** = `ClosedEnum`\<*typeof* [`PaymentType`](#paymenttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/wireinrequest.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/wireinrequest.ts#L29)
+
+Type of payment for the wire in
+
+***
+
 <a id="paymentunit-1"></a>
 
 ### PaymentUnit
@@ -1763,9 +3971,31 @@ The representation of a pay period.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-payperiodenddate"></a> `endDate?` | `string` | The end date, inclusive, of the pay period. |
-| <a id="property-payperiodpayroll"></a> `payroll?` | `PayPeriodPayroll` | Information about the payroll for the pay period. |
+| <a id="property-payperiodpayroll"></a> `payroll?` | [`PayPeriodPayroll`](#payperiodpayroll) | Information about the payroll for the pay period. |
 | <a id="property-payperiodpayscheduleuuid"></a> `payScheduleUuid?` | `string` | A unique identifier of the pay schedule to which the pay period belongs. |
 | <a id="property-payperiodstartdate"></a> `startDate?` | `string` | The start date, inclusive, of the pay period. |
+
+***
+
+<a id="payperiodpayroll"></a>
+
+### PayPeriodPayroll
+
+> **PayPeriodPayroll** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payperiod.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payperiod.ts#L27)
+
+Information about the payroll for the pay period.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payperiodpayrollcheckdate"></a> `checkDate?` | `string` | The date on which employees will be paid for the payroll if the payroll is submitted on time. |
+| <a id="property-payperiodpayrollpayrolldeadline"></a> `payrollDeadline?` | `Date` | The date by which payroll should be run for employees to be paid on time. Payroll data, such as time and attendance data, should be submitted on or before this date. |
+| <a id="property-payperiodpayrollpayrolltype"></a> `payrollType?` | [`PayrollType`](#payrolltype-1) | Whether it is regular pay period or transition pay period. |
+| <a id="property-payperiodpayrollpayrolluuid"></a> `payrollUuid?` | `string` | The UUID of the payroll for this pay period. |
+| <a id="property-payperiodpayrollprocessed"></a> `processed?` | `boolean` | Whether or not the payroll has been successfully processed. Note that processed payrolls cannot be updated. Additionally, a payroll is not guaranteed to be processed just because the payroll deadline has passed. Late payrolls are not uncommon. Conversely, users may choose to run payroll before the payroll deadline. |
 
 ***
 
@@ -1786,7 +4016,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:9
 | <a id="property-payrollautopayroll"></a> `autoPayroll?` | `boolean` | Indicates whether the payroll is an auto pilot payroll |
 | <a id="property-payrollcalculatedat"></a> `calculatedAt?` | `Date` \| `null` | A timestamp of the last valid payroll calculation. Null if there isn't a valid calculation. |
 | <a id="property-payrollcheckdate"></a> `checkDate?` | `string` | The date on which employees will be paid for the payroll. |
-| <a id="property-payrollcompanytaxes"></a> `companyTaxes?` | `PayrollCompanyTaxesType`[] | An array of taxes applicable to this payroll in addition to taxes included in `employee_compensations`. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
+| <a id="property-payrollcompanytaxes"></a> `companyTaxes?` | [`PayrollCompanyTaxesType`](#payrollcompanytaxestype)[] | An array of taxes applicable to this payroll in addition to taxes included in `employee_compensations`. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
 | <a id="property-payrollcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company for the payroll. |
 | <a id="property-payrollcreatedat"></a> `createdAt?` | `Date` | Datetime for when the resource was created. |
 | <a id="property-payrollcreditblockers"></a> `creditBlockers?` | [`PayrollCreditBlockerType`](#payrollcreditblockertype)[] | Only included for processed payrolls |
@@ -1796,18 +4026,38 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:9
 | <a id="property-payrolloffcycle"></a> `offCycle?` | `boolean` | Indicates whether the payroll is an off-cycle payroll |
 | <a id="property-payrolloffcyclereason"></a> `offCycleReason?` | [`OffCycleReasonType`](#offcyclereasontype-1) \| `null` | The off-cycle reason. Only included for off-cycle payrolls. |
 | <a id="property-payrollpartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Will money movement for the payroll be performed by the partner rather than by Gusto? |
-| <a id="property-payrollpaymentspeedchanged"></a> `paymentSpeedChanged?` | `PayrollPaymentSpeedChangedType` | Only applicable when a payroll is moved to four day processing instead of fast ach. |
+| <a id="property-payrollpaymentspeedchanged"></a> `paymentSpeedChanged?` | [`PayrollPaymentSpeedChangedType`](#payrollpaymentspeedchangedtype) | Only applicable when a payroll is moved to four day processing instead of fast ach. |
 | <a id="property-payrollpayrolldeadline"></a> `payrollDeadline?` | `Date` | A timestamp that is the deadline for the payroll to be run in order for employees to be paid on time. If payroll has not been run by the deadline, a prepare request will update both the check date and deadline to reflect the soonest employees can be paid and the deadline by which the payroll must be run in order for said check date to be met. |
-| <a id="property-payrollpayrollstatusmeta"></a> `payrollStatusMeta?` | `PayrollPayrollStatusMetaType` | Information about the payroll's status and expected dates |
-| <a id="property-payrollpayrolltaxes"></a> `payrollTaxes?` | `PayrollTaxesType`[] | An array of tax totals applicable to this payroll. Only included for processed or calculated payrolls when `payroll_taxes` is present in the `include` parameter. |
+| <a id="property-payrollpayrollstatusmeta"></a> `payrollStatusMeta?` | [`PayrollPayrollStatusMetaType`](#payrollpayrollstatusmetatype) | Information about the payroll's status and expected dates |
+| <a id="property-payrollpayrolltaxes"></a> `payrollTaxes?` | [`PayrollTaxesType`](#payrolltaxestype)[] | An array of tax totals applicable to this payroll. Only included for processed or calculated payrolls when `payroll_taxes` is present in the `include` parameter. |
 | <a id="property-payrollpayrolluuid"></a> `payrollUuid?` | `string` | The UUID of the payroll. |
 | <a id="property-payrollprocessed"></a> `processed?` | `boolean` | Whether or not the payroll has been successfully processed. Note that processed payrolls cannot be updated. Additionally, a payroll is not guaranteed to be processed just because the payroll deadline has passed. Late payrolls are not uncommon. Conversely, users may choose to run payroll before the payroll deadline. |
 | <a id="property-payrollprocesseddate"></a> `processedDate?` | `string` \| `null` | The date at which the payroll was processed. Null if the payroll isn't processed yet. |
 | <a id="property-payrollskipregulardeductions"></a> `skipRegularDeductions?` | `boolean` \| `null` | Block regular deductions and contributions for this payroll. Only included for off-cycle payrolls. |
 | <a id="property-payrollsubmissionblockers"></a> `submissionBlockers?` | [`PayrollSubmissionBlockerType`](#payrollsubmissionblockertype)[] | Only included for processed or calculated payrolls |
-| <a id="property-payrolltotals"></a> `totals?` | `PayrollTotalsType` | The subtotals for the payroll. |
+| <a id="property-payrolltotals"></a> `totals?` | [`PayrollTotalsType`](#payrolltotalstype) | The subtotals for the payroll. |
 | <a id="property-payrolluuid"></a> `uuid?` | `string` | The UUID of the payroll. |
-| <a id="property-payrollwithholdingpayperiod"></a> `withholdingPayPeriod?` | `PayrollWithholdingPayPeriodType` \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
+| <a id="property-payrollwithholdingpayperiod"></a> `withholdingPayPeriod?` | [`PayrollWithholdingPayPeriodType`](#payrollwithholdingpayperiodtype-1) \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
+
+***
+
+<a id="payrollcompanytaxestype"></a>
+
+### PayrollCompanyTaxesType
+
+> **PayrollCompanyTaxesType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcompanytaxestype.ts:10](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcompanytaxestype.ts#L10)
+
+`PayrollCompanyTaxesType` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcompanytaxestypeamount"></a> `amount?` | `string` | The amount of this tax for the payroll |
+| <a id="property-payrollcompanytaxestypeemployer"></a> `employer?` | `boolean` | Whether this tax is an employer or employee tax |
+| <a id="property-payrollcompanytaxestypename"></a> `name?` | `string` | The tax name |
 
 ***
 
@@ -1828,8 +4078,20 @@ A blocker that prevents payment crediting.
 | <a id="property-payrollcreditblockertypeblockername"></a> `blockerName?` | `string` | The name of the credit blocker. |
 | <a id="property-payrollcreditblockertypeblockertype"></a> `blockerType?` | `string` | The type of blocker that's blocking the payment from being credited. |
 | <a id="property-payrollcreditblockertypeselectedoption"></a> `selectedOption?` | `string` \| `null` | The unblock option that's been selected to resolve the credit blocker. |
-| <a id="property-payrollcreditblockertypestatus"></a> `status?` | `PayrollCreditBlockerTypeStatus` | The status of the credit blocker |
-| <a id="property-payrollcreditblockertypeunblockoptions"></a> `unblockOptions?` | (`PayrollCreditBlockerUnblockOptionSubmitWire` \| `PayrollCreditBlockerUnblockOptionSubmitBankScreenshot` \| `PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi` \| `PayrollCreditBlockerUnblockOptionWaitForReverseWire`)[] | The available options to unblock a credit blocker. |
+| <a id="property-payrollcreditblockertypestatus"></a> `status?` | [`PayrollCreditBlockerTypeStatus`](#payrollcreditblockertypestatus-1) | The status of the credit blocker |
+| <a id="property-payrollcreditblockertypeunblockoptions"></a> `unblockOptions?` | ([`PayrollCreditBlockerUnblockOptionSubmitWire`](#payrollcreditblockerunblockoptionsubmitwire) \| [`PayrollCreditBlockerUnblockOptionSubmitBankScreenshot`](#payrollcreditblockerunblockoptionsubmitbankscreenshot) \| [`PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi`](#payrollcreditblockerunblockoptionrespondtohighriskfraudrfi) \| [`PayrollCreditBlockerUnblockOptionWaitForReverseWire`](#payrollcreditblockerunblockoptionwaitforreversewire))[] | The available options to unblock a credit blocker. |
+
+***
+
+<a id="payrollcreditblockertypestatus-1"></a>
+
+### PayrollCreditBlockerTypeStatus
+
+> **PayrollCreditBlockerTypeStatus** = `ClosedEnum`\<*typeof* [`PayrollCreditBlockerTypeStatus`](#payrollcreditblockertypestatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockertype.ts:37](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockertype.ts#L37)
+
+The status of the credit blocker
 
 ***
 
@@ -1837,11 +4099,163 @@ A blocker that prevents payment crediting.
 
 ### PayrollCreditBlockerTypeUnblockOptions
 
-> **PayrollCreditBlockerTypeUnblockOptions** = `PayrollCreditBlockerUnblockOptionSubmitWire` \| `PayrollCreditBlockerUnblockOptionSubmitBankScreenshot` \| `PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi` \| `PayrollCreditBlockerUnblockOptionWaitForReverseWire`
+> **PayrollCreditBlockerTypeUnblockOptions** = [`PayrollCreditBlockerUnblockOptionSubmitWire`](#payrollcreditblockerunblockoptionsubmitwire) \| [`PayrollCreditBlockerUnblockOptionSubmitBankScreenshot`](#payrollcreditblockerunblockoptionsubmitbankscreenshot) \| [`PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi`](#payrollcreditblockerunblockoptionrespondtohighriskfraudrfi) \| [`PayrollCreditBlockerUnblockOptionWaitForReverseWire`](#payrollcreditblockerunblockoptionwaitforreversewire)
 
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockertype.ts:28](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockertype.ts#L28)
 
 `PayrollCreditBlockerTypeUnblockOptions` entity from the Gusto Embedded API.
+
+***
+
+<a id="payrollcreditblockerunblockoptionrespondtohighriskfraudrfi"></a>
+
+### PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi
+
+> **PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi.ts:22](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi.ts#L22)
+
+Unblock option to resolve a credit blocker by responding to high risk fraud RFI
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionrespondtohighriskfraudrficheckdate"></a> `checkDate` | `string` | The payment check date associated with the unblock option |
+| <a id="property-payrollcreditblockerunblockoptionrespondtohighriskfraudrfiunblocktype"></a> `unblockType` | `"respond_to_high_risk_fraud_rfi"` | The type of unblock option for the credit blocker |
+
+***
+
+<a id="payrollcreditblockerunblockoptionrespondtohighriskfraudrfimetadata"></a>
+
+### PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfiMetadata
+
+> **PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfiMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi.ts#L11)
+
+`PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfiMetadata` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionrespondtohighriskfraudrfimetadatainformationrequestuuid"></a> `informationRequestUuid` | `string` | UUID of the information request |
+
+***
+
+<a id="payrollcreditblockerunblockoptionsubmitbankscreenshot"></a>
+
+### PayrollCreditBlockerUnblockOptionSubmitBankScreenshot
+
+> **PayrollCreditBlockerUnblockOptionSubmitBankScreenshot** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot.ts:25](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot.ts#L25)
+
+Unblock option to resolve a credit blocker by submitting a bank screenshot
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionsubmitbankscreenshotcheckdate"></a> `checkDate` | `string` | The payment check date associated with the unblock option |
+| <a id="property-payrollcreditblockerunblockoptionsubmitbankscreenshotunblocktype"></a> `unblockType` | `"submit_bank_screenshot"` | The type of unblock option for the credit blocker |
+
+***
+
+<a id="payrollcreditblockerunblockoptionsubmitbankscreenshotmetadata"></a>
+
+### PayrollCreditBlockerUnblockOptionSubmitBankScreenshotMetadata
+
+> **PayrollCreditBlockerUnblockOptionSubmitBankScreenshotMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot.ts#L11)
+
+`PayrollCreditBlockerUnblockOptionSubmitBankScreenshotMetadata` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionsubmitbankscreenshotmetadatainformationrequestuuid"></a> `informationRequestUuid` | `string` | UUID of the information request |
+| <a id="property-payrollcreditblockerunblockoptionsubmitbankscreenshotmetadatabankaccountlastfourdigits"></a> `bankAccountLastFourDigits?` | `string` \| `null` | Last 4 digits of the bank account number for the bank screenshot RFI |
+
+***
+
+<a id="payrollcreditblockerunblockoptionsubmitwire"></a>
+
+### PayrollCreditBlockerUnblockOptionSubmitWire
+
+> **PayrollCreditBlockerUnblockOptionSubmitWire** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionsubmitwire.ts:29](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionsubmitwire.ts#L29)
+
+Unblock option to resolve a credit blocker by submitting a wire transfer
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionsubmitwirecheckdate"></a> `checkDate` | `string` | The payment check date associated with the unblock option |
+| <a id="property-payrollcreditblockerunblockoptionsubmitwireunblocktype"></a> `unblockType` | `"submit_wire"` | The type of unblock option for the credit blocker |
+
+***
+
+<a id="payrollcreditblockerunblockoptionsubmitwiremetadata"></a>
+
+### PayrollCreditBlockerUnblockOptionSubmitWireMetadata
+
+> **PayrollCreditBlockerUnblockOptionSubmitWireMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionsubmitwire.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionsubmitwire.ts#L11)
+
+`PayrollCreditBlockerUnblockOptionSubmitWireMetadata` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionsubmitwiremetadatawireinamount"></a> `wireInAmount` | `string` | The amount to be wired in (decimal string) |
+| <a id="property-payrollcreditblockerunblockoptionsubmitwiremetadatawireindeadline"></a> `wireInDeadline` | `Date` | Deadline for the wire transfer to be received |
+| <a id="property-payrollcreditblockerunblockoptionsubmitwiremetadatawireinrequestuuid"></a> `wireInRequestUuid` | `string` | UUID of the wire in request |
+
+***
+
+<a id="payrollcreditblockerunblockoptionwaitforreversewire"></a>
+
+### PayrollCreditBlockerUnblockOptionWaitForReverseWire
+
+> **PayrollCreditBlockerUnblockOptionWaitForReverseWire** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionwaitforreversewire.ts:25](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionwaitforreversewire.ts#L25)
+
+Unblock option to resolve a credit blocker by waiting for reverse wire
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionwaitforreversewirecheckdate"></a> `checkDate` | `string` | The payment check date associated with the unblock option |
+| <a id="property-payrollcreditblockerunblockoptionwaitforreversewireunblocktype"></a> `unblockType` | `"wait_for_reverse_wire"` | The type of unblock option for the credit blocker |
+
+***
+
+<a id="payrollcreditblockerunblockoptionwaitforreversewiremetadata"></a>
+
+### PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata
+
+> **PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollcreditblockerunblockoptionwaitforreversewire.ts:11](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollcreditblockerunblockoptionwaitforreversewire.ts#L11)
+
+`PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollcreditblockerunblockoptionwaitforreversewiremetadatabankaccountlastfourdigits"></a> `bankAccountLastFourDigits?` | `string` \| `null` | Last 4 digits of the bank account number for the reverse wire |
+| <a id="property-payrollcreditblockerunblockoptionwaitforreversewiremetadatareversewiredetailid"></a> `reverseWireDetailId?` | `number` \| `null` | ID of the reverse wire detail |
 
 ***
 
@@ -1860,13 +4274,13 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemplo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-payrollemployeecompensationstypecheckamount"></a> `checkAmount?` | `number` \| `null` | The employee's check amount, equal to net_pay + reimbursements. This value is only available for processed payrolls. |
-| <a id="property-payrollemployeecompensationstypedeductions"></a> `deductions?` | `Deductions`[] | An array of deductions for the employee. This field is included by default for regular payrolls in version `v2025-06-15` and later. |
+| <a id="property-payrollemployeecompensationstypedeductions"></a> `deductions?` | [`Deductions`](#deductions)[] | An array of deductions for the employee. This field is included by default for regular payrolls in version `v2025-06-15` and later. |
 | <a id="property-payrollemployeecompensationstypeemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
 | <a id="property-payrollemployeecompensationstypeexcluded"></a> `excluded?` | `boolean` | This employee will be excluded (skipped) from payroll calculation and will not be paid for the payroll. Cancelling a payroll would reset all employees' excluded back to false. |
 | <a id="property-payrollemployeecompensationstypefirstname"></a> `firstName?` | `string` \| `null` | The first name of the employee. Requires `employees:read` scope. |
 | <a id="property-payrollemployeecompensationstypefixedcompensations"></a> `fixedCompensations?` | [`PayrollEmployeeCompensationsTypeFixedCompensations`](#payrollemployeecompensationstypefixedcompensations)[] | An array of fixed compensations for the employee. Fixed compensations include tips, bonuses, and one time reimbursements. If this payroll has been processed, only fixed compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active fixed compensations are returned. |
 | <a id="property-payrollemployeecompensationstypegrosspay"></a> `grossPay?` | `number` \| `null` | The employee's gross pay, equal to regular wages + cash tips + payroll tips + any other additional earnings, excluding imputed income. This value is only available for processed payrolls. |
-| <a id="property-payrollemployeecompensationstypehourlycompensations"></a> `hourlyCompensations?` | `PayrollEmployeeCompensationsTypeHourlyCompensations`[] | An array of hourly compensations for the employee. Hourly compensations include regular, overtime, and double overtime hours. If this payroll has been processed, only hourly compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active hourly compensations are returned. |
+| <a id="property-payrollemployeecompensationstypehourlycompensations"></a> `hourlyCompensations?` | [`PayrollEmployeeCompensationsTypeHourlyCompensations`](#payrollemployeecompensationstypehourlycompensations)[] | An array of hourly compensations for the employee. Hourly compensations include regular, overtime, and double overtime hours. If this payroll has been processed, only hourly compensations with a value greater than 0.00 are returned. For an unprocessed payroll, all active hourly compensations are returned. |
 | <a id="property-payrollemployeecompensationstypelastname"></a> `lastName?` | `string` \| `null` | The last name of the employee. Requires `employees:read` scope. |
 | <a id="property-payrollemployeecompensationstypememo"></a> `memo?` | `string` \| `null` | Custom text that will be printed as a personal note to the employee on a paystub. |
 | <a id="property-payrollemployeecompensationstypenetpay"></a> `netPay?` | `number` \| `null` | The employee's net pay, equal to gross_pay - employee taxes - employee deductions or garnishments - cash tips. This value is only available for processed payrolls. |
@@ -1895,6 +4309,29 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemplo
 | <a id="property-payrollemployeecompensationstypefixedcompensationsamount"></a> `amount?` | `string` | The amount of the compensation for the pay period. |
 | <a id="property-payrollemployeecompensationstypefixedcompensationsjobuuid"></a> `jobUuid?` | `string` | The UUID of the job for the compensation. |
 | <a id="property-payrollemployeecompensationstypefixedcompensationsname"></a> `name?` | `string` | The name of the compensation. This also serves as the unique, immutable identifier for this compensation. |
+
+***
+
+<a id="payrollemployeecompensationstypehourlycompensations"></a>
+
+### PayrollEmployeeCompensationsTypeHourlyCompensations
+
+> **PayrollEmployeeCompensationsTypeHourlyCompensations** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollemployeecompensationstype.ts:42](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollemployeecompensationstype.ts#L42)
+
+`PayrollEmployeeCompensationsTypeHourlyCompensations` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollemployeecompensationstypehourlycompensationsamount"></a> `amount?` | `string` | The amount of the compensation. This field is only available after the payroll is calculated and cannot be used for updating hourly compensations. |
+| <a id="property-payrollemployeecompensationstypehourlycompensationscompensationmultiplier"></a> `compensationMultiplier?` | `number` | The amount multiplied by the base rate to calculate total compensation per hour worked. |
+| <a id="property-payrollemployeecompensationstypehourlycompensationsflsastatus"></a> `flsaStatus?` | `string` | The FLSA Status of the employee's primary job compensation |
+| <a id="property-payrollemployeecompensationstypehourlycompensationshours"></a> `hours?` | `string` | The number of hours to be compensated for this pay period. |
+| <a id="property-payrollemployeecompensationstypehourlycompensationsjobuuid"></a> `jobUuid?` | `string` | The UUID of the job for the compensation. |
+| <a id="property-payrollemployeecompensationstypehourlycompensationsname"></a> `name?` | `string` | The name of the compensation. This also serves as the unique, immutable identifier for this compensation. |
 
 ***
 
@@ -1969,6 +4406,28 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollfixed
 
 ***
 
+<a id="payrollpaymentspeedchangedtype"></a>
+
+### PayrollPaymentSpeedChangedType
+
+> **PayrollPaymentSpeedChangedType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollpaymentspeedchangedtype.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollpaymentspeedchangedtype.ts#L14)
+
+Only applicable when a payroll is moved to four day processing instead of fast ach.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollpaymentspeedchangedtypecurrentcheckdate"></a> `currentCheckDate?` | `string` | Current check date. |
+| <a id="property-payrollpaymentspeedchangedtypecurrentdebitdate"></a> `currentDebitDate?` | `string` | Current debit date. |
+| <a id="property-payrollpaymentspeedchangedtypeoriginalcheckdate"></a> `originalCheckDate?` | `string` | Original check date when fast ach applies. |
+| <a id="property-payrollpaymentspeedchangedtypeoriginaldebitdate"></a> `originalDebitDate?` | `string` | Original debit date when fast ach applies. |
+| <a id="property-payrollpaymentspeedchangedtypereason"></a> `reason?` | `string` | The reason why the payroll is moved to four day. |
+
+***
+
 <a id="payrollpayperiodtype"></a>
 
 ### PayrollPayPeriodType
@@ -1986,6 +4445,29 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollpaype
 | <a id="property-payrollpayperiodtypeenddate"></a> `endDate?` | `string` | The start date, inclusive, of the pay period. |
 | <a id="property-payrollpayperiodtypepayscheduleuuid"></a> `payScheduleUuid?` | `string` \| `null` | The UUID of the pay schedule for the payroll. |
 | <a id="property-payrollpayperiodtypestartdate"></a> `startDate?` | `string` | The start date, inclusive, of the pay period. |
+
+***
+
+<a id="payrollpayrollstatusmetatype"></a>
+
+### PayrollPayrollStatusMetaType
+
+> **PayrollPayrollStatusMetaType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollpayrollstatusmetatype.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollpayrollstatusmetatype.ts#L14)
+
+Information about the payroll's status and expected dates
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollpayrollstatusmetatypecancellable"></a> `cancellable?` | `boolean` | true if the payroll may be cancelled. |
+| <a id="property-payrollpayrollstatusmetatypeexpectedcheckdate"></a> `expectedCheckDate?` | `string` | The date an employee will be paid if the payroll is submitted now. |
+| <a id="property-payrollpayrollstatusmetatypeexpecteddebittime"></a> `expectedDebitTime?` | `string` | The time the employer's account will be debited if the payroll is submitted now. |
+| <a id="property-payrollpayrollstatusmetatypeinitialcheckdate"></a> `initialCheckDate?` | `string` | The normal check date for the associated pay period. |
+| <a id="property-payrollpayrollstatusmetatypeinitialdebitcutofftime"></a> `initialDebitCutoffTime?` | `string` | Payroll must be submitted at or before this time to avoid late payroll. |
+| <a id="property-payrollpayrollstatusmetatypepayrolllate"></a> `payrollLate?` | `boolean` | expected_check_date > initial_check_date. |
 
 ***
 
@@ -2014,15 +4496,15 @@ The response from preparing a payroll for update. Contains refreshed employee co
 | <a id="property-payrollpreparedoffcycle"></a> `offCycle?` | `boolean` | Indicates whether the payroll is an off-cycle payroll |
 | <a id="property-payrollpreparedoffcyclereason"></a> `offCycleReason?` | [`OffCycleReasonType`](#offcyclereasontype-1) \| `null` | The off-cycle reason. Only included for off-cycle payrolls. |
 | <a id="property-payrollpreparedpartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Will money movement for the payroll be performed by the partner rather than by Gusto? |
-| <a id="property-payrollpreparedpaymentspeedchanged"></a> `paymentSpeedChanged?` | `PayrollPaymentSpeedChangedType` | Only applicable when a payroll is moved to four day processing instead of fast ach. |
+| <a id="property-payrollpreparedpaymentspeedchanged"></a> `paymentSpeedChanged?` | [`PayrollPaymentSpeedChangedType`](#payrollpaymentspeedchangedtype) | Only applicable when a payroll is moved to four day processing instead of fast ach. |
 | <a id="property-payrollpreparedpayrolldeadline"></a> `payrollDeadline?` | `Date` | A timestamp that is the deadline for the payroll to be run in order for employees to be paid on time. If payroll has not been run by the deadline, a prepare request will update both the check date and deadline to reflect the soonest employees can be paid and the deadline by which the payroll must be run in order for said check date to be met. |
-| <a id="property-payrollpreparedpayrollstatusmeta"></a> `payrollStatusMeta?` | `PayrollPayrollStatusMetaType` | Information about the payroll's status and expected dates |
+| <a id="property-payrollpreparedpayrollstatusmeta"></a> `payrollStatusMeta?` | [`PayrollPayrollStatusMetaType`](#payrollpayrollstatusmetatype) | Information about the payroll's status and expected dates |
 | <a id="property-payrollpreparedpayrolluuid"></a> `payrollUuid?` | `string` | The UUID of the payroll. |
 | <a id="property-payrollpreparedprocessed"></a> `processed?` | `boolean` | Whether or not the payroll has been successfully processed. Note that processed payrolls cannot be updated. Additionally, a payroll is not guaranteed to be processed just because the payroll deadline has passed. Late payrolls are not uncommon. Conversely, users may choose to run payroll before the payroll deadline. |
 | <a id="property-payrollpreparedprocesseddate"></a> `processedDate?` | `string` \| `null` | The date at which the payroll was processed. Null if the payroll isn't processed yet. |
 | <a id="property-payrollpreparedskipregulardeductions"></a> `skipRegularDeductions?` | `boolean` \| `null` | Block regular deductions and contributions for this payroll. Only included for off-cycle payrolls. |
 | <a id="property-payrollprepareduuid"></a> `uuid?` | `string` | The UUID of the payroll. |
-| <a id="property-payrollpreparedwithholdingpayperiod"></a> `withholdingPayPeriod?` | `PayrollWithholdingPayPeriodType` \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
+| <a id="property-payrollpreparedwithholdingpayperiod"></a> `withholdingPayPeriod?` | [`PayrollWithholdingPayPeriodType`](#payrollwithholdingpayperiodtype-1) \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
 
 ***
 
@@ -2075,14 +4557,14 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollrecei
 | <a id="property-payrollreceiptdebitdate"></a> `debitDate?` | `string` | The debit or funding date for the payroll |
 | <a id="property-payrollreceiptemployeecompensations"></a> `employeeCompensations?` | [`PayrollReceiptEmployeeCompensations`](#payrollreceiptemployeecompensations)[] | An array of employee compensations and withholdings for this payroll |
 | <a id="property-payrollreceiptlicense"></a> `license?` | `string` | Always the fixed string "ZenPayroll, Inc., dba Gusto is a licensed money transmitter. For more about Gusto’s licenses and your state-specific rights to request information, submit complaints, dispute errors, or cancel transactions, visit our license page." |
-| <a id="property-payrollreceiptlicensee"></a> `licensee?` | `Licensee` | The licensed payroll processor |
+| <a id="property-payrollreceiptlicensee"></a> `licensee?` | [`Licensee`](#licensee) | The licensed payroll processor |
 | <a id="property-payrollreceiptlicenseuri"></a> `licenseUri?` | `string` | URL for the license information for the licensed payroll processor. Always the fixed string "https://gusto.com/about/licenses" |
 | <a id="property-payrollreceiptnameofrecipient"></a> `nameOfRecipient?` | `string` | Always the fixed string "Payroll Recipients" |
 | <a id="property-payrollreceiptnameofsender"></a> `nameOfSender?` | `string` | The name of the company by whom the payroll was paid |
 | <a id="property-payrollreceiptpayrolluuid"></a> `payrollUuid?` | `string` | A unique identifier of the payroll receipt. |
 | <a id="property-payrollreceiptrecipientnotice"></a> `recipientNotice?` | `string` | Always the fixed string "Payroll recipients include the employees listed below plus the tax agencies for the taxes listed below." |
 | <a id="property-payrollreceipttaxes"></a> `taxes?` | [`Taxes`](#taxes)[] | An array of totaled employer and employee taxes for the pay period. |
-| <a id="property-payrollreceipttotals"></a> `totals?` | `Totals` | The subtotals for the payroll. |
+| <a id="property-payrollreceipttotals"></a> `totals?` | [`Totals`](#totals) | The subtotals for the payroll. |
 
 ***
 
@@ -2105,10 +4587,22 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollrecei
 | <a id="property-payrollreceiptemployeecompensationsemployeelastname"></a> `employeeLastName?` | `string` | The last name of the employee. |
 | <a id="property-payrollreceiptemployeecompensationsemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
 | <a id="property-payrollreceiptemployeecompensationsnetpay"></a> `netPay?` | `string` | The employee's net pay. Net pay paid by check is available for reference but is not included in the `["totals"]["net_pay_debit"]` amount. |
-| <a id="property-payrollreceiptemployeecompensationspaymentmethod"></a> `paymentMethod?` | `PayrollReceiptPaymentMethod` | The employee's compensation payment method. |
+| <a id="property-payrollreceiptemployeecompensationspaymentmethod"></a> `paymentMethod?` | [`PayrollReceiptPaymentMethod`](#payrollreceiptpaymentmethod-1) | The employee's compensation payment method. |
 | <a id="property-payrollreceiptemployeecompensationstotalgarnishments"></a> `totalGarnishments?` | `string` | The total garnishments for the pay period. |
 | <a id="property-payrollreceiptemployeecompensationstotalreimbursement"></a> `totalReimbursement?` | `string` | The total reimbursement for the pay period. |
 | <a id="property-payrollreceiptemployeecompensationstotaltax"></a> `totalTax?` | `string` | The total of employer and employee taxes for the pay period. |
+
+***
+
+<a id="payrollreceiptpaymentmethod-1"></a>
+
+### PayrollReceiptPaymentMethod
+
+> **PayrollReceiptPaymentMethod** = `ClosedEnum`\<*typeof* [`PayrollReceiptPaymentMethod`](#payrollreceiptpaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollreceipt.ts:52](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollreceipt.ts#L52)
+
+The employee's compensation payment method.
 
 ***
 
@@ -2129,7 +4623,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:5
 | <a id="property-payrollshowautopayroll"></a> `autoPayroll?` | `boolean` | Indicates whether the payroll is an auto pilot payroll |
 | <a id="property-payrollshowcalculatedat"></a> `calculatedAt?` | `Date` \| `null` | A timestamp of the last valid payroll calculation. Null if there isn't a valid calculation. |
 | <a id="property-payrollshowcheckdate"></a> `checkDate?` | `string` | The date on which employees will be paid for the payroll. |
-| <a id="property-payrollshowcompanytaxes"></a> `companyTaxes?` | `PayrollCompanyTaxesType`[] | An array of taxes applicable to this payroll in addition to taxes included in `employee_compensations`. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
+| <a id="property-payrollshowcompanytaxes"></a> `companyTaxes?` | [`PayrollCompanyTaxesType`](#payrollcompanytaxestype)[] | An array of taxes applicable to this payroll in addition to taxes included in `employee_compensations`. Only included for processed or calculated payrolls when `taxes` is present in the `include` parameter. |
 | <a id="property-payrollshowcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company for the payroll. |
 | <a id="property-payrollshowcreatedat"></a> `createdAt?` | `Date` | Datetime for when the resource was created. |
 | <a id="property-payrollshowcreditblockers"></a> `creditBlockers?` | [`PayrollCreditBlockerType`](#payrollcreditblockertype)[] | Only included for processed payrolls |
@@ -2139,18 +4633,64 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:5
 | <a id="property-payrollshowoffcycle"></a> `offCycle?` | `boolean` | Indicates whether the payroll is an off-cycle payroll |
 | <a id="property-payrollshowoffcyclereason"></a> `offCycleReason?` | [`OffCycleReasonType`](#offcyclereasontype-1) \| `null` | The off-cycle reason. Only included for off-cycle payrolls. |
 | <a id="property-payrollshowpartnerowneddisbursement"></a> `partnerOwnedDisbursement?` | `boolean` \| `null` | Will money movement for the payroll be performed by the partner rather than by Gusto? |
-| <a id="property-payrollshowpaymentspeedchanged"></a> `paymentSpeedChanged?` | `PayrollPaymentSpeedChangedType` | Only applicable when a payroll is moved to four day processing instead of fast ach. |
+| <a id="property-payrollshowpaymentspeedchanged"></a> `paymentSpeedChanged?` | [`PayrollPaymentSpeedChangedType`](#payrollpaymentspeedchangedtype) | Only applicable when a payroll is moved to four day processing instead of fast ach. |
 | <a id="property-payrollshowpayrolldeadline"></a> `payrollDeadline?` | `Date` | A timestamp that is the deadline for the payroll to be run in order for employees to be paid on time. If payroll has not been run by the deadline, a prepare request will update both the check date and deadline to reflect the soonest employees can be paid and the deadline by which the payroll must be run in order for said check date to be met. |
-| <a id="property-payrollshowpayrollstatusmeta"></a> `payrollStatusMeta?` | `PayrollPayrollStatusMetaType` | Information about the payroll's status and expected dates |
-| <a id="property-payrollshowpayrolltaxes"></a> `payrollTaxes?` | `PayrollTaxesType`[] | An array of tax totals applicable to this payroll. Only included for processed or calculated payrolls when `payroll_taxes` is present in the `include` parameter. |
+| <a id="property-payrollshowpayrollstatusmeta"></a> `payrollStatusMeta?` | [`PayrollPayrollStatusMetaType`](#payrollpayrollstatusmetatype) | Information about the payroll's status and expected dates |
+| <a id="property-payrollshowpayrolltaxes"></a> `payrollTaxes?` | [`PayrollTaxesType`](#payrolltaxestype)[] | An array of tax totals applicable to this payroll. Only included for processed or calculated payrolls when `payroll_taxes` is present in the `include` parameter. |
 | <a id="property-payrollshowpayrolluuid"></a> `payrollUuid?` | `string` | The UUID of the payroll. |
 | <a id="property-payrollshowprocessed"></a> `processed?` | `boolean` | Whether or not the payroll has been successfully processed. Note that processed payrolls cannot be updated. Additionally, a payroll is not guaranteed to be processed just because the payroll deadline has passed. Late payrolls are not uncommon. Conversely, users may choose to run payroll before the payroll deadline. |
 | <a id="property-payrollshowprocesseddate"></a> `processedDate?` | `string` \| `null` | The date at which the payroll was processed. Null if the payroll isn't processed yet. |
 | <a id="property-payrollshowskipregulardeductions"></a> `skipRegularDeductions?` | `boolean` \| `null` | Block regular deductions and contributions for this payroll. Only included for off-cycle payrolls. |
 | <a id="property-payrollshowsubmissionblockers"></a> `submissionBlockers?` | [`PayrollSubmissionBlockerType`](#payrollsubmissionblockertype)[] | Only included for processed or calculated payrolls |
-| <a id="property-payrollshowtotals"></a> `totals?` | `PayrollTotalsType` | The subtotals for the payroll. |
+| <a id="property-payrollshowtotals"></a> `totals?` | [`PayrollTotalsType`](#payrolltotalstype) | The subtotals for the payroll. |
 | <a id="property-payrollshowuuid"></a> `uuid?` | `string` | The UUID of the payroll. |
-| <a id="property-payrollshowwithholdingpayperiod"></a> `withholdingPayPeriod?` | `PayrollWithholdingPayPeriodType` \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
+| <a id="property-payrollshowwithholdingpayperiod"></a> `withholdingPayPeriod?` | [`PayrollWithholdingPayPeriodType`](#payrollwithholdingpayperiodtype-1) \| `null` | The payment schedule tax rate the payroll is based on. Only included for off-cycle payrolls. |
+
+***
+
+<a id="payrollshowamounttype-1"></a>
+
+### PayrollShowAmountType
+
+> **PayrollShowAmountType** = `ClosedEnum`\<*typeof* [`PayrollShowAmountType`](#payrollshowamounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:382](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L382)
+
+The amount type of the deduction for the pay period. Only present for unprocessed payrolls.
+
+***
+
+<a id="payrollshowbenefits"></a>
+
+### PayrollShowBenefits
+
+> **PayrollShowBenefits** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:420](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L420)
+
+`PayrollShowBenefits` entity from the Gusto Embedded API.
+
+***
+
+<a id="payrollshowdeductions"></a>
+
+### PayrollShowDeductions
+
+> **PayrollShowDeductions** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:391](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L391)
+
+`PayrollShowDeductions` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollshowdeductionsamount"></a> `amount?` | `number` | The amount of the deduction for the pay period. |
+| <a id="property-payrollshowdeductionsamounttype"></a> `amountType?` | [`PayrollShowAmountType`](#payrollshowamounttype-1) | The amount type of the deduction for the pay period. Only present for unprocessed payrolls. |
+| <a id="property-payrollshowdeductionsname"></a> `name?` | `string` | The name of the deduction. |
+| <a id="property-payrollshowdeductionsupdatableviapayroll"></a> `updatableViaPayroll?` | `boolean` | Whether the deduction can be updated via the payroll update endpoint. Only present for unprocessed payrolls. |
+| <a id="property-payrollshowdeductionsuuid"></a> `uuid?` | `string` | The UUID of the deduction. Only present for unprocessed payrolls. |
 
 ***
 
@@ -2174,6 +4714,94 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:3
 
 ***
 
+<a id="payrollshowhourlycompensations"></a>
+
+### PayrollShowHourlyCompensations
+
+> **PayrollShowHourlyCompensations** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:318](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L318)
+
+`PayrollShowHourlyCompensations` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollshowhourlycompensationsamount"></a> `amount?` | `string` | The amount of the compensation. This field is only available after the payroll is calculated and cannot be used for updating hourly compensations. |
+| <a id="property-payrollshowhourlycompensationscompensationmultiplier"></a> `compensationMultiplier?` | `number` | The amount multiplied by the base rate to calculate total compensation per hour worked. |
+| <a id="property-payrollshowhourlycompensationsflsastatus"></a> `flsaStatus?` | `string` | The FLSA Status of the employee's primary job compensation |
+| <a id="property-payrollshowhourlycompensationshours"></a> `hours?` | `string` | The number of hours to be compensated for this pay period. |
+| <a id="property-payrollshowhourlycompensationsjobuuid"></a> `jobUuid?` | `string` | The UUID of the job for the compensation. |
+| <a id="property-payrollshowhourlycompensationsname"></a> `name?` | `string` | The name of the compensation. This also serves as the unique, immutable identifier for this compensation. |
+
+***
+
+<a id="payrollshowpaidtimeoff"></a>
+
+### PayrollShowPaidTimeOff
+
+> **PayrollShowPaidTimeOff** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:345](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L345)
+
+`PayrollShowPaidTimeOff` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollshowpaidtimeofffinalpayoutunusedhoursinput"></a> `finalPayoutUnusedHoursInput?` | `string` \| `null` | The outstanding hours paid upon termination. This field is only applicable for termination payrolls. |
+| <a id="property-payrollshowpaidtimeoffhours"></a> `hours?` | `string` | The hours of this PTO taken during the pay period. |
+| <a id="property-payrollshowpaidtimeoffname"></a> `name?` | `string` | The name of the PTO. This also serves as the unique, immutable identifier for the PTO. |
+
+***
+
+<a id="payrollshowpaymentmethod-1"></a>
+
+### PayrollShowPaymentMethod
+
+> **PayrollShowPaymentMethod** = `ClosedEnum`\<*typeof* [`PayrollShowPaymentMethod`](#payrollshowpaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:291](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L291)
+
+The employee's compensation payment method. Is *only* `Historical` when retrieving external payrolls initially run outside of Gusto, then put into Gusto.
+
+***
+
+<a id="payrollshowreimbursements"></a>
+
+### PayrollShowReimbursements
+
+> **PayrollShowReimbursements** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:360](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L360)
+
+`PayrollShowReimbursements` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollshowreimbursementsamount"></a> `amount` | `string` | The dollar amount of the reimbursement for the pay period. |
+| <a id="property-payrollshowreimbursementsdescription"></a> `description` | `string` \| `null` | The description of the reimbursement. Null for unnamed reimbursements. |
+| <a id="property-payrollshowreimbursementsrecurring"></a> `recurring?` | `boolean` | Whether the reimbursement is recurring. This field is only available for unprocessed payrolls. |
+| <a id="property-payrollshowreimbursementsuuid"></a> `uuid?` | `string` \| `null` | The UUID of the reimbursement. Null for unnamed reimbursements. This field is only available for unprocessed payrolls. |
+
+***
+
+<a id="payrollshowtaxes"></a>
+
+### PayrollShowTaxes
+
+> **PayrollShowTaxes** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:414](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L414)
+
+`PayrollShowTaxes` entity from the Gusto Embedded API.
+
+***
+
 <a id="payrollsubmissionblockertype"></a>
 
 ### PayrollSubmissionBlockerType
@@ -2191,8 +4819,124 @@ A blocker that prevents payment submission.
 | <a id="property-payrollsubmissionblockertypeblockername"></a> `blockerName?` | `string` | The name of the submission blocker. |
 | <a id="property-payrollsubmissionblockertypeblockertype"></a> `blockerType?` | `string` | The type of blocker that's blocking the payment submission. |
 | <a id="property-payrollsubmissionblockertypeselectedoption"></a> `selectedOption?` | `string` \| `null` | The unblock option that's been selected to resolve the submission blocker. |
-| <a id="property-payrollsubmissionblockertypestatus"></a> `status?` | `PayrollSubmissionBlockerTypeStatus` | The status of the submission blocker. |
+| <a id="property-payrollsubmissionblockertypestatus"></a> `status?` | [`PayrollSubmissionBlockerTypeStatus`](#payrollsubmissionblockertypestatus-1) | The status of the submission blocker. |
 | <a id="property-payrollsubmissionblockertypeunblockoptions"></a> `unblockOptions?` | [`UnblockOptions`](#unblockoptions)[] | The available options to unblock a submission blocker. |
+
+***
+
+<a id="payrollsubmissionblockertypestatus-1"></a>
+
+### PayrollSubmissionBlockerTypeStatus
+
+> **PayrollSubmissionBlockerTypeStatus** = `ClosedEnum`\<*typeof* [`PayrollSubmissionBlockerTypeStatus`](#payrollsubmissionblockertypestatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollsubmissionblockertype.ts:30](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollsubmissionblockertype.ts#L30)
+
+The status of the submission blocker.
+
+***
+
+<a id="payrolltaxestype"></a>
+
+### PayrollTaxesType
+
+> **PayrollTaxesType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrolltaxestype.ts:10](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrolltaxestype.ts#L10)
+
+`PayrollTaxesType` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrolltaxestypeamount"></a> `amount?` | `number` | The total tax for the payroll |
+| <a id="property-payrolltaxestypeemployer"></a> `employer?` | `boolean` | Whether this tax is an employer or employee tax |
+| <a id="property-payrolltaxestypename"></a> `name?` | `string` | The tax name |
+
+***
+
+<a id="payrolltotalstype"></a>
+
+### PayrollTotalsType
+
+> **PayrollTotalsType** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrolltotalstype.ts:14](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrolltotalstype.ts#L14)
+
+The subtotals for the payroll.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrolltotalstypeadditionalearnings"></a> `additionalEarnings?` | `string` | The total additional earnings amount for the payroll. |
+| <a id="property-payrolltotalstypebenefits"></a> `benefits?` | `string` | The total amount of company contributed benefits for the payroll. |
+| <a id="property-payrolltotalstypecheckamount"></a> `checkAmount?` | `string` | The total check amount for the payroll. |
+| <a id="property-payrolltotalstypechildsupportdebit"></a> `childSupportDebit?` | `string` | The total child support debit for the payroll. |
+| <a id="property-payrolltotalstypecompanydebit"></a> `companyDebit?` | `string` | The total company debit for the payroll. |
+| <a id="property-payrolltotalstypedeferredpayrolltaxes"></a> `deferredPayrollTaxes?` | `string` | The total amount of payroll taxes deferred for the payroll, such as allowed by the CARES act. |
+| <a id="property-payrolltotalstypeemployeebenefitsdeductions"></a> `employeeBenefitsDeductions?` | `string` | The total amount of employee deducted benefits for the payroll. |
+| <a id="property-payrolltotalstypeemployeebonuses"></a> `employeeBonuses?` | `string` | The total employee bonuses amount for the payroll. |
+| <a id="property-payrolltotalstypeemployeecashtips"></a> `employeeCashTips?` | `string` | The total employee cash tips amount for the payroll. |
+| <a id="property-payrolltotalstypeemployeecommissions"></a> `employeeCommissions?` | `string` | The total employee commissions amount for the payroll. |
+| <a id="property-payrolltotalstypeemployeepaychecktips"></a> `employeePaycheckTips?` | `string` | The total employee paycheck tips amount for the payroll. |
+| <a id="property-payrolltotalstypeemployeetaxes"></a> `employeeTaxes?` | `string` | The total amount of employee paid taxes for the payroll. |
+| <a id="property-payrolltotalstypeemployertaxes"></a> `employerTaxes?` | `string` | The total amount of employer paid taxes for the payroll. |
+| <a id="property-payrolltotalstypegrosspay"></a> `grossPay?` | `string` | The gross pay amount for the payroll. |
+| <a id="property-payrolltotalstypeimputedpay"></a> `imputedPay?` | `string` | The total amount of imputed pay for the payroll. |
+| <a id="property-payrolltotalstypenetpay"></a> `netPay?` | `string` | The net pay amount for the payroll. |
+| <a id="property-payrolltotalstypenetpaydebit"></a> `netPayDebit?` | `string` | The total company net pay for the payroll. |
+| <a id="property-payrolltotalstypeotherdeductions"></a> `otherDeductions?` | `string` | The total amount of deductions for the payroll. |
+| <a id="property-payrolltotalstypeownersdraw"></a> `ownersDraw?` | `string` | The total owner's draw for the payroll. |
+| <a id="property-payrolltotalstypereimbursementdebit"></a> `reimbursementDebit?` | `string` | The total reimbursement debit for the payroll. |
+| <a id="property-payrolltotalstypereimbursements"></a> `reimbursements?` | `string` | The total reimbursements for the payroll. |
+| <a id="property-payrolltotalstypetaxdebit"></a> `taxDebit?` | `string` | The total tax debit for the payroll. |
+
+***
+
+<a id="payrolltype-1"></a>
+
+### PayrollType
+
+> **PayrollType** = `ClosedEnum`\<*typeof* [`PayrollType`](#payrolltype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payperiod.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payperiod.ts#L15)
+
+Whether it is regular pay period or transition pay period.
+
+***
+
+<a id="payrollupdateamounttype-1"></a>
+
+### PayrollUpdateAmountType
+
+> **PayrollUpdateAmountType** = `ClosedEnum`\<*typeof* [`PayrollUpdateAmountType`](#payrollupdateamounttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:62](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L62)
+
+The amount type of the deduction for the pay period.
+
+***
+
+<a id="payrollupdatedeductions"></a>
+
+### PayrollUpdateDeductions
+
+> **PayrollUpdateDeductions** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:76](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L76)
+
+An array of deductions for the employee.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollupdatedeductionsamount"></a> `amount?` | `number` | The amount of the deduction for the pay period. |
+| <a id="property-payrollupdatedeductionsamounttype"></a> `amountType?` | [`PayrollUpdateAmountType`](#payrollupdateamounttype-1) | The amount type of the deduction for the pay period. |
+| <a id="property-payrollupdatedeductionsname"></a> `name?` | `string` | The name of the deduction. |
+| <a id="property-payrollupdatedeductionsuuid"></a> `uuid?` | `string` | The UUID of the deduction. This parameter is optional and can be provided in order to update an existing deduction. |
 
 ***
 
@@ -2213,10 +4957,83 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdat
 | <a id="property-payrollupdateemployeecompensationsemployeeuuid"></a> `employeeUuid?` | `string` | The UUID of the employee. |
 | <a id="property-payrollupdateemployeecompensationsexcluded"></a> `excluded?` | `boolean` | This employee will be excluded from payroll calculation and will not be paid for the payroll. |
 | <a id="property-payrollupdateemployeecompensationsmemo"></a> `memo?` | `string` | Custom text that will be printed as a personal note to the employee on a paystub. |
-| <a id="property-payrollupdateemployeecompensationspaidtimeoff"></a> `paidTimeOff?` | `PayrollUpdatePaidTimeOff`[] | An array of all paid time off the employee is eligible for this pay period. Each paid time off object can be the name or the specific policy_uuid. |
-| <a id="property-payrollupdateemployeecompensationspaymentmethod"></a> `paymentMethod?` | `PayrollUpdatePaymentMethod` | The employee's compensation payment method. Invalid values will be ignored. |
+| <a id="property-payrollupdateemployeecompensationspaidtimeoff"></a> `paidTimeOff?` | [`PayrollUpdatePaidTimeOff`](#payrollupdatepaidtimeoff)[] | An array of all paid time off the employee is eligible for this pay period. Each paid time off object can be the name or the specific policy_uuid. |
+| <a id="property-payrollupdateemployeecompensationspaymentmethod"></a> `paymentMethod?` | [`PayrollUpdatePaymentMethod`](#payrollupdatepaymentmethod-1) | The employee's compensation payment method. Invalid values will be ignored. |
 | <a id="property-payrollupdateemployeecompensationsreimbursements"></a> `reimbursements?` | [`PayrollUpdateReimbursements`](#payrollupdatereimbursements)[] | An array of reimbursements for the employee. |
 | <a id="property-payrollupdateemployeecompensationsversion"></a> `version?` | `string` | The current version of this employee compensation from the prepared payroll. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
+<a id="payrollupdatefixedcompensations"></a>
+
+### PayrollUpdateFixedCompensations
+
+> **PayrollUpdateFixedCompensations** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L26)
+
+An array of fixed compensations for the employee. Fixed compensations include tips, bonuses, and one time reimbursements.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollupdatefixedcompensationsamount"></a> `amount?` | `string` | The amount of the compensation for the pay period. |
+| <a id="property-payrollupdatefixedcompensationsjobuuid"></a> `jobUuid?` | `string` | The UUID of the job for the compensation. |
+| <a id="property-payrollupdatefixedcompensationsname"></a> `name?` | `string` | The name of the compensation. This also serves as the unique, immutable identifier for this compensation. |
+
+***
+
+<a id="payrollupdatehourlycompensations"></a>
+
+### PayrollUpdateHourlyCompensations
+
+> **PayrollUpdateHourlyCompensations** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:44](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L44)
+
+An array of hourly compensations for the employee. Hourly compensations include regular, overtime, and double overtime hours.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollupdatehourlycompensationshours"></a> `hours?` | `string` | The number of hours to be compensated for this pay period. |
+| <a id="property-payrollupdatehourlycompensationsjobuuid"></a> `jobUuid?` | `string` | The UUIDs of the job for the compensation. |
+| <a id="property-payrollupdatehourlycompensationsname"></a> `name?` | `string` | The name of the compensation. This also serves as the unique, immutable identifier for this compensation. |
+
+***
+
+<a id="payrollupdatepaidtimeoff"></a>
+
+### PayrollUpdatePaidTimeOff
+
+> **PayrollUpdatePaidTimeOff** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:95](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L95)
+
+`PayrollUpdatePaidTimeOff` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payrollupdatepaidtimeofffinalpayoutunusedhoursinput"></a> `finalPayoutUnusedHoursInput?` | `string` \| `null` | The outstanding hours paid upon termination. This field is only applicable for termination payrolls. |
+| <a id="property-payrollupdatepaidtimeoffhours"></a> `hours?` | `string` | The hours of this PTO taken during the pay period. |
+| <a id="property-payrollupdatepaidtimeoffname"></a> `name?` | `string` | The name of the PTO. This also serves as the unique, immutable identifier for the PTO. Must pass in name or policy_uuid but not both. |
+| <a id="property-payrollupdatepaidtimeoffpolicyuuid"></a> `policyUuid?` | `string` | The uuid of the PTO policy. Must pass in name or policy_uuid but not both. |
+
+***
+
+<a id="payrollupdatepaymentmethod-1"></a>
+
+### PayrollUpdatePaymentMethod
+
+> **PayrollUpdatePaymentMethod** = `ClosedEnum`\<*typeof* [`PayrollUpdatePaymentMethod`](#payrollupdatepaymentmethod)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdate.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollupdate.ts#L12)
+
+The employee's compensation payment method. Invalid values will be ignored.
 
 ***
 
@@ -2237,6 +5054,72 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollupdat
 | <a id="property-payrollupdatereimbursementsamount"></a> `amount?` | `string` | The dollar amount of the reimbursement for the pay period. |
 | <a id="property-payrollupdatereimbursementsdescription"></a> `description?` | `string` | The description of the reimbursement. If not provided, the reimbursement will be unnamed. |
 | <a id="property-payrollupdatereimbursementsuuid"></a> `uuid?` | `string` | The UUID of an existing reimbursement. This parameter is optional and can be provided in order to update an existing reimbursement. |
+
+***
+
+<a id="payrollwithholdingpayperiodtype-1"></a>
+
+### PayrollWithholdingPayPeriodType
+
+> **PayrollWithholdingPayPeriodType** = `ClosedEnum`\<*typeof* [`PayrollWithholdingPayPeriodType`](#payrollwithholdingpayperiodtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payroll.ts:78](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payroll.ts#L78)
+
+`PayrollWithholdingPayPeriodType` entity from the Gusto Embedded API.
+
+***
+
+<a id="payscheduleautopayrollenablementblocker"></a>
+
+### PayScheduleAutoPayrollEnablementBlocker
+
+> **PayScheduleAutoPayrollEnablementBlocker** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payscheduleautopayrollenablementblocker.ts:18](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payscheduleautopayrollenablementblocker.ts#L18)
+
+A single blocker preventing Autopayroll enablement.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-payscheduleautopayrollenablementblockerkey"></a> `key?` | `string` | The blocker type (e.g. employees_not_on_direct_deposit, employees_not_salaried, missing_funding_method, missing_state_tax_requirements, one_day_ach_speed_not_supported, company_suspended, earned_fast_ach_not_met). |
+| <a id="property-payscheduleautopayrollenablementblockermetadata"></a> `metadata?` | [`PayScheduleAutoPayrollEnablementBlockerMetadata`](#payscheduleautopayrollenablementblockermetadata) | Blocker-specific metadata (e.g. employee_uuids, states). |
+
+***
+
+<a id="payscheduleautopayrollenablementblockermetadata"></a>
+
+### PayScheduleAutoPayrollEnablementBlockerMetadata
+
+> **PayScheduleAutoPayrollEnablementBlockerMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payscheduleautopayrollenablementblocker.ts:13](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payscheduleautopayrollenablementblocker.ts#L13)
+
+Blocker-specific metadata (e.g. employee_uuids, states).
+
+***
+
+<a id="payschedulefrequency-1"></a>
+
+### PayScheduleFrequency
+
+> **PayScheduleFrequency** = `ClosedEnum`\<*typeof* [`PayScheduleFrequency`](#payschedulefrequency)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payschedulefrequency.ts:22](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payschedulefrequency.ts#L22)
+
+The frequency that employees on this pay schedule are paid with Gusto.
+
+#### Remarks
+
+READ-ONLY in responses. Possible values:
+
+- `Every week`: Employees are paid weekly.
+- `Every other week`: Employees are paid bi-weekly (every two weeks).
+- `Twice per month`: Employees are paid on two fixed days each month (e.g. 1st and 15th); use day_1 and day_2.
+- `Monthly`: Employees are paid once per month; use day_1 for the pay day.
+- `Quarterly`: Employees are paid every three months.
+- `Annually`: Employees are paid once per year.
 
 ***
 
@@ -2285,12 +5168,24 @@ For API version 2025-11-15 and later, responses use `auto_payroll`; earlier vers
 | <a id="property-payscheduleshowanchorendofpayperiod"></a> `anchorEndOfPayPeriod?` | `RFCDate` | The last date of the first pay period. This can be the same date as the anchor pay date (ISO 8601 YYYY-MM-DD). |
 | <a id="property-payscheduleshowanchorpaydate"></a> `anchorPayDate?` | `RFCDate` | The first date that employees on this pay schedule are paid with Gusto (ISO 8601 YYYY-MM-DD). |
 | <a id="property-payscheduleshowautopayroll"></a> `autoPayroll?` | `boolean` | With automatic payroll enabled, payroll runs automatically one day before payroll deadlines. When false, payroll does not run automatically. **Remarks** Returned for API version 2025-11-15 and later; for earlier versions the response uses auto_pilot instead. |
-| <a id="property-payscheduleshowautopayrollenablementblockers"></a> `autoPayrollEnablementBlockers?` | `PayScheduleAutoPayrollEnablementBlocker`[] \| `null` | List of blockers preventing automatic payroll from being enabled. If automatic payroll is already enabled, this field is null. |
+| <a id="property-payscheduleshowautopayrollenablementblockers"></a> `autoPayrollEnablementBlockers?` | [`PayScheduleAutoPayrollEnablementBlocker`](#payscheduleautopayrollenablementblocker)[] \| `null` | List of blockers preventing automatic payroll from being enabled. If automatic payroll is already enabled, this field is null. |
 | <a id="property-payscheduleshowcustomname"></a> `customName?` | `string` | A custom name for a pay schedule; defaults to the pay frequency description when none was set by the partner. **Remarks** When the partner never set a custom name (or cleared it), this field contains the auto-generated description derived from frequency and pay days (e.g. "every 1st and 15th of the month", "every Friday"). When the partner set a custom name on create or update, this field contains that value. |
 | <a id="property-payscheduleshowday1"></a> `day1?` | `number` \| `null` | An integer between 1 and 31 indicating the first day of the month that employees are paid. This field is only relevant for pay schedules with the "Twice per month" and "Monthly" frequencies. It will be null for pay schedules with other frequencies. **Remarks** |
 | <a id="property-payscheduleshowday2"></a> `day2?` | `number` \| `null` | An integer between 1 and 31 indicating the second day of the month that employees are paid. This field is the second pay date for pay schedules with the "Twice per month" frequency. For semi-monthly pay schedules, this field should be set to 31. For months shorter than 31 days, the second pay date is set to the last day of the month. It will be null for pay schedules with other frequencies. **Remarks** |
-| <a id="property-payscheduleshowfrequency"></a> `frequency?` | `PayScheduleFrequency` | The frequency that employees on this pay schedule are paid with Gusto. **Remarks** READ-ONLY in responses. Possible values: - `Every week`: Employees are paid weekly. - `Every other week`: Employees are paid bi-weekly (every two weeks). - `Twice per month`: Employees are paid on two fixed days each month (e.g. 1st and 15th); use day_1 and day_2. - `Monthly`: Employees are paid once per month; use day_1 for the pay day. - `Quarterly`: Employees are paid every three months. - `Annually`: Employees are paid once per year. |
+| <a id="property-payscheduleshowfrequency"></a> `frequency?` | [`PayScheduleFrequency`](#payschedulefrequency-1) | The frequency that employees on this pay schedule are paid with Gusto. **Remarks** READ-ONLY in responses. Possible values: - `Every week`: Employees are paid weekly. - `Every other week`: Employees are paid bi-weekly (every two weeks). - `Twice per month`: Employees are paid on two fixed days each month (e.g. 1st and 15th); use day_1 and day_2. - `Monthly`: Employees are paid once per month; use day_1 for the pay day. - `Quarterly`: Employees are paid every three months. - `Annually`: Employees are paid once per year. |
 | <a id="property-payscheduleshowname"></a> `name?` | `string` \| `null` | This field will be hourly when the pay schedule is for hourly employees, salaried when the pay schedule is for salaried employees, the department name if pay schedule is by department, and null when the pay schedule is for all employees. |
+
+***
+
+<a id="plaidstatus-1"></a>
+
+### PlaidStatus
+
+> **PlaidStatus** = `ClosedEnum`\<*typeof* [`PlaidStatus`](#plaidstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:72](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L72)
+
+`PlaidStatus` entity from the Gusto Embedded API.
 
 ***
 
@@ -2303,6 +5198,59 @@ For API version 2025-11-15 and later, responses use `auto_payroll`; earlier vers
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicy.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicy.ts#L15)
 
 Type of the time off policy. Only "vacation" and "sick" can be created through the API, but other types may be present if the company was previously a Gusto.com customer.
+
+***
+
+<a id="presidentsday"></a>
+
+### PresidentsDay
+
+> **PresidentsDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:23](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L23)
+
+`PresidentsDay` entity from the Gusto Embedded API.
+
+***
+
+<a id="questions"></a>
+
+### Questions
+
+> **Questions** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/employeestatetaxesrequest.ts:16](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/employeestatetaxesrequest.ts#L16)
+
+`Questions` entity from the Gusto Embedded API.
+
+***
+
+<a id="ratetype-1"></a>
+
+### RateType
+
+> **RateType** = `ClosedEnum`\<*typeof* [`RateType`](#ratetype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:81](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L81)
+
+[for `workers_compensation_rate`] The type of rate being collected. Either:
+
+#### Remarks
+
+- `percent`: A percentage formatted as a decimal, e.g. `0.01` for 1%
+  - `currency_per_hour`: A dollar amount per hour, e.g. `3.24` for $3.24/hr
+
+***
+
+<a id="recipienttype-1"></a>
+
+### RecipientType
+
+> **RecipientType** = `ClosedEnum`\<*typeof* [`RecipientType`](#recipienttype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/document.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/document.ts#L15)
+
+The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
 
 ***
 
@@ -2342,6 +5290,25 @@ Representation of a recovery case
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/recoverycase.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/recoverycase.ts#L15)
 
 Status of the recovery case
+
+***
+
+<a id="requiredattributes"></a>
+
+### RequiredAttributes
+
+> **RequiredAttributes** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/childsupportdata.ts:36](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/childsupportdata.ts#L36)
+
+`RequiredAttributes` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-requiredattributeskey"></a> `key?` | [`ChildSupportDataKey`](#childsupportdatakey-1) | A required attribute when creating a garnishment for this state agency. The current values are listed as an enum; though unlikely, values could be added if state agency requirements change in the future. |
+| <a id="property-requiredattributeslabel"></a> `label?` | `string` | A human readable name of the attribute, e.g. CSE Case Number |
 
 ***
 
@@ -2410,7 +5377,7 @@ The representation of a company's signatory
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-signatoryhasssn"></a> `hasSsn?` | `boolean` | Indicates whether the signatory has an SSN in Gusto. |
-| <a id="property-signatoryidentityverificationstatus"></a> `identityVerificationStatus?` | `IdentityVerificationStatus` \| `null` | | | | **Remarks** |---|---| |__Status__| __Description__ | | Pass | Signatory can sign all forms | | Fail | Signatory cannot sign forms | | Skipped | Signatory cannot sign Form 8655 until the form is manually uploaded as wet-signed | | null | Identity verification process has not been completed | |
+| <a id="property-signatoryidentityverificationstatus"></a> `identityVerificationStatus?` | [`IdentityVerificationStatus`](#identityverificationstatus-1) \| `null` | | | | **Remarks** |---|---| |__Status__| __Description__ | | Pass | Signatory can sign all forms | | Fail | Signatory cannot sign forms | | Skipped | Signatory cannot sign Form 8655 until the form is manually uploaded as wet-signed | | null | Identity verification process has not been completed | |
 | <a id="property-signatoryisadmin"></a> `isAdmin?` | `boolean` | Whether or not the signatory is also the payroll admin of the company. |
 | <a id="property-signatoryversion"></a> `version?` | `string` | The current version of the signatory. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 
@@ -2473,12 +5440,113 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequireme
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-taxrequirementapplicableif"></a> `applicableIf?` | `ApplicableIf`[] | An array of references to other requirements within the requirement set. This requirement is only applicable if all referenced requirements have values matching the corresponding `value`. The primary use-case is dynamically hiding and showing requirements as values change. E.g. Show Requirement-B when Requirement-A has been answered with `false`. To be explicit, an empty array means the requirement is applicable. |
+| <a id="property-taxrequirementapplicableif"></a> `applicableIf?` | [`ApplicableIf`](#applicableif)[] | An array of references to other requirements within the requirement set. This requirement is only applicable if all referenced requirements have values matching the corresponding `value`. The primary use-case is dynamically hiding and showing requirements as values change. E.g. Show Requirement-B when Requirement-A has been answered with `false`. To be explicit, an empty array means the requirement is applicable. |
 | <a id="property-taxrequirementdescription"></a> `description?` | `string` \| `null` | A more detailed customer facing description of the requirement |
 | <a id="property-taxrequirementeditable"></a> `editable?` | `boolean` | Whether the value of this requirement can be updated |
 | <a id="property-taxrequirementkey"></a> `key?` | `string` | An identifier for an individual requirement. Uniqueness is guaranteed within a requirement set. |
 | <a id="property-taxrequirementlabel"></a> `label?` | `string` | A customer facing description of the requirement |
-| <a id="property-taxrequirementvalue"></a> `value?` | `TaxRequirementsValue` \| `null` | The value or "answer" for a tax requirement. Type depends on the requirement metadata type (e.g. string for text/account_number, boolean for radio/checkbox, number for percent/currency/tax_rate). Null when the requirement has not been answered. |
+| <a id="property-taxrequirementvalue"></a> `value?` | [`TaxRequirementsValue`](#taxrequirementsvalue) \| `null` | The value or "answer" for a tax requirement. Type depends on the requirement metadata type (e.g. string for text/account_number, boolean for radio/checkbox, number for percent/currency/tax_rate). Null when the requirement has not been answered. |
+
+***
+
+<a id="taxrequirementmetadata"></a>
+
+### TaxRequirementMetadata
+
+> **TaxRequirementMetadata** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:133](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L133)
+
+`TaxRequirementMetadata` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxrequirementmetadatatype"></a> `type` | [`TaxRequirementMetadataType`](#taxrequirementmetadatatype-1) | Describes the type of requirement - each type may have additional metadata properties to describe possible values, formats, etc. **Remarks** - `text`: free-text input, no additional requirements - `currency`: a value representing a dollar amount, e.g. `374.55` representing `$374.55` - `radio`: choose one of options provided, see `options` - `select`: choose one of options provided, see `options` - `percent`: A decimal value representing a percentage, e.g. `0.034` representing `3.4%` - `account_number`: An account number for a tax agency, more information provided by `mask` and `prefix` - `tax_rate`: A decimal value representing a tax rate, e.g. `0.034` representing a tax rate of `3.4%`, see `validation` for additional validation guidance - `workers_compensation_rate`: A decimal value representing a percentage, see `risk_class_code`, `risk_class_description`, and `rate_type` |
+| <a id="property-taxrequirementmetadatamask"></a> `mask?` | `string` \| `null` | [for `account_number`] A pattern describing the format of the account number **Remarks** The mask is a sequence of characters representing the requirements of the actual account number. Each character in the mask represents a single character in the account number as follows: - `#`: a digit (`\d`) - `@`: a upper or lower case letter (`[a-zA-Z]`) - `^`: an uppercase letter (`[A-Z]`) - `%`: a digit or uppercase letter (`[0-9A-Z]`) - any other character represents the literal character Examples: - mask: `WHT-######` represents `WHT-` followed by 5 digits, e.g. `WHT-33421` - mask: `%####-^^` supports values of `75544-AB` and `Z7654-HK` |
+| <a id="property-taxrequirementmetadataoptions"></a> `options?` | [`TaxRequirementMetadataOptions`](#taxrequirementmetadataoptions)[] | [for `select` or `radio`] An array of objects describing the possible values. |
+| <a id="property-taxrequirementmetadataprefix"></a> `prefix?` | `string` \| `null` | [for `account_number`] A value that precedes the value to be collected - useful for display, but should not be submitted as part of the value. E.g. some tax agencies use an account number that is a company's federal ein plus two digits. In that case the mask would be `##` and the prefix `XXXXX1234`. |
+| <a id="property-taxrequirementmetadataratetype"></a> `rateType?` | [`RateType`](#ratetype-1) | [for `workers_compensation_rate`] The type of rate being collected. Either: **Remarks** - `percent`: A percentage formatted as a decimal, e.g. `0.01` for 1% - `currency_per_hour`: A dollar amount per hour, e.g. `3.24` for $3.24/hr |
+| <a id="property-taxrequirementmetadatariskclasscode"></a> `riskClassCode?` | `string` | [for `workers_compensation_rate`] The industry risk class code for the rate being requested |
+| <a id="property-taxrequirementmetadatariskclassdescription"></a> `riskClassDescription?` | `string` | [for `workers_compensation_rate`] A description of the industry risk class for the rate being requested |
+| <a id="property-taxrequirementmetadatavalidation"></a> `validation?` | [`Validation`](#validation) | [for `tax_rate`] Describes the validation required for the tax rate |
+
+***
+
+<a id="taxrequirementmetadataoptions"></a>
+
+### TaxRequirementMetadataOptions
+
+> **TaxRequirementMetadataOptions** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:59](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L59)
+
+`TaxRequirementMetadataOptions` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxrequirementmetadataoptionslabel"></a> `label` | `string` | A customer facing label for the answer |
+| <a id="property-taxrequirementmetadataoptionsvalue"></a> `value` | `string` \| `boolean` | The actual value to be submitted |
+| <a id="property-taxrequirementmetadataoptionsshortlabel"></a> `shortLabel?` | `string` \| `null` | A less verbose label that may sometimes be available |
+
+***
+
+<a id="taxrequirementmetadatatype-1"></a>
+
+### TaxRequirementMetadataType
+
+> **TaxRequirementMetadataType** = `ClosedEnum`\<*typeof* [`TaxRequirementMetadataType`](#taxrequirementmetadatatype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:26](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L26)
+
+Describes the type of requirement - each type may have additional metadata properties to describe possible values, formats, etc.
+
+#### Remarks
+
+- `text`: free-text input, no additional requirements
+- `currency`: a value representing a dollar amount, e.g. `374.55` representing `$374.55`
+- `radio`: choose one of options provided, see `options`
+- `select`: choose one of options provided, see `options`
+- `percent`: A decimal value representing a percentage, e.g. `0.034` representing `3.4%`
+- `account_number`: An account number for a tax agency, more information provided by `mask` and `prefix`
+- `tax_rate`: A decimal value representing a tax rate, e.g. `0.034` representing a tax rate of `3.4%`, see `validation` for additional validation guidance
+- `workers_compensation_rate`: A decimal value representing a percentage, see `risk_class_code`, `risk_class_description`, and `rate_type`
+
+***
+
+<a id="taxrequirementmetadatavalidationtype-1"></a>
+
+### TaxRequirementMetadataValidationType
+
+> **TaxRequirementMetadataValidationType** = `ClosedEnum`\<*typeof* [`TaxRequirementMetadataValidationType`](#taxrequirementmetadatavalidationtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:97](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L97)
+
+Describes the type of tax_rate validation rule
+
+***
+
+<a id="taxrequirementset"></a>
+
+### TaxRequirementSet
+
+> **TaxRequirementSet** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementset.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementset.ts#L15)
+
+`TaxRequirementSet` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-taxrequirementseteffectivefrom"></a> `effectiveFrom?` | `string` \| `null` | An ISO 8601 formatted date representing the date values became effective. Some requirement sets are effective dated, while others are not. Multiple requirement sets for the same state/key can/will exist with unique effective dates. If a requirement set is has an `effective_from` value, all requirement sets with the same key will also have an `effective_from` value. |
+| <a id="property-taxrequirementsetkey"></a> `key?` | `string` | An identifier for a set of requirements. A list of requirement sets can contain multiple sets with the same `key` and different `effective_from` values. |
+| <a id="property-taxrequirementsetlabel"></a> `label?` | `string` | Customer facing label for the requirement set, e.g. "Registrations" |
+| <a id="property-taxrequirementsetstate"></a> `state?` | `string` | One of the two-letter state abbreviations for the fifty United States and the District of Columbia (DC) |
 
 ***
 
@@ -2522,6 +5590,18 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequireme
 
 ***
 
+<a id="taxrequirementsvalue"></a>
+
+### TaxRequirementsValue
+
+> **TaxRequirementsValue** = `boolean` \| `string` \| `number`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementsvalue.ts:13](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementsvalue.ts#L13)
+
+The value or "answer" for a tax requirement. Type depends on the requirement metadata type (e.g. string for text/account_number, boolean for radio/checkbox, number for percent/currency/tax_rate). Null when the requirement has not been answered.
+
+***
+
 <a id="termination"></a>
 
 ### Termination
@@ -2546,6 +5626,18 @@ The representation of a termination in Gusto.
 
 ***
 
+<a id="thanksgiving"></a>
+
+### Thanksgiving
+
+> **Thanksgiving** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:65](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L65)
+
+`Thanksgiving` entity from the Gusto Embedded API.
+
+***
+
 <a id="timeoffpolicy"></a>
 
 ### TimeOffPolicy
@@ -2562,7 +5654,7 @@ Representation of a Time Off Policy
 | ------ | ------ | ------ |
 | <a id="property-timeoffpolicyaccrualmethod"></a> `accrualMethod` | `string` | Policy time off accrual method |
 | <a id="property-timeoffpolicycompanyuuid"></a> `companyUuid` | `string` | Unique identifier for the company owning the time off policy |
-| <a id="property-timeoffpolicyemployees"></a> `employees` | `TimeOffPolicyEmployees`[] | List of employee UUIDs under a time off policy |
+| <a id="property-timeoffpolicyemployees"></a> `employees` | [`TimeOffPolicyEmployees`](#timeoffpolicyemployees)[] | List of employee UUIDs under a time off policy |
 | <a id="property-timeoffpolicyisactive"></a> `isActive` | `boolean` | boolean representing if a policy is active or not |
 | <a id="property-timeoffpolicyname"></a> `name` | `string` | Name of the time off policy |
 | <a id="property-timeoffpolicypolicytype"></a> `policyType` | [`PolicyType`](#policytype-1) | Type of the time off policy. Only "vacation" and "sick" can be created through the API, but other types may be present if the company was previously a Gusto.com customer. |
@@ -2580,6 +5672,24 @@ Representation of a Time Off Policy
 
 ***
 
+<a id="timeoffpolicyemployees"></a>
+
+### TimeOffPolicyEmployees
+
+> **TimeOffPolicyEmployees** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicy.ts:33](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicy.ts#L33)
+
+`TimeOffPolicyEmployees` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-timeoffpolicyemployeesbalance"></a> `balance?` | `string` | The time off balance for the employee |
+
+***
+
 <a id="timeoffpolicyrequest"></a>
 
 ### TimeOffPolicyRequest
@@ -2594,9 +5704,9 @@ Request body for creating a time off policy
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-timeoffpolicyrequestaccrualmethod"></a> `accrualMethod` | `AccrualMethod` | Accrual method of the time off policy |
+| <a id="property-timeoffpolicyrequestaccrualmethod"></a> `accrualMethod` | [`AccrualMethod`](#accrualmethod-1) | Accrual method of the time off policy |
 | <a id="property-timeoffpolicyrequestname"></a> `name` | `string` | Name of the time off policy |
-| <a id="property-timeoffpolicyrequestpolicytype"></a> `policyType` | `TimeOffPolicyRequestPolicyType` | Type of the time off policy. Currently only "vacation" and "sick" are supported |
+| <a id="property-timeoffpolicyrequestpolicytype"></a> `policyType` | [`TimeOffPolicyRequestPolicyType`](#timeoffpolicyrequestpolicytype-1) | Type of the time off policy. Currently only "vacation" and "sick" are supported |
 | <a id="property-timeoffpolicyrequestaccrualrate"></a> `accrualRate?` | `string` \| `null` | The rate at which the time off hours will accrue for an employee on the policy. Represented as a float, e.g. "40.0". |
 | <a id="property-timeoffpolicyrequestaccrualrateunit"></a> `accrualRateUnit?` | `string` \| `null` | The number of hours an employee has to work or be paid for to accrue the number of hours set in the accrual rate. Only used for hourly policies (per_hour_paid, per_hour_paid_no_overtime, per_hour_work, per_hour_worked_no_overtime). Represented as a float, e.g. "40.0". |
 | <a id="property-timeoffpolicyrequestaccrualwaitingperioddays"></a> `accrualWaitingPeriodDays?` | `number` \| `null` | Number of days before an employee on the policy will begin accruing time off hours. If accrual_method is per_anniversary_year, per_calendar_year, or unlimited, then accrual_waiting_period_days should be 0. |
@@ -2606,6 +5716,40 @@ Request body for creating a time off policy
 | <a id="property-timeoffpolicyrequestmaxhours"></a> `maxHours?` | `string` \| `null` | The max number of hours an employee can accrue. If accrual_method is unlimited, then max_hours must be blank. |
 | <a id="property-timeoffpolicyrequestpaidoutontermination"></a> `paidOutOnTermination?` | `boolean` | Boolean representing if an employee's accrued time off hours will be paid out on termination. If accrual_method is unlimited, then paid_out_on_termination must be `false`. |
 | <a id="property-timeoffpolicyrequestpolicyresetdate"></a> `policyResetDate?` | `string` \| `null` | The date the policy resets. Format MM-DD |
+
+***
+
+<a id="timeoffpolicyrequestpolicytype-1"></a>
+
+### TimeOffPolicyRequestPolicyType
+
+> **TimeOffPolicyRequestPolicyType** = `ClosedEnum`\<*typeof* [`TimeOffPolicyRequestPolicyType`](#timeoffpolicyrequestpolicytype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/timeoffpolicyrequest.ts:12](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/timeoffpolicyrequest.ts#L12)
+
+Type of the time off policy. Currently only "vacation" and "sick" are supported
+
+***
+
+<a id="totals"></a>
+
+### Totals
+
+> **Totals** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/payrollreceipt.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/payrollreceipt.ts#L15)
+
+The subtotals for the payroll.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-totalschildsupportdebit"></a> `childSupportDebit?` | `string` | The total child support debit for the payroll. |
+| <a id="property-totalscompanydebit"></a> `companyDebit?` | `string` | The total company debit for the payroll. |
+| <a id="property-totalsnetpaydebit"></a> `netPayDebit?` | `string` | The total company net pay for the payroll. |
+| <a id="property-totalsreimbursementdebit"></a> `reimbursementDebit?` | `string` | The total reimbursements for the payroll. |
+| <a id="property-totalstaxdebit"></a> `taxDebit?` | `string` | The total tax debit for the payroll. |
 
 ***
 
@@ -2653,6 +5797,93 @@ The representation of an unprocessed termination pay period.
 
 ***
 
+<a id="upcomingemployment"></a>
+
+### UpcomingEmployment
+
+> **UpcomingEmployment** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:78](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L78)
+
+The contractor's upcoming employment details, if a rehire is scheduled.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-upcomingemploymentsetupstatus"></a> `setupStatus?` | `string` \| `null` | The setup status of the upcoming employment. |
+| <a id="property-upcomingemploymentstartdate"></a> `startDate?` | `string` | The start date of the upcoming employment. |
+
+***
+
+<a id="validation"></a>
+
+### Validation
+
+> **Validation** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/taxrequirementmetadata.ts:111](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/taxrequirementmetadata.ts#L111)
+
+[for `tax_rate`] Describes the validation required for the tax rate
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-validationtype"></a> `type` | [`TaxRequirementMetadataValidationType`](#taxrequirementmetadatavalidationtype-1) | Describes the type of tax_rate validation rule |
+| <a id="property-validationmax"></a> `max?` | `string` | [for `min_max`] The inclusive upper bound of the tax rate |
+| <a id="property-validationmin"></a> `min?` | `string` | [for `min_max`] The inclusive lower bound of the tax rate |
+| <a id="property-validationrates"></a> `rates?` | `string`[] | [for `one_of`] The possible, unformatted tax rates for selection. **Remarks** - e.g. ["0.0", "0.001"] representing 0% and 0.1% |
+
+***
+
+<a id="verificationstatus-1"></a>
+
+### VerificationStatus
+
+> **VerificationStatus** = `ClosedEnum`\<*typeof* [`VerificationStatus`](#verificationstatus)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:33](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L33)
+
+The verification status of the bank account.
+
+#### Remarks
+
+'awaiting_deposits' means the bank account is just created and money is being transferred.
+'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint.
+'verified' means the bank account is verified.
+
+***
+
+<a id="verificationtype-1"></a>
+
+### VerificationType
+
+> **VerificationType** = `ClosedEnum`\<*typeof* [`VerificationType`](#verificationtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/companybankaccount.ts:57](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/companybankaccount.ts#L57)
+
+The verification type of the bank account.
+
+#### Remarks
+
+'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits.
+'plaid' means the bank account is connected through Plaid.
+
+***
+
+<a id="veteransday"></a>
+
+### VeteransDay
+
+> **VeteransDay** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/holidaypaypolicy.ts:59](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/holidaypaypolicy.ts#L59)
+
+`VeteransDay` entity from the Gusto Embedded API.
+
+***
+
 <a id="wagetype-1"></a>
 
 ### WageType
@@ -2685,7 +5916,7 @@ Representation of a wire in request
 | <a id="property-wireinrequestdatesent"></a> `dateSent?` | `string` \| `null` | Date the wire in was sent |
 | <a id="property-wireinrequestoriginationbank"></a> `originationBank?` | `string` | Name of bank receiving the wire in |
 | <a id="property-wireinrequestoriginationbankaddress"></a> `originationBankAddress?` | `string` | Address of bank receiving the wire in |
-| <a id="property-wireinrequestpaymenttype"></a> `paymentType?` | `PaymentType` | Type of payment for the wire in |
+| <a id="property-wireinrequestpaymenttype"></a> `paymentType?` | [`PaymentType`](#paymenttype-1) | Type of payment for the wire in |
 | <a id="property-wireinrequestpaymentuuid"></a> `paymentUuid?` | `string` | Unique identifier of the payment |
 | <a id="property-wireinrequestrecipientaccountnumber"></a> `recipientAccountNumber?` | `string` | Recipient bank account number |
 | <a id="property-wireinrequestrecipientaddress"></a> `recipientAddress?` | `string` | Address of the recipient of the wire in |
