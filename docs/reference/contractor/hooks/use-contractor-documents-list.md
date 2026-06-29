@@ -11,37 +11,15 @@ custom_edit_url: null
 
 # useContractorDocumentsList
 
-## Hooks
-
 <a id="usecontractordocumentslist"></a>
 
-### useContractorDocumentsList()
-
-> **useContractorDocumentsList**(`params`): [`UseContractorDocumentsListResult`](#usecontractordocumentslistresult)
+> **useContractorDocumentsList**(`params`: [`UseContractorDocumentsListParams`](#usecontractordocumentslistparams)): [`UseContractorDocumentsListResult`](#usecontractordocumentslistresult)
 
 Standalone data hook for a contractor's documents.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`UseContractorDocumentsListParams`](#usecontractordocumentslistparams) | See [UseContractorDocumentsListParams](#usecontractordocumentslistparams). |
-
-#### Returns
-
-[`UseContractorDocumentsListResult`](#usecontractordocumentslistresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or the ready state with `data.documents` once loaded.
-
-#### Remarks
-
-Wraps the `contractorDocumentsGetAll` query in the standard
-[BaseHookReady](../../utilities.md#basehookready) shape. Read-only — viewing or signing a document is
-handled by the screen the parent routes to, so this hook exposes no actions.
-
-#### Example
-
-```tsx
+```tsx title="Example"
 import { useContractorDocumentsList } from '@gusto/embedded-react-sdk'
 
 function ContractorDocuments({ contractorId }: { contractorId: string }) {
@@ -59,31 +37,29 @@ function ContractorDocuments({ contractorId }: { contractorId: string }) {
 }
 ```
 
-## Interfaces
+## Remarks
 
-<a id="usecontractordocumentslistparams"></a>
+Wraps the `contractorDocumentsGetAll` query in the standard
+[BaseHookReady](../../utilities.md#basehookready) shape. Read-only — viewing or signing a document is
+handled by the screen the parent routes to, so this hook exposes no actions.
+
+## Props
 
 ### UseContractorDocumentsListParams
 
-Parameters for [useContractorDocumentsList](#usecontractordocumentslist).
+<a id="usecontractordocumentslistparams"></a>
 
-#### Properties
+Parameters for [useContractorDocumentsList](#usecontractordocumentslist).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 
-## Type Aliases
+## Returns
 
-<a id="usecontractordocumentslistready"></a>
+[`UseContractorDocumentsListResult`](#usecontractordocumentslistresult)
 
-### UseContractorDocumentsListReady
-
-> **UseContractorDocumentsListReady** = [`BaseHookReady`](../../utilities.md#basehookready)\<\{ `documents`: `Document`[]; \}, \{ `isFetching`: `boolean`; \}\>
-
-Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumentslist) once the documents have loaded.
-
-***
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or the ready state with `data.documents` once loaded.
 
 <a id="usecontractordocumentslistresult"></a>
 
@@ -92,3 +68,18 @@ Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumen
 > **UseContractorDocumentsListResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDocumentsListReady`](#usecontractordocumentslistready)
 
 Result of [useContractorDocumentsList](#usecontractordocumentslist) — a discriminated union of loading and ready states.
+
+<a id="usecontractordocumentslistready"></a>
+
+### UseContractorDocumentsListReady
+
+Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumentslist) once the documents have loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
+| `data.documents` | `Document`[] | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |
+| `status.isFetching` | `boolean` | - |
