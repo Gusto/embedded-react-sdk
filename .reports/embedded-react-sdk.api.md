@@ -150,9 +150,6 @@ export { AfterSuccessContext }
 export { AfterSuccessHook }
 
 // @public
-export const AGREE_FIELD = "agree";
-
-// @public
 export interface AlertProps {
     action?: ReactNode;
     children?: ReactNode;
@@ -380,15 +377,6 @@ export interface BreadcrumbsProps {
     isSmallContainer?: boolean;
     onClick?: (id: string) => void;
 }
-
-// @public
-export function buildContractorSignatureFields(descriptors: W9FieldDescriptor[]): ContractorSignatureFields;
-
-// @public
-export function buildW9Defaults(document: Document_2, descriptors: W9FieldDescriptor[]): ContractorSignatureFormData;
-
-// @public
-export function buildW9FieldDescriptors(document: Document_2): W9FieldDescriptor[];
 
 // @public
 export interface ButtonIconProps extends ButtonProps {
@@ -1593,9 +1581,6 @@ city: z.ZodString;
 state: z.ZodString;
 zip: z.ZodString;
 }>;
-
-// @public
-export function createContractorSignatureFormSchema(descriptors: W9FieldDescriptor[]): z.ZodType<ContractorSignatureFormData, ContractorSignatureFormData>;
 
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
@@ -3089,9 +3074,6 @@ interface InviteSignatoryProps extends BaseComponentInterface<'Company.AssignSig
 }
 
 // @public
-export function isW9Document(document: Document_2): boolean;
-
-// @public
 export type JobErrorCode = (typeof JobErrorCodes)[keyof typeof JobErrorCodes];
 
 // @public
@@ -3225,15 +3207,6 @@ export interface LinkProps extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>,
 | 'title'> {
     children?: ReactNode;
 }
-
-// @public
-export const LLC_CLASSIFICATION_CODES: readonly ["c", "s", "p"];
-
-// @public
-export const LLC_CLASSIFICATION_FIELD = "llcClassificationCode";
-
-// @public
-export const LLC_CLASSIFICATION_OPTION: TaxClassificationOptionKey;
 
 // @public
 export interface LoadingSpinnerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
@@ -3636,12 +3609,6 @@ export function OrderNumberField(props: OrderNumberFieldProps): JSX;
 
 // @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
-
-// @public
-export const OTHER_CLASSIFICATION_OPTION: TaxClassificationOptionKey;
-
-// @public
-export const OTHER_TEXT_FIELD = "other_text";
 
 // @public
 export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
@@ -4537,11 +4504,6 @@ interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
     withEmployeeI9?: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SignFieldValue" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function serializeW9Fields(document: Document_2, descriptors: W9FieldDescriptor[], values: ContractorSignatureFormData): SignFieldValue[];
-
 // @public
 export interface SharedFieldLayoutProps extends DataAttributes {
     description?: ReactNode;
@@ -4959,15 +4921,6 @@ export interface TabsProps {
     selectedId?: string;
     tabs: TabProps[];
 }
-
-// @public
-export const TAX_CLASSIFICATION_FIELD = "taxClassification";
-
-// @public
-export const TAX_CLASSIFICATION_OPTION_KEYS: readonly ["individual_proprietor", "c_corporation", "s_corporation", "partnership", "trust_estate", "limited_liability_company", "other"];
-
-// @public
-export type TaxClassificationOptionKey = (typeof TAX_CLASSIFICATION_OPTION_KEYS)[number];
 
 // @public
 function TerminateEmployee(props: TerminateEmployeeProps): JSX;
@@ -5934,24 +5887,6 @@ function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 interface ViewHolidayScheduleProps extends BaseComponentInterface<'Company.TimeOff.HolidayPolicy' | 'Company.TimeOff.PolicyDetail'> {
     companyId: string;
 }
-
-// @public
-export const W9_DOCUMENT_NAME = "taxpayer_identification_form_w_9";
-
-// @public
-export interface W9FieldDescriptor {
-    apiKey?: string;
-    hasRedactedValue?: boolean;
-    isRequired: boolean;
-    name: string;
-    placeholder?: string;
-    section: W9Section;
-    variant: W9FieldVariant;
-    visibleWhenClassification?: TaxClassificationOptionKey;
-}
-
-// @public
-export type W9FieldVariant = 'text' | 'checkbox' | 'radio' | 'select';
 
 // @public
 export type W9Section = 'classification' | 'exemptions' | 'address' | 'tin' | 'certification';

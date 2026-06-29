@@ -7,21 +7,21 @@ import type {
  * The `name` of the W-9 document — the only contractor document type that
  * supports signing today.
  *
- * @public
+ * @internal
  */
 export const W9_DOCUMENT_NAME = 'taxpayer_identification_form_w_9'
 
 /**
  * Form-field name for the synthesized federal tax classification radio group.
  *
- * @public
+ * @internal
  */
 export const TAX_CLASSIFICATION_FIELD = 'taxClassification'
 
 /**
  * Form-field name for the synthesized LLC tax classification code select.
  *
- * @public
+ * @internal
  */
 export const LLC_CLASSIFICATION_FIELD = 'llcClassificationCode'
 
@@ -29,7 +29,7 @@ export const LLC_CLASSIFICATION_FIELD = 'llcClassificationCode'
  * Ordered classification option keys backing the {@link TAX_CLASSIFICATION_FIELD}
  * radio group. Each maps to a W-9 checkbox field on the underlying document.
  *
- * @public
+ * @internal
  */
 export const TAX_CLASSIFICATION_OPTION_KEYS = [
   'individual_proprietor',
@@ -44,35 +44,35 @@ export const TAX_CLASSIFICATION_OPTION_KEYS = [
 /**
  * A single federal tax classification option key.
  *
- * @public
+ * @internal
  */
 export type TaxClassificationOptionKey = (typeof TAX_CLASSIFICATION_OPTION_KEYS)[number]
 
 /**
  * The classification option that reveals the LLC tax classification select.
  *
- * @public
+ * @internal
  */
 export const LLC_CLASSIFICATION_OPTION: TaxClassificationOptionKey = 'limited_liability_company'
 
 /**
  * The classification option that reveals the "Other" free-text field.
  *
- * @public
+ * @internal
  */
 export const OTHER_CLASSIFICATION_OPTION: TaxClassificationOptionKey = 'other'
 
 /**
  * Ordered LLC tax classification code options.
  *
- * @public
+ * @internal
  */
 export const LLC_CLASSIFICATION_CODES = ['c', 's', 'p'] as const
 
 /**
  * The W-9 `other_text` API field key, revealed when "Other" is selected.
  *
- * @public
+ * @internal
  */
 export const OTHER_TEXT_FIELD = 'other_text'
 
@@ -87,14 +87,14 @@ export type W9Section = 'classification' | 'exemptions' | 'address' | 'tin' | 'c
 /**
  * Visual input variant for a W-9 field.
  *
- * @public
+ * @internal
  */
 export type W9FieldVariant = 'text' | 'checkbox' | 'radio' | 'select'
 
 /**
  * A render-ready descriptor for a single W-9 form field.
  *
- * @public
+ * @internal
  */
 export interface W9FieldDescriptor {
   /** react-hook-form field name (also the i18n label sub-key). */
@@ -251,7 +251,7 @@ function indexFields(document: Document): Map<string, DocumentField> {
 /**
  * Whether the document is a W-9 with signable fields.
  *
- * @public
+ * @internal
  */
 export function isW9Document(document: Document): boolean {
   return document.name === W9_DOCUMENT_NAME
@@ -270,7 +270,7 @@ export function isW9Document(document: Document): boolean {
  *
  * @param document - The W-9 document returned by the API.
  * @returns The ordered list of field descriptors to render.
- * @public
+ * @internal
  */
 export function buildW9FieldDescriptors(document: Document): W9FieldDescriptor[] {
   const byKey = indexFields(document)
@@ -346,7 +346,7 @@ export type ContractorSignatureFormData = Record<string, string | boolean> & {
  * @param document - The W-9 document returned by the API.
  * @param descriptors - The descriptors produced by {@link buildW9FieldDescriptors}.
  * @returns The default form values.
- * @public
+ * @internal
  */
 export function buildW9Defaults(
   document: Document,
@@ -385,7 +385,7 @@ export function buildW9Defaults(
 /**
  * A single `{ key, value }` pair sent in the sign request.
  *
- * @public
+ * @internal
  */
 export interface SignFieldValue {
   /** The API field key. */
@@ -410,7 +410,7 @@ export interface SignFieldValue {
  * @param descriptors - The descriptors produced by {@link buildW9FieldDescriptors}.
  * @param values - The validated form values.
  * @returns The ordered field array for the sign request body.
- * @public
+ * @internal
  */
 export function serializeW9Fields(
   document: Document,

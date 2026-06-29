@@ -49,7 +49,7 @@ function isEmpty(value: unknown): boolean {
  *
  * @param descriptors - The descriptors produced by `buildW9FieldDescriptors`.
  * @returns A Zod schema typed to {@link ContractorSignatureFormData}.
- * @public
+ * @internal
  */
 export function createContractorSignatureFormSchema(
   descriptors: W9FieldDescriptor[],

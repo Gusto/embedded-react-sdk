@@ -49,182 +49,7 @@ document that returns no recognized W-9 fields renders as acknowledge-only
 `form.Fields` under headings; consult `form.fieldsMetadata` for per-field
 required flags and select/radio options.
 
-## Functions
-
-<a id="buildcontractorsignaturefields"></a>
-
-### buildContractorSignatureFields()
-
-> **buildContractorSignatureFields**(`descriptors`): [`ContractorSignatureFields`](#contractorsignaturefields)
-
-Builds the map of bound field components for a W-9 signing form, including
-the always-present `agree` consent checkbox.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `descriptors` | [`W9FieldDescriptor`](#w9fielddescriptor)[] | The descriptors produced by `buildW9FieldDescriptors`. |
-
-#### Returns
-
-[`ContractorSignatureFields`](#contractorsignaturefields)
-
-A [ContractorSignatureFields](#contractorsignaturefields) map keyed by form-field name.
-
-***
-
-<a id="buildw9defaults"></a>
-
-### buildW9Defaults()
-
-> **buildW9Defaults**(`document`, `descriptors`): [`ContractorSignatureFormData`](#contractorsignatureformdata)
-
-Builds default form values from a document's fields.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `document` | `Document` | The W-9 document returned by the API. |
-| `descriptors` | [`W9FieldDescriptor`](#w9fielddescriptor)[] | The descriptors produced by [buildW9FieldDescriptors](#buildw9fielddescriptors). |
-
-#### Returns
-
-[`ContractorSignatureFormData`](#contractorsignatureformdata)
-
-The default form values.
-
-#### Remarks
-
-Pass-through values are seeded from the API `value`. The classification radio
-defaults to whichever classification checkbox is already set (`'1'`).
-
-***
-
-<a id="buildw9fielddescriptors"></a>
-
-### buildW9FieldDescriptors()
-
-> **buildW9FieldDescriptors**(`document`): [`W9FieldDescriptor`](#w9fielddescriptor)[]
-
-Builds the ordered, render-ready W-9 field descriptors for a document.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `document` | `Document` | The W-9 document returned by the API. |
-
-#### Returns
-
-[`W9FieldDescriptor`](#w9fielddescriptor)[]
-
-The ordered list of field descriptors to render.
-
-#### Remarks
-
-Pass-through fields are included only when present on the document; their
-input variant is derived from the API `data_type` (so a field typed `text`
-always renders as text, even if the static layout guessed otherwise) and
-their `isRequired` flag is driven by the API `required` flag unless the W-9
-layout marks them optional. The classification radio is included when any of
-the classification checkbox fields are present.
-
-***
-
-<a id="createcontractorsignatureformschema"></a>
-
-### createContractorSignatureFormSchema()
-
-> **createContractorSignatureFormSchema**(`descriptors`): `ZodType`\<[`ContractorSignatureFormData`](#contractorsignatureformdata), [`ContractorSignatureFormData`](#contractorsignatureformdata)\>
-
-Builds a Zod schema for the W-9 signing form from its field descriptors.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `descriptors` | [`W9FieldDescriptor`](#w9fielddescriptor)[] | The descriptors produced by `buildW9FieldDescriptors`. |
-
-#### Returns
-
-`ZodType`\<[`ContractorSignatureFormData`](#contractorsignatureformdata), [`ContractorSignatureFormData`](#contractorsignatureformdata)\>
-
-A Zod schema typed to [ContractorSignatureFormData](#contractorsignatureformdata).
-
-#### Remarks
-
-Every field validates as `z.unknown()` with emptiness enforced in
-`superRefine`, mirroring the dynamic state-taxes form pattern. The LLC
-classification code is required only while the LLC classification is
-selected, and `agree` must be checked.
-
-***
-
-<a id="isw9document"></a>
-
-### isW9Document()
-
-> **isW9Document**(`document`): `boolean`
-
-Whether the document is a W-9 with signable fields.
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `document` | `Document` |
-
-#### Returns
-
-`boolean`
-
-***
-
-<a id="serializew9fields"></a>
-
-### serializeW9Fields()
-
-> **serializeW9Fields**(`document`, `descriptors`, `values`): `SignFieldValue`[]
-
-Serializes W-9 form values into the `{ key, value }` field array expected by
-the sign API.
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `document` | `Document` | The W-9 document being signed. |
-| `descriptors` | [`W9FieldDescriptor`](#w9fielddescriptor)[] | The descriptors produced by [buildW9FieldDescriptors](#buildw9fielddescriptors). |
-| `values` | [`ContractorSignatureFormData`](#contractorsignatureformdata) | The validated form values. |
-
-#### Returns
-
-`SignFieldValue`[]
-
-The ordered field array for the sign request body.
-
-#### Remarks
-
-Applies the W-9 mapping: the chosen classification key is sent with value
-`'1'`; when the LLC classification is chosen, the selected LLC code is sent
-under the `tax_classification` key. Checkboxes serialize to `'1'`/`'0'`. The
-`other_text` and `llcClassificationCode` values are only included for their
-respective classifications. The `date` field is intentionally omitted so the
-API auto-fills the signing date in its own locale-correct format.
-
 ## Variables
-
-<a id="agree_field"></a>
-
-### AGREE\_FIELD
-
-> `const` **AGREE\_FIELD**: `"agree"` = `'agree'`
-
-The form-field name of the electronic-signature consent checkbox.
-
-***
 
 <a id="contractorsignatureformerrorcodes"></a>
 
@@ -245,88 +70,6 @@ Validation error codes produced by the contractor signature form schema.
 
 Use these constants as the keys in a field's `validationMessages` prop to map
 an error code to a user-facing message.
-
-***
-
-<a id="llc_classification_codes"></a>
-
-### LLC\_CLASSIFICATION\_CODES
-
-> `const` **LLC\_CLASSIFICATION\_CODES**: readonly \[`"c"`, `"s"`, `"p"`\]
-
-Ordered LLC tax classification code options.
-
-***
-
-<a id="llc_classification_field"></a>
-
-### LLC\_CLASSIFICATION\_FIELD
-
-> `const` **LLC\_CLASSIFICATION\_FIELD**: `"llcClassificationCode"` = `'llcClassificationCode'`
-
-Form-field name for the synthesized LLC tax classification code select.
-
-***
-
-<a id="llc_classification_option"></a>
-
-### LLC\_CLASSIFICATION\_OPTION
-
-> `const` **LLC\_CLASSIFICATION\_OPTION**: [`TaxClassificationOptionKey`](#taxclassificationoptionkey) = `'limited_liability_company'`
-
-The classification option that reveals the LLC tax classification select.
-
-***
-
-<a id="other_classification_option"></a>
-
-### OTHER\_CLASSIFICATION\_OPTION
-
-> `const` **OTHER\_CLASSIFICATION\_OPTION**: [`TaxClassificationOptionKey`](#taxclassificationoptionkey) = `'other'`
-
-The classification option that reveals the "Other" free-text field.
-
-***
-
-<a id="other_text_field"></a>
-
-### OTHER\_TEXT\_FIELD
-
-> `const` **OTHER\_TEXT\_FIELD**: `"other_text"` = `'other_text'`
-
-The W-9 `other_text` API field key, revealed when "Other" is selected.
-
-***
-
-<a id="tax_classification_field"></a>
-
-### TAX\_CLASSIFICATION\_FIELD
-
-> `const` **TAX\_CLASSIFICATION\_FIELD**: `"taxClassification"` = `'taxClassification'`
-
-Form-field name for the synthesized federal tax classification radio group.
-
-***
-
-<a id="tax_classification_option_keys"></a>
-
-### TAX\_CLASSIFICATION\_OPTION\_KEYS
-
-> `const` **TAX\_CLASSIFICATION\_OPTION\_KEYS**: readonly \[`"individual_proprietor"`, `"c_corporation"`, `"s_corporation"`, `"partnership"`, `"trust_estate"`, `"limited_liability_company"`, `"other"`\]
-
-Ordered classification option keys backing the [TAX\_CLASSIFICATION\_FIELD](#tax_classification_field)
-radio group. Each maps to a W-9 checkbox field on the underlying document.
-
-***
-
-<a id="w9_document_name"></a>
-
-### W9\_DOCUMENT\_NAME
-
-> `const` **W9\_DOCUMENT\_NAME**: `"taxpayer_identification_form_w_9"` = `'taxpayer_identification_form_w_9'`
-
-The `name` of the W-9 document — the only contractor document type that
-supports signing today.
 
 ## Interfaces
 
@@ -414,27 +157,6 @@ document metadata has loaded.
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-***
-
-<a id="w9fielddescriptor"></a>
-
-### W9FieldDescriptor
-
-A render-ready descriptor for a single W-9 form field.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `isRequired` | `boolean` | Whether the field must have a value for the form to submit. |
-| `name` | `string` | react-hook-form field name (also the i18n label sub-key). |
-| `section` | [`W9Section`](#w9section) | Section this field is grouped under. |
-| `variant` | [`W9FieldVariant`](#w9fieldvariant) | Input variant used to pick the bound field component. |
-| `apiKey?` | `string` | Underlying API field key for pass-through fields; absent for synthesized fields. |
-| `hasRedactedValue?` | `boolean` | Whether the API returned a masked value for this field (e.g. a redacted SSN/EIN). Redacted fields seed an empty input, surface the mask as a placeholder, are exempt from required validation, and are omitted from the sign payload unless the contractor types a replacement. |
-| `placeholder?` | `string` | The masked value to display as a placeholder for a redacted field. |
-| `visibleWhenClassification?` | `"other"` \| `"individual_proprietor"` \| `"c_corporation"` \| `"s_corporation"` \| `"partnership"` \| `"trust_estate"` \| `"limited_liability_company"` | When set, the field only renders while the classification radio holds this option. |
-
 ## Type Aliases
 
 <a id="contractorsignatureboundfield"></a>
@@ -484,16 +206,6 @@ form schema.
 
 ***
 
-<a id="taxclassificationoptionkey"></a>
-
-### TaxClassificationOptionKey
-
-> **TaxClassificationOptionKey** = *typeof* [`TAX_CLASSIFICATION_OPTION_KEYS`](#tax_classification_option_keys)\[`number`\]
-
-A single federal tax classification option key.
-
-***
-
 <a id="usecontractorsignatureformresult"></a>
 
 ### UseContractorSignatureFormResult
@@ -501,16 +213,6 @@ A single federal tax classification option key.
 > **UseContractorSignatureFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorSignatureFormReady`](#usecontractorsignatureformready)
 
 Result of [useContractorSignatureForm](#usecontractorsignatureform) — a discriminated union on `isLoading`.
-
-***
-
-<a id="w9fieldvariant"></a>
-
-### W9FieldVariant
-
-> **W9FieldVariant** = `"text"` \| `"checkbox"` \| `"radio"` \| `"select"`
-
-Visual input variant for a W-9 field.
 
 ***
 

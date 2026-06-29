@@ -43,7 +43,7 @@ export type ContractorSignatureFields = Record<string, ContractorSignatureBoundF
 /**
  * The form-field name of the electronic-signature consent checkbox.
  *
- * @public
+ * @internal
  */
 export const AGREE_FIELD = 'agree'
 
@@ -77,7 +77,7 @@ function boundField(
  *
  * @param descriptors - The descriptors produced by `buildW9FieldDescriptors`.
  * @returns A {@link ContractorSignatureFields} map keyed by form-field name.
- * @public
+ * @internal
  */
 export function buildContractorSignatureFields(
   descriptors: W9FieldDescriptor[],
