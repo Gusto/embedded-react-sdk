@@ -13,7 +13,11 @@ export type { MinimumWages } from '@gusto/embedded-api-v-2025-11-15/models/compo
 export type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
 export { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
 export type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-export { ContractorOnboardingStatus1, ContractorType, WageType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+export {
+  ContractorOnboardingStatus1,
+  ContractorType,
+  WageType,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 /** `ContractorAddress` entity from the Gusto Embedded API. */
 export type { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress'
 /** `ContractorBankAccount` entity from the Gusto Embedded API. */
@@ -70,7 +74,11 @@ export { AuthorizationStatus } from '@gusto/embedded-api-v-2025-11-15/models/com
 /** `RequiredQuestions` entity from the Gusto Embedded API. */
 export type { RequiredQuestions } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
 export type { InformationRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
-export { InformationRequestStatus, InformationRequestType, ResponseType } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
+export {
+  InformationRequestStatus,
+  InformationRequestType,
+  ResponseType,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
 export type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 export type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
 export type { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage'

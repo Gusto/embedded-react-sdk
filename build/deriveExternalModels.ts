@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { Project } from 'ts-morph'
+import { format, resolveConfig } from 'prettier'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -144,7 +145,13 @@ function render(byModule: Map<string, Set<string>>): string {
   return `${header}\n${blocks}\n`
 }
 
-const output = render(collectReferencedSymbols())
+// Format with the repo's Prettier config so the output matches format:check — otherwise
+// CI regenerates an unformatted barrel and the format job fails on the auto-committed file.
+const prettierConfig = await resolveConfig(OUTPUT_PATH)
+const output = await format(render(collectReferencedSymbols()), {
+  ...prettierConfig,
+  filepath: OUTPUT_PATH,
+})
 
 if (isVerifyMode) {
   const current = existsSync(OUTPUT_PATH) ? readFileSync(OUTPUT_PATH, 'utf8') : ''
