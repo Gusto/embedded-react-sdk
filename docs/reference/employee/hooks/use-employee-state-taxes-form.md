@@ -380,6 +380,34 @@ An array of [StateTaxFieldsGroup](#statetaxfieldsgroup) — one entry per state,
 
 ## Utility Types
 
+<a id="basestatetaxfieldprops"></a>
+
+### BaseStateTaxFieldProps
+
+Props shared by every state-tax `Field` variant. Each variant extends this
+with a variant-specific `FieldComponent` shape; `select` and `text` also add
+a `placeholder`.
+
+#### Extended by
+
+- [`SelectStateTaxFieldProps`](#selectstatetaxfieldprops)
+- [`RadioStateTaxFieldProps`](#radiostatetaxfieldprops)
+- [`TextStateTaxFieldProps`](#textstatetaxfieldprops)
+- [`NumberStateTaxFieldProps`](#numberstatetaxfieldprops)
+- [`CurrencyStateTaxFieldProps`](#currencystatetaxfieldprops)
+- [`DateStateTaxFieldProps`](#datestatetaxfieldprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `description?` | `ReactNode` | Overrides the API-supplied description. When omitted, falls back to `question.description` (sanitized internally by the underlying field via DOMPurify). |
+| `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
+| `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
+
+***
+
 <a id="currencystatetaxfieldprops"></a>
 
 ### CurrencyStateTaxFieldProps
@@ -391,7 +419,7 @@ validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -401,7 +429,7 @@ validation messages.
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ***
 
@@ -416,7 +444,7 @@ validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -426,7 +454,7 @@ validation messages.
 | `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replace the underlying SDK DatePicker primitive with a component of your own. |
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ***
 
@@ -475,7 +503,7 @@ validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -485,7 +513,7 @@ validation messages.
 | `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replace the underlying SDK NumberInput primitive with a component of your own. |
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ***
 
@@ -500,7 +528,7 @@ validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -510,7 +538,7 @@ validation messages.
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replace the underlying SDK RadioGroup primitive with a component of your own. |
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ***
 
@@ -525,7 +553,7 @@ placeholder, and validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -536,7 +564,7 @@ placeholder, and validation messages.
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `placeholder?` | `string` | Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ***
 
@@ -576,6 +604,17 @@ UI input variant for a state-tax question — determines which field type render
 
 ***
 
+<a id="statetaxvalidationmessages"></a>
+
+### StateTaxValidationMessages
+
+> **StateTaxValidationMessages** = [`ValidationMessages`](../../utilities.md#validationmessages)\<*typeof* `EmployeeStateTaxesErrorCodes.REQUIRED`\>
+
+Localized validation messages supported by the state-tax field components.
+Every variant surfaces a single error code, `REQUIRED`.
+
+***
+
 <a id="statetaxvalue"></a>
 
 ### StateTaxValue
@@ -598,7 +637,7 @@ placeholder, and validation messages.
 
 #### Extends
 
-- `BaseStateTaxFieldProps`
+- [`BaseStateTaxFieldProps`](#basestatetaxfieldprops)
 
 #### Properties
 
@@ -609,7 +648,7 @@ placeholder, and validation messages.
 | `formHookResult?` | [`FormHookResult`](../../utilities.md#formhookresult) | When using the hook outside an `SDKFormProvider`, pass the form-hook result here so the field can connect to it. |
 | `label?` | `string` | Overrides the API-supplied label. When omitted, falls back to `question.label`. |
 | `placeholder?` | `string` | Placeholder shown when the field is empty. |
-| `validationMessages?` | `StateTaxValidationMessages` | Override the default localized validation message(s). |
+| `validationMessages?` | [`StateTaxValidationMessages`](#statetaxvalidationmessages) | Override the default localized validation message(s). |
 
 ## Advanced
 

@@ -22,6 +22,8 @@ import type {
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 export type {
+  BaseStateTaxFieldProps,
+  StateTaxValidationMessages,
   CurrencyStateTaxFieldProps,
   DateStateTaxFieldProps,
   NumberStateTaxFieldProps,

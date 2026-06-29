@@ -561,6 +561,8 @@ export type {
   CurrencyStateTaxQuestion,
   DateStateTaxQuestion,
   CreateStateFieldsOptions,
+  BaseStateTaxFieldProps,
+  StateTaxValidationMessages,
   SelectStateTaxFieldProps,
   RadioStateTaxFieldProps,
   TextStateTaxFieldProps,

@@ -31,6 +31,8 @@ export {
   type NumberStateTaxQuestion,
   type CurrencyStateTaxQuestion,
   type DateStateTaxQuestion,
+  type BaseStateTaxFieldProps,
+  type StateTaxValidationMessages,
   type SelectStateTaxFieldProps,
   type RadioStateTaxFieldProps,
   type TextStateTaxFieldProps,
