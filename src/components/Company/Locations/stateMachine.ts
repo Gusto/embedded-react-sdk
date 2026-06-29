@@ -34,10 +34,12 @@ export const locationsStateMachine = {
     transition(
       companyEvents.COMPANY_LOCATION_CREATE,
       'locationAdd',
-      reduce((ctx: LocationsContextInterface): LocationsContextInterface => ({
-        ...ctx,
-        component: LocationFormContextual,
-      })),
+      reduce(
+        (ctx: LocationsContextInterface): LocationsContextInterface => ({
+          ...ctx,
+          component: LocationFormContextual,
+        }),
+      ),
     ),
   ),
   locationAdd: state<MachineTransition>(

@@ -221,8 +221,12 @@ export function findHookResultAlias(
   for (const member of members) {
     if (member.kind !== ReflectionKind.TypeAlias || !(member.type instanceof UnionType)) continue
     const branches = member.type.types
-    const refsReady = branches.some(t => t instanceof ReferenceType && t.reflection === readyInterface)
-    const refsLoading = branches.some(t => t instanceof ReferenceType && t.name === 'HookLoadingResult')
+    const refsReady = branches.some(
+      t => t instanceof ReferenceType && t.reflection === readyInterface,
+    )
+    const refsLoading = branches.some(
+      t => t instanceof ReferenceType && t.name === 'HookLoadingResult',
+    )
     if (refsReady && refsLoading) return member
   }
   return null
@@ -355,7 +359,10 @@ function extractFormHookModel(hookFn: DeclarationReflection): FormHookModel | nu
 }
 
 function extractProps(hookName: string, propType: SomeType | undefined): HookProps {
-  if (!(propType instanceof ReferenceType) || !(propType.reflection instanceof DeclarationReflection)) {
+  if (
+    !(propType instanceof ReferenceType) ||
+    !(propType.reflection instanceof DeclarationReflection)
+  ) {
     throw new HookModelError(
       hookName,
       `props parameter is not a resolvable reference (got ${propType?.type ?? 'none'})`,

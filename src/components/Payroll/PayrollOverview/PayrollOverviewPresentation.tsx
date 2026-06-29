@@ -687,7 +687,8 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireAmount'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        { wire_in_amount?: string } | undefined
+                        | { wire_in_amount?: string }
+                        | undefined
                       const wireAmount = metadata?.wire_in_amount
                       return wireAmount ? formatCurrency(Number(wireAmount)) : '-'
                     },
@@ -696,7 +697,8 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireTransferDeadline'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        { wire_in_deadline?: string } | undefined
+                        | { wire_in_deadline?: string }
+                        | undefined
                       const wireDeadline = metadata?.wire_in_deadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
@@ -736,7 +738,8 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.debitDate'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        { debit_date?: string } | undefined
+                        | { debit_date?: string }
+                        | undefined
                       const debitDate = metadata?.debit_date
                       return dateFormatter.formatShortWithYear(debitDate)
                     },

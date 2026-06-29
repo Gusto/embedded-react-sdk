@@ -84,7 +84,8 @@ export interface UseWorkAddressManagementReadySuccess extends BaseHookReady<
 }
 
 type UseWorkAddressManagementReady =
-  UseWorkAddressManagementReadyEmployeeError | UseWorkAddressManagementReadySuccess
+  | UseWorkAddressManagementReadyEmployeeError
+  | UseWorkAddressManagementReadySuccess
 
 /**
  * Return type of {@link useWorkAddressManagement}.

@@ -5,10 +5,12 @@ import { CardContextual, HomeAddressEditFormContextual } from './HomeAddressComp
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
-const returnToCard = reduce((ctx: HomeAddressContextInterface): HomeAddressContextInterface => ({
-  ...ctx,
-  component: CardContextual as ComponentType,
-}))
+const returnToCard = reduce(
+  (ctx: HomeAddressContextInterface): HomeAddressContextInterface => ({
+    ...ctx,
+    component: CardContextual as ComponentType,
+  }),
+)
 
 /** @internal */
 export const homeAddressStateMachine = {
@@ -16,10 +18,12 @@ export const homeAddressStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       'editHomeAddress',
-      reduce((ctx: HomeAddressContextInterface): HomeAddressContextInterface => ({
-        ...ctx,
-        component: HomeAddressEditFormContextual as ComponentType,
-      })),
+      reduce(
+        (ctx: HomeAddressContextInterface): HomeAddressContextInterface => ({
+          ...ctx,
+          component: HomeAddressEditFormContextual as ComponentType,
+        }),
+      ),
     ),
   ),
   editHomeAddress: state<MachineTransition>(

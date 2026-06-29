@@ -69,11 +69,13 @@ export const employeeListStateMachine = {
     transition(
       componentEvents.EMPLOYEE_CREATE,
       'onboard',
-      reduce((ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
-        ...ctx,
-        component: OnboardingExecutionFlowContextual,
-        header: backToListHeader,
-      })),
+      reduce(
+        (ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          header: backToListHeader,
+        }),
+      ),
     ),
   ),
   dashboard: state<MachineTransition>(

@@ -16,7 +16,8 @@ export default function globalDocsSidebarPlugin(_context: LoadContext): Plugin<v
     name: 'global-docs-sidebar',
     async allContentLoaded({ allContent, actions }) {
       const docsContent = allContent['docusaurus-plugin-content-docs'] as
-        Record<string, LoadedContent> | undefined
+        | Record<string, LoadedContent>
+        | undefined
       const defaultInstance = docsContent?.default
       if (!defaultInstance) {
         actions.setGlobalData({ versions: {}, latestVersionName: null })

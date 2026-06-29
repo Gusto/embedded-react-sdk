@@ -13,11 +13,13 @@ export const deductionsMachine = {
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_ADD,
       'form',
-      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-        ...ctx,
-        component: DeductionsFormContextual,
-        editingDeductionId: undefined,
-      })),
+      reduce(
+        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+          ...ctx,
+          component: DeductionsFormContextual,
+          editingDeductionId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_EDIT,
@@ -39,38 +41,46 @@ export const deductionsMachine = {
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_CREATED,
       'list',
-      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-        ...ctx,
-        component: DeductionsListContextual,
-        editingDeductionId: undefined,
-      })),
+      reduce(
+        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+          ...ctx,
+          component: DeductionsListContextual,
+          editingDeductionId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
       'list',
-      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-        ...ctx,
-        component: DeductionsListContextual,
-        editingDeductionId: undefined,
-      })),
+      reduce(
+        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+          ...ctx,
+          component: DeductionsListContextual,
+          editingDeductionId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_CANCEL,
       'list',
-      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-        ...ctx,
-        component: DeductionsListContextual,
-        editingDeductionId: undefined,
-      })),
+      reduce(
+        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+          ...ctx,
+          component: DeductionsListContextual,
+          editingDeductionId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY,
       'list',
-      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-        ...ctx,
-        component: DeductionsListContextual,
-        editingDeductionId: undefined,
-      })),
+      reduce(
+        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+          ...ctx,
+          component: DeductionsListContextual,
+          editingDeductionId: undefined,
+        }),
+      ),
     ),
   ),
   done: final(),

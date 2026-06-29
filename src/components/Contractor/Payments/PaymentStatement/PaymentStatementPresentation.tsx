@@ -151,14 +151,16 @@ export const PaymentStatementPresentation = ({
             <Components.DescriptionList
               layout="horizontal"
               showSeparators={false}
-              items={receiptDetailsConfig.map(({ label, value }): DescriptionListItem => ({
-                term: (
-                  <Text size="sm" variant="supporting">
-                    {label}
-                  </Text>
-                ),
-                description: <Text size="sm">{value}</Text>,
-              }))}
+              items={receiptDetailsConfig.map(
+                ({ label, value }): DescriptionListItem => ({
+                  term: (
+                    <Text size="sm" variant="supporting">
+                      {label}
+                    </Text>
+                  ),
+                  description: <Text size="sm">{value}</Text>,
+                }),
+              )}
             />
             <hr />
             <Flex flexDirection="column" alignItems="center" gap={12}>

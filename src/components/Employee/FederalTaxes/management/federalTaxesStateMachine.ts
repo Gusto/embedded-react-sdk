@@ -8,18 +8,22 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
-const returnToCard = reduce((ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
-  ...ctx,
-  component: FederalTaxesCardContextual as ComponentType,
-  successAlert: null,
-}))
-
-const returnToCardWithAlert = (alert: FederalTaxesContextInterface['successAlert']) =>
-  reduce((ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
+const returnToCard = reduce(
+  (ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
     ...ctx,
     component: FederalTaxesCardContextual as ComponentType,
-    successAlert: alert,
-  }))
+    successAlert: null,
+  }),
+)
+
+const returnToCardWithAlert = (alert: FederalTaxesContextInterface['successAlert']) =>
+  reduce(
+    (ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
+      ...ctx,
+      component: FederalTaxesCardContextual as ComponentType,
+      successAlert: alert,
+    }),
+  )
 
 /** @internal */
 export const federalTaxesStateMachine = {
@@ -27,11 +31,13 @@ export const federalTaxesStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED,
       'editFederalTaxes',
-      reduce((ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
-        ...ctx,
-        component: FederalTaxesEditFormContextual as ComponentType,
-        successAlert: null,
-      })),
+      reduce(
+        (ctx: FederalTaxesContextInterface): FederalTaxesContextInterface => ({
+          ...ctx,
+          component: FederalTaxesEditFormContextual as ComponentType,
+          successAlert: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED,

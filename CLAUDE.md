@@ -228,7 +228,9 @@ Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — 
 let updateJobPath: string | null = null
 const updateJobResolver = vi.fn<HttpResponseResolver>(({ request }) => {
   updateJobPath = new URL(request.url).pathname
-  return HttpResponse.json({/* ... */})
+  return HttpResponse.json({
+    /* ... */
+  })
 })
 
 // ...

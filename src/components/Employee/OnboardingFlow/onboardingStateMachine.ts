@@ -14,12 +14,14 @@ type EventPayloads = {
   }
 }
 
-const returnToIndex = reduce((ctx: OnboardingContextInterface): OnboardingContextInterface => ({
-  ...ctx,
-  component: EmployeeListContextual,
-  employeeId: undefined,
-  onboardingStatus: undefined,
-}))
+const returnToIndex = reduce(
+  (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+    ...ctx,
+    component: EmployeeListContextual,
+    employeeId: undefined,
+    onboardingStatus: undefined,
+  }),
+)
 
 /** @internal */
 export const employeeOnboardingMachine = {
@@ -27,11 +29,13 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_CREATE,
       'executing',
-      reduce((ctx: OnboardingContextInterface): OnboardingContextInterface => ({
-        ...ctx,
-        component: OnboardingExecutionFlowContextual,
-        employeeId: undefined,
-      })),
+      reduce(
+        (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          employeeId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_UPDATE,

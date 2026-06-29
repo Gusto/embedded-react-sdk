@@ -357,7 +357,9 @@ When a hook's fields are split across the layout, use `formHookResult` prop on *
 const activeForms = [employeeDetails, ...(showHomeAddress ? [homeAddress] : []), workAddress]
 
 const { handleSubmit, errorHandling } = composeSubmitHandler(activeForms, async () => {
-  const employeeResult = await employeeDetails.actions.onSubmit({/* callbacks */})
+  const employeeResult = await employeeDetails.actions.onSubmit({
+    /* callbacks */
+  })
   if (!employeeResult) return
 
   const newId = employeeResult.data.uuid
@@ -370,7 +372,12 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(activeForms, async 
     }
   }
 
-  await workAddress.actions.onSubmit({/* callbacks */}, { employeeId: newId })
+  await workAddress.actions.onSubmit(
+    {
+      /* callbacks */
+    },
+    { employeeId: newId },
+  )
 })
 ```
 

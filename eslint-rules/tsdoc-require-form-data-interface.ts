@@ -21,8 +21,7 @@ import { getTagName, getTSDocComment } from './utils'
 /** Whether a type-alias body is an object shape (literal or mapped). */
 function isObjectShape(typeNode: TSESTree.TypeNode): boolean {
   return (
-    typeNode.type === AST_NODE_TYPES.TSTypeLiteral ||
-    typeNode.type === AST_NODE_TYPES.TSMappedType
+    typeNode.type === AST_NODE_TYPES.TSTypeLiteral || typeNode.type === AST_NODE_TYPES.TSMappedType
   )
 }
 

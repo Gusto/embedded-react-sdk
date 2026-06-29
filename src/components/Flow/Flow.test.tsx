@@ -24,22 +24,26 @@ const buildMachine = (overrides: Partial<FlowContextInterface> = {}) =>
         transition(
           NEXT_EVENT,
           'second',
-          reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-            ...ctx,
-            component: SecondScreen,
-            header: { type: 'minimal' },
-          })),
+          reduce(
+            (ctx: FlowContextInterface): FlowContextInterface => ({
+              ...ctx,
+              component: SecondScreen,
+              header: { type: 'minimal' },
+            }),
+          ),
         ),
       ),
       second: state<MachineTransition>(
         transition(
           BACK_EVENT,
           'first',
-          reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-            ...ctx,
-            component: FirstScreen,
-            header: null,
-          })),
+          reduce(
+            (ctx: FlowContextInterface): FlowContextInterface => ({
+              ...ctx,
+              component: FirstScreen,
+              header: null,
+            }),
+          ),
         ),
       ),
     },
@@ -133,22 +137,26 @@ describe('Flow', () => {
           transition(
             NEXT_EVENT,
             'second',
-            reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-              ...ctx,
-              component: SecondWithButton,
-              header: { type: 'minimal' },
-            })),
+            reduce(
+              (ctx: FlowContextInterface): FlowContextInterface => ({
+                ...ctx,
+                component: SecondWithButton,
+                header: { type: 'minimal' },
+              }),
+            ),
           ),
         ),
         second: state<MachineTransition>(
           transition(
             BACK_EVENT,
             'first',
-            reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-              ...ctx,
-              component: FirstWithButton,
-              header: null,
-            })),
+            reduce(
+              (ctx: FlowContextInterface): FlowContextInterface => ({
+                ...ctx,
+                component: FirstWithButton,
+                header: null,
+              }),
+            ),
           ),
         ),
       },
@@ -197,11 +205,13 @@ describe('Flow', () => {
           transition(
             NEXT_EVENT,
             'second',
-            reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-              ...ctx,
-              component: SecondScreen,
-              header: { type: 'minimal' },
-            })),
+            reduce(
+              (ctx: FlowContextInterface): FlowContextInterface => ({
+                ...ctx,
+                component: SecondScreen,
+                header: { type: 'minimal' },
+              }),
+            ),
           ),
         ),
         second: state<MachineTransition>(),
@@ -234,11 +244,13 @@ describe('Flow', () => {
           transition(
             BACK_EVENT,
             'first',
-            reduce((ctx: FlowContextInterface): FlowContextInterface => ({
-              ...ctx,
-              component: FirstScreen,
-              header: null,
-            })),
+            reduce(
+              (ctx: FlowContextInterface): FlowContextInterface => ({
+                ...ctx,
+                component: FirstScreen,
+                header: null,
+              }),
+            ),
           ),
         ),
       },

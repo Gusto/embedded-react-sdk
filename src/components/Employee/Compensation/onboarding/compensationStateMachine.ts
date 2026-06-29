@@ -15,22 +15,26 @@ export const compensationStateMachine = {
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST,
       'viewJobs',
-      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
-        ...ctx,
-        component: JobsListContextual,
-        currentJobId: null,
-      })),
+      reduce(
+        (ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+          ...ctx,
+          component: JobsListContextual,
+          currentJobId: null,
+        }),
+      ),
     ),
   ),
   viewJobs: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_JOB_ADD,
       'editJob',
-      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
-        ...ctx,
-        component: EditCompensationContextual,
-        currentJobId: null,
-      })),
+      reduce(
+        (ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+          ...ctx,
+          component: EditCompensationContextual,
+          currentJobId: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_JOB_EDIT,
@@ -52,20 +56,24 @@ export const compensationStateMachine = {
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST,
       'viewJobs',
-      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
-        ...ctx,
-        component: JobsListContextual,
-        currentJobId: null,
-      })),
+      reduce(
+        (ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+          ...ctx,
+          component: JobsListContextual,
+          currentJobId: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_CANCEL,
       'viewJobs',
-      reduce((ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
-        ...ctx,
-        component: JobsListContextual,
-        currentJobId: null,
-      })),
+      reduce(
+        (ctx: CompensationFlowContextInterface): CompensationFlowContextInterface => ({
+          ...ctx,
+          component: JobsListContextual,
+          currentJobId: null,
+        }),
+      ),
     ),
   ),
   done: final(),

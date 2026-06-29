@@ -35,7 +35,10 @@ export type TimeOffFlowAlert = {
 
 /** @internal */
 export type AddEmployeesSource =
-  'policySettings' | 'policyDetailsForm' | 'viewTimeOffPolicyDetail' | 'viewHolidayEmployees'
+  | 'policySettings'
+  | 'policyDetailsForm'
+  | 'viewTimeOffPolicyDetail'
+  | 'viewHolidayEmployees'
 
 /** @internal */
 export interface TimeOffFlowContextInterface extends FlowContextInterface {

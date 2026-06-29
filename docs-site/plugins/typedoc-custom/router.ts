@@ -115,9 +115,7 @@ const VALIDATION_TYPE_PARAMS = new Set(['TErrorCode', 'TOptionalErrorCode'])
  * unions, and cross-page references), so the page's own `*Validation` aliases
  * are gathered while entry/value generics like `TEntry` are left alone.
  */
-function collectFieldValidationTypes(
-  members: DeclarationReflection[],
-): Set<DeclarationReflection> {
+function collectFieldValidationTypes(members: DeclarationReflection[]): Set<DeclarationReflection> {
   const memberSet = new Set(members)
   const validationTypes = new Set<DeclarationReflection>()
 
@@ -146,7 +144,10 @@ function collectFieldValidationTypes(
     } else if (member.kind === ReflectionKind.Function) {
       for (const sig of member.signatures ?? []) {
         const propsRef = sig.parameters?.[0]?.type
-        if (propsRef instanceof ReferenceType && propsRef.reflection instanceof DeclarationReflection) {
+        if (
+          propsRef instanceof ReferenceType &&
+          propsRef.reflection instanceof DeclarationReflection
+        ) {
           collectFromAlias(propsRef.reflection)
         }
       }
@@ -632,7 +633,10 @@ export class SDKRouter extends MemberRouter {
           (m): m is DeclarationReflection => m instanceof DeclarationReflection,
         )
         for (const member of hookMembers) {
-          if (!(member instanceof DeclarationReflection) || member.kind !== ReflectionKind.Function) {
+          if (
+            !(member instanceof DeclarationReflection) ||
+            member.kind !== ReflectionKind.Function
+          ) {
             continue
           }
           const ready = getHookReadyInterface(member)

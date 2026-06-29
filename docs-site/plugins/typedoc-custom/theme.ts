@@ -408,7 +408,11 @@ function substituteTypeParams(
         substituteTypeParams(arg, subMap, restores)
       }
     })
-    while (next.length > 0 && next[next.length - 1] instanceof IntrinsicType && (next[next.length - 1] as IntrinsicType).name === 'never') {
+    while (
+      next.length > 0 &&
+      next[next.length - 1] instanceof IntrinsicType &&
+      (next[next.length - 1] as IntrinsicType).name === 'never'
+    ) {
       next = next.slice(0, -1)
     }
     if (next.length !== original.length || next.some((arg, i) => arg !== original[i])) {
@@ -566,7 +570,10 @@ function renderFieldPropsTable(
   const underlyingRef = hookFieldRef.typeArguments?.[0]
   if (!(underlyingRef instanceof ReferenceType)) return null
   const underlying = underlyingRef.reflection
-  if (!(underlying instanceof DeclarationReflection) || underlying.kind !== ReflectionKind.Interface) {
+  if (
+    !(underlying instanceof DeclarationReflection) ||
+    underlying.kind !== ReflectionKind.Interface
+  ) {
     return null
   }
 
@@ -591,8 +598,7 @@ function renderFieldPropsTable(
 
   // HookFieldProps<T> = Omit<T, 'name'> — the hook binds `name` internally.
   const props = (underlying.children ?? []).filter(
-    c =>
-      c.isDeclaration() && c.name !== 'name' && !(c.name === 'validationMessages' && !hasCodes),
+    c => c.isDeclaration() && c.name !== 'name' && !(c.name === 'validationMessages' && !hasCodes),
   )
 
   // A prop earns a row when it is required (e.g. `label`), when its type
@@ -917,7 +923,10 @@ function moveExampleToTop(rendered: string): string {
 
   let exampleEnd = lines.length
   for (let i = exampleStart + 1; i < lines.length; i++) {
-    if (/^## /.test(lines[i]!)) { exampleEnd = i; break }
+    if (/^## /.test(lines[i]!)) {
+      exampleEnd = i
+      break
+    }
   }
 
   const exampleLines = lines.slice(exampleStart, exampleEnd)
@@ -926,7 +935,12 @@ function moveExampleToTop(rendered: string): string {
   const firstH2 = withoutExample.findIndex(l => /^## /.test(l))
   if (firstH2 === -1) return rendered
 
-  return [...withoutExample.slice(0, firstH2), ...exampleLines, '', ...withoutExample.slice(firstH2)].join('\n')
+  return [
+    ...withoutExample.slice(0, firstH2),
+    ...exampleLines,
+    '',
+    ...withoutExample.slice(firstH2),
+  ].join('\n')
 }
 
 /**
@@ -1099,7 +1113,10 @@ function fieldPropsReflection(type: SomeType | undefined): DeclarationReflection
  * unions, type-alias references, and `typeof XxxErrorCodes.CODE` queries (whose
  * queried property's literal value, or failing that its name, is the code).
  */
-function collectErrorCodes(type: SomeType | undefined, seen = new Set<DeclarationReflection>()): string[] {
+function collectErrorCodes(
+  type: SomeType | undefined,
+  seen = new Set<DeclarationReflection>(),
+): string[] {
   if (!type) return []
   if (type instanceof LiteralType && typeof type.value === 'string') return [type.value]
   if (type instanceof UnionType) return type.types.flatMap(t => collectErrorCodes(t, seen))
@@ -1147,7 +1164,10 @@ const VALIDATION_CODE_PARAMS = new Set(['TErrorCode', 'TOptionalErrorCode'])
 function fieldValidationCodes(propsRef: DeclarationReflection): string[] {
   if (propsRef.type instanceof ReferenceType && propsRef.type.name === 'HookFieldProps') {
     const underlyingRef = propsRef.type.typeArguments?.[0]
-    if (underlyingRef instanceof ReferenceType && underlyingRef.reflection instanceof DeclarationReflection) {
+    if (
+      underlyingRef instanceof ReferenceType &&
+      underlyingRef.reflection instanceof DeclarationReflection
+    ) {
       const codes: string[] = []
       underlyingRef.reflection.typeParameters?.forEach((param, index) => {
         if (VALIDATION_CODE_PARAMS.has(param.name)) {
@@ -1162,7 +1182,9 @@ function fieldValidationCodes(propsRef: DeclarationReflection): string[] {
     validationMessages?.type instanceof ReferenceType &&
     validationMessages.type.name === 'ValidationMessages'
   ) {
-    const codes = (validationMessages.type.typeArguments ?? []).flatMap(arg => collectErrorCodes(arg))
+    const codes = (validationMessages.type.typeArguments ?? []).flatMap(arg =>
+      collectErrorCodes(arg),
+    )
     return [...new Set(codes)]
   }
   return []
@@ -1234,7 +1256,8 @@ function linkyType(context: SDKThemeContext, type: SomeType | undefined): string
     return type.types.map(t => linkyType(context, t)).join(' \\| ')
   }
   if (type instanceof ReferenceType) {
-    const linkable = type.reflection instanceof DeclarationReflection && context.router.hasUrl(type.reflection)
+    const linkable =
+      type.reflection instanceof DeclarationReflection && context.router.hasUrl(type.reflection)
     const nameMd = linkable
       ? `[\`${type.name}\`](${context.urlTo(type.reflection as DeclarationReflection)})`
       : `\`${type.name}\``
@@ -1410,7 +1433,10 @@ function buildFlatFieldsSection(
 
   // `AdjustForMinimumWage` → `Adjust for minimum wage`, for example labels.
   const humanize = (name: string): string => {
-    const words = name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase().trim()
+    const words = name
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .toLowerCase()
+      .trim()
     return words.charAt(0).toUpperCase() + words.slice(1)
   }
 
@@ -1424,21 +1450,33 @@ function buildFlatFieldsSection(
   // Required fields first, then optional/can-be-undefined; alphabetical within
   // each group (the page sidebar keeps the per-field sections in strict alpha).
   const indexMembers = [...members].sort(
-    (a, b) => Number(isOptionalField(a)) - Number(isOptionalField(b)) || a.name.localeCompare(b.name),
+    (a, b) =>
+      Number(isOptionalField(a)) - Number(isOptionalField(b)) || a.name.localeCompare(b.name),
   )
   const indexRows = indexMembers.map(member => {
     const optional = member.flags.isOptional ? '?' : ''
-    const description = memberDescription(member).replace(/\s*\n+\s*/g, ' ').replace(/\|/g, '\\|')
+    const description = memberDescription(member)
+      .replace(/\s*\n+\s*/g, ' ')
+      .replace(/\|/g, '\\|')
     return `| \`${member.name}${optional}\` | ${linkyType(context, member.type)} | ${description || '—'} |`
   })
-  const indexBlock: string[] = [`### ${fieldsInterface.name}`, '', anchorLine(context, fieldsInterface).trimEnd()]
+  const indexBlock: string[] = [
+    `### ${fieldsInterface.name}`,
+    '',
+    anchorLine(context, fieldsInterface).trimEnd(),
+  ]
   if (fieldsInterface.comment) {
     const comment = context.partials
       .comment(fieldsInterface.comment, { showSummary: true, showTags: false })
       .trim()
     if (comment) indexBlock.push('', comment)
   }
-  indexBlock.push('', '| Property | Type | Description |', '| ------ | ------ | ------ |', ...indexRows)
+  indexBlock.push(
+    '',
+    '| Property | Type | Description |',
+    '| ------ | ------ | ------ |',
+    ...indexRows,
+  )
   const sections: string[] = [indexBlock.join('\n')]
 
   // The `validationMessages={{…}}` attribute lines for a field's codes, indented
@@ -1460,12 +1498,18 @@ function buildFlatFieldsSection(
   // codes — the cool part: each field shows exactly the codes it can emit.
   const fieldExample = (jsxTag: string, label: string, codes: string[]): string => {
     if (codes.length === 0) return `<${jsxTag} label="${label}" />`
-    return [`<${jsxTag}`, `  label="${label}"`, ...validationMessagesAttr(codes, '  '), '/>'].join('\n')
+    return [`<${jsxTag}`, `  label="${label}"`, ...validationMessagesAttr(codes, '  '), '/>'].join(
+      '\n',
+    )
   }
 
   // Wrap an example in a code fence, guarding behind a null-check for
   // optional/conditional fields (which are `undefined` until their rule is met).
-  const exampleFence = (member: DeclarationReflection, fieldKey: string, element: string): string => {
+  const exampleFence = (
+    member: DeclarationReflection,
+    fieldKey: string,
+    element: string,
+  ): string => {
     if (!isOptionalField(member)) return ['```tsx', element, '```'].join('\n')
     const indented = element
       .split('\n')
@@ -1541,9 +1585,19 @@ function buildFlatFieldsSection(
     const propsRef = fieldPropsReflection(member.type)
     if (propsRef) {
       relocated.add(propsRef.name)
-      const element = fieldExample(`form.Fields.${fieldKey}`, humanize(fieldKey), fieldValidationCodes(propsRef))
+      const element = fieldExample(
+        `form.Fields.${fieldKey}`,
+        humanize(fieldKey),
+        fieldValidationCodes(propsRef),
+      )
       sections.push(
-        [...intro, '', exampleFence(member, fieldKey, element), '', renderPropsBlockH4(propsRef)].join('\n'),
+        [
+          ...intro,
+          '',
+          exampleFence(member, fieldKey, element),
+          '',
+          renderPropsBlockH4(propsRef),
+        ].join('\n'),
       )
       continue
     }
@@ -1589,7 +1643,10 @@ function buildFlatFieldsSection(
         // Reuses a group already shown — point back to the first field's example.
         groupParts.push('', fenceFragment([`    {/* same sub-fields as ${firstUse} */}`]))
       }
-      groupParts.push('', `See [\`${groupRef.name}\`](#${context.router.getAnchor(groupRef)}) for all sub-fields.`)
+      groupParts.push(
+        '',
+        `See [\`${groupRef.name}\`](#${context.router.getAnchor(groupRef)}) for all sub-fields.`,
+      )
       sections.push(groupParts.join('\n'))
       continue
     }
@@ -1671,7 +1728,8 @@ function buildFieldsTable(
     }
 
     // Column 1: Field Key — link to the field component's anchor below
-    const fieldKeyUrl = fieldComp && context.router.hasUrl(fieldComp) ? context.urlTo(fieldComp) : null
+    const fieldKeyUrl =
+      fieldComp && context.router.hasUrl(fieldComp) ? context.urlTo(fieldComp) : null
     const fieldKeyCell = fieldKeyUrl ? `[\`${fieldKey}\`](${fieldKeyUrl})` : `\`${fieldKey}\``
 
     // Column 2: Component Type — extract from props type alias chain
@@ -1680,12 +1738,10 @@ function buildFieldsTable(
       try {
         // fieldComp.signatures[0].parameters[0].type → ReferenceType(XxxFieldProps)
         const param = fieldComp.signatures?.[0]?.parameters?.[0]
-        const propsRef =
-          param?.type instanceof ReferenceType ? param.type.reflection : null
+        const propsRef = param?.type instanceof ReferenceType ? param.type.reflection : null
         if (propsRef instanceof DeclarationReflection) {
           // propsRef.type → ReferenceType(HookFieldProps, typeArguments=[...])
-          const innerRef =
-            propsRef.type instanceof ReferenceType ? propsRef.type : null
+          const innerRef = propsRef.type instanceof ReferenceType ? propsRef.type : null
           if (innerRef) {
             // typeArguments[0] → ReferenceType(DatePickerHookFieldProps, ...)
             const firstArg = innerRef.typeArguments?.[0]
@@ -1859,7 +1915,10 @@ function renderFieldsMemberWithInheritance(
   if (own.length > 0) {
     parts.push('#### Properties')
     parts.push(
-      context.partials.propertiesTable(own, { isEventProps: false, kind: ReflectionKind.Interface }),
+      context.partials.propertiesTable(own, {
+        isEventProps: false,
+        kind: ReflectionKind.Interface,
+      }),
     )
   }
   const names = inherited.map(c => `\`${c.name}\``).join(', ')
@@ -1948,7 +2007,10 @@ function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<strin
   const names = new Set<string>()
   for (const comp of (group?.children ?? []) as DeclarationReflection[]) {
     const paramType = comp.signatures?.[0]?.parameters?.[0]?.type
-    if (paramType instanceof ReferenceType && paramType.reflection instanceof DeclarationReflection) {
+    if (
+      paramType instanceof ReferenceType &&
+      paramType.reflection instanceof DeclarationReflection
+    ) {
       names.add(paramType.reflection.name)
     }
   }
@@ -1972,7 +2034,10 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
 
   let taSectionEnd = lines.length
   for (let i = taSectionStart + 1; i < lines.length; i++) {
-    if (/^##\s/.test(lines[i]!)) { taSectionEnd = i; break }
+    if (/^##\s/.test(lines[i]!)) {
+      taSectionEnd = i
+      break
+    }
   }
 
   const taSectionLines = lines.slice(taSectionStart, taSectionEnd)
@@ -1991,7 +2056,7 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
       }
       const entryEnd = j // exclusive; taSectionLines[j] is *** or end
       const headingLine = taSectionLines.slice(entryStart, entryEnd).find(l => /^###\s/.test(l))
-      const headingName = headingLine ? /^###\s+(\S+)/.exec(headingLine)?.[1] ?? '' : ''
+      const headingName = headingLine ? (/^###\s+(\S+)/.exec(headingLine)?.[1] ?? '') : ''
       if (dropAliasNames.has(headingName)) {
         for (let k = entryStart; k < entryEnd; k++) linesToRemove.add(k)
         if (entryEnd < taSectionLines.length && /^\*\*\*\s*$/.test(taSectionLines[entryEnd]!)) {
@@ -2114,8 +2179,7 @@ export class SDKTheme extends MarkdownTheme {
           ])
         }
         const children =
-          reflection.kind === ReflectionKind.TypeAlias &&
-          reflection.type instanceof ReflectionType
+          reflection.kind === ReflectionKind.TypeAlias && reflection.type instanceof ReflectionType
             ? (reflection.type.declaration.children ?? [])
             : (reflection.children ?? [])
         for (const child of children) {
@@ -2292,7 +2356,9 @@ export class SDKThemeContext extends MarkdownThemeContext {
           )
           const resultAlias = findHookResultAlias(siblings, readyType)
           if (resultAlias) {
-            parts.push(this.partials.memberContainer(resultAlias, { headingLevel: headingLevel + 1 }))
+            parts.push(
+              this.partials.memberContainer(resultAlias, { headingLevel: headingLevel + 1 }),
+            )
             // Divide the two Returns entries (result alias / Ready interface) the
             // same way sibling members are separated elsewhere on the page.
             parts.push('***')
@@ -2313,8 +2379,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
 
           // For TypeAlias `= { ... }`, properties live on type.declaration.children.
           const typeAliasDecl =
-            readyType.kind === ReflectionKind.TypeAlias &&
-            readyType.type instanceof ReflectionType
+            readyType.kind === ReflectionKind.TypeAlias && readyType.type instanceof ReflectionType
               ? readyType.type.declaration
               : null
           const allProps = (typeAliasDecl?.children ?? readyType.children ?? []).filter(c =>
