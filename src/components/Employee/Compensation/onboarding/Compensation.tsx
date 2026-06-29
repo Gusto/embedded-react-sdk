@@ -100,6 +100,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Comp
  * roles need to be managed) on first mount; on subsequent refetches the user
  * stays on their current step.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/job/created` | Fired after a job is successfully created | {@link Job} |

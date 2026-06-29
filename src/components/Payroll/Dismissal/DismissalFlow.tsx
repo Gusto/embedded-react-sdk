@@ -19,6 +19,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * When `payrollId` is provided, pay period selection is skipped and the flow starts directly at execution for that payroll. When omitted, the flow starts at pay period selection.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `dismissal/payPeriod/selected` | A pay period is selected and the dismissal payroll is created | `{ payrollUuid: string }` |

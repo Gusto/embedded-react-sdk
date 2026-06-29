@@ -30,6 +30,7 @@ export interface DocumentManagerProps extends BaseComponentInterface<'Employee.D
  * @remarks
  * Emits the following events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `CANCEL` | The back button is selected | — |

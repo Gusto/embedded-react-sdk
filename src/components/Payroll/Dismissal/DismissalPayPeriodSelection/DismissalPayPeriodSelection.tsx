@@ -37,6 +37,7 @@ export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface
  * @remarks
  * Events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `dismissal/payPeriod/selected` | Fired after a pay period is selected and the off-cycle payroll has been created, or immediately when `payrollId` is supplied. | `{ payrollUuid: string }` |

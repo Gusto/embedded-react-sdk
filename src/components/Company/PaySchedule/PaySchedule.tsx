@@ -19,10 +19,12 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  * @public
  */
 export type PayScheduleDefaultFields = {
-  [K in keyof Pick<
-    PayScheduleFormData,
-    'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
-  >]: NonNullable<PayScheduleFormData[K]>
+  [
+    K in keyof Pick<
+      PayScheduleFormData,
+      'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
+    >
+  ]: NonNullable<PayScheduleFormData[K]>
 }
 
 /**
@@ -52,6 +54,7 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySch
  * Renders the schedule list when at least one pay schedule exists and the create form otherwise.
  * Emits the following events through `onEvent`:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |

@@ -50,6 +50,22 @@ The flow forwards every event emitted by its sub-components to `onEvent`;
 see the events table on each sub-component for the full set of events and
 payloads observable from this flow.
 
+## OnboardingFlowProps
+
+<a id="onboardingflowprops"></a>
+
+Props for OnboardingFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/create` | Fired when the user chooses to add a new contractor | — |
@@ -69,20 +85,6 @@ payloads observable from this flow.
 | `contractor/onboardingStatus/updated` | Fired when the contractor's onboarding status is updated | Change contractor onboarding status API response |
 | `contractor/submit/done` | Fired when the contractor submission is complete | `{ message: string }` or `{ onboardingStatus, message: string }` |
 | `contractor/invite/selfOnboarding` | Fired when the contractor is invited for self-onboarding | `{ contractorId: string }` |
-
-## OnboardingFlowProps
-
-<a id="onboardingflowprops"></a>
-
-Props for OnboardingFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
-
-_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ## Sub-components
 

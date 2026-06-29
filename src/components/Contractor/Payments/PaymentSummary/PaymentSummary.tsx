@@ -57,6 +57,7 @@ const findWireInRequestUuid = (
  * - **Debit account** — shows the company bank account used for the debit.
  * - **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/exit` | User completes the payment flow. | — |

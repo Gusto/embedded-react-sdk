@@ -23,8 +23,7 @@ export interface StateTaxesEditFormProps extends BaseComponentInterface<'Employe
  * emits scoped management events on submit and cancel, so partner copy
  * overrides on the management namespace do not leak into the onboarding flow.
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |

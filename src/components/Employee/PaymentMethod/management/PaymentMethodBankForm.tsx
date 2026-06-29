@@ -25,6 +25,7 @@ export interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'empl
  * `Employee.Management.PaymentMethodBankForm` namespace so partner overrides on
  * the management bank form don't leak into the onboarding form.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/paymentMethod/bankForm/submitted` | Fired after the bank account is successfully created | The created bank account |

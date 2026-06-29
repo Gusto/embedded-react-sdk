@@ -48,6 +48,8 @@ html {
   --gusto-code-block-bg: #f7f7f8;
   --gusto-body-text-color: rgba(27, 27, 29, 0.82);
 
+  --ifm-heading-color: #000000;
+
   --docusaurus-highlighted-code-line-bg: rgba(241, 94, 73, 0.1);
 }
 
@@ -88,6 +90,8 @@ html {
   --gusto-pagination-border: #3a3a3d;
   --gusto-code-block-bg: #2a2a2d;
   --gusto-body-text-color: rgba(255, 255, 255, 0.72);
+
+  --ifm-heading-color: #ffffff;
 
   --docusaurus-highlighted-code-line-bg: rgba(241, 94, 73, 0.15);
 }
@@ -673,6 +677,17 @@ nav.theme-doc-breadcrumbs:not(:has(.breadcrumbs__item + .breadcrumbs__item)) {
   font-size: 0.8rem;
 }
 
+.breadcrumbs__item:not(.breadcrumbs__item--active) .breadcrumbs__link:any-link:hover {
+  background-color: transparent;
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark']
+  .breadcrumbs__item:not(.breadcrumbs__item--active)
+  .breadcrumbs__link:any-link:hover {
+  color: var(--ifm-color-primary);
+}
+
 .breadcrumbs__item--active .breadcrumbs__link {
   background-color: transparent;
   color: var(--ifm-color-primary-darkest);
@@ -940,6 +955,34 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
   color: var(--ifm-link-hover-color);
 }
 
+/* Swap the plugin's inline external-link SVG for the site's diagonal-arrow
+   icon used elsewhere (navbar GitHub link, footer external links). */
+.cookie-consent-toast .cookie-consent-description a .cookie-consent-external-link-icon {
+  display: none;
+}
+
+.cookie-consent-toast .cookie-consent-description a[href*='://']::after {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-left: 3px;
+  background-color: currentColor;
+  opacity: 0.6;
+  vertical-align: -1px;
+  -webkit-mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  mask-image: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17 17 7'/><path d='M7 7h10v10'/></svg>");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transition: opacity 0.15s ease;
+}
+
+.cookie-consent-toast .cookie-consent-description a[href*='://']:hover::after {
+  opacity: 1;
+}
+
 .cookie-consent-toast .cookie-consent-buttons {
   display: flex;
   flex-direction: row;
@@ -959,12 +1002,11 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.25rem;
-  padding: 0 1.1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
   white-space: nowrap;
   flex: 0 0 auto;
   min-width: 0;
@@ -972,42 +1014,44 @@ body:has(.cookie-consent-toast.cookie-consent-modal) {
     background-color 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease,
-    transform 0.12s ease,
-    box-shadow 0.12s ease;
+    transform 0.1s ease;
 }
 
 .cookie-consent-toast .cookie-consent-button-primary {
   background-color: var(--ifm-color-primary);
-  color: #ffffff;
-  border: 1px solid transparent;
+  color: #1b1b1d;
+  border: none;
 }
 
 .cookie-consent-toast .cookie-consent-button-primary:hover:not(:disabled) {
-  background-color: var(--ifm-color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(241, 94, 73, 0.25);
+  background-color: #f67660;
+  color: #1b1b1d;
 }
 
 .cookie-consent-toast .cookie-consent-button-secondary {
-  background-color: transparent;
-  color: var(--ifm-navbar-link-color);
-  border: 1px solid rgba(27, 27, 29, 0.16);
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #1b1b1d;
+  border: 1px solid rgba(27, 27, 29, 0.12);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
-  background-color: rgba(27, 27, 29, 0.05);
-  border-color: rgba(27, 27, 29, 0.24);
-  transform: translateY(-1px);
+  background-color: rgba(27, 27, 29, 0.06);
+  border-color: rgba(27, 27, 29, 0.2);
+  color: #1b1b1d;
 }
 
 [data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary {
-  color: var(--ifm-navbar-link-color);
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
   border-color: rgba(255, 255, 255, 0.18);
 }
 
 [data-theme='dark'] .cookie-consent-toast .cookie-consent-button-secondary:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
 }
 
 .cookie-consent-toast .cookie-consent-button-text {

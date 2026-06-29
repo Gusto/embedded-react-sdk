@@ -220,13 +220,11 @@ export const terminationMachine = {
     transition(
       componentEvents.PAYROLL_EXIT_FLOW,
       'payrollLanding',
-      reduce(
-        (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
-          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
-          component: PayrollLandingContextual,
-          payrollOption: undefined,
-        }),
-      ),
+      reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+        component: PayrollLandingContextual,
+        payrollOption: undefined,
+      })),
     ),
     summaryBreadcrumbTransition,
     formBreadcrumbTransition,

@@ -36,6 +36,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/assignSignatory/modeUpdated` | The user switched between create and invite modes | The selected mode string (`'createSignatory'` or `'inviteSignatory'`) |
@@ -70,6 +72,8 @@ Currently supports a single default bank account per company. When no bank accou
 the component renders the add-account form; once one is on file it renders the list view
 with controls to change or verify the account via micro-deposits.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |
@@ -100,7 +104,7 @@ Props for [CreateSignatory](#createsignatory).
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -138,6 +142,8 @@ document list and the signature form.
 When `signatoryId` matches the currently saved signatory's id, the user is treated as the
 signatory and is allowed to sign documents.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
@@ -170,6 +176,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Handles document listing, signatory management, and the signing workflow. If no signatory has
 been assigned for the company yet, the flow starts on the assign-signatory step before
 presenting the document list.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -206,7 +214,7 @@ Props for the [FederalTaxes](#federaltaxes) component.
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -235,7 +243,7 @@ Props for the [Industry](#industry) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -267,6 +275,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 The invited person receives an email to complete their signatory information. Use this when
 you want to provide only the invite flow without the create option.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
@@ -296,6 +306,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Pass a `locationId` to edit an existing location; omit it to create a new one.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -327,6 +339,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Internally switches between a list view and a create/edit form. For more granular control,
 use the standalone `LocationForm` component directly.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -361,6 +375,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/location/add` | A user chose to add a new location | — |
@@ -394,6 +410,8 @@ is true, a completion message and "done" action are shown; otherwise a checklist
 steps is rendered with a continue action. Provide `children` to override the default layout while
 still consuming the onboarding status via context.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
@@ -424,6 +442,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 Renders the schedule list when at least one pay schedule exists and the create form otherwise.
 Emits the following events through `onEvent`:
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -458,6 +478,8 @@ Lower-level building block used internally by the document signer for its signin
 Use this component directly when you need full control over navigation between the document
 list and the signature form (e.g. routing the user yourself after they select a form).
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/sign/signForm` | Fired when a form is successfully signed | Response from the sign company form API request |
@@ -489,6 +511,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Switches internally between a list of states with tax requirements and a per-state edit form.
 For finer-grained control over navigation, use the standalone [StateTaxesList](#statetaxeslist) and
 [StateTaxesForm](#statetaxesform) building blocks directly.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -522,6 +546,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Lower-level building block used by [StateTaxes](#statetaxes) for its edit view. Use directly when
 you need full control over navigation between the list and edit views.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -567,6 +593,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

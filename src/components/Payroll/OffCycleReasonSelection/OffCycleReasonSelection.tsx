@@ -18,6 +18,7 @@ import { componentEvents } from '@/shared/constants'
  * Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
  * so a surrounding form can update its state to match.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/selectReason` | Fired when the user selects a reason | {@link SelectReasonPayload} |

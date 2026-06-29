@@ -17,6 +17,7 @@ export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './Onboard
  * bank account, employee onboarding, pay schedule, state taxes, and document signing before
  * returning to the overview.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/overview/continue` | User chose to continue to the next outstanding onboarding requirement | — |

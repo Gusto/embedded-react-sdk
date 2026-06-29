@@ -34,12 +34,7 @@ The `requiredFields` arrays accept these field names:
 
 ```typescript
 type EmployeeDetailsField =
-  | 'firstName'
-  | 'middleInitial'
-  | 'lastName'
-  | 'email'
-  | 'dateOfBirth'
-  | 'ssn'
+  'firstName' | 'middleInitial' | 'lastName' | 'email' | 'dateOfBirth' | 'ssn'
 ```
 
 ### Required Fields

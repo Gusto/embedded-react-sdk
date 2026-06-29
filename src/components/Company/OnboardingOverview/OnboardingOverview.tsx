@@ -27,6 +27,7 @@ export interface OnboardingOverviewProps extends BaseComponentInterface<'Company
  * steps is rendered with a continue action. Provide `children` to override the default layout while
  * still consuming the onboarding status via context.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |

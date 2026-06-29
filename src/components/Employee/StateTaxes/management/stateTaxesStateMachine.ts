@@ -5,22 +5,18 @@ import { StateTaxesCardContextual, StateTaxesEditFormContextual } from './StateT
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
-const returnToCard = reduce(
-  (ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-    ...ctx,
-    component: StateTaxesCardContextual as ComponentType,
-    successAlert: null,
-  }),
-)
+const returnToCard = reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+  ...ctx,
+  component: StateTaxesCardContextual as ComponentType,
+  successAlert: null,
+}))
 
 const returnToCardWithAlert = (alert: StateTaxesSuccessAlertCode) =>
-  reduce(
-    (ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-      ...ctx,
-      component: StateTaxesCardContextual as ComponentType,
-      successAlert: alert,
-    }),
-  )
+  reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+    ...ctx,
+    component: StateTaxesCardContextual as ComponentType,
+    successAlert: alert,
+  }))
 
 /** @internal */
 export const stateTaxesStateMachine = {
@@ -28,13 +24,11 @@ export const stateTaxesStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
       'editStateTaxes',
-      reduce(
-        (ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-          ...ctx,
-          component: StateTaxesEditFormContextual as ComponentType,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+        ...ctx,
+        component: StateTaxesEditFormContextual as ComponentType,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED,

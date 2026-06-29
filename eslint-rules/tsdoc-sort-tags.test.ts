@@ -36,8 +36,14 @@ ruleTester.run('tsdoc-sort-tags', rule, {
     // Multiple @example blocks — each is its own group
     `/**\n * Description.\n *\n * @public\n *\n * @example\n * foo(1)\n *\n * @example\n * foo(2)\n */\nfunction foo(): void {}`,
 
-    // @components is its own group between @remarks and the other tags
+    // @components is its own group between @events and the other tags
     `/**\n * Description.\n *\n * @remarks Notes.\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
+
+    // @events is its own group between @remarks and @components
+    `/**\n * Description.\n *\n * @remarks Notes.\n *\n * @events\n * | Event | Description | Data |\n * | ----- | ----------- | ---- |\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
+
+    // @events without @remarks — its own group before @components
+    `/**\n * Description.\n *\n * @events\n * | Event | Description | Data |\n * | ----- | ----------- | ---- |\n *\n * @public\n */\nfunction foo(): void {}`,
   ],
 
   invalid: [
@@ -73,6 +79,20 @@ ruleTester.run('tsdoc-sort-tags', rule, {
     {
       code: `/**\n * Description.\n *\n * @components\n * - {@link Bar}\n * @public\n */\nfunction foo(): void {}`,
       output: `/**\n * Description.\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
+      errors: [{ messageId: 'incorrectGrouping' }],
+    },
+
+    // @events must be its own group, separated by blank lines
+    {
+      code: `/**\n * Description.\n *\n * @events\n * | Event | Description | Data |\n * @public\n */\nfunction foo(): void {}`,
+      output: `/**\n * Description.\n *\n * @events\n * | Event | Description | Data |\n *\n * @public\n */\nfunction foo(): void {}`,
+      errors: [{ messageId: 'incorrectGrouping' }],
+    },
+
+    // @events after @remarks must stay in order, @events before @components
+    {
+      code: `/**\n * Description.\n *\n * @components\n * - {@link Bar}\n * @events\n * | Event | Description | Data |\n * @public\n */\nfunction foo(): void {}`,
+      output: `/**\n * Description.\n *\n * @events\n * | Event | Description | Data |\n *\n * @components\n * - {@link Bar}\n *\n * @public\n */\nfunction foo(): void {}`,
       errors: [{ messageId: 'incorrectGrouping' }],
     },
   ],

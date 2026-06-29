@@ -32,6 +32,7 @@ export interface CompensationAddAnotherJobFormProps extends CommonComponentInter
  * @remarks
  * Routed from {@link CompensationCard}'s `employee/management/compensation/card/addAnotherRequested` event. Emits its own scoped `submitted` and `cancelled` events — both are your cue to return to the card. {@link Compensation} bundles the card, this form, and the swap and alert wiring as a single drop-in; reach for this form directly only when that orchestration is the wrong fit.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/compensation/addAnotherJobForm/submitted` | Fired after the secondary job and compensation are saved; use it to return to the card | Saved `Compensation` entity |

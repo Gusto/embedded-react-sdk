@@ -35,6 +35,7 @@ export interface InviteSignatoryProps extends BaseComponentInterface<'Company.As
  * The invited person receives an email to complete their signatory information. Use this when
  * you want to provide only the invite flow without the create option.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |

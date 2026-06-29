@@ -38,6 +38,7 @@ type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
  * Set `selfOnboarding` to `true` when this component is rendered as part of the contractor's
  * own self-onboarding flow rather than admin onboarding.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |

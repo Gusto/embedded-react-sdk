@@ -43,7 +43,7 @@ export interface HolidaySelectionFormProps extends BaseComponentInterface<'Compa
  * federal holidays are shown with their observed and next-observation dates; in create mode they
  * are all selected by default.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/holidaySelection/done` | Holidays were saved in create mode | — |

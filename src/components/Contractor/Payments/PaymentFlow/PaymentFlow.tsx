@@ -17,6 +17,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * Events emitted by the subcomponents bubble up through the single `onEvent` handler.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/create` | Fired when the user chooses to create a new payment | — |
