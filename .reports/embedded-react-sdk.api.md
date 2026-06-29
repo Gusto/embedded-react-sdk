@@ -878,6 +878,7 @@ export const componentEvents: {
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
     readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
+    readonly CONTRACTOR_SELF_ONBOARDING_DONE: "contractor/selfOnboarding/done";
     readonly CONTRACTOR_ADDRESS_UPDATED: "contractor/address/updated";
     readonly CONTRACTOR_ADDRESS_DONE: "contractor/address/done";
     readonly CONTRACTOR_PAYMENT_METHOD_UPDATED: "contractor/paymentMethod/updated";
@@ -1358,6 +1359,8 @@ declare namespace ContractorOnboarding {
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
         Landing_2 as Landing,
         LandingProps_2 as LandingProps,
+        OnboardingSummary_2 as OnboardingSummary,
+        OnboardingSummaryProps_2 as OnboardingSummaryProps,
         ContractorList,
         ContractorListProps,
         ContractorProfile,
@@ -3539,9 +3542,17 @@ interface OnboardingOverviewProps extends BaseComponentInterface<'Company.Onboar
 function OnboardingSummary(props: OnboardingSummaryProps): JSX;
 
 // @public
+function OnboardingSummary_2(props: OnboardingSummaryProps_2): JSX;
+
+// @public
 interface OnboardingSummaryProps extends BaseComponentInterface<'Employee.OnboardingSummary'> {
     employeeId: string;
     isAdmin?: boolean;
+}
+
+// @public
+interface OnboardingSummaryProps_2 extends BaseComponentInterface<'Contractor.OnboardingSummary'> {
+    contractorId: string;
 }
 
 // @public

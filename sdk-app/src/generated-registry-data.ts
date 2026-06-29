@@ -33,6 +33,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'ContractorOnboarding.Landing': ['contractorId', 'companyId'],
   'ContractorOnboarding.NewHireReport': ['contractorId'],
   'ContractorOnboarding.OnboardingFlow': ['companyId'],
+  'ContractorOnboarding.OnboardingSummary': ['contractorId'],
   'ContractorOnboarding.PaymentMethod': ['contractorId'],
   'EmployeeManagement.Compensation': ['employeeId'],
   'EmployeeManagement.CompensationAddAnotherJobForm': ['employeeId'],

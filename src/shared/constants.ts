@@ -219,6 +219,7 @@ export const companyEvents = {
  */
 export const contractorEvents = {
   CONTRACTOR_SELF_ONBOARDING_START: 'contractor/selfOnboarding/start',
+  CONTRACTOR_SELF_ONBOARDING_DONE: 'contractor/selfOnboarding/done',
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
   CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
