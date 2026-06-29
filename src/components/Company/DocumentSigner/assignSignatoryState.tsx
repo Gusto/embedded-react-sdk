@@ -10,12 +10,10 @@ export const assignSignatoryState = state<MachineTransition>(
   transition(
     companyEvents.COMPANY_SIGNATORY_INVITED,
     'documentList',
-    reduce(
-      (ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
-        ...ctx,
-        component: DocumentList,
-      }),
-    ),
+    reduce((ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
+      ...ctx,
+      component: DocumentList,
+    })),
   ),
   transition(
     companyEvents.COMPANY_SIGNATORY_CREATED,
