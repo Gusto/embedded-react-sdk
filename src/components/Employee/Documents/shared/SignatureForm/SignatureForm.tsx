@@ -33,7 +33,7 @@ export interface SignatureFormProps extends BaseComponentInterface<'Employee.Doc
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/forms/sign` | Fired after the form is successfully signed | {@link Form} |
+ * | `employee/forms/sign` | Fired after the form is successfully signed | {@link APIModels.Form} |
  * | `cancel` | Fired when the user cancels signing and returns to the document list | — |
  *
  * @param props - See {@link SignatureFormProps}.

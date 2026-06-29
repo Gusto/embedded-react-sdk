@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import {
   Comment,
@@ -30,6 +30,86 @@ import {
   reparentDeprecatedMembers,
   standalonePageFromSources,
 } from './utils.ts'
+
+/**
+ * The TypeDoc namespace (and generated directory) that re-exports embedded-API entity types.
+ * `export type * as APIModels` in src/index.ts produces this; getIdealBaseName leaves the
+ * directory name as-is since it's absent from NAMESPACE_PATHS.
+ */
+const API_MODELS_NAMESPACE = 'APIModels'
+
+/**
+ * Map an installed-package source path to its definition on GitHub.
+ *
+ * TypeDoc resolves re-exported entity types to the compiled `esm/**\/*.d.ts` inside
+ * `node_modules`. We rewrite that to the package's published TypeScript source
+ * (`src/**\/*.ts`) on the repo named in the package's own `package.json#repository`, so
+ * the link survives version bumps (the dated package directory comes from `repository.directory`).
+ */
+function upstreamGitHubSource(
+  absolutePath: string,
+  symbolName: string,
+): { fileName: string; line: number; url: string } | undefined {
+  const match = /^(.*\/node_modules\/(?:@[^/]+\/)?[^/]+)\/(.+)$/.exec(absolutePath)
+  if (!match) return undefined
+  const [, packageRoot, relativePath] = match
+  const repo = readPackageRepository(packageRoot!)
+  if (!repo) return undefined
+
+  const srcRelative = relativePath!.replace(/^esm\//, 'src/').replace(/\.d\.ts$/, '.ts')
+  const repoRelative = `${repo.directory}/${srcRelative}`
+  const line = findDeclarationLine(join(packageRoot!, srcRelative), symbolName)
+  const anchor = line ? `#L${line}` : ''
+  // The client publishes one git tag per package version, e.g. `gusto_embedded_v_2025_11_15/v0.0.2`.
+  // Pin to that tag (not `main`) so links keep resolving to the exact source this build documents.
+  const ref = `${repo.directory}/v${repo.version}`
+  return {
+    fileName: repoRelative,
+    line: line ?? 1,
+    url: `${repo.baseUrl}/blob/${ref}/${repoRelative}${anchor}`,
+  }
+}
+
+type PackageRepository = { baseUrl: string; directory: string; version: string }
+const repositoryCache = new Map<string, PackageRepository | null>()
+
+function readPackageRepository(packageRoot: string): PackageRepository | null {
+  if (repositoryCache.has(packageRoot)) return repositoryCache.get(packageRoot)!
+  let result: PackageRepository | null = null
+  try {
+    const manifestPath = join(packageRoot, 'package.json')
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as {
+      version?: string
+      repository?: { url?: string; directory?: string }
+    }
+    const rawUrl = manifest.repository?.url
+    const directory = manifest.repository?.directory
+    const version = manifest.version
+    if (rawUrl && directory && version) {
+      const baseUrl = rawUrl
+        .replace(/^git\+/, '')
+        .replace(/\.git$/, '')
+        .replace(/^git:\/\//, 'https://')
+      result = { baseUrl, directory, version }
+    }
+  } catch {
+    result = null
+  }
+  repositoryCache.set(packageRoot, result)
+  return result
+}
+
+/** Line number of the top-level declaration of `symbolName` in a package source file, if found. */
+function findDeclarationLine(sourcePath: string, symbolName: string): number | undefined {
+  if (!existsSync(sourcePath)) return undefined
+  const escaped = symbolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const declaration = new RegExp(
+    `^export (?:type ${escaped}\\b|declare (?:const|function|class|enum) ${escaped}(?![\\w$])|(?:const|function|class|enum) ${escaped}(?![\\w$]))`,
+  )
+  const lines = readFileSync(sourcePath, 'utf8').split('\n')
+  const index = lines.findIndex(line => declaration.test(line))
+  return index >= 0 ? index + 1 : undefined
+}
 
 /** Convert a PascalCase name to kebab-case.
  *  'OnboardingFlow' → 'onboarding-flow',  'PayrollRunFlow' → 'payroll-run-flow' */
@@ -184,6 +264,24 @@ export class SDKRouter extends MemberRouter {
         )
       }
     }
+
+    // APIModels re-exports embedded-API entity types. It's a TypeDoc namespace, but in the
+    // sidebar we present it as an ordinary collapsed section pinned to the end — after the
+    // domains and standalone pages — rather than letting it default to the top.
+    const apiModelsDir = join(outDir, API_MODELS_NAMESPACE)
+    mkdirSync(apiModelsDir, { recursive: true })
+    writeFileSync(
+      join(apiModelsDir, '_category_.json'),
+      JSON.stringify(
+        {
+          label: 'API Models',
+          position: DOMAINS.length + STANDALONE_PAGES.length + 1,
+          collapsed: true,
+        },
+        null,
+        2,
+      ) + '\n',
+    )
   }
 
   // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
@@ -575,6 +673,14 @@ export class SDKRouter extends MemberRouter {
   }
 
   private static clearSources(reflection: ProjectReflection | DeclarationReflection): void {
+    // The APIModels namespace re-exports entity types from the embedded-API package.
+    // Keep their sources (rewritten to upstream GitHub links) so the reference shows
+    // where each entity is actually defined, rather than stripping them like SDK-owned
+    // symbols whose source paths are noise.
+    if (reflection instanceof DeclarationReflection && reflection.name === API_MODELS_NAMESPACE) {
+      SDKRouter.rewriteUpstreamSources(reflection)
+      return
+    }
     if (reflection instanceof DeclarationReflection) {
       reflection.sources = undefined
       for (const sig of reflection.signatures ?? []) {
@@ -584,6 +690,27 @@ export class SDKRouter extends MemberRouter {
     for (const child of reflection.children ?? []) {
       SDKRouter.clearSources(child)
     }
+  }
+
+  /** Point every source under the namespace at the upstream package's source on GitHub. */
+  private static rewriteUpstreamSources(reflection: DeclarationReflection): void {
+    const apply = (
+      sources: { fileName: string; fullFileName: string; line: number; url?: string }[] | undefined,
+    ) => {
+      for (const source of sources ?? []) {
+        const upstream = upstreamGitHubSource(
+          source.fullFileName || source.fileName,
+          reflection.name,
+        )
+        if (!upstream) continue
+        source.fileName = upstream.fileName
+        source.line = upstream.line
+        source.url = upstream.url
+      }
+    }
+    apply(reflection.sources)
+    for (const sig of reflection.signatures ?? []) apply(sig.sources)
+    for (const child of reflection.children ?? []) SDKRouter.rewriteUpstreamSources(child)
   }
 
   /**

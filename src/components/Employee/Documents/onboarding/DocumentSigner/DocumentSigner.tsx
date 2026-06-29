@@ -39,7 +39,7 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Employee.Do
  * | ----- | ----------- | ---- |
  * | `employee/employmentEligibility/done` | Fired after I-9 employment eligibility is captured | The updated I-9 authorization |
  * | `employee/forms/view` | Fired when a form's "Sign" action is selected from the document list | `{ uuid: string; name?: string }` |
- * | `employee/forms/sign` | Fired after a form is successfully signed | {@link Form} |
+ * | `employee/forms/sign` | Fired after a form is successfully signed | {@link APIModels.Form} |
  * | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
  * | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
  * | `cancel` | Fired when the user cancels signing a form and returns to the document list | — |
