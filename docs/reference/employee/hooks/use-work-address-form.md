@@ -169,51 +169,6 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## Form
-
-<a id="workaddressfieldsmetadata"></a>
-
-### WorkAddressFieldsMetadata
-
-> **WorkAddressFieldsMetadata** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressform).
-
-***
-
-<a id="workaddressformdata"></a>
-
-### WorkAddressFormData
-
-Shape of the values managed by the work address form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `effectiveDate` | `string` |
-| `locationUuid` | `string` |
-
-***
-
-<a id="workaddressformfields"></a>
-
-### WorkAddressFormFields
-
-> **WorkAddressFormFields** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useWorkAddressForm](#useworkaddressform).
-
-***
-
-<a id="workaddressformoutputs"></a>
-
-### WorkAddressFormOutputs
-
-> **WorkAddressFormOutputs** = [`WorkAddressFormData`](#workaddressformdata)
-
-Shape of the validated values produced by the work address form on submit.
-
 ## Fields
 
 ### WorkAddressFields
@@ -323,6 +278,51 @@ codes to localized copy in `validationMessages` when composing the hook.
 > **WorkAddressField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the work address form.
+
+***
+
+<a id="workaddressfieldsmetadata"></a>
+
+### WorkAddressFieldsMetadata
+
+> **WorkAddressFieldsMetadata** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressform).
+
+***
+
+<a id="workaddressformdata"></a>
+
+### WorkAddressFormData
+
+Shape of the values managed by the work address form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `effectiveDate` | `string` |
+| `locationUuid` | `string` |
+
+***
+
+<a id="workaddressformfields"></a>
+
+### WorkAddressFormFields
+
+> **WorkAddressFormFields** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useWorkAddressForm](#useworkaddressform).
+
+***
+
+<a id="workaddressformoutputs"></a>
+
+### WorkAddressFormOutputs
+
+> **WorkAddressFormOutputs** = [`WorkAddressFormData`](#workaddressformdata)
+
+Shape of the validated values produced by the work address form on submit.
 
 ***
 

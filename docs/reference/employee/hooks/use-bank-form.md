@@ -107,43 +107,6 @@ Ready-state return value of [useBankForm](#usebankform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
 
-## Form
-
-<a id="bankformdata"></a>
-
-### BankFormData
-
-Shape of the values managed by the bank account form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `accountNumber` | `string` |
-| `accountType` | `"Checking"` \| `"Savings"` |
-| `name` | `string` |
-| `routingNumber` | `string` |
-
-***
-
-<a id="bankformfieldsmetadata"></a>
-
-### BankFormFieldsMetadata
-
-> **BankFormFieldsMetadata** = [`UseBankFormReady`](#usebankformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
-
-***
-
-<a id="bankformoutputs"></a>
-
-### BankFormOutputs
-
-> **BankFormOutputs** = [`BankFormData`](#bankformdata)
-
-Shape of the validated values produced by the bank account form on submit.
-
 ## Fields
 
 ### BankFormFields
@@ -277,6 +240,23 @@ Union of bank account type values that the form accepts.
 
 ***
 
+<a id="bankformdata"></a>
+
+### BankFormData
+
+Shape of the values managed by the bank account form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `accountNumber` | `string` |
+| `accountType` | `"Checking"` \| `"Savings"` |
+| `name` | `string` |
+| `routingNumber` | `string` |
+
+***
+
 <a id="bankformerrorcode"></a>
 
 ### BankFormErrorCode
@@ -317,6 +297,16 @@ Field names accepted by the bank account form.
 
 ***
 
+<a id="bankformfieldsmetadata"></a>
+
+### BankFormFieldsMetadata
+
+> **BankFormFieldsMetadata** = [`UseBankFormReady`](#usebankformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
+
+***
+
 <a id="bankformoptionalfieldstorequire"></a>
 
 ### BankFormOptionalFieldsToRequire
@@ -325,6 +315,16 @@ Field names accepted by the bank account form.
 
 Keys of optional bank account fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
+
+***
+
+<a id="bankformoutputs"></a>
+
+### BankFormOutputs
+
+> **BankFormOutputs** = [`BankFormData`](#bankformdata)
+
+Shape of the validated values produced by the bank account form on submit.
 
 ***
 

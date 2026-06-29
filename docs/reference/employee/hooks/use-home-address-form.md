@@ -174,56 +174,6 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` \| `"update"` | - |
 
-## Form
-
-<a id="homeaddressfieldsmetadata"></a>
-
-### HomeAddressFieldsMetadata
-
-> **HomeAddressFieldsMetadata** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Type of `form.fieldsMetadata` returned by [useHomeAddressForm](#usehomeaddressform).
-
-***
-
-<a id="homeaddressformdata"></a>
-
-### HomeAddressFormData
-
-Shape of the values managed by the home address form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `city` | `string` |
-| `courtesyWithholding` | `boolean` |
-| `effectiveDate` | `string` |
-| `state` | `string` |
-| `street1` | `string` |
-| `street2` | `string` |
-| `zip` | `string` |
-
-***
-
-<a id="homeaddressformfields"></a>
-
-### HomeAddressFormFields
-
-> **HomeAddressFormFields** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useHomeAddressForm](#usehomeaddressform).
-
-***
-
-<a id="homeaddressformoutputs"></a>
-
-### HomeAddressFormOutputs
-
-> **HomeAddressFormOutputs** = [`HomeAddressFormData`](#homeaddressformdata)
-
-Shape of the validated values produced by the home address form on submit.
-
 ## Fields
 
 ### HomeAddressFields
@@ -432,6 +382,56 @@ codes to localized copy in `validationMessages` when composing the hook.
 > **HomeAddressField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the home address form.
+
+***
+
+<a id="homeaddressfieldsmetadata"></a>
+
+### HomeAddressFieldsMetadata
+
+> **HomeAddressFieldsMetadata** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Type of `form.fieldsMetadata` returned by [useHomeAddressForm](#usehomeaddressform).
+
+***
+
+<a id="homeaddressformdata"></a>
+
+### HomeAddressFormData
+
+Shape of the values managed by the home address form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `city` | `string` |
+| `courtesyWithholding` | `boolean` |
+| `effectiveDate` | `string` |
+| `state` | `string` |
+| `street1` | `string` |
+| `street2` | `string` |
+| `zip` | `string` |
+
+***
+
+<a id="homeaddressformfields"></a>
+
+### HomeAddressFormFields
+
+> **HomeAddressFormFields** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useHomeAddressForm](#usehomeaddressform).
+
+***
+
+<a id="homeaddressformoutputs"></a>
+
+### HomeAddressFormOutputs
+
+> **HomeAddressFormOutputs** = [`HomeAddressFormData`](#homeaddressformdata)
+
+Shape of the validated values produced by the home address form on submit.
 
 ***
 

@@ -20,7 +20,6 @@ import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
 import {
   findHookResultAlias,
   getFormHookModel,
-  getFormSectionTypes,
   getHookModel,
   getHookReadyInterface,
 } from './hook-model.ts'
@@ -75,7 +74,6 @@ const SYNTHETIC_GROUP_ORDER = [
   'Block Components',
   'Form Hooks',
   'Data Hooks',
-  'Form',
   'Utility Hooks',
   'Hooks',
   'Fields',
@@ -181,17 +179,6 @@ function groupSyntheticMembers(
     group.children = byTitle.get(title)!
     return group
   })
-}
-
-/**
- * Stamp a `@group` tag on a reflection so groupSyntheticMembers buckets it into
- * the named section. No-op when the reflection already carries an authored
- * `@group`, preserving explicit intent from source TSDoc.
- */
-function stampGroup(reflection: DeclarationReflection, group: string): void {
-  if (reflection.comment?.blockTags.some(t => t.tag === '@group')) return
-  if (!reflection.comment) reflection.comment = new Comment()
-  reflection.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: group }]))
 }
 
 export class SDKRouter extends MemberRouter {
@@ -426,22 +413,6 @@ export class SDKRouter extends MemberRouter {
       for (const [hookDir, hookMembers] of byHookDir) {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
-        const memberDecls = hookMembers.filter(
-          (m): m is DeclarationReflection => m instanceof DeclarationReflection,
-        )
-        // Stamp `@group Form` on the form-shape types (form data, form fields,
-        // form outputs, fields metadata) so they render in a dedicated `## Form`
-        // section instead of collapsing into Utility Types. Identified
-        // structurally from the type graph (see getFormSectionTypes), never by
-        // name. Must precede groupSyntheticMembers, which reads the tag.
-        for (const member of memberDecls) {
-          if (member.kind !== ReflectionKind.Function) continue
-          const formModel = getFormHookModel(member)
-          if (!formModel) continue
-          for (const formType of getFormSectionTypes(formModel, memberDecls)) {
-            stampGroup(formType, 'Form')
-          }
-        }
         hookNs.groups = groupSyntheticMembers(hookMembers, hookNs, undefined, true)
         // Remove inlined types from groups by reflection identity, derived from
         // the type graph: every hook's Ready interface and its `UseXxxResult`
@@ -451,6 +422,9 @@ export class SDKRouter extends MemberRouter {
         // array alias (`StateTaxFields`) under its own `## Fields` section.
         // FormData and derived-alias props stay visible as their own sections.
         const inlined = new Set<DeclarationReflection>()
+        const memberDecls = hookMembers.filter(
+          (m): m is DeclarationReflection => m instanceof DeclarationReflection,
+        )
         for (const member of hookMembers) {
           if (!(member instanceof DeclarationReflection) || member.kind !== ReflectionKind.Function) {
             continue

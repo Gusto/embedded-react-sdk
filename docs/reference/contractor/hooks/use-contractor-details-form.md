@@ -151,64 +151,6 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
 
-## Form
-
-<a id="contractordetailsfieldsmetadata"></a>
-
-### ContractorDetailsFieldsMetadata
-
-> **ContractorDetailsFieldsMetadata** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsformdata"></a>
-
-### ContractorDetailsFormData
-
-Shape of the values managed by the contractor details form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `businessName` | `string` |
-| `ein` | `string` |
-| `email` | `string` |
-| `fileNewHireReport` | `boolean` |
-| `firstName` | `string` |
-| `hourlyRate` | `number` |
-| `lastName` | `string` |
-| `middleInitial` | `string` |
-| `selfOnboarding` | `boolean` |
-| `ssn` | `string` |
-| `startDate` | `string` |
-| `type` | `"Business"` \| `"Individual"` |
-| `wageType` | `"Fixed"` \| `"Hourly"` |
-| `workState` | `string` |
-
-***
-
-<a id="contractordetailsformfields"></a>
-
-### ContractorDetailsFormFields
-
-> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsformoutputs"></a>
-
-### ContractorDetailsFormOutputs
-
-> **ContractorDetailsFormOutputs** = [`ContractorDetailsFormData`](#contractordetailsformdata)
-
-Shape of the validated values produced by the contractor details form on
-submit.
-
 ## Fields
 
 ### ContractorDetailsFields
@@ -614,6 +556,64 @@ hook.
 | `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
 | `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="contractordetailsfieldsmetadata"></a>
+
+### ContractorDetailsFieldsMetadata
+
+> **ContractorDetailsFieldsMetadata** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsformdata"></a>
+
+### ContractorDetailsFormData
+
+Shape of the values managed by the contractor details form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `businessName` | `string` |
+| `ein` | `string` |
+| `email` | `string` |
+| `fileNewHireReport` | `boolean` |
+| `firstName` | `string` |
+| `hourlyRate` | `number` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
+| `startDate` | `string` |
+| `type` | `"Business"` \| `"Individual"` |
+| `wageType` | `"Fixed"` \| `"Hourly"` |
+| `workState` | `string` |
+
+***
+
+<a id="contractordetailsformfields"></a>
+
+### ContractorDetailsFormFields
+
+> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsformoutputs"></a>
+
+### ContractorDetailsFormOutputs
+
+> **ContractorDetailsFormOutputs** = [`ContractorDetailsFormData`](#contractordetailsformdata)
+
+Shape of the validated values produced by the contractor details form on
+submit.
 
 ***
 

@@ -121,89 +121,6 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Form
-
-<a id="signemployeeformdata"></a>
-
-### SignEmployeeFormData
-
-Shape of the values managed by the I-9 sign-employee form.
-
-#### Properties
-
-| Property | Type | Default value |
-| ------ | ------ | ------ |
-| `confirmSignature` | `boolean` | `agreeValidator` |
-| `preparer2Agree` | `boolean` | `agreeValidator` |
-| `preparer2City` | `string` | |
-| `preparer2FirstName` | `string` | |
-| `preparer2LastName` | `string` | |
-| `preparer2Signature` | `string` | |
-| `preparer2State` | `string` | |
-| `preparer2Street1` | `string` | |
-| `preparer2Street2` | `string` | |
-| `preparer2Zip` | `string` | |
-| `preparer3Agree` | `boolean` | `agreeValidator` |
-| `preparer3City` | `string` | |
-| `preparer3FirstName` | `string` | |
-| `preparer3LastName` | `string` | |
-| `preparer3Signature` | `string` | |
-| `preparer3State` | `string` | |
-| `preparer3Street1` | `string` | |
-| `preparer3Street2` | `string` | |
-| `preparer3Zip` | `string` | |
-| `preparer4Agree` | `boolean` | `agreeValidator` |
-| `preparer4City` | `string` | |
-| `preparer4FirstName` | `string` | |
-| `preparer4LastName` | `string` | |
-| `preparer4Signature` | `string` | |
-| `preparer4State` | `string` | |
-| `preparer4Street1` | `string` | |
-| `preparer4Street2` | `string` | |
-| `preparer4Zip` | `string` | |
-| `preparerAgree` | `boolean` | `agreeValidator` |
-| `preparerCity` | `string` | |
-| `preparerFirstName` | `string` | |
-| `preparerLastName` | `string` | |
-| `preparerSignature` | `string` | |
-| `preparerState` | `string` | |
-| `preparerStreet1` | `string` | |
-| `preparerStreet2` | `string` | |
-| `preparerZip` | `string` | |
-| `signature` | `string` | |
-| `usedPreparer` | `"yes"` \| `"no"` | `undefined` |
-
-***
-
-<a id="signemployeeformfields"></a>
-
-### SignEmployeeFormFields
-
-> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="signemployeeformfieldsmetadata"></a>
-
-### SignEmployeeFormFieldsMetadata
-
-> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="signemployeeformoutputs"></a>
-
-### SignEmployeeFormOutputs
-
-> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
-
-Shape of the validated values produced by the I-9 sign-employee form on
-submit.
-
 ## Fields
 
 ### SignEmployeeFormFieldComponents
@@ -391,6 +308,58 @@ Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesi
 
 ***
 
+<a id="signemployeeformdata"></a>
+
+### SignEmployeeFormData
+
+Shape of the values managed by the I-9 sign-employee form.
+
+#### Properties
+
+| Property | Type | Default value |
+| ------ | ------ | ------ |
+| `confirmSignature` | `boolean` | `agreeValidator` |
+| `preparer2Agree` | `boolean` | `agreeValidator` |
+| `preparer2City` | `string` | |
+| `preparer2FirstName` | `string` | |
+| `preparer2LastName` | `string` | |
+| `preparer2Signature` | `string` | |
+| `preparer2State` | `string` | |
+| `preparer2Street1` | `string` | |
+| `preparer2Street2` | `string` | |
+| `preparer2Zip` | `string` | |
+| `preparer3Agree` | `boolean` | `agreeValidator` |
+| `preparer3City` | `string` | |
+| `preparer3FirstName` | `string` | |
+| `preparer3LastName` | `string` | |
+| `preparer3Signature` | `string` | |
+| `preparer3State` | `string` | |
+| `preparer3Street1` | `string` | |
+| `preparer3Street2` | `string` | |
+| `preparer3Zip` | `string` | |
+| `preparer4Agree` | `boolean` | `agreeValidator` |
+| `preparer4City` | `string` | |
+| `preparer4FirstName` | `string` | |
+| `preparer4LastName` | `string` | |
+| `preparer4Signature` | `string` | |
+| `preparer4State` | `string` | |
+| `preparer4Street1` | `string` | |
+| `preparer4Street2` | `string` | |
+| `preparer4Zip` | `string` | |
+| `preparerAgree` | `boolean` | `agreeValidator` |
+| `preparerCity` | `string` | |
+| `preparerFirstName` | `string` | |
+| `preparerLastName` | `string` | |
+| `preparerSignature` | `string` | |
+| `preparerState` | `string` | |
+| `preparerStreet1` | `string` | |
+| `preparerStreet2` | `string` | |
+| `preparerZip` | `string` | |
+| `signature` | `string` | |
+| `usedPreparer` | `"yes"` \| `"no"` | `undefined` |
+
+***
+
 <a id="signemployeeformerrorcode"></a>
 
 ### SignEmployeeFormErrorCode
@@ -427,6 +396,37 @@ hook.
 > **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the I-9 sign-employee form.
+
+***
+
+<a id="signemployeeformfields"></a>
+
+### SignEmployeeFormFields
+
+> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
+
+***
+
+<a id="signemployeeformfieldsmetadata"></a>
+
+### SignEmployeeFormFieldsMetadata
+
+> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
+
+***
+
+<a id="signemployeeformoutputs"></a>
+
+### SignEmployeeFormOutputs
+
+> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
+
+Shape of the validated values produced by the I-9 sign-employee form on
+submit.
 
 ***
 

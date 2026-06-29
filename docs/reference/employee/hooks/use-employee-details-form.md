@@ -144,57 +144,6 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | `status.isPending` | `boolean` | `true` while the create, update, or onboarding-status mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | `'create'` when no `employeeId` was supplied, `'update'` otherwise. |
 
-## Form
-
-<a id="employeedetailsfieldsmetadata"></a>
-
-### EmployeeDetailsFieldsMetadata
-
-> **EmployeeDetailsFieldsMetadata** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
-
-***
-
-<a id="employeedetailsformdata"></a>
-
-### EmployeeDetailsFormData
-
-Shape of the values managed by the employee details form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `dateOfBirth` | `string` |
-| `email` | `string` |
-| `firstName` | `string` |
-| `lastName` | `string` |
-| `middleInitial` | `string` |
-| `selfOnboarding` | `boolean` |
-| `ssn` | `string` |
-
-***
-
-<a id="employeedetailsformfields"></a>
-
-### EmployeeDetailsFormFields
-
-> **EmployeeDetailsFormFields** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
-
-***
-
-<a id="employeedetailsformoutputs"></a>
-
-### EmployeeDetailsFormOutputs
-
-> **EmployeeDetailsFormOutputs** = [`EmployeeDetailsFormData`](#employeedetailsformdata)
-
-Shape of the validated values produced by the employee details form on
-submit.
-
 ## Fields
 
 ### EmployeeDetailsFields
@@ -455,6 +404,57 @@ hook.
 > **EmployeeDetailsField** = `Exclude`\<keyof *typeof* `fieldValidators`, `"selfOnboarding"`\>
 
 Field names accepted by the employee details form.
+
+***
+
+<a id="employeedetailsfieldsmetadata"></a>
+
+### EmployeeDetailsFieldsMetadata
+
+> **EmployeeDetailsFieldsMetadata** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
+
+***
+
+<a id="employeedetailsformdata"></a>
+
+### EmployeeDetailsFormData
+
+Shape of the values managed by the employee details form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `dateOfBirth` | `string` |
+| `email` | `string` |
+| `firstName` | `string` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
+
+***
+
+<a id="employeedetailsformfields"></a>
+
+### EmployeeDetailsFormFields
+
+> **EmployeeDetailsFormFields** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of `form.Fields` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
+
+***
+
+<a id="employeedetailsformoutputs"></a>
+
+### EmployeeDetailsFormOutputs
+
+> **EmployeeDetailsFormOutputs** = [`EmployeeDetailsFormData`](#employeedetailsformdata)
+
+Shape of the validated values produced by the employee details form on
+submit.
 
 ***
 

@@ -137,53 +137,6 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
-## Form
-
-<a id="signcompanyformdata"></a>
-
-### SignCompanyFormData
-
-Shape of the values managed by the sign-company form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `confirmSignature` | `boolean` |
-| `signature` | `string` |
-
-***
-
-<a id="signcompanyformfieldsmetadata"></a>
-
-### SignCompanyFormFieldsMetadata
-
-> **SignCompanyFormFieldsMetadata** = [`UseSignCompanyFormReady`](#usesigncompanyformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of the `form.fieldsMetadata` object returned by [useSignCompanyForm](#usesigncompanyform).
-
-***
-
-<a id="signcompanyformoutputs"></a>
-
-### SignCompanyFormOutputs
-
-> **SignCompanyFormOutputs** = [`SignCompanyFormData`](#signcompanyformdata)
-
-Shape of the validated values produced by the sign-company form on submit.
-
-## Fields
-
-### SignCompanyFormFields
-<a id="signcompanyformfields"></a>
-
-Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
-
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| `ConfirmSignature` | — | — |
-| `Signature` | — | — |
-
 ## Utility Types
 
 <a id="confirmsignaturefieldprops"></a>
@@ -203,6 +156,21 @@ Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.ConfirmSig
 > **SignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
 
 Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.Signature` component.
+
+***
+
+<a id="signcompanyformdata"></a>
+
+### SignCompanyFormData
+
+Shape of the values managed by the sign-company form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `confirmSignature` | `boolean` |
+| `signature` | `string` |
 
 ***
 
@@ -244,6 +212,16 @@ Field names accepted by the sign-company form.
 
 ***
 
+<a id="signcompanyformfieldsmetadata"></a>
+
+### SignCompanyFormFieldsMetadata
+
+> **SignCompanyFormFieldsMetadata** = [`UseSignCompanyFormReady`](#usesigncompanyformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of the `form.fieldsMetadata` object returned by [useSignCompanyForm](#usesigncompanyform).
+
+***
+
 <a id="signcompanyformoptionalfieldstorequire"></a>
 
 ### SignCompanyFormOptionalFieldsToRequire
@@ -259,6 +237,16 @@ is typically unnecessary.
 
 ***
 
+<a id="signcompanyformoutputs"></a>
+
+### SignCompanyFormOutputs
+
+> **SignCompanyFormOutputs** = [`SignCompanyFormData`](#signcompanyformdata)
+
+Shape of the validated values produced by the sign-company form on submit.
+
+***
+
 <a id="signcompanyformrequiredvalidation"></a>
 
 ### SignCompanyFormRequiredValidation
@@ -271,3 +259,15 @@ The required-field error code emitted by every field of [useSignCompanyForm](#us
 
 Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
+
+## Fields
+
+### SignCompanyFormFields
+<a id="signcompanyformfields"></a>
+
+Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `ConfirmSignature` | — | — |
+| `Signature` | — | — |

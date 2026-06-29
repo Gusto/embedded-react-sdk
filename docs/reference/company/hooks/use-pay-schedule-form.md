@@ -139,56 +139,6 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
 
-## Form
-
-<a id="payschedulefieldsmetadata"></a>
-
-### PayScheduleFieldsMetadata
-
-> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformdata"></a>
-
-### PayScheduleFormData
-
-Shape of the values managed by the pay schedule form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `anchorEndOfPayPeriod` | `string` \| `null` |
-| `anchorPayDate` | `string` \| `null` |
-| `customName` | `string` |
-| `customTwicePerMonth` | `string` |
-| `day1` | `number` |
-| `day2` | `number` |
-| `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
-
-***
-
-<a id="payscheduleformfields"></a>
-
-### PayScheduleFormFields
-
-> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformoutputs"></a>
-
-### PayScheduleFormOutputs
-
-> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
-
-Shape of the validated values produced by the pay schedule form on submit.
-
 ## Fields
 
 ### PayScheduleFields
@@ -421,6 +371,56 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 > **PayScheduleField** = keyof *typeof* `fieldValidators`
 
 Union of field names managed by the pay schedule form.
+
+***
+
+<a id="payschedulefieldsmetadata"></a>
+
+### PayScheduleFieldsMetadata
+
+> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
+<a id="payscheduleformdata"></a>
+
+### PayScheduleFormData
+
+Shape of the values managed by the pay schedule form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `anchorEndOfPayPeriod` | `string` \| `null` |
+| `anchorPayDate` | `string` \| `null` |
+| `customName` | `string` |
+| `customTwicePerMonth` | `string` |
+| `day1` | `number` |
+| `day2` | `number` |
+| `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
+
+***
+
+<a id="payscheduleformfields"></a>
+
+### PayScheduleFormFields
+
+> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
+<a id="payscheduleformoutputs"></a>
+
+### PayScheduleFormOutputs
+
+> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
+
+Shape of the validated values produced by the pay schedule form on submit.
 
 ***
 
