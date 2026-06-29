@@ -279,8 +279,7 @@ export function useContractorBankAccountForm({
  * @public
  */
 export type UseContractorBankAccountFormResult =
-  | HookLoadingResult
-  | UseContractorBankAccountFormReady
+  HookLoadingResult | UseContractorBankAccountFormReady
 
 /**
  * Per-field metadata exposed on `form.fieldsMetadata` for {@link useContractorBankAccountForm}.
