@@ -330,17 +330,6 @@ Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
 
 ## Utility Types
-
-<a id="hiredatefieldprops"></a>
-
-### HireDateFieldProps
-
-> **HireDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.HireDate` component.
-
-***
-
 <a id="joberrorcode"></a>
 
 ### JobErrorCode
@@ -461,41 +450,3 @@ the employee being saved was created in the same submit chain and the
 | `hireDate?` | `string` | Supply `hireDate` at submit time rather than via a rendered field. Use with `withHireDateField: false` for screens that derive hireDate from external context (e.g. the employee's `startDate` during onboarding). Falls back to the loaded job's `hireDate` on update mode when omitted; required (or sourced from a default) on create mode. |
 
 ***
-
-<a id="jobtitlefieldprops"></a>
-
-### JobTitleFieldProps
-
-> **JobTitleFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation)\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.Title` component.
-
-***
-
-<a id="statewcclasscodefieldprops"></a>
-
-### StateWcClassCodeFieldProps
-
-> **StateWcClassCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`JobRequiredValidation`](#jobrequiredvalidation), `WARiskClassCode`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcClassCode` component.
-
-***
-
-<a id="statewccoveredfieldprops"></a>
-
-### StateWcCoveredFieldProps
-
-> **StateWcCoveredFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, `boolean`\>\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.StateWcCovered` component.
-
-***
-
-<a id="twopercentshareholderfieldprops"></a>
-
-### TwoPercentShareholderFieldProps
-
-> **TwoPercentShareholderFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
-
-Props accepted by [useJobForm](#usejobform)'s `Fields.TwoPercentShareholder` component.

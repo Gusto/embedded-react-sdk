@@ -179,7 +179,6 @@ Available on the hook result as `form.Fields.Type`. Options are
 method type. Supply `getOptionLabel` to translate the option labels.
 
 ## Utility Types
-
 <a id="payment_method_types"></a>
 
 ### PAYMENT\_METHOD\_TYPES
@@ -258,11 +257,3 @@ Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) 
 Union of payment method type values that the form accepts.
 
 ***
-
-<a id="typefieldprops"></a>
-
-### TypeFieldProps
-
-> **TypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
-
-Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.

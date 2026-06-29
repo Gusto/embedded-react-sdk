@@ -365,7 +365,6 @@ automatically waived even if `ssn` is listed in
 `optionalFieldsToRequire`.
 
 ## Utility Types
-
 <a id="employeedetailssubmitcallbacks"></a>
 
 ### EmployeeDetailsSubmitCallbacks
@@ -386,26 +385,6 @@ switch changes the employee's onboarding status as part of an update.
 | `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
 | `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
 | `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
-
-***
-
-<a id="dateofbirthfieldprops"></a>
-
-### DateOfBirthFieldProps
-
-> **DateOfBirthFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.DateOfBirth` component.
-
-***
-
-<a id="emailfieldprops"></a>
-
-### EmailFieldProps
-
-> **EmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmailValidation`](#emailvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Email` component.
 
 ***
 
@@ -495,36 +474,6 @@ birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ***
 
-<a id="firstnamefieldprops"></a>
-
-### FirstNameFieldProps
-
-> **FirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.FirstName` component.
-
-***
-
-<a id="lastnamefieldprops"></a>
-
-### LastNameFieldProps
-
-> **LastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`NameValidation`](#namevalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.LastName` component.
-
-***
-
-<a id="middleinitialfieldprops"></a>
-
-### MiddleInitialFieldProps
-
-> **MiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`EmployeeDetailsRequiredValidation`](#employeedetailsrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.MiddleInitial` component.
-
-***
-
 <a id="namevalidation"></a>
 
 ### NameValidation
@@ -538,26 +487,6 @@ Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#u
 Use these as keys in `validationMessages` on `Fields.FirstName` and
 `Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
 description of each code.
-
-***
-
-<a id="selfonboardingfieldprops"></a>
-
-### SelfOnboardingFieldProps
-
-> **SelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.SelfOnboarding` component.
-
-***
-
-<a id="ssnfieldprops"></a>
-
-### SsnFieldProps
-
-> **SsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SsnValidation`](#ssnvalidation), [`SsnRequiredValidation`](#ssnrequiredvalidation)\>\>
-
-Props accepted by [useEmployeeDetailsForm](#useemployeedetailsform)'s `Fields.Ssn` component.
 
 ***
 

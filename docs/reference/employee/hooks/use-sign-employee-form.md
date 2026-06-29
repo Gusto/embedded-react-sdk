@@ -247,7 +247,6 @@ automatically reveals the first preparer field group; switching back to
 `'no'` removes all preparer sections.
 
 ## Utility Types
-
 <a id="max_preparers"></a>
 
 ### MAX\_PREPARERS
@@ -350,16 +349,6 @@ Props accepted by the text-input preparer fields of [useSignEmployeeForm](#usesi
 
 ***
 
-<a id="signemployeeformconfirmsignaturefieldprops"></a>
-
-### SignEmployeeFormConfirmSignatureFieldProps
-
-> **SignEmployeeFormConfirmSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmSignature` component.
-
-***
-
 <a id="signemployeeformerrorcode"></a>
 
 ### SignEmployeeFormErrorCode
@@ -413,21 +402,3 @@ Use this as the `validationMessages` key for any sign-employee-form field.
 See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 
 ***
-
-<a id="signemployeeformsignaturefieldprops"></a>
-
-### SignEmployeeFormSignatureFieldProps
-
-> **SignEmployeeFormSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.Signature` component.
-
-***
-
-<a id="usedpreparerfieldprops"></a>
-
-### UsedPreparerFieldProps
-
-> **UsedPreparerFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`SignEmployeeFormRequiredValidation`](#signemployeeformrequiredvalidation)\>\>
-
-Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.UsedPreparer` component.

@@ -537,17 +537,6 @@ contractors when `fileNewHireReport` is enabled, in which case it is
 required.
 
 ## Utility Types
-
-<a id="contractorbusinessnamefieldprops"></a>
-
-### ContractorBusinessNameFieldProps
-
-> **ContractorBusinessNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.BusinessName` component.
-
-***
-
 <a id="contractordetailseinrequiredvalidation"></a>
 
 ### ContractorDetailsEinRequiredValidation
@@ -677,106 +666,6 @@ Optional overrides passed to [onSubmit](#usecontractordetailsformready).
 
 ***
 
-<a id="contractoreinfieldprops"></a>
-
-### ContractorEinFieldProps
-
-> **ContractorEinFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
-
-***
-
-<a id="contractoremailfieldprops"></a>
-
-### ContractorEmailFieldProps
-
-> **ContractorEmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Email` component.
-
-***
-
-<a id="contractorfilenewhirereportfieldprops"></a>
-
-### ContractorFileNewHireReportFieldProps
-
-> **ContractorFileNewHireReportFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
-
-***
-
-<a id="contractorfirstnamefieldprops"></a>
-
-### ContractorFirstNameFieldProps
-
-> **ContractorFirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FirstName` component.
-
-***
-
-<a id="contractorhourlyratefieldprops"></a>
-
-### ContractorHourlyRateFieldProps
-
-> **ContractorHourlyRateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
-
-***
-
-<a id="contractorlastnamefieldprops"></a>
-
-### ContractorLastNameFieldProps
-
-> **ContractorLastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.LastName` component.
-
-***
-
-<a id="contractormiddleinitialfieldprops"></a>
-
-### ContractorMiddleInitialFieldProps
-
-> **ContractorMiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
-
-***
-
-<a id="contractorselfonboardingfieldprops"></a>
-
-### ContractorSelfOnboardingFieldProps
-
-> **ContractorSelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.SelfOnboarding` component.
-
-***
-
-<a id="contractorssnfieldprops"></a>
-
-### ContractorSsnFieldProps
-
-> **ContractorSsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ssn` component.
-
-***
-
-<a id="contractorstartdatefieldprops"></a>
-
-### ContractorStartDateFieldProps
-
-> **ContractorStartDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
-
-***
-
 <a id="contractortype"></a>
 
 ### ContractorType
@@ -791,36 +680,6 @@ Contractor type enum (`Individual` / `Business`) re-exported from the API model.
 | ------ | ------ |
 | `Business` | `"Business"` |
 | `Individual` | `"Individual"` |
-
-***
-
-<a id="contractortypefieldprops"></a>
-
-### ContractorTypeFieldProps
-
-> **ContractorTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Type` component.
-
-***
-
-<a id="contractorwagetypefieldprops"></a>
-
-### ContractorWageTypeFieldProps
-
-> **ContractorWageTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
-
-***
-
-<a id="contractorworkstatefieldprops"></a>
-
-### ContractorWorkStateFieldProps
-
-> **ContractorWorkStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WorkState` component.
 
 ***
 

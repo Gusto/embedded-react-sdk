@@ -386,37 +386,6 @@ validates ZIP code format and emits `INVALID_ZIP` when the value does
 not match.
 
 ## Utility Types
-
-<a id="cityfieldprops"></a>
-
-### CityFieldProps
-
-> **CityFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.City` component.
-
-***
-
-<a id="courtesywithholdingfieldprops"></a>
-
-### CourtesyWithholdingFieldProps
-
-> **CourtesyWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.CourtesyWithholding` component.
-
-***
-
-<a id="homeaddresseffectivedatefieldprops"></a>
-
-### HomeAddressEffectiveDateFieldProps
-
-> **HomeAddressEffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.EffectiveDate` component.
-
-***
-
 <a id="homeaddresserrorcode"></a>
 
 ### HomeAddressErrorCode
@@ -497,36 +466,6 @@ Optional overrides passed to [onSubmit](#usehomeaddressformready).
 
 ***
 
-<a id="statefieldprops"></a>
-
-### StateFieldProps
-
-> **StateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation), `string`\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.State` component.
-
-***
-
-<a id="street1fieldprops"></a>
-
-### Street1FieldProps
-
-> **Street1FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street1` component.
-
-***
-
-<a id="street2fieldprops"></a>
-
-### Street2FieldProps
-
-> **Street2FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`HomeAddressRequiredValidation`](#homeaddressrequiredvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Street2` component.
-
-***
-
 <a id="usecurrenthomeaddressformprops"></a>
 
 ### UseCurrentHomeAddressFormProps
@@ -539,16 +478,6 @@ Options for [useCurrentHomeAddressForm](#usecurrenthomeaddressform).
 
 Same shape as [UseHomeAddressFormProps](#usehomeaddressformprops) minus `homeAddressUuid` —
 the hook resolves the current home address itself.
-
-***
-
-<a id="zipfieldprops"></a>
-
-### ZipFieldProps
-
-> **ZipFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ZipValidation`](#zipvalidation)\>\>
-
-Props accepted by [useHomeAddressForm](#usehomeaddressform)'s `Fields.Zip` component.
 
 ***
 

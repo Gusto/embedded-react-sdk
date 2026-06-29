@@ -387,27 +387,6 @@ selected agency requires a remittance number (`status.requiredAttrKeys.has('remi
 Always null-check before rendering.
 
 ## Utility Types
-
-<a id="casenumberfieldprops"></a>
-
-### CaseNumberFieldProps
-
-> **CaseNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.CaseNumber` component.
-
-***
-
-<a id="childsupportgarnishmentamountfieldprops"></a>
-
-### ChildSupportGarnishmentAmountFieldProps
-
-> **ChildSupportGarnishmentAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ChildSupportGarnishmentAmountValidation`](#childsupportgarnishmentamountvalidation)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.Amount` component.
-
-***
-
 <a id="childsupportgarnishmentamountvalidation"></a>
 
 ### ChildSupportGarnishmentAmountValidation
@@ -501,16 +480,6 @@ number, order number, remittance number, and payment-period fields. See
 
 ***
 
-<a id="childsupportgarnishmentstatefieldprops"></a>
-
-### ChildSupportGarnishmentStateFieldProps
-
-> **ChildSupportGarnishmentStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`StateFieldEntry`](#statefieldentry)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.State` component.
-
-***
-
 <a id="countyentry"></a>
 
 ### CountyEntry
@@ -534,46 +503,6 @@ record represents the whole state. Supply `getOptionLabel` on
 
 ***
 
-<a id="fipscodefieldprops"></a>
-
-### FipsCodeFieldProps
-
-> **FipsCodeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`CountyEntry`](#countyentry)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.FipsCode` component.
-
-***
-
-<a id="ordernumberfieldprops"></a>
-
-### OrderNumberFieldProps
-
-> **OrderNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.OrderNumber` component.
-
-***
-
-<a id="paymentperiodfieldprops"></a>
-
-### PaymentPeriodFieldProps
-
-> **PaymentPeriodFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PaymentPeriod` component.
-
-***
-
-<a id="payperiodmaximumfieldprops"></a>
-
-### PayPeriodMaximumFieldProps
-
-> **PayPeriodMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`PayPeriodMaximumValidation`](#payperiodmaximumvalidation)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PayPeriodMaximum` component.
-
-***
-
 <a id="payperiodmaximumvalidation"></a>
 
 ### PayPeriodMaximumValidation
@@ -586,16 +515,6 @@ Validation error codes emitted by the `payPeriodMaximum` field of [useChildSuppo
 
 Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
 [ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
-
-***
-
-<a id="remittancenumberfieldprops"></a>
-
-### RemittanceNumberFieldProps
-
-> **RemittanceNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation)\>\>
-
-Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.RemittanceNumber` component.
 
 ***
 

@@ -1313,7 +1313,7 @@ function injectAfterReturns(rendered: string, section: string): string {
 /**
  * Names of the `*FieldProps` type aliases that are a flat field component's
  * props parameter — e.g. `CaseNumberFieldProps`. These are fully covered by the
- * component's expanded Parameters table, so {@link nestFieldTypeAliasesUnderComponents}
+ * component's expanded Parameters table, so {@link dropFieldPropsAliases}
  * drops their standalone alias blocks. Group sub-field props (e.g.
  * `PreparerTextFieldProps`) and `*Validation` types are deliberately excluded —
  * they have no per-field Parameters table and are referenced as link targets.
@@ -1331,17 +1331,18 @@ function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<strin
 }
 
 /**
- * Remove the dropped `*FieldProps` alias entries from the `## Type Aliases`
+ * Remove the dropped `*FieldProps` alias entries from the `## Utility Types`
  * section. Each names a flat field's props parameter, already documented by the
  * component's expanded Parameters table, so its standalone alias block is pure
  * duplication. Every other alias — `*Validation`, group/variant props, shared
- * base types — is left untouched in place.
+ * base types — is left untouched in place. (Hook pages collapse Variables,
+ * Interfaces, and Type Aliases into a single `## Utility Types` group.)
  */
 function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): string {
   if (dropAliasNames.size === 0) return rendered
 
   const lines = rendered.split('\n')
-  const taSectionStart = lines.findIndex(l => /^##\s+Type Aliases\s*$/.test(l))
+  const taSectionStart = lines.findIndex(l => /^##\s+Utility Types\s*$/.test(l))
   if (taSectionStart === -1) return rendered
 
   let taSectionEnd = lines.length
@@ -1355,7 +1356,7 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
   // lines containing only `***`. Mark the lines of any dropped entry — plus its
   // trailing separator — for removal.
   const linesToRemove = new Set<number>()
-  let i = 1 // skip the ## Type Aliases heading line itself
+  let i = 1 // skip the ## Utility Types heading line itself
   while (i < taSectionLines.length) {
     if (/^###\s/.test(taSectionLines[i]!) || /^<a id=/.test(taSectionLines[i]!)) {
       const entryStart = i

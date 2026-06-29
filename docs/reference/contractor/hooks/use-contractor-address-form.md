@@ -283,17 +283,6 @@ Available on the hook result as `form.Fields.Zip`. Required; also validates
 ZIP code format and emits `INVALID_ZIP` when the value does not match.
 
 ## Utility Types
-
-<a id="contractoraddresscityfieldprops"></a>
-
-### ContractorAddressCityFieldProps
-
-> **ContractorAddressCityFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
-
-Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.City` component.
-
-***
-
 <a id="contractoraddresserrorcode"></a>
 
 ### ContractorAddressErrorCode
@@ -360,36 +349,6 @@ See [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
 ***
 
-<a id="contractoraddressstatefieldprops"></a>
-
-### ContractorAddressStateFieldProps
-
-> **ContractorAddressStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation), `string`\>\>
-
-Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.State` component.
-
-***
-
-<a id="contractoraddressstreet1fieldprops"></a>
-
-### ContractorAddressStreet1FieldProps
-
-> **ContractorAddressStreet1FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
-
-Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street1` component.
-
-***
-
-<a id="contractoraddressstreet2fieldprops"></a>
-
-### ContractorAddressStreet2FieldProps
-
-> **ContractorAddressStreet2FieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressRequiredValidation`](#contractoraddressrequiredvalidation)\>\>
-
-Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Street2` component.
-
-***
-
 <a id="contractoraddresssubmitoptions"></a>
 
 ### ContractorAddressSubmitOptions
@@ -401,16 +360,6 @@ Optional overrides passed to [onSubmit](#usecontractoraddressformready).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `contractorId?` | `string` | Override the contractor identifier supplied to the hook. |
-
-***
-
-<a id="contractoraddresszipfieldprops"></a>
-
-### ContractorAddressZipFieldProps
-
-> **ContractorAddressZipFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorAddressZipValidation`](#contractoraddresszipvalidation)\>\>
-
-Props accepted by [useContractorAddressForm](#usecontractoraddressform)'s `Fields.Zip` component.
 
 ***
 

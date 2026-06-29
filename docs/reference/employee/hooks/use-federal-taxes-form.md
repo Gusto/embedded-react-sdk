@@ -326,37 +326,6 @@ Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `getOptionLabel` to localize. The form submits a boolean value.
 
 ## Utility Types
-
-<a id="deductionsfieldprops"></a>
-
-### DeductionsFieldProps
-
-> **DeductionsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.Deductions` component.
-
-***
-
-<a id="dependentsamountfieldprops"></a>
-
-### DependentsAmountFieldProps
-
-> **DependentsAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.DependentsAmount` component.
-
-***
-
-<a id="extrawithholdingfieldprops"></a>
-
-### ExtraWithholdingFieldProps
-
-> **ExtraWithholdingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.ExtraWithholding` component.
-
-***
-
 <a id="federaltaxeserrorcode"></a>
 
 ### FederalTaxesErrorCode
@@ -432,16 +401,6 @@ household, and exempt from withholding.
 
 ***
 
-<a id="filingstatusfieldprops"></a>
-
-### FilingStatusFieldProps
-
-> **FilingStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), [`FilingStatusValue`](#filingstatusvalue)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingStatus` component.
-
-***
-
 <a id="filingstatusvalue"></a>
 
 ### FilingStatusValue
@@ -451,21 +410,3 @@ Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.FilingSt
 Union of filing status values that the form accepts.
 
 ***
-
-<a id="otherincomefieldprops"></a>
-
-### OtherIncomeFieldProps
-
-> **OtherIncomeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation)\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.OtherIncome` component.
-
-***
-
-<a id="twojobsfieldprops"></a>
-
-### TwoJobsFieldProps
-
-> **TwoJobsFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`FederalTaxesRequiredValidation`](#federaltaxesrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useFederalTaxesForm](#usefederaltaxesform)'s `Fields.TwoJobs` component.

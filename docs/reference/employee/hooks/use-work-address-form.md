@@ -268,27 +268,6 @@ company's active locations; the hook populates them from the locations
 query. Required.
 
 ## Utility Types
-
-<a id="effectivedatefieldprops"></a>
-
-### EffectiveDateFieldProps
-
-> **EffectiveDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\>\>
-
-Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.EffectiveDate` component.
-
-***
-
-<a id="locationfieldprops"></a>
-
-### LocationFieldProps
-
-> **LocationFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
-
-Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
-
-***
-
 <a id="usecurrentworkaddressformprops"></a>
 
 ### UseCurrentWorkAddressFormProps

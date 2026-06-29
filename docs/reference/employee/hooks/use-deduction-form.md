@@ -359,37 +359,6 @@ Available on the hook result as `form.Fields.TotalAmount` only when
 drops it on the wire. Always null-check before rendering.
 
 ## Utility Types
-
-<a id="annualmaximumfieldprops"></a>
-
-### AnnualMaximumFieldProps
-
-> **AnnualMaximumFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.AnnualMaximum` component.
-
-***
-
-<a id="deductaspercentagefieldprops"></a>
-
-### DeductAsPercentageFieldProps
-
-> **DeductAsPercentageFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.DeductAsPercentage` component.
-
-***
-
-<a id="deductionamountfieldprops"></a>
-
-### DeductionAmountFieldProps
-
-> **DeductionAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormAmountValidation`](#deductionformamountvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Amount` component.
-
-***
-
 <a id="deductionformamountvalidation"></a>
 
 ### DeductionFormAmountValidation
@@ -490,41 +459,3 @@ deduct-as-percentage, and garnishment-type fields. See
 [DeductionFormErrorCodes](#deductionformerrorcodes).
 
 ***
-
-<a id="descriptionfieldprops"></a>
-
-### DescriptionFieldProps
-
-> **DescriptionFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` component.
-
-***
-
-<a id="garnishmenttypefieldprops"></a>
-
-### GarnishmentTypeFieldProps
-
-> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
-
-***
-
-<a id="recurringfieldprops"></a>
-
-### RecurringFieldProps
-
-> **RecurringFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `boolean`\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Recurring` component.
-
-***
-
-<a id="totalamountfieldprops"></a>
-
-### TotalAmountFieldProps
-
-> **TotalAmountFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`DeductionFormCapValidation`](#deductionformcapvalidation)\>\>
-
-Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.TotalAmount` component.
