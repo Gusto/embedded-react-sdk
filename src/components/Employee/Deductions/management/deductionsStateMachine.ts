@@ -10,24 +10,20 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
 }
 
-const returnToCard = reduce(
-  (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-    ...ctx,
-    component: DeductionsCardContextual as ComponentType,
-    successAlert: null,
-    editingDeductionId: undefined,
-  }),
-)
+const returnToCard = reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+  ...ctx,
+  component: DeductionsCardContextual as ComponentType,
+  successAlert: null,
+  editingDeductionId: undefined,
+}))
 
 const returnToCardWithAlert = (alert: DeductionsContextInterface['successAlert']) =>
-  reduce(
-    (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-      ...ctx,
-      component: DeductionsCardContextual as ComponentType,
-      successAlert: alert,
-      editingDeductionId: undefined,
-    }),
-  )
+  reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+    ...ctx,
+    component: DeductionsCardContextual as ComponentType,
+    successAlert: alert,
+    editingDeductionId: undefined,
+  }))
 
 /** @internal */
 export const deductionsStateMachine = {
@@ -35,14 +31,12 @@ export const deductionsStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED,
       'editDeduction',
-      reduce(
-        (ctx: DeductionsContextInterface): DeductionsContextInterface => ({
-          ...ctx,
-          component: DeductionsEditFormContextual as ComponentType,
-          successAlert: null,
-          editingDeductionId: undefined,
-        }),
-      ),
+      reduce((ctx: DeductionsContextInterface): DeductionsContextInterface => ({
+        ...ctx,
+        component: DeductionsEditFormContextual as ComponentType,
+        successAlert: null,
+        editingDeductionId: undefined,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED,

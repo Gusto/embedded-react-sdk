@@ -39,5 +39,4 @@ interface HolidaySelectionFormViewModeProps extends HolidaySelectionFormBaseProp
 
 /** @internal */
 export type HolidaySelectionFormPresentationProps =
-  | HolidaySelectionFormSelectModeProps
-  | HolidaySelectionFormViewModeProps
+  HolidaySelectionFormSelectModeProps | HolidaySelectionFormViewModeProps
