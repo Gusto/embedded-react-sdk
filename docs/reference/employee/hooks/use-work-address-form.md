@@ -227,32 +227,7 @@ Available on the hook result as `form.Fields.Location`. Options are the
 company's active locations; the hook populates them from the locations
 query. Required.
 
-## Utility Types
-<a id="usecurrentworkaddressformprops"></a>
-
-### UseCurrentWorkAddressFormProps
-
-> **UseCurrentWorkAddressFormProps** = `Omit`\<[`UseWorkAddressFormProps`](#useworkaddressformprops), `"workAddressUuid"`\>
-
-Options for [useCurrentWorkAddressForm](#usecurrentworkaddressform).
-
-#### Remarks
-
-Same shape as [UseWorkAddressFormProps](#useworkaddressformprops) minus `workAddressUuid` —
-the hook resolves the current work address itself.
-
-***
-
-<a id="workaddresserrorcode"></a>
-
-### WorkAddressErrorCode
-
-> **WorkAddressErrorCode** = *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\[keyof *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\]
-
-Union of validation error code strings emitted by the work address form
-schema.
-
-***
+## Validations
 
 <a id="workaddresserrorcodes"></a>
 
@@ -268,6 +243,46 @@ codes to localized copy in `validationMessages` when composing the hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="workaddresserrorcode"></a>
+
+### WorkAddressErrorCode
+
+> **WorkAddressErrorCode** = *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\[keyof *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\]
+
+Union of validation error code strings emitted by the work address form
+schema.
+
+***
+
+<a id="workaddressrequiredvalidation"></a>
+
+### WorkAddressRequiredValidation
+
+> **WorkAddressRequiredValidation** = *typeof* `WorkAddressErrorCodes.REQUIRED`
+
+The required-field error code produced by [useWorkAddressForm](#useworkaddressform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the location and effective date fields.
+See `WorkAddressErrorCodes`.
+
+## Utility Types
+<a id="usecurrentworkaddressformprops"></a>
+
+### UseCurrentWorkAddressFormProps
+
+> **UseCurrentWorkAddressFormProps** = `Omit`\<[`UseWorkAddressFormProps`](#useworkaddressformprops), `"workAddressUuid"`\>
+
+Options for [useCurrentWorkAddressForm](#usecurrentworkaddressform).
+
+#### Remarks
+
+Same shape as [UseWorkAddressFormProps](#useworkaddressformprops) minus `workAddressUuid` —
+the hook resolves the current work address itself.
 
 ***
 
@@ -334,21 +349,6 @@ Shape of the validated values produced by the work address form on submit.
 
 Keys of optional work address fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="workaddressrequiredvalidation"></a>
-
-### WorkAddressRequiredValidation
-
-> **WorkAddressRequiredValidation** = *typeof* `WorkAddressErrorCodes.REQUIRED`
-
-The required-field error code produced by [useWorkAddressForm](#useworkaddressform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the location and effective date fields.
-See `WorkAddressErrorCodes`.
 
 ***
 

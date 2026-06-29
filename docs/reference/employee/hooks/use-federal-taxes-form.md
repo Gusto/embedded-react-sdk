@@ -274,17 +274,7 @@ Available on the hook result as `form.Fields.TwoJobs`. Two options for
 `true` and `false`. The default labels are `Yes` and `No` — pass
 `getOptionLabel` to localize. The form submits a boolean value.
 
-## Utility Types
-<a id="federaltaxeserrorcode"></a>
-
-### FederalTaxesErrorCode
-
-> **FederalTaxesErrorCode** = *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\[keyof *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\]
-
-Union of validation error code strings emitted by the federal taxes form
-schema.
-
-***
+## Validations
 
 <a id="federaltaxeserrorcodes"></a>
 
@@ -303,6 +293,31 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ***
 
+<a id="federaltaxeserrorcode"></a>
+
+### FederalTaxesErrorCode
+
+> **FederalTaxesErrorCode** = *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\[keyof *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\]
+
+Union of validation error code strings emitted by the federal taxes form
+schema.
+
+***
+
+<a id="federaltaxesrequiredvalidation"></a>
+
+### FederalTaxesRequiredValidation
+
+> **FederalTaxesRequiredValidation** = *typeof* `FederalTaxesErrorCodes.REQUIRED`
+
+The required-field error code produced by [useFederalTaxesForm](#usefederaltaxesform) fields.
+
+#### Remarks
+
+Used as the `validationMessages` key for every federal taxes field. See
+[FederalTaxesErrorCodes](#federaltaxeserrorcodes).
+
+## Utility Types
 <a id="federaltaxesfield"></a>
 
 ### FederalTaxesField
@@ -381,21 +396,6 @@ Shape of the validated values produced by the federal taxes form on submit.
 
 Keys of optional federal taxes fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="federaltaxesrequiredvalidation"></a>
-
-### FederalTaxesRequiredValidation
-
-> **FederalTaxesRequiredValidation** = *typeof* `FederalTaxesErrorCodes.REQUIRED`
-
-The required-field error code produced by [useFederalTaxesForm](#usefederaltaxesform) fields.
-
-#### Remarks
-
-Used as the `validationMessages` key for every federal taxes field. See
-[FederalTaxesErrorCodes](#federaltaxeserrorcodes).
 
 ***
 

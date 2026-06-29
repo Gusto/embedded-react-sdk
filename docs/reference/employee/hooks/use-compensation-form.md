@@ -357,31 +357,7 @@ promotion that bundles a new title with a raise). Otherwise bind the title
 via `useJobForm.Fields.Title` instead and avoid rendering both on the same
 screen.
 
-## Utility Types
-<a id="compensationeffectivedatevalidation"></a>
-
-### CompensationEffectiveDateValidation
-
-> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
-
-Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
-
-***
-
-<a id="compensationerrorcode"></a>
-
-### CompensationErrorCode
-
-> **CompensationErrorCode** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[keyof *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\]
-
-Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
-
-***
+## Validations
 
 <a id="compensationerrorcodes"></a>
 
@@ -437,6 +413,60 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
 
 ***
 
+<a id="compensationerrorcode"></a>
+
+### CompensationErrorCode
+
+> **CompensationErrorCode** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[keyof *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\]
+
+Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
+
+***
+
+<a id="compensationeffectivedatevalidation"></a>
+
+### CompensationEffectiveDateValidation
+
+> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
+
+Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+***
+
+<a id="compensationrequiredvalidation"></a>
+
+### CompensationRequiredValidation
+
+> **CompensationRequiredValidation** = *typeof* `CompensationErrorCodes.REQUIRED`
+
+The required-field error code produced by [useCompensationForm](#usecompensationform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the title, FLSA status, payment
+unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
+
+***
+
+<a id="ratevalidation"></a>
+
+### RateValidation
+
+> **RateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"RATE_MINIMUM"` \| `"RATE_EXEMPT_THRESHOLD"`\]
+
+Validation error codes emitted by the `rate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Rate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+## Utility Types
 <a id="compensationfieldsmetadata"></a>
 
 ### CompensationFieldsMetadata
@@ -538,21 +568,6 @@ const compensation = useCompensationForm({
 
 ***
 
-<a id="compensationrequiredvalidation"></a>
-
-### CompensationRequiredValidation
-
-> **CompensationRequiredValidation** = *typeof* `CompensationErrorCodes.REQUIRED`
-
-The required-field error code produced by [useCompensationForm](#usecompensationform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the title, FLSA status, payment
-unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
-
-***
-
 <a id="compensationsubmitoptions"></a>
 
 ### CompensationSubmitOptions
@@ -577,16 +592,3 @@ stub.
 | `jobId?` | `string` | Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). |
 
 ***
-
-<a id="ratevalidation"></a>
-
-### RateValidation
-
-> **RateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"RATE_MINIMUM"` \| `"RATE_EXEMPT_THRESHOLD"`\]
-
-Validation error codes emitted by the `rate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Rate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.

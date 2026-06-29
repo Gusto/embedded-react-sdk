@@ -272,16 +272,7 @@ Indicates whether the employee is a 2% shareholder in an S-Corporation.
 Available on the hook result as `form.Fields.TwoPercentShareholder` only
 when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
 
-## Utility Types
-<a id="joberrorcode"></a>
-
-### JobErrorCode
-
-> **JobErrorCode** = *typeof* [`JobErrorCodes`](#joberrorcodes)\[keyof *typeof* [`JobErrorCodes`](#joberrorcodes)\]
-
-Union of every error code produced by the [useJobForm](#usejobform) schema.
-
-***
+## Validations
 
 <a id="joberrorcodes"></a>
 
@@ -315,6 +306,31 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
 
 ***
 
+<a id="joberrorcode"></a>
+
+### JobErrorCode
+
+> **JobErrorCode** = *typeof* [`JobErrorCodes`](#joberrorcodes)\[keyof *typeof* [`JobErrorCodes`](#joberrorcodes)\]
+
+Union of every error code produced by the [useJobForm](#usejobform) schema.
+
+***
+
+<a id="jobrequiredvalidation"></a>
+
+### JobRequiredValidation
+
+> **JobRequiredValidation** = *typeof* `JobErrorCodes.REQUIRED`
+
+The validation error code a [useJobForm](#usejobform) field can produce.
+
+#### Remarks
+
+Currently a single literal — `'REQUIRED'` — surfaced as the key in
+`validationMessages` on each `Fields.*` component. Future schema additions
+may extend the union.
+
+## Utility Types
 <a id="jobfieldsmetadata"></a>
 
 ### JobFieldsMetadata
@@ -410,22 +426,6 @@ const job = useJobForm({
 | ------ | ------ | ------ |
 | `create?` | (`"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in create mode |
 | `update?` | (`"title"` \| `"hireDate"` \| `"twoPercentShareholder"` \| `"stateWcCovered"`)[] | Fields that can be required in update mode |
-
-***
-
-<a id="jobrequiredvalidation"></a>
-
-### JobRequiredValidation
-
-> **JobRequiredValidation** = *typeof* `JobErrorCodes.REQUIRED`
-
-The validation error code a [useJobForm](#usejobform) field can produce.
-
-#### Remarks
-
-Currently a single literal — `'REQUIRED'` — surfaced as the key in
-`validationMessages` on each `Fields.*` component. Future schema additions
-may extend the union.
 
 ***
 

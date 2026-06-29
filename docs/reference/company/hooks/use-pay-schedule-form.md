@@ -317,31 +317,7 @@ Available on the hook result as `form.Fields.Frequency`. Always required.
 Options are `'Every week'`, `'Every other week'`, `'Twice per month'`, and
 `'Monthly'`. Pass `getOptionLabel` to customize how options are displayed.
 
-## Utility Types
-<a id="dayvalidation"></a>
-
-### DayValidation
-
-> **DayValidation** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[`"REQUIRED"` \| `"DAY_RANGE"`\]
-
-Validation error codes emitted by the `day1` and `day2` fields of [usePayScheduleForm](#usepayscheduleform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Day1` and `Fields.Day2`.
-See [PayScheduleErrorCodes](#payscheduleerrorcodes).
-
-***
-
-<a id="payscheduleerrorcode"></a>
-
-### PayScheduleErrorCode
-
-> **PayScheduleErrorCode** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[keyof *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\]
-
-Union of validation error code strings emitted by the pay schedule form.
-
-***
+## Validations
 
 <a id="payscheduleerrorcodes"></a>
 
@@ -364,6 +340,45 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 
 ***
 
+<a id="payscheduleerrorcode"></a>
+
+### PayScheduleErrorCode
+
+> **PayScheduleErrorCode** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[keyof *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\]
+
+Union of validation error code strings emitted by the pay schedule form.
+
+***
+
+<a id="dayvalidation"></a>
+
+### DayValidation
+
+> **DayValidation** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[`"REQUIRED"` \| `"DAY_RANGE"`\]
+
+Validation error codes emitted by the `day1` and `day2` fields of [usePayScheduleForm](#usepayscheduleform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Day1` and `Fields.Day2`.
+See [PayScheduleErrorCodes](#payscheduleerrorcodes).
+
+***
+
+<a id="payschedulerequiredvalidation"></a>
+
+### PayScheduleRequiredValidation
+
+> **PayScheduleRequiredValidation** = *typeof* `PayScheduleErrorCodes.REQUIRED`
+
+The required-field error code produced by [usePayScheduleForm](#usepayscheduleform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the custom name, frequency, anchor
+pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
+
+## Utility Types
 <a id="payschedulefield"></a>
 
 ### PayScheduleField
@@ -446,18 +461,3 @@ Configuration for promoting optional pay schedule fields to required in a given 
 
 Only fields that are optional by default can be promoted. Currently
 `customTwicePerMonth` is the only configurable field.
-
-***
-
-<a id="payschedulerequiredvalidation"></a>
-
-### PayScheduleRequiredValidation
-
-> **PayScheduleRequiredValidation** = *typeof* `PayScheduleErrorCodes.REQUIRED`
-
-The required-field error code produced by [usePayScheduleForm](#usepayscheduleform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the custom name, frequency, anchor
-pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).

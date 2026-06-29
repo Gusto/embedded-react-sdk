@@ -241,17 +241,7 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 Available on the hook result as `form.Fields.Zip`. Required; also validates
 ZIP code format and emits `INVALID_ZIP` when the value does not match.
 
-## Utility Types
-<a id="contractoraddresserrorcode"></a>
-
-### ContractorAddressErrorCode
-
-> **ContractorAddressErrorCode** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[keyof *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\]
-
-Union of validation error code strings emitted by the contractor address
-form schema.
-
-***
+## Validations
 
 <a id="contractoraddresserrorcodes"></a>
 
@@ -272,6 +262,46 @@ hook.
 
 ***
 
+<a id="contractoraddresserrorcode"></a>
+
+### ContractorAddressErrorCode
+
+> **ContractorAddressErrorCode** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[keyof *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\]
+
+Union of validation error code strings emitted by the contractor address
+form schema.
+
+***
+
+<a id="contractoraddressrequiredvalidation"></a>
+
+### ContractorAddressRequiredValidation
+
+> **ContractorAddressRequiredValidation** = *typeof* `ContractorAddressErrorCodes.REQUIRED`
+
+The required-field error code produced by [useContractorAddressForm](#usecontractoraddressform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the street, city, and state fields.
+See [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
+
+***
+
+<a id="contractoraddresszipvalidation"></a>
+
+### ContractorAddressZipValidation
+
+> **ContractorAddressZipValidation** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
+
+Validation error codes emitted by the `zip` field of [useContractorAddressForm](#usecontractoraddressform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Zip`. See
+[ContractorAddressErrorCodes](#contractoraddresserrorcodes).
+
+## Utility Types
 <a id="contractoraddressfield"></a>
 
 ### ContractorAddressField
@@ -342,21 +372,6 @@ via the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="contractoraddressrequiredvalidation"></a>
-
-### ContractorAddressRequiredValidation
-
-> **ContractorAddressRequiredValidation** = *typeof* `ContractorAddressErrorCodes.REQUIRED`
-
-The required-field error code produced by [useContractorAddressForm](#usecontractoraddressform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the street, city, and state fields.
-See [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
-
-***
-
 <a id="contractoraddresssubmitoptions"></a>
 
 ### ContractorAddressSubmitOptions
@@ -370,16 +385,3 @@ Optional overrides passed to [onSubmit](#usecontractoraddressformready).
 | `contractorId?` | `string` | Override the contractor identifier supplied to the hook. |
 
 ***
-
-<a id="contractoraddresszipvalidation"></a>
-
-### ContractorAddressZipValidation
-
-> **ContractorAddressZipValidation** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
-
-Validation error codes emitted by the `zip` field of [useContractorAddressForm](#usecontractoraddressform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Zip`. See
-[ContractorAddressErrorCodes](#contractoraddresserrorcodes).

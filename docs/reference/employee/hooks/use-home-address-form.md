@@ -345,17 +345,7 @@ Available on the hook result as `form.Fields.Zip`. Required; also
 validates ZIP code format and emits `INVALID_ZIP` when the value does
 not match.
 
-## Utility Types
-<a id="homeaddresserrorcode"></a>
-
-### HomeAddressErrorCode
-
-> **HomeAddressErrorCode** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[keyof *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\]
-
-Union of validation error code strings emitted by the home address form
-schema.
-
-***
+## Validations
 
 <a id="homeaddresserrorcodes"></a>
 
@@ -375,6 +365,46 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ***
 
+<a id="homeaddresserrorcode"></a>
+
+### HomeAddressErrorCode
+
+> **HomeAddressErrorCode** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[keyof *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\]
+
+Union of validation error code strings emitted by the home address form
+schema.
+
+***
+
+<a id="homeaddressrequiredvalidation"></a>
+
+### HomeAddressRequiredValidation
+
+> **HomeAddressRequiredValidation** = *typeof* `HomeAddressErrorCodes.REQUIRED`
+
+The required-field error code produced by [useHomeAddressForm](#usehomeaddressform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the street, city, state, courtesy
+withholding, and effective date fields. See [HomeAddressErrorCodes](#homeaddresserrorcodes).
+
+***
+
+<a id="zipvalidation"></a>
+
+### ZipValidation
+
+> **ZipValidation** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
+
+Validation error codes emitted by the `zip` field of [useHomeAddressForm](#usehomeaddressform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Zip`. See
+[HomeAddressErrorCodes](#homeaddresserrorcodes).
+
+## Utility Types
 <a id="homeaddressfield"></a>
 
 ### HomeAddressField
@@ -446,21 +476,6 @@ the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="homeaddressrequiredvalidation"></a>
-
-### HomeAddressRequiredValidation
-
-> **HomeAddressRequiredValidation** = *typeof* `HomeAddressErrorCodes.REQUIRED`
-
-The required-field error code produced by [useHomeAddressForm](#usehomeaddressform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the street, city, state, courtesy
-withholding, and effective date fields. See [HomeAddressErrorCodes](#homeaddresserrorcodes).
-
-***
-
 <a id="homeaddresssubmitoptions"></a>
 
 ### HomeAddressSubmitOptions
@@ -490,16 +505,3 @@ Same shape as [UseHomeAddressFormProps](#usehomeaddressformprops) minus `homeAdd
 the hook resolves the current home address itself.
 
 ***
-
-<a id="zipvalidation"></a>
-
-### ZipValidation
-
-> **ZipValidation** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
-
-Validation error codes emitted by the `zip` field of [useHomeAddressForm](#usehomeaddressform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Zip`. See
-[HomeAddressErrorCodes](#homeaddresserrorcodes).

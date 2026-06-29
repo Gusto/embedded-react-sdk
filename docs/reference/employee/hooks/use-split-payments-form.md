@@ -135,6 +135,62 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
 
+## Validations
+
+<a id="splitpaymentsformerrorcodes"></a>
+
+### SplitPaymentsFormErrorCodes
+
+> `const` **SplitPaymentsFormErrorCodes**: `object`
+
+Validation error codes emitted by the split payments form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `DUPLICATE_PRIORITIES` | `"DUPLICATE_PRIORITIES"` | `'DUPLICATE_PRIORITIES'` |
+| `INVALID_AMOUNT` | `"INVALID_AMOUNT"` | `'INVALID_AMOUNT'` |
+| `INVALID_PERCENTAGE` | `"INVALID_PERCENTAGE"` | `'INVALID_PERCENTAGE'` |
+| `PERCENTAGE_TOTAL_MISMATCH` | `"PERCENTAGE_TOTAL_MISMATCH"` | `'PERCENTAGE_TOTAL_MISMATCH'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="splitfieldvalidation"></a>
+
+### SplitFieldValidation
+
+> **SplitFieldValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED` \| *typeof* `SplitPaymentsFormErrorCodes.INVALID_AMOUNT` \| *typeof* `SplitPaymentsFormErrorCodes.INVALID_PERCENTAGE`
+
+Validation codes a bound split-amount Field can emit at submit time:
+`REQUIRED` (every non-remainder split must have a value), `INVALID_AMOUNT`
+(Amount mode, `value < 0`), `INVALID_PERCENTAGE` (Percentage mode, non-integer
+or out of `0..100`). Supply translations for all three via `validationMessages`.
+The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance`.
+
+***
+
+<a id="splitpaymentsformerrorcode"></a>
+
+### SplitPaymentsFormErrorCode
+
+> **SplitPaymentsFormErrorCode** = *typeof* [`SplitPaymentsFormErrorCodes`](#splitpaymentsformerrorcodes)\[keyof *typeof* [`SplitPaymentsFormErrorCodes`](#splitpaymentsformerrorcodes)\]
+
+Union of validation error code strings emitted by the split payments form
+schema.
+
+***
+
+<a id="splitpaymentsformrequiredvalidation"></a>
+
+### SplitPaymentsFormRequiredValidation
+
+> **SplitPaymentsFormRequiredValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED`
+
+Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
+
 ## Utility Types
 
 <a id="split_by_values"></a>
@@ -212,20 +268,6 @@ required by the hook; the rest are required.
 
 ***
 
-<a id="splitfieldvalidation"></a>
-
-### SplitFieldValidation
-
-> **SplitFieldValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED` \| *typeof* `SplitPaymentsFormErrorCodes.INVALID_AMOUNT` \| *typeof* `SplitPaymentsFormErrorCodes.INVALID_PERCENTAGE`
-
-Validation codes a bound split-amount Field can emit at submit time:
-`REQUIRED` (every non-remainder split must have a value), `INVALID_AMOUNT`
-(Amount mode, `value < 0`), `INVALID_PERCENTAGE` (Percentage mode, non-integer
-or out of `0..100`). Supply translations for all three via `validationMessages`.
-The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance`.
-
-***
-
 <a id="splitpaymentsformdata"></a>
 
 ### SplitPaymentsFormData
@@ -242,38 +284,6 @@ Shape of the values managed by the split payments form. `splitAmount` and
 | `priority` | `Record`\<`string`, `number`\> | Per-account priority values keyed by bank account uuid; the highest priority receives the remainder. |
 | `splitAmount` | `Record`\<`string`, `number` \| `null`\> | Per-account split values keyed by bank account uuid (percent or dollars depending on `splitBy`). |
 | `splitBy` | [`SplitByValue`](#splitbyvalue) | Selected split mode — by percentage or by fixed amount. |
-
-***
-
-<a id="splitpaymentsformerrorcode"></a>
-
-### SplitPaymentsFormErrorCode
-
-> **SplitPaymentsFormErrorCode** = *typeof* [`SplitPaymentsFormErrorCodes`](#splitpaymentsformerrorcodes)\[keyof *typeof* [`SplitPaymentsFormErrorCodes`](#splitpaymentsformerrorcodes)\]
-
-Union of validation error code strings emitted by the split payments form
-schema.
-
-***
-
-<a id="splitpaymentsformerrorcodes"></a>
-
-### SplitPaymentsFormErrorCodes
-
-> `const` **SplitPaymentsFormErrorCodes**: `object`
-
-Validation error codes emitted by the split payments form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `DUPLICATE_PRIORITIES` | `"DUPLICATE_PRIORITIES"` | `'DUPLICATE_PRIORITIES'` |
-| `INVALID_AMOUNT` | `"INVALID_AMOUNT"` | `'INVALID_AMOUNT'` |
-| `INVALID_PERCENTAGE` | `"INVALID_PERCENTAGE"` | `'INVALID_PERCENTAGE'` |
-| `PERCENTAGE_TOTAL_MISMATCH` | `"PERCENTAGE_TOTAL_MISMATCH"` | `'PERCENTAGE_TOTAL_MISMATCH'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -315,16 +325,6 @@ the hook's `optionalFieldsToRequire` option.
 > **SplitPaymentsFormOutputs** = [`SplitPaymentsFormData`](#splitpaymentsformdata)
 
 Shape of the validated values produced by the split payments form on submit.
-
-***
-
-<a id="splitpaymentsformrequiredvalidation"></a>
-
-### SplitPaymentsFormRequiredValidation
-
-> **SplitPaymentsFormRequiredValidation** = *typeof* `SplitPaymentsFormErrorCodes.REQUIRED`
-
-Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
 
 ***
 

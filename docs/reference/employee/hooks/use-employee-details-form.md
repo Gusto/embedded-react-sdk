@@ -323,6 +323,117 @@ file, the field shows a masked placeholder and the required rule is
 automatically waived even if `ssn` is listed in
 `optionalFieldsToRequire`.
 
+## Validations
+
+<a id="employeedetailserrorcodes"></a>
+
+### EmployeeDetailsErrorCodes
+
+> `const` **EmployeeDetailsErrorCodes**: `object`
+
+Validation error codes emitted by the employee details form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"` | `'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'` |
+| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
+| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
+| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="employeedetailserrorcode"></a>
+
+### EmployeeDetailsErrorCode
+
+> **EmployeeDetailsErrorCode** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[keyof *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\]
+
+Union of validation error code strings emitted by the employee details form
+schema.
+
+***
+
+<a id="emailvalidation"></a>
+
+### EmailValidation
+
+> **EmailValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`\]
+
+Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Email`. The
+`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
+enabled but the email is empty (create mode only). See
+[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
+
+***
+
+<a id="employeedetailsrequiredvalidation"></a>
+
+### EmployeeDetailsRequiredValidation
+
+> **EmployeeDetailsRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+
+The required-field error code produced by [useEmployeeDetailsForm](#useemployeedetailsform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the middle initial and date of
+birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
+
+***
+
+<a id="namevalidation"></a>
+
+### NameValidation
+
+> **NameValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
+
+Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.FirstName` and
+`Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
+description of each code.
+
+***
+
+<a id="ssnrequiredvalidation"></a>
+
+### SsnRequiredValidation
+
+> **SsnRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+
+The required-field error code for the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+The required rule is automatically waived when the employee already has
+an SSN on file, even if `ssn` is included in `optionalFieldsToRequire`.
+
+***
+
+<a id="ssnvalidation"></a>
+
+### SsnValidation
+
+> **SsnValidation** = *typeof* `EmployeeDetailsErrorCodes.INVALID_SSN`
+
+The format-validation error code emitted by the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
+
+#### Remarks
+
+Use as a key in `validationMessages` on `Fields.Ssn`. See
+[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
+
 ## Utility Types
 <a id="employeedetailssubmitcallbacks"></a>
 
@@ -344,56 +455,6 @@ switch changes the employee's onboarding status as part of an update.
 | `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
 | `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
 | `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
-
-***
-
-<a id="emailvalidation"></a>
-
-### EmailValidation
-
-> **EmailValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`\]
-
-Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Email`. The
-`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
-enabled but the email is empty (create mode only). See
-[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
-
-***
-
-<a id="employeedetailserrorcode"></a>
-
-### EmployeeDetailsErrorCode
-
-> **EmployeeDetailsErrorCode** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[keyof *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\]
-
-Union of validation error code strings emitted by the employee details form
-schema.
-
-***
-
-<a id="employeedetailserrorcodes"></a>
-
-### EmployeeDetailsErrorCodes
-
-> `const` **EmployeeDetailsErrorCodes**: `object`
-
-Validation error codes emitted by the employee details form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"` | `'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'` |
-| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
-| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
-| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -468,62 +529,3 @@ Keys of optional employee details fields that can be promoted to required
 via the hook's `optionalFieldsToRequire` option.
 
 ***
-
-<a id="employeedetailsrequiredvalidation"></a>
-
-### EmployeeDetailsRequiredValidation
-
-> **EmployeeDetailsRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
-
-The required-field error code produced by [useEmployeeDetailsForm](#useemployeedetailsform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the middle initial and date of
-birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
-
-***
-
-<a id="namevalidation"></a>
-
-### NameValidation
-
-> **NameValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
-
-Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.FirstName` and
-`Fields.LastName`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes) for the full
-description of each code.
-
-***
-
-<a id="ssnrequiredvalidation"></a>
-
-### SsnRequiredValidation
-
-> **SsnRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
-
-The required-field error code for the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-The required rule is automatically waived when the employee already has
-an SSN on file, even if `ssn` is included in `optionalFieldsToRequire`.
-
-***
-
-<a id="ssnvalidation"></a>
-
-### SsnValidation
-
-> **SsnValidation** = *typeof* `EmployeeDetailsErrorCodes.INVALID_SSN`
-
-The format-validation error code emitted by the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
-
-#### Remarks
-
-Use as a key in `validationMessages` on `Fields.Ssn`. See
-[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).

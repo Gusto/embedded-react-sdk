@@ -209,14 +209,35 @@ _Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, 
 Available on the hook result as `form.Fields.RoutingNumber`. Validates the
 value against a 9-digit numeric pattern.
 
-## Utility Types
-<a id="account_types"></a>
+## Validations
 
-### ACCOUNT\_TYPES
+<a id="bankformerrorcodes"></a>
 
-> `const` **ACCOUNT\_TYPES**: readonly \[`"Checking"`, `"Savings"`\]
+### BankFormErrorCodes
 
-Supported bank account type values: checking and savings.
+> `const` **BankFormErrorCodes**: `object`
+
+Validation error codes emitted by the bank account form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` | `'INVALID_ACCOUNT_NUMBER'` |
+| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` | `'INVALID_ROUTING_NUMBER'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="bankformerrorcode"></a>
+
+### BankFormErrorCode
+
+> **BankFormErrorCode** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\]
+
+Union of validation error code strings emitted by the bank account form
+schema.
 
 ***
 
@@ -227,6 +248,35 @@ Supported bank account type values: checking and savings.
 > **AccountNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`\>\]
 
 Validation error codes emitted by the `accountNumber` field of [useBankForm](#usebankform).
+
+***
+
+<a id="bankformrequiredvalidation"></a>
+
+### BankFormRequiredValidation
+
+> **BankFormRequiredValidation** = *typeof* `BankFormErrorCodes.REQUIRED`
+
+Validation error codes emitted by [useBankForm](#usebankform) fields that only emit `REQUIRED`.
+
+***
+
+<a id="routingnumbervalidation"></a>
+
+### RoutingNumberValidation
+
+> **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
+
+Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
+
+## Utility Types
+<a id="account_types"></a>
+
+### ACCOUNT\_TYPES
+
+> `const` **ACCOUNT\_TYPES**: readonly \[`"Checking"`, `"Savings"`\]
+
+Supported bank account type values: checking and savings.
 
 ***
 
@@ -254,36 +304,6 @@ Shape of the values managed by the bank account form.
 | `accountType` | `"Checking"` \| `"Savings"` |
 | `name` | `string` |
 | `routingNumber` | `string` |
-
-***
-
-<a id="bankformerrorcode"></a>
-
-### BankFormErrorCode
-
-> **BankFormErrorCode** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\]
-
-Union of validation error code strings emitted by the bank account form
-schema.
-
-***
-
-<a id="bankformerrorcodes"></a>
-
-### BankFormErrorCodes
-
-> `const` **BankFormErrorCodes**: `object`
-
-Validation error codes emitted by the bank account form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` | `'INVALID_ACCOUNT_NUMBER'` |
-| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` | `'INVALID_ROUTING_NUMBER'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -328,16 +348,6 @@ Shape of the validated values produced by the bank account form on submit.
 
 ***
 
-<a id="bankformrequiredvalidation"></a>
-
-### BankFormRequiredValidation
-
-> **BankFormRequiredValidation** = *typeof* `BankFormErrorCodes.REQUIRED`
-
-Validation error codes emitted by [useBankForm](#usebankform) fields that only emit `REQUIRED`.
-
-***
-
 <a id="bankformsubmitoptions"></a>
 
 ### BankFormSubmitOptions
@@ -351,11 +361,3 @@ Optional submit-time overrides for [useBankForm](#usebankform)'s `onSubmit`.
 | `employeeId?` | `string` | Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. |
 
 ***
-
-<a id="routingnumbervalidation"></a>
-
-### RoutingNumberValidation
-
-> **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
-
-Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).

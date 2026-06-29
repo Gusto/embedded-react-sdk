@@ -148,6 +148,44 @@ Available on the hook result as `form.Fields.Type`. Options are
 `Direct Deposit` and `Check`; defaults to the employee's existing payment
 method type. Supply `getOptionLabel` to translate the option labels.
 
+## Validations
+
+<a id="paymentmethodformerrorcodes"></a>
+
+### PaymentMethodFormErrorCodes
+
+> `const` **PaymentMethodFormErrorCodes**: `object`
+
+Validation error codes emitted by the payment method form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="paymentmethodformerrorcode"></a>
+
+### PaymentMethodFormErrorCode
+
+> **PaymentMethodFormErrorCode** = *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\[keyof *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\]
+
+Union of validation error code strings emitted by the payment method form
+schema.
+
+***
+
+<a id="paymentmethodformrequiredvalidation"></a>
+
+### PaymentMethodFormRequiredValidation
+
+> **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
+
+Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
+
 ## Utility Types
 <a id="payment_method_types"></a>
 
@@ -170,34 +208,6 @@ Shape of the values managed by the payment method form.
 | Property | Type |
 | ------ | ------ |
 | `type` | `"Check"` \| `"Direct Deposit"` |
-
-***
-
-<a id="paymentmethodformerrorcode"></a>
-
-### PaymentMethodFormErrorCode
-
-> **PaymentMethodFormErrorCode** = *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\[keyof *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\]
-
-Union of validation error code strings emitted by the payment method form
-schema.
-
-***
-
-<a id="paymentmethodformerrorcodes"></a>
-
-### PaymentMethodFormErrorCodes
-
-> `const` **PaymentMethodFormErrorCodes**: `object`
-
-Validation error codes emitted by the payment method form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -239,16 +249,6 @@ the hook's `optionalFieldsToRequire` option.
 > **PaymentMethodFormOutputs** = [`PaymentMethodFormData`](#paymentmethodformdata)
 
 Shape of the validated values produced by the payment method form on submit.
-
-***
-
-<a id="paymentmethodformrequiredvalidation"></a>
-
-### PaymentMethodFormRequiredValidation
-
-> **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
-
-Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
 
 ***
 

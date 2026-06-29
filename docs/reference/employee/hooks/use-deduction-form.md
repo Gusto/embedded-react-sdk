@@ -321,7 +321,36 @@ Available on the hook result as `form.Fields.TotalAmount` only when
 `status.isRecurring` is `true`. A zero value means "no cap" — the hook
 drops it on the wire. Always null-check before rendering.
 
-## Utility Types
+## Validations
+
+<a id="deductionformerrorcodes"></a>
+
+### DeductionFormErrorCodes
+
+> `const` **DeductionFormErrorCodes**: `object`
+
+Validation error codes emitted by the deduction form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="deductionformerrorcode"></a>
+
+### DeductionFormErrorCode
+
+> **DeductionFormErrorCode** = *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\[keyof *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\]
+
+Union of validation error code strings emitted by the deduction form schema.
+
+***
+
 <a id="deductionformamountvalidation"></a>
 
 ### DeductionFormAmountValidation
@@ -353,6 +382,36 @@ description of each code.
 
 ***
 
+<a id="deductionformnegativeamountvalidation"></a>
+
+### DeductionFormNegativeAmountValidation
+
+> **DeductionFormNegativeAmountValidation** = *typeof* `DeductionFormErrorCodes.NEGATIVE_AMOUNT`
+
+The negative-amount error code produced by [useDeductionForm](#usedeductionform)'s currency fields.
+
+#### Remarks
+
+Used as a `validationMessages` key on `Fields.Amount`, `Fields.TotalAmount`,
+and `Fields.AnnualMaximum`. See [DeductionFormErrorCodes](#deductionformerrorcodes).
+
+***
+
+<a id="deductionformrequiredvalidation"></a>
+
+### DeductionFormRequiredValidation
+
+> **DeductionFormRequiredValidation** = *typeof* `DeductionFormErrorCodes.REQUIRED`
+
+The required-field error code produced by [useDeductionForm](#usedeductionform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the description, recurring,
+deduct-as-percentage, and garnishment-type fields. See
+[DeductionFormErrorCodes](#deductionformerrorcodes).
+
+## Utility Types
 <a id="deductionformdata"></a>
 
 ### DeductionFormData
@@ -373,34 +432,6 @@ Shape of the values managed by the deduction form.
 
 ***
 
-<a id="deductionformerrorcode"></a>
-
-### DeductionFormErrorCode
-
-> **DeductionFormErrorCode** = *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\[keyof *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\]
-
-Union of validation error code strings emitted by the deduction form schema.
-
-***
-
-<a id="deductionformerrorcodes"></a>
-
-### DeductionFormErrorCodes
-
-> `const` **DeductionFormErrorCodes**: `object`
-
-Validation error codes emitted by the deduction form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
 <a id="deductionformfieldsmetadata"></a>
 
 ### DeductionFormFieldsMetadata
@@ -415,21 +446,6 @@ Carries per-field `isRequired`, `isDisabled`, label, description, and option
 entries derived from the schema and form state. Use these to drive UI such
 as disabled state or option lists when not relying on the pre-bound
 [DeductionFormFields](#deductionformfields) components.
-
-***
-
-<a id="deductionformnegativeamountvalidation"></a>
-
-### DeductionFormNegativeAmountValidation
-
-> **DeductionFormNegativeAmountValidation** = *typeof* `DeductionFormErrorCodes.NEGATIVE_AMOUNT`
-
-The negative-amount error code produced by [useDeductionForm](#usedeductionform)'s currency fields.
-
-#### Remarks
-
-Used as a `validationMessages` key on `Fields.Amount`, `Fields.TotalAmount`,
-and `Fields.AnnualMaximum`. See [DeductionFormErrorCodes](#deductionformerrorcodes).
 
 ***
 
@@ -451,21 +467,5 @@ hook's `optionalFieldsToRequire` option.
 > **DeductionFormOutputs** = [`DeductionFormData`](#deductionformdata)
 
 Shape of the validated values produced by the deduction form on submit.
-
-***
-
-<a id="deductionformrequiredvalidation"></a>
-
-### DeductionFormRequiredValidation
-
-> **DeductionFormRequiredValidation** = *typeof* `DeductionFormErrorCodes.REQUIRED`
-
-The required-field error code produced by [useDeductionForm](#usedeductionform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the description, recurring,
-deduct-as-percentage, and garnishment-type fields. See
-[DeductionFormErrorCodes](#deductionformerrorcodes).
 
 ***

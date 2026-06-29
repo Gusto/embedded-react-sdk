@@ -348,54 +348,7 @@ Available on the hook result as `form.Fields.RemittanceNumber` only when the
 selected agency requires a remittance number (`status.requiredAttrKeys.has('remittance_number')`).
 Always null-check before rendering.
 
-## Utility Types
-<a id="childsupportgarnishmentamountvalidation"></a>
-
-### ChildSupportGarnishmentAmountValidation
-
-> **ChildSupportGarnishmentAmountValidation** = [`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation) \| [`ChildSupportGarnishmentPercentValidation`](#childsupportgarnishmentpercentvalidation)
-
-Validation error codes emitted by the `amount` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Amount`. The field
-accepts a percentage of paycheck (0–100). See
-[ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
-
-***
-
-<a id="childsupportgarnishmentformdata"></a>
-
-### ChildSupportGarnishmentFormData
-
-Shape of the values managed by the child support garnishment form.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| `amount` | `number` |
-| `caseNumber` | `string` |
-| `fipsCode` | `string` |
-| `orderNumber` | `string` |
-| `paymentPeriod` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
-| `payPeriodMaximum` | `number` |
-| `remittanceNumber` | `string` |
-| `state` | `string` |
-
-***
-
-<a id="childsupportgarnishmentformerrorcode"></a>
-
-### ChildSupportGarnishmentFormErrorCode
-
-> **ChildSupportGarnishmentFormErrorCode** = *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\[keyof *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\]
-
-Union of validation error code strings emitted by the child support
-garnishment form schema.
-
-***
+## Validations
 
 <a id="childsupportgarnishmentformerrorcodes"></a>
 
@@ -417,31 +370,30 @@ hook.
 
 ***
 
-<a id="childsupportgarnishmentformfieldsmetadata"></a>
+<a id="childsupportgarnishmentformerrorcode"></a>
 
-### ChildSupportGarnishmentFormFieldsMetadata
+### ChildSupportGarnishmentFormErrorCode
 
-> **ChildSupportGarnishmentFormFieldsMetadata** = [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+> **ChildSupportGarnishmentFormErrorCode** = *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\[keyof *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\]
 
-Per-field metadata returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) as `form.fieldsMetadata`.
-
-#### Remarks
-
-Carries per-field `isRequired`, `isDisabled`, label, description, and option
-entries derived from the schema and form state. Use these to drive UI such
-as disabled state or option lists when not relying on the pre-bound
-[ChildSupportGarnishmentFormFields](#childsupportgarnishmentformfields) components.
+Union of validation error code strings emitted by the child support
+garnishment form schema.
 
 ***
 
-<a id="childsupportgarnishmentformoutputs"></a>
+<a id="childsupportgarnishmentamountvalidation"></a>
 
-### ChildSupportGarnishmentFormOutputs
+### ChildSupportGarnishmentAmountValidation
 
-> **ChildSupportGarnishmentFormOutputs** = [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)
+> **ChildSupportGarnishmentAmountValidation** = [`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation) \| [`ChildSupportGarnishmentPercentValidation`](#childsupportgarnishmentpercentvalidation)
 
-Shape of the validated values produced by the child support garnishment
-form on submit.
+Validation error codes emitted by the `amount` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Amount`. The field
+accepts a percentage of paycheck (0–100). See
+[ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
 
 ***
 
@@ -491,6 +443,69 @@ number, order number, remittance number, and payment-period fields. See
 
 ***
 
+<a id="payperiodmaximumvalidation"></a>
+
+### PayPeriodMaximumValidation
+
+> **PayPeriodMaximumValidation** = [`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation) \| [`ChildSupportGarnishmentNegativeAmountValidation`](#childsupportgarnishmentnegativeamountvalidation)
+
+Validation error codes emitted by the `payPeriodMaximum` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
+[ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
+
+## Utility Types
+<a id="childsupportgarnishmentformdata"></a>
+
+### ChildSupportGarnishmentFormData
+
+Shape of the values managed by the child support garnishment form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `amount` | `number` |
+| `caseNumber` | `string` |
+| `fipsCode` | `string` |
+| `orderNumber` | `string` |
+| `paymentPeriod` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
+| `payPeriodMaximum` | `number` |
+| `remittanceNumber` | `string` |
+| `state` | `string` |
+
+***
+
+<a id="childsupportgarnishmentformfieldsmetadata"></a>
+
+### ChildSupportGarnishmentFormFieldsMetadata
+
+> **ChildSupportGarnishmentFormFieldsMetadata** = [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) as `form.fieldsMetadata`.
+
+#### Remarks
+
+Carries per-field `isRequired`, `isDisabled`, label, description, and option
+entries derived from the schema and form state. Use these to drive UI such
+as disabled state or option lists when not relying on the pre-bound
+[ChildSupportGarnishmentFormFields](#childsupportgarnishmentformfields) components.
+
+***
+
+<a id="childsupportgarnishmentformoutputs"></a>
+
+### ChildSupportGarnishmentFormOutputs
+
+> **ChildSupportGarnishmentFormOutputs** = [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)
+
+Shape of the validated values produced by the child support garnishment
+form on submit.
+
+***
+
 <a id="countyentry"></a>
 
 ### CountyEntry
@@ -511,21 +526,6 @@ record represents the whole state. Supply `getOptionLabel` on
 | ------ | ------ | ------ |
 | `county` | `string` \| `null` | The county name, or `null` for an "all counties" entry covering the whole state. |
 | `fipsCode` | `string` | The FIPS code for the county. |
-
-***
-
-<a id="payperiodmaximumvalidation"></a>
-
-### PayPeriodMaximumValidation
-
-> **PayPeriodMaximumValidation** = [`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation) \| [`ChildSupportGarnishmentNegativeAmountValidation`](#childsupportgarnishmentnegativeamountvalidation)
-
-Validation error codes emitted by the `payPeriodMaximum` field of [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
-[ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
 
 ***
 

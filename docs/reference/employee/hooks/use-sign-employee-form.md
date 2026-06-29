@@ -205,6 +205,50 @@ form being signed is an I-9; `undefined` otherwise. Selecting `'yes'`
 automatically reveals the first preparer field group; switching back to
 `'no'` removes all preparer sections.
 
+## Validations
+
+<a id="signemployeeformerrorcodes"></a>
+
+### SignEmployeeFormErrorCodes
+
+> `const` **SignEmployeeFormErrorCodes**: `object`
+
+Validation error codes emitted by the I-9 sign-employee form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="signemployeeformerrorcode"></a>
+
+### SignEmployeeFormErrorCode
+
+> **SignEmployeeFormErrorCode** = *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\[keyof *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\]
+
+Union of validation error code strings emitted by the I-9 sign-employee
+form schema.
+
+***
+
+<a id="signemployeeformrequiredvalidation"></a>
+
+### SignEmployeeFormRequiredValidation
+
+> **SignEmployeeFormRequiredValidation** = *typeof* `SignEmployeeFormErrorCodes.REQUIRED`
+
+The required-field error code emitted by every field of [useSignEmployeeForm](#usesignemployeeform).
+
+#### Remarks
+
+Use this as the `validationMessages` key for any sign-employee-form field.
+See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
+
 ## Utility Types
 <a id="max_preparers"></a>
 
@@ -360,35 +404,6 @@ Shape of the values managed by the I-9 sign-employee form.
 
 ***
 
-<a id="signemployeeformerrorcode"></a>
-
-### SignEmployeeFormErrorCode
-
-> **SignEmployeeFormErrorCode** = *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\[keyof *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\]
-
-Union of validation error code strings emitted by the I-9 sign-employee
-form schema.
-
-***
-
-<a id="signemployeeformerrorcodes"></a>
-
-### SignEmployeeFormErrorCodes
-
-> `const` **SignEmployeeFormErrorCodes**: `object`
-
-Validation error codes emitted by the I-9 sign-employee form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
 <a id="signemployeeformfield"></a>
 
 ### SignEmployeeFormField
@@ -427,20 +442,5 @@ Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#use
 
 Shape of the validated values produced by the I-9 sign-employee form on
 submit.
-
-***
-
-<a id="signemployeeformrequiredvalidation"></a>
-
-### SignEmployeeFormRequiredValidation
-
-> **SignEmployeeFormRequiredValidation** = *typeof* `SignEmployeeFormErrorCodes.REQUIRED`
-
-The required-field error code emitted by every field of [useSignEmployeeForm](#usesignemployeeform).
-
-#### Remarks
-
-Use this as the `validationMessages` key for any sign-employee-form field.
-See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 
 ***
