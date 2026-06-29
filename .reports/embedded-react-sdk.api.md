@@ -56,6 +56,7 @@ import { ContractorPaymentGroupTotals } from '@gusto/embedded-api-v-2025-11-15/m
 import { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers';
 import { ContractorPaymentGroupWithBlockersStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers';
 import { ContractorPaymentGroupWithBlockersTotals } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers';
+import { ContractorPaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod';
 import { ContractorPaymentMethod1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptLicensee } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
@@ -1898,6 +1899,43 @@ export const ContractorOnboardingStatus: {
     readonly SELF_ONBOARDING_REVIEW: "self_onboarding_review";
     readonly ONBOARDING_COMPLETED: "onboarding_completed";
 };
+
+// @public
+export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
+
+// @public
+export const ContractorPaymentMethodErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorPaymentMethodFieldsMetadata = UseContractorPaymentMethodFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
+
+// @public
+export type ContractorPaymentMethodFormField = "type";
+
+// @public
+export interface ContractorPaymentMethodFormFields {
+    Type: typeof ContractorPaymentMethodTypeField;
+}
+
+// @public
+export type ContractorPaymentMethodFormOutputs = ContractorPaymentMethodFormData;
+
+// @public
+export type ContractorPaymentMethodFormType = (typeof ContractorPaymentMethodTypes)[number];
+
+// @public
+export function ContractorPaymentMethodTypeField(props: ContractorPaymentMethodTypeFieldProps): JSX;
+
+// @public
+export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
+
+// @public
+export const ContractorPaymentMethodTypes: readonly ["Direct Deposit", "Check"];
 
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
@@ -5878,6 +5916,35 @@ export type UseContractorDocumentsListReady = BaseHookReady<{
 
 // @public
 export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorPaymentMethodForm(input: UseContractorPaymentMethodFormProps): HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @public
+export interface UseContractorPaymentMethodFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorPaymentMethodFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+    };
+    data: {
+        paymentMethod: ContractorPaymentMethod;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+        isDirectDeposit: boolean;
+    };
+}
+
+// @public
+export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;

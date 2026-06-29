@@ -28,6 +28,12 @@ export const updateContractorPaymentMethod = http.put<
   return HttpResponse.json(responseFixture)
 })
 
+export function handleUpdateContractorPaymentMethod(
+  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorIdPaymentMethodType>,
+) {
+  return http.put(`${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`, resolver)
+}
+
 export function handleGetContractorBankAccounts(
   resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidBankAccountsRequest>,
 ) {
