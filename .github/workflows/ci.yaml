@@ -36,9 +36,56 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
+  # derive-models: Generate the API models barrel (src/models/external.ts) exactly once.
+  # Both `build` (→ dist → API report) and `derive-check-src` (→ TypeDoc) consume this single
+  # artifact, so every derived output in a run reflects the same barrel and derive-commit
+  # pushes a self-consistent set. On main/merge_group/dependabot a stale barrel fails here.
+  derive-models:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    outputs:
+      stale: ${{ steps.check.outputs.stale }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Generate API models barrel
+        run: npm run models:derive
+
+      - name: Check for stale barrel
+        id: check
+        run: |
+          git add src/models/external.ts
+          if git diff --staged --quiet; then
+            echo "stale=false" >> $GITHUB_OUTPUT
+          else
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]] || [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+              echo "::error::src/models/external.ts is stale — run 'npm run derive' locally and commit the result."
+              exit 1
+            fi
+            echo "stale=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload derived models barrel
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-models
+          path: src/models/external.ts
+          retention-days: 1
+          if-no-files-found: error
+
   # Build job: Build the project and cache artifacts
   build:
-    needs: setup
+    needs: [setup, derive-models]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -59,6 +106,15 @@ jobs:
         with:
           path: dist
           key: build-${{ github.sha }}
+
+      # Compile dist from the single canonical barrel so the API report (derived from
+      # dist) reflects the same external.ts as the docs.
+      - name: Download API models barrel
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-models
+          path: src/models
 
       - name: Generate i18n translations
         if: steps.cache-build.outputs.cache-hit != 'true'
@@ -133,7 +189,7 @@ jobs:
   # On regular branches: outputs stale=true if files changed (derive-commit handles the push).
   # On main, merge_group, and dependabot: fails immediately if files are stale.
   derive-check-src:
-    needs: [setup]
+    needs: [setup, derive-models]
     runs-on: ubuntu-latest
     outputs:
       stale: ${{ steps.check.outputs.stale }}
@@ -153,6 +209,14 @@ jobs:
       - name: Install docs-site dependencies
         run: npm ci
         working-directory: docs-site
+
+      # TypeDoc reads src/models/external.ts; use the single canonical barrel from
+      # derive-models so the docs reflect the same external.ts as the API report.
+      - name: Download API models barrel
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-models
+          path: src/models
 
       - name: Derive endpoint inventory and TypeDoc in parallel
         run: |
@@ -250,8 +314,8 @@ jobs:
   # Main, merge_group, and dependabot are gated out at the check layer (they fail on
   # staleness rather than setting stale=true), so derive-commit never runs for them.
   derive-commit:
-    needs: [derive-check-src, derive-check-dist]
-    if: needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
+    needs: [derive-models, derive-check-src, derive-check-dist]
+    if: needs.derive-models.outputs.stale == 'true' || needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
     # Must use the self-hosted runner group — GitHub-hosted runners are blocked
     # by the org IP allow list and cannot push back to the repository.
     runs-on:
@@ -293,11 +357,18 @@ jobs:
           name: derived-dist
           path: .reports
 
+      - name: Download derived models barrel
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-models
+          path: src/models
+
       - name: Commit and push derived files
         run: |
           git add docs/appendix
           git add docs/reference
           git add .reports
+          git add src/models/external.ts
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --staged --quiet; then
@@ -306,25 +377,28 @@ jobs:
           fi
 
   # derive: Single required check that branch protection can gate on.
-  # Aggregates derive-check-src and derive-check-dist. derive-commit is excluded
-  # intentionally — it only runs when files are stale and is not a health signal.
-  # Fails when either check job reported stale=true so the gate stays red until
+  # Aggregates derive-models, derive-check-src and derive-check-dist. derive-commit is
+  # excluded intentionally — it only runs when files are stale and is not a health signal.
+  # Fails when any check job reported stale=true so the gate stays red until
   # derive-commit pushes the fix and CI passes on the new commit.
   derive:
-    needs: [derive-check-src, derive-check-dist]
+    needs: [derive-models, derive-check-src, derive-check-dist]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify derive checks passed
         env:
+          MODELS: ${{ needs.derive-models.result }}
           SRC: ${{ needs.derive-check-src.result }}
           DIST: ${{ needs.derive-check-dist.result }}
+          MODELS_STALE: ${{ needs.derive-models.outputs.stale }}
           SRC_STALE: ${{ needs.derive-check-src.outputs.stale }}
           DIST_STALE: ${{ needs.derive-check-dist.outputs.stale }}
         run: |
+          if [[ "$MODELS" != "success" && "$MODELS" != "skipped" ]]; then exit 1; fi
           if [[ "$SRC" != "success" && "$SRC" != "skipped" ]]; then exit 1; fi
           if [[ "$DIST" != "success" && "$DIST" != "skipped" ]]; then exit 1; fi
-          if [[ "$SRC_STALE" == "true" || "$DIST_STALE" == "true" ]]; then
+          if [[ "$MODELS_STALE" == "true" || "$SRC_STALE" == "true" || "$DIST_STALE" == "true" ]]; then
             echo "::error::Derived files were stale — an auto-fix commit may be in progress. Re-run CI after it lands, or run 'npm run derive' locally."
             exit 1
           fi
