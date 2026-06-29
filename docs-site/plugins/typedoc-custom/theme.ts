@@ -6,14 +6,18 @@ import {
   type Context,
   DeclarationReflection,
   IntersectionType,
+  IndexedAccessType,
   IntrinsicType,
+  LiteralType,
   ParameterReflection,
+  QueryType,
   ReferenceType,
   ReflectionKind,
   ReflectionType,
   type SignatureReflection,
   type SomeType,
   TupleType,
+  TypeOperatorType,
   UnionType,
 } from 'typedoc'
 import { MarkdownPageEvent, MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown'
@@ -578,16 +582,27 @@ function renderFieldPropsTable(
   })
   const paramNames = new Set(typeParams.map(p => p.name))
 
-  // HookFieldProps<T> = Omit<T, 'name'> — the hook binds `name` internally.
-  const props = (underlying.children ?? []).filter(c => c.isDeclaration() && c.name !== 'name')
+  // A field with no validation codes (its error-code generics resolve to
+  // `never`, e.g. a checkbox typed `CheckboxHookFieldProps`) can't be given any
+  // `validationMessages` — drop the prop entirely rather than show an unusable
+  // `ValidationMessages<never>`.
+  const hasCodes =
+    ['TErrorCode', 'TOptionalErrorCode'].flatMap(p => collectErrorCodes(subMap.get(p))).length > 0
 
-  // A prop earns a row when it is required (e.g. `label`) or when its type
-  // references a type parameter (e.g. `validationMessages`, `getOptionLabel`),
-  // so the field's real codes/entry type can be substituted. The rest are
-  // forwarded unchanged from the base field-props interface and are summarized
-  // — each is documented by following the base-interface link.
+  // HookFieldProps<T> = Omit<T, 'name'> — the hook binds `name` internally.
+  const props = (underlying.children ?? []).filter(
+    c =>
+      c.isDeclaration() && c.name !== 'name' && !(c.name === 'validationMessages' && !hasCodes),
+  )
+
+  // A prop earns a row when it is required (e.g. `label`), when its type
+  // references a type parameter (e.g. `validationMessages`, `getOptionLabel`)
+  // so the field's real codes/entry type can be substituted, or when it's a
+  // prop we always surface (`FieldComponent` — the UI-override escape hatch).
+  // The rest are forwarded unchanged from the base field-props interface and
+  // summarized — each is documented by following the base-interface link.
   const isPromoted = (c: DeclarationReflection) =>
-    !c.flags.isOptional || referencesTypeParam(c.type, paramNames)
+    !c.flags.isOptional || referencesTypeParam(c.type, paramNames) || c.name === 'FieldComponent'
   const mainProps = props.filter(isPromoted)
   const forwarded = props.filter(c => !isPromoted(c))
 
@@ -1002,10 +1017,586 @@ function fieldPropsId(sig: SignatureReflection | undefined): number | undefined 
 }
 
 /**
+ * The `*FieldProps` props reference a Fields member carries when it is a single
+ * field component, or `undefined` when the member is a field *group*
+ * (`PreparerFieldGroup`) or dynamic collection (`SplitFieldEntry[]`) that
+ * legitimately renders without a per-component subsection.
+ *
+ * A single-component member is declared `typeof XxxField` — which
+ * `expandParameters` turns into a `(props: XxxFieldProps) => Element` call
+ * signature — or, less ideally, `ComponentType<XxxFieldProps>`. Both carry a
+ * `*FieldProps` reference; groups and arrays do not. An unexpanded `typeof X`
+ * {@link QueryType} survives only when `X` did not reflect (the component was
+ * never exported), which is itself the defect {@link buildFieldsTable} fails on.
+ */
+function fieldComponentPropsName(type: SomeType | undefined): string | undefined {
+  if (!type) return undefined
+  if (type instanceof UnionType) {
+    for (const member of type.types) {
+      const name = fieldComponentPropsName(member)
+      if (name) return name
+    }
+    return undefined
+  }
+  const sig = fieldCallSignature(type)
+  if (sig) {
+    const propsType = sig.parameters?.[0]?.type
+    if (propsType instanceof ReferenceType && propsType.name.endsWith('FieldProps')) {
+      return propsType.name
+    }
+  }
+  if (type instanceof QueryType) return type.queryType.name
+  if (type instanceof ReferenceType) {
+    for (const arg of type.typeArguments ?? []) {
+      if (arg instanceof ReferenceType && arg.name.endsWith('FieldProps')) return arg.name
+    }
+  }
+  return undefined
+}
+
+/**
+ * Resolve a Fields member's type to the `*FieldProps` reflection that documents
+ * it — handling `typeof XxxField` (expanded call signature), `ComponentType<
+ * XxxFieldProps>`, and `typeof XxxField | undefined`. Returns `null` for shapes
+ * that carry no field-props reference (groups, arrays, primitives).
+ */
+function fieldPropsReflection(type: SomeType | undefined): DeclarationReflection | null {
+  if (!type) return null
+  if (type instanceof UnionType) {
+    for (const member of type.types) {
+      const ref = fieldPropsReflection(member)
+      if (ref) return ref
+    }
+    return null
+  }
+  const sig = fieldCallSignature(type)
+  if (sig) {
+    const propsType = sig.parameters?.[0]?.type
+    if (
+      propsType instanceof ReferenceType &&
+      propsType.reflection instanceof DeclarationReflection &&
+      propsType.name.endsWith('FieldProps')
+    ) {
+      return propsType.reflection
+    }
+  }
+  if (type instanceof ReferenceType) {
+    for (const arg of type.typeArguments ?? []) {
+      if (
+        arg instanceof ReferenceType &&
+        arg.reflection instanceof DeclarationReflection &&
+        arg.name.endsWith('FieldProps')
+      ) {
+        return arg.reflection
+      }
+    }
+  }
+  return null
+}
+
+/**
+ * Collect the string-literal validation codes a type resolves to — walking
+ * unions, type-alias references, and `typeof XxxErrorCodes.CODE` queries (whose
+ * queried property's literal value, or failing that its name, is the code).
+ */
+function collectErrorCodes(type: SomeType | undefined, seen = new Set<DeclarationReflection>()): string[] {
+  if (!type) return []
+  if (type instanceof LiteralType && typeof type.value === 'string') return [type.value]
+  if (type instanceof UnionType) return type.types.flatMap(t => collectErrorCodes(t, seen))
+  // `(typeof XxxErrorCodes)['A' | 'B']` — the codes are the index keys (which
+  // equal their values for these `as const` code maps).
+  if (type instanceof IndexedAccessType) return collectErrorCodes(type.indexType, seen)
+  // `keyof Pick<typeof XxxErrorCodes, 'A' | 'B'>` — the codes are the picked
+  // keys; a bare `keyof X` falls back to walking `X`.
+  if (type instanceof TypeOperatorType && type.operator === 'keyof') {
+    if (type.target instanceof ReferenceType && type.target.name === 'Pick') {
+      return collectErrorCodes(type.target.typeArguments?.[1], seen)
+    }
+    return collectErrorCodes(type.target, seen)
+  }
+  if (type instanceof QueryType) {
+    const queried = type.queryType.reflection
+    if (queried instanceof DeclarationReflection) {
+      if (queried.type instanceof LiteralType && typeof queried.type.value === 'string') {
+        return [queried.type.value]
+      }
+      return [queried.name]
+    }
+    const tail = type.queryType.name?.split('.').pop()
+    return tail ? [tail] : []
+  }
+  if (type instanceof ReferenceType) {
+    const refl = type.reflection
+    if (refl instanceof DeclarationReflection && refl.type && !seen.has(refl)) {
+      seen.add(refl)
+      return collectErrorCodes(refl.type, seen)
+    }
+  }
+  return []
+}
+
+const VALIDATION_CODE_PARAMS = new Set(['TErrorCode', 'TOptionalErrorCode'])
+
+/**
+ * Every validation code a field's `validationMessages` accepts — both the
+ * required `TErrorCode` and optional `TOptionalErrorCode` generics (required
+ * first). Reads the generics bound on an alias-shaped `HookFieldProps<Underlying
+ * <…>>`, or the `ValidationMessages<TErrorCode, TOptionalErrorCode>` arguments
+ * on an interface-shaped props type.
+ */
+function fieldValidationCodes(propsRef: DeclarationReflection): string[] {
+  if (propsRef.type instanceof ReferenceType && propsRef.type.name === 'HookFieldProps') {
+    const underlyingRef = propsRef.type.typeArguments?.[0]
+    if (underlyingRef instanceof ReferenceType && underlyingRef.reflection instanceof DeclarationReflection) {
+      const codes: string[] = []
+      underlyingRef.reflection.typeParameters?.forEach((param, index) => {
+        if (VALIDATION_CODE_PARAMS.has(param.name)) {
+          codes.push(...collectErrorCodes(underlyingRef.typeArguments?.[index] ?? param.default))
+        }
+      })
+      if (codes.length > 0) return [...new Set(codes)]
+    }
+  }
+  const validationMessages = (propsRef.children ?? []).find(c => c.name === 'validationMessages')
+  if (
+    validationMessages?.type instanceof ReferenceType &&
+    validationMessages.type.name === 'ValidationMessages'
+  ) {
+    const codes = (validationMessages.type.typeArguments ?? []).flatMap(arg => collectErrorCodes(arg))
+    return [...new Set(codes)]
+  }
+  return []
+}
+
+/**
+ * The field-component members of a field-*group* type — an object whose every
+ * member is itself a field component (`typeof XxxField` / `ComponentType<…>`),
+ * e.g. `PreparerFieldGroup`'s nine sub-fields. Returns `null` when `ref` isn't
+ * such a group (handles both `interface` and object-literal `type` aliases).
+ */
+function fieldGroupMembers(ref: DeclarationReflection): DeclarationReflection[] | null {
+  // Members live either on the reflection directly (interface, or object-literal
+  // type alias TypeDoc converted to a container) or under `type.declaration`.
+  const children =
+    ref.children ?? (ref.type instanceof ReflectionType ? ref.type.declaration.children : null)
+  const members = (children ?? []).filter(c => c.isDeclaration())
+  if (members.length === 0) return null
+  return members.every(m => fieldPropsReflection(m.type) != null) ? members : null
+}
+
+/**
+ * Resolve a Fields member type to its field-group reflection (e.g.
+ * `PreparerFieldGroup`), stripping a trailing `| undefined`. Returns `null`
+ * when the member is not a field group.
+ */
+function fieldGroupReflection(type: SomeType | undefined): DeclarationReflection | null {
+  let ref: SomeType | undefined = type
+  if (ref instanceof UnionType) ref = ref.types.find(t => t instanceof ReferenceType)
+  if (!(ref instanceof ReferenceType) || !(ref.reflection instanceof DeclarationReflection)) {
+    return null
+  }
+  return fieldGroupMembers(ref.reflection) ? ref.reflection : null
+}
+
+/**
+ * Render a field's props as a table from its props reflection alone — no
+ * component-function reflection required. A `HookFieldProps<…>` alias goes
+ * through {@link renderFieldPropsTable} (type-param substitution, base-prop
+ * footer); a plain props interface (e.g. the factory-built `SplitFieldProps`)
+ * renders its own properties directly. Returns null when neither applies.
+ */
+function renderFieldPropsTableAny(
+  context: SDKThemeContext,
+  propsRef: DeclarationReflection,
+): string | null {
+  const aliasTable = renderFieldPropsTable(context, propsRef)
+  if (aliasTable) return aliasTable
+  const props = (propsRef.children ?? []).filter(c => c.isDeclaration() && c.name !== 'name')
+  if (props.length > 0) {
+    return context.partials.propertiesTable(props, {
+      isEventProps: false,
+      kind: ReflectionKind.Interface,
+    })
+  }
+  return null
+}
+
+/**
+ * Render a type as markdown for a `form.Fields.X: <type>` signature line,
+ * matching how TypeDoc renders types in property tables: the type name is in
+ * inline code, generic brackets are escaped sans-serif (`\<`…`\>`), array `[]`
+ * is plain, and any reference resolving to a page-local reflection is linked —
+ * e.g. `` `ComponentType`\<[`SplitByFieldProps`](#…)\> `` and
+ * `` [`SplitFieldEntry`](#…)[] ``. Mirrors {@link plainTypeString}'s shapes.
+ */
+function linkyType(context: SDKThemeContext, type: SomeType | undefined): string {
+  if (type instanceof UnionType) {
+    return type.types.map(t => linkyType(context, t)).join(' \\| ')
+  }
+  if (type instanceof ReferenceType) {
+    const linkable = type.reflection instanceof DeclarationReflection && context.router.hasUrl(type.reflection)
+    const nameMd = linkable
+      ? `[\`${type.name}\`](${context.urlTo(type.reflection as DeclarationReflection)})`
+      : `\`${type.name}\``
+    const args = type.typeArguments ?? []
+    if (args.length === 0) return nameMd
+    return `${nameMd}\\<${args.map(a => linkyType(context, a)).join(', ')}\\>`
+  }
+  if (type instanceof ArrayType) return `${linkyType(context, type.elementType)}[]`
+  // `typeof XxxField` expands (via `expandParameters`) to a `(props: XxxFieldProps)
+  // => Element` call signature. Present it as the semantically-equivalent
+  // `ComponentType<XxxFieldProps>` so `typeof`- and `ComponentType`-declared
+  // fields read identically.
+  if (type instanceof ReflectionType) {
+    const propsType = type.declaration.signatures?.[0]?.parameters?.[0]?.type
+    if (propsType instanceof ReferenceType && propsType.name.endsWith('FieldProps')) {
+      return `\`ComponentType\`\\<${linkyType(context, propsType)}\\>`
+    }
+  }
+  return `\`${plainTypeString(type)}\``
+}
+
+/** Same-reflection HTML anchor line, or empty when anchors are off / no URL. */
+function anchorLine(context: SDKThemeContext, ref: DeclarationReflection): string {
+  if (context.router.hasUrl(ref) && context.options.getValue('useHTMLAnchors')) {
+    return `<a id="${context.router.getAnchor(ref)}"></a>\n\n`
+  }
+  return ''
+}
+
+/**
+ * Render a type as a plain string with no markdown links — for the `form.Fields.X:
+ * <type>` signature lines, which live inside inline code where links wouldn't
+ * render. Covers the shapes Fields members use (references with type arguments,
+ * arrays, unions, `typeof X`, primitives); falls back to TypeDoc's own
+ * stringification for anything else.
+ */
+function plainTypeString(type: SomeType | undefined): string {
+  if (!type) return 'unknown'
+  if (type instanceof ReferenceType) {
+    const args = type.typeArguments
+    return args && args.length > 0
+      ? `${type.name}<${args.map(plainTypeString).join(', ')}>`
+      : type.name
+  }
+  if (type instanceof ArrayType) return `${plainTypeString(type.elementType)}[]`
+  if (type instanceof UnionType) return type.types.map(plainTypeString).join(' | ')
+  if (type instanceof QueryType) return `typeof ${plainTypeString(type.queryType)}`
+  if (type instanceof IntrinsicType) return type.name
+  return type.toString()
+}
+
+/**
+ * Whether {@link buildFlatFieldsSection} can render every member of a fields
+ * interface — i.e. each is a single field component (`typeof XxxField` /
+ * `ComponentType<XxxFieldProps>`) or an array of field entries. Returns false
+ * when any member is a field *group* (e.g. `PreparerFieldGroup`), which the
+ * flat renderer doesn't handle yet (those hooks keep the legacy table).
+ */
+function canRenderFlatFields(fieldsInterface: DeclarationReflection): boolean {
+  const members = (fieldsInterface.children ?? []).filter(c => c.isDeclaration())
+  if (members.length === 0) return false
+  return members.every(member => {
+    if (member.type instanceof ArrayType && member.type.elementType instanceof ReferenceType) {
+      const entryRef = member.type.elementType.reflection
+      return (
+        entryRef instanceof DeclarationReflection &&
+        (entryRef.children ?? []).some(child => fieldPropsReflection(child.type) != null)
+      )
+    }
+    return fieldPropsReflection(member.type) != null || fieldGroupReflection(member.type) != null
+  })
+}
+
+/**
+ * Build the `## Fields` section for a flat fields interface whose members are
+ * declared as `ComponentType<XxxFieldProps>` and/or arrays of field entries —
+ * the shape that needs no exported component-function value. Each field's docs
+ * are sourced from its `*FieldProps` type (and, for arrays, the entry
+ * interface), which are relocated here from "Utility Types" (their anchors are
+ * preserved so existing links resolve). Returns the markdown plus the set of
+ * type names relocated, for the caller to drop from their standalone section.
+ *
+ * Hard-fails (throws {@link HookModelError}) on any member it can't resolve to
+ * a field component or an array of field entries — the loud signal that a hook
+ * exposes a field shape the reference renderer doesn't yet handle.
+ */
+function buildFlatFieldsSection(
+  context: SDKThemeContext,
+  formModel: FormHookModel,
+): { markdown: string; relocated: Set<string> } {
+  const fieldsInterface = formModel.fieldsInterface!
+  const members = (fieldsInterface.children ?? [])
+    .filter(c => c.isDeclaration())
+    .sort((a, b) => a.name.localeCompare(b.name))
+  const relocated = new Set<string>()
+
+  // An H4 block for a relocated type: `#### Name` + anchor + comment + table.
+  const typeBlockH4 = (ref: DeclarationReflection, table: string): string => {
+    const block: string[] = [`#### ${ref.name}`, '', anchorLine(context, ref).trimEnd()]
+    if (ref.comment) {
+      const comment = context.partials
+        .comment(ref.comment, { showSummary: true, showTags: false })
+        .trim()
+      if (comment) block.push('', comment)
+    }
+    block.push('', table)
+    return block.join('\n')
+  }
+
+  // An H4 block for a field's props type: `#### Name` + anchor + composed type +
+  // comment + the props table. Alias-shaped props (`XxxFieldProps =
+  // HookFieldProps<…>`) keep the underlying composed type, but the repeated
+  // `**Name** =` prefix is stripped since the heading already names it.
+  const renderPropsBlockH4 = (ref: DeclarationReflection): string => {
+    const table = renderFieldPropsTableAny(context, ref)
+    if (!table) {
+      throw new HookModelError(
+        formModel.hookFn.name,
+        `Could not render props table for "${ref.name}".`,
+      )
+    }
+    if (ref.kind === ReflectionKind.TypeAlias) {
+      const standard = context.partials
+        .memberContainer(ref, { headingLevel: 4 })
+        .trimEnd()
+        .replace(`**${ref.name}** = `, '')
+      return `${standard}\n\n${table}`
+    }
+    return typeBlockH4(ref, table)
+  }
+
+  // A field group (e.g. `PreparerFieldGroup`) documented once, even when several
+  // Fields members reference it: an `### Name` heading + comment + a table of its
+  // sub-fields, then each distinct sub-field props type expanded once.
+  const renderGroupBlock = (groupRef: DeclarationReflection): string => {
+    const groupMembers = fieldGroupMembers(groupRef) ?? []
+    const block: string[] = [`### ${groupRef.name}`, '', anchorLine(context, groupRef).trimEnd()]
+    if (groupRef.comment) {
+      const comment = context.partials
+        .comment(groupRef.comment, { showSummary: true, showTags: false })
+        .trim()
+      if (comment) block.push('', comment)
+    }
+    block.push(
+      '',
+      '| Field | Component |',
+      '| ------ | ------ |',
+      ...groupMembers.map(m => `| \`${m.name}\` | ${linkyType(context, m.type)} |`),
+    )
+    const seen = new Set<string>()
+    for (const m of groupMembers) {
+      const propsRef = fieldPropsReflection(m.type)
+      if (propsRef && !seen.has(propsRef.name)) {
+        seen.add(propsRef.name)
+        relocated.add(propsRef.name)
+        block.push('', renderPropsBlockH4(propsRef))
+      }
+    }
+    return block.join('\n')
+  }
+
+  // Field groups referenced by one or more members, rendered once after the
+  // per-field sections (keyed by name to dedupe `Preparer1`–`Preparer4`).
+  const groupRefs = new Map<string, DeclarationReflection>()
+
+  const memberDescription = (member: DeclarationReflection): string =>
+    member.comment
+      ? context.partials.comment(member.comment, { showSummary: true, showTags: false }).trim()
+      : ''
+
+  // `AdjustForMinimumWage` → `Adjust for minimum wage`, for example labels.
+  const humanize = (name: string): string => {
+    const words = name.replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase().trim()
+    return words.charAt(0).toUpperCase() + words.slice(1)
+  }
+
+  // A field is optional/conditional when its declared type is `… | undefined`
+  // or the property itself is optional — it must be null-checked before use.
+  const isOptionalField = (member: DeclarationReflection): boolean => isConditionalField(member)
+
+  // Interface index table first — rendered via `linkyType` (not the default
+  // member partial) so `typeof XxxField` members display as
+  // `ComponentType<XxxFieldProps>`, consistent with the per-field examples.
+  // Required fields first, then optional/can-be-undefined; alphabetical within
+  // each group (the page sidebar keeps the per-field sections in strict alpha).
+  const indexMembers = [...members].sort(
+    (a, b) => Number(isOptionalField(a)) - Number(isOptionalField(b)) || a.name.localeCompare(b.name),
+  )
+  const indexRows = indexMembers.map(member => {
+    const optional = member.flags.isOptional ? '?' : ''
+    const description = memberDescription(member).replace(/\s*\n+\s*/g, ' ').replace(/\|/g, '\\|')
+    return `| \`${member.name}${optional}\` | ${linkyType(context, member.type)} | ${description || '—'} |`
+  })
+  const indexBlock: string[] = [`### ${fieldsInterface.name}`, '', anchorLine(context, fieldsInterface).trimEnd()]
+  if (fieldsInterface.comment) {
+    const comment = context.partials
+      .comment(fieldsInterface.comment, { showSummary: true, showTags: false })
+      .trim()
+    if (comment) indexBlock.push('', comment)
+  }
+  indexBlock.push('', '| Property | Type | Description |', '| ------ | ------ | ------ |', ...indexRows)
+  const sections: string[] = [indexBlock.join('\n')]
+
+  // The `validationMessages={{…}}` attribute lines for a field's codes, indented
+  // by `indent`. Inline for one or two codes; wrapped one-per-line beyond that.
+  const validationMessagesAttr = (codes: string[], indent: string): string[] => {
+    if (codes.length === 0) return []
+    if (codes.length <= 2) {
+      return [`${indent}validationMessages={{ ${codes.map(c => `${c}: '…'`).join(', ')} }}`]
+    }
+    return [
+      `${indent}validationMessages={{`,
+      ...codes.map(c => `${indent}  ${c}: '…',`),
+      `${indent}}}`,
+    ]
+  }
+
+  // A JSX usage example for a field component. The `label` (always required)
+  // plus a `validationMessages` map pre-filled with the field's own required
+  // codes — the cool part: each field shows exactly the codes it can emit.
+  const fieldExample = (jsxTag: string, label: string, codes: string[]): string => {
+    if (codes.length === 0) return `<${jsxTag} label="${label}" />`
+    return [`<${jsxTag}`, `  label="${label}"`, ...validationMessagesAttr(codes, '  '), '/>'].join('\n')
+  }
+
+  // Wrap an example in a code fence, guarding behind a null-check for
+  // optional/conditional fields (which are `undefined` until their rule is met).
+  const exampleFence = (member: DeclarationReflection, fieldKey: string, element: string): string => {
+    if (!isOptionalField(member)) return ['```tsx', element, '```'].join('\n')
+    const indented = element
+      .split('\n')
+      .map(line => `  ${line}`)
+      .join('\n')
+    return ['```tsx', `{form.Fields.${fieldKey} && (`, indented, ')}', '```'].join('\n')
+  }
+
+  for (const member of members) {
+    const fieldKey = member.name
+    const description = memberDescription(member)
+    // Heading + the member's own description, shared by every field shape.
+    const intro = description ? [`### ${fieldKey}`, '', description] : [`### ${fieldKey}`]
+
+    // Array-of-entries: `splits: SplitFieldEntry[]`.
+    if (member.type instanceof ArrayType && member.type.elementType instanceof ReferenceType) {
+      const entryRef = member.type.elementType.reflection
+      if (!(entryRef instanceof DeclarationReflection)) {
+        throw new HookModelError(
+          formModel.hookFn.name,
+          `Fields member "${fieldKey}" is an array whose entry type did not resolve.`,
+        )
+      }
+      const entryProps = (entryRef.children ?? []).filter(c => c.isDeclaration())
+      const boundField = entryProps.find(c => fieldPropsReflection(c.type))
+      const boundPropsRef = boundField ? fieldPropsReflection(boundField.type) : null
+      if (!boundField || !boundPropsRef) {
+        throw new HookModelError(
+          formModel.hookFn.name,
+          `Fields member "${fieldKey}" is an array of "${entryRef.name}", but no entry property ` +
+            `resolves to a field component (expected a \`ComponentType<XxxFieldProps>\` member).`,
+        )
+      }
+      relocated.add(entryRef.name).add(boundPropsRef.name)
+
+      // Entry interface keeps every property (including the data `name` field),
+      // so render its table directly rather than through the field-props helper.
+      const entryTable = context.partials.propertiesTable(entryProps, {
+        isEventProps: false,
+        kind: ReflectionKind.Interface,
+      })
+      const hasName = entryProps.some(p => p.name === 'name')
+      const exampleLabel = hasName ? `{entry.name ?? '…'}` : '"…"'
+      const boundAttrs = [
+        `    key={entry.uuid}`,
+        `    label=${exampleLabel}`,
+        ...validationMessagesAttr(fieldValidationCodes(boundPropsRef), '    '),
+      ]
+      const example = [
+        '```tsx',
+        `{form.Fields.${fieldKey}.map(entry => (`,
+        `  <entry.${boundField.name}`,
+        ...boundAttrs,
+        '  />',
+        '))}',
+        '```',
+      ].join('\n')
+      sections.push(
+        [
+          ...intro,
+          '',
+          example,
+          '',
+          typeBlockH4(entryRef, entryTable),
+          '',
+          renderPropsBlockH4(boundPropsRef),
+        ].join('\n'),
+      )
+      continue
+    }
+
+    // Single field component: `ComponentType<XxxFieldProps>` / `typeof XxxField`.
+    const propsRef = fieldPropsReflection(member.type)
+    if (propsRef) {
+      relocated.add(propsRef.name)
+      const element = fieldExample(`form.Fields.${fieldKey}`, humanize(fieldKey), fieldValidationCodes(propsRef))
+      sections.push(
+        [...intro, '', exampleFence(member, fieldKey, element), '', renderPropsBlockH4(propsRef)].join('\n'),
+      )
+      continue
+    }
+
+    // Field group (e.g. `PreparerFieldGroup`): description + an example that
+    // accesses a sub-field, plus a reference to the shared group block rendered
+    // once after the loop.
+    const groupRef = fieldGroupReflection(member.type)
+    if (groupRef) {
+      relocated.add(groupRef.name)
+      groupRefs.set(groupRef.name, groupRef)
+      const subField = (fieldGroupMembers(groupRef) ?? [])[0]
+      const groupParts = [...intro]
+      if (subField) {
+        const subCodes = fieldPropsReflection(subField.type)
+          ? fieldValidationCodes(fieldPropsReflection(subField.type)!)
+          : []
+        const element = fieldExample(
+          `form.Fields.${fieldKey}.${subField.name}`,
+          humanize(subField.name),
+          subCodes,
+        )
+        groupParts.push('', exampleFence(member, fieldKey, element))
+      }
+      groupParts.push('', `See [\`${groupRef.name}\`](#${context.router.getAnchor(groupRef)}) for all sub-fields.`)
+      sections.push(groupParts.join('\n'))
+      continue
+    }
+
+    throw new HookModelError(
+      formModel.hookFn.name,
+      `Fields member "${fieldKey}" (type ${member.type?.type ?? 'unknown'}) is neither a field ` +
+        `component (\`ComponentType<XxxFieldProps>\` / \`typeof XxxField\`), a field group, nor an ` +
+        `array of field entries.`,
+    )
+  }
+
+  for (const groupRef of groupRefs.values()) {
+    sections.push(renderGroupBlock(groupRef))
+  }
+
+  const markdown = ['## Fields', '', sections.join('\n\n***\n\n')].join('\n')
+  return { markdown, relocated }
+}
+
+/**
  * Auto-generate a quick-reference fields table from the hook model's Fields
  * interface. Each row shows the field key, the component type extracted from
  * the field component's props type alias, and notes from the field
  * component's @remarks. Returns null when the Fields interface has no children.
+ *
+ * Hard-fails (throws {@link HookModelError}) when a Fields member is a single
+ * field component yet no documented per-component subsection resolved for it —
+ * almost always because the component function is not exported from the package
+ * entry (`src/index.ts`), so TypeDoc never reflects it. This is deliberately
+ * loud: a silent `—` row hides a missing piece of the public hook surface.
  */
 function buildFieldsTable(
   context: SDKThemeContext,
@@ -1040,6 +1631,20 @@ function buildFieldsTable(
     const fieldKey = child.name
     const propsId = fieldPropsId(fieldCallSignature(child.type))
     const fieldComp = propsId !== undefined ? componentByPropsId.get(propsId) : undefined
+
+    // A single field-component member must resolve to a documented subsection.
+    // If it doesn't, the component function is almost certainly not exported
+    // from the package entry, so TypeDoc never reflected it — fail loudly
+    // rather than emit a silent `—` row that hides the gap.
+    const propsName = fieldComponentPropsName(child.type)
+    if (propsName && !(fieldComp && context.router.hasUrl(fieldComp))) {
+      throw new HookModelError(
+        formModel.hookFn.name,
+        `Fields member "${fieldKey}" is a field component (props \`${propsName}\`) but no ` +
+          `documented component resolved for it. Export the field component function from the ` +
+          `package entry (src/index.ts) and declare the member as \`typeof XxxField\`.`,
+      )
+    }
 
     // Column 1: Field Key — link to the field component's anchor below
     const fieldKeyUrl = fieldComp && context.router.hasUrl(fieldComp) ? context.urlTo(fieldComp) : null
@@ -1761,10 +2366,21 @@ export class SDKThemeContext extends MarkdownThemeContext {
           rendered = addExampleTitles(rendered)
           rendered = moveExampleToTop(rendered)
           rendered = reorderHookSections(rendered)
+          let relocatedFieldTypes = new Set<string>()
           if (formModel) {
             // A form hook always gets a `## Fields` section — if neither shape
             // renders, that's a hard error, never a silently field-less page.
-            if (formModel.fieldsInterface) {
+            if (formModel.fieldsInterface && canRenderFlatFields(formModel.fieldsInterface)) {
+              // Flat interface of single field components (`typeof XxxField` /
+              // `ComponentType<XxxFieldProps>`) and/or arrays of field entries —
+              // documented from the props types, no component-function value
+              // required.
+              const { markdown, relocated } = buildFlatFieldsSection(this, formModel)
+              relocatedFieldTypes = relocated
+              rendered = injectAfterReturns(rendered, markdown)
+            } else if (formModel.fieldsInterface) {
+              // Has a field shape the flat renderer doesn't handle yet (e.g.
+              // `PreparerFieldGroup` groups) — keep the legacy quick-ref table.
               const fieldsTable = buildFieldsTable(this, page.model, formModel)
               if (!fieldsTable) {
                 throw new HookModelError(
@@ -1786,7 +2402,10 @@ export class SDKThemeContext extends MarkdownThemeContext {
             }
           }
           rendered = removeComponentsHeader(rendered)
-          rendered = dropFieldPropsAliases(rendered, fieldComponentPropsAliasNames(page.model))
+          rendered = dropFieldPropsAliases(
+            rendered,
+            new Set([...fieldComponentPropsAliasNames(page.model), ...relocatedFieldTypes]),
+          )
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

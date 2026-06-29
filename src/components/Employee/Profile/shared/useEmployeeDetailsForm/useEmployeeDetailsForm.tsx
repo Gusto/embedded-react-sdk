@@ -99,28 +99,25 @@ export type UseEmployeeDetailsFormProps =
  * The Field components exposed by {@link useEmployeeDetailsForm} as `form.Fields`.
  *
  * @remarks
- * Each entry is a component bound to a specific form field — see
- * {@link FirstNameField}, {@link MiddleInitialField}, {@link LastNameField},
- * {@link EmailField}, {@link DateOfBirthField}, {@link SsnField}, and
- * {@link SelfOnboardingField}. `SelfOnboarding` may be `undefined` when
- * the field is not toggleable.
+ * Each entry is a component bound to a specific form field. `SelfOnboarding`
+ * may be `undefined` when the field is not toggleable.
  *
  * @public
  */
 export interface EmployeeDetailsFields {
-  /** Text input bound to `firstName`. See {@link FirstNameField}. */
+  /** Text input bound to `firstName`. */
   FirstName: typeof FirstNameField
-  /** Text input bound to `middleInitial`. See {@link MiddleInitialField}. */
+  /** Text input bound to `middleInitial`. */
   MiddleInitial: typeof MiddleInitialField
-  /** Text input bound to `lastName`. See {@link LastNameField}. */
+  /** Text input bound to `lastName`. */
   LastName: typeof LastNameField
-  /** Text input bound to `email`. See {@link EmailField}. */
+  /** Text input bound to `email`. */
   Email: typeof EmailField
-  /** Date picker bound to `dateOfBirth`. See {@link DateOfBirthField}. */
+  /** Date picker bound to `dateOfBirth`. */
   DateOfBirth: typeof DateOfBirthField
-  /** Text input bound to `ssn`. See {@link SsnField}. */
+  /** Text input bound to `ssn`. */
   Ssn: typeof SsnField
-  /** Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. See {@link SelfOnboardingField}. */
+  /** Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. */
   SelfOnboarding: typeof SelfOnboardingField | undefined
 }
 

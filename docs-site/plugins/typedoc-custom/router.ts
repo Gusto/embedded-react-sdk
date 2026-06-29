@@ -654,6 +654,17 @@ export class SDKRouter extends MemberRouter {
           if (formModel?.fieldsInterface) inlined.add(formModel.fieldsInterface)
           if (formModel?.fieldsArrayAlias) inlined.add(formModel.fieldsArrayAlias)
         }
+        // Exported field-component functions (e.g. `SignatureField`, taking a
+        // single `*FieldProps` argument) are documented through the props-driven
+        // `## Fields` section, not as standalone members — inline them so they
+        // don't render duplicate `### XxxField` subsections.
+        for (const member of memberDecls) {
+          if (member.kind !== ReflectionKind.Function) continue
+          const paramType = member.signatures?.[0]?.parameters?.[0]?.type
+          if (paramType instanceof ReferenceType && paramType.name.endsWith('FieldProps')) {
+            inlined.add(member)
+          }
+        }
         // Companion types tagged `@group Fields` (e.g. the per-variant
         // `StateTaxQuestion*Field` aliases) render inside the page's `## Fields`
         // section after the fields source-of-truth, not as their own group.
