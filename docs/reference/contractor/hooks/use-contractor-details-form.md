@@ -440,9 +440,9 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Contractor`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Contractor`](../../APIModels/index.md#contractor)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
 | `data` | `object` | The loaded contractor data, or `null` in create mode. |
-| `data.contractor` | `Contractor` \| `null` | The contractor being edited, or `null` in create mode. |
+| `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) \| `null` | The contractor being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |

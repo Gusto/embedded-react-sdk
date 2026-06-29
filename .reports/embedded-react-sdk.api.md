@@ -11,66 +11,133 @@ import { AfterSuccessHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
 import { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata';
 import { AnchorHTMLAttributes } from 'react';
 import { AriaAttributes } from 'react';
+import { AuthorizationStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization';
 import { BeforeCreateRequestContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
 import { BeforeCreateRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
 import { BeforeRequestContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
 import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
 import { ButtonHTMLAttributes } from 'react';
+import { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount';
 import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
 import { ComponentType } from 'react';
 import { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
 import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
+import { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount';
+import { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody';
 import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup';
+import { ContractorPaymentForGroupPreview } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgrouppreview';
+import { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup';
+import { ContractorPaymentGroupPreview } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgrouppreview';
+import { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers';
+import { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
 import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody';
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
 import { Document as Document_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
+import { DocumentType as DocumentType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
+import { EmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
 import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax';
+import { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltaxrev2020';
 import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus';
 import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod';
 import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
+import { EmployeeStateTaxesRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxesrequest';
 import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
 import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
+import { EntityErrorObject } from '@gusto/embedded-api-v-2025-11-15/models/components/entityerrorobject';
 import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
+import { FederalTaxDetails } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails';
 import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
+import { FilingForm } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails';
 import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
 import { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form';
 import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
 import { GarnishmentType } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
+import { HolidayPayPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy';
 import { HTMLAttributes } from 'react';
+import { InformationRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest';
+import { InformationRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest';
+import { InformationRequestType } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest';
 import { InputHTMLAttributes } from 'react';
 import { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job';
 import { JSX } from 'react';
 import { JSXElementConstructor } from 'react';
 import { Location as Location_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/location';
 import { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage';
+import { MinimumWages } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
+import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
+import { OnboardingStep } from '@gusto/embedded-api-v-2025-11-15/models/components/companyonboardingstatus';
+import { PaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/paidtimeoff';
+import { PaymentMethodBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentmethodbankaccount';
 import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport';
+import { PaymentSpeed } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentconfigs';
 import { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
+import { PayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payperiod';
+import { Payroll as Payroll_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
+import { PayrollCreditBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollcreditblockertype';
+import { PayrollCreditBlockerTypeUnblockOptions } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollcreditblockertype';
+import { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeFixedCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeReimbursements } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
+import { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype';
 import { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype';
+import { PayrollPrepared } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
+import { PayrollProcessingRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest';
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest';
+import { PayrollReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt';
+import { PayrollReceiptEmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt';
+import { PayrollShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
+import { PayrollShowFixedCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll';
+import { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype';
+import { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate';
+import { PayrollUpdateReimbursements } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate';
 import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payschedulepreviewpayperiod';
 import { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow';
-import { PolicyType as PolicyType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy';
+import { PolicyType } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactElement } from 'react';
 import { ReactNode } from 'react';
+import { RecoveryCase } from '@gusto/embedded-api-v-2025-11-15/models/components/recoverycase';
+import { RecoveryCaseStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/recoverycase';
 import { Ref } from 'react';
 import { RefObject } from 'react';
+import { RequiredQuestions } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest';
+import { ResponseType as ResponseType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest';
 import { SelectHTMLAttributes } from 'react';
+import { SetupStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirementstateslist';
 import { Signatory } from '@gusto/embedded-api-v-2025-11-15/models/components/signatory';
+import { States } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxesrequest';
 import { SyntheticEvent } from 'react';
 import { TableHTMLAttributes } from 'react';
+import { Taxes } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt';
+import { TaxPayerType } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails';
+import { TaxRequirement } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirement';
+import { TaxRequirementsState } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirementsstate';
+import { TaxRequirementStatesList } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirementstateslist';
+import { Termination } from '@gusto/embedded-api-v-2025-11-15/models/components/termination';
 import { TextareaHTMLAttributes } from 'react';
+import { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy';
+import { TimeOffPolicyRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicyrequest';
+import { UnblockOptions } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype';
+import { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/unprocessedterminationpayperiod';
 import { UseFormProps } from 'react-hook-form';
 import { UseFormReturn } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
+import { WageType as WageType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { WireInRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/wireinrequest';
+import { WireInRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/wireinrequest';
 import { z } from 'zod';
 
 // @public
@@ -184,6 +251,108 @@ export interface APIConfig {
     headers?: HeadersInit;
     hooks?: SDKHooks;
     observability?: ObservabilityHook;
+}
+
+declare namespace APIModels {
+    export {
+        Agencies,
+        CompanyBankAccount,
+        OnboardingStep,
+        MinimumWages,
+        Compensation,
+        PaymentUnit,
+        Contractor,
+        ContractorOnboardingStatus1,
+        ContractorType_2 as ContractorType,
+        WageType_2 as WageType,
+        ContractorAddress,
+        ContractorBankAccount,
+        ContractorCreateRequestBody,
+        ContractorPaymentForGroup,
+        ContractorPaymentForGroupPreview,
+        ContractorPaymentGroup,
+        ContractorPaymentGroupPreview,
+        ContractorPaymentGroupWithBlockers,
+        ContractorPaymentReceipt,
+        ContractorUpdateRequestBody,
+        Document_2 as Document,
+        Employee,
+        EmployeeAddress,
+        EmployeeBankAccount,
+        EmployeeFederalTax,
+        EmployeeFederalTaxRev2020,
+        EmployeeOnboardingStatus_2 as EmployeeOnboardingStatus,
+        EmployeePaymentMethod,
+        EmployeeStateTaxesList,
+        EmployeeStateTaxesRequest,
+        States,
+        EmployeeStateTaxQuestion,
+        EmployeeWorkAddress,
+        EntityErrorObject,
+        FederalTaxDetails,
+        TaxPayerType,
+        FilingForm,
+        FlsaStatusType,
+        Form,
+        GarnishmentType,
+        Garnishment,
+        PaymentPeriod,
+        HolidayPayPolicy,
+        DocumentType_2 as DocumentType,
+        AuthorizationStatus,
+        RequiredQuestions,
+        InformationRequest,
+        InformationRequestStatus,
+        InformationRequestType,
+        ResponseType_2 as ResponseType,
+        Job,
+        Location_2 as Location,
+        MinimumWage,
+        PaidTimeOff,
+        PaymentSpeed,
+        PaymentMethodBankAccount,
+        PayPeriod,
+        EmployeeCompensations,
+        OffCycleReasonType,
+        Payroll_2 as Payroll,
+        PayrollShow,
+        PayrollShowFixedCompensations,
+        PayrollPrepared,
+        PayrollCreditBlockerTypeUnblockOptions,
+        PayrollCreditBlockerType,
+        PayrollEmployeeCompensationsType,
+        PayrollEmployeeCompensationsTypeFixedCompensations,
+        PayrollEmployeeCompensationsTypePaidTimeOff,
+        PayrollEmployeeCompensationsTypeReimbursements,
+        PayrollEmployeeCompensationsTypePaymentMethod,
+        PayrollFixedCompensationTypesType,
+        PayrollPayPeriodType,
+        PayrollProcessingRequest,
+        PayrollProcessingRequestStatus,
+        PayrollReceipt,
+        PayrollReceiptEmployeeCompensations,
+        Taxes,
+        UnblockOptions,
+        PayrollSubmissionBlockerType,
+        PayrollUpdateEmployeeCompensations,
+        PayrollUpdateReimbursements,
+        PaySchedulePreviewPayPeriod,
+        PayScheduleShow,
+        RecoveryCase,
+        RecoveryCaseStatus,
+        Signatory,
+        TaxRequirement,
+        TaxRequirementsState,
+        TaxRequirementStatesList,
+        SetupStatus,
+        Termination,
+        TimeOffPolicy,
+        PolicyType,
+        TimeOffPolicyRequest,
+        UnprocessedTerminationPayPeriod,
+        WireInRequest,
+        WireInRequestStatus
+    }
 }
 
 // @public
@@ -1468,7 +1637,7 @@ export function CourtesyWithholdingField(props: CourtesyWithholdingFieldProps): 
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
-type CreatableTimeOffPolicyType = Extract<PolicyType_2, 'sick' | 'vacation'>;
+type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
 // Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
@@ -4118,7 +4287,7 @@ interface PolicySettingsProps extends BaseComponentInterface<'Company.TimeOff.Cr
 }
 
 // @public
-type PolicyType = 'sick' | 'vacation' | 'holiday';
+type PolicyType_2 = 'sick' | 'vacation' | 'holiday';
 
 // @public (undocumented)
 type PolicyTypeKey = 'vacation' | 'sick';
@@ -4129,7 +4298,7 @@ function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX;
 // @public
 interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
     companyId: string;
-    defaultPolicyType?: PolicyType;
+    defaultPolicyType?: PolicyType_2;
 }
 
 // @public
@@ -4962,7 +5131,7 @@ declare namespace TimeOff {
         PolicyListProps,
         PolicyTypeSelector,
         PolicyTypeSelectorProps,
-        PolicyType,
+        PolicyType_2 as PolicyType,
         PolicyConfigurationForm,
         PolicyConfigurationFormProps,
         PolicyConfigurationFormData,

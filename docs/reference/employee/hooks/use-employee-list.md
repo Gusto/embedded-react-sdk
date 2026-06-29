@@ -78,7 +78,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 
 #### Extends
 
-- `Employee`
+- [`Employee`](../../APIModels/index.md#employee)
 
 #### Properties
 
@@ -94,7 +94,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `departmentUuid?` | `string` \| `null` | The UUID of the department the employee is under |
 | `email?` | `string` \| `null` | The personal email address of the employee. This is provided to support syncing users between our system and yours. You may not use this email address for any other purpose (e.g. marketing). |
 | `employeeCode?` | `string` | The short format code of the employee |
-| `flsaStatus?` | `FlsaStatusType` | The FLSA status for this compensation. Salaried ('Exempt') employees are paid a fixed salary every pay period. Salaried with overtime ('Salaried Nonexempt') employees are paid a fixed salary every pay period, and receive overtime pay when applicable. Hourly ('Nonexempt') employees are paid for the hours they work, and receive overtime pay when applicable. Commissioned employees ('Commission Only Exempt') earn wages based only on commission. Commissioned with overtime ('Commission Only Nonexempt') earn wages based on commission, and receive overtime pay when applicable. Owners ('Owner') are employees that own at least twenty percent of the company. |
+| `flsaStatus?` | [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1) | The FLSA status for this compensation. Salaried ('Exempt') employees are paid a fixed salary every pay period. Salaried with overtime ('Salaried Nonexempt') employees are paid a fixed salary every pay period, and receive overtime pay when applicable. Hourly ('Nonexempt') employees are paid for the hours they work, and receive overtime pay when applicable. Commissioned employees ('Commission Only Exempt') earn wages based only on commission. Commissioned with overtime ('Commission Only Nonexempt') earn wages based on commission, and receive overtime pay when applicable. Owners ('Owner') are employees that own at least twenty percent of the company. |
 | `hasSsn?` | `boolean` | Indicates whether the employee has an SSN in Gusto. |
 | `hiredAt?` | `RFCDate` | The date when the employee was hired to the company |
 | `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
@@ -103,7 +103,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `onboardingDocumentsConfig?` | `EmployeeOnboardingDocumentsConfig` | Configuration for an employee onboarding documents during onboarding |
 | `onboardingStatus?` | `EmployeeOnboardingStatus1` \| `null` | The current onboarding status of the employee |
 | `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
-| `primaryJob?` | `Job` | The employee's primary job, if one is marked primary. |
+| `primaryJob?` | [`Job`](../../APIModels/index.md#job) | The employee's primary job, if one is marked primary. |
 | `ssn?` | `string` | Deprecated. This field always returns an empty string. |
 | `terminated?` | `boolean` | Whether the employee is terminated. |
 | `twoPercentShareholder?` | `boolean` \| `null` | Whether the employee is a two percent shareholder of the company. This field only applies to companies with an S-Corp entity type. |
@@ -142,9 +142,9 @@ Ready state of [useEmployeeList](#useemployeelist).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Actions that mutate an employee's state, gated by the entry's `allowedActions`. |
-| `actions.onCancelSelfOnboarding` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onCancelSelfOnboarding` | (`employeeId`) => `Promise`\<[`EmployeeOnboardingStatus`](../../APIModels/index.md#employeeonboardingstatus) \| `undefined`\> | Reverts a self-onboarding employee to admin-driven onboarding. Resolves to the updated record, or `undefined` if the call failed. |
 | `actions.onDelete` | (`employeeId`) => `Promise`\<`void`\> | Deletes the employee. |
-| `actions.onReview` | (`employeeId`) => `Promise`\<`EmployeeOnboardingStatus` \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
+| `actions.onReview` | (`employeeId`) => `Promise`\<[`EmployeeOnboardingStatus`](../../APIModels/index.md#employeeonboardingstatus) \| `undefined`\> | Moves the employee into the admin-review onboarding status. Resolves to the updated record, or `undefined` if the call failed. |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
 | `data.employees` | [`EmployeeWithActions`](#employeewithactions)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

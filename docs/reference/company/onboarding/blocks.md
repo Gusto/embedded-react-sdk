@@ -77,9 +77,9 @@ with controls to change or verify the account via micro-deposits.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |
-| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created CompanyBankAccount |
+| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
-| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified CompanyBankAccount |
+| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step | — |
 
 <a id="createsignatory"></a>
@@ -181,17 +181,17 @@ presenting the document list.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/forms/view` | Fired when a user selects a form to sign from the document list | Form |
+| `company/forms/view` | Fired when a user selects a form to sign from the document list | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when the user completes the document signing process | — |
-| `company/forms/sign/signForm` | Fired when a form is successfully signed | Form |
+| `company/forms/sign/signForm` | Fired when a form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
 | `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
-| `company/signatory/created` | Fired when a new signatory is created successfully | Signatory |
-| `company/signatory/updated` | Fired when an existing signatory is updated successfully | Signatory |
-| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | Signatory |
+| `company/signatory/created` | Fired when a new signatory is created successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/updated` | Fired when an existing signatory is updated successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 
 <a id="federaltaxes"></a>
 
@@ -218,7 +218,7 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/federalTaxes/updated` | Federal tax details were successfully updated | FederalTaxDetails |
+| `company/federalTaxes/updated` | Federal tax details were successfully updated | [APIModels.FederalTaxDetails](../../APIModels/index.md#federaltaxdetails) |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
 
 <a id="industry"></a>
@@ -619,7 +619,7 @@ At least one of `create` or `invite` must be provided.
 
 ### CreateSignatoryDefaultValues
 
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
 
@@ -636,7 +636,7 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 ### InviteSignatoryDefaultValues
 
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.

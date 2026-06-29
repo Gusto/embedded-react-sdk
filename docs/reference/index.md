@@ -92,7 +92,7 @@ record. The values mirror the strings returned by the API.
 
 ### ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`ContractorOnboardingStatus1`\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`ContractorOnboardingStatus1`](APIModels/index.md#contractoronboardingstatus1-1)\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.
@@ -879,3 +879,9 @@ High-level classification of where an [SDKError](#sdkerror) originated.
 > **SupportedLanguages** = `"en"`
 
 Language codes the SDK ships translations for; the top-level keys of [ResourceDictionary](#resourcedictionary).
+
+## API Models
+
+| Namespace | Description |
+| ------ | ------ |
+| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |
