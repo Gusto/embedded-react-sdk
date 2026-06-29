@@ -958,6 +958,29 @@ Request body for updating a contractor.
 
 ***
 
+<a id="department"></a>
+
+### Department
+
+> **Department** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/department.ts:19](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/department.ts#L19)
+
+`Department` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-departmentcompanyuuid"></a> `companyUuid?` | `string` | The UUID of the company |
+| <a id="property-departmentcontractors"></a> `contractors?` | `Contractors`[] | Array of contractors assigned to the department. |
+| <a id="property-departmentemployees"></a> `employees?` | `DepartmentEmployees`[] | Array of employees assigned to the department. |
+| <a id="property-departmenttitle"></a> `title?` | `string` | Name of the department |
+| <a id="property-departmentuuid"></a> `uuid?` | `string` | The UUID of the department |
+| <a id="property-departmentversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
 <a id="document"></a>
 
 ### Document

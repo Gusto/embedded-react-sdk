@@ -31,6 +31,8 @@ export type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2
 /** `ContractorPaymentReceipt` entity from the Gusto Embedded API. */
 export type { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt'
 export type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
+/** `Department` entity from the Gusto Embedded API. */
+export type { Department } from '@gusto/embedded-api-v-2025-11-15/models/components/department'
 /** `Document` entity from the Gusto Embedded API. */
 export type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
 export type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'

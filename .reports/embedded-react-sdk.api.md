@@ -36,6 +36,7 @@ import { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/mo
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
+import { Department } from '@gusto/embedded-api-v-2025-11-15/models/components/department';
 import { Document as Document_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
 import { DocumentType as DocumentType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
@@ -275,6 +276,7 @@ declare namespace APIModels {
         ContractorPaymentGroupWithBlockers,
         ContractorPaymentReceipt,
         ContractorUpdateRequestBody,
+        Department,
         Document_2 as Document,
         Employee,
         EmployeeAddress,
