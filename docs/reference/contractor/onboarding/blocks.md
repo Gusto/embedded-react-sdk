@@ -175,6 +175,8 @@ Fetches the contractor's documents via [useContractorDocumentsList](../hooks/use
 renders them in a table. The Continue action is disabled until every document
 that requires signing has been signed.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/documents/view` | Fired when a document's "Sign" action is selected | `{ uuid?: string; title?: string }` |
