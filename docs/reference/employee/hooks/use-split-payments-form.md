@@ -105,6 +105,8 @@ A loading-state result while the payment method and bank accounts are loading, o
 
 Return type of [useSplitPaymentsForm](#usesplitpaymentsform) — a discriminated union on `isLoading`.
 
+***
+
 <a id="usesplitpaymentsformready"></a>
 
 ### UseSplitPaymentsFormReady

@@ -85,6 +85,8 @@ A loading-state result while the hook is initializing, or a [UseBankFormReady](#
 
 Return type of [useBankForm](#usebankform) — a discriminated union on `isLoading`.
 
+***
+
 <a id="usebankformready"></a>
 
 ### UseBankFormReady

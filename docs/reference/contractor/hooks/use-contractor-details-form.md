@@ -128,6 +128,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Return type of [useContractorDetailsForm](#usecontractordetailsform).
 
+***
+
 <a id="usecontractordetailsformready"></a>
 
 ### UseContractorDetailsFormReady

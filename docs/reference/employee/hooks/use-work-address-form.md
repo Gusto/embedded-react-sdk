@@ -145,6 +145,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
+***
+
 <a id="useworkaddressformready"></a>
 
 ### UseWorkAddressFormReady

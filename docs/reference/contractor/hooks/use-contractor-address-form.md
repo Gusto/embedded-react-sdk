@@ -94,6 +94,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Discriminated union returned by [useContractorAddressForm](#usecontractoraddressform).
 
+***
+
 <a id="usecontractoraddressformready"></a>
 
 ### UseContractorAddressFormReady

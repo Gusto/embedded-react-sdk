@@ -107,6 +107,8 @@ Discriminated union returned by [useJobForm](#usejobform).
 Branch on `isLoading` to narrow to either [HookLoadingResult](../../utilities.md#hookloadingresult) or
 [UseJobFormReady](#usejobformready).
 
+***
+
 <a id="usejobformready"></a>
 
 ### UseJobFormReady

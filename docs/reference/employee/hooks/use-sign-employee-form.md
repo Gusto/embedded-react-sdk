@@ -99,6 +99,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Result of [useSignEmployeeForm](#usesignemployeeform) — a discriminated union on `isLoading`.
 
+***
+
 <a id="usesignemployeeformready"></a>
 
 ### UseSignEmployeeFormReady

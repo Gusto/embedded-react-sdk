@@ -116,6 +116,8 @@ Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) w
 is loading (update mode only); [UseDeductionFormReady](#usedeductionformready) once data is
 ready. In create mode the hook returns the ready branch immediately.
 
+***
+
 <a id="usedeductionformready"></a>
 
 ### UseDeductionFormReady

@@ -79,6 +79,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while the first page
 
 Return type of [useEmployeeList](#useemployeelist).
 
+***
+
 <a id="useemployeelistready"></a>
 
 ### UseEmployeeListReady

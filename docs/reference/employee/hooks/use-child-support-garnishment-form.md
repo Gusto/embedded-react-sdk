@@ -114,6 +114,8 @@ Discriminated union: [HookLoadingResult](../../utilities.md#hookloadingresult) w
 in update mode, the existing garnishment) is loading;
 [UseChildSupportGarnishmentFormReady](#usechildsupportgarnishmentformready) once data is ready.
 
+***
+
 <a id="usechildsupportgarnishmentformready"></a>
 
 ### UseChildSupportGarnishmentFormReady

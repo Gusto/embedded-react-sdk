@@ -92,6 +92,8 @@ A loading-state result while the current payment method is loading, or a [UsePay
 
 Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.
 
+***
+
 <a id="usepaymentmethodformready"></a>
 
 ### UsePaymentMethodFormReady

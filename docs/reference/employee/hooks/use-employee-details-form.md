@@ -121,6 +121,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Return type of [useEmployeeDetailsForm](#useemployeedetailsform).
 
+***
+
 <a id="useemployeedetailsformready"></a>
 
 ### UseEmployeeDetailsFormReady

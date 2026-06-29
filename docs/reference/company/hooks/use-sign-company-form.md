@@ -113,6 +113,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Result of [useSignCompanyForm](#usesigncompanyform) — a discriminated union on `isLoading`.
 
+***
+
 <a id="usesigncompanyformready"></a>
 
 ### UseSignCompanyFormReady
@@ -136,6 +138,60 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `status` | `object` | Submit-state flags. |
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
+
+## Fields
+
+### SignCompanyFormFields
+<a id="signcompanyformfields"></a>
+
+Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| [`ConfirmSignature`](#signcompanyconfirmsignaturefield) | [Checkbox](../../utilities.md#checkboxhookfieldprops) | The checkbox must be checked to submit; it captures consent to the form's terms. |
+| [`Signature`](#signcompanysignaturefield) | [TextInput](../../utilities.md#textinputhookfieldprops) | The signer types their full legal name; always required. |
+
+<a id="signcompanyconfirmsignaturefield"></a>
+
+### SignCompanyConfirmSignatureField
+
+Checkbox bound to the `confirmSignature` field of [useSignCompanyForm](#usesigncompanyform).
+
+#### Parameters
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult` from [CheckboxHookFieldProps](../../utilities.md#checkboxhookfieldprops)._
+
+#### Remarks
+
+Available on the hook result as `form.Fields.ConfirmSignature`. The checkbox
+must be checked to submit; it captures consent to the form's terms.
+
+***
+
+<a id="signcompanysignaturefield"></a>
+
+### SignCompanySignatureField
+
+Text input bound to the `signature` field of [useSignCompanyForm](#usesigncompanyform).
+
+#### Parameters
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `FieldComponent`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+#### Remarks
+
+Available on the hook result as `form.Fields.Signature`. The signer types
+their full legal name; always required.
 
 ## Validations
 
@@ -181,27 +237,6 @@ Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 
 ## Utility Types
-
-<a id="confirmsignaturefieldprops"></a>
-
-### ConfirmSignatureFieldProps
-
-> **ConfirmSignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
-
-Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.ConfirmSignature` component.
-
-***
-
-<a id="signaturefieldprops"></a>
-
-### SignatureFieldProps
-
-> **SignatureFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`SignCompanyFormRequiredValidation`](#signcompanyformrequiredvalidation)\>\>
-
-Props accepted by [useSignCompanyForm](#usesigncompanyform)'s `Fields.Signature` component.
-
-***
-
 <a id="signcompanyformdata"></a>
 
 ### SignCompanyFormData
@@ -259,15 +294,3 @@ is typically unnecessary.
 > **SignCompanyFormOutputs** = [`SignCompanyFormData`](#signcompanyformdata)
 
 Shape of the validated values produced by the sign-company form on submit.
-
-## Fields
-
-### SignCompanyFormFields
-<a id="signcompanyformfields"></a>
-
-Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.Fields`.
-
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| `ConfirmSignature` | — | — |
-| `Signature` | — | — |

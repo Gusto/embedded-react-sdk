@@ -113,6 +113,8 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 
 Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
 
+***
+
 <a id="usepayscheduleformready"></a>
 
 ### UsePayScheduleFormReady

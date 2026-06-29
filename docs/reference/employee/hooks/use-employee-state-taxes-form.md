@@ -111,6 +111,8 @@ Discriminated union returned by [useEmployeeStateTaxesForm](#useemployeestatetax
 branch carries only `errorHandling`; ready branch carries form data,
 fields, status, and actions.
 
+***
+
 <a id="useemployeestatetaxesformready"></a>
 
 ### UseEmployeeStateTaxesFormReady

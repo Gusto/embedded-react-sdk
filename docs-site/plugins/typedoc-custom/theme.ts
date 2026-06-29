@@ -1664,6 +1664,9 @@ export class SDKThemeContext extends MarkdownThemeContext {
           const resultAlias = findHookResultAlias(siblings, readyType)
           if (resultAlias) {
             parts.push(this.partials.memberContainer(resultAlias, { headingLevel: headingLevel + 1 }))
+            // Divide the two Returns entries (result alias / Ready interface) the
+            // same way sibling members are separated elsewhere on the page.
+            parts.push('***')
           }
 
           if (this.router.hasUrl(readyType) && this.options.getValue('useHTMLAnchors')) {

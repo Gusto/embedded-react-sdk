@@ -95,6 +95,8 @@ Use this type when threading the hook result through helpers (e.g.
 presentational components). Discriminate on `isLoading` to narrow to
 [UseFederalTaxesFormReady](#usefederaltaxesformready).
 
+***
+
 <a id="usefederaltaxesformready"></a>
 
 ### UseFederalTaxesFormReady
