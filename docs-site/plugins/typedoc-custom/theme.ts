@@ -853,11 +853,13 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 
 /**
  * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
- * sequence: Example → Remarks → Props → Returns → everything else (Fields,
- * Variables, Interfaces, Type Aliases — kept in their original relative order).
+ * sequence: Example → Remarks → Props → Returns → Form → Fields → everything
+ * else (Utility Hooks, Utility Types, Advanced — kept in their original
+ * relative order). Form precedes Fields because the field entries are
+ * referenced from the form-shape types.
  *
- * The Props and Returns sections carry hard-coded headings, so they rank by
- * exact title.
+ * The ranked sections carry hard-coded headings, so they rank by exact title.
+ * Idempotent — safe to run before and after the Fields section is injected.
  */
 function reorderHookSections(rendered: string): string {
   const lines = rendered.split('\n')
@@ -880,6 +882,8 @@ function reorderHookSections(rendered: string): string {
     if (title === 'Remarks') return 1
     if (title === 'Props') return 2
     if (title === 'Returns') return 3
+    if (title === 'Form') return 4
+    if (title === 'Fields') return 5
     return 99
   }
   const ordered = sections
@@ -1783,6 +1787,12 @@ export class SDKThemeContext extends MarkdownThemeContext {
           }
           rendered = removeComponentsHeader(rendered)
           rendered = dropFieldPropsAliases(rendered, fieldComponentPropsAliasNames(page.model))
+          // Re-run the section reorder now that the Fields section is injected
+          // and the Components header removed, so `## Form` and `## Fields` land
+          // in their ranked positions (Form before Fields) regardless of whether
+          // Fields was injected after Returns (array shape) or before the
+          // field-component group (flat shape).
+          rendered = reorderHookSections(rendered)
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

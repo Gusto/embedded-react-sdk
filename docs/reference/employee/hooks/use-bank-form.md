@@ -107,6 +107,36 @@ Ready-state return value of [useBankForm](#usebankform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"create"` | - |
 
+## Form
+
+<a id="bankformdata"></a>
+
+### BankFormData
+
+> **BankFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the bank account form.
+
+***
+
+<a id="bankformfieldsmetadata"></a>
+
+### BankFormFieldsMetadata
+
+> **BankFormFieldsMetadata** = [`UseBankFormReady`](#usebankformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
+
+***
+
+<a id="bankformoutputs"></a>
+
+### BankFormOutputs
+
+> **BankFormOutputs** = [`BankFormData`](#bankformdata)
+
+Shape of the validated values produced by the bank account form on submit.
+
 ## Fields
 
 ### BankFormFields
@@ -261,16 +291,6 @@ Props accepted by [useBankForm](#usebankform)'s `Fields.AccountType` component.
 
 ***
 
-<a id="bankformdata"></a>
-
-### BankFormData
-
-> **BankFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the bank account form.
-
-***
-
 <a id="bankformerrorcode"></a>
 
 ### BankFormErrorCode
@@ -311,16 +331,6 @@ Field names accepted by the bank account form.
 
 ***
 
-<a id="bankformfieldsmetadata"></a>
-
-### BankFormFieldsMetadata
-
-> **BankFormFieldsMetadata** = [`UseBankFormReady`](#usebankformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
-
-***
-
 <a id="bankformoptionalfieldstorequire"></a>
 
 ### BankFormOptionalFieldsToRequire
@@ -329,16 +339,6 @@ Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankfo
 
 Keys of optional bank account fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="bankformoutputs"></a>
-
-### BankFormOutputs
-
-> **BankFormOutputs** = [`BankFormData`](#bankformdata)
-
-Shape of the validated values produced by the bank account form on submit.
 
 ***
 

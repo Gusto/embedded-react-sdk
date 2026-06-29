@@ -140,6 +140,43 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 | `status.isRecurring` | `boolean` | Mirrors the watched `recurring` value. Cap fields (`TotalAmount`, `AnnualMaximum`) are only included on `Fields` when this is true — the consumer can render them unconditionally and the gating happens in the hook. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new deduction or PUT an existing one. |
 
+## Form
+
+<a id="deductionformdata"></a>
+
+### DeductionFormData
+
+> **DeductionFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the deduction form.
+
+***
+
+<a id="deductionformfieldsmetadata"></a>
+
+### DeductionFormFieldsMetadata
+
+> **DeductionFormFieldsMetadata** = [`UseDeductionFormReady`](#usedeductionformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata returned by [useDeductionForm](#usedeductionform) as `form.fieldsMetadata`.
+
+#### Remarks
+
+Carries per-field `isRequired`, `isDisabled`, label, description, and option
+entries derived from the schema and form state. Use these to drive UI such
+as disabled state or option lists when not relying on the pre-bound
+[DeductionFormFields](#deductionformfields) components.
+
+***
+
+<a id="deductionformoutputs"></a>
+
+### DeductionFormOutputs
+
+> **DeductionFormOutputs** = [`DeductionFormData`](#deductionformdata)
+
+Shape of the validated values produced by the deduction form on submit.
+
 ## Fields
 
 ### DeductionFormFields
@@ -384,16 +421,6 @@ description of each code.
 
 ***
 
-<a id="deductionformdata"></a>
-
-### DeductionFormData
-
-> **DeductionFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the deduction form.
-
-***
-
 <a id="deductionformerrorcode"></a>
 
 ### DeductionFormErrorCode
@@ -422,23 +449,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ***
 
-<a id="deductionformfieldsmetadata"></a>
-
-### DeductionFormFieldsMetadata
-
-> **DeductionFormFieldsMetadata** = [`UseDeductionFormReady`](#usedeductionformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata returned by [useDeductionForm](#usedeductionform) as `form.fieldsMetadata`.
-
-#### Remarks
-
-Carries per-field `isRequired`, `isDisabled`, label, description, and option
-entries derived from the schema and form state. Use these to drive UI such
-as disabled state or option lists when not relying on the pre-bound
-[DeductionFormFields](#deductionformfields) components.
-
-***
-
 <a id="deductionformnegativeamountvalidation"></a>
 
 ### DeductionFormNegativeAmountValidation
@@ -462,16 +472,6 @@ and `Fields.AnnualMaximum`. See [DeductionFormErrorCodes](#deductionformerrorcod
 
 Keys of optional deduction fields that can be promoted to required via the
 hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="deductionformoutputs"></a>
-
-### DeductionFormOutputs
-
-> **DeductionFormOutputs** = [`DeductionFormData`](#deductionformdata)
-
-Shape of the validated values produced by the deduction form on submit.
 
 ***
 

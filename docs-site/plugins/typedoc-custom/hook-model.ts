@@ -1,6 +1,7 @@
 import {
   ArrayType,
   DeclarationReflection,
+  IndexedAccessType,
   IntersectionType,
   ReferenceType,
   ReflectionKind,
@@ -226,6 +227,81 @@ export function findHookResultAlias(
     if (refsReady && refsLoading) return member
   }
   return null
+}
+
+/** The declaration a type references, or `null` when it is not a resolved reference. */
+function referencedDeclaration(type: SomeType | undefined): DeclarationReflection | null {
+  return type instanceof ReferenceType && type.reflection instanceof DeclarationReflection
+    ? type.reflection
+    : null
+}
+
+/**
+ * Whether an alias's declared type is an indexed access rooted at `root` —
+ * e.g. `UseXxxReady['form']['Fields']`. Unwraps nested indexing down to the
+ * object being indexed.
+ */
+function indexesInto(type: SomeType | undefined, root: DeclarationReflection): boolean {
+  let current = type
+  while (current instanceof IndexedAccessType) current = current.objectType
+  return current instanceof ReferenceType && current.reflection === root
+}
+
+/**
+ * The form-shape types documented under a form hook's `## Form` section, in
+ * reading order: the form data type, the `form.Fields` alias, the form outputs
+ * alias, and the fields-metadata type. Every member is identified structurally
+ * from the type graph — the data and metadata types are the `BaseFormHookReady`
+ * type arguments, the `Fields` alias is an indexed access into the ready
+ * interface, and the outputs alias is a direct re-alias of the form data type —
+ * never by name. A type that resolves to none of these stays in Utility Types.
+ */
+export function getFormSectionTypes(
+  model: FormHookModel,
+  members: readonly DeclarationReflection[],
+): DeclarationReflection[] {
+  const formData = referencedDeclaration(model.formDataType)
+  const fieldsMetadata = referencedDeclaration(model.fieldsMetadataType)
+
+  // Only the hook page's own exports belong in its Form section. A hook that
+  // takes the default `BaseFormHookReady` metadata type resolves
+  // `fieldsMetadataType` to the *shared* base `FieldsMetadata` (documented on
+  // the utilities page); grouping that would leak the section across pages.
+  const ownMembers = new Set(members)
+  const ordered: DeclarationReflection[] = []
+  const seen = new Set<DeclarationReflection>()
+  const add = (refl: DeclarationReflection | null): void => {
+    if (refl && ownMembers.has(refl) && !seen.has(refl)) {
+      seen.add(refl)
+      ordered.push(refl)
+    }
+  }
+
+  add(formData)
+  // `form.Fields` (and any other indexed access into the ready interface),
+  // except the fields-metadata alias, which is emitted last.
+  for (const member of members) {
+    if (
+      member.kind === ReflectionKind.TypeAlias &&
+      member !== fieldsMetadata &&
+      indexesInto(member.type, model.readyInterface)
+    ) {
+      add(member)
+    }
+  }
+  // The form outputs alias — a direct re-alias of the form data type.
+  for (const member of members) {
+    if (
+      formData &&
+      member.kind === ReflectionKind.TypeAlias &&
+      member.type instanceof ReferenceType &&
+      member.type.reflection === formData
+    ) {
+      add(member)
+    }
+  }
+  add(fieldsMetadata)
+  return ordered
 }
 
 /**

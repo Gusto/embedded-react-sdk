@@ -139,6 +139,46 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Whether the form is creating a new schedule or updating an existing one. |
 
+## Form
+
+<a id="payschedulefieldsmetadata"></a>
+
+### PayScheduleFieldsMetadata
+
+> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
+<a id="payscheduleformdata"></a>
+
+### PayScheduleFormData
+
+> **PayScheduleFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the pay schedule form.
+
+***
+
+<a id="payscheduleformfields"></a>
+
+### PayScheduleFormFields
+
+> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
+
+***
+
+<a id="payscheduleformoutputs"></a>
+
+### PayScheduleFormOutputs
+
+> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
+
+Shape of the validated values produced by the pay schedule form on submit.
+
 ## Fields
 
 ### PayScheduleFields
@@ -442,46 +482,6 @@ Use these as `validationMessages` keys on the corresponding `Fields.*` component
 > **PayScheduleField** = keyof *typeof* `fieldValidators`
 
 Union of field names managed by the pay schedule form.
-
-***
-
-<a id="payschedulefieldsmetadata"></a>
-
-### PayScheduleFieldsMetadata
-
-> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformdata"></a>
-
-### PayScheduleFormData
-
-> **PayScheduleFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the pay schedule form.
-
-***
-
-<a id="payscheduleformfields"></a>
-
-### PayScheduleFormFields
-
-> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformoutputs"></a>
-
-### PayScheduleFormOutputs
-
-> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
-
-Shape of the validated values produced by the pay schedule form on submit.
 
 ***
 

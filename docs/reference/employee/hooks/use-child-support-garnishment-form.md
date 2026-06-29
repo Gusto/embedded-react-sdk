@@ -142,6 +142,44 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 | `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
 | `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
 
+## Form
+
+<a id="childsupportgarnishmentformdata"></a>
+
+### ChildSupportGarnishmentFormData
+
+> **ChildSupportGarnishmentFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the child support garnishment form.
+
+***
+
+<a id="childsupportgarnishmentformfieldsmetadata"></a>
+
+### ChildSupportGarnishmentFormFieldsMetadata
+
+> **ChildSupportGarnishmentFormFieldsMetadata** = [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) as `form.fieldsMetadata`.
+
+#### Remarks
+
+Carries per-field `isRequired`, `isDisabled`, label, description, and option
+entries derived from the schema and form state. Use these to drive UI such
+as disabled state or option lists when not relying on the pre-bound
+[ChildSupportGarnishmentFormFields](#childsupportgarnishmentformfields) components.
+
+***
+
+<a id="childsupportgarnishmentformoutputs"></a>
+
+### ChildSupportGarnishmentFormOutputs
+
+> **ChildSupportGarnishmentFormOutputs** = [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)
+
+Shape of the validated values produced by the child support garnishment
+form on submit.
+
 ## Fields
 
 ### ChildSupportGarnishmentFormFields
@@ -386,16 +424,6 @@ accepts a percentage of paycheck (0–100). See
 
 ***
 
-<a id="childsupportgarnishmentformdata"></a>
-
-### ChildSupportGarnishmentFormData
-
-> **ChildSupportGarnishmentFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the child support garnishment form.
-
-***
-
 <a id="childsupportgarnishmentformerrorcode"></a>
 
 ### ChildSupportGarnishmentFormErrorCode
@@ -424,34 +452,6 @@ hook.
 | `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
 | `PERCENT_OUT_OF_RANGE` | `"PERCENT_OUT_OF_RANGE"` | `'PERCENT_OUT_OF_RANGE'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="childsupportgarnishmentformfieldsmetadata"></a>
-
-### ChildSupportGarnishmentFormFieldsMetadata
-
-> **ChildSupportGarnishmentFormFieldsMetadata** = [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) as `form.fieldsMetadata`.
-
-#### Remarks
-
-Carries per-field `isRequired`, `isDisabled`, label, description, and option
-entries derived from the schema and form state. Use these to drive UI such
-as disabled state or option lists when not relying on the pre-bound
-[ChildSupportGarnishmentFormFields](#childsupportgarnishmentformfields) components.
-
-***
-
-<a id="childsupportgarnishmentformoutputs"></a>
-
-### ChildSupportGarnishmentFormOutputs
-
-> **ChildSupportGarnishmentFormOutputs** = [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)
-
-Shape of the validated values produced by the child support garnishment
-form on submit.
 
 ***
 

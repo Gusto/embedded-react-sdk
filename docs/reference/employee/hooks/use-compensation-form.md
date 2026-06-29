@@ -153,6 +153,57 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `status.showOwnerSalaryAlert` | `boolean` | True when the current `flsaStatus` is `OWNER` (Owner's draw). Render an informational alert noting that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. |
 | `status.willDeleteSecondaryJobs` | `boolean` | True when submitting the form right now would delete the employee's secondary jobs server-side (the "carve-out" branch). Reactive: derived from the current `flsaStatus` form value, the loaded compensation, and the other-jobs count, so this flips as you change inputs. Conditions: update mode, the loaded compensation is Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt value, and the employee has at least one secondary job. While this flag is true the hook also takes the `effectiveDate` field over: it forces the form value to today (so submits route through a PUT that immediately deletes secondaries) and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. On revert (FLSA back to Nonexempt) the prior `effectiveDate` is restored. Render an inline warning keyed off this flag — no separate confirmation step is needed. |
 
+## Form
+
+<a id="compensationfieldsmetadata"></a>
+
+### CompensationFieldsMetadata
+
+> **CompensationFieldsMetadata** = [`UseCompensationFormReady`](#usecompensationformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Metadata for each [useCompensationForm](#usecompensationform) field, exposed on `form.fieldsMetadata`.
+
+#### Remarks
+
+Includes per-field `isDisabled`, `isRequired`, and the dynamic option list
+for select fields (`flsaStatus`, `paymentUnit`, `minimumWageId`).
+`effectiveDate` additionally carries `minDate` / `maxDate` derived from
+the parent job's hire date and any pending future compensation.
+
+***
+
+<a id="compensationformdata"></a>
+
+### CompensationFormData
+
+> **CompensationFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the form values managed by [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Accepted as `defaultValues` on `useCompensationForm` and returned by
+`form.getFormSubmissionValues()` once the form has validated. `effectiveDate`
+is an ISO date string (`YYYY-MM-DD`) or `null`; `flsaStatus` is optional so
+the field can render an empty placeholder when nothing is preselected
+(requiredness is enforced on submit per mode).
+
+***
+
+<a id="compensationformoutputs"></a>
+
+### CompensationFormOutputs
+
+> **CompensationFormOutputs** = [`CompensationFormData`](#compensationformdata)
+
+Validated submission shape produced by the [useCompensationForm](#usecompensationform) schema.
+
+#### Remarks
+
+Identical to [CompensationFormData](#compensationformdata) — exposed as a separate alias so
+the input vs. output sides of the schema remain distinguishable in advanced
+usages.
+
 ## Fields
 
 ### CompensationFormFields
@@ -455,57 +506,6 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
   }}
 />
 ```
-
-***
-
-<a id="compensationfieldsmetadata"></a>
-
-### CompensationFieldsMetadata
-
-> **CompensationFieldsMetadata** = [`UseCompensationFormReady`](#usecompensationformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Metadata for each [useCompensationForm](#usecompensationform) field, exposed on `form.fieldsMetadata`.
-
-#### Remarks
-
-Includes per-field `isDisabled`, `isRequired`, and the dynamic option list
-for select fields (`flsaStatus`, `paymentUnit`, `minimumWageId`).
-`effectiveDate` additionally carries `minDate` / `maxDate` derived from
-the parent job's hire date and any pending future compensation.
-
-***
-
-<a id="compensationformdata"></a>
-
-### CompensationFormData
-
-> **CompensationFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the form values managed by [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Accepted as `defaultValues` on `useCompensationForm` and returned by
-`form.getFormSubmissionValues()` once the form has validated. `effectiveDate`
-is an ISO date string (`YYYY-MM-DD`) or `null`; `flsaStatus` is optional so
-the field can render an empty placeholder when nothing is preselected
-(requiredness is enforced on submit per mode).
-
-***
-
-<a id="compensationformoutputs"></a>
-
-### CompensationFormOutputs
-
-> **CompensationFormOutputs** = [`CompensationFormData`](#compensationformdata)
-
-Validated submission shape produced by the [useCompensationForm](#usecompensationform) schema.
-
-#### Remarks
-
-Identical to [CompensationFormData](#compensationformdata) — exposed as a separate alias so
-the input vs. output sides of the schema remain distinguishable in advanced
-usages.
 
 ***
 

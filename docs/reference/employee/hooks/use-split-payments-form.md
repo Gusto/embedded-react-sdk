@@ -135,6 +135,57 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `status.percentageTotal` | `number` | Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. |
 | `status.splitBy` | `"Percentage"` \| `"Amount"` | Current `splitBy` value, reactively tracked. |
 
+## Form
+
+<a id="splitpaymentsformdata"></a>
+
+### SplitPaymentsFormData
+
+> **SplitPaymentsFormData** = `object`
+
+Shape of the values managed by the split payments form. `splitAmount` and
+`priority` are keyed by bank account uuid.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `priority` | `Record`\<`string`, `number`\> | Per-account priority values keyed by bank account uuid; the highest priority receives the remainder. |
+| `splitAmount` | `Record`\<`string`, `number` \| `null`\> | Per-account split values keyed by bank account uuid (percent or dollars depending on `splitBy`). |
+| `splitBy` | [`SplitByValue`](#splitbyvalue) | Selected split mode — by percentage or by fixed amount. |
+
+***
+
+<a id="splitpaymentsformfieldsmetadata"></a>
+
+### SplitPaymentsFormFieldsMetadata
+
+> **SplitPaymentsFormFieldsMetadata** = [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata exposed on `form.fieldsMetadata` for [useSplitPaymentsForm](#usesplitpaymentsform).
+
+***
+
+<a id="splitpaymentsformoutputs"></a>
+
+### SplitPaymentsFormOutputs
+
+> **SplitPaymentsFormOutputs** = [`SplitPaymentsFormData`](#splitpaymentsformdata)
+
+Shape of the validated values produced by the split payments form on submit.
+
+## Fields
+
+### SplitPaymentsFormFields
+<a id="splitpaymentsformfields"></a>
+
+Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
+
+| Field Key | Component Type | Notes |
+| --------- | -------------- | ----- |
+| `SplitBy` | — | — |
+| `splits` | — | — |
+
 ## Utility Types
 
 <a id="split_by_values"></a>
@@ -226,25 +277,6 @@ The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalan
 
 ***
 
-<a id="splitpaymentsformdata"></a>
-
-### SplitPaymentsFormData
-
-> **SplitPaymentsFormData** = `object`
-
-Shape of the values managed by the split payments form. `splitAmount` and
-`priority` are keyed by bank account uuid.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `priority` | `Record`\<`string`, `number`\> | Per-account priority values keyed by bank account uuid; the highest priority receives the remainder. |
-| `splitAmount` | `Record`\<`string`, `number` \| `null`\> | Per-account split values keyed by bank account uuid (percent or dollars depending on `splitBy`). |
-| `splitBy` | [`SplitByValue`](#splitbyvalue) | Selected split mode — by percentage or by fixed amount. |
-
-***
-
 <a id="splitpaymentsformerrorcode"></a>
 
 ### SplitPaymentsFormErrorCode
@@ -287,16 +319,6 @@ Field names accepted by the split payments form.
 
 ***
 
-<a id="splitpaymentsformfieldsmetadata"></a>
-
-### SplitPaymentsFormFieldsMetadata
-
-> **SplitPaymentsFormFieldsMetadata** = [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata exposed on `form.fieldsMetadata` for [useSplitPaymentsForm](#usesplitpaymentsform).
-
-***
-
 <a id="splitpaymentsformoptionalfieldstorequire"></a>
 
 ### SplitPaymentsFormOptionalFieldsToRequire
@@ -305,16 +327,6 @@ Per-field metadata exposed on `form.fieldsMetadata` for [useSplitPaymentsForm](#
 
 Keys of optional split payments fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="splitpaymentsformoutputs"></a>
-
-### SplitPaymentsFormOutputs
-
-> **SplitPaymentsFormOutputs** = [`SplitPaymentsFormData`](#splitpaymentsformdata)
-
-Shape of the validated values produced by the split payments form on submit.
 
 ***
 
@@ -350,15 +362,3 @@ domain data — use it for label construction or lookups by uuid.
 | `priority` | `number` | Ordering value — splits are processed in ascending priority; the highest priority is the remainder. |
 | `splitAmount` | `number` \| `null` | Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. |
 | `uuid` | `string` | UUID of the underlying bank account. |
-
-## Fields
-
-### SplitPaymentsFormFields
-<a id="splitpaymentsformfields"></a>
-
-Field components exposed by [useSplitPaymentsForm](#usesplitpaymentsform) on `form.Fields`.
-
-| Field Key | Component Type | Notes |
-| --------- | -------------- | ----- |
-| `SplitBy` | — | — |
-| `splits` | — | — |

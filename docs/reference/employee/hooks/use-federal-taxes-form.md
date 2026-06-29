@@ -118,6 +118,57 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `status.isPending` | `boolean` | `true` while the update mutation is in flight. |
 | `status.mode` | `"update"` | Always `'update'` — the federal tax record is created when the employee is created. |
 
+## Form
+
+<a id="federaltaxesfieldsmetadata"></a>
+
+### FederalTaxesFieldsMetadata
+
+> **FederalTaxesFieldsMetadata** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Metadata for each [useFederalTaxesForm](#usefederaltaxesform) field, exposed on `form.fieldsMetadata`.
+
+#### Remarks
+
+Includes per-field `isDisabled`, `isRequired`, and the dynamic option list
+for select and radio fields (`filingStatus`, `twoJobs`).
+
+***
+
+<a id="federaltaxesformdata"></a>
+
+### FederalTaxesFormData
+
+> **FederalTaxesFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the federal taxes form.
+
+***
+
+<a id="federaltaxesformfields"></a>
+
+### FederalTaxesFormFields
+
+> **FederalTaxesFormFields** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"Fields"`\]
+
+Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
+
+#### Remarks
+
+Alias for the `Fields` shape on [UseFederalTaxesFormReady](#usefederaltaxesformready). Use this
+type when typing a presentational component that consumes the hook's
+fields.
+
+***
+
+<a id="federaltaxesformoutputs"></a>
+
+### FederalTaxesFormOutputs
+
+> **FederalTaxesFormOutputs** = [`FederalTaxesFormData`](#federaltaxesformdata)
+
+Shape of the validated values produced by the federal taxes form on submit.
+
 ## Fields
 
 ### FederalTaxesFields
@@ -341,57 +392,6 @@ codes to localized copy in `validationMessages` when composing the hook.
 > **FederalTaxesField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the federal taxes form.
-
-***
-
-<a id="federaltaxesfieldsmetadata"></a>
-
-### FederalTaxesFieldsMetadata
-
-> **FederalTaxesFieldsMetadata** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Metadata for each [useFederalTaxesForm](#usefederaltaxesform) field, exposed on `form.fieldsMetadata`.
-
-#### Remarks
-
-Includes per-field `isDisabled`, `isRequired`, and the dynamic option list
-for select and radio fields (`filingStatus`, `twoJobs`).
-
-***
-
-<a id="federaltaxesformdata"></a>
-
-### FederalTaxesFormData
-
-> **FederalTaxesFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the federal taxes form.
-
-***
-
-<a id="federaltaxesformfields"></a>
-
-### FederalTaxesFormFields
-
-> **FederalTaxesFormFields** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"Fields"`\]
-
-Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
-
-#### Remarks
-
-Alias for the `Fields` shape on [UseFederalTaxesFormReady](#usefederaltaxesformready). Use this
-type when typing a presentational component that consumes the hook's
-fields.
-
-***
-
-<a id="federaltaxesformoutputs"></a>
-
-### FederalTaxesFormOutputs
-
-> **FederalTaxesFormOutputs** = [`FederalTaxesFormData`](#federaltaxesformdata)
-
-Shape of the validated values produced by the federal taxes form on submit.
 
 ***
 

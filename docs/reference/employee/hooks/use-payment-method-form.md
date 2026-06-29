@@ -115,6 +115,36 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
+## Form
+
+<a id="paymentmethodformdata"></a>
+
+### PaymentMethodFormData
+
+> **PaymentMethodFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the payment method form.
+
+***
+
+<a id="paymentmethodformfieldsmetadata"></a>
+
+### PaymentMethodFormFieldsMetadata
+
+> **PaymentMethodFormFieldsMetadata** = [`UsePaymentMethodFormReady`](#usepaymentmethodformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Per-field metadata exposed on `form.fieldsMetadata` for [usePaymentMethodForm](#usepaymentmethodform).
+
+***
+
+<a id="paymentmethodformoutputs"></a>
+
+### PaymentMethodFormOutputs
+
+> **PaymentMethodFormOutputs** = [`PaymentMethodFormData`](#paymentmethodformdata)
+
+Shape of the validated values produced by the payment method form on submit.
+
 ## Fields
 
 ### PaymentMethodFormFields
@@ -160,16 +190,6 @@ Supported payment method type values: direct deposit and check.
 
 ***
 
-<a id="paymentmethodformdata"></a>
-
-### PaymentMethodFormData
-
-> **PaymentMethodFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the payment method form.
-
-***
-
 <a id="paymentmethodformerrorcode"></a>
 
 ### PaymentMethodFormErrorCode
@@ -208,16 +228,6 @@ Field names accepted by the payment method form.
 
 ***
 
-<a id="paymentmethodformfieldsmetadata"></a>
-
-### PaymentMethodFormFieldsMetadata
-
-> **PaymentMethodFormFieldsMetadata** = [`UsePaymentMethodFormReady`](#usepaymentmethodformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Per-field metadata exposed on `form.fieldsMetadata` for [usePaymentMethodForm](#usepaymentmethodform).
-
-***
-
 <a id="paymentmethodformoptionalfieldstorequire"></a>
 
 ### PaymentMethodFormOptionalFieldsToRequire
@@ -226,16 +236,6 @@ Per-field metadata exposed on `form.fieldsMetadata` for [usePaymentMethodForm](#
 
 Keys of optional payment method fields that can be promoted to required via
 the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="paymentmethodformoutputs"></a>
-
-### PaymentMethodFormOutputs
-
-> **PaymentMethodFormOutputs** = [`PaymentMethodFormData`](#paymentmethodformdata)
-
-Shape of the validated values produced by the payment method form on submit.
 
 ***
 

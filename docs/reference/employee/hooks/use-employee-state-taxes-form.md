@@ -135,6 +135,54 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
+## Form
+
+<a id="employeestatetaxesfieldsmetadata"></a>
+
+### EmployeeStateTaxesFieldsMetadata
+
+> **EmployeeStateTaxesFieldsMetadata** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
+with `isRequired` / `isDisabled` and option lists.
+
+***
+
+<a id="employeestatetaxesformdata"></a>
+
+### EmployeeStateTaxesFormData
+
+Shape of the values managed by the employee state taxes form. Keyed by
+two-letter state code, then by question key (camelCased from the API key).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `states` | `Record`\<`string`, `Record`\<`string`, [`StateTaxValue`](#statetaxvalue)\>\> | Per-state answer map: state code → (camelCased question key → value). |
+
+***
+
+<a id="employeestatetaxesformfields"></a>
+
+### EmployeeStateTaxesFormFields
+
+> **EmployeeStateTaxesFormFields** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"Fields"`\]
+
+The array of per-state field groups exposed by
+[useEmployeeStateTaxesForm](#useemployeestatetaxesform) on `form.Fields`.
+
+***
+
+<a id="employeestatetaxesformoutputs"></a>
+
+### EmployeeStateTaxesFormOutputs
+
+> **EmployeeStateTaxesFormOutputs** = [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)
+
+Shape of the validated values produced by the employee state taxes form on
+submit.
+
 ## Fields
 
 <a id="statetaxfields"></a>
@@ -413,54 +461,6 @@ Use these constants as the keys in a field's `validationMessages` prop to
 map an error code to a user-facing message. The state-taxes form surfaces
 only a single error code: every required field that is empty emits
 `REQUIRED`.
-
-***
-
-<a id="employeestatetaxesfieldsmetadata"></a>
-
-### EmployeeStateTaxesFieldsMetadata
-
-> **EmployeeStateTaxesFieldsMetadata** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
-with `isRequired` / `isDisabled` and option lists.
-
-***
-
-<a id="employeestatetaxesformdata"></a>
-
-### EmployeeStateTaxesFormData
-
-Shape of the values managed by the employee state taxes form. Keyed by
-two-letter state code, then by question key (camelCased from the API key).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `states` | `Record`\<`string`, `Record`\<`string`, [`StateTaxValue`](#statetaxvalue)\>\> | Per-state answer map: state code → (camelCased question key → value). |
-
-***
-
-<a id="employeestatetaxesformfields"></a>
-
-### EmployeeStateTaxesFormFields
-
-> **EmployeeStateTaxesFormFields** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"Fields"`\]
-
-The array of per-state field groups exposed by
-[useEmployeeStateTaxesForm](#useemployeestatetaxesform) on `form.Fields`.
-
-***
-
-<a id="employeestatetaxesformoutputs"></a>
-
-### EmployeeStateTaxesFormOutputs
-
-> **EmployeeStateTaxesFormOutputs** = [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)
-
-Shape of the validated values produced by the employee state taxes form on
-submit.
 
 ***
 

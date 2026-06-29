@@ -119,6 +119,47 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
+## Form
+
+<a id="contractoraddressfieldsmetadata"></a>
+
+### ContractorAddressFieldsMetadata
+
+> **ContractorAddressFieldsMetadata** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontractoraddressform).
+
+***
+
+<a id="contractoraddressformdata"></a>
+
+### ContractorAddressFormData
+
+> **ContractorAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the contractor address form.
+
+***
+
+<a id="contractoraddressformfields"></a>
+
+### ContractorAddressFormFields
+
+> **ContractorAddressFormFields** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"Fields"`\]
+
+Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
+
+***
+
+<a id="contractoraddressformoutputs"></a>
+
+### ContractorAddressFormOutputs
+
+> **ContractorAddressFormOutputs** = [`ContractorAddressFormData`](#contractoraddressformdata)
+
+Shape of the validated values produced by the contractor address form on
+submit.
+
 ## Fields
 
 ### ContractorAddressFields
@@ -290,47 +331,6 @@ hook.
 > **ContractorAddressField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the contractor address form.
-
-***
-
-<a id="contractoraddressfieldsmetadata"></a>
-
-### ContractorAddressFieldsMetadata
-
-> **ContractorAddressFieldsMetadata** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontractoraddressform).
-
-***
-
-<a id="contractoraddressformdata"></a>
-
-### ContractorAddressFormData
-
-> **ContractorAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the contractor address form.
-
-***
-
-<a id="contractoraddressformfields"></a>
-
-### ContractorAddressFormFields
-
-> **ContractorAddressFormFields** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
-
-***
-
-<a id="contractoraddressformoutputs"></a>
-
-### ContractorAddressFormOutputs
-
-> **ContractorAddressFormOutputs** = [`ContractorAddressFormData`](#contractoraddressformdata)
-
-Shape of the validated values produced by the contractor address form on
-submit.
 
 ***
 

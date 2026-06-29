@@ -121,6 +121,47 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | `status.isPending` | `boolean` | `true` while the sign mutation is in flight. |
 | `status.mode` | `"create"` | Always `'create'`; the hook always submits as a signing operation. |
 
+## Form
+
+<a id="signemployeeformdata"></a>
+
+### SignEmployeeFormData
+
+> **SignEmployeeFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+
+Shape of the values managed by the I-9 sign-employee form.
+
+***
+
+<a id="signemployeeformfields"></a>
+
+### SignEmployeeFormFields
+
+> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
+
+***
+
+<a id="signemployeeformfieldsmetadata"></a>
+
+### SignEmployeeFormFieldsMetadata
+
+> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
+
+***
+
+<a id="signemployeeformoutputs"></a>
+
+### SignEmployeeFormOutputs
+
+> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
+
+Shape of the validated values produced by the I-9 sign-employee form on
+submit.
+
 ## Fields
 
 ### SignEmployeeFormFieldComponents
@@ -319,16 +360,6 @@ Props accepted by [useSignEmployeeForm](#usesignemployeeform)'s `Fields.ConfirmS
 
 ***
 
-<a id="signemployeeformdata"></a>
-
-### SignEmployeeFormData
-
-> **SignEmployeeFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the I-9 sign-employee form.
-
-***
-
 <a id="signemployeeformerrorcode"></a>
 
 ### SignEmployeeFormErrorCode
@@ -365,37 +396,6 @@ hook.
 > **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
 
 Field names accepted by the I-9 sign-employee form.
-
-***
-
-<a id="signemployeeformfields"></a>
-
-### SignEmployeeFormFields
-
-> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="signemployeeformfieldsmetadata"></a>
-
-### SignEmployeeFormFieldsMetadata
-
-> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="signemployeeformoutputs"></a>
-
-### SignEmployeeFormOutputs
-
-> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
-
-Shape of the validated values produced by the I-9 sign-employee form on
-submit.
 
 ***
 
