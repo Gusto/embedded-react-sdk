@@ -77,13 +77,6 @@ export const LLC_CLASSIFICATION_CODES = ['c', 's', 'p'] as const
 export const OTHER_TEXT_FIELD = 'other_text'
 
 /**
- * The W-9 `date` API field key, populated automatically at submit time.
- *
- * @public
- */
-export const SIGNED_DATE_FIELD = 'date'
-
-/**
  * Section a W-9 field belongs to, used to group fields under headings when
  * rendering the signing form.
  *
@@ -146,6 +139,15 @@ function hasRedactedValue(field: DocumentField | undefined): boolean {
 }
 
 /**
+ * Maps an API field's `data_type` to the input variant used to render it. Only
+ * `checkbox` maps to a checkbox; every other pass-through type renders as text
+ * (e.g. `exemption_from_FATCA` is a FATCA-exemption code, not a checkbox).
+ */
+function variantForDataType(dataType: string | undefined): W9FieldVariant {
+  return dataType === 'checkbox' ? 'checkbox' : 'text'
+}
+
+/**
  * The W-9 layout plan, in render order. Pass-through entries carry the API
  * field key; synthesized entries (`taxClassification`, `llcClassificationCode`)
  * do not. The actual rendered set is filtered to fields present on the document.
@@ -199,7 +201,7 @@ const W9_PLAN: Array<{
   {
     name: 'exemption_from_FATCA',
     apiKey: 'exemption_from_FATCA',
-    variant: 'checkbox',
+    variant: 'text',
     section: 'exemptions',
     optional: true,
   },
@@ -260,9 +262,11 @@ export function isW9Document(document: Document): boolean {
  *
  * @remarks
  * Pass-through fields are included only when present on the document; their
- * `isRequired` flag is driven by the API `required` flag unless the W-9 layout
- * marks them optional. The classification radio is included when any of the
- * classification checkbox fields are present.
+ * input variant is derived from the API `data_type` (so a field typed `text`
+ * always renders as text, even if the static layout guessed otherwise) and
+ * their `isRequired` flag is driven by the API `required` flag unless the W-9
+ * layout marks them optional. The classification radio is included when any of
+ * the classification checkbox fields are present.
  *
  * @param document - The W-9 document returned by the API.
  * @returns The ordered list of field descriptors to render.
@@ -281,7 +285,7 @@ export function buildW9FieldDescriptors(document: Document): W9FieldDescriptor[]
       descriptors.push({
         name: entry.name,
         apiKey: entry.apiKey,
-        variant: entry.variant,
+        variant: variantForDataType(field.dataType),
         section: entry.section,
         isRequired: entry.optional ? false : Boolean(field.required),
         visibleWhenClassification: entry.visibleWhenClassification,
@@ -399,8 +403,8 @@ export interface SignFieldValue {
  * `'1'`; when the LLC classification is chosen, the selected LLC code is sent
  * under the `tax_classification` key. Checkboxes serialize to `'1'`/`'0'`. The
  * `other_text` and `llcClassificationCode` values are only included for their
- * respective classifications. The `date` field, when present on the document,
- * is set to today's date.
+ * respective classifications. The `date` field is intentionally omitted so the
+ * API auto-fills the signing date in its own locale-correct format.
  *
  * @param document - The W-9 document being signed.
  * @param descriptors - The descriptors produced by {@link buildW9FieldDescriptors}.
@@ -413,7 +417,6 @@ export function serializeW9Fields(
   descriptors: W9FieldDescriptor[],
   values: ContractorSignatureFormData,
 ): SignFieldValue[] {
-  const byKey = indexFields(document)
   const fields: SignFieldValue[] = []
 
   const classification = String(values[TAX_CLASSIFICATION_FIELD] ?? '')
@@ -459,10 +462,6 @@ export function serializeW9Fields(
         value: String(values[LLC_CLASSIFICATION_FIELD] ?? ''),
       })
     }
-  }
-
-  if (byKey.has(SIGNED_DATE_FIELD)) {
-    fields.push({ key: SIGNED_DATE_FIELD, value: new Date().toISOString().slice(0, 10) })
   }
 
   return fields

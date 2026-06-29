@@ -33,11 +33,11 @@ export const w9DocumentFields = [
   {
     key: 'exemption_from_FATCA',
     value: null,
-    data_type: 'checkbox',
-    required: true,
+    data_type: 'text',
+    required: false,
     page_number: 0,
   },
-  { key: 'other', value: null, data_type: 'text', required: false, page_number: 0 },
+  { key: 'other', value: null, data_type: 'checkbox', required: true, page_number: 0 },
   { key: 'other_text', value: null, data_type: 'text', required: false, page_number: 0 },
   { key: 'foreign_partners', value: null, data_type: 'checkbox', required: true, page_number: 0 },
   {

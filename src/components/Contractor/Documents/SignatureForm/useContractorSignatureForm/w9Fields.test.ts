@@ -27,8 +27,8 @@ function w9Document(overrides: Partial<Document> = {}): Document {
       { key: 'limited_liability_company', value: null, dataType: 'checkbox', required: true },
       { key: 'tax_classification', value: null, dataType: 'text', required: false },
       { key: 'exempt_payee_code', value: null, dataType: 'text', required: false },
-      { key: 'exemption_from_FATCA', value: null, dataType: 'checkbox', required: true },
-      { key: 'other', value: null, dataType: 'text', required: false },
+      { key: 'exemption_from_FATCA', value: null, dataType: 'text', required: false },
+      { key: 'other', value: null, dataType: 'checkbox', required: true },
       { key: 'other_text', value: null, dataType: 'text', required: false },
       { key: 'foreign_partners', value: null, dataType: 'checkbox', required: true },
       {
@@ -100,6 +100,14 @@ describe('buildW9FieldDescriptors', () => {
     expect(byName.account_number).toMatchObject({ isRequired: false })
     expect(byName.company_name).toMatchObject({ isRequired: false })
     expect(byName.home_address_street_2).toMatchObject({ isRequired: false })
+  })
+
+  it('derives the input variant from the API data_type', () => {
+    const byName = Object.fromEntries(buildW9FieldDescriptors(w9Document()).map(d => [d.name, d]))
+    // exemption_from_FATCA is a FATCA-exemption code (text), not a checkbox.
+    expect(byName.exemption_from_FATCA).toMatchObject({ variant: 'text' })
+    expect(byName.foreign_partners).toMatchObject({ variant: 'checkbox' })
+    expect(byName.ssn).toMatchObject({ variant: 'text' })
   })
 
   it('keeps API-required fields required', () => {
@@ -207,16 +215,30 @@ describe('serializeW9Fields', () => {
     const checked = serializeW9Fields(
       w9Document(),
       descriptors,
-      baseValues({ foreign_partners: true, exemption_from_FATCA: false }),
+      baseValues({ foreign_partners: true }),
     )
     expect(checked).toContainEqual({ key: 'foreign_partners', value: '1' })
-    expect(checked).toContainEqual({ key: 'exemption_from_FATCA', value: '0' })
+
+    const unchecked = serializeW9Fields(
+      w9Document(),
+      descriptors,
+      baseValues({ foreign_partners: false }),
+    )
+    expect(unchecked).toContainEqual({ key: 'foreign_partners', value: '0' })
   })
 
-  it('sets the date field to today in ISO format', () => {
-    const today = new Date().toISOString().slice(0, 10)
+  it('serializes exemption_from_FATCA as its text code, not a checkbox', () => {
+    const fields = serializeW9Fields(
+      w9Document(),
+      descriptors,
+      baseValues({ exemption_from_FATCA: 'A' }),
+    )
+    expect(fields).toContainEqual({ key: 'exemption_from_FATCA', value: 'A' })
+  })
+
+  it('omits the date field so the API auto-fills it', () => {
     const fields = serializeW9Fields(w9Document(), descriptors, baseValues())
-    expect(fields).toContainEqual({ key: 'date', value: today })
+    expect(fields.find(f => f.key === 'date')).toBeUndefined()
   })
 
   it('passes edited non-sensitive values through as editable inputs', () => {

@@ -51,8 +51,8 @@
       "label": "Exempt payee code"
     },
     "exemption_from_FATCA": {
-      "label": "Exemption from FATCA",
-      "description": "This is an exemption from the Foreign Account Tax Compliance Act."
+      "label": "Exemption from FATCA reporting code (4b)",
+      "description": "Enter the code (if any) indicating you are exempt from reporting under the Foreign Account Tax Compliance Act."
     },
     "home_address_street_1": {
       "label": "Street 1"

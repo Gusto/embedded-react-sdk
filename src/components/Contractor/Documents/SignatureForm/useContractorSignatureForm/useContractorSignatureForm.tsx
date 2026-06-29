@@ -168,14 +168,18 @@ function buildFieldsMetadata(descriptors: W9FieldDescriptor[]): FieldsMetadata {
  * and collects the document's fields plus a typed signature and consent.
  *
  * @remarks
- * The fields are driven by the document returned from the API. Today the only
- * signable contractor document is the W-9, whose federal tax classification
- * checkboxes are presented as a single required radio group with conditional
- * LLC-code and "Other" sub-fields; on submit the selection is mapped back to
- * the W-9 wire format. Pre-filled values (name, address, TIN, etc.) are
- * editable inputs. `data.sections` describes how to group `form.Fields` under
- * headings; consult `form.fieldsMetadata` for per-field required flags and
- * select/radio options.
+ * This hook implements the W-9 — the only signable contractor document the API
+ * exposes today (`taxpayer_identification_form_w_9`). It applies a fixed W-9
+ * layout to the fields the document returns: each field's input variant is
+ * derived from its API `data_type`, the seven federal tax-classification
+ * checkboxes are collapsed into a single required radio group with conditional
+ * LLC-code and "Other" sub-fields, and on submit the selection is mapped back
+ * to the W-9 wire format. Pre-filled values (name, address, TIN, etc.) are
+ * editable inputs; the signing `date` is omitted so the API auto-fills it. A
+ * document that returns no recognized W-9 fields renders as acknowledge-only
+ * (`data.hasFields` is `false`). `data.sections` describes how to group
+ * `form.Fields` under headings; consult `form.fieldsMetadata` for per-field
+ * required flags and select/radio options.
  *
  * @param props - See {@link UseContractorSignatureFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorSignatureFormReady} once loaded.
@@ -240,6 +244,10 @@ export function useContractorSignatureForm({
                 requestBody: {
                   fields: serializeW9Fields(document, descriptors, payload),
                   agree: payload.agree,
+                  // The signing IP is supplied by the partner proxy via the
+                  // `x-gusto-client-ip` header; send an empty body value to
+                  // match the employee/company sign flows.
+                  signedByIpAddress: '',
                 },
               },
             })
