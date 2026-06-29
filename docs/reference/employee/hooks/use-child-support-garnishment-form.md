@@ -148,9 +148,20 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 
 ### ChildSupportGarnishmentFormData
 
-> **ChildSupportGarnishmentFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the child support garnishment form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `amount` | `number` |
+| `caseNumber` | `string` |
+| `fipsCode` | `string` |
+| `orderNumber` | `string` |
+| `paymentPeriod` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
+| `payPeriodMaximum` | `number` |
+| `remittanceNumber` | `string` |
+| `state` | `string` |
 
 ***
 

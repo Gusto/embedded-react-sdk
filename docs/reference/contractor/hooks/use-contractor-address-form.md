@@ -135,9 +135,17 @@ Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontrac
 
 ### ContractorAddressFormData
 
-> **ContractorAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the contractor address form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `city` | `string` |
+| `state` | `string` |
+| `street1` | `string` |
+| `street2` | `string` |
+| `zip` | `string` |
 
 ***
 

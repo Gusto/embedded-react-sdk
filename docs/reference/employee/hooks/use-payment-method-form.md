@@ -121,9 +121,13 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 
 ### PaymentMethodFormData
 
-> **PaymentMethodFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the payment method form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `type` | `"Check"` \| `"Direct Deposit"` |
 
 ***
 

@@ -62,6 +62,7 @@ const fieldValidators = {
  * Shape of the values managed by the deduction form.
  *
  * @public
+ * @interface
  */
 export type DeductionFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

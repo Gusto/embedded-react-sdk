@@ -60,6 +60,7 @@ export type PayScheduleField = keyof typeof fieldValidators
  * Shape of the values managed by the pay schedule form.
  *
  * @public
+ * @interface
  */
 export type PayScheduleFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

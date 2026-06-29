@@ -170,6 +170,7 @@ export default [
       'tsdoc-coverage/require-comment': 'error',
       'tsdoc-coverage/require-member-comment': 'error',
       'tsdoc-coverage/require-release-tag': 'error',
+      'tsdoc-coverage/require-form-data-interface': 'error',
     },
   },
 

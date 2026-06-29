@@ -160,9 +160,19 @@ Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployee
 
 ### EmployeeDetailsFormData
 
-> **EmployeeDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the employee details form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `dateOfBirth` | `string` |
+| `email` | `string` |
+| `firstName` | `string` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
 
 ***
 

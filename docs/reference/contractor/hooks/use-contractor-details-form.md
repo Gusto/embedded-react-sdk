@@ -167,9 +167,26 @@ Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontra
 
 ### ContractorDetailsFormData
 
-> **ContractorDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the contractor details form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `businessName` | `string` |
+| `ein` | `string` |
+| `email` | `string` |
+| `fileNewHireReport` | `boolean` |
+| `firstName` | `string` |
+| `hourlyRate` | `number` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
+| `startDate` | `string` |
+| `type` | `"Business"` \| `"Individual"` |
+| `wageType` | `"Fixed"` \| `"Hourly"` |
+| `workState` | `string` |
 
 ***
 

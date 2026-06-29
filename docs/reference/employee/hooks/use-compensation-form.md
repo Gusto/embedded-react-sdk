@@ -176,8 +176,6 @@ the parent job's hire date and any pending future compensation.
 
 ### CompensationFormData
 
-> **CompensationFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the form values managed by [useCompensationForm](#usecompensationform).
 
 #### Remarks
@@ -187,6 +185,18 @@ Accepted as `defaultValues` on `useCompensationForm` and returned by
 is an ISO date string (`YYYY-MM-DD`) or `null`; `flsaStatus` is optional so
 the field can render an empty placeholder when nothing is preselected
 (requiredness is enforced on submit per mode).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `adjustForMinimumWage` | `boolean` | - |
+| `effectiveDate` | `string` \| `null` | The effective date a new compensation should take effect on. - **create mode (`compensationId` absent)**: required; partners typically default to the parent job's `hireDate` (onboarding stub-fill) or a future date (rate change). Must be on or after `hireDate`. Server-side this maps to POST /v1/jobs/:jobId/compensations. - **update mode (`compensationId` present)**: optional; if omitted the API keeps the existing effective date. The `hireDate` lower bound is **not** enforced — loaded values may legitimately predate the hire date. Maps to PUT /v1/compensations/:id. |
+| `flsaStatus` | `"Exempt"` \| `"Salaried Nonexempt"` \| `"Nonexempt"` \| `"Owner"` \| `"Commission Only Exempt"` \| `"Commission Only Nonexempt"` \| `undefined` | - |
+| `minimumWageId` | `string` | - |
+| `paymentUnit` | `"Hour"` \| `"Week"` \| `"Month"` \| `"Year"` \| `"Paycheck"` | - |
+| `rate` | `number` | - |
+| `title` | `string` | Optional in both modes. Setting title here scopes the change to this compensation's `effectiveDate` — pair it with a future-dated comp to schedule a promotion title alongside a rate change. Use `useJobForm.Fields.Title` instead when creating a job (title is required by the API on job creation) or when renaming the active role immediately, and avoid rendering both fields on the same screen. |
 
 ***
 

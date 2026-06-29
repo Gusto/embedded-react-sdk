@@ -155,9 +155,19 @@ Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayschedulefo
 
 ### PayScheduleFormData
 
-> **PayScheduleFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the pay schedule form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `anchorEndOfPayPeriod` | `string` \| `null` |
+| `anchorPayDate` | `string` \| `null` |
+| `customName` | `string` |
+| `customTwicePerMonth` | `string` |
+| `day1` | `number` |
+| `day2` | `number` |
+| `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
 
 ***
 

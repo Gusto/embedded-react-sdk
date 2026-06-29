@@ -143,9 +143,14 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 
 ### SignCompanyFormData
 
-> **SignCompanyFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the sign-company form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `confirmSignature` | `boolean` |
+| `signature` | `string` |
 
 ***
 

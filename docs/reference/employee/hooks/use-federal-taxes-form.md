@@ -139,9 +139,18 @@ for select and radio fields (`filingStatus`, `twoJobs`).
 
 ### FederalTaxesFormData
 
-> **FederalTaxesFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the federal taxes form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `deductions` | `number` |
+| `dependentsAmount` | `number` |
+| `extraWithholding` | `number` |
+| `filingStatus` | `string` |
+| `otherIncome` | `number` |
+| `twoJobs` | `boolean` |
 
 ***
 

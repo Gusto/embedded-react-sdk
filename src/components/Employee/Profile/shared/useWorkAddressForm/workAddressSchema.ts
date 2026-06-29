@@ -44,6 +44,7 @@ export type WorkAddressField = keyof typeof fieldValidators
  * Shape of the values managed by the work address form.
  *
  * @public
+ * @interface
  */
 export type WorkAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

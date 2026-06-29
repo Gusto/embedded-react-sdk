@@ -185,9 +185,14 @@ Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressfo
 
 ### WorkAddressFormData
 
-> **WorkAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the work address form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `effectiveDate` | `string` |
+| `locationUuid` | `string` |
 
 ***
 

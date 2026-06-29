@@ -190,9 +190,19 @@ Type of `form.fieldsMetadata` returned by [useHomeAddressForm](#usehomeaddressfo
 
 ### HomeAddressFormData
 
-> **HomeAddressFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the home address form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `city` | `string` |
+| `courtesyWithholding` | `boolean` |
+| `effectiveDate` | `string` |
+| `state` | `string` |
+| `street1` | `string` |
+| `street2` | `string` |
+| `zip` | `string` |
 
 ***
 

@@ -146,9 +146,19 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 
 ### DeductionFormData
 
-> **DeductionFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the deduction form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `amount` | `number` |
+| `annualMaximum` | `number` |
+| `deductAsPercentage` | `boolean` |
+| `description` | `string` |
+| `garnishmentType` | `"child_support"` \| `"federal_tax_lien"` \| `"state_tax_lien"` \| `"student_loan"` \| `"creditor_garnishment"` \| `"federal_loan"` \| `"other_garnishment"` |
+| `recurring` | `boolean` |
+| `totalAmount` | `number` |
 
 ***
 

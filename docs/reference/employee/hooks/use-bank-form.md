@@ -113,9 +113,16 @@ Ready-state return value of [useBankForm](#usebankform).
 
 ### BankFormData
 
-> **BankFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the bank account form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `accountNumber` | `string` |
+| `accountType` | `"Checking"` \| `"Savings"` |
+| `name` | `string` |
+| `routingNumber` | `string` |
 
 ***
 

@@ -63,6 +63,7 @@ export type BankFormField = keyof typeof fieldValidators
  * Shape of the values managed by the bank account form.
  *
  * @public
+ * @interface
  */
 export type BankFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
