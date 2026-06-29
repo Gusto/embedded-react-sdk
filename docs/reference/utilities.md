@@ -249,6 +249,7 @@ parsed values (or `undefined` if invalid).
 - [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
 - [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
 - [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
+- [`UseContractorSignatureFormReady`](contractor/hooks/use-contractor-signature-form.md#usecontractorsignatureformready)
 
 #### Type Parameters
 
@@ -405,6 +406,7 @@ components to render labels, inline validation, and bounded date pickers.
 | `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
 | `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 | `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
 
 ***
 
@@ -442,6 +444,7 @@ from so callers can read additional attributes off the originating record.
 | `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
 | `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 | `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
 
 ***
 

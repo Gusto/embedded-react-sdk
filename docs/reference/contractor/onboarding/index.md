@@ -30,3 +30,4 @@ custom_edit_url: null
 | [Landing](blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
 | [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [SignatureForm](blocks.md#signatureform) | Standalone form for signing an individual contractor document (W-9). |
