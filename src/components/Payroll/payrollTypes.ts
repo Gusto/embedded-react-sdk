@@ -1,4 +1,12 @@
 import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type { Department } from '@gusto/embedded-api-v-2025-11-15/models/components/department'
+
+/**
+ * The department a payroll is scoped to, when departmental payroll is enabled.
+ *
+ * @internal
+ */
+export type PayrollDepartment = Department
 
 /**
  * Enum-like map of payroll categories combining `Regular`, `External`, and every off-cycle reason.
