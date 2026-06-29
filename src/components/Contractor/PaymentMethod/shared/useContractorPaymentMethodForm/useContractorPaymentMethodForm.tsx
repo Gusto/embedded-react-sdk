@@ -249,8 +249,7 @@ export function useContractorPaymentMethodForm({
  * @public
  */
 export type UseContractorPaymentMethodFormResult =
-  | HookLoadingResult
-  | UseContractorPaymentMethodFormReady
+  HookLoadingResult | UseContractorPaymentMethodFormReady
 
 /**
  * Per-field metadata exposed on `form.fieldsMetadata` for {@link useContractorPaymentMethodForm}.
