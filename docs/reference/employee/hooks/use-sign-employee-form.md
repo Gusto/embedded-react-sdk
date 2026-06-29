@@ -178,10 +178,44 @@ First preparer field group; defined only for I-9 forms when `preparers.count >= 
 
 ```tsx
 {form.Fields.Preparer1 && (
-  <form.Fields.Preparer1.City
-    label="City"
-    validationMessages={{ REQUIRED: '…' }}
-  />
+  <>
+    <form.Fields.Preparer1.City
+      label="City"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.ConfirmSignature
+      label="Confirm signature"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.FirstName
+      label="First name"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.LastName
+      label="Last name"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Signature
+      label="Signature"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.State
+      label="State"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Street1
+      label="Street1"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Street2
+      label="Street2"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+    <form.Fields.Preparer1.Zip
+      label="Zip"
+      validationMessages={{ REQUIRED: '…' }}
+    />
+  </>
 )}
 ```
 
@@ -195,10 +229,9 @@ Second preparer field group; defined only for I-9 forms when `preparers.count >=
 
 ```tsx
 {form.Fields.Preparer2 && (
-  <form.Fields.Preparer2.City
-    label="City"
-    validationMessages={{ REQUIRED: '…' }}
-  />
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
 )}
 ```
 
@@ -212,10 +245,9 @@ Third preparer field group; defined only for I-9 forms when `preparers.count >= 
 
 ```tsx
 {form.Fields.Preparer3 && (
-  <form.Fields.Preparer3.City
-    label="City"
-    validationMessages={{ REQUIRED: '…' }}
-  />
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
 )}
 ```
 
@@ -229,10 +261,9 @@ Fourth preparer field group; defined only for I-9 forms when `preparers.count >=
 
 ```tsx
 {form.Fields.Preparer4 && (
-  <form.Fields.Preparer4.City
-    label="City"
-    validationMessages={{ REQUIRED: '…' }}
-  />
+  <>
+    {/* same sub-fields as Preparer1 */}
+  </>
 )}
 ```
 

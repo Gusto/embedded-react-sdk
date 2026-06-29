@@ -1399,6 +1399,9 @@ function buildFlatFieldsSection(
   // Field groups referenced by one or more members, rendered once after the
   // per-field sections (keyed by name to dedupe `Preparer1`–`Preparer4`).
   const groupRefs = new Map<string, DeclarationReflection>()
+  // The first Fields key to use each group — that one gets the full worked
+  // example; later keys reusing the same group point back to it.
+  const groupFirstField = new Map<string, string>()
 
   const memberDescription = (member: DeclarationReflection): string =>
     member.comment
@@ -1552,18 +1555,39 @@ function buildFlatFieldsSection(
     if (groupRef) {
       relocated.add(groupRef.name)
       groupRefs.set(groupRef.name, groupRef)
-      const subField = (fieldGroupMembers(groupRef) ?? [])[0]
       const groupParts = [...intro]
-      if (subField) {
-        const subCodes = fieldPropsReflection(subField.type)
-          ? fieldValidationCodes(fieldPropsReflection(subField.type)!)
-          : []
-        const element = fieldExample(
-          `form.Fields.${fieldKey}.${subField.name}`,
-          humanize(subField.name),
-          subCodes,
-        )
-        groupParts.push('', exampleFence(member, fieldKey, element))
+      const firstUse = groupFirstField.get(groupRef.name)
+
+      // Wrap a fragment body in a code fence, null-checking the group for
+      // optional/conditional members.
+      const fenceFragment = (body: string[]): string => {
+        const fragment = ['  <>', ...body, '  </>']
+        const inner = isOptionalField(member)
+          ? [`{form.Fields.${fieldKey} && (`, ...fragment, ')}']
+          : fragment
+        return ['```tsx', ...inner, '```'].join('\n')
+      }
+
+      if (!firstUse) {
+        // First field to use this group: a complete example rendering every
+        // sub-field, each with its own validationMessages.
+        groupFirstField.set(groupRef.name, fieldKey)
+        const body = (fieldGroupMembers(groupRef) ?? []).map(sub => {
+          const subPropsRef = fieldPropsReflection(sub.type)
+          const element = fieldExample(
+            `form.Fields.${fieldKey}.${sub.name}`,
+            humanize(sub.name),
+            subPropsRef ? fieldValidationCodes(subPropsRef) : [],
+          )
+          return element
+            .split('\n')
+            .map(line => `    ${line}`)
+            .join('\n')
+        })
+        groupParts.push('', fenceFragment(body))
+      } else {
+        // Reuses a group already shown — point back to the first field's example.
+        groupParts.push('', fenceFragment([`    {/* same sub-fields as ${firstUse} */}`]))
       }
       groupParts.push('', `See [\`${groupRef.name}\`](#${context.router.getAnchor(groupRef)}) for all sub-fields.`)
       sections.push(groupParts.join('\n'))
