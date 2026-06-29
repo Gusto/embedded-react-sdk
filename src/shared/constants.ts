@@ -236,6 +236,8 @@ export const contractorEvents = {
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
   CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
   CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
+  CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: 'contractor/documents/view',
+  CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
 } as const
 
 /**
