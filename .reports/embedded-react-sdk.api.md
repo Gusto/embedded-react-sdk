@@ -1925,17 +1925,16 @@ export interface ContractorPaymentMethodFormFields {
 // @public
 export type ContractorPaymentMethodFormOutputs = ContractorPaymentMethodFormData;
 
+// Warning: (ae-forgotten-export) The symbol "PAYMENT_METHOD_TYPES_2" needs to be exported by the entry point index.d.ts
+//
 // @public
-export type ContractorPaymentMethodFormType = (typeof ContractorPaymentMethodTypes)[number];
+export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHOD_TYPES_2)[number];
 
 // @public
 export function ContractorPaymentMethodTypeField(props: ContractorPaymentMethodTypeFieldProps): JSX;
 
 // @public
 export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
-
-// @public
-export const ContractorPaymentMethodTypes: readonly ["Direct Deposit", "Check"];
 
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
