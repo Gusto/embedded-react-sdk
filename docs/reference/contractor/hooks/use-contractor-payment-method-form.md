@@ -38,7 +38,7 @@ Selects whether the contractor is paid by Direct Deposit or Check. Provide
 
 > **useContractorPaymentMethodForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
 
-Headless React Hook Form hook for managing a contractor's payment method.
+Headless React Hook Form hook for managing a contractor's payment method type.
 
 #### Parameters
 
@@ -54,29 +54,22 @@ A loading-state result while data loads, or a [UseContractorPaymentMethodFormRea
 
 #### Remarks
 
-Switches between Direct Deposit and Check on a single form. Choosing Direct
-Deposit reveals the bank account fields (nickname, routing number, account
-number, account type) and, on submit, creates the bank account, refetches the
-payment method to pick up the bumped optimistic-locking version, then updates
-the payment method. Choosing Check hides the bank fields and only updates the
-payment method type. Always operates in update mode — every contractor has a
-payment method, defaulting to Check.
+Owns only the payment method `type` selection (Direct Deposit or Check) and,
+on submit, updates the contractor's payment method via `PUT`. Always operates
+in update mode — every contractor has a payment method, defaulting to Check.
 
-Bank-field visibility and requiredness are driven by the selected `type`: the
-fields are `undefined` on `form.Fields` and skip their required checks when
-Check is selected. The account number is pre-filled with the masked value and
-only re-validated once a bank field changes.
+The bank account itself is managed by the separate `useContractorBankAccountForm`
+hook. On the Direct Deposit path the bank-account `POST` updates the payment
+method as a server side-effect, so a composing component submits the bank form
+instead of this hook; this hook's `onSubmit` is used for the Check path.
+`status.isDirectDeposit` lets the component drive that branching.
 
 #### Example
 
 ```tsx
-import {
-  useContractorPaymentMethodForm,
-  SDKFormProvider,
-  PAYMENT_METHODS,
-} from '@gusto/embedded-react-sdk'
+import { useContractorPaymentMethodForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
-function PaymentMethodScreen({ contractorId }: { contractorId: string }) {
+function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
   const paymentMethod = useContractorPaymentMethodForm({ contractorId })
 
   if (paymentMethod.isLoading) return null
@@ -91,10 +84,6 @@ function PaymentMethodScreen({ contractorId }: { contractorId: string }) {
         }}
       >
         <Fields.Type label="Select payment method" />
-        {Fields.Name && <Fields.Name label="Account nickname" />}
-        {Fields.RoutingNumber && <Fields.RoutingNumber label="Routing number" />}
-        {Fields.AccountNumber && <Fields.AccountNumber label="Account number" />}
-        {Fields.AccountType && <Fields.AccountType label="Account type" />}
         <button type="submit" disabled={paymentMethod.status.isPending}>Save</button>
       </form>
     </SDKFormProvider>
@@ -118,8 +107,6 @@ hook.
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
-| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` | `'INVALID_ACCOUNT_NUMBER'` |
-| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` | `'INVALID_ROUTING_NUMBER'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ## Interfaces
@@ -130,20 +117,11 @@ hook.
 
 Field components exposed by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) on `form.Fields`.
 
-#### Remarks
-
-The bank-account fields are `undefined` when the payment method is Check.
-Always null-check before rendering.
-
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `AccountNumber` | ((`props`) => `Element`) \| `undefined` | Text input bound to `accountNumber`; available only for Direct Deposit. |
-| `AccountType` | ((`props`) => `Element`) \| `undefined` | Radio group bound to `accountType`; available only for Direct Deposit. |
-| `Name` | ((`props`) => `Element`) \| `undefined` | Text input bound to `name`; available only for Direct Deposit. |
-| `RoutingNumber` | ((`props`) => `Element`) \| `undefined` | Text input bound to `routingNumber`; available only for Direct Deposit. |
-| `Type` | (`props`) => `Element` | Radio group bound to `type`. Always available. |
+| `Type` | (`props`) => `Element` | Radio group bound to `type`. Selects Direct Deposit or Check. |
 
 ***
 
@@ -158,8 +136,7 @@ Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `contractorId` | `string` | Contractor whose payment method is being edited. |
-| `defaultValues?` | `Partial`\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | Pre-fill form values. Server data (the current payment method and bank account) is used when no override is supplied. |
-| `optionalFieldsToRequire?` | `ContractorPaymentMethodOptionalFieldsToRequire` | Override optional fields to be required. |
+| `defaultValues?` | `Partial`\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | Pre-fill form values. Server data (the current payment method) is used when no override is supplied. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
@@ -180,9 +157,8 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod)\> \| `undefined`\> | - |
-| `data` | `object` | The contractor's current payment method and bank account, loaded from the API. |
-| `data.bankAccount` | [`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount) \| `undefined` | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod)\> \| `undefined`\> | - |
+| `data` | `object` | The contractor's current payment method, loaded from the API. |
 | `data.paymentMethod` | [`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod) | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
@@ -191,7 +167,8 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | `isPending` reflects the in-flight submit sequence; `mode` is always `'update'`. |
+| `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. `isDirectDeposit` reflects the currently selected type so a composing component can render bank fields and decide whether to submit the bank-account form. |
+| `status.isDirectDeposit` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 

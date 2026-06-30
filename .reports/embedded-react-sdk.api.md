@@ -1911,29 +1911,19 @@ export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodEr
 // @public
 export const ContractorPaymentMethodErrorCodes: {
     readonly REQUIRED: "REQUIRED";
-    readonly INVALID_ROUTING_NUMBER: "INVALID_ROUTING_NUMBER";
-    readonly INVALID_ACCOUNT_NUMBER: "INVALID_ACCOUNT_NUMBER";
 };
 
 // @public
 export type ContractorPaymentMethodFieldsMetadata = UseContractorPaymentMethodFormReady['form']['fieldsMetadata'];
 
 // @public
-export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
+export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
 
 // @public
-export type ContractorPaymentMethodFormField = "name" | "routingNumber" | "accountNumber" | "accountType" | "type";
+export type ContractorPaymentMethodFormField = "type";
 
 // @public
 export interface ContractorPaymentMethodFormFields {
-    // Warning: (ae-forgotten-export) The symbol "AccountNumberField_2" needs to be exported by the entry point index.d.ts
-    AccountNumber: typeof AccountNumberField_2 | undefined;
-    // Warning: (ae-forgotten-export) The symbol "AccountTypeField_2" needs to be exported by the entry point index.d.ts
-    AccountType: typeof AccountTypeField_2 | undefined;
-    // Warning: (ae-forgotten-export) The symbol "NameField_2" needs to be exported by the entry point index.d.ts
-    Name: typeof NameField_2 | undefined;
-    // Warning: (ae-forgotten-export) The symbol "RoutingNumberField_2" needs to be exported by the entry point index.d.ts
-    RoutingNumber: typeof RoutingNumberField_2 | undefined;
     Type: typeof ContractorPaymentMethodTypeField;
 }
 
@@ -5938,8 +5928,6 @@ export function useContractorPaymentMethodForm(input: UseContractorPaymentMethod
 export interface UseContractorPaymentMethodFormProps {
     contractorId: string;
     defaultValues?: Partial<ContractorPaymentMethodFormData>;
-    // Warning: (ae-forgotten-export) The symbol "ContractorPaymentMethodOptionalFieldsToRequire" needs to be exported by the entry point index.d.ts
-    optionalFieldsToRequire?: ContractorPaymentMethodOptionalFieldsToRequire;
     shouldFocusError?: boolean;
     validationMode?: UseFormProps['mode'];
 }
@@ -5947,15 +5935,15 @@ export interface UseContractorPaymentMethodFormProps {
 // @public
 export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
     actions: {
-        onSubmit: (options?: ContractorPaymentMethodSubmitOptions) => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+        onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
     };
     data: {
         paymentMethod: ContractorPaymentMethod;
-        bankAccount: ContractorBankAccount | undefined;
     };
     status: {
         isPending: boolean;
         mode: 'update';
+        isDirectDeposit: boolean;
     };
 }
 
@@ -6564,7 +6552,6 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm/useContractorPaymentMethodForm.d.ts:76:9 - (ae-forgotten-export) The symbol "ContractorPaymentMethodSubmitOptions" needs to be exported by the entry point index.d.ts
 // dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
