@@ -552,9 +552,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/management/homeAddress/editRequested` | Manage button on the home address card clicked | `{ employeeId: string }` |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
-| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
-| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
-| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
+| `employee/management/homeAddress/created` | A new home address was created | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/updated` | An existing home address was updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/deleted` | A home address was deleted | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
 
 <a id="homeaddresscard"></a>
 
@@ -607,9 +607,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/homeAddress/created` | A new home address was created | EmployeeAddress |
-| `employee/management/homeAddress/updated` | An existing home address was updated | EmployeeAddress |
-| `employee/management/homeAddress/deleted` | A home address was deleted | EmployeeAddress |
+| `employee/management/homeAddress/created` | A new home address was created | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/updated` | An existing home address was updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/management/homeAddress/deleted` | A home address was deleted | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
 | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
 
 <a id="paymentmethod"></a>
@@ -812,7 +812,7 @@ edit, saves changes, or cancels.
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `employee/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ employeeId: string }` |
-| `employee/management/profile/updated` | Fired after the profile is successfully saved | Employee |
+| `employee/management/profile/updated` | Fired after the profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user cancels editing | — |
 
 <a id="profilecard"></a>
@@ -876,7 +876,7 @@ return to the read view.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/profile/updated` | Fired after the employee profile is successfully saved | Employee |
+| `employee/management/profile/updated` | Fired after the employee profile is successfully saved | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
 
 <a id="statetaxes"></a>
@@ -1110,9 +1110,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/management/workAddress/editRequested` | Manage button on the work address card clicked | `{ employeeId: string }` |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
-| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
-| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
-| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
+| `employee/management/workAddress/created` | A new work address was created | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/updated` | An existing work address was updated | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/deleted` | A work address was deleted | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 
 <a id="workaddresscard"></a>
 
@@ -1165,9 +1165,9 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/management/workAddress/created` | A new work address was created | EmployeeWorkAddress |
-| `employee/management/workAddress/updated` | An existing work address was updated | EmployeeWorkAddress |
-| `employee/management/workAddress/deleted` | A work address was deleted | EmployeeWorkAddress |
+| `employee/management/workAddress/created` | A new work address was created | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/updated` | An existing work address was updated | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/management/workAddress/deleted` | A work address was deleted | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
 
 ## Utility types

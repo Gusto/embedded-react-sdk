@@ -324,9 +324,9 @@ flip with form input live under `status.*`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Garnishment`](../../APIModels/index.md#garnishment)\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
 | `data` | `object` | Deduction-specific data payload: the loaded garnishment for update mode, or `null` in create mode. |
-| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
+| `data.deduction` | [`Garnishment`](../../APIModels/index.md#garnishment) \| `null` | The garnishment loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
@@ -505,7 +505,7 @@ Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.Description` c
 
 ### GarnishmentTypeFieldProps
 
-> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), `GarnishmentType`\>\>
+> **GarnishmentTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`DeductionFormRequiredValidation`](#deductionformrequiredvalidation), [`GarnishmentType`](../../APIModels/index.md#garnishmenttype-1)\>\>
 
 Props accepted by [useDeductionForm](#usedeductionform)'s `Fields.GarnishmentType` component.
 

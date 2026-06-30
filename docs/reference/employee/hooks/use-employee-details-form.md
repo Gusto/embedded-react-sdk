@@ -321,9 +321,9 @@ error handling, and the `form.Fields` map.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`callbacks?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Employee`](../../APIModels/index.md#employee)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
 | `data` | `object` | The loaded employee data, or `null` in create mode. |
-| `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
+| `data.employee` | [`Employee`](../../APIModels/index.md#employee) \| `null` | The employee being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |

@@ -34,7 +34,7 @@ export interface ProfileEditFormProps extends BaseComponentInterface<'Employee.M
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | {@link Employee} |
+ * | `employee/management/profile/updated` | Fired after the employee profile is successfully saved | {@link APIModels.Employee} |
  * | `employee/management/profile/editCancelled` | Fired when the user clicks Cancel | — |
  *
  * @param input - See {@link ProfileEditFormProps}.
