@@ -272,7 +272,7 @@ const config: Config = {
           title: 'Get Started',
           items: [
             { label: 'What is the SDK?', to: '/docs/' },
-            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Getting started', to: '/docs/getting-started' },
             { label: 'Authentication', to: '/docs/getting-started/authentication' },
           ],
         },

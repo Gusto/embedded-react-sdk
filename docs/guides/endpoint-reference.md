@@ -1,11 +1,11 @@
 ---
-title: 'Endpoint Reference'
+title: 'Endpoint reference'
 description: Auto-generated list of every Gusto Embedded API endpoint each SDK block calls, with HTTP methods, paths, and URL parameters for proxy allowlisting.
 ---
 
 <!-- AUTO-GENERATED FILE. Do not edit manually. Run "npm run endpoints:derive" to regenerate. -->
 
-# Endpoint Reference
+# Endpoint reference
 
 Every SDK component ("block") makes a specific set of API calls. This reference lists them all. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
 

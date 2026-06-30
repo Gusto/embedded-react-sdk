@@ -1,5 +1,5 @@
 ---
-title: Integration Guide
+title: Integration guide
 description: Wire the SDK into a React app — versioning, event handling, request interceptors, UI customization, composition, data sources, translation, routing, and errors.
 ---
 

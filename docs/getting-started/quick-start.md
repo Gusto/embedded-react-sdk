@@ -28,7 +28,7 @@ Get up and running with the SDK quickly by cloning the [`embedded-react-sdk-demo
 git clone https://github.com/Gusto/embedded-react-sdk-demo-app.git
 ```
 
-See the [demo application's README](https://github.com/Gusto/embedded-react-sdk-demo-app#readme) for full installation and usage instructions.
+Explore the [Example app](./example-app.md) guide to learn more, or see the [demo application's README](https://github.com/Gusto/embedded-react-sdk-demo-app#readme) for full installation and usage instructions.
 
 ## Configuration
 
@@ -75,3 +75,4 @@ The SDK is designed to take on your application's look and feel via theming and 
 - Read [Authentication](./authentication.mdx) for the full picture on how your proxy should acquire and use OAuth tokens in production
 - Review [Proxy security](./proxy-security-partner-guidance.md) before pointing a proxy at real partner traffic
 - Explore [Workflows overview](../guides/workflows-overview.md) for the pre-built flows you can drop into your app
+- Dig into the [Integration guide](../guides/integration-guide/integration-guide.md) for more detailed guides on building with the SDK, covering topics like versioning, events, customization, and observability

@@ -4,11 +4,9 @@ description: Index of every pre-built workflow in the SDK—onboarding, payroll,
 order: 4
 ---
 
-## Introduction to workflows
-
 Workflows are pre-built UI experiences you can use to quickly and easily incorporate essential payroll functionality into your build, such as onboarding an employee or running payroll.
 
-### Available workflows
+## Available workflows
 
 | Workflow                                                                                       | Description                                                                |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -28,11 +26,11 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 | [Transition payroll](../reference/payroll/transition-flow.md)                                  | Guided flow for transition payroll.                                        |
 | [Time off](../reference/time-off/time-off-flow.md)                                             | Hub for managing time off policies and schedules.                          |
 
-### Why should I use a workflow?
+## Why should I use a workflow?
 
 Workflows are simple to add to your application. A single React component placed in your app can encapsulate an entire complex multi-step user experience.
 
-### How to use workflows
+## How to use workflows
 
 In this example, we incorporate the entire employee onboarding flow in our application. This component represents multiple steps, including inputting profile details, taxes, and payment info. You can implement it as follows:
 

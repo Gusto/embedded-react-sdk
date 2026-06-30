@@ -4,7 +4,7 @@ const sidebars: SidebarsConfig = {
   docs: [
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Getting started',
       link: { type: 'doc', id: 'getting-started/getting-started' },
       collapsed: false,
       items: [
@@ -22,24 +22,7 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'category',
-          label: 'Component Adapter',
-          link: { type: 'doc', id: 'guides/component-adapter/component-adapter' },
-          items: [
-            'guides/component-adapter/how-the-component-adapter-works',
-            'guides/component-adapter/setting-up-your-component-adapter',
-            'guides/component-adapter/component-adapter-types',
-            'guides/component-adapter/component-adapter-faq',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Theming',
-          link: { type: 'doc', id: 'guides/theming/theming' },
-          items: ['guides/theming/theming-guide'],
-        },
-        {
-          type: 'category',
-          label: 'Integration Guide',
+          label: 'Integration guide',
           link: { type: 'doc', id: 'guides/integration-guide/integration-guide' },
           items: [
             'guides/integration-guide/versioning',
@@ -55,10 +38,22 @@ const sidebars: SidebarsConfig = {
             'guides/integration-guide/observability-examples',
           ],
         },
+        'guides/theming',
+        {
+          type: 'category',
+          label: 'Component Adapter',
+          link: { type: 'doc', id: 'guides/component-adapter/component-adapter' },
+          items: [
+            'guides/component-adapter/how-the-component-adapter-works',
+            'guides/component-adapter/setting-up-your-component-adapter',
+            'guides/component-adapter/component-adapter-types',
+            'guides/component-adapter/component-adapter-faq',
+          ],
+        },
         'guides/workflows-overview',
         'hooks/hooks',
-        'guides/endpoint-reference',
         'guides/proxy-examples',
+        'guides/endpoint-reference',
       ],
     },
     {
