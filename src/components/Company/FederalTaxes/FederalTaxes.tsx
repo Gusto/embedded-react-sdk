@@ -45,7 +45,7 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Company.Feder
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `company/federalTaxes/updated` | Federal tax details were successfully updated | {@link FederalTaxDetails} |
+ * | `company/federalTaxes/updated` | Federal tax details were successfully updated | {@link APIModels.FederalTaxDetails} |
  * | `company/federalTaxes/done` | The federal tax update step is complete | — |
  *
  * @param props - Component props including `companyId` and optional `defaultValues`.
