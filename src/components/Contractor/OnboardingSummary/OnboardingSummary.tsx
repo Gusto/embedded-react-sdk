@@ -21,6 +21,11 @@ export interface OnboardingSummaryProps extends BaseComponentInterface<'Contract
  * Lets the contractor know their information has been submitted and emits
  * `contractor/selfOnboarding/done` when they acknowledge it.
  *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `contractor/selfOnboarding/done` | Fired when the contractor acknowledges completion and clicks the Done button | `{ contractorId: string }` |
+ *
  * @public
  */
 export function OnboardingSummary(props: OnboardingSummaryProps) {

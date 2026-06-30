@@ -933,6 +933,19 @@ export interface ContractorContractorList{
 "continueCta":string;
 "progressBarCta":string;
 };
+export interface ContractorDocumentsList{
+"title":string;
+"subtitle":string;
+"documentListLabel":string;
+"documentColumnLabel":string;
+"statusColumnLabel":string;
+"signDocumentCta":string;
+"notSigned":string;
+"signed":string;
+"emptyTitle":string;
+"errorTitle":string;
+"continueCta":string;
+};
 export interface ContractorLanding{
 "landingSubtitle":string;
 "landingDescription":string;
