@@ -129,9 +129,9 @@ export interface ContractorDetailsFields {
   MiddleInitial: typeof MiddleInitialField | undefined
   /** Text input bound to `businessName`; available only for business contractors. */
   BusinessName: typeof BusinessNameField | undefined
-  /** Text input bound to `ssn`; available only for individual contractors who are not self-onboarding. */
+  /** Text input bound to `ssn`; available only for individual contractors. */
   Ssn: typeof SsnField | undefined
-  /** Text input bound to `ein`; available only for business contractors who are not self-onboarding. */
+  /** Text input bound to `ein`; available only for business contractors. */
   Ein: typeof EinField | undefined
   /** Select bound to `workState`; available only for individual contractors filing a new-hire report. */
   WorkState: typeof WorkStateField | undefined
@@ -189,9 +189,11 @@ const canToggleSelfOnboarding = (contractor?: Contractor) => {
  * Returns a discriminated union: a loading variant while the contractor fetch
  * resolves, and a ready variant exposing the form's data, pending status,
  * submit action, error handling, and bound `Fields`. Field visibility is
- * driven by the current `type`, `wageType`, and self-onboarding selection;
- * fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
- * is only toggleable when the contractor's onboarding status allows it.
+ * driven by the current `type` and `wageType` (self-onboarding only toggles the
+ * `Email` field); fields that do not apply are `undefined` on `form.Fields`.
+ * SSN/EIN are exposed by contractor type regardless of self-onboarding — each
+ * consumer decides whether to render them. Self-onboarding is only toggleable
+ * when the contractor's onboarding status allows it.
  *
  * @param input - See {@link UseContractorDetailsFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorDetailsFormReady} once ready.
@@ -385,12 +387,12 @@ export function useContractorDetailsForm({
                     workState: payload.fileNewHireReport
                       ? payload.workState || undefined
                       : undefined,
-                    ssn: !selfOnboardingEnabled && cleanedSsn ? cleanedSsn : undefined,
+                    ssn: cleanedSsn || undefined,
                   }
                 : {
                     fileNewHireReport: false,
                     businessName: payload.businessName,
-                    ein: !selfOnboardingEnabled && cleanedEin ? cleanedEin : undefined,
+                    ein: cleanedEin || undefined,
                   }),
             }
 
@@ -487,8 +489,8 @@ export function useContractorDetailsForm({
         LastName: isIndividual ? LastNameField : undefined,
         MiddleInitial: isIndividual ? MiddleInitialField : undefined,
         BusinessName: isBusiness ? BusinessNameField : undefined,
-        Ssn: isIndividual && !watchedSelfOnboarding ? SsnField : undefined,
-        Ein: isBusiness && !watchedSelfOnboarding ? EinField : undefined,
+        Ssn: isIndividual ? SsnField : undefined,
+        Ein: isBusiness ? EinField : undefined,
         WorkState: isIndividual && watchedFileNewHireReport ? WorkStateField : undefined,
       },
       fieldsMetadata,

@@ -70,9 +70,11 @@ function ContractorDetailsReady({
 Returns a discriminated union: a loading variant while the contractor fetch
 resolves, and a ready variant exposing the form's data, pending status,
 submit action, error handling, and bound `Fields`. Field visibility is
-driven by the current `type`, `wageType`, and self-onboarding selection;
-fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
-is only toggleable when the contractor's onboarding status allows it.
+driven by the current `type` and `wageType` (self-onboarding only toggles the
+`Email` field); fields that do not apply are `undefined` on `form.Fields`.
+SSN/EIN are exposed by contractor type regardless of self-onboarding — each
+consumer decides whether to render them. Self-onboarding is only toggleable
+when the contractor's onboarding status allows it.
 
 ## Props
 
@@ -167,7 +169,7 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 | `Type` | `ComponentType`\<[`TypeFieldProps`](#contractortypefieldprops)\> | Radio group bound to `type`. Always available. |
 | `WageType` | `ComponentType`\<[`WageTypeFieldProps`](#contractorwagetypefieldprops)\> | Radio group bound to `wageType`. Always available. |
 | `BusinessName` | `ComponentType`\<[`BusinessNameFieldProps`](#contractorbusinessnamefieldprops)\> \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
-| `Ein` | `ComponentType`\<[`EinFieldProps`](#contractoreinfieldprops)\> \| `undefined` | Text input bound to `ein`; available only for business contractors who are not self-onboarding. |
+| `Ein` | `ComponentType`\<[`EinFieldProps`](#contractoreinfieldprops)\> \| `undefined` | Text input bound to `ein`; available only for business contractors. |
 | `Email` | `ComponentType`\<[`EmailFieldProps`](#contractoremailfieldprops)\> \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
 | `FileNewHireReport` | `ComponentType`\<[`FileNewHireReportFieldProps`](#contractorfilenewhirereportfieldprops)\> \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
 | `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#contractorfirstnamefieldprops)\> \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
@@ -175,7 +177,7 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 | `LastName` | `ComponentType`\<[`LastNameFieldProps`](#contractorlastnamefieldprops)\> \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
 | `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#contractormiddleinitialfieldprops)\> \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
 | `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#contractorselfonboardingfieldprops)\> \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
-| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#contractorssnfieldprops)\> \| `undefined` | Text input bound to `ssn`; available only for individual contractors who are not self-onboarding. |
+| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#contractorssnfieldprops)\> \| `undefined` | Text input bound to `ssn`; available only for individual contractors. |
 | `WorkState` | `ComponentType`\<[`WorkStateFieldProps`](#contractorworkstatefieldprops)\> \| `undefined` | Select bound to `workState`; available only for individual contractors filing a new-hire report. |
 
 ***
@@ -213,7 +215,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### Ein
 
-Text input bound to `ein`; available only for business contractors who are not self-onboarding.
+Text input bound to `ein`; available only for business contractors.
 
 ```tsx
 {form.Fields.Ein && (
@@ -453,7 +455,7 @@ _Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../
 
 ### Ssn
 
-Text input bound to `ssn`; available only for individual contractors who are not self-onboarding.
+Text input bound to `ssn`; available only for individual contractors.
 
 ```tsx
 {form.Fields.Ssn && (

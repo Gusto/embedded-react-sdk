@@ -1,1 +1,6 @@
-export { ContractorProfile, type ContractorProfileProps } from './ContractorProfile'
+export {
+  ContractorProfile,
+  type ContractorProfileProps,
+  type ContractorProfileAdminProps,
+  type ContractorProfileSelfOnboardingProps,
+} from './ContractorProfile'
