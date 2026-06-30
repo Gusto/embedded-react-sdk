@@ -12,16 +12,7 @@ export type TypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>
 >
 
-/**
- * Radio group bound to the `type` field of {@link useContractorPaymentMethodForm}.
- *
- * @remarks
- * Surfaced to partners as `form.Fields.Type`; see {@link ContractorPaymentMethodFormFields}.
- *
- * @param props - See {@link TypeFieldProps}.
- * @returns The rendered radio group bound to `type`.
- * @internal
- */
+/** @internal */
 export function TypeField(props: TypeFieldProps) {
   return <RadioGroupHookField {...props} name="type" />
 }

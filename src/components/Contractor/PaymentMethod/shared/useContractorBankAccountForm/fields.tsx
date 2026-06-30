@@ -44,16 +44,7 @@ export type AccountNumberValidation = (typeof ContractorBankAccountErrorCodes)[k
  */
 export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `name` field of {@link useContractorBankAccountForm}.
- *
- * @remarks
- * Surfaced to partners as `form.Fields.Name`; see {@link ContractorBankAccountFormFields}.
- *
- * @param props - See {@link NameFieldProps}.
- * @returns The rendered text input bound to `name`.
- * @internal
- */
+/** @internal */
 export function NameField(props: NameFieldProps) {
   return <TextInputHookField {...props} name="name" />
 }
@@ -67,16 +58,7 @@ export type RoutingNumberFieldProps = HookFieldProps<
   TextInputHookFieldProps<RoutingNumberValidation>
 >
 
-/**
- * Text input bound to the `routingNumber` field of {@link useContractorBankAccountForm}.
- *
- * @remarks
- * Surfaced to partners as `form.Fields.RoutingNumber`; see {@link ContractorBankAccountFormFields}.
- *
- * @param props - See {@link RoutingNumberFieldProps}.
- * @returns The rendered text input bound to `routingNumber`.
- * @internal
- */
+/** @internal */
 export function RoutingNumberField(props: RoutingNumberFieldProps) {
   return <TextInputHookField {...props} name="routingNumber" />
 }
@@ -90,16 +72,7 @@ export type AccountNumberFieldProps = HookFieldProps<
   TextInputHookFieldProps<AccountNumberValidation>
 >
 
-/**
- * Text input bound to the `accountNumber` field of {@link useContractorBankAccountForm}.
- *
- * @remarks
- * Surfaced to partners as `form.Fields.AccountNumber`; see {@link ContractorBankAccountFormFields}.
- *
- * @param props - See {@link AccountNumberFieldProps}.
- * @returns The rendered text input bound to `accountNumber`.
- * @internal
- */
+/** @internal */
 export function AccountNumberField(props: AccountNumberFieldProps) {
   return <TextInputHookField {...props} name="accountNumber" />
 }
@@ -113,16 +86,7 @@ export type AccountTypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<RequiredValidation, ContractorAccountType>
 >
 
-/**
- * Radio group bound to the `accountType` field of {@link useContractorBankAccountForm}.
- *
- * @remarks
- * Surfaced to partners as `form.Fields.AccountType`; see {@link ContractorBankAccountFormFields}.
- *
- * @param props - See {@link AccountTypeFieldProps}.
- * @returns The rendered radio group bound to `accountType`.
- * @internal
- */
+/** @internal */
 export function AccountTypeField(props: AccountTypeFieldProps) {
   return <RadioGroupHookField {...props} name="accountType" />
 }
