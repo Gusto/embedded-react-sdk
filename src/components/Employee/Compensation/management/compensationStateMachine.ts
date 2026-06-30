@@ -17,24 +17,20 @@ type EventPayloads = {
   }
 }
 
-const returnToCard = reduce(
-  (ctx: CompensationContextInterface): CompensationContextInterface => ({
-    ...ctx,
-    component: CompensationCardContextual as ComponentType,
-    successAlert: null,
-    currentJobId: null,
-  }),
-)
+const returnToCard = reduce((ctx: CompensationContextInterface): CompensationContextInterface => ({
+  ...ctx,
+  component: CompensationCardContextual as ComponentType,
+  successAlert: null,
+  currentJobId: null,
+}))
 
 const returnToCardWithAlert = (alert: CompensationContextInterface['successAlert']) =>
-  reduce(
-    (ctx: CompensationContextInterface): CompensationContextInterface => ({
-      ...ctx,
-      component: CompensationCardContextual as ComponentType,
-      successAlert: alert,
-      currentJobId: null,
-    }),
-  )
+  reduce((ctx: CompensationContextInterface): CompensationContextInterface => ({
+    ...ctx,
+    component: CompensationCardContextual as ComponentType,
+    successAlert: alert,
+    currentJobId: null,
+  }))
 
 /** @internal */
 export const compensationStateMachine = {
@@ -60,26 +56,22 @@ export const compensationStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED,
       'addJob',
-      reduce(
-        (ctx: CompensationContextInterface): CompensationContextInterface => ({
-          ...ctx,
-          component: CompensationAddJobFormContextual as ComponentType,
-          currentJobId: null,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: CompensationContextInterface): CompensationContextInterface => ({
+        ...ctx,
+        component: CompensationAddJobFormContextual as ComponentType,
+        currentJobId: null,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
       'addAnotherJob',
-      reduce(
-        (ctx: CompensationContextInterface): CompensationContextInterface => ({
-          ...ctx,
-          component: CompensationAddAnotherJobFormContextual as ComponentType,
-          currentJobId: null,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: CompensationContextInterface): CompensationContextInterface => ({
+        ...ctx,
+        component: CompensationAddAnotherJobFormContextual as ComponentType,
+        currentJobId: null,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ALERT_DISMISSED,

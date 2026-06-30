@@ -54,12 +54,13 @@ function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
  * the component renders the add-account form; once one is on file it renders the list view
  * with controls to change or verify the account via micro-deposits.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |
- * | `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created {@link CompanyBankAccount} |
+ * | `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created {@link APIModels.CompanyBankAccount} |
  * | `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
- * | `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified {@link CompanyBankAccount} |
+ * | `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified {@link APIModels.CompanyBankAccount} |
  * | `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step | — |
  *
  * @param props - Component props including the target `companyId`.

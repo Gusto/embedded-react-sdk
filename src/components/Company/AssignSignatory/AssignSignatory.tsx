@@ -37,6 +37,7 @@ export interface AssignSignatoryProps extends BaseComponentInterface<'Company.As
  * @remarks
  * For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/signatory/assignSignatory/modeUpdated` | The user switched between create and invite modes | The selected mode string (`'createSignatory'` or `'inviteSignatory'`) |

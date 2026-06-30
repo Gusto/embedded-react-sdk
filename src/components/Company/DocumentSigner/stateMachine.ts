@@ -27,12 +27,10 @@ export const documentSignerMachine = {
     transition(
       companyEvents.COMPANY_FORM_EDIT_SIGNATORY,
       'assignSignatory',
-      reduce(
-        (ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
-          ...ctx,
-          component: AssignSignatory,
-        }),
-      ),
+      reduce((ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
+        ...ctx,
+        component: AssignSignatory,
+      })),
     ),
     transition(companyEvents.COMPANY_FORMS_DONE, 'final'),
   ),
@@ -41,22 +39,18 @@ export const documentSignerMachine = {
     transition(
       companyEvents.COMPANY_SIGN_FORM_DONE,
       'documentList',
-      reduce(
-        (ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
-          ...ctx,
-          component: DocumentList,
-        }),
-      ),
+      reduce((ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
+        ...ctx,
+        component: DocumentList,
+      })),
     ),
     transition(
       companyEvents.COMPANY_SIGN_FORM_BACK,
       'documentList',
-      reduce(
-        (ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
-          ...ctx,
-          component: DocumentList,
-        }),
-      ),
+      reduce((ctx: DocumentSignerContextInterface): DocumentSignerContextInterface => ({
+        ...ctx,
+        component: DocumentList,
+      })),
     ),
   ),
   final: state<MachineTransition>(),

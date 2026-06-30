@@ -34,9 +34,10 @@ export interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I
  * collects the employee's signature along with any preparer or translator
  * details. On successful submission the signed form is emitted.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/forms/sign` | Fired after the I-9 is successfully signed | {@link Form} |
+ * | `employee/forms/sign` | Fired after the I-9 is successfully signed | {@link APIModels.Form} |
  * | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
  * | `cancel` | Fired when the user cancels signing and returns to the document list | — |
  *

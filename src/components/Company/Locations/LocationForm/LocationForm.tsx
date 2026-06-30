@@ -155,6 +155,7 @@ function Root({
  * @remarks
  * Pass a `locationId` to edit an existing location; omit it to create a new one.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/location/add/done` | Fired when a new location is created | The created location |

@@ -20,6 +20,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  *
  * If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |

@@ -1,5 +1,15 @@
 export * from '@/components'
 export * from '@/contexts'
+
+/**
+ * Gusto API entity types returned by SDK hooks and components. These are
+ * re-exported from the Gusto Embedded API client so their shapes are
+ * documented here in the SDK reference.
+ *
+ * @group API Models
+ * @public
+ */
+export type * as APIModels from '@/models/external'
 export {
   componentEvents,
   EmployeeOnboardingStatus,
@@ -684,3 +694,11 @@ export type {
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
+
+// Domain data hooks - Contractor
+export { useContractorDocumentsList } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+export type {
+  UseContractorDocumentsListParams,
+  UseContractorDocumentsListResult,
+  UseContractorDocumentsListReady,
+} from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'

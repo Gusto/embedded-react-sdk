@@ -31,6 +31,7 @@ export interface PolicySettingsProps extends BaseComponentInterface<'Company.Tim
  * @remarks
  * Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |

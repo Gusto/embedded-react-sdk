@@ -29,7 +29,7 @@ Props for [AddEmployeesHoliday](#addemployeesholiday).
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -65,6 +65,8 @@ from each employee's existing paid time off data. Starting balances can be manua
 set or overridden per employee. When employees are being moved from another policy a
 reassignment warning is shown, and removing a previously enrolled employee requires
 confirmation.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -114,7 +116,7 @@ Props for [HolidaySelectionForm](#holidayselectionform).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -154,6 +156,8 @@ When editing a policy whose configuration is already complete, the accrual
 method selector is restricted to the matching category (unlimited vs.
 accrual-based).
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
@@ -184,7 +188,7 @@ Props for the [PolicyList](#policylist) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -216,6 +220,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -278,6 +284,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 The holiday option is omitted when the company already has a holiday pay policy, since a company
 can only have one.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |
@@ -308,6 +316,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Loads the policy and its enrolled employees, then renders the tabbed detail view with
 actions for editing the policy, adding or removing employees, and adjusting individual
 balances. Editable actions are only shown for sick and vacation policies.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -361,6 +371,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Shows enrolled employees with search filtering, and provides actions to add employees,
 edit the holiday selection, or remove employees.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `timeOff/holidayAddEmployees` | User clicks to add employees | — |
@@ -389,7 +401,7 @@ Props for the [ViewHolidayPolicyDetails](#viewholidaypolicydetails) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -419,7 +431,7 @@ Props for [ViewHolidaySchedule](#viewholidayschedule).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -456,7 +468,7 @@ at the start of the year or spread evenly across pay periods.
 
 ### CreatableTimeOffPolicyType
 
-> **CreatableTimeOffPolicyType** = `Extract`\<`PolicyType`, `"sick"` \| `"vacation"`\>
+> **CreatableTimeOffPolicyType** = `Extract`\<[`PolicyType`](../APIModels/index.md#policytype-1), `"sick"` \| `"vacation"`\>
 
 Time off policy types that can be created through the time off policy management workflow.
 

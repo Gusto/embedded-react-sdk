@@ -4,9 +4,7 @@
  * @public
  */
 export type PolicySettingsAccrualMethod =
-  | 'hours_worked'
-  | 'fixed_per_pay_period'
-  | 'fixed_all_at_once'
+  'hours_worked' | 'fixed_per_pay_period' | 'fixed_all_at_once'
 
 /**
  * Form values captured by the policy settings form.

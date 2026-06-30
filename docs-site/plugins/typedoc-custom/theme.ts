@@ -245,8 +245,9 @@ function reorderComponentSections(rendered: string): string {
   const rank = (title: string): number => {
     if (/^Examples?$/.test(title)) return 0
     if (title === 'Remarks') return 1
-    if (/Props$/.test(title)) return 3
-    return 2
+    if (/Props$/.test(title)) return 2
+    if (title === 'Events') return 3
+    return 4
   }
   const ordered = sections
     .map((section, index) => ({ section, index }))

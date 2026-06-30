@@ -56,7 +56,7 @@ function Root({ children, className, companyId, dictionary }: IndustryProps) {
  *
  * Presents a searchable list of industry options and persists the selection for the given company.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |

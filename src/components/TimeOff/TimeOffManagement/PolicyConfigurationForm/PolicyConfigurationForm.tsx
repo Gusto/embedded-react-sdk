@@ -40,6 +40,7 @@ export interface PolicyConfigurationFormProps extends BaseComponentInterface<'Co
  * method selector is restricted to the matching category (unlimited vs.
  * accrual-based).
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |

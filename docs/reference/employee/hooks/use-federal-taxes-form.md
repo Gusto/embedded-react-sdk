@@ -283,9 +283,9 @@ the federal-taxes specific `data`, `status`, and `actions`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeFederalTax`\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeFederalTax`](../../APIModels/index.md#employeefederaltax)\> \| `undefined`\> | Validates the form, runs the update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the updated record. Resolves to `undefined` on validation failure or mutation error. |
 | `data` | `object` | The loaded federal tax record. |
-| `data.employeeFederalTax` | `EmployeeFederalTax` | The current federal tax record for the employee. |
+| `data.employeeFederalTax` | [`EmployeeFederalTax`](../../APIModels/index.md#employeefederaltax) | The current federal tax record for the employee. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |

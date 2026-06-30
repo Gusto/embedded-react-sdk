@@ -130,7 +130,7 @@ Memoizes the bound field components for a state-taxes form, avoiding unnecessary
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `employeeStateTaxes` | `EmployeeStateTaxesList`[] | Array of state-tax groups returned by the employee state-taxes API. |
+| `employeeStateTaxes` | [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[] | Array of state-tax groups returned by the employee state-taxes API. |
 | `isAdmin` | `boolean` | When `true`, admin-only questions are included; when `false`, they are filtered out. |
 
 #### Returns
@@ -228,9 +228,9 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Form actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
 | `data` | `object` | Current per-state tax records returned by the server. |
-| `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
+| `data.employeeStateTaxes` | [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` & `object` | Form internals plus the iterable per-state `Fields` array. |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |

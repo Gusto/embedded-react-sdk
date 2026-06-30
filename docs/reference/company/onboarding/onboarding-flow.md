@@ -39,6 +39,22 @@ The flow begins on the overview screen and steps through locations, federal taxe
 bank account, employee onboarding, pay schedule, state taxes, and document signing before
 returning to the overview.
 
+## OnboardingFlowProps
+
+<a id="onboardingflowprops"></a>
+
+Props for the company onboarding flow orchestrator.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values applied to individual flow step components (federal taxes, pay schedule). |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/overview/continue` | User chose to continue to the next outstanding onboarding requirement | — |
@@ -57,20 +73,6 @@ table) for composing a custom workflow when this orchestration is the wrong
 fit. See the
 [Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
 for how to recompose these blocks into your own flow.
-
-## OnboardingFlowProps
-
-<a id="onboardingflowprops"></a>
-
-Props for the company onboarding flow orchestrator.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values applied to individual flow step components (federal taxes, pay schedule). |
-
-_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ## Sub-components
 

@@ -43,6 +43,8 @@ Features:
 - **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
 - **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/payments/edit` | The edit modal was opened for a contractor. | — |
@@ -95,6 +97,8 @@ Features:
 - **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
 - **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
@@ -134,7 +138,7 @@ Props for [PaymentsList](#paymentslist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -189,6 +193,8 @@ Features:
 - **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
 - **Debit account** — shows the company bank account used for the debit.
 - **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

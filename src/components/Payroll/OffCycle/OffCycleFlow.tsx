@@ -19,6 +19,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * receipts). All off-cycle payroll types share the same execution steps as regular
  * payrolls — only the creation step differs.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |

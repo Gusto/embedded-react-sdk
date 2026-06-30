@@ -26,6 +26,7 @@ export interface LocationsListProps extends BaseComponentInterface<'Company.Loca
  * @remarks
  * Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/location/add` | A user chose to add a new location | — |

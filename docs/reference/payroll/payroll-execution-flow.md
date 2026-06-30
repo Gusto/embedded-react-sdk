@@ -42,6 +42,26 @@ payrolls. Render it directly when you have built your own payroll-creation step 
 the user off to the standard execution experience without re-implementing it. The flow ships
 with breadcrumb navigation and the standard wire-confirmation UX.
 
+## PayrollExecutionFlowProps
+
+<a id="payrollexecutionflowprops"></a>
+
+Props for PayrollExecutionFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
+| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
+| `initialPayPeriod?` | [`PayrollPayPeriodType`](../APIModels/index.md#payrollpayperiodtype) | Optional pay period metadata used to seed breadcrumb labels and date context. |
+| `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |
+| `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
+| `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
+| `withReimbursements?` | `boolean` | Optional flag to show or hide reimbursement fields throughout the flow. Defaults to `true`. |
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
@@ -59,24 +79,6 @@ with breadcrumb navigation and the standard wire-confirmation UX.
 | `runPayroll/pdfPaystub/viewed` | Fired when user views employee paystub PDF | `{ employeeId }` |
 | `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
 | `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |
-
-## PayrollExecutionFlowProps
-
-<a id="payrollexecutionflowprops"></a>
-
-Props for PayrollExecutionFlow.
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
-| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
-| `initialPayPeriod?` | `PayrollPayPeriodType` | Optional pay period metadata used to seed breadcrumb labels and date context. |
-| `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |
-| `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
-| `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
-| `withReimbursements?` | `boolean` | Optional flag to show or hide reimbursement fields throughout the flow. Defaults to `true`. |
 
 ## Sub-components
 

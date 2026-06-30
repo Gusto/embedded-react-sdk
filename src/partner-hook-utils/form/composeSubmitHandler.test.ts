@@ -98,8 +98,8 @@ function createMockForm(
 
   const errorHandling =
     (overrides.errorHandling as
-      | (HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock })
-      | undefined) ?? createMockErrorHandling()
+      (HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock }) | undefined) ??
+    createMockErrorHandling()
 
   return {
     form: { hookFormInternals: hookFormInternals as never },

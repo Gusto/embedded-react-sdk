@@ -44,6 +44,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * complete, current set of events observable from `DashboardFlow`, grouped by
  * the tab that emits them.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/profile/editRequested` | Fired when "Edit" is clicked on the Basic details (Profile) card | `{ employeeId: string }` |

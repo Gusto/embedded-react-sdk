@@ -41,14 +41,6 @@ into the standard payroll execution experience (configuration, overview, submiss
 receipts). All off-cycle payroll types share the same execution steps as regular
 payrolls — only the creation step differs.
 
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
-| `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
-
-Once the flow transitions to execution, all standard run-payroll events are emitted
-(e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
-
 ## OffCycleFlowProps
 
 <a id="offcycleflowprops"></a>
@@ -61,6 +53,16 @@ Props for OffCycleFlow.
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
 | `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 | `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
+| `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
+
+Once the flow transitions to execution, all standard run-payroll events are emitted
+(e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
 
 ## Sub-components
 

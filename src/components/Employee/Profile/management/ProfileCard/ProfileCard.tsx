@@ -30,6 +30,7 @@ export interface ProfileCardProps {
  * render success or error alerts itself — alert presentation is the
  * surrounding surface's responsibility.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/profile/editRequested` | Fired when the user clicks the Edit button | `{ employeeId: string }` |

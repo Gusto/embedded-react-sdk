@@ -65,8 +65,7 @@ export async function fetchEntityIds(
 }
 
 export type InspectRequest =
-  | { kind: 'show'; url: string }
-  | { kind: 'listFilter'; url: string; matchUuid: string }
+  { kind: 'show'; url: string } | { kind: 'listFilter'; url: string; matchUuid: string }
 
 export function buildEntityInspectRequest(
   key: keyof EntityIds,

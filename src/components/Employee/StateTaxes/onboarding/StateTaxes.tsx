@@ -24,8 +24,7 @@ export interface StateTaxesProps extends BaseComponentInterface<'Employee.StateT
  * answers. The set of fields is driven by the API response for each state
  * on record.
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |

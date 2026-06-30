@@ -64,12 +64,12 @@ function WorkAddressEditFormRoot({ employeeId, dictionary, onEvent }: WorkAddres
 /**
  * Standalone employee work address edit form for creating, updating, and deleting addresses.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/management/workAddress/created` | A new work address was created | {@link EmployeeWorkAddress} |
- * | `employee/management/workAddress/updated` | An existing work address was updated | {@link EmployeeWorkAddress} |
- * | `employee/management/workAddress/deleted` | A work address was deleted | {@link EmployeeWorkAddress} |
+ * | `employee/management/workAddress/created` | A new work address was created | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/management/workAddress/updated` | An existing work address was updated | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/management/workAddress/deleted` | A work address was deleted | {@link APIModels.EmployeeWorkAddress} |
  * | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
  *
  * @public

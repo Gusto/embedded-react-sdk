@@ -16,6 +16,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @remarks
  * Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `runPayroll/selected` | A payroll is selected to run | `{ payrollId: string }` |

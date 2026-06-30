@@ -36,6 +36,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 For more granular control, use `CompanyOnboarding.CreateSignatory` or `CompanyOnboarding.InviteSignatory` directly.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/assignSignatory/modeUpdated` | The user switched between create and invite modes | The selected mode string (`'createSignatory'` or `'inviteSignatory'`) |
@@ -70,12 +72,14 @@ Currently supports a single default bank account per company. When no bank accou
 the component renders the add-account form; once one is on file it renders the list view
 with controls to change or verify the account via micro-deposits.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when the user chooses to change an existing bank account | — |
-| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created CompanyBankAccount |
+| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created | The created [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when the user chooses to verify the bank account after micro-deposits are made | — |
-| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified CompanyBankAccount |
+| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when the bank account has been successfully verified | The verified [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step | — |
 
 <a id="createsignatory"></a>
@@ -100,7 +104,7 @@ Props for [CreateSignatory](#createsignatory).
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -138,6 +142,8 @@ document list and the signature form.
 When `signatoryId` matches the currently saved signatory's id, the user is treated as the
 signatory and is allowed to sign documents.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
@@ -171,19 +177,21 @@ Handles document listing, signatory management, and the signing workflow. If no 
 been assigned for the company yet, the flow starts on the assign-signatory step before
 presenting the document list.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/forms/view` | Fired when a user selects a form to sign from the document list | Form |
+| `company/forms/view` | Fired when a user selects a form to sign from the document list | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when the user completes the document signing process | — |
-| `company/forms/sign/signForm` | Fired when a form is successfully signed | Form |
+| `company/forms/sign/signForm` | Fired when a form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `company/forms/sign/done` | Fired when the form signing process is complete | — |
 | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
 | `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
 | `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
-| `company/signatory/created` | Fired when a new signatory is created successfully | Signatory |
-| `company/signatory/updated` | Fired when an existing signatory is updated successfully | Signatory |
-| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | Signatory |
+| `company/signatory/created` | Fired when a new signatory is created successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/updated` | Fired when an existing signatory is updated successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
+| `company/signatory/invited` | Fired when a signatory is successfully invited to the company | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 
 <a id="federaltaxes"></a>
 
@@ -206,11 +214,11 @@ Props for the [FederalTaxes](#federaltaxes) component.
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `company/federalTaxes/updated` | Federal tax details were successfully updated | FederalTaxDetails |
+| `company/federalTaxes/updated` | Federal tax details were successfully updated | [APIModels.FederalTaxDetails](../../APIModels/index.md#federaltaxdetails) |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
 
 <a id="industry"></a>
@@ -235,7 +243,7 @@ Props for the [Industry](#industry) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -267,6 +275,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 The invited person receives an email to complete their signatory information. Use this when
 you want to provide only the invite flow without the create option.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
@@ -296,6 +306,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Pass a `locationId` to edit an existing location; omit it to create a new one.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -327,6 +339,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Internally switches between a list view and a create/edit form. For more granular control,
 use the standalone `LocationForm` component directly.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -361,6 +375,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/location/add` | A user chose to add a new location | — |
@@ -394,6 +410,8 @@ is true, a completion message and "done" action are shown; otherwise a checklist
 steps is rendered with a continue action. Provide `children` to override the default layout while
 still consuming the onboarding status via context.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
@@ -424,6 +442,8 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 
 Renders the schedule list when at least one pay schedule exists and the create form otherwise.
 Emits the following events through `onEvent`:
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -458,6 +478,8 @@ Lower-level building block used internally by the document signer for its signin
 Use this component directly when you need full control over navigation between the document
 list and the signature form (e.g. routing the user yourself after they select a form).
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/forms/sign/signForm` | Fired when a form is successfully signed | Response from the sign company form API request |
@@ -489,6 +511,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 Switches internally between a list of states with tax requirements and a per-state edit form.
 For finer-grained control over navigation, use the standalone [StateTaxesList](#statetaxeslist) and
 [StateTaxesForm](#statetaxesform) building blocks directly.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -522,6 +546,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Lower-level building block used by [StateTaxes](#statetaxes) for its edit view. Use directly when
 you need full control over navigation between the list and edit views.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -568,6 +594,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
@@ -591,7 +619,7 @@ At least one of `create` or `invite` must be provided.
 
 ### CreateSignatoryDefaultValues
 
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<`Signatory`\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
 
@@ -608,7 +636,7 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 ### InviteSignatoryDefaultValues
 
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<`Signatory`, `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.

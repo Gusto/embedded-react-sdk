@@ -27,6 +27,7 @@ interface RecoveryCasesInternalProps
  * {@link PayrollBlockerList}, but can be used standalone when you want a
  * dedicated recovery cases surface.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
@@ -51,15 +52,11 @@ function Root({ companyId, onEvent = () => {} }: RecoveryCasesInternalProps) {
 
   const recoveryCasesMachineInstance = useMemo(
     () =>
-      createMachine(
-        'list',
-        recoveryCasesMachine,
-        (): RecoveryCasesContextInterface => ({
-          component: null,
-          companyId,
-          onEvent: handleEvent,
-        }),
-      ),
+      createMachine('list', recoveryCasesMachine, (): RecoveryCasesContextInterface => ({
+        component: null,
+        companyId,
+        onEvent: handleEvent,
+      })),
     [companyId],
   )
   const [current, send] = useMachine(recoveryCasesMachineInstance)

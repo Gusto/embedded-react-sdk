@@ -47,6 +47,7 @@ export interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Compan
  * actions for editing the policy, adding or removing employees, and adjusting individual
  * balances. Editable actions are only shown for sick and vacation policies.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/addEmployeesToPolicy` | The add-employees action was clicked. | `{ policyId: string }` |

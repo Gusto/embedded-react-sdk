@@ -109,6 +109,7 @@ export type ContractorProfileProps =
  * existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
  * fields for the contractor to complete.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/created` | A new contractor was created successfully. | The created contractor entity |

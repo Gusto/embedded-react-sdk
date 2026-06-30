@@ -65,7 +65,7 @@ export interface ContractorListProps extends BaseComponentInterface<'Contractor.
 /**
  * Lists a company's contractors with controls to add, edit, delete, and continue onboarding.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/create` | The add-contractor action was triggered. | — |

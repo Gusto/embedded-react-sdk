@@ -47,7 +47,7 @@ type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
  * type) when direct deposit is selected. Submitting creates the bank account if needed and then
  * updates the contractor's payment method.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/bankAccount/created` | Fired after a bank account is created for the contractor | The API response object; access the created bank account at `.contractorBankAccount` |

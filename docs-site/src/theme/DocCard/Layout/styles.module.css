@@ -1,0 +1,36 @@
+.cardContainer {
+  --ifm-link-color: var(--ifm-color-emphasis-800);
+  --ifm-link-hover-color: var(--ifm-color-emphasis-700);
+  --ifm-link-hover-decoration: none;
+
+  display: block;
+  height: 100%;
+  padding: 2rem;
+  background-color: #ffffff;
+  border: 1px solid #ebedf0;
+  border-radius: 16px;
+  box-shadow: none;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.cardContainer:hover {
+  border-color: #d0d3d8;
+  box-shadow: none;
+  text-decoration: none;
+  color: inherit;
+}
+
+[data-theme='dark'] .cardContainer {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .cardContainer:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.cardContainer *:last-child {
+  margin-bottom: 0;
+}

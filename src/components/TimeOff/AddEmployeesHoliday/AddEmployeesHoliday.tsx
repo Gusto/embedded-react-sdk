@@ -14,7 +14,7 @@ export interface AddEmployeesHolidayProps extends BaseComponentInterface<never> 
 /**
  * Employee selection screen for assigning employees to a company's holiday pay policy.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/holidayAddEmployees/done` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |

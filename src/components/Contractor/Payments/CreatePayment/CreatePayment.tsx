@@ -72,6 +72,7 @@ export interface CreatePaymentProps extends BaseComponentInterface<'Contractor.P
  * - **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
  * - **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/edit` | The edit modal was opened for a contractor. | — |

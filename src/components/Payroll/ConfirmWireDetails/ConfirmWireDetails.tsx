@@ -19,7 +19,7 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
  * Displays a banner when wire transfers are awaiting funds and walks the user
  * through viewing wire instructions and confirming transfer details via a modal.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `payroll/wire/startTransfer` | User initiates the wire transfer flow | — |

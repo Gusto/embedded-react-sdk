@@ -45,7 +45,7 @@ export interface AddressProps {
 /**
  * Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |

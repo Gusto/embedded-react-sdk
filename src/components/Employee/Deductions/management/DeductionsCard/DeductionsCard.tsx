@@ -34,6 +34,7 @@ export interface DeductionsCardProps {
  * @remarks
  * Fetches its own data and owns the delete confirm dialog. Has no alert API — alert rendering is the consumer's responsibility. Add and edit affordances do not open a form themselves; emit-then-route is the contract, so the consumer listens for the `addRequested` / `editRequested` events and renders {@link DeductionsEditForm} (or its own equivalent) accordingly. For an orchestrated card-plus-form flow, use {@link Deductions} instead.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/deductions/card/addRequested` | Fired when the "Add deduction" CTA is clicked | `{ employeeId: string }` |

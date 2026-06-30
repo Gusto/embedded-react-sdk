@@ -19,7 +19,7 @@ export interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface<
  * Displays the holiday pay policy for a company with tabbed views of the included holidays and
  * the enrolled employees.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/backToList` | The user clicked the back navigation. | — |
