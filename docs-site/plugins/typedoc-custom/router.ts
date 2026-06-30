@@ -165,6 +165,7 @@ const SYNTHETIC_GROUP_ORDER = [
   'Hooks',
   'Fields',
   'Components',
+  'Component Props',
   'Events',
   'Functions',
   'Variables',
