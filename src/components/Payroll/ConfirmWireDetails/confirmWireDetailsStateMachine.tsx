@@ -38,10 +38,12 @@ export const confirmWireDetailsMachine = {
     transition(
       payrollWireEvents.PAYROLL_WIRE_START_TRANSFER,
       'wireInstructions',
-      reduce((ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
-        ...ctx,
-        component: WireInstructionsContextual,
-      })),
+      reduce(
+        (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
+          ...ctx,
+          component: WireInstructionsContextual,
+        }),
+      ),
     ),
   ),
   wireInstructions: state<MachineTransition>(
@@ -81,9 +83,11 @@ export const confirmWireDetailsMachine = {
     transition(
       payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL,
       'banner',
-      reduce((ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
-        ...ctx,
-      })),
+      reduce(
+        (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
+          ...ctx,
+        }),
+      ),
     ),
   ),
   confirmForm: state<MachineTransition>(
@@ -104,10 +108,12 @@ export const confirmWireDetailsMachine = {
     transition(
       payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL,
       'banner',
-      reduce((ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
-        ...ctx,
-        component: null,
-      })),
+      reduce(
+        (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
+          ...ctx,
+          component: null,
+        }),
+      ),
     ),
   ),
   final: state<MachineTransition>(),

@@ -84,7 +84,8 @@ export interface UseHomeAddressManagementReadySuccess extends BaseHookReady<
 }
 
 type UseHomeAddressManagementReady =
-  UseHomeAddressManagementReadyEmployeeError | UseHomeAddressManagementReadySuccess
+  | UseHomeAddressManagementReadyEmployeeError
+  | UseHomeAddressManagementReadySuccess
 
 /**
  * Return type of {@link useHomeAddressManagement}.

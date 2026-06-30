@@ -198,14 +198,16 @@ export const payrollLandingMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'overview',
-      reduce((ctx: PayrollLandingFlowContextInterface): PayrollLandingFlowContextInterface => ({
-        ...updateBreadcrumbs('overview', ctx, {
-          startDate: ctx.startDate ?? '',
-          endDate: ctx.endDate ?? '',
+      reduce(
+        (ctx: PayrollLandingFlowContextInterface): PayrollLandingFlowContextInterface => ({
+          ...updateBreadcrumbs('overview', ctx, {
+            startDate: ctx.startDate ?? '',
+            endDate: ctx.endDate ?? '',
+          }),
+          component: PayrollLandingOverviewContextual,
+          previousState: 'tabs',
         }),
-        component: PayrollLandingOverviewContextual,
-        previousState: 'tabs',
-      })),
+      ),
       guard((ctx: PayrollLandingFlowContextInterface) => {
         return ctx.previousState === 'overview'
       }),

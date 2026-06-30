@@ -9,7 +9,9 @@ import { componentEvents } from '@/shared/constants'
 
 /** @internal */
 export type PaymentMethodSuccessAlertCode =
-  'bankAccountAdded' | 'bankAccountDeleted' | 'splitUpdated'
+  | 'bankAccountAdded'
+  | 'bankAccountDeleted'
+  | 'splitUpdated'
 
 /** @internal */
 export interface PaymentMethodContextInterface extends FlowContextInterface {

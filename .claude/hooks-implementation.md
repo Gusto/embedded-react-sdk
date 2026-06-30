@@ -351,12 +351,16 @@ if (isDataLoading || !requiredData) {
 // Ready state
 return {
   isLoading: false as const,
-  data: {/* domain entities */},
+  data: {
+    /* domain entities */
+  },
   status: { isPending, mode: isCreateMode ? 'create' : 'update' },
   actions: { onSubmit },
   errorHandling,
   form: {
-    Fields: {/* field components, some possibly undefined */},
+    Fields: {
+      /* field components, some possibly undefined */
+    },
     fieldsMetadata,
     hookFormInternals: { formMethods },
   },

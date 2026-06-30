@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import type { TabProps } from '@/components/Common/UI/Tabs/TabsTypes'
 
 type BackNavigation =
-  { onBack: () => void; backLabel: string } | { onBack?: never; backLabel?: never }
+  | { onBack: () => void; backLabel: string }
+  | { onBack?: never; backLabel?: never }
 
 type TabbedContent =
   | {
