@@ -11,124 +11,15 @@ custom_edit_url: null
 
 # useContractorBankAccountForm
 
-## Components
-
-<a id="contractorbankaccountaccountnumberfield"></a>
-
-### ContractorBankAccountAccountNumberField
-
-Text input bound to the `accountNumber` field of [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorBankAccountAccountNumberFieldProps`](#contractorbankaccountaccountnumberfieldprops) | See [AccountNumberFieldProps](#contractorbankaccountaccountnumberfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AccountNumber`. Pre-filled with
-the masked account number (e.g. "XXXX1207"), which is accepted unchanged to
-keep the existing account; a newly entered value is validated against the
-1–17 digit numeric pattern.
-
-***
-
-<a id="contractorbankaccountaccounttypefield"></a>
-
-### ContractorBankAccountAccountTypeField
-
-Radio group bound to the `accountType` field of [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorBankAccountAccountTypeFieldProps`](#contractorbankaccountaccounttypefieldprops) | See [AccountTypeFieldProps](#contractorbankaccountaccounttypefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.AccountType`. Options are
-`Checking` and `Savings`; defaults to `Checking`. Supply `getOptionLabel` to
-translate the option labels.
-
-***
-
-<a id="contractorbankaccountnamefield"></a>
-
-### ContractorBankAccountNameField
-
-Text input bound to the `name` field of [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorBankAccountNameFieldProps`](#contractorbankaccountnamefieldprops) | See [NameFieldProps](#contractorbankaccountnamefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Name`. Captures the bank account
-nickname.
-
-***
-
-<a id="contractorbankaccountroutingnumberfield"></a>
-
-### ContractorBankAccountRoutingNumberField
-
-Text input bound to the `routingNumber` field of [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorBankAccountRoutingNumberFieldProps`](#contractorbankaccountroutingnumberfieldprops) | See [RoutingNumberFieldProps](#contractorbankaccountroutingnumberfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.RoutingNumber`. Validated against
-a 9-digit numeric pattern.
-
-## Form Hooks
-
 <a id="usecontractorbankaccountform"></a>
 
-### useContractorBankAccountForm()
-
-> **useContractorBankAccountForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
+> **useContractorBankAccountForm**(`props`: [`UseContractorBankAccountFormProps`](#usecontractorbankaccountformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
 
 Headless React Hook Form hook for creating a contractor's bank account.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseContractorBankAccountFormProps`](#usecontractorbankaccountformprops) | See [UseContractorBankAccountFormProps](#usecontractorbankaccountformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
-
-A loading-state result while data loads, or a [UseContractorBankAccountFormReady](#usecontractorbankaccountformready) once ready.
-
-#### Remarks
-
-Captures the account nickname, routing number, account number, and account
-type. Creating a bank account also updates the contractor's payment method to
-Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
-needs only this submit — no separate payment method update.
-
-When the contractor already has a bank account on file, the account number
-field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
-The API requires `account_number` on every write and treats that exact masked
-value as "keep the existing account," so submitting it unchanged preserves the
-account while still applying any name/routing/type edits; typing a real number
-replaces it.
-
-#### Example
-
-```tsx
+```tsx title="Example"
 import { useContractorBankAccountForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function AddBankAccount({ contractorId }: { contractorId: string }) {
@@ -156,7 +47,208 @@ function AddBankAccount({ contractorId }: { contractorId: string }) {
 }
 ```
 
-## Variables
+## Remarks
+
+Captures the account nickname, routing number, account number, and account
+type. Creating a bank account also updates the contractor's payment method to
+Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
+needs only this submit — no separate payment method update.
+
+When the contractor already has a bank account on file, the account number
+field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
+The API requires `account_number` on every write and treats that exact masked
+value as "keep the existing account," so submitting it unchanged preserves the
+account while still applying any name/routing/type edits; typing a real number
+replaces it.
+
+## Props
+
+### UseContractorBankAccountFormProps
+
+<a id="usecontractorbankaccountformprops"></a>
+
+Props for [useContractorBankAccountForm](#usecontractorbankaccountform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | Contractor for whom to create the bank account. |
+| `defaultValues?` | `Partial`\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | Pre-fill form values. The contractor's existing bank account is used when no override is supplied. |
+| `optionalFieldsToRequire?` | [`ContractorBankAccountOptionalFieldsToRequire`](#contractorbankaccountoptionalfieldstorequire) | Override optional fields to be required. |
+| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
+| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
+
+## Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
+
+A loading-state result while data loads, or a [UseContractorBankAccountFormReady](#usecontractorbankaccountformready) once ready.
+
+<a id="usecontractorbankaccountformresult"></a>
+
+### UseContractorBankAccountFormResult
+
+> **UseContractorBankAccountFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
+
+Return type of [useContractorBankAccountForm](#usecontractorbankaccountform) — a discriminated union on `isLoading`.
+
+***
+
+<a id="usecontractorbankaccountformready"></a>
+
+### UseContractorBankAccountFormReady
+
+Ready-state return value of [useContractorBankAccountForm](#usecontractorbankaccountform).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit the form. Returns the created bank account on success or `undefined` on validation/mutation failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount)\> \| `undefined`\> | - |
+| `data` | `object` | The contractor's current bank account, loaded from the API, if any. |
+| `data.bankAccount` | [`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount) \| `undefined` | - |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`ContractorBankAccountFormFields`](#contractorbankaccountformfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
+| `status.isPending` | `boolean` | - |
+| `status.mode` | `"create"` | - |
+
+## Fields
+
+### ContractorBankAccountFormFields
+
+<a id="contractorbankaccountformfields"></a>
+
+Field components exposed by [useContractorBankAccountForm](#usecontractorbankaccountform) on `form.Fields`.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `AccountNumber` | `ComponentType`\<[`AccountNumberFieldProps`](#contractorbankaccountaccountnumberfieldprops)\> | Bound to `accountNumber` — see [AccountNumberField](#contractorbankaccountaccountnumberfield). |
+| `AccountType` | `ComponentType`\<[`AccountTypeFieldProps`](#contractorbankaccountaccounttypefieldprops)\> | Bound to `accountType` — see [AccountTypeField](#contractorbankaccountaccounttypefield). |
+| `Name` | `ComponentType`\<[`NameFieldProps`](#contractorbankaccountnamefieldprops)\> | Bound to `name` — see [NameField](#contractorbankaccountnamefield). |
+| `RoutingNumber` | `ComponentType`\<[`RoutingNumberFieldProps`](#contractorbankaccountroutingnumberfieldprops)\> | Bound to `routingNumber` — see [RoutingNumberField](#contractorbankaccountroutingnumberfield). |
+
+***
+
+### AccountNumber
+
+Bound to `accountNumber` — see [AccountNumberField](#contractorbankaccountaccountnumberfield).
+
+```tsx
+<form.Fields.AccountNumber
+  label="Account number"
+  validationMessages={{ REQUIRED: '…', INVALID_ACCOUNT_NUMBER: '…' }}
+/>
+```
+
+<a id="contractorbankaccountaccountnumberfieldprops"></a>
+
+#### ContractorBankAccountAccountNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountAccountNumberValidation`](#contractorbankaccountaccountnumbervalidation)\>\>
+
+Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.AccountNumber` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorBankAccountAccountNumberValidation`](#contractorbankaccountaccountnumbervalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### AccountType
+
+Bound to `accountType` — see [AccountTypeField](#contractorbankaccountaccounttypefield).
+
+```tsx
+<form.Fields.AccountType
+  label="Account type"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="contractorbankaccountaccounttypefieldprops"></a>
+
+#### ContractorBankAccountAccountTypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation), [`ContractorAccountType`](#contractoraccounttype)\>\>
+
+Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.AccountType` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`ContractorAccountType`](#contractoraccounttype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+***
+
+### Name
+
+Bound to `name` — see [NameField](#contractorbankaccountnamefield).
+
+```tsx
+<form.Fields.Name
+  label="Name"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="contractorbankaccountnamefieldprops"></a>
+
+#### ContractorBankAccountNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation)\>\>
+
+Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.Name` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### RoutingNumber
+
+Bound to `routingNumber` — see [RoutingNumberField](#contractorbankaccountroutingnumberfield).
+
+```tsx
+<form.Fields.RoutingNumber
+  label="Routing number"
+  validationMessages={{ REQUIRED: '…', INVALID_ROUTING_NUMBER: '…' }}
+/>
+```
+
+<a id="contractorbankaccountroutingnumberfieldprops"></a>
+
+#### ContractorBankAccountRoutingNumberFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountRoutingNumberValidation`](#contractorbankaccountroutingnumbervalidation)\>\>
+
+Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.RoutingNumber` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorBankAccountRoutingNumberValidation`](#contractorbankaccountroutingnumbervalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+## Validations
 
 <a id="contractorbankaccounterrorcodes"></a>
 
@@ -178,99 +270,14 @@ hook.
 
 ***
 
-<a id="contractorbankaccounttypes"></a>
+<a id="contractorbankaccounterrorcode"></a>
 
-### ContractorBankAccountTypes
+### ContractorBankAccountErrorCode
 
-> `const` **ContractorBankAccountTypes**: readonly \[`"Checking"`, `"Savings"`\]
+> **ContractorBankAccountErrorCode** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\]
 
-Supported bank account type values: checking and savings.
-
-## Interfaces
-
-<a id="contractorbankaccountformfields"></a>
-
-### ContractorBankAccountFormFields
-
-Field components exposed by [useContractorBankAccountForm](#usecontractorbankaccountform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `AccountNumber` | (`props`) => `Element` | Bound to `accountNumber` — see [AccountNumberField](#contractorbankaccountaccountnumberfield). |
-| `AccountType` | (`props`) => `Element` | Bound to `accountType` — see [AccountTypeField](#contractorbankaccountaccounttypefield). |
-| `Name` | (`props`) => `Element` | Bound to `name` — see [NameField](#contractorbankaccountnamefield). |
-| `RoutingNumber` | (`props`) => `Element` | Bound to `routingNumber` — see [RoutingNumberField](#contractorbankaccountroutingnumberfield). |
-
-***
-
-<a id="usecontractorbankaccountformprops"></a>
-
-### UseContractorBankAccountFormProps
-
-Props for [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `contractorId` | `string` | Contractor for whom to create the bank account. |
-| `defaultValues?` | `Partial`\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | Pre-fill form values. The contractor's existing bank account is used when no override is supplied. |
-| `optionalFieldsToRequire?` | [`ContractorBankAccountOptionalFieldsToRequire`](#contractorbankaccountoptionalfieldstorequire) | Override optional fields to be required. |
-| `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
-| `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
-
-***
-
-<a id="usecontractorbankaccountformready"></a>
-
-### UseContractorBankAccountFormReady
-
-Ready-state return value of [useContractorBankAccountForm](#usecontractorbankaccountform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorBankAccountFormData`](#contractorbankaccountformdata), [`ContractorBankAccountFormFields`](#contractorbankaccountformfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit the form. Returns the created bank account on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount)\> \| `undefined`\> | - |
-| `data` | `object` | The contractor's current bank account, loaded from the API, if any. |
-| `data.bankAccount` | [`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount) \| `undefined` | - |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorBankAccountFormFields`](#contractorbankaccountformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |
-| `status.isPending` | `boolean` | - |
-| `status.mode` | `"create"` | - |
-
-## Type Aliases
-
-<a id="contractoraccounttype"></a>
-
-### ContractorAccountType
-
-> **ContractorAccountType** = *typeof* [`ContractorBankAccountTypes`](#contractorbankaccounttypes)\[`number`\]
-
-Union of bank account type values that the form accepts.
-
-***
-
-<a id="contractorbankaccountaccountnumberfieldprops"></a>
-
-### ContractorBankAccountAccountNumberFieldProps
-
-> **ContractorBankAccountAccountNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountAccountNumberValidation`](#contractorbankaccountaccountnumbervalidation)\>\>
-
-Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.AccountNumber` component.
+Union of validation error code strings emitted by the contractor bank account
+form schema.
 
 ***
 
@@ -285,24 +292,34 @@ Validation error codes emitted by the `accountNumber` field of
 
 ***
 
-<a id="contractorbankaccountaccounttypefieldprops"></a>
+<a id="contractorbankaccountrequiredvalidation"></a>
 
-### ContractorBankAccountAccountTypeFieldProps
+### ContractorBankAccountRequiredValidation
 
-> **ContractorBankAccountAccountTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation), [`ContractorAccountType`](#contractoraccounttype)\>\>
+> **ContractorBankAccountRequiredValidation** = *typeof* `ContractorBankAccountErrorCodes.REQUIRED`
 
-Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.AccountType` component.
+Validation error code emitted by [useContractorBankAccountForm](#usecontractorbankaccountform) fields
+that only emit `REQUIRED`.
 
 ***
 
-<a id="contractorbankaccounterrorcode"></a>
+<a id="contractorbankaccountroutingnumbervalidation"></a>
 
-### ContractorBankAccountErrorCode
+### ContractorBankAccountRoutingNumberValidation
 
-> **ContractorBankAccountErrorCode** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\]
+> **ContractorBankAccountRoutingNumberValidation** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof `Pick`\<*typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
 
-Union of validation error code strings emitted by the contractor bank account
-form schema.
+Validation error codes emitted by the `routingNumber` field of
+[useContractorBankAccountForm](#usecontractorbankaccountform).
+
+## Utility Types
+<a id="contractoraccounttype"></a>
+
+### ContractorAccountType
+
+> **ContractorAccountType** = *typeof* [`ContractorBankAccountTypes`](#contractorbankaccounttypes)\[`number`\]
+
+Union of bank account type values that the form accepts.
 
 ***
 
@@ -320,9 +337,16 @@ Per-field metadata exposed on `form.fieldsMetadata` for [useContractorBankAccoun
 
 ### ContractorBankAccountFormData
 
-> **ContractorBankAccountFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
 Shape of the values managed by the contractor bank account form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `accountNumber` | `string` |
+| `accountType` | `"Checking"` \| `"Savings"` |
+| `name` | `string` |
+| `routingNumber` | `string` |
 
 ***
 
@@ -347,16 +371,6 @@ submit.
 
 ***
 
-<a id="contractorbankaccountnamefieldprops"></a>
-
-### ContractorBankAccountNameFieldProps
-
-> **ContractorBankAccountNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountRequiredValidation`](#contractorbankaccountrequiredvalidation)\>\>
-
-Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.Name` component.
-
-***
-
 <a id="contractorbankaccountoptionalfieldstorequire"></a>
 
 ### ContractorBankAccountOptionalFieldsToRequire
@@ -368,42 +382,10 @@ required via the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="contractorbankaccountrequiredvalidation"></a>
+<a id="contractorbankaccounttypes"></a>
 
-### ContractorBankAccountRequiredValidation
+### ContractorBankAccountTypes
 
-> **ContractorBankAccountRequiredValidation** = *typeof* `ContractorBankAccountErrorCodes.REQUIRED`
+> `const` **ContractorBankAccountTypes**: readonly \[`"Checking"`, `"Savings"`\]
 
-Validation error code emitted by [useContractorBankAccountForm](#usecontractorbankaccountform) fields
-that only emit `REQUIRED`.
-
-***
-
-<a id="contractorbankaccountroutingnumberfieldprops"></a>
-
-### ContractorBankAccountRoutingNumberFieldProps
-
-> **ContractorBankAccountRoutingNumberFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorBankAccountRoutingNumberValidation`](#contractorbankaccountroutingnumbervalidation)\>\>
-
-Props accepted by [useContractorBankAccountForm](#usecontractorbankaccountform)'s `Fields.RoutingNumber` component.
-
-***
-
-<a id="contractorbankaccountroutingnumbervalidation"></a>
-
-### ContractorBankAccountRoutingNumberValidation
-
-> **ContractorBankAccountRoutingNumberValidation** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof `Pick`\<*typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
-
-Validation error codes emitted by the `routingNumber` field of
-[useContractorBankAccountForm](#usecontractorbankaccountform).
-
-***
-
-<a id="usecontractorbankaccountformresult"></a>
-
-### UseContractorBankAccountFormResult
-
-> **UseContractorBankAccountFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)
-
-Return type of [useContractorBankAccountForm](#usecontractorbankaccountform) — a discriminated union on `isLoading`.
+Supported bank account type values: checking and savings.
