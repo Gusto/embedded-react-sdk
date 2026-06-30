@@ -16,6 +16,7 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'workflows-overview/workflows-overview',
+    { type: 'doc', id: 'hooks/hooks', label: 'Hooks Overview' },
     {
       type: 'category',
       label: 'Component Adapter',
@@ -49,16 +50,6 @@ const sidebars: SidebarsConfig = {
         'integration-guide/error-handling',
         'integration-guide/observability',
         'integration-guide/observability-examples',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Hooks',
-      link: { type: 'doc', id: 'hooks/hooks' },
-      items: [
-        'hooks/useEmployeeDetailsForm',
-        'hooks/useCompensationForm',
-        'hooks/useWorkAddressForm',
       ],
     },
     {

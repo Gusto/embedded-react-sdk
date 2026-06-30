@@ -53,7 +53,7 @@ export interface UsePaymentMethodFormProps {
  * @public
  */
 export interface PaymentMethodFormFields {
-  /** Bound to `type` — see {@link TypeField}. */
+  /** Bound to `type`. */
   Type: typeof TypeField
 }
 

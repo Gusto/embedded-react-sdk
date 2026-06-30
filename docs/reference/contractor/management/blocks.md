@@ -182,7 +182,7 @@ Props for [PaymentSummary](#paymentsummary).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company that owns the payment group. |
-| `onEvent` | (`type`, `data?`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
+| `onEvent` | (`type`: [`EventType`](../../events.md#eventtype), `data?`: `unknown`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
 | `paymentGroupId` | `string` | UUID of the contractor payment group to summarize. |
 
 ### Remarks

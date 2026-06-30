@@ -61,13 +61,13 @@ export interface UseBankFormProps {
  * @public
  */
 export interface BankFormFields {
-  /** Bound to `name` — see {@link NameField}. */
+  /** Bound to `name`. */
   Name: typeof NameField
-  /** Bound to `routingNumber` — see {@link RoutingNumberField}. */
+  /** Bound to `routingNumber`. */
   RoutingNumber: typeof RoutingNumberField
-  /** Bound to `accountNumber` — see {@link AccountNumberField}. */
+  /** Bound to `accountNumber`. */
   AccountNumber: typeof AccountNumberField
-  /** Bound to `accountType` — see {@link AccountTypeField}. */
+  /** Bound to `accountType`. */
   AccountType: typeof AccountTypeField
 }
 

@@ -52,6 +52,7 @@ export type HomeAddressField = keyof typeof fieldValidators
  * Shape of the values managed by the home address form.
  *
  * @public
+ * @interface
  */
 export type HomeAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

@@ -772,6 +772,14 @@ export interface BaseListProps {
     items: ReactNode[];
 }
 
+// @public
+export interface BaseStateTaxFieldProps {
+    description?: ReactNode;
+    formHookResult?: FormHookResult;
+    label?: string;
+    validationMessages?: StateTaxValidationMessages;
+}
+
 export { BeforeCreateRequestContext }
 
 export { BeforeCreateRequestHook }
@@ -2332,12 +2340,16 @@ locationUuid: z.ZodString;
 effectiveDate: z.ZodISODate;
 }>;
 
-// Warning: (ae-forgotten-export) The symbol "BaseStateTaxFieldProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type CurrencyStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
-};
+}
+
+// @public
+export interface CurrencyStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<CurrencyStateTaxFieldProps>;
+    type: 'currency';
+}
 
 // @public
 export function CustomNameField(props: CustomNameFieldProps): JSX;
@@ -2424,9 +2436,15 @@ export interface DateRangePickerProps {
 }
 
 // @public
-export type DateStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface DateStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<DatePickerProps>;
-};
+}
+
+// @public
+export interface DateStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<DateStateTaxFieldProps>;
+    type: 'date';
+}
 
 // @public
 export function Day1Field(props: Day1FieldProps): JSX;
@@ -3901,9 +3919,15 @@ export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTML
 }
 
 // @public
-export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface NumberStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
-};
+}
+
+// @public
+export interface NumberStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<NumberStateTaxFieldProps>;
+    type: 'number';
+}
 
 // Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -4846,9 +4870,15 @@ export interface RadioProps extends SharedHorizontalFieldLayoutProps, Pick<Input
 }
 
 // @public
-export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface RadioStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
-};
+}
+
+// @public
+export interface RadioStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<RadioStateTaxFieldProps>;
+    type: 'radio';
+}
 
 // @public (undocumented)
 type RateBasedAccrualMethod = 'perPayPeriod' | 'perCalendarYear' | 'perAnniversaryYear' | 'perHourWorked' | 'perHourWorkedNoOvertime' | 'perHourPaid' | 'perHourPaidNoOvertime';
@@ -5013,10 +5043,16 @@ interface SelectReasonPayload {
 }
 
 // @public
-export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
-    placeholder?: string;
+export interface SelectStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<SelectProps>;
-};
+    placeholder?: string;
+}
+
+// @public
+export interface SelectStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<SelectStateTaxFieldProps>;
+    type: 'select';
+}
 
 // @public
 export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
@@ -5045,6 +5081,13 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 
 // @public
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
+
+// @public
+export interface SharedQuestionMetadata {
+    description: string | null;
+    label: string;
+    questionId: string;
+}
 
 // @public
 export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
@@ -5303,36 +5346,22 @@ interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'>
 }
 
 // @public
+export type StateTaxFields = StateTaxFieldsGroup[];
+
+// @public
 export interface StateTaxFieldsGroup {
     questions: StateTaxQuestionFieldEntry[];
     state: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedQuestionMetadata" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type StateTaxQuestionFieldEntry = ({
-    type: 'select';
-    Field: ComponentType<SelectStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'radio';
-    Field: ComponentType<RadioStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'text';
-    Field: ComponentType<TextStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'number';
-    Field: ComponentType<NumberStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'currency';
-    Field: ComponentType<CurrencyStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'date';
-    Field: ComponentType<DateStateTaxFieldProps>;
-} & SharedQuestionMetadata);
+export type StateTaxQuestionFieldEntry = SelectStateTaxQuestion | RadioStateTaxQuestion | TextStateTaxQuestion | NumberStateTaxQuestion | CurrencyStateTaxQuestion | DateStateTaxQuestion;
 
 // @public
 export type StateTaxQuestionVariant = 'select' | 'radio' | 'text' | 'number' | 'currency' | 'date';
+
+// @public
+export type StateTaxValidationMessages = ValidationMessages<typeof EmployeeStateTaxesErrorCodes.REQUIRED>;
 
 // @public
 export type StateTaxValue = string | number | boolean | Date | null | undefined;
@@ -5521,10 +5550,16 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
 }
 
 // @public
-export type TextStateTaxFieldProps = BaseStateTaxFieldProps & {
-    placeholder?: string;
+export interface TextStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<TextInputProps>;
-};
+    placeholder?: string;
+}
+
+// @public
+export interface TextStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<TextStateTaxFieldProps>;
+    type: 'text';
+}
 
 declare namespace TimeOff {
     export {
@@ -6082,15 +6117,12 @@ export interface UseEmployeeStateTaxesFormProps {
 }
 
 // @public
-export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]> {
+export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>;
     };
     data: {
         employeeStateTaxes: EmployeeStateTaxesList[];
-    };
-    form: BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]>['form'] & {
-        Fields: StateTaxFieldsGroup[];
     };
     status: {
         isPending: boolean;
@@ -6338,7 +6370,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady;
 
 // @public
-export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady;
+export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): UseSplitPaymentsFormResult;
 
 // @public
 export interface UseSplitPaymentsFormProps {

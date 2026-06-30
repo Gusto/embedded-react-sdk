@@ -37,11 +37,14 @@ export interface BaseStateTaxFieldProps {
 }
 
 /**
- * Props for a `Field` rendered as a select (dropdown).
+ * Props for an API-supplied state-tax question rendered as a select (dropdown).
+ *
+ * Override the user-visible text for this field — its label, description,
+ * placeholder, and validation messages.
  *
  * @public
  */
-export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface SelectStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Placeholder shown when no option is selected. Defaults to a generic localized string when omitted. */
   placeholder?: string
   /** Replace the underlying SDK Select primitive with a component of your own. */
@@ -49,21 +52,27 @@ export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
 }
 
 /**
- * Props for a `Field` rendered as a radio group.
+ * Props for an API-supplied state-tax question rendered as a radio group.
+ *
+ * Override the user-visible text for this field — its label, description, and
+ * validation messages.
  *
  * @public
  */
-export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface RadioStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Replace the underlying SDK RadioGroup primitive with a component of your own. */
   FieldComponent?: ComponentType<RadioGroupProps>
 }
 
 /**
- * Props for a `Field` rendered as a single-line text input.
+ * Props for an API-supplied state-tax question rendered as a single-line text input.
+ *
+ * Override the user-visible text for this field — its label, description,
+ * placeholder, and validation messages.
  *
  * @public
  */
-export type TextStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface TextStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Placeholder shown when the field is empty. */
   placeholder?: string
   /** Replace the underlying SDK TextInput primitive with a component of your own. */
@@ -71,31 +80,40 @@ export type TextStateTaxFieldProps = BaseStateTaxFieldProps & {
 }
 
 /**
- * Props for a `Field` rendered as a decimal number input.
+ * Props for an API-supplied state-tax question rendered as a decimal number input.
+ *
+ * Override the user-visible text for this field — its label, description, and
+ * validation messages.
  *
  * @public
  */
-export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface NumberStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Replace the underlying SDK NumberInput primitive with a component of your own. */
   FieldComponent?: ComponentType<NumberInputProps>
 }
 
 /**
- * Props for a `Field` rendered as a currency-formatted number input.
+ * Props for an API-supplied state-tax question rendered as a currency-formatted number input.
+ *
+ * Override the user-visible text for this field — its label, description, and
+ * validation messages.
  *
  * @public
  */
-export type CurrencyStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Replace the underlying SDK NumberInput primitive with a component of your own. */
   FieldComponent?: ComponentType<NumberInputProps>
 }
 
 /**
- * Props for a `Field` rendered as a date picker.
+ * Props for an API-supplied state-tax question rendered as a date picker.
+ *
+ * Override the user-visible text for this field — its label, description, and
+ * validation messages.
  *
  * @public
  */
-export type DateStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface DateStateTaxFieldProps extends BaseStateTaxFieldProps {
   /** Replace the underlying SDK DatePicker primitive with a component of your own. */
   FieldComponent?: ComponentType<DatePickerProps>
 }

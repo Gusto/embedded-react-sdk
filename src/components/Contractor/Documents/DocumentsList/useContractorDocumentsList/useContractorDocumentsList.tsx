@@ -17,6 +17,7 @@ export interface UseContractorDocumentsListParams {
  * Ready-state shape returned by {@link useContractorDocumentsList} once the documents have loaded.
  *
  * @public
+ * @interface
  */
 export type UseContractorDocumentsListReady = BaseHookReady<
   { documents: Document[] },

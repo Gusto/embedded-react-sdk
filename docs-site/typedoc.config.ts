@@ -17,8 +17,8 @@ export const baseOptions = {
   groupOrder: [
     'Domains',
     'Namespaces',
-    ...COMPONENT_GROUPS,
     ...HOOK_GROUPS,
+    ...COMPONENT_GROUPS,
     ...VARIABLE_GROUPS,
     'Functions',
     'Variables',
@@ -48,10 +48,13 @@ export const baseOptions = {
 
   sort: ['required-first', 'alphabetical'],
 
-  excludeNotDocumented: true,
+  excludeNotDocumented: false,
   excludeInternal: true,
   excludePrivate: true,
   excludeProtected: true,
+  expandObjects: false,
+  expandParameters: true,
+
   strikeDeprecatedPageTitles: false,
 
   router: 'sdk-router',
@@ -61,9 +64,11 @@ export const baseOptions = {
   validation: { invalidLink: true },
   formatWithPrettier: false,
 
-  // Custom block tag listing the components/hooks a flow composes; rendered as a
-  // table by the SDK theme. Spread the defaults so the built-in tags are kept.
-  blockTags: [...OptionDefaults.blockTags, '@components', '@events'],
+  // Custom block tags. `@components` lists the components/hooks a flow composes
+  // (rendered as a table by the SDK theme); `@events` documents events separately
+  // from `@remarks`; `@groupWith {@link X}` pins a type to render immediately after
+  // sibling `X` in its group. Spread the defaults so the built-in tags are kept.
+  blockTags: [...OptionDefaults.blockTags, '@components', '@events', '@groupWith'],
 } satisfies TypeDocOptions & PluginOptions
 
 export default {
