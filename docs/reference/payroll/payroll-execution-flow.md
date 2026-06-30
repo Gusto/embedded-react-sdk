@@ -54,7 +54,7 @@ Props for PayrollExecutionFlow.
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
 | `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
-| `initialPayPeriod?` | `PayrollPayPeriodType` | Optional pay period metadata used to seed breadcrumb labels and date context. |
+| `initialPayPeriod?` | [`PayrollPayPeriodType`](../APIModels/index.md#payrollpayperiodtype) | Optional pay period metadata used to seed breadcrumb labels and date context. |
 | `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |
 | `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
 | `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |

@@ -46,7 +46,7 @@ function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/profile/editRequested` | Fired when the user clicks Edit on the read-view card | `{ employeeId: string }` |
- * | `employee/management/profile/updated` | Fired after the profile is successfully saved | {@link Employee} |
+ * | `employee/management/profile/updated` | Fired after the profile is successfully saved | {@link APIModels.Employee} |
  * | `employee/management/profile/editCancelled` | Fired when the user cancels editing | — |
  *
  * @param props - See {@link ProfileProps}.

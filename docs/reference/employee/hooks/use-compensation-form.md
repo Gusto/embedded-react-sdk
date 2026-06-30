@@ -411,14 +411,14 @@ that flip with form input live under `status.*`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Compensation`](../../APIModels/index.md#compensation)\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
 | `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
-| `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
-| `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
+| `data.compensation` | [`Compensation`](../../APIModels/index.md#compensation) \| `null` | The compensation row loaded for update; `null` in create mode. |
+| `data.currentJob` | [`Job`](../../APIModels/index.md#job) \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
 | `data.hasPendingFutureCompensation` | `boolean` | True when at least one future-dated compensation already exists for this job. |
 | `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
 | `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
-| `data.minimumWages` | `MinimumWage`[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
+| `data.minimumWages` | [`MinimumWage`](../../APIModels/index.md#minimumwage)[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
@@ -601,7 +601,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.Title` c
 
 ### FlsaStatusFieldProps
 
-> **FlsaStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
+> **FlsaStatusFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
 
@@ -611,7 +611,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStat
 
 ### MinimumWageIdFieldProps
 
-> **MinimumWageIdFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
+> **MinimumWageIdFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`MinimumWage`](../../APIModels/index.md#minimumwage)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
 
@@ -621,7 +621,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumW
 
 ### PaymentUnitFieldProps
 
-> **PaymentUnitFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
+> **PaymentUnitFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
 

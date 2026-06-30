@@ -79,7 +79,7 @@ Parameters for [useContractorDocumentsList](#usecontractordocumentslist).
 
 ### UseContractorDocumentsListReady
 
-> **UseContractorDocumentsListReady** = [`BaseHookReady`](../../utilities.md#basehookready)\<\{ `documents`: `Document`[]; \}, \{ `isFetching`: `boolean`; \}\>
+> **UseContractorDocumentsListReady** = [`BaseHookReady`](../../utilities.md#basehookready)\<\{ `documents`: [`Document`](../../APIModels/index.md#document)[]; \}, \{ `isFetching`: `boolean`; \}\>
 
 Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumentslist) once the documents have loaded.
 

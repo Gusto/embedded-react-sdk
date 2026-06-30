@@ -357,11 +357,11 @@ that flip with form input live under `status.*`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Garnishment`\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Garnishment`](../../APIModels/index.md#garnishment)\> \| `undefined`\> | Submits the form. Returns the saved garnishment + mode on success, or `undefined` when validation fails or the request errored. |
 | `data` | `object` | Child-support-specific data payload: the available agencies, counties for the selected state, and the loaded garnishment for update mode. |
 | `data.agencies` | [`StateFieldEntry`](#statefieldentry)[] | Agencies offered as `State` options; raw entries the consumer can use with `getOptionLabel` for translated names. |
 | `data.counties` | [`CountyEntry`](#countyentry)[] | Counties for the currently selected state. Empty array when no state is selected. |
-| `data.deduction` | `Garnishment` \| `null` | The garnishment loaded for update; `null` in create mode. |
+| `data.deduction` | [`Garnishment`](../../APIModels/index.md#garnishment) \| `null` | The garnishment loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
@@ -374,7 +374,7 @@ that flip with form input live under `status.*`.
 | `status.isPending` | `boolean` | `true` while a create or update mutation is in flight. |
 | `status.mode` | `"create"` \| `"update"` | Reflects whether the next submit will POST a new garnishment or PUT an existing one. |
 | `status.requiredAttrKeys` | `ReadonlySet`\<`"case_number"` \| `"order_number"` \| `"remittance_number"`\> | Which `required_attributes` keys the selected agency declares. |
-| `status.selectedAgency` | `Agencies` \| `null` | The agency record matching the currently selected `state`. |
+| `status.selectedAgency` | [`Agencies`](../../APIModels/index.md#agencies) \| `null` | The agency record matching the currently selected `state`. |
 
 ## Type Aliases
 
@@ -566,7 +566,7 @@ Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentfo
 
 ### PaymentPeriodFieldProps
 
-> **PaymentPeriodFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), `PaymentPeriod`\>\>
+> **PaymentPeriodFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ChildSupportGarnishmentRequiredValidation`](#childsupportgarnishmentrequiredvalidation), [`PaymentPeriod`](../../APIModels/index.md#paymentperiod-1)\>\>
 
 Props accepted by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s `Fields.PaymentPeriod` component.
 
