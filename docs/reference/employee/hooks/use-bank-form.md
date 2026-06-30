@@ -96,7 +96,7 @@ Ready-state return value of [useBankForm](#usebankform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Optional [BankFormSubmitOptions](#bankformsubmitoptions) can override the `employeeId` supplied to the hook. |
-| `actions.onSubmit` | (`options?`: [`BankFormSubmitOptions`](#bankformsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeBankAccount`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`BankFormSubmitOptions`](#bankformsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeBankAccount`](../../APIModels/index.md#employeebankaccount)\> \| `undefined`\> | - |
 | `data` | `Record`\<`string`, `never`\> | No server-fetched data — the create form derives everything from user input. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |

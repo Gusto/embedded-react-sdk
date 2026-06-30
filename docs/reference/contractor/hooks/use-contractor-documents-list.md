@@ -80,7 +80,7 @@ Ready-state shape returned by [useContractorDocumentsList](#usecontractordocumen
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `data` | `object` | Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. |
-| `data.documents` | `Document`[] | - |
+| `data.documents` | [`Document`](../../APIModels/index.md#document)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. |

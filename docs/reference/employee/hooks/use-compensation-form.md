@@ -132,14 +132,14 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`: [`CompensationSubmitOptions`](#compensationsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Compensation`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
+| `actions.onSubmit` | (`options?`: [`CompensationSubmitOptions`](#compensationsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Compensation`](../../APIModels/index.md#compensation)\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved compensation. Resolves to `undefined` on validation failure or mutation error. Accepts [CompensationSubmitOptions](#compensationsubmitoptions) for threading IDs/version into the onboarding stub-fill chain. |
 | `data` | `object` | Compensation-specific data payload: the loaded compensation, the parent job, available minimum wages, and effective-date bounds. |
-| `data.compensation` | `Compensation` \| `null` | The compensation row loaded for update; `null` in create mode. |
-| `data.currentJob` | `Job` \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
+| `data.compensation` | [`Compensation`](../../APIModels/index.md#compensation) \| `null` | The compensation row loaded for update; `null` in create mode. |
+| `data.currentJob` | [`Job`](../../APIModels/index.md#job) \| `null` | The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. |
 | `data.hasPendingFutureCompensation` | `boolean` | True when at least one future-dated compensation already exists for this job. |
 | `data.maximumEffectiveDate` | `string` \| `null` | Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. |
 | `data.minimumEffectiveDate` | `string` \| `null` | Lower bound for `effectiveDate` (typically the parent job's hire date). |
-| `data.minimumWages` | `MinimumWage`[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
+| `data.minimumWages` | [`MinimumWage`](../../APIModels/index.md#minimumwage)[] | Minimum wages available at the employee's active work location. Empty when no location is set or no minimums are defined. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
@@ -254,7 +254,7 @@ FLSA classification select. `undefined` when the status is not user-editable (e.
 
 #### FlsaStatusFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `FlsaStatusType`\>\>
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStatus` component.
 
@@ -263,7 +263,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.FlsaStat
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
-| `getOptionLabel?` | (`entry`: `FlsaStatusType`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
@@ -287,7 +287,7 @@ Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rend
 
 #### MinimumWageIdFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `MinimumWage`\>\>
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`MinimumWage`](../../APIModels/index.md#minimumwage)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumWageId` component.
 
@@ -296,7 +296,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.MinimumW
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
-| `getOptionLabel?` | (`entry`: `MinimumWage`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: [`MinimumWage`](../../APIModels/index.md#minimumwage)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
@@ -320,7 +320,7 @@ Payment unit select. `undefined` for commission-only FLSA statuses (the hook for
 
 #### PaymentUnitFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), `PaymentUnit`\>\>
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation), [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\>\>
 
 Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentUnit` component.
 
@@ -329,7 +329,7 @@ Props accepted by [useCompensationForm](#usecompensationform)'s `Fields.PaymentU
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
-| `getOptionLabel?` | (`entry`: `PaymentUnit`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: [`PaymentUnit`](../../APIModels/index.md#paymentunit-1)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`CompensationRequiredValidation`](#compensationrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._

@@ -79,14 +79,14 @@ export interface ProfileProps extends BaseComponentInterface<'Employee.Profile'>
  * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/created` | Fired after an employee is successfully created | {@link Employee} |
- * | `employee/updated` | Fired after an employee is successfully updated | {@link Employee} |
+ * | `employee/created` | Fired after an employee is successfully created | {@link APIModels.Employee} |
+ * | `employee/updated` | Fired after an employee is successfully updated | {@link APIModels.Employee} |
  * | `employee/onboardingStatus/updated` | Fired when toggling self-onboarding changes the employee's onboarding status (admin variant) | The updated onboarding status |
- * | `employee/homeAddress/created` | Fired after the home address is created | {@link EmployeeAddress} |
- * | `employee/homeAddress/updated` | Fired after the home address is updated | {@link EmployeeAddress} |
- * | `employee/workAddress/created` | Fired after the work address is created (admin variant) | {@link EmployeeWorkAddress} |
- * | `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | {@link EmployeeWorkAddress} |
- * | `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | {@link Employee} extended with `startDate` (admin variant) |
+ * | `employee/homeAddress/created` | Fired after the home address is created | {@link APIModels.EmployeeAddress} |
+ * | `employee/homeAddress/updated` | Fired after the home address is updated | {@link APIModels.EmployeeAddress} |
+ * | `employee/workAddress/created` | Fired after the work address is created (admin variant) | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | {@link APIModels.Employee} extended with `startDate` (admin variant) |
  *
  * @param input - See {@link ProfileProps}.
  * @returns The employee profile onboarding step.

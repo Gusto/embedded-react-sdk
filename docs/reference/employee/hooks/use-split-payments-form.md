@@ -116,11 +116,11 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Actions that mutate the form or submit it. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
 | `actions.reorderSplits` | (`orderedUuids`: `string`[]) => `void` | Reorder splits by uuid (Amount mode). Pass the ordered list of split uuids; the last uuid becomes the remainder. The hook writes the new priority map and re-anchors the remainder's `splitAmount` to `null` (clearing the previous remainder to `0`). |
 | `data` | `object` | Server-fetched data and derived working values. |
-| `data.bankAccounts` | `EmployeeBankAccount`[] | All bank accounts available to allocate splits across. |
-| `data.paymentMethod` | `EmployeePaymentMethod` | The employee's current payment method. |
+| `data.bankAccounts` | [`EmployeeBankAccount`](../../APIModels/index.md#employeebankaccount)[] | All bank accounts available to allocate splits across. |
+| `data.paymentMethod` | [`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod) | The employee's current payment method. |
 | `data.remainderId` | `string` | UUID of the split that absorbs the remainder in Amount mode (always the last by priority). |
 | `data.splits` | [`WorkingSplit`](#workingsplit)[] | The current working split entries, one per bank account. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

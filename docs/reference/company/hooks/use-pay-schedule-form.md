@@ -124,12 +124,12 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`PayScheduleShow`\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`PayScheduleShow`](../../APIModels/index.md#payscheduleshow)\> \| `undefined`\> | Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. |
 | `data` | `object` | Static entity data resolved from the API. |
 | `data.paymentSpeedDays` | `number` \| `null` | Business days the company needs to process payroll, derived from payment configs; `null` if unavailable. |
-| `data.payPeriodPreview` | `PaySchedulePreviewPayPeriod`[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
+| `data.payPeriodPreview` | [`PaySchedulePreviewPayPeriod`](../../APIModels/index.md#payschedulepreviewpayperiod)[] \| `null` | Upcoming pay periods previewed from current form values; `null` until the anchor date fields are complete. |
 | `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
-| `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
+| `data.paySchedule` | [`PayScheduleShow`](../../APIModels/index.md#payscheduleshow) \| `null` | The pay schedule loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |

@@ -45,8 +45,8 @@ stays on their current step.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/job/created` | Fired after a job is successfully created | Job |
-| `employee/job/updated` | Fired after a job is successfully updated | Job |
+| `employee/job/created` | Fired after a job is successfully created | [Job](../../APIModels/index.md#job) |
+| `employee/job/updated` | Fired after a job is successfully updated | [Job](../../APIModels/index.md#job) |
 | `employee/job/deleted` | Fired after a job is successfully deleted | — |
 | `employee/compensation/updated` | Fired after compensation details are updated | [Compensation](#compensation) |
 | `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
@@ -186,7 +186,7 @@ presenting the document list.
 | ----- | ----------- | ---- |
 | `employee/employmentEligibility/done` | Fired after I-9 employment eligibility is captured | The updated I-9 authorization |
 | `employee/forms/view` | Fired when a form's "Sign" action is selected from the document list | `{ uuid: string; name?: string }` |
-| `employee/forms/sign` | Fired after a form is successfully signed | Form |
+| `employee/forms/sign` | Fired after a form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
 | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
 | `cancel` | Fired when the user cancels signing a form and returns to the document list | — |
@@ -400,7 +400,7 @@ details. On successful submission the signed form is emitted.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/forms/sign` | Fired after the I-9 is successfully signed | Form |
+| `employee/forms/sign` | Fired after the I-9 is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
@@ -553,14 +553,14 @@ is omitted.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/created` | Fired after an employee is successfully created | Employee |
-| `employee/updated` | Fired after an employee is successfully updated | Employee |
+| `employee/created` | Fired after an employee is successfully created | [APIModels.Employee](../../APIModels/index.md#employee) |
+| `employee/updated` | Fired after an employee is successfully updated | [APIModels.Employee](../../APIModels/index.md#employee) |
 | `employee/onboardingStatus/updated` | Fired when toggling self-onboarding changes the employee's onboarding status (admin variant) | The updated onboarding status |
-| `employee/homeAddress/created` | Fired after the home address is created | EmployeeAddress |
-| `employee/homeAddress/updated` | Fired after the home address is updated | EmployeeAddress |
-| `employee/workAddress/created` | Fired after the work address is created (admin variant) | EmployeeWorkAddress |
-| `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | EmployeeWorkAddress |
-| `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | Employee extended with `startDate` (admin variant) |
+| `employee/homeAddress/created` | Fired after the home address is created | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/homeAddress/updated` | Fired after the home address is updated | [APIModels.EmployeeAddress](../../APIModels/index.md#employeeaddress) |
+| `employee/workAddress/created` | Fired after the work address is created (admin variant) | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
+| `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | [APIModels.Employee](../../APIModels/index.md#employee) extended with `startDate` (admin variant) |
 
 <a id="signatureform"></a>
 
@@ -592,7 +592,7 @@ submission the signed form is emitted; cancelling returns to the document list.
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `employee/forms/sign` | Fired after the form is successfully signed | Form |
+| `employee/forms/sign` | Fired after the form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
 <a id="statetaxes"></a>
@@ -631,7 +631,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ### CompensationDefaultValues
 
-> **CompensationDefaultValues** = `RequireAtLeastOne`\<\{ `flsaStatus?`: `FlsaStatusType`; `paymentUnit?`: *typeof* [`PAY_PERIODS`](../../index.md#pay_periods)\[keyof *typeof* [`PAY_PERIODS`](../../index.md#pay_periods)\]; `rate?`: `Job`\[`"rate"`\]; `title?`: `Job`\[`"title"`\]; \}\>
+> **CompensationDefaultValues** = `RequireAtLeastOne`\<\{ `flsaStatus?`: [`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1); `paymentUnit?`: *typeof* [`PAY_PERIODS`](../../index.md#pay_periods)\[keyof *typeof* [`PAY_PERIODS`](../../index.md#pay_periods)\]; `rate?`: [`Job`](../../APIModels/index.md#job)\[`"rate"`\]; `title?`: [`Job`](../../APIModels/index.md#job)\[`"title"`\]; \}\>
 
 Default values for the compensation form fields.
 

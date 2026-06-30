@@ -123,9 +123,9 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Form actions. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeStateTaxesList`[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[]\> \| `undefined`\> | Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. |
 | `data` | `object` | Current per-state tax records returned by the server. |
-| `data.employeeStateTaxes` | `EmployeeStateTaxesList`[] | - |
+| `data.employeeStateTaxes` | [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[] | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`StateTaxFields`](#statetaxfields) | - |
@@ -315,7 +315,7 @@ _Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata
 
 ### useStateFields()
 
-> **useStateFields**(`employeeStateTaxes`: `EmployeeStateTaxesList`[], `isAdmin`: `boolean`): [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
+> **useStateFields**(`employeeStateTaxes`: [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[], `isAdmin`: `boolean`): [`StateTaxFieldsGroup`](#statetaxfieldsgroup)[]
 
 Memoizes the bound field components for a state-taxes form, avoiding unnecessary rebuilds when the data refetches but the underlying questions haven't changed.
 
@@ -323,7 +323,7 @@ Memoizes the bound field components for a state-taxes form, avoiding unnecessary
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `employeeStateTaxes` | `EmployeeStateTaxesList`[] | Array of state-tax groups returned by the employee state-taxes API. |
+| `employeeStateTaxes` | [`EmployeeStateTaxesList`](../../APIModels/index.md#employeestatetaxeslist)[] | Array of state-tax groups returned by the employee state-taxes API. |
 | `isAdmin` | `boolean` | When `true`, admin-only questions are included; when `false`, they are filtered out. |
 
 #### Returns

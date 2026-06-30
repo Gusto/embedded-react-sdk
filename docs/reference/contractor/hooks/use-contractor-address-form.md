@@ -105,11 +105,11 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`: [`ContractorAddressSubmitOptions`](#contractoraddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`ContractorAddressSubmitOptions`](#contractoraddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorAddress`](../../APIModels/index.md#contractoraddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
-| `data.contractor` | `Contractor` | The full contractor entity loaded alongside the address. |
-| `data.contractorAddress` | `ContractorAddress` | The contractor address row loaded for update. |
-| `data.contractorType` | `ContractorType` \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
+| `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) | The full contractor entity loaded alongside the address. |
+| `data.contractorAddress` | [`ContractorAddress`](../../APIModels/index.md#contractoraddress) | The contractor address row loaded for update. |
+| `data.contractorType` | [`ContractorType`](../../APIModels/index.md#contractortype-1) \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorAddressFields`](#contractoraddressfields) | - |

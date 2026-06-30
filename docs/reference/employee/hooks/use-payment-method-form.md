@@ -103,9 +103,9 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeePaymentMethod`\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod)\> \| `undefined`\> | - |
 | `data` | `object` | The employee's current payment method, loaded from the API. |
-| `data.paymentMethod` | `EmployeePaymentMethod` | - |
+| `data.paymentMethod` | [`EmployeePaymentMethod`](../../APIModels/index.md#employeepaymentmethod) | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |

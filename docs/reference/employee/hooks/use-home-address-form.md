@@ -131,7 +131,7 @@ Presence or absence of `homeAddressUuid` selects the API verb — see the
 | `employeeId` | `string` | UUID of the employee whose home address is being created or edited. |
 | `defaultValues?` | `Partial`\<[`HomeAddressFormData`](#homeaddressformdata)\> | Pre-fill form values. Server data takes precedence on update. |
 | `homeAddressUuid?` | `string` | When set, loads that home address via GET `/v1/home_addresses/{uuid}` and updates it (PUT). When omitted, the form is in create mode (POST). |
-| `initialAddress?` | `EmployeeAddress` | Pre-loaded address matching `homeAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
+| `initialAddress?` | [`EmployeeAddress`](../../APIModels/index.md#employeeaddress) | Pre-loaded address matching `homeAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
 | `optionalFieldsToRequire?` | [`HomeAddressOptionalFieldsToRequire`](#homeaddressoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `HomeAddressOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
@@ -162,9 +162,9 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`options?`: [`HomeAddressSubmitOptions`](#homeaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`options?`: [`HomeAddressSubmitOptions`](#homeaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeAddress`](../../APIModels/index.md#employeeaddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
-| `data.homeAddress` | `EmployeeAddress` \| `null` | The address row loaded for update; `null` in create mode. |
+| `data.homeAddress` | [`EmployeeAddress`](../../APIModels/index.md#employeeaddress) \| `null` | The address row loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`HomeAddressFields`](#homeaddressfields) | - |

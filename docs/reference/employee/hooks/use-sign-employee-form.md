@@ -110,11 +110,11 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Form`](../../APIModels/index.md#form)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success. |
 | `actions.addPreparer?` | () => `void` | Adds an additional preparer/translator section (up to 4). Defined only for I-9 forms. |
 | `actions.removePreparer?` | () => `void` | Removes the last preparer/translator section and unregisters its fields. Defined only for I-9 forms. |
 | `data` | `object` | Loaded data — the form entity and a preview PDF URL. |
-| `data.form` | `Form` | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
+| `data.form` | [`Form`](../../APIModels/index.md#form) | The employee form entity fetched from the API (includes `uuid`, `name`, `title`). |
 | `data.pdfUrl` | `string` \| `null` \| `undefined` | URL to the form's signed PDF for preview, or `undefined` while it is still being generated. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` & `object` | Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. |

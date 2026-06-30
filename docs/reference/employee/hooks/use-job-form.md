@@ -118,12 +118,12 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
-| `actions.onSubmit` | (`options?`: [`JobSubmitOptions`](#jobsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Job`\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
+| `actions.onSubmit` | (`options?`: [`JobSubmitOptions`](#jobsubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Job`](../../APIModels/index.md#job)\> \| `undefined`\> | Validates the form, runs the appropriate create/update mutation, and resolves to a [HookSubmitResult](../../utilities.md#hooksubmitresult) containing the saved job. Resolves to `undefined` on validation failure or mutation error. |
 | `data` | `object` | Job-specific data payload: the loaded job (if any), the employee's other jobs, the employee record, the active work address, and presentation flags for conditional fields. |
-| `data.currentJob` | `Job` \| `null` | The job row loaded for update; `null` in create mode. |
-| `data.currentWorkAddress` | `EmployeeWorkAddress` \| `null` | The employee's active work address, or `null` when none is set. |
-| `data.employee` | `Employee` \| `null` | The loaded employee record, or `null` when `employeeId` was omitted. |
-| `data.jobs` | `Job`[] \| `undefined` | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. |
+| `data.currentJob` | [`Job`](../../APIModels/index.md#job) \| `null` | The job row loaded for update; `null` in create mode. |
+| `data.currentWorkAddress` | [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress) \| `null` | The employee's active work address, or `null` when none is set. |
+| `data.employee` | [`Employee`](../../APIModels/index.md#employee) \| `null` | The loaded employee record, or `null` when `employeeId` was omitted. |
+| `data.jobs` | [`Job`](../../APIModels/index.md#job)[] \| `undefined` | All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. |
 | `data.showStateWc` | `boolean` | True when the active work-address state is WA; use this to decide whether to render `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`, so most callers only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode` truthiness rather than this flag directly. |
 | `data.showTwoPercentShareholder` | `boolean` | True when the company is taxable as an S-Corp; use this to decide whether to render `TwoPercentShareholder`. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |

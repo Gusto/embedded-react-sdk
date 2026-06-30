@@ -132,9 +132,9 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`callbacks?`: [`EmployeeDetailsSubmitCallbacks`](#employeedetailssubmitcallbacks)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Employee`\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
+| `actions.onSubmit` | (`callbacks?`: [`EmployeeDetailsSubmitCallbacks`](#employeedetailssubmitcallbacks)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Employee`](../../APIModels/index.md#employee)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated employee, or `undefined` when validation fails. |
 | `data` | `object` | The loaded employee data, or `null` in create mode. |
-| `data.employee` | `Employee` \| `null` | The employee being edited, or `null` in create mode. |
+| `data.employee` | [`Employee`](../../APIModels/index.md#employee) \| `null` | The employee being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |
@@ -498,8 +498,8 @@ switch changes the employee's onboarding status as part of an update.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onEmployeeCreated?` | (`employee`: `Employee`) => `void` | Fired after a new employee is successfully created. |
-| `onEmployeeUpdated?` | (`employee`: `Employee`) => `void` | Fired after an existing employee is successfully updated. |
+| `onEmployeeCreated?` | (`employee`: [`Employee`](../../APIModels/index.md#employee)) => `void` | Fired after a new employee is successfully created. |
+| `onEmployeeUpdated?` | (`employee`: [`Employee`](../../APIModels/index.md#employee)) => `void` | Fired after an existing employee is successfully updated. |
 | `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
 
 ***

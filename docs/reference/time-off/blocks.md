@@ -468,7 +468,7 @@ at the start of the year or spread evenly across pay periods.
 
 ### CreatableTimeOffPolicyType
 
-> **CreatableTimeOffPolicyType** = `Extract`\<`PolicyType`, `"sick"` \| `"vacation"`\>
+> **CreatableTimeOffPolicyType** = `Extract`\<[`PolicyType`](../APIModels/index.md#policytype-1), `"sick"` \| `"vacation"`\>
 
 Time off policy types that can be created through the time off policy management workflow.
 

@@ -44,9 +44,9 @@ function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
  * | ----- | ----------- | ---- |
  * | `employee/management/workAddress/editRequested` | Manage button on the work address card clicked | `{ employeeId: string }` |
  * | `employee/management/workAddress/editCancelled` | User backed out of the edit form | — |
- * | `employee/management/workAddress/created` | A new work address was created | {@link EmployeeWorkAddress} |
- * | `employee/management/workAddress/updated` | An existing work address was updated | {@link EmployeeWorkAddress} |
- * | `employee/management/workAddress/deleted` | A work address was deleted | {@link EmployeeWorkAddress} |
+ * | `employee/management/workAddress/created` | A new work address was created | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/management/workAddress/updated` | An existing work address was updated | {@link APIModels.EmployeeWorkAddress} |
+ * | `employee/management/workAddress/deleted` | A work address was deleted | {@link APIModels.EmployeeWorkAddress} |
  *
  * @public
  */

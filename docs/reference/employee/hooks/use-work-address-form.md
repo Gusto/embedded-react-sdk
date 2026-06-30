@@ -124,7 +124,7 @@ the location list; pass it when it is known.
 | `employeeId` | `string` | UUID of the employee whose work address is being created or edited. |
 | `companyId?` | `string` | Company UUID for locations; omit or leave unset while resolving from the employee record. |
 | `defaultValues?` | `Partial`\<[`WorkAddressFormData`](#workaddressformdata)\> | Pre-fill form values. Server data takes precedence on update. |
-| `initialAddress?` | `EmployeeWorkAddress` | Pre-loaded address matching `workAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
+| `initialAddress?` | [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress) | Pre-loaded address matching `workAddressUuid`. When supplied, the form uses it directly instead of issuing a GET — useful when the parent already has the row from a list query. |
 | `optionalFieldsToRequire?` | [`WorkAddressOptionalFieldsToRequire`](#workaddressoptionalfieldstorequire) | Override fields that are optional on a given mode to be required. See `WorkAddressOptionalFieldsToRequire`. |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler` so submit-time focus is coordinated across multiple forms. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | Passed through to react-hook-form. Defaults to `'onSubmit'`. |
@@ -156,10 +156,10 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
-| `actions.onSubmit` | (`callbacks?`: [`WorkAddressSubmitCallbacks`](#workaddresssubmitcallbacks), `options?`: [`WorkAddressSubmitOptions`](#workaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`EmployeeWorkAddress`\> \| `undefined`\> | - |
+| `actions.onSubmit` | (`callbacks?`: [`WorkAddressSubmitCallbacks`](#workaddresssubmitcallbacks), `options?`: [`WorkAddressSubmitOptions`](#workaddresssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress)\> \| `undefined`\> | - |
 | `data` | `object` | Static entity data resolved from the API. |
-| `data.companyLocations` | `Location`[] \| `undefined` | Company locations available for selection; `undefined` until the locations query resolves. |
-| `data.workAddress` | `EmployeeWorkAddress` \| `null` | The address row loaded for update; `null` in create mode. |
+| `data.companyLocations` | [`Location`](../../APIModels/index.md#location)[] \| `undefined` | Company locations available for selection; `undefined` until the locations query resolves. |
+| `data.workAddress` | [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress) \| `null` | The address row loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`WorkAddressFields`](#workaddressfields) | - |
@@ -232,7 +232,7 @@ Location selector. Always available.
 
 #### LocationFieldProps
 
-> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), `Location`\>\>
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation), [`Location`](../../APIModels/index.md#location)\>\>
 
 Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` component.
 
@@ -241,7 +241,7 @@ Props accepted by [useWorkAddressForm](#useworkaddressform)'s `Fields.Location` 
 | `label` | `string` | Visible label rendered above the field. |
 | `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
-| `getOptionLabel?` | (`entry`: `Location`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: [`Location`](../../APIModels/index.md#location)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`WorkAddressRequiredValidation`](#workaddressrequiredvalidation)\> | Custom error text keyed by validation error code. |
 
 _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
@@ -386,8 +386,8 @@ Only the callback matching the submit mode fires —
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `onWorkAddressCreated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after a new work address is successfully created. |
-| `onWorkAddressUpdated?` | (`workAddress`: `EmployeeWorkAddress`) => `void` | Fired after an existing work address is successfully updated. |
+| `onWorkAddressCreated?` | (`workAddress`: [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress)) => `void` | Fired after a new work address is successfully created. |
+| `onWorkAddressUpdated?` | (`workAddress`: [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress)) => `void` | Fired after an existing work address is successfully updated. |
 
 ***
 

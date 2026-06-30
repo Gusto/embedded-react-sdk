@@ -41,9 +41,9 @@ function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
  * | ----- | ----------- | ---- |
  * | `employee/management/homeAddress/editRequested` | Manage button on the home address card clicked | `{ employeeId: string }` |
  * | `employee/management/homeAddress/editCancelled` | User backed out of the edit form | — |
- * | `employee/management/homeAddress/created` | A new home address was created | {@link EmployeeAddress} |
- * | `employee/management/homeAddress/updated` | An existing home address was updated | {@link EmployeeAddress} |
- * | `employee/management/homeAddress/deleted` | A home address was deleted | {@link EmployeeAddress} |
+ * | `employee/management/homeAddress/created` | A new home address was created | {@link APIModels.EmployeeAddress} |
+ * | `employee/management/homeAddress/updated` | An existing home address was updated | {@link APIModels.EmployeeAddress} |
+ * | `employee/management/homeAddress/deleted` | A home address was deleted | {@link APIModels.EmployeeAddress} |
  *
  * @public
  */

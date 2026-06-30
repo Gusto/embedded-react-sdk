@@ -124,9 +124,9 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Imperative actions exposed by the hook. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`Form`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Form`](../../APIModels/index.md#form)\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed form on success, or `undefined` on validation or API failure. |
 | `data` | `object` | Loaded data — the company form entity and a preview PDF URL. |
-| `data.companyForm` | `Form` | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
+| `data.companyForm` | [`Form`](../../APIModels/index.md#form) | The company form entity fetched from the API (includes `uuid`, `title`, `description`). |
 | `data.pdfUrl` | `string` \| `null` | URL to the form's PDF document, or `null` when the document URL is not available. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
