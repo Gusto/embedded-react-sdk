@@ -29,4 +29,5 @@ custom_edit_url: null
 | [DocumentsList](blocks.md#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
 | [Landing](blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
 | [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [OnboardingSummary](blocks.md#onboardingsummary) | Confirmation screen shown at the end of the contractor self-onboarding flow. Lets the contractor know their information has been submitted and emits `contractor/selfOnboarding/done` when they acknowledge it. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
