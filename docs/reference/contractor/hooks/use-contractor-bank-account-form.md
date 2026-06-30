@@ -238,9 +238,9 @@ Ready-state return value of [useContractorBankAccountForm](#usecontractorbankacc
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the created bank account on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorBankAccount`\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount)\> \| `undefined`\> | - |
 | `data` | `object` | The contractor's current bank account, loaded from the API, if any. |
-| `data.bankAccount` | `ContractorBankAccount` \| `undefined` | - |
+| `data.bankAccount` | [`ContractorBankAccount`](../../APIModels/index.md#contractorbankaccount) \| `undefined` | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorBankAccountFormFields`](#contractorbankaccountformfields) | - |
