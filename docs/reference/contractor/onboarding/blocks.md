@@ -89,28 +89,22 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Form for creating or editing a contractor profile, supporting both individual and business contractor types.
 
-### ContractorProfileProps
+### Parameters
 
-<a id="contractorprofileprops"></a>
-
-Props for [ContractorProfile](#contractorprofile).
-
-| Property | Type | Description |
+| Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+| `props` | [`ContractorProfileProps`](#contractorprofileprops) | See [ContractorProfileProps](#contractorprofileprops). |
 
 ### Remarks
 
-Renders different field sets depending on the contractor type (individual vs. business) and wage type
-(hourly vs. fixed), and exposes a self-onboarding toggle that invites the contractor to complete their
-own setup. When `contractorId` is provided, the form fetches the existing contractor and updates it on
-submit; otherwise it creates a new contractor under `companyId`.
+In admin mode (the default), renders different field sets depending on the contractor type (individual
+vs. business) and wage type (hourly vs. fixed), and exposes a self-onboarding toggle that invites the
+contractor to complete their own setup. When `contractorId` is provided, the form fetches the existing
+contractor and updates it on submit; otherwise it creates a new contractor under `companyId`.
+
+When `isAdmin` is `false`, renders the contractor self-onboarding profile instead: it resolves the
+existing contractor's type and presents the individual (name + SSN) or business (business name + EIN)
+fields for the contractor to complete.
 
 ### Events
 
@@ -340,6 +334,81 @@ function PaymentMethodStep() {
 > **AddressDefaultValues** = `RequireAtLeastOne`\<[`ContractorAddressFormData`](../hooks/use-contractor-address-form.md#contractoraddressformdata)\>
 
 Pre-fill values accepted by [Address](#address). At least one of `street1`, `street2`, `city`, `state`, or `zip` must be provided.
+
+<a id="contractorprofileadminprops"></a>
+
+### ContractorProfileAdminProps
+
+Props for [ContractorProfile](#contractorprofile) in admin mode.
+
+#### Remarks
+
+Renders the admin create/edit form. When `contractorId` is omitted, the form
+creates a new contractor under `companyId`. When provided, it fetches and
+updates the existing contractor.
+
+#### Extends
+
+- [`BaseComponentInterface`](../../index.md#basecomponentinterface)\<`"Contractor.Profile"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `contractorId?` | `string` | UUID of an existing contractor to edit. When omitted, the form creates a new contractor. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `isAdmin?` | `true` | When `true` (the default), renders the admin create/edit form. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+<a id="contractorprofileprops"></a>
+
+### ContractorProfileProps
+
+> **ContractorProfileProps** = [`ContractorProfileAdminProps`](#contractorprofileadminprops) \| [`ContractorProfileSelfOnboardingProps`](#contractorprofileselfonboardingprops)
+
+Props for [ContractorProfile](#contractorprofile).
+
+#### Remarks
+
+Discriminated by `isAdmin`. See [ContractorProfileAdminProps](#contractorprofileadminprops) and
+[ContractorProfileSelfOnboardingProps](#contractorprofileselfonboardingprops) for the specific prop shapes.
+
+<a id="contractorprofileselfonboardingprops"></a>
+
+### ContractorProfileSelfOnboardingProps
+
+Props for [ContractorProfile](#contractorprofile) in self-onboarding mode.
+
+#### Remarks
+
+Renders the contractor self-onboarding profile. The contractor must already
+exist so its type (individual vs. business) can be resolved to determine
+which fields to display.
+
+#### Extends
+
+- [`BaseComponentInterface`](../../index.md#basecomponentinterface)\<`"Contractor.Profile"`\>
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company the contractor belongs to. |
+| `contractorId` | `string` | UUID of the existing contractor completing self-onboarding. Required in self-onboarding mode. |
+| `isAdmin` | `false` | When `false`, renders the contractor self-onboarding profile. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
+| `className?` | `string` | CSS class name applied to the component's root element. |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorProfile`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
 
 <a id="onboardingflowdefaultvalues"></a>
 

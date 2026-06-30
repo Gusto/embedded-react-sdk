@@ -46,10 +46,9 @@ Text input bound to the `ein` field of [useContractorDetailsForm](#usecontractor
 
 #### Remarks
 
-Available on the hook result as `form.Fields.Ein` for business contractors
-who are not self-onboarding. Auto-formats input as `XX-XXXXXXX`. When the
-contractor already has an EIN on file, the field shows a masked placeholder
-and the required rule is waived.
+Available on the hook result as `form.Fields.Ein` for business contractors.
+Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on
+file, the field shows a masked placeholder and the required rule is waived.
 
 ***
 
@@ -205,10 +204,10 @@ Text input bound to the `ssn` field of [useContractorDetailsForm](#usecontractor
 
 #### Remarks
 
-Available on the hook result as `form.Fields.Ssn` for individual contractors
-who are not self-onboarding. Auto-formats input with dashes
-(`XXX-XX-XXXX`). When the contractor already has an SSN on file, the field
-shows a masked placeholder and the required rule is waived.
+Available on the hook result as `form.Fields.Ssn` for individual contractors.
+Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already
+has an SSN on file, the field shows a masked placeholder and the required
+rule is waived.
 
 ***
 
@@ -316,9 +315,11 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 Returns a discriminated union: a loading variant while the contractor fetch
 resolves, and a ready variant exposing the form's data, pending status,
 submit action, error handling, and bound `Fields`. Field visibility is
-driven by the current `type`, `wageType`, and self-onboarding selection;
-fields that do not apply are `undefined` on `form.Fields`. Self-onboarding
-is only toggleable when the contractor's onboarding status allows it.
+driven by the current `type` and `wageType` (self-onboarding only toggles the
+`Email` field); fields that do not apply are `undefined` on `form.Fields`.
+SSN/EIN are exposed by contractor type regardless of self-onboarding — each
+consumer decides whether to render them. Self-onboarding is only toggleable
+when the contractor's onboarding status allows it.
 
 ## Variables
 
@@ -395,7 +396,7 @@ before rendering.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `BusinessName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
-| `Ein` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ein`; available only for business contractors who are not self-onboarding. |
+| `Ein` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ein`; available only for business contractors. |
 | `Email` | ((`props`) => `Element`) \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
 | `FileNewHireReport` | ((`props`) => `Element`) \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
 | `FirstName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
@@ -403,7 +404,7 @@ before rendering.
 | `LastName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
 | `MiddleInitial` | ((`props`) => `Element`) \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
 | `SelfOnboarding` | ((`props`) => `Element`) \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
-| `Ssn` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ssn`; available only for individual contractors who are not self-onboarding. |
+| `Ssn` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ssn`; available only for individual contractors. |
 | `StartDate` | (`props`) => `Element` | Date picker bound to `startDate`. Always available. |
 | `Type` | (`props`) => `Element` | Radio group bound to `type`. Always available. |
 | `WageType` | (`props`) => `Element` | Radio group bound to `wageType`. Always available. |

@@ -77,7 +77,7 @@ describe('useContractorDetailsForm', () => {
       expect(ready.form.Fields.Ssn).toBeUndefined()
     })
 
-    it('reveals email and hides ssn when self-onboarding is enabled', async () => {
+    it('reveals email and keeps ssn exposed when self-onboarding is enabled', async () => {
       const { result } = renderForm({
         companyId: 'company-1',
         defaultValues: { type: ContractorType.Individual, selfOnboarding: true },
@@ -89,8 +89,25 @@ describe('useContractorDetailsForm', () => {
       const ready = result.current
       assertReady(ready)
 
+      // SSN/EIN are exposed by contractor type only — never gated by
+      // self-onboarding. Consumers decide whether to render them.
       expect(ready.form.Fields.Email).toBeDefined()
-      expect(ready.form.Fields.Ssn).toBeUndefined()
+      expect(ready.form.Fields.Ssn).toBeDefined()
+    })
+
+    it('keeps ein exposed for a business contractor when self-onboarding is enabled', async () => {
+      const { result } = renderForm({
+        companyId: 'company-1',
+        defaultValues: { type: ContractorType.Business, selfOnboarding: true },
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      expect(ready.form.Fields.Ein).toBeDefined()
     })
 
     it('reveals the hourly rate field when wageType is Hourly', async () => {
@@ -252,7 +269,7 @@ describe('useContractorDetailsForm', () => {
       })
     })
 
-    it('omits ssn and sends email when self-onboarding is enabled', async () => {
+    it('sends ssn and email together when self-onboarding is enabled', async () => {
       let body: Record<string, unknown> | null = null
       const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
         body = (await request.json()) as Record<string, unknown>
@@ -283,12 +300,51 @@ describe('useContractorDetailsForm', () => {
         await ready.actions.onSubmit()
       })
 
+      // The hook submits whatever SSN is present regardless of self-onboarding;
+      // suppressing it (admin invite flow) is the consuming component's job.
       expect(createResolver).toHaveBeenCalledTimes(1)
       expect(body).toMatchObject({
         self_onboarding: true,
         email: 'jane@example.com',
+        ssn: '123456789',
       })
-      expect(body).not.toHaveProperty('ssn')
+    })
+
+    it('sends ein when a business contractor is self-onboarding', async () => {
+      let body: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ uuid: 'new-uuid', is_active: true }, { status: 201 })
+      })
+      server.use(handleCreateContractor(createResolver))
+
+      const { result } = renderForm({
+        companyId: 'company-1',
+        defaultValues: {
+          type: ContractorType.Business,
+          wageType: WageType.Fixed,
+          selfOnboarding: true,
+          businessName: 'Acme LLC',
+          email: 'billing@acme.com',
+          ein: '12-3456789',
+        },
+      })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const ready = result.current
+      assertReady(ready)
+
+      await act(async () => {
+        await ready.actions.onSubmit()
+      })
+
+      expect(createResolver).toHaveBeenCalledTimes(1)
+      expect(body).toMatchObject({
+        self_onboarding: true,
+        ein: '123456789',
+      })
     })
 
     it('does not call the mutation when validation fails', async () => {

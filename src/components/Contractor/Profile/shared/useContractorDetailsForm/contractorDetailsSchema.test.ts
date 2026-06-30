@@ -145,9 +145,25 @@ describe('createContractorDetailsSchema', () => {
   })
 
   describe('Individual, self-onboarding (selfOnboarding: true)', () => {
-    it('does not require ssn (field excluded)', () => {
+    it('treats ssn as optional by default (not gated by self-onboarding)', () => {
       const result = parse({ ...validIndividualSelfOnboarding, ssn: '' }, { mode: 'create' })
       expect(result.success).toBe(true)
+    })
+
+    it('requires ssn when promoted even while self-onboarding', () => {
+      const result = parse(
+        { ...validIndividualSelfOnboarding, ssn: '' },
+        { mode: 'create', optionalFieldsToRequire: { create: ['ssn'] } },
+      )
+      expect(issueFor(result, 'ssn')?.message).toBe(REQUIRED)
+    })
+
+    it('still validates ssn format when present while self-onboarding', () => {
+      const result = parse(
+        { ...validIndividualSelfOnboarding, ssn: '123-45-678' },
+        { mode: 'create' },
+      )
+      expect(issueFor(result, 'ssn')?.message).toBe(INVALID_SSN)
     })
 
     it('requires email on create', () => {
@@ -216,9 +232,17 @@ describe('createContractorDetailsSchema', () => {
   })
 
   describe('Business, self-onboarding (selfOnboarding: true)', () => {
-    it('does not require ein (field excluded)', () => {
+    it('treats ein as optional by default (not gated by self-onboarding)', () => {
       const result = parse({ ...validBusinessSelfOnboarding, ein: '' }, { mode: 'create' })
       expect(result.success).toBe(true)
+    })
+
+    it('requires ein when promoted even while self-onboarding', () => {
+      const result = parse(
+        { ...validBusinessSelfOnboarding, ein: '' },
+        { mode: 'create', optionalFieldsToRequire: { create: ['ein'] } },
+      )
+      expect(issueFor(result, 'ein')?.message).toBe(REQUIRED)
     })
 
     it('requires email', () => {

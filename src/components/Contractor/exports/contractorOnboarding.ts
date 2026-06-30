@@ -6,7 +6,12 @@ export type {
 export { Landing, type LandingProps } from '../Landing'
 export { OnboardingSummary, type OnboardingSummaryProps } from '../OnboardingSummary'
 export { ContractorList, type ContractorListProps } from '../ContractorList'
-export { ContractorProfile, type ContractorProfileProps } from '../Profile'
+export {
+  ContractorProfile,
+  type ContractorProfileProps,
+  type ContractorProfileAdminProps,
+  type ContractorProfileSelfOnboardingProps,
+} from '../Profile'
 export type { ContractorDetailsFormData as ContractorProfileFormData } from '../Profile/shared'
 export { Address, type AddressProps } from '../Address'
 export type { AddressDefaultValues } from '../Address/types'
