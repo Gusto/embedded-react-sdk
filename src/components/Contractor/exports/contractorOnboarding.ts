@@ -4,6 +4,7 @@ export type {
   OnboardingFlowDefaultValues,
 } from '../OnboardingFlow/OnboardingFlowComponents'
 export { Landing, type LandingProps } from '../Landing'
+export { OnboardingSummary, type OnboardingSummaryProps } from '../OnboardingSummary'
 export { ContractorList, type ContractorListProps } from '../ContractorList'
 export {
   ContractorProfile,
