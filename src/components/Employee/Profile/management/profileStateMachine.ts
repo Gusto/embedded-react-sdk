@@ -5,22 +5,18 @@ import { CardContextual, ProfileEditFormContextual } from './ProfileComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
-const returnToCard = reduce(
-  (ctx: ProfileContextInterface): ProfileContextInterface => ({
-    ...ctx,
-    component: CardContextual as ComponentType,
-    successAlert: null,
-  }),
-)
+const returnToCard = reduce((ctx: ProfileContextInterface): ProfileContextInterface => ({
+  ...ctx,
+  component: CardContextual as ComponentType,
+  successAlert: null,
+}))
 
 const returnToCardWithAlert = (alert: ProfileContextInterface['successAlert']) =>
-  reduce(
-    (ctx: ProfileContextInterface): ProfileContextInterface => ({
-      ...ctx,
-      component: CardContextual as ComponentType,
-      successAlert: alert,
-    }),
-  )
+  reduce((ctx: ProfileContextInterface): ProfileContextInterface => ({
+    ...ctx,
+    component: CardContextual as ComponentType,
+    successAlert: alert,
+  }))
 
 /** @internal */
 export const profileStateMachine = {
@@ -28,13 +24,11 @@ export const profileStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       'editProfile',
-      reduce(
-        (ctx: ProfileContextInterface): ProfileContextInterface => ({
-          ...ctx,
-          component: ProfileEditFormContextual as ComponentType,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: ProfileContextInterface): ProfileContextInterface => ({
+        ...ctx,
+        component: ProfileEditFormContextual as ComponentType,
+        successAlert: null,
+      })),
     ),
     transition(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED, 'card', returnToCard),
   ),

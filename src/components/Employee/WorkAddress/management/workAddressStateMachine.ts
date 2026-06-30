@@ -5,12 +5,10 @@ import { WorkAddressCardContextual, WorkAddressEditFormContextual } from './Work
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
-const returnToCard = reduce(
-  (ctx: WorkAddressContextInterface): WorkAddressContextInterface => ({
-    ...ctx,
-    component: WorkAddressCardContextual as ComponentType,
-  }),
-)
+const returnToCard = reduce((ctx: WorkAddressContextInterface): WorkAddressContextInterface => ({
+  ...ctx,
+  component: WorkAddressCardContextual as ComponentType,
+}))
 
 /** @internal */
 export const workAddressStateMachine = {
@@ -18,12 +16,10 @@ export const workAddressStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED,
       'editWorkAddress',
-      reduce(
-        (ctx: WorkAddressContextInterface): WorkAddressContextInterface => ({
-          ...ctx,
-          component: WorkAddressEditFormContextual as ComponentType,
-        }),
-      ),
+      reduce((ctx: WorkAddressContextInterface): WorkAddressContextInterface => ({
+        ...ctx,
+        component: WorkAddressEditFormContextual as ComponentType,
+      })),
     ),
   ),
   // The edit surface is modal-style: editing/changing/deleting a row closes
