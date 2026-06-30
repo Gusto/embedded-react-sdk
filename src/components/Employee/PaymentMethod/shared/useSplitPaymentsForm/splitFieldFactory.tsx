@@ -87,8 +87,7 @@ function createBoundSplitField(uuid: string): ComponentType<SplitFieldProps> {
     FieldComponent,
   }: SplitFieldProps) {
     const externalControl = formHookResult?.form.hookFormInternals.formMethods.control as
-      | Control<SplitPaymentsFormData>
-      | undefined
+      Control<SplitPaymentsFormData> | undefined
     const splitBy = useWatch({ control: externalControl, name: 'splitBy' })
     const format: NumberInputProps['format'] = splitBy === SPLIT_BY.amount ? 'currency' : 'percent'
 

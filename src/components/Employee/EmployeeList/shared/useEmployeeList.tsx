@@ -20,12 +20,7 @@ import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/type
  * @public
  */
 export type EmployeeAction =
-  | 'edit'
-  | 'delete'
-  | 'cancel_self_onboarding'
-  | 'review'
-  | 'dismiss'
-  | 'rehire'
+  'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire'
 
 /**
  * An employee entity extended with the actions permitted on it and a reference to its primary job.

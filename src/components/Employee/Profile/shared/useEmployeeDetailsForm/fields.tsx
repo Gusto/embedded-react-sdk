@@ -46,9 +46,7 @@ export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'IN
  * @public
  */
 export type EmailValidation = (typeof EmployeeDetailsErrorCodes)[
-  | 'REQUIRED'
-  | 'INVALID_EMAIL'
-  | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING']
+  'REQUIRED' | 'INVALID_EMAIL' | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING']
 
 /**
  * The format-validation error code emitted by the `ssn` field of {@link useEmployeeDetailsForm}.

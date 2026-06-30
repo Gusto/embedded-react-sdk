@@ -12,13 +12,11 @@ type EventPayloads = {
   }
 }
 
-const returnToCard = reduce(
-  (ctx: DocumentsContextInterface): DocumentsContextInterface => ({
-    ...ctx,
-    component: DocumentsCardContextual as ComponentType,
-    formId: undefined,
-  }),
-)
+const returnToCard = reduce((ctx: DocumentsContextInterface): DocumentsContextInterface => ({
+  ...ctx,
+  component: DocumentsCardContextual as ComponentType,
+  formId: undefined,
+}))
 
 /** @internal */
 export const documentsStateMachine = {

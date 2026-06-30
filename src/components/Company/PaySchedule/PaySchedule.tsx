@@ -19,10 +19,12 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  * @public
  */
 export type PayScheduleDefaultFields = {
-  [K in keyof Pick<
-    PayScheduleFormData,
-    'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
-  >]: NonNullable<PayScheduleFormData[K]>
+  [
+    K in keyof Pick<
+      PayScheduleFormData,
+      'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
+    >
+  ]: NonNullable<PayScheduleFormData[K]>
 }
 
 /**

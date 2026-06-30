@@ -24,8 +24,7 @@ type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
  * @public
  */
 export type UseEmployeeWorkAddressSummaryResult =
-  | HookLoadingResult
-  | UseEmployeeWorkAddressSummaryReady
+  HookLoadingResult | UseEmployeeWorkAddressSummaryReady
 
 /**
  * Read-only data hook for the employee work address summary card.

@@ -174,8 +174,7 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
  * @public
  */
 export type UseChildSupportGarnishmentFormResult =
-  | HookLoadingResult
-  | UseChildSupportGarnishmentFormReady
+  HookLoadingResult | UseChildSupportGarnishmentFormReady
 
 /**
  * Headless hook for creating or updating a child-support garnishment.
