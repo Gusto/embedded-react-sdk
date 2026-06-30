@@ -12,7 +12,6 @@ export {
   type ContractorBankAccountErrorCode,
   type ContractorAccountType,
   type ContractorBankAccountFormData,
-  type ContractorBankAccountFormOutputs,
   type ContractorBankAccountFormField,
   type ContractorBankAccountOptionalFieldsToRequire,
 } from './useContractorBankAccountFormSchema'

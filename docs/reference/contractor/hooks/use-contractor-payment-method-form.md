@@ -215,17 +215,6 @@ Field names accepted by the contractor payment method form.
 
 ***
 
-<a id="contractorpaymentmethodformoutputs"></a>
-
-### ContractorPaymentMethodFormOutputs
-
-> **ContractorPaymentMethodFormOutputs** = [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)
-
-Shape of the validated values produced by the contractor payment method form
-on submit.
-
-***
-
 <a id="contractorpaymentmethodformtype"></a>
 
 ### ContractorPaymentMethodFormType

@@ -361,7 +361,6 @@ export type {
   ContractorBankAccountErrorCode,
   ContractorAccountType,
   ContractorBankAccountFormData,
-  ContractorBankAccountFormOutputs,
   ContractorBankAccountFormField,
   ContractorBankAccountOptionalFieldsToRequire,
   ContractorBankAccountRequiredValidation,
@@ -386,7 +385,6 @@ export type {
   ContractorPaymentMethodErrorCode,
   ContractorPaymentMethodFormType,
   ContractorPaymentMethodFormData,
-  ContractorPaymentMethodFormOutputs,
   ContractorPaymentMethodFormField,
   TypeFieldProps as ContractorPaymentMethodTypeFieldProps,
 } from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'

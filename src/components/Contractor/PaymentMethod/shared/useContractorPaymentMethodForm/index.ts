@@ -11,7 +11,6 @@ export {
   type ContractorPaymentMethodErrorCode,
   type ContractorPaymentMethodFormType,
   type ContractorPaymentMethodFormData,
-  type ContractorPaymentMethodFormOutputs,
   type ContractorPaymentMethodFormField,
 } from './contractorPaymentMethodSchema'
 export { type TypeFieldProps } from './fields'

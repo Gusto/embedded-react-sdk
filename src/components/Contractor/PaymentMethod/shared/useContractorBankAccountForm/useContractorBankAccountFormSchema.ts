@@ -72,9 +72,11 @@ export type ContractorBankAccountFormData = {
 
 /**
  * Shape of the validated values produced by the contractor bank account form on
- * submit.
+ * submit. Internal seam between the form's input and parsed-output types; the
+ * two coincide today, and partners consume the parsed values through
+ * `form.getFormSubmissionValues` (typed as the form-data shape).
  *
- * @public
+ * @internal
  */
 export type ContractorBankAccountFormOutputs = ContractorBankAccountFormData
 

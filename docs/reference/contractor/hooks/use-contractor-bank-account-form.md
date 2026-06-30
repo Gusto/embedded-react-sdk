@@ -363,17 +363,6 @@ Field names accepted by the contractor bank account form.
 
 ***
 
-<a id="contractorbankaccountformoutputs"></a>
-
-### ContractorBankAccountFormOutputs
-
-> **ContractorBankAccountFormOutputs** = [`ContractorBankAccountFormData`](#contractorbankaccountformdata)
-
-Shape of the validated values produced by the contractor bank account form on
-submit.
-
-***
-
 <a id="contractorbankaccountoptionalfieldstorequire"></a>
 
 ### ContractorBankAccountOptionalFieldsToRequire

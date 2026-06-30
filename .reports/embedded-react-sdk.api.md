@@ -1695,9 +1695,6 @@ export interface ContractorBankAccountFormFields {
 }
 
 // @public
-export type ContractorBankAccountFormOutputs = ContractorBankAccountFormData;
-
-// @public
 export type ContractorBankAccountNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRequiredValidation>>;
 
 // @public
@@ -1922,9 +1919,6 @@ export type ContractorPaymentMethodFormField = "type";
 export interface ContractorPaymentMethodFormFields {
     Type: ComponentType<ContractorPaymentMethodTypeFieldProps>;
 }
-
-// @public
-export type ContractorPaymentMethodFormOutputs = ContractorPaymentMethodFormData;
 
 // Warning: (ae-forgotten-export) The symbol "PAYMENT_METHOD_TYPES_2" needs to be exported by the entry point index.d.ts
 //

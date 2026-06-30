@@ -102,6 +102,11 @@ export type {Domain}Field = keyof typeof fieldValidators
 export type {Domain}FormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+// @internal seam — the hook uses this as useForm's third generic, but it is NOT
+// part of the public surface (don't re-export from src/index.ts). Today it's a
+// plain alias of {Domain}FormData; the name documents the input/output split for
+// the day a schema transform makes them diverge. See .claude/tsdoc-guides/hooks.md.
+/** @internal */
 export type {Domain}FormOutputs = {Domain}FormData
 
 // ── Required fields config ─────────────────────────────────────────────
@@ -403,7 +408,6 @@ export {
   {Domain}ErrorCodes,
   type {Domain}ErrorCode,
   type {Domain}FormData,
-  type {Domain}FormOutputs,
   type {Domain}Field,
 } from './{camelDomain}Schema'
 export type {

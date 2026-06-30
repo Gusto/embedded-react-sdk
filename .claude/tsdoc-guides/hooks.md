@@ -6,17 +6,18 @@ Read this when documenting hook-related symbols — hooks, hook props, hook retu
 
 Every partner-facing form hook has this export pattern — document all of them:
 
-| Symbol                                        | Release tag | What to document                                                                                       |
-| --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
-| `useXxxForm`                                  | `@public`   | The hook: `@param`, `@returns` (both branches), `@example`                                             |
-| `UseXxxProps`                                 | `@public`   | Props interface — one `/** description */` per property                                                |
-| `UseXxxFormOutputs` or equivalent return type | `@public`   | Partners type submit callbacks against this                                                            |
-| `UseXxxReady`                                 | `@public`   | Ready branch shape — document each member                                                              |
-| `XxxFormFields`                               | `@public`   | The `form.Fields` interface — **this is the documentation home for each field's behavior** (see below) |
-| `{Field}FieldProps`                           | `@public`   | One per field — partners type `getOptionLabel` / `validationMessages` against these                    |
+| Symbol              | Release tag | What to document                                                                                                        |
+| ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `useXxxForm`        | `@public`   | The hook: `@param`, `@returns` (both branches), `@example`                                                              |
+| `UseXxxProps`       | `@public`   | Props interface — one `/** description */` per property                                                                 |
+| `XxxFormData`       | `@public`   | The form-values shape — partners type `defaultValues` against it, and it's the return of `form.getFormSubmissionValues` |
+| `UseXxxReady`       | `@public`   | Ready branch shape — document each member                                                                               |
+| `XxxFormFields`     | `@public`   | The `form.Fields` interface — **this is the documentation home for each field's behavior** (see below)                  |
+| `{Field}FieldProps` | `@public`   | One per field — partners type `getOptionLabel` / `validationMessages` against these                                     |
 
 Always `@internal`, no prose needed (just `/** @internal */`):
 
+- `XxxFormOutputs` — the resolver-output type. It's an internal seam between the form's input and parsed-output shapes (today they coincide; `XxxFormOutputs` is defined as `= XxxFormData`). Partners don't need the seam: they type `defaultValues` against `XxxFormData` and read parsed values from `form.getFormSubmissionValues`, which is typed as the form-data shape. Keep `XxxFormOutputs` defined (the hook uses it as `useForm`'s third generic) but don't export it from `src/index.ts`.
 - `createXxxSchema`, `XxxSchemaOptions`, `XxxMetadataConfig`
 - Raw factory functions that have a `useXxx` wrapper (e.g. `createStateFields`)
 - Internal mapping/resolution utilities (e.g. `getQuestionVariant`)
