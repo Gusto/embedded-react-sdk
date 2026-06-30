@@ -1389,17 +1389,11 @@ export const ContractorOnboardingStatus: {
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
 
+// Warning: (ae-forgotten-export) The symbol "ContractorProfileAdminProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "ContractorProfileSelfOnboardingProps" needs to be exported by the entry point index.d.ts
+//
 // @public
-type ContractorProfileProps = BaseComponentInterface<'Contractor.Profile'> & {
-    companyId: string;
-    defaultValues?: Partial<ContractorDetailsFormData>;
-} & ({
-    isAdmin?: true;
-    contractorId?: string;
-} | {
-    isAdmin: false;
-    contractorId: string;
-});
+type ContractorProfileProps = ContractorProfileAdminProps | ContractorProfileSelfOnboardingProps;
 
 // @public
 export function ContractorSelfOnboardingField(props: ContractorSelfOnboardingFieldProps): JSX;

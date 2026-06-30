@@ -274,23 +274,14 @@ Pre-fill values accepted by [Address](#address). At least one of `street1`, `str
 
 ### ContractorProfileProps
 
-> **ContractorProfileProps** = [`BaseComponentInterface`](../../index.md#basecomponentinterface)\<`"Contractor.Profile"`\> & `object` & \{ `contractorId?`: `string`; `isAdmin?`: `true`; \} \| \{ `contractorId`: `string`; `isAdmin`: `false`; \}
+> **ContractorProfileProps** = `ContractorProfileAdminProps` \| `ContractorProfileSelfOnboardingProps`
 
 Props for [ContractorProfile](#contractorprofile).
 
-#### Type Declaration
-
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company the contractor belongs to. |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](../hooks/use-contractor-details-form.md#contractordetailsformdata)\> | Initial values for the contractor profile form fields. |
-
 #### Remarks
 
-Discriminated by `isAdmin`. In admin mode (the default) `contractorId` is
-optional — omitting it creates a new contractor. In self-onboarding mode
-(`isAdmin={false}`) `contractorId` is required, because the contractor must
-already exist for its type (individual vs. business) to be resolved.
+Discriminated by `isAdmin`. See ContractorProfileAdminProps and
+ContractorProfileSelfOnboardingProps for the specific prop shapes.
 
 <a id="onboardingflowdefaultvalues"></a>
 
