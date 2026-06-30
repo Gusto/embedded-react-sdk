@@ -378,6 +378,25 @@ export type {
 } from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
 
 export {
+  useContractorPaymentMethodForm,
+  ContractorPaymentMethodErrorCodes,
+  TypeField as ContractorPaymentMethodTypeField,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+export type {
+  UseContractorPaymentMethodFormProps,
+  UseContractorPaymentMethodFormResult,
+  UseContractorPaymentMethodFormReady,
+  ContractorPaymentMethodFormFields,
+  ContractorPaymentMethodFieldsMetadata,
+  ContractorPaymentMethodErrorCode,
+  ContractorPaymentMethodFormType,
+  ContractorPaymentMethodFormData,
+  ContractorPaymentMethodFormOutputs,
+  ContractorPaymentMethodFormField,
+  TypeFieldProps as ContractorPaymentMethodTypeFieldProps,
+} from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
+
+export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,

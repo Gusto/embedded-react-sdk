@@ -429,6 +429,44 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.t
 
 ***
 
+<a id="contractorpaymentmethodsplitby"></a>
+
+### ContractorPaymentMethodSplitBy
+
+> `const` **ContractorPaymentMethodSplitBy**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentmethod.ts:24](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentmethod.ts#L24)
+
+`ContractorPaymentMethodSplitBy` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentmethodsplitbyamount"></a> `Amount` | `"Amount"` |
+| <a id="property-contractorpaymentmethodsplitbypercentage"></a> `Percentage` | `"Percentage"` |
+
+***
+
+<a id="contractorpaymentmethodtype"></a>
+
+### ContractorPaymentMethodType
+
+> `const` **ContractorPaymentMethodType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentmethod.ts:16](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentmethod.ts#L16)
+
+`ContractorPaymentMethodType` entity from the Gusto Embedded API.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-contractorpaymentmethodtypecheck"></a> `Check` | `"Check"` |
+| <a id="property-contractorpaymentmethodtypedirectdeposit"></a> `DirectDeposit` | `"Direct Deposit"` |
+
+***
+
 <a id="contractorpaymentreceiptpaymentmethod"></a>
 
 ### ContractorPaymentReceiptPaymentMethod
@@ -2416,6 +2454,26 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpa
 
 ***
 
+<a id="contractorpaymentmethod"></a>
+
+### ContractorPaymentMethod
+
+> **ContractorPaymentMethod** = `object`
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentmethod.ts:32](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentmethod.ts#L32)
+
+`ContractorPaymentMethod` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-contractorpaymentmethodsplitby"></a> `splitBy?` | [`ContractorPaymentMethodSplitBy`](#contractorpaymentmethodsplitby-1) \| `null` | Describes how the payment will be split. If `split_by` is Percentage, then the `split` amounts must add up to exactly 100. If `split_by` is Amount, then values are in cents and the last split amount must be `null` to capture the remainder. |
+| <a id="property-contractorpaymentmethodtype"></a> `type?` | [`ContractorPaymentMethodType`](#contractorpaymentmethodtype-1) \| `null` | The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required. |
+| <a id="property-contractorpaymentmethodversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
+
+***
+
 <a id="contractorpaymentmethod1-1"></a>
 
 ### ContractorPaymentMethod1
@@ -2425,6 +2483,30 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpa
 Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractor.ts:67](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractor.ts#L67)
 
 `ContractorPaymentMethod1` entity from the Gusto Embedded API.
+
+***
+
+<a id="contractorpaymentmethodsplitby-1"></a>
+
+### ContractorPaymentMethodSplitBy
+
+> **ContractorPaymentMethodSplitBy** = `ClosedEnum`\<*typeof* [`ContractorPaymentMethodSplitBy`](#contractorpaymentmethodsplitby)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentmethod.ts:24](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentmethod.ts#L24)
+
+`ContractorPaymentMethodSplitBy` entity from the Gusto Embedded API.
+
+***
+
+<a id="contractorpaymentmethodtype-1"></a>
+
+### ContractorPaymentMethodType
+
+> **ContractorPaymentMethodType** = `ClosedEnum`\<*typeof* [`ContractorPaymentMethodType`](#contractorpaymentmethodtype)\>
+
+Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpaymentmethod.ts:16](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/contractorpaymentmethod.ts#L16)
+
+`ContractorPaymentMethodType` entity from the Gusto Embedded API.
 
 ***
 
