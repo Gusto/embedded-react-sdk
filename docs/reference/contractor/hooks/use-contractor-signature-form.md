@@ -19,8 +19,8 @@ custom_edit_url: null
 
 > **useContractorSignatureForm**(`props`): [`UseContractorSignatureFormResult`](#usecontractorsignatureformresult)
 
-Headless hook for signing a contractor document — displays the document PDF
-and collects the document's fields plus a typed signature and consent.
+Headless hook for signing a contractor document — collects the document's
+fields plus a typed signature and consent.
 
 #### Parameters
 
@@ -37,17 +37,18 @@ A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a 
 #### Remarks
 
 This hook implements the W-9 — the only signable contractor document the API
-exposes today (`taxpayer_identification_form_w_9`). It applies a fixed W-9
-layout to the fields the document returns: each field's input variant is
-derived from its API `data_type`, the seven federal tax-classification
-checkboxes are collapsed into a single required radio group with conditional
-LLC-code and "Other" sub-fields, and on submit the selection is mapped back
-to the W-9 wire format. Pre-filled values (name, address, TIN, etc.) are
-editable inputs; the signing `date` is omitted so the API auto-fills it. A
-document that returns no recognized W-9 fields renders as acknowledge-only
-(`data.hasFields` is `false`). `data.sections` describes how to group
-`form.Fields` under headings; consult `form.fieldsMetadata` for per-field
-required flags and select/radio options.
+exposes today (`taxpayer_identification_form_w_9`). The field surface is
+declared statically (`form.Fields`), like the other SDK form hooks: core
+fields are always present, while variable fields are exposed only when the API
+returns them (otherwise `undefined`) — a presence-based safety check, so a
+field the API drops is skipped rather than rendered as an orphan. The seven
+federal tax-classification checkboxes are collapsed into a single required
+radio group with conditional LLC-code and "Other" sub-fields, and on submit
+the selection is mapped back to the W-9 wire format. Pre-filled values (name,
+address, TIN, etc.) are editable inputs; the signing `date` is omitted so the
+API auto-fills it. A document that returns no recognized W-9 fields renders
+as acknowledge-only (`data.hasFields` is `false`). Consult
+`form.fieldsMetadata` for per-field required flags and select/radio options.
 
 ## Variables
 
@@ -64,6 +65,8 @@ Validation error codes produced by the contractor signature form schema.
 | Name | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `AGREE_REQUIRED` | `"AGREE_REQUIRED"` | `'AGREE_REQUIRED'` | The electronic-signature consent checkbox was not checked. |
+| `INVALID_EIN` | `"INVALID_EIN"` | `'INVALID_EIN'` | The Employer Identification Number is not a valid EIN. |
+| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` | The Social Security Number is not a valid SSN. |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` | A required field was left empty. |
 
 #### Remarks
@@ -73,38 +76,84 @@ an error code to a user-facing message.
 
 ## Interfaces
 
-<a id="contractorsignaturefieldprops"></a>
+<a id="contractorsignatureformdata"></a>
 
-### ContractorSignatureFieldProps
+### ContractorSignatureFormData
 
-Props accepted by a W-9 field component exposed on
-`useContractorSignatureForm`'s `form.Fields`.
+Shape of the values managed by [useContractorSignatureForm](#usecontractorsignatureform).
+
+#### Remarks
+
+Keys are the camelCase react-hook-form field names. `taxClassification` and
+`llcClassificationCode` are synthesized (they have no single API field), and
+`agree` is the electronic-signature consent; all other keys map to a W-9 API
+field via the hook's serializer.
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `label` | `string` | Visible label rendered above the field. |
-| `description?` | `ReactNode` | Optional helper text rendered below the field. |
-| `getOptionLabel?` | (`value`) => `string` | Maps an option value to its display label; used by radio and select fields. |
-| `placeholder?` | `string` | Placeholder text; used by text and select fields. |
-| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorSignatureFormErrorCode`](#contractorsignatureformerrorcode)\> | Custom error text keyed by validation error code. |
+| `accountNumber` | `string` | Account number(s) (W-9 line 7). |
+| `agree` | `boolean` | Electronic-signature consent; must be checked to submit. |
+| `businessName` | `string` | Business name, if different (W-9 line 2). |
+| `companyName` | `string` | Requester's name and address. |
+| `ein` | `string` | Employer Identification Number. Accepts a formatted EIN (`NN-NNNNNNN`) or the `N/A` sentinel the API uses when the W-9 collects an SSN instead. A redacted value left untouched (empty) is valid — the server keeps the EIN on file. |
+| `exemptionFromFatca` | `string` | Exemption from FATCA reporting code (W-9 line 4b). |
+| `exemptPayeeCode` | `string` | Exempt payee code (W-9 line 4a). |
+| `foreignPartners` | `boolean` | Whether the payee has foreign partners/owners/beneficiaries (W-9 line 3b). |
+| `homeAddressCity` | `string` | City (W-9 line 6). |
+| `homeAddressState` | `string` | State (W-9 line 6). |
+| `homeAddressStreet1` | `string` | Street address line 1 (W-9 line 5). |
+| `homeAddressStreet2` | `string` | Street address line 2 (W-9 line 5). |
+| `homeAddressZip` | `string` | ZIP code (W-9 line 6). |
+| `llcClassificationCode` | `string` | LLC tax classification code, set only when the LLC classification is selected. |
+| `name` | `string` | Entity or individual name (W-9 line 1). |
+| `otherText` | `string` | Free-text classification entry, used only when the "Other" classification is selected. |
+| `signatureText` | `string` | Typed signature. |
+| `ssn` | `string` | Social Security Number. Accepts a 9-digit SSN (validated digits-only) or the `N/A` sentinel the API uses when the W-9 collects an EIN instead. A redacted value left untouched (empty) is valid — the server keeps the SSN on file. |
+| `taxClassification` | `string` | Selected federal tax classification option key (W-9 line 3). |
 
 ***
 
-<a id="contractorsignaturesection"></a>
+<a id="contractorsignatureformfieldcomponents"></a>
 
-### ContractorSignatureSection
+### ContractorSignatureFormFieldComponents
 
-A section of the W-9 signing form along with the form-field names to render
-within it, in order.
+Field components exposed by [useContractorSignatureForm](#usecontractorsignatureform) on `form.Fields`.
+
+#### Remarks
+
+Every field is presence-gated against the API response and is `undefined`
+when the document didn't return its backing field — always null-check before
+rendering. This guards against the document API diverging (dropping or
+renaming a field) by skipping fields it no longer returns, mirroring the
+stable signing flow. `Agree` is the sole exception: it's a synthesized
+electronic-signature consent checkbox with no API field, so it's always
+present.
 
 #### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `fieldNames` | `string`[] | Form-field names to render in this section, in order. |
-| `section` | [`W9Section`](#w9section) | The section identifier (e.g. `'address'`, `'tin'`). |
+| `AccountNumber` | ((`props`) => `Element`) \| `undefined` | Account number(s); defined only when the API returns `account_number`. |
+| `Agree` | (`props`) => `Element` | Electronic-signature consent checkbox; always present (synthesized, not an API field). |
+| `BusinessName` | ((`props`) => `Element`) \| `undefined` | Business name; defined only when the API returns `business_name`. |
+| `CompanyName` | ((`props`) => `Element`) \| `undefined` | Requester's name and address; defined only when the API returns `company_name`. |
+| `Ein` | ((`props`) => `Element`) \| `undefined` | Employer Identification Number; defined only when the API returns `ein`. |
+| `ExemptionFromFatca` | ((`props`) => `Element`) \| `undefined` | FATCA exemption code; defined only when the API returns `exemption_from_FATCA`. |
+| `ExemptPayeeCode` | ((`props`) => `Element`) \| `undefined` | Exempt payee code; defined only when the API returns `exempt_payee_code`. |
+| `ForeignPartners` | ((`props`) => `Element`) \| `undefined` | Foreign partners checkbox; defined only when the API returns `foreign_partners`. |
+| `HomeAddressCity` | ((`props`) => `Element`) \| `undefined` | City; defined only when the API returns `home_address_city`. |
+| `HomeAddressState` | ((`props`) => `Element`) \| `undefined` | State; defined only when the API returns `home_address_state`. |
+| `HomeAddressStreet1` | ((`props`) => `Element`) \| `undefined` | Street address line 1; defined only when the API returns `home_address_street_1`. |
+| `HomeAddressStreet2` | ((`props`) => `Element`) \| `undefined` | Street address line 2; defined only when the API returns `home_address_street_2`. |
+| `HomeAddressZip` | ((`props`) => `Element`) \| `undefined` | ZIP code; defined only when the API returns `home_address_zip`. |
+| `LlcClassificationCode` | ((`props`) => `Element`) \| `undefined` | LLC tax classification code select; defined only when classification checkboxes are present. |
+| `Name` | ((`props`) => `Element`) \| `undefined` | Entity or individual name; defined only when the API returns `name`. |
+| `OtherText` | ((`props`) => `Element`) \| `undefined` | "Other" free-text classification; defined only when the API returns `other_text`. |
+| `SignatureText` | ((`props`) => `Element`) \| `undefined` | Typed signature; defined only when the API returns `signature_text`. |
+| `Ssn` | ((`props`) => `Element`) \| `undefined` | Social Security Number; defined only when the API returns `ssn`. |
+| `TaxClassification` | ((`props`) => `Element`) \| `undefined` | Federal tax classification radio group; defined only when the document carries classification checkboxes. |
 
 ***
 
@@ -119,6 +168,7 @@ Props for [useContractorSignatureForm](#usecontractorsignatureform).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `documentUuid` | `string` | UUID of the contractor document to sign. |
+| `optionalFieldsToRequire?` | [`ContractorSignatureOptionalFieldsToRequire`](#contractorsignatureoptionalfieldstorequire) | Promote optional W-9 fields to required (e.g. `{ create: ['businessName'] }`). |
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form; defaults to `'onSubmit'`. |
 
@@ -133,7 +183,7 @@ document metadata has loaded.
 
 #### Extends
 
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorSignatureFormData`](#contractorsignatureformdata), [`ContractorSignatureFields`](#contractorsignaturefields)\>
+- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorSignatureFormData`](#contractorsignatureformdata), [`ContractorSignatureFormFieldComponents`](#contractorsignatureformfieldcomponents)\>
 
 #### Properties
 
@@ -141,14 +191,13 @@ document metadata has loaded.
 | ------ | ------ | ------ |
 | `actions` | `object` | Imperative actions exposed by the hook. |
 | `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`DocumentSigned`\> \| `undefined`\> | Validates the form and submits the signature. Resolves with the signed document on success, or `undefined` on validation or API failure. |
-| `data` | `object` | Loaded data — the document being signed and a preview PDF URL. |
+| `data` | `object` | Loaded data — the document being signed and a downloadable PDF URL. |
 | `data.document` | `Document` | The document entity fetched from the API. |
 | `data.hasFields` | `boolean` | Whether the document carries signable fields (vs. acknowledge-only). |
 | `data.pdfUrl` | `string` \| `null` | URL to the document's PDF, or `null` when unavailable. |
-| `data.sections` | [`ContractorSignatureSection`](#contractorsignaturesection)[] | Ordered sections describing how to group fields when rendering. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | `TFields` | - |
+| `form.Fields` | [`ContractorSignatureFormFieldComponents`](#contractorsignatureformfieldcomponents) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorSignatureFormData`](#contractorsignatureformdata)\> | - |
@@ -159,39 +208,33 @@ document metadata has loaded.
 
 ## Type Aliases
 
-<a id="contractorsignatureboundfield"></a>
+<a id="contractorsignatureagreefieldprops"></a>
 
-### ContractorSignatureBoundField
+### ContractorSignatureAgreeFieldProps
 
-> **ContractorSignatureBoundField** = `ComponentType`\<[`ContractorSignatureFieldProps`](#contractorsignaturefieldprops)\>
+> **ContractorSignatureAgreeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\<`AgreeValidation`\>\>
 
-A W-9 field component pre-bound to its form-field name.
-
-***
-
-<a id="contractorsignaturefields"></a>
-
-### ContractorSignatureFields
-
-> **ContractorSignatureFields** = `Record`\<`string`, [`ContractorSignatureBoundField`](#contractorsignatureboundfield)\>
-
-Map of W-9 form-field name to its bound field component.
+Props accepted by the `Agree` consent checkbox of [useContractorSignatureForm](#usecontractorsignatureform).
 
 ***
 
-<a id="contractorsignatureformdata"></a>
+<a id="contractorsignaturecheckboxfieldprops"></a>
 
-### ContractorSignatureFormData
+### ContractorSignatureCheckboxFieldProps
 
-> **ContractorSignatureFormData** = `Record`\<`string`, `string` \| `boolean`\> & `object`
+> **ContractorSignatureCheckboxFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`CheckboxHookFieldProps`](../../utilities.md#checkboxhookfieldprops)\>
 
-The shape of values managed by the W-9 signing form.
+Props accepted by the `ForeignPartners` checkbox of [useContractorSignatureForm](#usecontractorsignatureform).
 
-#### Type Declaration
+***
 
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `agree` | `boolean` | Electronic-signature consent; must be checked to submit. |
+<a id="contractorsignatureeinfieldprops"></a>
+
+### ContractorSignatureEinFieldProps
+
+> **ContractorSignatureEinFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<`EinValidation`, `RequiredValidation`\>\>
+
+Props accepted by the `Ein` field of [useContractorSignatureForm](#usecontractorsignatureform).
 
 ***
 
@@ -206,6 +249,66 @@ form schema.
 
 ***
 
+<a id="contractorsignatureformoutputs"></a>
+
+### ContractorSignatureFormOutputs
+
+> **ContractorSignatureFormOutputs** = [`ContractorSignatureFormData`](#contractorsignatureformdata)
+
+Validated submission shape produced by the [useContractorSignatureForm](#usecontractorsignatureform) schema.
+
+***
+
+<a id="contractorsignatureoptionalfieldstorequire"></a>
+
+### ContractorSignatureOptionalFieldsToRequire
+
+> **ContractorSignatureOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
+
+Optional W-9 fields a partner can promote to required.
+
+***
+
+<a id="contractorsignatureradiofieldprops"></a>
+
+### ContractorSignatureRadioFieldProps
+
+> **ContractorSignatureRadioFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`RequiredValidation`, `string`\>\>
+
+Props accepted by the radio-group field of [useContractorSignatureForm](#usecontractorsignatureform).
+
+***
+
+<a id="contractorsignatureselectfieldprops"></a>
+
+### ContractorSignatureSelectFieldProps
+
+> **ContractorSignatureSelectFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<`RequiredValidation`, `string`\>\>
+
+Props accepted by the select field of [useContractorSignatureForm](#usecontractorsignatureform).
+
+***
+
+<a id="contractorsignaturessnfieldprops"></a>
+
+### ContractorSignatureSsnFieldProps
+
+> **ContractorSignatureSsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<`SsnValidation`, `RequiredValidation`\>\>
+
+Props accepted by the `Ssn` field of [useContractorSignatureForm](#usecontractorsignatureform).
+
+***
+
+<a id="contractorsignaturetextfieldprops"></a>
+
+### ContractorSignatureTextFieldProps
+
+> **ContractorSignatureTextFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<`RequiredValidation`\>\>
+
+Props accepted by the text-input fields of [useContractorSignatureForm](#usecontractorsignatureform).
+
+***
+
 <a id="usecontractorsignatureformresult"></a>
 
 ### UseContractorSignatureFormResult
@@ -213,14 +316,3 @@ form schema.
 > **UseContractorSignatureFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorSignatureFormReady`](#usecontractorsignatureformready)
 
 Result of [useContractorSignatureForm](#usecontractorsignatureform) — a discriminated union on `isLoading`.
-
-***
-
-<a id="w9section"></a>
-
-### W9Section
-
-> **W9Section** = `"classification"` \| `"exemptions"` \| `"address"` \| `"tin"` \| `"certification"`
-
-Section a W-9 field belongs to, used to group fields under headings when
-rendering the signing form.

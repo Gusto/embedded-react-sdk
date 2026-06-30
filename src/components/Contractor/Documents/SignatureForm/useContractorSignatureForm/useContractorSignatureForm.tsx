@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
@@ -9,22 +9,46 @@ import { useContractorDocumentsGetPdf } from '@gusto/embedded-api-v-2025-11-15/r
 import { useContractorDocumentsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsSign'
 import {
   buildW9Defaults,
-  buildW9FieldDescriptors,
+  getPresentFieldNames,
+  getRedactionState,
   serializeW9Fields,
+  EMPTY_W9_DEFAULTS,
   TAX_CLASSIFICATION_OPTION_KEYS,
   LLC_CLASSIFICATION_CODES,
-  LLC_CLASSIFICATION_FIELD,
-  TAX_CLASSIFICATION_FIELD,
-  type ContractorSignatureFormData,
-  type W9FieldDescriptor,
-  type W9Section,
+  LLC_CLASSIFICATION_OPTION,
+  OTHER_CLASSIFICATION_OPTION,
+  type W9RedactionState,
 } from './w9Fields'
-import { createContractorSignatureFormSchema } from './contractorSignatureFormSchema'
 import {
-  AGREE_FIELD,
-  buildContractorSignatureFields,
-  type ContractorSignatureFields,
+  createContractorSignatureFormSchema,
+  type ContractorSignatureFormData,
+  type ContractorSignatureFormOutputs,
+  type ContractorSignatureOptionalFieldsToRequire,
+} from './contractorSignatureFormSchema'
+import {
+  NameField,
+  TaxClassificationField,
+  HomeAddressStreet1Field,
+  HomeAddressCityField,
+  HomeAddressStateField,
+  HomeAddressZipField,
+  SsnField,
+  EinField,
+  SignatureTextField,
+  AgreeField,
+  BusinessNameField,
+  LlcClassificationCodeField,
+  OtherTextField,
+  ForeignPartnersField,
+  ExemptPayeeCodeField,
+  ExemptionFromFatcaField,
+  HomeAddressStreet2Field,
+  AccountNumberField,
+  CompanyNameField,
+  type ContractorSignatureFormFieldComponents,
 } from './fields'
+import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -49,19 +73,8 @@ export interface UseContractorSignatureFormProps {
   validationMode?: UseFormProps['mode']
   /** Auto-focus the first invalid field on submit. Defaults to `true`; set to `false` when using `composeSubmitHandler`. */
   shouldFocusError?: boolean
-}
-
-/**
- * A section of the W-9 signing form along with the form-field names to render
- * within it, in order.
- *
- * @public
- */
-export interface ContractorSignatureSection {
-  /** The section identifier (e.g. `'address'`, `'tin'`). */
-  section: W9Section
-  /** Form-field names to render in this section, in order. */
-  fieldNames: string[]
+  /** Promote optional W-9 fields to required (e.g. `{ create: ['businessName'] }`). */
+  optionalFieldsToRequire?: ContractorSignatureOptionalFieldsToRequire
 }
 
 /**
@@ -73,16 +86,14 @@ export interface ContractorSignatureSection {
 export interface UseContractorSignatureFormReady extends BaseFormHookReady<
   FieldsMetadata,
   ContractorSignatureFormData,
-  ContractorSignatureFields
+  ContractorSignatureFormFieldComponents
 > {
-  /** Loaded data — the document being signed and a preview PDF URL. */
+  /** Loaded data — the document being signed and a downloadable PDF URL. */
   data: {
     /** The document entity fetched from the API. */
     document: Document
     /** URL to the document's PDF, or `null` when unavailable. */
     pdfUrl: string | null
-    /** Ordered sections describing how to group fields when rendering. */
-    sections: ContractorSignatureSection[]
     /** Whether the document carries signable fields (vs. acknowledge-only). */
     hasFields: boolean
   }
@@ -107,79 +118,70 @@ export interface UseContractorSignatureFormReady extends BaseFormHookReady<
  */
 export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady
 
-const SECTION_ORDER: W9Section[] = [
-  'classification',
-  'exemptions',
-  'address',
-  'tin',
-  'certification',
-]
-
-function buildSections(descriptors: W9FieldDescriptor[]): ContractorSignatureSection[] {
-  const grouped = new Map<W9Section, string[]>()
-  for (const descriptor of descriptors) {
-    const names = grouped.get(descriptor.section) ?? []
-    names.push(descriptor.name)
-    grouped.set(descriptor.section, names)
+function buildFields(
+  presentFieldNames: Set<string>,
+  classification: string,
+): ContractorSignatureFormFieldComponents {
+  return {
+    // Every field is presence-gated to guard against the document API diverging
+    // (dropping or renaming a field) — only `Agree` is synthesized and always on.
+    Name: presentFieldNames.has('name') ? NameField : undefined,
+    TaxClassification: presentFieldNames.has('taxClassification')
+      ? TaxClassificationField
+      : undefined,
+    HomeAddressStreet1: presentFieldNames.has('homeAddressStreet1')
+      ? HomeAddressStreet1Field
+      : undefined,
+    HomeAddressCity: presentFieldNames.has('homeAddressCity') ? HomeAddressCityField : undefined,
+    HomeAddressState: presentFieldNames.has('homeAddressState') ? HomeAddressStateField : undefined,
+    HomeAddressZip: presentFieldNames.has('homeAddressZip') ? HomeAddressZipField : undefined,
+    Ssn: presentFieldNames.has('ssn') ? SsnField : undefined,
+    Ein: presentFieldNames.has('ein') ? EinField : undefined,
+    SignatureText: presentFieldNames.has('signatureText') ? SignatureTextField : undefined,
+    Agree: AgreeField,
+    BusinessName: presentFieldNames.has('businessName') ? BusinessNameField : undefined,
+    // Revealed only while the LLC classification is selected (and the document
+    // carries classification checkboxes).
+    LlcClassificationCode:
+      presentFieldNames.has('llcClassificationCode') && classification === LLC_CLASSIFICATION_OPTION
+        ? LlcClassificationCodeField
+        : undefined,
+    // Revealed only while the "Other" classification is selected.
+    OtherText:
+      presentFieldNames.has('otherText') && classification === OTHER_CLASSIFICATION_OPTION
+        ? OtherTextField
+        : undefined,
+    ForeignPartners: presentFieldNames.has('foreignPartners') ? ForeignPartnersField : undefined,
+    ExemptPayeeCode: presentFieldNames.has('exemptPayeeCode') ? ExemptPayeeCodeField : undefined,
+    ExemptionFromFatca: presentFieldNames.has('exemptionFromFatca')
+      ? ExemptionFromFatcaField
+      : undefined,
+    HomeAddressStreet2: presentFieldNames.has('homeAddressStreet2')
+      ? HomeAddressStreet2Field
+      : undefined,
+    AccountNumber: presentFieldNames.has('accountNumber') ? AccountNumberField : undefined,
+    CompanyName: presentFieldNames.has('companyName') ? CompanyNameField : undefined,
   }
-  return SECTION_ORDER.filter(section => grouped.has(section)).map(section => ({
-    section,
-    fieldNames: grouped.get(section)!,
-  }))
-}
-
-function buildFieldsMetadata(descriptors: W9FieldDescriptor[]): FieldsMetadata {
-  const metadata: FieldsMetadata = {
-    [AGREE_FIELD]: { name: AGREE_FIELD, isRequired: true },
-  }
-
-  for (const descriptor of descriptors) {
-    if (descriptor.name === TAX_CLASSIFICATION_FIELD) {
-      metadata[descriptor.name] = {
-        name: descriptor.name,
-        isRequired: descriptor.isRequired,
-        options: TAX_CLASSIFICATION_OPTION_KEYS.map(key => ({ value: key, label: key })),
-        entries: [...TAX_CLASSIFICATION_OPTION_KEYS],
-      }
-      continue
-    }
-    if (descriptor.name === LLC_CLASSIFICATION_FIELD) {
-      metadata[descriptor.name] = {
-        name: descriptor.name,
-        isRequired: true,
-        options: LLC_CLASSIFICATION_CODES.map(code => ({ value: code, label: code })),
-        entries: [...LLC_CLASSIFICATION_CODES],
-      }
-      continue
-    }
-    metadata[descriptor.name] = {
-      name: descriptor.name,
-      isRequired: descriptor.isRequired && !descriptor.hasRedactedValue,
-      hasRedactedValue: descriptor.hasRedactedValue,
-      placeholder: descriptor.placeholder,
-    }
-  }
-
-  return metadata
 }
 
 /**
- * Headless hook for signing a contractor document — displays the document PDF
- * and collects the document's fields plus a typed signature and consent.
+ * Headless hook for signing a contractor document — collects the document's
+ * fields plus a typed signature and consent.
  *
  * @remarks
  * This hook implements the W-9 — the only signable contractor document the API
- * exposes today (`taxpayer_identification_form_w_9`). It applies a fixed W-9
- * layout to the fields the document returns: each field's input variant is
- * derived from its API `data_type`, the seven federal tax-classification
- * checkboxes are collapsed into a single required radio group with conditional
- * LLC-code and "Other" sub-fields, and on submit the selection is mapped back
- * to the W-9 wire format. Pre-filled values (name, address, TIN, etc.) are
- * editable inputs; the signing `date` is omitted so the API auto-fills it. A
- * document that returns no recognized W-9 fields renders as acknowledge-only
- * (`data.hasFields` is `false`). `data.sections` describes how to group
- * `form.Fields` under headings; consult `form.fieldsMetadata` for per-field
- * required flags and select/radio options.
+ * exposes today (`taxpayer_identification_form_w_9`). The field surface is
+ * declared statically (`form.Fields`), like the other SDK form hooks: core
+ * fields are always present, while variable fields are exposed only when the API
+ * returns them (otherwise `undefined`) — a presence-based safety check, so a
+ * field the API drops is skipped rather than rendered as an orphan. The seven
+ * federal tax-classification checkboxes are collapsed into a single required
+ * radio group with conditional LLC-code and "Other" sub-fields, and on submit
+ * the selection is mapped back to the W-9 wire format. Pre-filled values (name,
+ * address, TIN, etc.) are editable inputs; the signing `date` is omitted so the
+ * API auto-fills it. A document that returns no recognized W-9 fields renders
+ * as acknowledge-only (`data.hasFields` is `false`). Consult
+ * `form.fieldsMetadata` for per-field required flags and select/radio options.
  *
  * @param props - See {@link UseContractorSignatureFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorSignatureFormReady} once loaded.
@@ -189,32 +191,91 @@ export function useContractorSignatureForm({
   documentUuid,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  optionalFieldsToRequire,
 }: UseContractorSignatureFormProps): UseContractorSignatureFormResult {
   const documentQuery = useContractorDocumentsGet({ documentUuid })
   // PDF failures are intentionally excluded from the page error surface; the
-  // viewer degrades gracefully when the URL is unavailable.
+  // download link is simply hidden when the URL is unavailable.
   const pdfQuery = useContractorDocumentsGetPdf({ documentUuid })
 
   const document = documentQuery.data?.document
 
-  const descriptors = useMemo(() => (document ? buildW9FieldDescriptors(document) : []), [document])
-  const schema = useMemo(() => createContractorSignatureFormSchema(descriptors), [descriptors])
-  const defaultValues = useMemo<ContractorSignatureFormData>(
-    () => (document ? buildW9Defaults(document, descriptors) : { agree: false }),
-    [document, descriptors],
+  const presentFieldNames = useMemo(
+    () => (document ? getPresentFieldNames(document) : new Set<string>()),
+    [document],
   )
-  const Fields = useMemo(() => buildContractorSignatureFields(descriptors), [descriptors])
-  const fieldsMetadata = useMemo(() => buildFieldsMetadata(descriptors), [descriptors])
-  const sections = useMemo(() => buildSections(descriptors), [descriptors])
+  const redaction = useMemo<W9RedactionState>(
+    () => (document ? getRedactionState(document) : { ssnRedacted: false, einRedacted: false }),
+    [document],
+  )
 
-  const formMethods = useForm<ContractorSignatureFormData, unknown, ContractorSignatureFormData>({
-    resolver: zodResolver(schema),
-    mode: validationMode,
-    shouldFocusError,
-    defaultValues,
-    values: defaultValues,
-    resetOptions: { keepDirtyValues: true },
+  const [schema, metadataConfig] = useMemo(
+    () =>
+      createContractorSignatureFormSchema({
+        optionalFieldsToRequire,
+        ssnRedacted: redaction.ssnRedacted,
+        einRedacted: redaction.einRedacted,
+      }),
+    [optionalFieldsToRequire, redaction.ssnRedacted, redaction.einRedacted],
+  )
+
+  const defaultValues = useMemo<ContractorSignatureFormData>(
+    () => (document ? buildW9Defaults(document) : EMPTY_W9_DEFAULTS),
+    [document],
+  )
+
+  const formMethods = useForm<ContractorSignatureFormData, unknown, ContractorSignatureFormOutputs>(
+    {
+      resolver: zodResolver(schema),
+      mode: validationMode,
+      shouldFocusError,
+      defaultValues,
+      values: defaultValues,
+      resetOptions: { keepDirtyValues: true },
+    },
+  )
+
+  const watchedClassification = useWatch({
+    control: formMethods.control,
+    name: 'taxClassification',
   })
+  const Fields = useMemo(
+    () => buildFields(presentFieldNames, watchedClassification),
+    [presentFieldNames, watchedClassification],
+  )
+
+  const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+
+  const fieldsMetadata = useMemo<FieldsMetadata>(() => {
+    const taxClassificationOptions = TAX_CLASSIFICATION_OPTION_KEYS.map(key => ({
+      value: key,
+      label: key,
+    }))
+    const llcClassificationOptions = LLC_CLASSIFICATION_CODES.map(code => ({
+      value: code,
+      label: code,
+    }))
+
+    return {
+      ...baseMetadata,
+      taxClassification: withOptions(baseMetadata.taxClassification, taxClassificationOptions, [
+        ...TAX_CLASSIFICATION_OPTION_KEYS,
+      ]),
+      llcClassificationCode: withOptions(
+        baseMetadata.llcClassificationCode,
+        llcClassificationOptions,
+        [...LLC_CLASSIFICATION_CODES],
+      ),
+      // The masked value drives the redacted SSN/EIN placeholder. `buildFormSchema`
+      // already set `hasRedactedValue` and exempted the field from required validation.
+      ...(redaction.ssnPlaceholder
+        ? { ssn: { ...baseMetadata.ssn, placeholder: redaction.ssnPlaceholder } }
+        : {}),
+      ...(redaction.einPlaceholder
+        ? { ein: { ...baseMetadata.ein, placeholder: redaction.einPlaceholder } }
+        : {}),
+    }
+  }, [baseMetadata, redaction])
 
   const signMutation = useContractorDocumentsSignMutation()
   const isPending = signMutation.isPending
@@ -232,7 +293,7 @@ export function useContractorSignatureForm({
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(
-        async (data: ContractorSignatureFormData) => {
+        async (data: ContractorSignatureFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
             if (!document) {
               throw new SDKInternalError('Document must be loaded before signing')
@@ -242,7 +303,7 @@ export function useContractorSignatureForm({
               request: {
                 documentUuid,
                 requestBody: {
-                  fields: serializeW9Fields(document, descriptors, payload),
+                  fields: serializeW9Fields(document, payload, redaction),
                   agree: payload.agree,
                   // The signing IP is supplied by the partner proxy via the
                   // `x-gusto-client-ip` header; send an empty body value to
@@ -282,8 +343,7 @@ export function useContractorSignatureForm({
     data: {
       document,
       pdfUrl: pdfQuery.data?.documentPdf?.documentUrl ?? null,
-      sections,
-      hasFields: descriptors.length > 0,
+      hasFields: presentFieldNames.size > 0,
     },
     status: { isPending, mode: 'create' },
     actions: { onSubmit },

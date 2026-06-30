@@ -1,8 +1,7 @@
 {
   "signatureRequired": "Signature required",
-  "instructions": "See the IRS Form W-9 for instructions on completing this form.",
+  "instructions": "See the IRS Form W-9 for instructions on completing this form",
   "downloadPrompt": "<downloadLink>Download document</downloadLink>",
-  "viewDocumentCta": "View document",
   "sections": {
     "exemptions": "Exemptions",
     "address": "Address",
@@ -105,7 +104,9 @@
   "agreeLabel": "I agree to electronically sign this form.",
   "validation": {
     "required": "This field is required.",
-    "agreeRequired": "You must agree to electronically sign this form."
+    "agreeRequired": "You must agree to electronically sign this form.",
+    "invalidSsn": "Enter a valid Social Security Number.",
+    "invalidEin": "Enter a valid Employer Identification Number."
   },
   "backCta": "Back",
   "signCta": "Sign",

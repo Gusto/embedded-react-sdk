@@ -1319,7 +1319,6 @@ export interface ContractorSignatureForm{
 "signatureRequired":string;
 "instructions":string;
 "downloadPrompt":string;
-"viewDocumentCta":string;
 "sections":{
 "exemptions":string;
 "address":string;
@@ -1423,6 +1422,8 @@ export interface ContractorSignatureForm{
 "validation":{
 "required":string;
 "agreeRequired":string;
+"invalidSsn":string;
+"invalidEin":string;
 };
 "backCta":string;
 "signCta":string;

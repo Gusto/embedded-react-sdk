@@ -2,13 +2,16 @@ import { describe, expect, it } from 'vitest'
 import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
 import {
   buildW9Defaults,
-  buildW9FieldDescriptors,
   serializeW9Fields,
+  getPresentFieldNames,
+  getRedactionState,
+  isW9Document,
+  normalizeEinOrNotApplicable,
+  normalizeSsnOrNotApplicable,
   TAX_CLASSIFICATION_FIELD,
   LLC_CLASSIFICATION_FIELD,
-  isW9Document,
-  type ContractorSignatureFormData,
 } from './w9Fields'
+import type { ContractorSignatureFormData } from './contractorSignatureFormSchema'
 
 function w9Document(overrides: Partial<Document> = {}): Document {
   return {
@@ -67,6 +70,40 @@ function w9Document(overrides: Partial<Document> = {}): Document {
   }
 }
 
+describe('normalizeEinOrNotApplicable', () => {
+  it('lets the N/A sentinel be typed through, normalized to uppercase', () => {
+    expect(normalizeEinOrNotApplicable('N/A')).toBe('N/A')
+    expect(normalizeEinOrNotApplicable('n/a')).toBe('N/A')
+    expect(normalizeEinOrNotApplicable('na')).toBe('N/A')
+  })
+
+  it('preserves in-progress prefixes while the user types toward N/A', () => {
+    expect(normalizeEinOrNotApplicable('N')).toBe('N')
+    expect(normalizeEinOrNotApplicable('N/')).toBe('N/')
+  })
+
+  it('formats numeric input as a standard EIN', () => {
+    expect(normalizeEinOrNotApplicable('123456789')).toBe('12-3456789')
+  })
+})
+
+describe('normalizeSsnOrNotApplicable', () => {
+  it('lets the N/A sentinel be typed through, normalized to uppercase', () => {
+    expect(normalizeSsnOrNotApplicable('N/A')).toBe('N/A')
+    expect(normalizeSsnOrNotApplicable('n/a')).toBe('N/A')
+    expect(normalizeSsnOrNotApplicable('na')).toBe('N/A')
+  })
+
+  it('preserves in-progress prefixes while the user types toward N/A', () => {
+    expect(normalizeSsnOrNotApplicable('N')).toBe('N')
+    expect(normalizeSsnOrNotApplicable('N/')).toBe('N/')
+  })
+
+  it('formats numeric input as a standard SSN', () => {
+    expect(normalizeSsnOrNotApplicable('123456789')).toBe('123-45-6789')
+  })
+})
+
 describe('isW9Document', () => {
   it('identifies the W-9 by name', () => {
     expect(isW9Document(w9Document())).toBe(true)
@@ -74,78 +111,60 @@ describe('isW9Document', () => {
   })
 })
 
-describe('buildW9FieldDescriptors', () => {
-  it('synthesizes a single required classification radio from the checkbox keys', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const classification = descriptors.find(d => d.name === TAX_CLASSIFICATION_FIELD)
-    expect(classification).toMatchObject({
-      name: TAX_CLASSIFICATION_FIELD,
-      variant: 'radio',
-      section: 'classification',
-      isRequired: true,
+describe('getPresentFieldNames', () => {
+  it('reports the synthesized classification fields when checkbox keys exist', () => {
+    const present = getPresentFieldNames(w9Document())
+    expect(present.has(TAX_CLASSIFICATION_FIELD)).toBe(true)
+    expect(present.has(LLC_CLASSIFICATION_FIELD)).toBe(true)
+  })
+
+  it('reports a pass-through field as present only when the API returns its key', () => {
+    const present = getPresentFieldNames(w9Document())
+    expect(present.has('businessName')).toBe(true)
+    expect(present.has('companyName')).toBe(true)
+
+    const withoutBusinessName = w9Document({
+      fields: w9Document().fields?.filter(field => field.key !== 'business_name'),
+    })
+    expect(getPresentFieldNames(withoutBusinessName).has('businessName')).toBe(false)
+  })
+
+  it('omits the classification fields when the document has no classification checkboxes', () => {
+    const acknowledgeOnly = w9Document({ fields: [] })
+    const present = getPresentFieldNames(acknowledgeOnly)
+    expect(present.has(TAX_CLASSIFICATION_FIELD)).toBe(false)
+    expect(present.size).toBe(0)
+  })
+})
+
+describe('getRedactionState', () => {
+  it('flags a masked SSN as redacted and surfaces the mask as a placeholder', () => {
+    expect(getRedactionState(w9Document())).toMatchObject({
+      ssnRedacted: true,
+      ssnPlaceholder: 'XXX-XX-3123',
     })
   })
 
-  it('does not render the seven classification checkboxes as standalone fields', () => {
-    const names = buildW9FieldDescriptors(w9Document()).map(d => d.name)
-    expect(names).not.toContain('individual_proprietor')
-    expect(names).not.toContain('c_corporation')
-    expect(names).not.toContain('limited_liability_company')
-  })
-
-  it('marks gws-flows-optional fields optional regardless of the API required flag', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const byName = Object.fromEntries(descriptors.map(d => [d.name, d]))
-    expect(byName.business_name).toMatchObject({ isRequired: false })
-    expect(byName.account_number).toMatchObject({ isRequired: false })
-    expect(byName.company_name).toMatchObject({ isRequired: false })
-    expect(byName.home_address_street_2).toMatchObject({ isRequired: false })
-  })
-
-  it('derives the input variant from the API data_type', () => {
-    const byName = Object.fromEntries(buildW9FieldDescriptors(w9Document()).map(d => [d.name, d]))
-    // exemption_from_FATCA is a FATCA-exemption code (text), not a checkbox.
-    expect(byName.exemption_from_FATCA).toMatchObject({ variant: 'text' })
-    expect(byName.foreign_partners).toMatchObject({ variant: 'checkbox' })
-    expect(byName.ssn).toMatchObject({ variant: 'text' })
-  })
-
-  it('keeps API-required fields required', () => {
-    const byName = Object.fromEntries(buildW9FieldDescriptors(w9Document()).map(d => [d.name, d]))
-    expect(byName.name).toMatchObject({ isRequired: true })
-    expect(byName.ssn).toMatchObject({ isRequired: true })
-    expect(byName.signature_text).toMatchObject({ isRequired: true })
-  })
-
-  it('groups fields into ordered sections', () => {
-    const sections = buildW9FieldDescriptors(w9Document()).map(d => d.section)
-    expect(sections).toContain('classification')
-    expect(sections).toContain('exemptions')
-    expect(sections).toContain('address')
-    expect(sections).toContain('tin')
-    expect(sections).toContain('certification')
+  it('does not flag an unmasked sensitive value (EIN "N/A") as redacted', () => {
+    expect(getRedactionState(w9Document())).toMatchObject({ einRedacted: false })
   })
 })
 
 describe('buildW9Defaults', () => {
-  it('seeds editable inputs from the API values', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const defaults = buildW9Defaults(w9Document(), descriptors)
-    expect(defaults).toMatchObject({
+  it('seeds editable inputs from the API values keyed by camelCase field name', () => {
+    expect(buildW9Defaults(w9Document())).toMatchObject({
       name: 'Klay Thompson',
-      home_address_street_1: '525 7th street',
-      home_address_city: 'New York',
+      homeAddressStreet1: '525 7th street',
+      homeAddressCity: 'New York',
       ein: 'N/A',
-      company_name: 'Entercross Systems',
+      companyName: 'Entercross Systems',
       agree: false,
-      [TAX_CLASSIFICATION_FIELD]: '',
+      taxClassification: '',
     })
   })
 
   it('seeds an empty input for a masked (redacted) SSN', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const defaults = buildW9Defaults(w9Document(), descriptors)
-    expect(defaults.ssn).toBe('')
+    expect(buildW9Defaults(w9Document()).ssn).toBe('')
   })
 
   it('preselects the classification whose checkbox value is set', () => {
@@ -154,34 +173,57 @@ describe('buildW9Defaults', () => {
         field.key === 's_corporation' ? { ...field, value: '1' } : field,
       ),
     })
-    const descriptors = buildW9FieldDescriptors(document)
-    const defaults = buildW9Defaults(document, descriptors)
-    expect(defaults[TAX_CLASSIFICATION_FIELD]).toBe('s_corporation')
+    expect(buildW9Defaults(document).taxClassification).toBe('s_corporation')
+  })
+
+  it('seeds the LLC code from tax_classification when the LLC classification is selected', () => {
+    const document = w9Document({
+      fields: w9Document().fields?.map(field => {
+        if (field.key === 'limited_liability_company') return { ...field, value: 'true' }
+        if (field.key === 'tax_classification') return { ...field, value: 'p' }
+        return field
+      }),
+    })
+    const defaults = buildW9Defaults(document)
+    expect(defaults.taxClassification).toBe('limited_liability_company')
+    expect(defaults.llcClassificationCode).toBe('p')
+  })
+
+  it('does not seed the LLC code when a non-LLC classification is selected', () => {
+    const document = w9Document({
+      fields: w9Document().fields?.map(field => {
+        if (field.key === 's_corporation') return { ...field, value: 'true' }
+        // A stray tax_classification value must not leak into a non-LLC selection.
+        if (field.key === 'tax_classification') return { ...field, value: 'p' }
+        return field
+      }),
+    })
+    expect(buildW9Defaults(document).llcClassificationCode).toBe('')
   })
 })
 
 describe('serializeW9Fields', () => {
-  const descriptors = buildW9FieldDescriptors(w9Document())
-
   function baseValues(
     overrides: Partial<ContractorSignatureFormData> = {},
   ): ContractorSignatureFormData {
     return {
-      ...buildW9Defaults(w9Document(), descriptors),
-      [TAX_CLASSIFICATION_FIELD]: 'c_corporation',
-      signature_text: 'Klay Thompson',
+      ...buildW9Defaults(w9Document()),
+      taxClassification: 'c_corporation',
+      signatureText: 'Klay Thompson',
       agree: true,
       ...overrides,
     }
   }
 
+  const redaction = getRedactionState(w9Document())
+
   it('maps the chosen classification to value "1"', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues())
+    const fields = serializeW9Fields(w9Document(), baseValues(), redaction)
     expect(fields).toContainEqual({ key: 'c_corporation', value: '1' })
   })
 
   it('only sends the chosen classification, not the unchosen ones', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues())
+    const fields = serializeW9Fields(w9Document(), baseValues(), redaction)
     const classificationKeys = fields.filter(f => f.value === '1').map(f => f.key)
     expect(classificationKeys).toEqual(['c_corporation'])
   })
@@ -189,11 +231,11 @@ describe('serializeW9Fields', () => {
   it('sends the LLC code under the tax_classification key when LLC is selected', () => {
     const fields = serializeW9Fields(
       w9Document(),
-      descriptors,
       baseValues({
-        [TAX_CLASSIFICATION_FIELD]: 'limited_liability_company',
-        [LLC_CLASSIFICATION_FIELD]: 'p',
+        taxClassification: 'limited_liability_company',
+        llcClassificationCode: 'p',
       }),
+      redaction,
     )
     expect(fields).toContainEqual({ key: 'limited_liability_company', value: '1' })
     expect(fields).toContainEqual({ key: 'tax_classification', value: 'p' })
@@ -202,27 +244,27 @@ describe('serializeW9Fields', () => {
   it('includes other_text only when the Other classification is selected', () => {
     const withOther = serializeW9Fields(
       w9Document(),
-      descriptors,
-      baseValues({ [TAX_CLASSIFICATION_FIELD]: 'other', other_text: 'Custom entity' }),
+      baseValues({ taxClassification: 'other', otherText: 'Custom entity' }),
+      redaction,
     )
     expect(withOther).toContainEqual({ key: 'other_text', value: 'Custom entity' })
 
-    const withoutOther = serializeW9Fields(w9Document(), descriptors, baseValues())
+    const withoutOther = serializeW9Fields(w9Document(), baseValues(), redaction)
     expect(withoutOther.find(f => f.key === 'other_text')).toBeUndefined()
   })
 
-  it('serializes checkboxes to "1"/"0"', () => {
+  it('serializes the foreign-partners checkbox to "1"/"0"', () => {
     const checked = serializeW9Fields(
       w9Document(),
-      descriptors,
-      baseValues({ foreign_partners: true }),
+      baseValues({ foreignPartners: true }),
+      redaction,
     )
     expect(checked).toContainEqual({ key: 'foreign_partners', value: '1' })
 
     const unchecked = serializeW9Fields(
       w9Document(),
-      descriptors,
-      baseValues({ foreign_partners: false }),
+      baseValues({ foreignPartners: false }),
+      redaction,
     )
     expect(unchecked).toContainEqual({ key: 'foreign_partners', value: '0' })
   })
@@ -230,49 +272,30 @@ describe('serializeW9Fields', () => {
   it('serializes exemption_from_FATCA as its text code, not a checkbox', () => {
     const fields = serializeW9Fields(
       w9Document(),
-      descriptors,
-      baseValues({ exemption_from_FATCA: 'A' }),
+      baseValues({ exemptionFromFatca: 'A' }),
+      redaction,
     )
     expect(fields).toContainEqual({ key: 'exemption_from_FATCA', value: 'A' })
   })
 
   it('omits the date field so the API auto-fills it', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues())
+    const fields = serializeW9Fields(w9Document(), baseValues(), redaction)
     expect(fields.find(f => f.key === 'date')).toBeUndefined()
   })
 
   it('passes edited non-sensitive values through as editable inputs', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues({ name: 'Edited Name' }))
+    const fields = serializeW9Fields(w9Document(), baseValues({ name: 'Edited Name' }), redaction)
     expect(fields).toContainEqual({ key: 'name', value: 'Edited Name' })
     expect(fields).toContainEqual({ key: 'ein', value: 'N/A' })
   })
 
   it('omits an untouched redacted SSN so the mask is never sent back', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues({ ssn: '' }))
+    const fields = serializeW9Fields(w9Document(), baseValues({ ssn: '' }), redaction)
     expect(fields.find(f => f.key === 'ssn')).toBeUndefined()
   })
 
   it('sends a replacement SSN when the contractor enters one', () => {
-    const fields = serializeW9Fields(w9Document(), descriptors, baseValues({ ssn: '123-45-6789' }))
+    const fields = serializeW9Fields(w9Document(), baseValues({ ssn: '123-45-6789' }), redaction)
     expect(fields).toContainEqual({ key: 'ssn', value: '123-45-6789' })
-  })
-})
-
-describe('redacted (masked) fields', () => {
-  it('flags a masked SSN as redacted and surfaces the mask as a placeholder', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const ssn = descriptors.find(d => d.name === 'ssn')
-    expect(ssn).toMatchObject({
-      name: 'ssn',
-      hasRedactedValue: true,
-      placeholder: 'XXX-XX-3123',
-      isRequired: true,
-    })
-  })
-
-  it('does not flag an unmasked sensitive value (EIN "N/A") as redacted', () => {
-    const descriptors = buildW9FieldDescriptors(w9Document())
-    const ein = descriptors.find(d => d.name === 'ein')
-    expect(ein).toMatchObject({ name: 'ein', hasRedactedValue: false })
   })
 })

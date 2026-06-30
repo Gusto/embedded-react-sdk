@@ -1,67 +1,50 @@
 import { describe, expect, it } from 'vitest'
-import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+import type { z } from 'zod'
 import {
   createContractorSignatureFormSchema,
   ContractorSignatureFormErrorCodes,
-} from './contractorSignatureFormSchema'
-import {
-  buildW9Defaults,
-  buildW9FieldDescriptors,
-  LLC_CLASSIFICATION_FIELD,
-  TAX_CLASSIFICATION_FIELD,
   type ContractorSignatureFormData,
-} from './w9Fields'
+  type ContractorSignatureSchemaOptions,
+} from './contractorSignatureFormSchema'
 
-function w9Document(): Document {
-  return {
-    uuid: 'doc-1',
-    name: 'taxpayer_identification_form_w_9',
-    title: 'W-9',
-    requiresSigning: true,
-    fields: [
-      { key: 'name', value: 'Klay Thompson', dataType: 'full_name', required: true },
-      { key: 'individual_proprietor', value: null, dataType: 'checkbox', required: true },
-      { key: 'c_corporation', value: null, dataType: 'checkbox', required: true },
-      { key: 'limited_liability_company', value: null, dataType: 'checkbox', required: true },
-      { key: 'other', value: null, dataType: 'checkbox', required: true },
-      {
-        key: 'home_address_street_1',
-        value: '525 7th street',
-        dataType: 'home_address_street_1',
-        required: true,
-      },
-      {
-        key: 'home_address_city',
-        value: 'New York',
-        dataType: 'home_address_city',
-        required: true,
-      },
-      { key: 'home_address_state', value: 'NY', dataType: 'home_address_state', required: true },
-      { key: 'home_address_zip', value: '10022', dataType: 'home_address_zip', required: true },
-      { key: 'ssn', value: 'XXX-XX-3123', dataType: 'ssn', required: true },
-      { key: 'ein', value: 'N/A', dataType: 'ein', required: true },
-      { key: 'signature_text', value: null, dataType: 'signature', required: true },
-      { key: 'date', value: '9/17/2025', dataType: 'date', required: true },
-    ],
-  }
-}
-
-const descriptors = buildW9FieldDescriptors(w9Document())
-const schema = createContractorSignatureFormSchema(descriptors)
-
-function validValues(
+function baseValues(
   overrides: Partial<ContractorSignatureFormData> = {},
 ): ContractorSignatureFormData {
   return {
-    ...buildW9Defaults(w9Document(), descriptors),
-    [TAX_CLASSIFICATION_FIELD]: 'c_corporation',
-    signature_text: 'Klay Thompson',
+    name: 'Klay Thompson',
+    businessName: '',
+    taxClassification: 'c_corporation',
+    llcClassificationCode: '',
+    otherText: '',
+    foreignPartners: false,
+    exemptPayeeCode: '',
+    exemptionFromFatca: '',
+    homeAddressStreet1: '525 7th street',
+    homeAddressStreet2: '',
+    homeAddressCity: 'New York',
+    homeAddressState: 'NY',
+    homeAddressZip: '10022',
+    accountNumber: '',
+    companyName: '',
+    // SSN arrives masked, so the form input is empty; the schema is built with
+    // `ssnRedacted: true` to exempt it (a value is already on file).
+    ssn: '',
+    ein: 'N/A',
+    signatureText: 'Klay Thompson',
     agree: true,
     ...overrides,
   }
 }
 
-function errorCodesByPath(values: ContractorSignatureFormData): Record<string, string> {
+function makeSchema(options: ContractorSignatureSchemaOptions = { ssnRedacted: true }): z.ZodType {
+  const [schema] = createContractorSignatureFormSchema(options)
+  return schema
+}
+
+function errorCodesByPath(
+  schema: z.ZodType,
+  values: ContractorSignatureFormData,
+): Record<string, string> {
   const result = schema.safeParse(values)
   if (result.success) return {}
   return Object.fromEntries(
@@ -71,48 +54,117 @@ function errorCodesByPath(values: ContractorSignatureFormData): Record<string, s
 
 describe('createContractorSignatureFormSchema', () => {
   it('accepts a fully populated, agreed-to submission', () => {
-    expect(schema.safeParse(validValues()).success).toBe(true)
+    expect(makeSchema().safeParse(baseValues()).success).toBe(true)
   })
 
   it('requires the agree checkbox', () => {
-    expect(errorCodesByPath(validValues({ agree: false }))).toMatchObject({
+    expect(errorCodesByPath(makeSchema(), baseValues({ agree: false }))).toMatchObject({
       agree: ContractorSignatureFormErrorCodes.AGREE_REQUIRED,
     })
   })
 
   it('requires the federal tax classification', () => {
-    expect(errorCodesByPath(validValues({ [TAX_CLASSIFICATION_FIELD]: '' }))).toMatchObject({
-      [TAX_CLASSIFICATION_FIELD]: ContractorSignatureFormErrorCodes.REQUIRED,
+    expect(errorCodesByPath(makeSchema(), baseValues({ taxClassification: '' }))).toMatchObject({
+      taxClassification: ContractorSignatureFormErrorCodes.REQUIRED,
     })
   })
 
   it('requires prefilled-but-cleared required fields', () => {
-    expect(errorCodesByPath(validValues({ name: '', signature_text: '' }))).toMatchObject({
+    expect(
+      errorCodesByPath(makeSchema(), baseValues({ name: '', signatureText: '' })),
+    ).toMatchObject({
       name: ContractorSignatureFormErrorCodes.REQUIRED,
-      signature_text: ContractorSignatureFormErrorCodes.REQUIRED,
+      signatureText: ContractorSignatureFormErrorCodes.REQUIRED,
     })
   })
 
-  it('requires the LLC code only while the LLC classification is selected', () => {
+  it('treats the LLC code as optional even when the LLC classification is selected', () => {
+    // The LLC code serializes into the W-9 `tax_classification` field, which the
+    // document API marks `required: false` — the form must not invent a
+    // requirement the API doesn't impose.
     expect(
-      errorCodesByPath(validValues({ [TAX_CLASSIFICATION_FIELD]: 'limited_liability_company' })),
-    ).toMatchObject({
-      [LLC_CLASSIFICATION_FIELD]: ContractorSignatureFormErrorCodes.REQUIRED,
-    })
-
-    expect(
-      schema.safeParse(
-        validValues({
-          [TAX_CLASSIFICATION_FIELD]: 'limited_liability_company',
-          [LLC_CLASSIFICATION_FIELD]: 'c',
-        }),
-      ).success,
+      makeSchema().safeParse(baseValues({ taxClassification: 'limited_liability_company' }))
+        .success,
     ).toBe(true)
   })
 
   it('treats the Other free-text field as optional', () => {
-    expect(schema.safeParse(validValues({ [TAX_CLASSIFICATION_FIELD]: 'other' })).success).toBe(
+    expect(makeSchema().safeParse(baseValues({ taxClassification: 'other' })).success).toBe(true)
+  })
+
+  it('promotes the LLC code to required via optionalFieldsToRequire', () => {
+    const schema = makeSchema({
+      ssnRedacted: true,
+      optionalFieldsToRequire: { create: ['llcClassificationCode'] },
+    })
+    expect(
+      errorCodesByPath(schema, baseValues({ taxClassification: 'limited_liability_company' })),
+    ).toMatchObject({
+      llcClassificationCode: ContractorSignatureFormErrorCodes.REQUIRED,
+    })
+  })
+
+  it('requires the SSN when it did not arrive redacted', () => {
+    expect(
+      errorCodesByPath(makeSchema({ ssnRedacted: false }), baseValues({ ssn: '' })),
+    ).toMatchObject({
+      ssn: ContractorSignatureFormErrorCodes.REQUIRED,
+    })
+  })
+
+  it('exempts the EIN from required validation when it arrived redacted', () => {
+    expect(
+      makeSchema({ ssnRedacted: true, einRedacted: true }).safeParse(baseValues({ ein: '' }))
+        .success,
+    ).toBe(true)
+  })
+
+  it('accepts a valid formatted SSN', () => {
+    expect(
+      makeSchema({ ssnRedacted: false }).safeParse(baseValues({ ssn: '123-45-6789' })).success,
+    ).toBe(true)
+  })
+
+  it('rejects a malformed SSN', () => {
+    expect(
+      errorCodesByPath(makeSchema({ ssnRedacted: false }), baseValues({ ssn: '123-45' })),
+    ).toMatchObject({
+      ssn: ContractorSignatureFormErrorCodes.INVALID_SSN,
+    })
+  })
+
+  it('rejects an SSN re-typed as the on-file mask (the server would stamp the mask)', () => {
+    expect(
+      errorCodesByPath(makeSchema({ ssnRedacted: true }), baseValues({ ssn: 'XXX-XX-1111' })),
+    ).toMatchObject({
+      ssn: ContractorSignatureFormErrorCodes.INVALID_SSN,
+    })
+  })
+
+  it('accepts the N/A sentinel for the SSN', () => {
+    expect(makeSchema({ ssnRedacted: false }).safeParse(baseValues({ ssn: 'N/A' })).success).toBe(
       true,
     )
+  })
+
+  it('accepts a valid formatted EIN', () => {
+    expect(makeSchema().safeParse(baseValues({ ein: '12-3456789' })).success).toBe(true)
+  })
+
+  it('rejects a malformed EIN', () => {
+    expect(errorCodesByPath(makeSchema(), baseValues({ ein: '12-345' }))).toMatchObject({
+      ein: ContractorSignatureFormErrorCodes.INVALID_EIN,
+    })
+  })
+
+  it('promotes an optional field to required via optionalFieldsToRequire', () => {
+    const schema = makeSchema({
+      ssnRedacted: true,
+      optionalFieldsToRequire: { create: ['businessName'] },
+    })
+    expect(errorCodesByPath(schema, baseValues({ businessName: '' }))).toMatchObject({
+      businessName: ContractorSignatureFormErrorCodes.REQUIRED,
+    })
+    expect(schema.safeParse(baseValues({ businessName: 'Entercross Systems' })).success).toBe(true)
   })
 })
