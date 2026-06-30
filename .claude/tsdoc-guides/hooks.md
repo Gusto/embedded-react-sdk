@@ -6,18 +6,51 @@ Read this when documenting hook-related symbols — hooks, hook props, hook retu
 
 Every partner-facing form hook has this export pattern — document all of them:
 
-| Symbol                                        | Release tag | What to document                                           |
-| --------------------------------------------- | ----------- | ---------------------------------------------------------- |
-| `useXxxForm`                                  | `@public`   | The hook: `@param`, `@returns` (both branches), `@example` |
-| `UseXxxProps`                                 | `@public`   | Props interface — one `/** description */` per property    |
-| `UseXxxFormOutputs` or equivalent return type | `@public`   | Partners type submit callbacks against this                |
-| `UseXxxReady`                                 | `@public`   | Ready branch shape — document each member                  |
+| Symbol                                        | Release tag | What to document                                                                                       |
+| --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| `useXxxForm`                                  | `@public`   | The hook: `@param`, `@returns` (both branches), `@example`                                             |
+| `UseXxxProps`                                 | `@public`   | Props interface — one `/** description */` per property                                                |
+| `UseXxxFormOutputs` or equivalent return type | `@public`   | Partners type submit callbacks against this                                                            |
+| `UseXxxReady`                                 | `@public`   | Ready branch shape — document each member                                                              |
+| `XxxFormFields`                               | `@public`   | The `form.Fields` interface — **this is the documentation home for each field's behavior** (see below) |
+| `{Field}FieldProps`                           | `@public`   | One per field — partners type `getOptionLabel` / `validationMessages` against these                    |
 
 Always `@internal`, no prose needed (just `/** @internal */`):
 
 - `createXxxSchema`, `XxxSchemaOptions`, `XxxMetadataConfig`
 - Raw factory functions that have a `useXxx` wrapper (e.g. `createStateFields`)
 - Internal mapping/resolution utilities (e.g. `getQuestionVariant`)
+- The domain `*Field` components themselves (`NameField`, `TypeField`, …). They are implementation detail reached only via `form.Fields`, not exported from `src/index.ts`, so they get just `/** @internal */` — no summary, no `@remarks`. The field's behavior is documented on the `XxxFormFields` member instead (see below).
+
+  ```ts
+  /** @internal */
+  export function NameField(props: NameFieldProps) {
+    return <TextInputHookField {...props} name="name" />
+  }
+  ```
+
+## Field behavior goes on the `XxxFormFields` members
+
+The `*Field` components are `@internal`, so anything documented only on them is invisible to partners. Put each field's observable behavior — validation pattern, available options and default, value masking, whether `getOptionLabel` translates labels — on the corresponding **public** `XxxFormFields` member, which is what partners see when they inspect `form.Fields`. Type members as `ComponentType<{Field}FieldProps>` (not `typeof {Field}Field`) so the public interface doesn't reference the internal function.
+
+```ts
+/**
+ * Field components exposed by {@link useXxxForm} on `form.Fields`.
+ *
+ * @public
+ */
+export interface XxxFormFields {
+  /** Bound to `routingNumber`. Validated against a 9-digit numeric pattern. */
+  RoutingNumber: ComponentType<RoutingNumberFieldProps>
+  /**
+   * Bound to `accountType`. Options are `Checking` and `Savings`; defaults to
+   * `Checking`. Supply `getOptionLabel` to translate the option labels.
+   */
+  AccountType: ComponentType<AccountTypeFieldProps>
+}
+```
+
+`useContractorBankAccountForm` / `useContractorPaymentMethodForm` are the reference examples.
 
 ## Loading/ready discriminated union
 

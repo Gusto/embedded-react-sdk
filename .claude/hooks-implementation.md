@@ -185,6 +185,7 @@ The `superRefine` callback in `buildFormSchema` options is already typed with th
 - Each field is a thin wrapper around a generic `*HookField` component that binds `name`
 - Export a `*FieldProps` type using `HookFieldProps<*HookFieldProps<TErrorCode, TEntry>>` which strips `name`
 - Derive validation type aliases from the schema's error codes constant so they stay in sync — never hardcode string unions
+- The `*Field` components are `@internal` — partners reach them only via `form.Fields`, and they are **not** exported from `src/index.ts` (only their `*FieldProps` types are public). Tag each with a bare `/** @internal */` — no summary, no `@remarks`. Each field's partner-facing behavior is documented on the public `{Domain}FormFields` member instead (see "Return Shape" below and `.claude/tsdoc-guides/hooks.md`).
 
 ```typescript
 // Derive validation types from the error codes constant — not hardcoded strings
@@ -195,6 +196,7 @@ export type RateValidation = (typeof ErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | '
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>
 
+/** @internal */
 export function JobTitleField(props: JobTitleFieldProps) {
   return <TextInputHookField {...props} name="jobTitle" />
 }
@@ -363,6 +365,8 @@ return {
 }
 ```
 
+Declare `form.Fields` against a dedicated `@public` `{Domain}FormFields` interface and type each member as `ComponentType<{Field}FieldProps>` (use `ComponentType<{Field}FieldProps> | undefined` for conditionally rendered fields). Do **not** type members as `typeof {Field}Field` — that would make the public interface reference the `@internal` field component. This interface is the documentation home for each field's partner-facing behavior (validation pattern, available options/defaults, value masking, whether `getOptionLabel` translates labels), since the `*Field` components themselves carry only `/** @internal */`. `useContractorBankAccountForm` / `useContractorPaymentMethodForm` are the reference examples.
+
 ### Submit Handler
 
 - Use `formMethods.handleSubmit` inside a `Promise` wrapper so `onSubmit` is async/awaitable
@@ -424,6 +428,8 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 ### What stays internal (export from inner barrels but NOT from `src/index.ts` unless needed)
 
 Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+
+The domain `*Field` components (`JobTitleField`, `NameField`, etc.) are also `@internal` and stay off `src/index.ts` — partners reach them via `form.Fields`, never by importing the function. Export only their `*FieldProps` types (partners need those to type `getOptionLabel` / `validationMessages`). Each `*Field` carries a bare `/** @internal */`; its partner-facing behavior is documented on the public `{Domain}FormFields` member instead.
 
 The schema factory `create{Domain}Schema` and its `{Domain}SchemaOptions` are also `@internal`. The inner hook barrel may re-export them for SDK use, but **do not** add them to `src/index.ts`: they are tagged `@internal`, so api-extractor emits an `ae-internal-missing-underscore` warning when they appear on the public entry point. Partners build forms through the hook, not the raw factory — `{Domain}FormData` / `{Domain}FormOutputs` cover the types they actually need.
 
