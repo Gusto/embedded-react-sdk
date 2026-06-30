@@ -11,62 +11,15 @@ custom_edit_url: null
 
 # useContractorPaymentMethodForm
 
-## Components
-
-<a id="contractorpaymentmethodtypefield"></a>
-
-### ContractorPaymentMethodTypeField
-
-Radio group bound to the `type` field of [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorPaymentMethodTypeFieldProps`](#contractorpaymentmethodtypefieldprops) | See [TypeFieldProps](#contractorpaymentmethodtypefieldprops). |
-
-#### Remarks
-
-Selects whether the contractor is paid by Direct Deposit or Check. Provide
-`getOptionLabel` to localize the option labels.
-
-## Form Hooks
-
 <a id="usecontractorpaymentmethodform"></a>
 
-### useContractorPaymentMethodForm()
-
-> **useContractorPaymentMethodForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+> **useContractorPaymentMethodForm**(`props`: [`UseContractorPaymentMethodFormProps`](#usecontractorpaymentmethodformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
 
 Headless React Hook Form hook for managing a contractor's payment method type.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseContractorPaymentMethodFormProps`](#usecontractorpaymentmethodformprops) | See [UseContractorPaymentMethodFormProps](#usecontractorpaymentmethodformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
-
-A loading-state result while data loads, or a [UseContractorPaymentMethodFormReady](#usecontractorpaymentmethodformready) once ready.
-
-#### Remarks
-
-Owns only the payment method `type` selection (Direct Deposit or Check) and,
-on submit, updates the contractor's payment method via `PUT`. Always operates
-in update mode — every contractor has a payment method, defaulting to Check.
-
-The bank account itself is managed by the separate `useContractorBankAccountForm`
-hook. On the Direct Deposit path the bank-account `POST` updates the payment
-method as a server side-effect, so a composing component submits the bank form
-instead of this hook; this hook's `onSubmit` is used for the Check path.
-`status.isDirectDeposit` lets the component drive that branching.
-
-#### Example
-
-```tsx
+```tsx title="Example"
 import { useContractorPaymentMethodForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
@@ -91,47 +44,25 @@ function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
 }
 ```
 
-## Variables
+## Remarks
 
-<a id="contractorpaymentmethoderrorcodes"></a>
+Owns only the payment method `type` selection (Direct Deposit or Check) and,
+on submit, updates the contractor's payment method via `PUT`. Always operates
+in update mode — every contractor has a payment method, defaulting to Check.
 
-### ContractorPaymentMethodErrorCodes
+The bank account itself is managed by the separate `useContractorBankAccountForm`
+hook. On the Direct Deposit path the bank-account `POST` updates the payment
+method as a server side-effect, so a composing component submits the bank form
+instead of this hook; this hook's `onSubmit` is used for the Check path.
+`status.isDirectDeposit` lets the component drive that branching.
 
-> `const` **ContractorPaymentMethodErrorCodes**: `object`
-
-Validation error codes emitted by the contractor payment method form schema.
-Map these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="contractorpaymentmethodformfields"></a>
-
-### ContractorPaymentMethodFormFields
-
-Field components exposed by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Type` | (`props`) => `Element` | Radio group bound to `type`. Selects Direct Deposit or Check. |
-
-***
-
-<a id="usecontractorpaymentmethodformprops"></a>
+## Props
 
 ### UseContractorPaymentMethodFormProps
 
-Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
+<a id="usecontractorpaymentmethodformprops"></a>
 
-#### Properties
+Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -140,6 +71,20 @@ Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
+## Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+
+A loading-state result while data loads, or a [UseContractorPaymentMethodFormReady](#usecontractorpaymentmethodformready) once ready.
+
+<a id="usecontractorpaymentmethodformresult"></a>
+
+### UseContractorPaymentMethodFormResult
+
+> **UseContractorPaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
+
+Return type of [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) — a discriminated union on `isLoading`.
+
 ***
 
 <a id="usecontractorpaymentmethodformready"></a>
@@ -147,12 +92,6 @@ Props for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 ### UseContractorPaymentMethodFormReady
 
 Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata), [`ContractorPaymentMethodFormFields`](#contractorpaymentmethodformfields)\>
-
-#### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -172,8 +111,45 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## Type Aliases
+## Fields
 
+### ContractorPaymentMethodFormFields
+
+<a id="contractorpaymentmethodformfields"></a>
+
+Field components exposed by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) on `form.Fields`.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Type` | `ComponentType`\<[`TypeFieldProps`](#contractorpaymentmethodtypefieldprops)\> | Radio group bound to `type`. Selects Direct Deposit or Check. |
+
+***
+
+### Type
+
+Radio group bound to `type`. Selects Direct Deposit or Check.
+
+```tsx
+<form.Fields.Type label="Type" />
+```
+
+<a id="contractorpaymentmethodtypefieldprops"></a>
+
+#### ContractorPaymentMethodTypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\>\>
+
+Props accepted by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform)'s `Fields.Type` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+## Utility Types
 <a id="contractorpaymentmethoderrorcode"></a>
 
 ### ContractorPaymentMethodErrorCode
@@ -182,6 +158,24 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 
 Union of validation error code strings emitted by the contractor payment
 method form schema.
+
+***
+
+<a id="contractorpaymentmethoderrorcodes"></a>
+
+### ContractorPaymentMethodErrorCodes
+
+> `const` **ContractorPaymentMethodErrorCodes**: `object`
+
+Validation error codes emitted by the contractor payment method form schema.
+Map these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -235,21 +229,3 @@ on submit.
 Union of payment method type values that the form accepts.
 
 ***
-
-<a id="contractorpaymentmethodtypefieldprops"></a>
-
-### ContractorPaymentMethodTypeFieldProps
-
-> **ContractorPaymentMethodTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\>\>
-
-Props accepted by [useContractorPaymentMethodForm](#usecontractorpaymentmethodform)'s `Fields.Type` component.
-
-***
-
-<a id="usecontractorpaymentmethodformresult"></a>
-
-### UseContractorPaymentMethodFormResult
-
-> **UseContractorPaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)
-
-Return type of [useContractorPaymentMethodForm](#usecontractorpaymentmethodform) — a discriminated union on `isLoading`.
