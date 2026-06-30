@@ -25,6 +25,7 @@ import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2025-1
 import { Control } from 'react-hook-form';
 import { CustomTypeOptions } from 'i18next';
 import { default as default_2 } from 'react';
+import { Document as Document_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
 import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
 import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
@@ -896,6 +897,8 @@ export const componentEvents: {
     readonly CONTRACTOR_ONBOARDING_STATUS_UPDATED: "contractor/onboardingStatus/updated";
     readonly CONTRACTOR_INVITE_CONTRACTOR: "contractor/invite/selfOnboarding";
     readonly CONTRACTOR_ONBOARDING_CONTINUE: "contractor/onboarding/continue";
+    readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
+    readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1374,7 +1377,9 @@ declare namespace ContractorOnboarding {
         NewHireReport,
         NewHireReportProps,
         ContractorSubmit,
-        ContractorSubmitProps
+        ContractorSubmitProps,
+        DocumentsList,
+        DocumentsListProps
     }
 }
 
@@ -2100,6 +2105,14 @@ interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentS
 interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
     companyId: string;
     signatoryId?: string;
+}
+
+// @public
+function DocumentsList(props: DocumentsListProps): JSX;
+
+// @public
+interface DocumentsListProps extends BaseComponentInterface<'Contractor.DocumentsList'> {
+    contractorId: string;
 }
 
 // @public
@@ -5301,6 +5314,24 @@ export type UseContractorDetailsFormSharedProps = {
     validationMode?: UseFormProps['mode'];
     shouldFocusError?: boolean;
 };
+
+// @public
+export function useContractorDocumentsList(input: UseContractorDocumentsListParams): UseContractorDocumentsListResult;
+
+// @public
+export interface UseContractorDocumentsListParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorDocumentsListReady = BaseHookReady<{
+    documents: Document_2[];
+}, {
+    isFetching: boolean;
+}>;
+
+// @public
+export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
 
 // @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
