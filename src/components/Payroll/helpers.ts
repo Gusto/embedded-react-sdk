@@ -1,24 +1,24 @@
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { Employee } from '@gusto/embedded-api-v-2026-06-15/models/components/employee'
 import {
   type PayrollShowFixedCompensations,
   OffCycleReasonType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
+} from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
 import type {
-  PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
-  PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateReimbursements } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollfixedcompensationtypestype'
+  FixedCompensations as FixedCompensations,
+  Reimbursements as Reimbursement,
+} from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateReimbursements } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollupdate'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleshow'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2026-06-15/models/components/payscheduleshow'
 import type {
   Compensation,
   MinimumWages,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import type { Payroll } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
+} from '@gusto/embedded-api-v-2026-06-15/models/components/compensation'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import type { Payroll } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
 import type { PayrollType } from './PayrollList/types'
 import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'

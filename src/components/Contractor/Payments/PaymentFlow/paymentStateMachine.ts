@@ -1,7 +1,7 @@
 import { reduce, state, transition } from 'robot3'
-import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroup'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { WireInRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2026-06-15/models/components/contractorpaymentgroup'
+import type { Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
+import type { WireInRequest } from '@gusto/embedded-api-v-2026-06-15/models/components/wireinrequest'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import {
   CreatePaymentContextual,

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxeslist'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2026-06-15/models/components/employeestatetaxeslist'
 import { getQuestionVariant, type StateTaxQuestionVariant } from './fieldMapping'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import type {

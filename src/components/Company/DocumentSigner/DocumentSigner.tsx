@@ -1,5 +1,5 @@
 import { createMachine } from 'robot3'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/signatoriesList'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/signatoriesList'
 import { useMemo } from 'react'
 import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'

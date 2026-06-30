@@ -1,4 +1,4 @@
-import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
+import type { Document } from '@gusto/embedded-api-v-2026-06-15/models/components/document'
 import { ContractorDocumentList } from './ContractorDocumentList'
 
 export interface ContractorDocumentListDemoProps {

@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { expect, describe, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { PayrollReceipt } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt'
+import type { PayrollReceipt } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollreceipt'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { mockUseContainerBreakpoints } from '@/test/setup'

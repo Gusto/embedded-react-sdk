@@ -3,8 +3,8 @@ import { useIsMutating } from '@tanstack/react-query'
 import {
   useRecoveryCasesRedebitMutation,
   mutationKeyRecoveryCasesRedebit,
-} from '@gusto/embedded-api-v-2026-02-01/react-query/recoveryCasesRedebit'
-import { useRecoveryCasesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/recoveryCasesGet'
+} from '@gusto/embedded-api-v-2026-06-15/react-query/recoveryCasesRedebit'
+import { useRecoveryCasesGet } from '@gusto/embedded-api-v-2026-06-15/react-query/recoveryCasesGet'
 import type { RecoveryCasesContextInterface } from '../RecoveryCasesComponents'
 import { useRecoveryCaseErrorCode } from '../useRecoveryCaseErrorCode'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'

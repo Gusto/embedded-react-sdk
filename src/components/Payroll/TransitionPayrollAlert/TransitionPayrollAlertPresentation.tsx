@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { PayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/payperiod'
+import type { PayPeriod } from '@gusto/embedded-api-v-2026-06-15/models/components/payperiod'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useI18n } from '@/i18n'

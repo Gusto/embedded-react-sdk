@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { type Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import { type Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
 import type { useContractorProfile } from './useContractorProfile'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'

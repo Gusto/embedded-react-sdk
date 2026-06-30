@@ -1,7 +1,7 @@
-import type { EntityErrorObject } from '@gusto/embedded-api-v-2026-02-01/models/components/entityerrorobject'
-import { GustoEmbeddedError } from '@gusto/embedded-api-v-2026-02-01/models/errors/gustoembeddederror'
-import { HTTPClientError } from '@gusto/embedded-api-v-2026-02-01/models/errors/httpclienterrors'
-import { SDKValidationError } from '@gusto/embedded-api-v-2026-02-01/models/errors/sdkvalidationerror'
+import type { EntityErrorObject } from '@gusto/embedded-api-v-2026-06-15/models/components/entityerrorobject'
+import { GustoEmbeddedError } from '@gusto/embedded-api-v-2026-06-15/models/errors/gustoembeddederror'
+import { HTTPClientError } from '@gusto/embedded-api-v-2026-06-15/models/errors/httpclienterrors'
+import { SDKValidationError } from '@gusto/embedded-api-v-2026-06-15/models/errors/sdkvalidationerror'
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
 /**

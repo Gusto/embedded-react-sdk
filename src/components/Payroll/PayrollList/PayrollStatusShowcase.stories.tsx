@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
-import type { Payroll } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
-import type { WireInRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest'
+import type { Payroll } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
+import type { WireInRequest } from '@gusto/embedded-api-v-2026-06-15/models/components/wireinrequest'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 

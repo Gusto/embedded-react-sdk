@@ -1,11 +1,11 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompanyFormsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companyforms'
+import type { GetV1CompanyFormsRequest } from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1companyforms'
 import type {
   GetV1CompanyFormRequest,
   GetV1CompanyFormResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companyform'
-import type { PutV1CompanyFormSignRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1companyformsign'
+} from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1companyform'
+import type { PutV1CompanyFormSignRequestBody } from '@gusto/embedded-api-v-2026-06-15/models/operations/putv1companyformsign'
 import { API_BASE_URL } from '@/test/constants'
 
 const basicForm = {

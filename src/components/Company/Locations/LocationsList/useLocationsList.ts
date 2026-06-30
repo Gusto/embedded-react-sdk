@@ -1,4 +1,4 @@
-import { type Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
+import { type Location } from '@gusto/embedded-api-v-2026-06-15/models/components/location'
 import { createCompoundContext } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 

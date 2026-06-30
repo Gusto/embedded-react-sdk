@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/informationRequestsGetInformationRequests'
-import type { InformationRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/informationRequestsGetInformationRequests'
+import type { InformationRequest } from '@gusto/embedded-api-v-2026-06-15/models/components/informationrequest'
 import {
   InformationRequestStatus,
   InformationRequestType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest'
+} from '@gusto/embedded-api-v-2026-06-15/models/components/informationrequest'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'

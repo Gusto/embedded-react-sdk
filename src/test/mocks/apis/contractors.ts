@@ -1,8 +1,8 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1contractorscontractoruuid'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody'
+import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1contractorscontractoruuid'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-06-15/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-06-15/models/components/contractorupdaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

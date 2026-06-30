@@ -1,5 +1,5 @@
 import { transition, reduce, state, guard } from 'robot3'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   PayrollConfigurationContextual,

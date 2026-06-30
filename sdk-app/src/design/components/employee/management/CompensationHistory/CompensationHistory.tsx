@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
-import type { Compensation } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
+import type { Job } from '@gusto/embedded-api-v-2026-06-15/models/components/job'
+import type { Compensation } from '@gusto/embedded-api-v-2026-06-15/models/components/compensation'
 import style from './CompensationHistory.module.scss'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'

@@ -1,19 +1,19 @@
-import { usePayrollsSubmitMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsSubmit'
-import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsCancel'
-import { usePayrollsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsGet'
+import { usePayrollsSubmitMutation } from '@gusto/embedded-api-v-2026-06-15/react-query/payrollsSubmit'
+import { usePayrollsCancelMutation } from '@gusto/embedded-api-v-2026-06-15/react-query/payrollsCancel'
+import { usePayrollsGet } from '@gusto/embedded-api-v-2026-06-15/react-query/payrollsGet'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsGet'
-import { useWireInRequestsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsGet'
+import { useBankAccountsGetSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/bankAccountsGet'
+import { useWireInRequestsGet } from '@gusto/embedded-api-v-2026-06-15/react-query/wireInRequestsGet'
 import { useEffect, useState } from 'react'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2026-02-01/react-query/_context'
-import { payrollsGetPayStub } from '@gusto/embedded-api-v-2026-02-01/funcs/payrollsGetPayStub'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2026-06-15/react-query/_context'
+import { payrollsGetPayStub } from '@gusto/embedded-api-v-2026-06-15/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollsubmissionblockertype'
 import type {
   PayrollCreditBlockerType,
   PayrollCreditBlockerTypeUnblockOptions,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockertype'
+} from '@gusto/embedded-api-v-2026-06-15/models/components/payrollcreditblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   ConfirmWireDetails,

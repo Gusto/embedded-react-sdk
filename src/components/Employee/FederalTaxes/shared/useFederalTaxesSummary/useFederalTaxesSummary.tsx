@@ -1,5 +1,5 @@
-import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupGetFederalTaxes'
-import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidfederaltaxes'
+import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2026-06-15/react-query/employeeTaxSetupGetFederalTaxes'
+import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1employeesemployeeidfederaltaxes'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 

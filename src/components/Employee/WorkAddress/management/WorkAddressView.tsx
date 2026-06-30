@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import type { Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
+import type { Location } from '@gusto/embedded-api-v-2026-06-15/models/components/location'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-06-15/models/components/employeeworkaddress'
 import {
   formatPendingWorkAddressLine,
   getPendingFutureWorkAddress,

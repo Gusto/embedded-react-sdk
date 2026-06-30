@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-06-15/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeeDetailsForm } from '../shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from '../shared/useEmployeeDetailsForm'
 import { useCurrentHomeAddressForm } from '../shared/useHomeAddressForm'

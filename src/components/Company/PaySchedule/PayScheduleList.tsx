@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/paySchedulesGetAll'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/paySchedulesGetAll'
 import styles from './PayScheduleList.module.scss'
 import { useDataView, DataView, Flex, VisuallyHidden, ActionsLayout } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'

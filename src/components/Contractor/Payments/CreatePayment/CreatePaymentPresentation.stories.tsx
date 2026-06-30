@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { ContractorPayments } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type { Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
+import type { PostV1CompaniesCompanyIdContractorPaymentGroupsContractorPayments as ContractorPayments } from '@gusto/embedded-api-v-2026-06-15/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 

@@ -76,26 +76,26 @@ src/components/
 └── Flow/ # Multi-step flow orchestration
 ```
 
-### API Layer (`@gusto/embedded-api-v-2026-02-01`)
+### API Layer (`@gusto/embedded-api-v-2026-06-15`)
 
-All API calls go through `@gusto/embedded-api-v-2026-02-01` with React Query hooks and Zod schema validation.
+All API calls go through `@gusto/embedded-api-v-2026-06-15` with React Query hooks and Zod schema validation.
 
 Import paths:
 
-- `@gusto/embedded-api-v-2026-02-01/react-query/<operation>` — React Query hooks
-- `@gusto/embedded-api-v-2026-02-01/models/components/<name>` — Entity types
-- `@gusto/embedded-api-v-2026-02-01/models/operations/<name>` — Request/response types
-- `@gusto/embedded-api-v-2026-02-01/models/errors/<name>` — Error types
+- `@gusto/embedded-api-v-2026-06-15/react-query/<operation>` — React Query hooks
+- `@gusto/embedded-api-v-2026-06-15/models/components/<name>` — Entity types
+- `@gusto/embedded-api-v-2026-06-15/models/operations/<name>` — Request/response types
+- `@gusto/embedded-api-v-2026-06-15/models/errors/<name>` — Error types
 
 Hook naming: `use<Resource><Action>Suspense` (queries), `use<Resource><Action>Mutation` (mutations)
 
 #### Auto-invalidation on mutation success
 
-The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `['@gusto/embedded-api-v-2026-02-01']` key, it invalidates **every** SDK query. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
+The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `['@gusto/embedded-api-v-2026-06-15']` key, it invalidates **every** SDK query. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
 
 Implications when writing SDK code:
 
-- **Do not call `queryClient.invalidateQueries(...)` after a successful `@gusto/embedded-api-v-2026-02-01` mutation.** It's redundant — the global `onSuccess` already invalidated the entire SDK namespace. Just `await mutateAsync(...)` and the next render's queries refetch automatically.
+- **Do not call `queryClient.invalidateQueries(...)` after a successful `@gusto/embedded-api-v-2026-06-15` mutation.** It's redundant — the global `onSuccess` already invalidated the entire SDK namespace. Just `await mutateAsync(...)` and the next render's queries refetch automatically.
 - This is why `usePaymentMethodList`, `useEmployeeCompensation`, etc. don't manually invalidate after their delete/update mutations.
 - If a partner brings their own `QueryClient` to `ApiProvider`, the defaults are **not** applied to it — they're responsible for matching the contract if they want this behavior. Don't paper over that with manual invalidation in hooks; treat it as their responsibility.
 - If you need to invalidate _more narrowly_ (e.g. you only want one query to refetch, not the whole namespace), that's a code smell — most likely the global invalidate is already doing what you want.
@@ -112,7 +112,7 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 ### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
 
-Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
+Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2026-06-15` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
 
 ### Component & Feature Conventions
 

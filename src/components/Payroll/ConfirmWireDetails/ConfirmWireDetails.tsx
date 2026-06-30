@@ -1,7 +1,7 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
 import { Suspense, useMemo, useRef, useState } from 'react'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsList'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'

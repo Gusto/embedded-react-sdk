@@ -1,9 +1,9 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1ContractorsContractorUuidPaymentMethodRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1contractorscontractoruuidpaymentmethod'
-import type { GetV1ContractorsContractorUuidBankAccountsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1contractorscontractoruuidbankaccounts'
-import type { PutV1ContractorsContractorIdPaymentMethodType } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1contractorscontractoridpaymentmethod'
-import type { ContractorBankAccountCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccountcreaterequestbody'
+import type { GetV1ContractorsContractorUuidPaymentMethodRequest } from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1contractorscontractoruuidpaymentmethod'
+import type { GetV1ContractorsContractorUuidBankAccountsRequest } from '@gusto/embedded-api-v-2026-06-15/models/operations/getv1contractorscontractoruuidbankaccounts'
+import type { Type as PutV1ContractorsContractorIdPaymentMethodType } from '@gusto/embedded-api-v-2026-06-15/models/operations/putv1contractorscontractoridpaymentmethod'
+import type { ContractorBankAccountCreateRequestBody } from '@gusto/embedded-api-v-2026-06-15/models/components/contractorbankaccountcreaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
