@@ -51,6 +51,7 @@ export type ContractorAddressField = keyof typeof fieldValidators
  * Shape of the values managed by the contractor address form.
  *
  * @public
+ * @interface
  */
 export type ContractorAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

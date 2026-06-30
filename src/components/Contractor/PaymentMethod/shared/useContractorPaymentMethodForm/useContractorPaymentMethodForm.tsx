@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -12,6 +13,7 @@ import {
   type ContractorPaymentMethodFormType,
   PAYMENT_METHOD_TYPES,
 } from './contractorPaymentMethodSchema'
+import type { TypeFieldProps } from './fields'
 import { TypeField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -50,8 +52,12 @@ export interface UseContractorPaymentMethodFormProps {
  * @public
  */
 export interface ContractorPaymentMethodFormFields {
-  /** Radio group bound to `type`. Selects Direct Deposit or Check. */
-  Type: typeof TypeField
+  /**
+   * Radio group bound to `type`. Selects whether the contractor is paid by
+   * Direct Deposit or Check. Supply `getOptionLabel` to translate the option
+   * labels.
+   */
+  Type: ComponentType<TypeFieldProps>
 }
 
 /**

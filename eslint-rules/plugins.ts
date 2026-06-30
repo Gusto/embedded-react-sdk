@@ -1,5 +1,7 @@
 import { FlatConfig } from 'typescript-eslint'
 import requireComment from './tsdoc-require-comment'
+import requireFormDataInterface from './tsdoc-require-form-data-interface'
+import requireHookReadyInterface from './tsdoc-require-hook-ready-interface'
 import requireMemberComment from './tsdoc-require-member-comment'
 import requireReleaseTag from './tsdoc-require-release-tag'
 import sortTags from './tsdoc-sort-tags'
@@ -18,6 +20,8 @@ export const tsdocCoverage: FlatConfig.Plugin = {
     'require-release-tag': requireReleaseTag,
     'require-comment': requireComment,
     'require-member-comment': requireMemberComment,
+    'require-form-data-interface': requireFormDataInterface,
+    'require-hook-ready-interface': requireHookReadyInterface,
     'sort-tags': sortTags,
     'valid-group': validGroup,
   },
