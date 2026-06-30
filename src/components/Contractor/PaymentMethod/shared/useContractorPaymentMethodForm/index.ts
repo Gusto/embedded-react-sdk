@@ -8,8 +8,6 @@ export type {
 } from './useContractorPaymentMethodForm'
 export {
   ContractorPaymentMethodErrorCodes,
-  PAYMENT_METHOD_TYPES,
-  createContractorPaymentMethodSchema,
   type ContractorPaymentMethodErrorCode,
   type ContractorPaymentMethodFormType,
   type ContractorPaymentMethodFormData,

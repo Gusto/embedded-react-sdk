@@ -9,7 +9,6 @@ export type {
 export {
   ContractorBankAccountErrorCodes,
   ACCOUNT_TYPES,
-  createContractorBankAccountSchema,
   type ContractorBankAccountErrorCode,
   type ContractorAccountType,
   type ContractorBankAccountFormData,
