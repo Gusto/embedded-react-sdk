@@ -93,16 +93,6 @@ function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
 
 ## Variables
 
-<a id="contractor_payment_method_types"></a>
-
-### CONTRACTOR\_PAYMENT\_METHOD\_TYPES
-
-> `const` **CONTRACTOR\_PAYMENT\_METHOD\_TYPES**: readonly \[`"Direct Deposit"`, `"Check"`\]
-
-Supported payment method type values: direct deposit and check.
-
-***
-
 <a id="contractorpaymentmethoderrorcodes"></a>
 
 ### ContractorPaymentMethodErrorCodes
@@ -240,7 +230,7 @@ on submit.
 
 ### ContractorPaymentMethodFormType
 
-> **ContractorPaymentMethodFormType** = *typeof* [`CONTRACTOR_PAYMENT_METHOD_TYPES`](#contractor_payment_method_types)\[`number`\]
+> **ContractorPaymentMethodFormType** = *typeof* `PAYMENT_METHOD_TYPES`\[`number`\]
 
 Union of payment method type values that the form accepts.
 
