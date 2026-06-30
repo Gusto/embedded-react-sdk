@@ -61,7 +61,7 @@ export interface OnboardingFlowProps extends BaseComponentInterface<never> {
  * The per-employee steps live in {@link OnboardingExecutionFlow}, which is also
  * exported as a standalone block — along with each individual step — for
  * composing a custom workflow when this orchestration is the wrong fit. See the
- * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}
  * for how to recompose these blocks into your own flow.
  *
  * The flow forwards every event emitted by its sub-components to `onEvent`;

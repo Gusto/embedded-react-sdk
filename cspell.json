@@ -7,8 +7,8 @@
   "ignorePaths": [
     "**/node_modules/**",
     "docs/reference/**",
-    "docs/appendix/endpoint-reference.md",
-    "docs/appendix/endpoint-inventory.json",
+    "docs/guides/endpoint-reference.md",
+    "docs/guides/endpoint-inventory.json",
     "docs/test-fests/**",
     "docs-site/docusaurus.config.ts",
     "docs-site/build/**",

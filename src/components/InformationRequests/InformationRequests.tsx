@@ -63,7 +63,7 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * Each piece is also exported as a standalone block (see the Sub-components
  * table) for composing a custom workflow when this orchestration is the wrong
  * fit. See the
- * {@link https://sdk.gusto.com/docs/integration-guide/composition | Composition guide}
+ * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}
  * for how to recompose these blocks into your own flow.
  *
  * @components

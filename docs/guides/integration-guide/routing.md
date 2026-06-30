@@ -318,4 +318,4 @@ export default function App({ companyId, employeeId }: AppProps) {
 
 ## A complete example
 
-The [Example App](../getting-started/example-app.md) is a complete, runnable version of this pattern. It composes several SDK workflows — including this employee self-onboarding flow — behind a router alongside a backend proxy, so you can see the full integration end to end.
+The [Example App](../../getting-started/example-app.md) is a complete, runnable version of this pattern. It composes several SDK workflows — including this employee self-onboarding flow — behind a router alongside a backend proxy, so you can see the full integration end to end.

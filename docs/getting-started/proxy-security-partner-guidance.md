@@ -34,7 +34,7 @@ Import it from the package:
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/appendix/endpoint-inventory.json` in any language.
+Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/guides/endpoint-inventory.json` in any language.
 
 The JSON structure:
 
@@ -66,7 +66,7 @@ Look up the flows or blocks your app uses, substitute `:param` placeholders with
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../appendix/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 
@@ -81,7 +81,7 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 ## Further reading
 
-- [Proxy examples with role-based access](../appendix/proxy-examples.md)
-- [Endpoint reference tables](../appendix/endpoint-reference.md)
+- [Proxy examples with role-based access](../guides/proxy-examples.md)
+- [Endpoint reference tables](../guides/endpoint-reference.md)
 - [Gusto API Scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)

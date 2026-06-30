@@ -71,7 +71,7 @@ _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderCom
 Each step is also exported as a standalone block (see the Sub-components
 table) for composing a custom workflow when this orchestration is the wrong
 fit. See the
-[Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
 for how to recompose these blocks into your own flow.
 
 ## Sub-components
@@ -109,5 +109,5 @@ flowchart
   class Employees flow
 ```
 
-Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/integration-guide/composition) for how to recompose these blocks into your own flow.
+Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
 <!-- /guide-source (slot: appendix) -->

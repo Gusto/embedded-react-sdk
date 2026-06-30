@@ -178,7 +178,7 @@ You can also mix approaches on the same page — for example, `SDKFormProvider` 
 
 ### Component Adapter integration
 
-By default, every field component renders through the SDK's [Component Adapter](../component-adapter/component-adapter.md). If you've configured a Component Adapter for your app (e.g., mapping to your own design system), hook fields will automatically render using your custom components. If no adapter is configured, fields render using the SDK's built-in React Aria-driven components.
+By default, every field component renders through the SDK's [Component Adapter](../guides/component-adapter/component-adapter.md). If you've configured a Component Adapter for your app (e.g., mapping to your own design system), hook fields will automatically render using your custom components. If no adapter is configured, fields render using the SDK's built-in React Aria-driven components.
 
 This means hooks inherit whatever UI customization you've already set up at the `GustoProvider` level -- no extra configuration needed.
 
@@ -470,7 +470,7 @@ const { errors, clearSubmitError } = employeeDetails.errorHandling
 
 Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields so they appear inline alongside client-side validation errors. When using `SDKFormProvider`, the provider handles this syncing via context. When using the `formHookResult` prop, each field resolves errors directly from `formHookResult.errorHandling.errors` — no provider is needed.
 
-For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../integration-guide/error-handling.md) and [Observability](../integration-guide/observability.md).
+For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../guides/integration-guide/error-handling.md) and [Observability](../guides/integration-guide/observability.md).
 
 ---
 

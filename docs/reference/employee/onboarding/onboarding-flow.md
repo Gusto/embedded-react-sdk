@@ -46,7 +46,7 @@ and wraps each step in error and suspense boundaries.
 The per-employee steps live in [OnboardingExecutionFlow](onboarding-execution-flow.md), which is also
 exported as a standalone block — along with each individual step — for
 composing a custom workflow when this orchestration is the wrong fit. See the
-[Composition guide](https://sdk.gusto.com/docs/integration-guide/composition)
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
 for how to recompose these blocks into your own flow.
 
 The flow forwards every event emitted by its sub-components to `onEvent`;

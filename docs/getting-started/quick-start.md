@@ -68,10 +68,10 @@ The SDK ships with baseline styles for its UI components. Include them with:
 import '@gusto/embedded-react-sdk/style.css'
 ```
 
-The SDK is designed to take on your application's look and feel via theming and component adapters. See [Customizing SDK UI](../integration-guide/customizing-sdk-ui.md) for the full guide.
+The SDK is designed to take on your application's look and feel via theming and component adapters. See [Customizing SDK UI](../guides/integration-guide/customizing-sdk-ui.md) for the full guide.
 
 ## Next steps
 
 - Read [Authentication](./authentication.mdx) for the full picture on how your proxy should acquire and use OAuth tokens in production.
 - Review [Proxy Security](./proxy-security-partner-guidance.md) before pointing a proxy at real partner traffic.
-- Explore [Workflows Overview](../workflows-overview/workflows-overview.md) for the pre-built flows you can drop into your app.
+- Explore [Workflows Overview](../guides/workflows-overview.md) for the pre-built flows you can drop into your app.

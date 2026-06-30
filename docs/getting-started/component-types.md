@@ -26,14 +26,34 @@ Sub-components are individual components for a single step or interaction (for e
 
 - You can re-order or omit steps
 - You can insert your own content between SDK steps
-- You can apply [Component Adapters](../component-adapter/component-adapter.md) to bring your own UI components while keeping the SDK's business logic
+- You can apply [Component Adapters](../guides/component-adapter/component-adapter.md) to bring your own UI components while keeping the SDK's business logic
 
-See the [Workflows Overview](../workflows-overview/workflows-overview.md) for the sub-components available in each domain.
+See the [Workflows Overview](../guides/workflows-overview.md) for the sub-components available in each domain.
 
 ### Workflows
 
 Workflows are single components that encapsulate an entire multi-step user experience. They are the fastest path to a production-ready feature and support the same theming and event handling as individual sub-components.
 
-See the [Workflows Overview](../workflows-overview/workflows-overview.md) for all available workflows.
+See the [Workflows Overview](../guides/workflows-overview.md) for all available workflows.
 
 > Not sure which type is right for you? Starting with a workflow and dropping down to sub-components or hooks for areas that need more control is a common pattern.
+
+## Finding components in the Reference
+
+The [Reference](../reference/index.md) is organized by **domain**, then by **component type** within each domain.
+
+The five domains map to the major areas of payroll:
+
+- **Company** — onboarding and information requests
+- **Employee** — onboarding, management, and termination
+- **Contractor** — onboarding and payments
+- **Payroll** — running, off-cycle, dismissal, and transition payroll
+- **Time off** — policy management
+
+Within each domain, pages are grouped by the three component types from above:
+
+- **Flows** — the workflow components for that domain
+- **Blocks** — the sub-components for that domain
+- **Hooks** — the headless hooks for that domain
+
+A few reference pages live outside the domain structure: [events](../reference/events.md), [theme variables](../reference/theme-variables.md), the [component inventory](../reference/component-inventory.md), [API models](../reference/APIModels/index.md), and [utilities](../reference/utilities.md).

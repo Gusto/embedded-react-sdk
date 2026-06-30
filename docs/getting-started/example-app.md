@@ -10,7 +10,7 @@ It is the best place to see how the individual pieces connect into a cohesive in
 
 ## What it demonstrates
 
-- **Composing workflows behind a router.** Each flow is split into its own steps and mapped to routes with [React Router](https://reactrouter.com/), driven by the SDK's `onEvent` callbacks. This is the same pattern described in [Routing](../integration-guide/routing.md) and [Composition](../integration-guide/composition.md), realized as working code.
+- **Composing workflows behind a router.** Each flow is split into its own steps and mapped to routes with [React Router](https://reactrouter.com/), driven by the SDK's `onEvent` callbacks. This is the same pattern described in [Routing](../guides/integration-guide/routing.md) and [Composition](../guides/integration-guide/composition.md), realized as working code.
 - **A backend proxy.** An Express server sits in front of the Gusto Embedded API, handling OAuth token acquisition and refresh and forwarding authenticated requests — the proxy layer described in [Getting Started](./getting-started.md) and [Authentication](./authentication.mdx).
 - **Theming.** SDK components are restyled through the `theme` prop on `GustoProvider`, with an interactive tray for experimenting with overrides.
 - **Multiple complete flows in one app**, including:
