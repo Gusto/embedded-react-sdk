@@ -49,8 +49,8 @@ composing a custom workflow when this orchestration is the wrong fit. See the
 [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
 for how to recompose these blocks into your own flow.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
 
 ## OnboardingFlowProps

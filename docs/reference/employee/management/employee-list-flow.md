@@ -38,8 +38,8 @@ action the admin invokes on a row (or the "Add employee" CTA). A "Back to
 employees" header is added to each sub-flow so the admin can return to the
 list at any time.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
 
 ## EmployeeListFlowProps

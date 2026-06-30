@@ -37,7 +37,7 @@ export interface InformationRequestsFlowProps extends Omit<
    * Set to `false` when embedding in a parent that renders the alert elsewhere.
    */
   withAlert?: boolean
-  /** Callback invoked when the flow or its subcomponents emit an event. */
+  /** Callback invoked when the flow or its blocks emit an event. */
   onEvent?: BaseComponentInterface['onEvent']
 }
 
@@ -60,7 +60,7 @@ const ALERT_TYPE = 'informationRequestResponded' as const
  * | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
  * | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
  *
- * Each piece is also exported as a standalone block (see the Sub-components
+ * Each piece is also exported as a standalone block (see the Blocks
  * table) for composing a custom workflow when this orchestration is the wrong
  * fit. See the
  * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}

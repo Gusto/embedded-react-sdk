@@ -50,7 +50,7 @@ error and suspense boundaries.
 
 Every tab section of the dashboard is also exported as a self-contained
 block that can be dropped into a custom layout without the surrounding
-dashboard chrome (see the sub-components below).
+dashboard chrome (see the blocks below).
 
 Each block wraps its read-only card, its edit form, and the card↔form
 transitions as a single drop-in. For cases where that built-in orchestration

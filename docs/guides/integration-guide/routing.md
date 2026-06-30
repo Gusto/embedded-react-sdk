@@ -26,7 +26,7 @@ EmployeeOnboarding.DocumentSigner
 EmployeeOnboarding.OnboardingSummary
 ```
 
-Each step is available as a subcomponent of `EmployeeOnboarding` which can be imported as follows:
+Each step is available as a block of `EmployeeOnboarding` which can be imported as follows:
 
 ```typescript
 import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'

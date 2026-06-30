@@ -4,7 +4,7 @@
 
 ## Payment Workflow <!-- slot: overview -->
 
-The typical step sequence when composing the subcomponents manually:
+The typical step sequence when composing the blocks manually:
 
 1. [`PaymentsList`](./blocks.md#paymentslist) — browse existing payment groups and start a new one.
 2. [`CreatePayment`](./blocks.md#createpayment) — select a date, edit per-contractor amounts, preview, and submit. Handles Fast ACH blockers and wire transfer requirements inline.

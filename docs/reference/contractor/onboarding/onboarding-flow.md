@@ -43,11 +43,11 @@ The flow is driven by an internal state machine and wraps each step in
 error and suspense boundaries.
 
 Each step of the flow is also exported as a standalone block (see the
-Sub-components table) for composing a custom workflow when this orchestration
+Blocks table) for composing a custom workflow when this orchestration
 is the wrong fit.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
 
 ## OnboardingFlowProps

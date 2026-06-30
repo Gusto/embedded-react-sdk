@@ -47,7 +47,7 @@ Props for InformationRequestsFlow.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`InformationRequests`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `onEvent?` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its subcomponents emit an event. |
+| `onEvent?` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its blocks emit an event. |
 | `withAlert?` | `boolean` | When `true` (default), the submission success alert is rendered at the top of this component. Set to `false` when embedding in a parent that renders the alert elsewhere. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
@@ -60,7 +60,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `informationRequest/form/done` | Fired when an information request is successfully submitted | Response from the Submit information request endpoint |
 | `informationRequest/form/cancel` | Fired when the user cancels the response form (closes the modal without submitting) | — |
 
-Each piece is also exported as a standalone block (see the Sub-components
+Each piece is also exported as a standalone block (see the Blocks
 table) for composing a custom workflow when this orchestration is the wrong
 fit. See the
 [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
