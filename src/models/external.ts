@@ -75,6 +75,12 @@ export { ContractorPaymentGroupPreviewStatus } from '@gusto/embedded-api-v-2025-
 export type { ContractorPaymentGroupWithBlockersTotals } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers'
 export type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers'
 export { ContractorPaymentGroupWithBlockersStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers'
+/** `ContractorPaymentMethod` entity from the Gusto Embedded API. */
+export type { ContractorPaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod'
+/** `ContractorPaymentMethodSplitBy` entity from the Gusto Embedded API. */
+export { ContractorPaymentMethodSplitBy } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod'
+/** `ContractorPaymentMethodType` entity from the Gusto Embedded API. */
+export { ContractorPaymentMethodType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod'
 /** `ContractorPaymentReceipt` entity from the Gusto Embedded API. */
 export type { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt'
 /** `ContractorPayments` entity from the Gusto Embedded API. */

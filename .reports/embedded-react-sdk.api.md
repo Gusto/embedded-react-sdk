@@ -58,6 +58,8 @@ import { ContractorPaymentGroupWithBlockersStatus } from '@gusto/embedded-api-v-
 import { ContractorPaymentGroupWithBlockersTotals } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroupwithblockers';
 import { ContractorPaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod';
 import { ContractorPaymentMethod1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor';
+import { ContractorPaymentMethodSplitBy } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod';
+import { ContractorPaymentMethodType } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentmethod';
 import { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptLicensee } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
 import { ContractorPaymentReceiptPaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentreceipt';
@@ -434,6 +436,9 @@ declare namespace APIModels {
         ContractorPaymentGroupWithBlockersTotals,
         ContractorPaymentGroupWithBlockers,
         ContractorPaymentGroupWithBlockersStatus,
+        ContractorPaymentMethod,
+        ContractorPaymentMethodSplitBy,
+        ContractorPaymentMethodType,
         ContractorPaymentReceipt,
         ContractorPayments,
         ContractorPaymentReceiptLicensee,
