@@ -93,6 +93,16 @@ function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
 
 ## Variables
 
+<a id="contractor_payment_method_types"></a>
+
+### CONTRACTOR\_PAYMENT\_METHOD\_TYPES
+
+> `const` **CONTRACTOR\_PAYMENT\_METHOD\_TYPES**: readonly \[`"Direct Deposit"`, `"Check"`\]
+
+Supported payment method type values: direct deposit and check.
+
+***
+
 <a id="contractorpaymentmethoderrorcodes"></a>
 
 ### ContractorPaymentMethodErrorCodes
@@ -108,16 +118,6 @@ hook.
 | Name | Type | Default value |
 | ------ | ------ | ------ |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="contractorpaymentmethodtypes"></a>
-
-### ContractorPaymentMethodTypes
-
-> `const` **ContractorPaymentMethodTypes**: readonly \[`"Direct Deposit"`, `"Check"`\]
-
-Supported payment method type values: direct deposit and check.
 
 ## Interfaces
 
@@ -167,9 +167,9 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit the form. Returns the updated payment method on success or `undefined` on validation/mutation failure. |
-| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<`ContractorPaymentMethod`\> \| `undefined`\> | - |
+| `actions.onSubmit` | () => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod)\> \| `undefined`\> | - |
 | `data` | `object` | The contractor's current payment method, loaded from the API. |
-| `data.paymentMethod` | `ContractorPaymentMethod` | - |
+| `data.paymentMethod` | [`ContractorPaymentMethod`](../../APIModels/index.md#contractorpaymentmethod) | - |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorPaymentMethodFormFields`](#contractorpaymentmethodformfields) | - |
@@ -240,7 +240,7 @@ on submit.
 
 ### ContractorPaymentMethodFormType
 
-> **ContractorPaymentMethodFormType** = *typeof* [`ContractorPaymentMethodTypes`](#contractorpaymentmethodtypes)\[`number`\]
+> **ContractorPaymentMethodFormType** = *typeof* [`CONTRACTOR_PAYMENT_METHOD_TYPES`](#contractor_payment_method_types)\[`number`\]
 
 Union of payment method type values that the form accepts.
 
