@@ -227,14 +227,16 @@ export interface BaseHookReady<
  * parsed values (or `undefined` if invalid).
  *
  * @typeParam TFieldsMetadata - Shape of the per-field metadata exposed by the hook.
- * @typeParam TFormData - Shape of the form values managed by react-hook-form.
+ * @typeParam TFormData - Shape of the form values managed by react-hook-form (the resolver input / `TFieldValues`).
  * @typeParam TFields - Shape of the pre-bound `Fields` component map.
+ * @typeParam TFormOutputs - Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge.
  * @public
  */
 export interface BaseFormHookReady<
   TFieldsMetadata extends FieldsMetadata = FieldsMetadata,
   TFormData extends FieldValues = FieldValues,
   TFields extends object = Record<string, unknown>,
+  TFormOutputs = TFormData,
 > {
   /** Always `false` in this branch; discriminates from {@link HookLoadingResult}. */
   isLoading: false
@@ -251,7 +253,7 @@ export interface BaseFormHookReady<
     Fields: TFields
     fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals<TFormData>
-    getFormSubmissionValues: () => TFormData | undefined
+    getFormSubmissionValues: () => TFormOutputs | undefined
   }
 }
 

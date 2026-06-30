@@ -738,7 +738,7 @@ export interface BaseFieldProps {
 }
 
 // @public
-export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>> {
+export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>, TFormOutputs = TFormData> {
     actions: Record<string, unknown>;
     data: Record<string, unknown>;
     errorHandling: HookErrorHandling;
@@ -746,7 +746,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
         Fields: TFields;
         fieldsMetadata: TFieldsMetadata;
         hookFormInternals: HookFormInternals<TFormData>;
-        getFormSubmissionValues: () => TFormData | undefined;
+        getFormSubmissionValues: () => TFormOutputs | undefined;
     };
     isLoading: false;
     status: {
@@ -6569,7 +6569,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:271:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
