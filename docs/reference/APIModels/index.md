@@ -2469,6 +2469,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/contractorpa
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-contractorpaymentmethodsplitby"></a> `splitBy?` | [`ContractorPaymentMethodSplitBy`](#contractorpaymentmethodsplitby-1) \| `null` | Describes how the payment will be split. If `split_by` is Percentage, then the `split` amounts must add up to exactly 100. If `split_by` is Amount, then values are in cents and the last split amount must be `null` to capture the remainder. |
+| <a id="property-contractorpaymentmethodsplits"></a> `splits?` | [`PaymentMethodBankAccount`](#paymentmethodbankaccount)[] \| `null` | - |
 | <a id="property-contractorpaymentmethodtype"></a> `type?` | [`ContractorPaymentMethodType`](#contractorpaymentmethodtype-1) \| `null` | The payment method type. If type is Check, then `split_by` and `splits` do not need to be populated. If type is Direct Deposit, `split_by` and `splits` are required. |
 | <a id="property-contractorpaymentmethodversion"></a> `version?` | `string` | The current version of the object. See the [versioning guide](https://docs.gusto.com/embedded-payroll/docs/idempotency) for information on how to use this field. |
 

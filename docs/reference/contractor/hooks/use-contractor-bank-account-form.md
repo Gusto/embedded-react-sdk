@@ -126,16 +126,18 @@ Field components exposed by [useContractorBankAccountForm](#usecontractorbankacc
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `AccountNumber` | `ComponentType`\<[`AccountNumberFieldProps`](#contractorbankaccountaccountnumberfieldprops)\> | Bound to `accountNumber` — see [AccountNumberField](#contractorbankaccountaccountnumberfield). |
-| `AccountType` | `ComponentType`\<[`AccountTypeFieldProps`](#contractorbankaccountaccounttypefieldprops)\> | Bound to `accountType` — see [AccountTypeField](#contractorbankaccountaccounttypefield). |
-| `Name` | `ComponentType`\<[`NameFieldProps`](#contractorbankaccountnamefieldprops)\> | Bound to `name` — see [NameField](#contractorbankaccountnamefield). |
-| `RoutingNumber` | `ComponentType`\<[`RoutingNumberFieldProps`](#contractorbankaccountroutingnumberfieldprops)\> | Bound to `routingNumber` — see [RoutingNumberField](#contractorbankaccountroutingnumberfield). |
+| `AccountNumber` | `ComponentType`\<[`AccountNumberFieldProps`](#contractorbankaccountaccountnumberfieldprops)\> | Bound to `accountNumber`. Pre-filled with the masked account number (e.g. "XXXX1207"), which is accepted unchanged to keep the existing account; a newly entered value is validated against the 1–17 digit numeric pattern. |
+| `AccountType` | `ComponentType`\<[`AccountTypeFieldProps`](#contractorbankaccountaccounttypefieldprops)\> | Bound to `accountType`. Options are `Checking` and `Savings`; defaults to `Checking`. Supply `getOptionLabel` to translate the option labels. |
+| `Name` | `ComponentType`\<[`NameFieldProps`](#contractorbankaccountnamefieldprops)\> | Bound to `name`. Captures the bank account nickname. |
+| `RoutingNumber` | `ComponentType`\<[`RoutingNumberFieldProps`](#contractorbankaccountroutingnumberfieldprops)\> | Bound to `routingNumber`. Validated against a 9-digit numeric pattern. |
 
 ***
 
 ### AccountNumber
 
-Bound to `accountNumber` — see [AccountNumberField](#contractorbankaccountaccountnumberfield).
+Bound to `accountNumber`. Pre-filled with the masked account number (e.g.
+"XXXX1207"), which is accepted unchanged to keep the existing account; a
+newly entered value is validated against the 1–17 digit numeric pattern.
 
 ```tsx
 <form.Fields.AccountNumber
@@ -164,7 +166,8 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### AccountType
 
-Bound to `accountType` — see [AccountTypeField](#contractorbankaccountaccounttypefield).
+Bound to `accountType`. Options are `Checking` and `Savings`; defaults to
+`Checking`. Supply `getOptionLabel` to translate the option labels.
 
 ```tsx
 <form.Fields.AccountType
@@ -194,7 +197,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### Name
 
-Bound to `name` — see [NameField](#contractorbankaccountnamefield).
+Bound to `name`. Captures the bank account nickname.
 
 ```tsx
 <form.Fields.Name
@@ -223,7 +226,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### RoutingNumber
 
-Bound to `routingNumber` — see [RoutingNumberField](#contractorbankaccountroutingnumberfield).
+Bound to `routingNumber`. Validated against a 9-digit numeric pattern.
 
 ```tsx
 <form.Fields.RoutingNumber

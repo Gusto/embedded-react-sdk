@@ -1659,16 +1659,10 @@ export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldPr
 export type ContractorAddressZipValidation = (typeof ContractorAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
 
 // @public
-export function ContractorBankAccountAccountNumberField(props: ContractorBankAccountAccountNumberFieldProps): JSX;
-
-// @public
 export type ContractorBankAccountAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountAccountNumberValidation>>;
 
 // @public
 export type ContractorBankAccountAccountNumberValidation = (typeof ContractorBankAccountErrorCodes)[keyof Pick<typeof ContractorBankAccountErrorCodes, 'REQUIRED' | 'INVALID_ACCOUNT_NUMBER'>];
-
-// @public
-export function ContractorBankAccountAccountTypeField(props: ContractorBankAccountAccountTypeFieldProps): JSX;
 
 // @public
 export type ContractorBankAccountAccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorBankAccountRequiredValidation, ContractorAccountType>>;
@@ -1694,17 +1688,14 @@ export type ContractorBankAccountFormField = "name" | "routingNumber" | "account
 
 // @public
 export interface ContractorBankAccountFormFields {
-    AccountNumber: typeof ContractorBankAccountAccountNumberField;
-    AccountType: typeof ContractorBankAccountAccountTypeField;
-    Name: typeof ContractorBankAccountNameField;
-    RoutingNumber: typeof ContractorBankAccountRoutingNumberField;
+    AccountNumber: ComponentType<ContractorBankAccountAccountNumberFieldProps>;
+    AccountType: ComponentType<ContractorBankAccountAccountTypeFieldProps>;
+    Name: ComponentType<ContractorBankAccountNameFieldProps>;
+    RoutingNumber: ComponentType<ContractorBankAccountRoutingNumberFieldProps>;
 }
 
 // @public
 export type ContractorBankAccountFormOutputs = ContractorBankAccountFormData;
-
-// @public
-export function ContractorBankAccountNameField(props: ContractorBankAccountNameFieldProps): JSX;
 
 // @public
 export type ContractorBankAccountNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRequiredValidation>>;
@@ -1714,9 +1705,6 @@ export type ContractorBankAccountOptionalFieldsToRequire = { create?: never[] | 
 
 // @public
 export type ContractorBankAccountRequiredValidation = typeof ContractorBankAccountErrorCodes.REQUIRED;
-
-// @public
-export function ContractorBankAccountRoutingNumberField(props: ContractorBankAccountRoutingNumberFieldProps): JSX;
 
 // @public
 export type ContractorBankAccountRoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRoutingNumberValidation>>;
@@ -1932,7 +1920,7 @@ export type ContractorPaymentMethodFormField = "type";
 
 // @public
 export interface ContractorPaymentMethodFormFields {
-    Type: typeof ContractorPaymentMethodTypeField;
+    Type: ComponentType<ContractorPaymentMethodTypeFieldProps>;
 }
 
 // @public
@@ -1942,9 +1930,6 @@ export type ContractorPaymentMethodFormOutputs = ContractorPaymentMethodFormData
 //
 // @public
 export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHOD_TYPES_2)[number];
-
-// @public
-export function ContractorPaymentMethodTypeField(props: ContractorPaymentMethodTypeFieldProps): JSX;
 
 // @public
 export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
