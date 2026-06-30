@@ -232,20 +232,6 @@ jobs:
           # pick up unrelated tree changes if anything went sideways.
           git add docs docs-site .nvmrc
 
-          # Force-add the downstream-owned version snapshots. docs-site/.gitignore
-          # excludes versions.json / versioned_docs/ / versioned_sidebars/ in the
-          # SDK source so a local `docusaurus docs:version` scratch run doesn't
-          # accidentally land in upstream commits. That same .gitignore is then
-          # synced down with the rest of docs-site/, so the bare `git add` above
-          # silently skips the restored-or-newly-created snapshots here. Without
-          # this force-add, every sync after the gitignore landed dropped the
-          # snapshots — see the picker-disappeared incident from June.
-          for path in versions.json versioned_docs versioned_sidebars; do
-            if [ -e "docs-site/$path" ]; then
-              git add -f "docs-site/$path"
-            fi
-          done
-
           # Defense in depth: refuse to push if any staged change escapes
           # the managed allowlist. No-op when the workflow is correct;
           # catches future drift.
