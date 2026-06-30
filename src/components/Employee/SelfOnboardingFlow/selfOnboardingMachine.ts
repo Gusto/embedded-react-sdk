@@ -17,36 +17,30 @@ export const employeeSelfOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_SELF_ONBOARDING_START,
       'employeeProfile',
-      reduce(
-        (ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
-          ...ctx,
-          component: Profile,
-        }),
-      ),
+      reduce((ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
+        ...ctx,
+        component: Profile,
+      })),
     ),
   ),
   employeeProfile: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PROFILE_DONE,
       'employeeFederalTaxes',
-      reduce(
-        (ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
-          ...ctx,
-          component: FederalTaxes,
-        }),
-      ),
+      reduce((ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
+        ...ctx,
+        component: FederalTaxes,
+      })),
     ),
   ),
   employeeFederalTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
       'employeeStateTaxes',
-      reduce(
-        (ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
-          ...ctx,
-          component: StateTaxes,
-        }),
-      ),
+      reduce((ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
+        ...ctx,
+        component: StateTaxes,
+      })),
     ),
   ),
   employeeStateTaxes: state<MachineTransition>(

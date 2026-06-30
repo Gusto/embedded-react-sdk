@@ -52,15 +52,11 @@ function Root({ companyId, onEvent = () => {} }: RecoveryCasesInternalProps) {
 
   const recoveryCasesMachineInstance = useMemo(
     () =>
-      createMachine(
-        'list',
-        recoveryCasesMachine,
-        (): RecoveryCasesContextInterface => ({
-          component: null,
-          companyId,
-          onEvent: handleEvent,
-        }),
-      ),
+      createMachine('list', recoveryCasesMachine, (): RecoveryCasesContextInterface => ({
+        component: null,
+        companyId,
+        onEvent: handleEvent,
+      })),
     [companyId],
   )
   const [current, send] = useMachine(recoveryCasesMachineInstance)

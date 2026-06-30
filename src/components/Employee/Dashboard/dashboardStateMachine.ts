@@ -33,26 +33,22 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
-const returnToIndex = reduce(
-  (ctx: DashboardContextInterface): DashboardContextInterface => ({
+const returnToIndex = reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+  ...ctx,
+  component: DashboardViewContextual,
+  header: null,
+  currentJobId: null,
+  successAlert: null,
+}))
+
+const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']) =>
+  reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
     ...ctx,
     component: DashboardViewContextual,
     header: null,
     currentJobId: null,
-    successAlert: null,
-  }),
-)
-
-const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']) =>
-  reduce(
-    (ctx: DashboardContextInterface): DashboardContextInterface => ({
-      ...ctx,
-      component: DashboardViewContextual,
-      header: null,
-      currentJobId: null,
-      successAlert: alert,
-    }),
-  )
+    successAlert: alert,
+  }))
 
 /** @internal */
 export const dashboardStateMachine = {
@@ -60,79 +56,65 @@ export const dashboardStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       'profile',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: ProfileContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: ProfileContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       'homeAddress',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: HomeAddressContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: HomeAddressContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED,
       'workAddress',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: WorkAddressContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: WorkAddressContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED,
       'federalTaxes',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: FederalTaxesContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: FederalTaxesContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
       'stateTaxes',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: StateTaxesContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: StateTaxesContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED,
       'paymentBankForm',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: PaymentBankFormContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: PaymentBankFormContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED,
       'paymentSplitView',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: PaymentSplitViewContextual,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: PaymentSplitViewContextual,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED,
@@ -155,14 +137,12 @@ export const dashboardStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED,
       'addJob',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: AddJobContextual,
-          currentJobId: null,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: AddJobContextual,
+        currentJobId: null,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
@@ -185,36 +165,30 @@ export const dashboardStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
       'addAnotherJob',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: AddAnotherJobContextual,
-          currentJobId: null,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: AddAnotherJobContextual,
+        currentJobId: null,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
       'index',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          successAlert: 'bankAccountDeleted',
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        successAlert: 'bankAccountDeleted',
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED,
       'editDeduction',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: DeductionsEditFormContextual,
-          successAlert: null,
-          editingDeductionId: undefined,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        component: DeductionsEditFormContextual,
+        successAlert: null,
+        editingDeductionId: undefined,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED,
@@ -237,22 +211,18 @@ export const dashboardStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
       'index',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          successAlert: 'deductionDeleted',
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        successAlert: 'deductionDeleted',
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_DISMISS,
       'index',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          successAlert: null,
-        }),
-      ),
+      reduce((ctx: DashboardContextInterface): DashboardContextInterface => ({
+        ...ctx,
+        successAlert: null,
+      })),
     ),
     transition(
       componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE,

@@ -93,8 +93,7 @@ export interface ContractorProfileSelfOnboardingProps extends BaseComponentInter
  * @public
  */
 export type ContractorProfileProps =
-  | ContractorProfileAdminProps
-  | ContractorProfileSelfOnboardingProps
+  ContractorProfileAdminProps | ContractorProfileSelfOnboardingProps
 
 /**
  * Form for creating or editing a contractor profile, supporting both individual and business contractor types.
