@@ -21,7 +21,11 @@ type FormMode = 'create' | 'update'
  * @internal
  */
 type RequiredFieldRule<TData = Record<string, unknown>> =
-  'create' | 'update' | 'always' | 'never' | ((data: TData, mode: FormMode) => boolean)
+  | 'create'
+  | 'update'
+  | 'always'
+  | 'never'
+  | ((data: TData, mode: FormMode) => boolean)
 
 /**
  * Mapping from each field name in a schema to its {@link RequiredFieldRule}.

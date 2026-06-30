@@ -47,11 +47,13 @@ export const stateTaxesStateMachine = {
     transition(
       componentEvents.CANCEL,
       'viewStateTaxes',
-      reduce((ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
-        ...ctx,
-        component: StateTaxesListContextual as ComponentType,
-        state: undefined,
-      })),
+      reduce(
+        (ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+          ...ctx,
+          component: StateTaxesListContextual as ComponentType,
+          state: undefined,
+        }),
+      ),
     ),
   ),
   done: final(),

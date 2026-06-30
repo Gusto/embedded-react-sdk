@@ -21,11 +21,13 @@ const returnToList = reduce(
 )
 
 const returnToListWithAlert = (alert: PaymentMethodSuccessAlertCode) =>
-  reduce((ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-    ...ctx,
-    component: PaymentMethodCardContextual as ComponentType,
-    successAlert: alert,
-  }))
+  reduce(
+    (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
+      ...ctx,
+      component: PaymentMethodCardContextual as ComponentType,
+      successAlert: alert,
+    }),
+  )
 
 /** @internal */
 export const paymentMethodStateMachine = {
@@ -33,20 +35,24 @@ export const paymentMethodStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED,
       'add',
-      reduce((ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-        ...ctx,
-        component: PaymentMethodBankFormContextual as ComponentType,
-        successAlert: null,
-      })),
+      reduce(
+        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
+          ...ctx,
+          component: PaymentMethodBankFormContextual as ComponentType,
+          successAlert: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED,
       'split',
-      reduce((ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-        ...ctx,
-        component: PaymentMethodSplitFormContextual as ComponentType,
-        successAlert: null,
-      })),
+      reduce(
+        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
+          ...ctx,
+          component: PaymentMethodSplitFormContextual as ComponentType,
+          successAlert: null,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,

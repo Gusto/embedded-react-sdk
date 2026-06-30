@@ -21,19 +21,23 @@ const toProfile = reduce(
 )
 
 const toProfileWithMessage = (message: string) =>
-  reduce((ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-    ...ctx,
-    component: ProfileViewContextual as ComponentType,
-    successMessage: message,
-  }))
+  reduce(
+    (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+      ...ctx,
+      component: ProfileViewContextual as ComponentType,
+      successMessage: message,
+    }),
+  )
 
 const toEditWithTab = (component: ComponentType, selectedTab: string) =>
-  reduce((ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-    ...ctx,
-    component,
-    successMessage: undefined,
-    selectedTab,
-  }))
+  reduce(
+    (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+      ...ctx,
+      component,
+      successMessage: undefined,
+      selectedTab,
+    }),
+  )
 
 export const contractorProfileStateMachine = {
   profile: state<MachineTransition>(

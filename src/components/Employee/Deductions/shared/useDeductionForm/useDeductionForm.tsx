@@ -318,7 +318,10 @@ export function useDeductionForm({
   // deductions after a frequency toggle. Compare against both shapes — mirrors
   // the `deductAsPercentage` handling in StandardDeductionForm.
   const watchedRecurring = useWatch({ control: formMethods.control, name: 'recurring' }) as
-    boolean | 'true' | 'false' | undefined
+    | boolean
+    | 'true'
+    | 'false'
+    | undefined
   const isRecurring = watchedRecurring === true || watchedRecurring === 'true'
 
   const createGarnishmentMutation = useGarnishmentsCreateMutation()

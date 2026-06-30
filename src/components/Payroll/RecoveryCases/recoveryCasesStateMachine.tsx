@@ -38,20 +38,24 @@ export const recoveryCasesMachine = {
     transition(
       recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_DONE,
       'list',
-      reduce((ctx: RecoveryCasesContextInterface): RecoveryCasesContextInterface => ({
-        ...ctx,
-        component: null,
-        selectedRecoveryCaseId: undefined,
-      })),
+      reduce(
+        (ctx: RecoveryCasesContextInterface): RecoveryCasesContextInterface => ({
+          ...ctx,
+          component: null,
+          selectedRecoveryCaseId: undefined,
+        }),
+      ),
     ),
     transition(
       recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_CANCEL,
       'list',
-      reduce((ctx: RecoveryCasesContextInterface): RecoveryCasesContextInterface => ({
-        ...ctx,
-        component: null,
-        selectedRecoveryCaseId: undefined,
-      })),
+      reduce(
+        (ctx: RecoveryCasesContextInterface): RecoveryCasesContextInterface => ({
+          ...ctx,
+          component: null,
+          selectedRecoveryCaseId: undefined,
+        }),
+      ),
     ),
   ),
   final: state<MachineTransition>(),

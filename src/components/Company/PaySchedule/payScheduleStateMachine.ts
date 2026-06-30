@@ -11,11 +11,13 @@ type EventPayloads = {
   [componentEvents.PAY_SCHEDULE_UPDATED]: undefined
 }
 
-const toList = reduce((ctx: PayScheduleContextInterface): PayScheduleContextInterface => ({
-  ...ctx,
-  component: PayScheduleListContextual as ComponentType,
-  payScheduleId: undefined,
-}))
+const toList = reduce(
+  (ctx: PayScheduleContextInterface): PayScheduleContextInterface => ({
+    ...ctx,
+    component: PayScheduleListContextual as ComponentType,
+    payScheduleId: undefined,
+  }),
+)
 
 /** @internal */
 export const payScheduleStateMachine = {
@@ -23,11 +25,13 @@ export const payScheduleStateMachine = {
     transition(
       componentEvents.PAY_SCHEDULE_CREATE,
       'addSchedule',
-      reduce((ctx: PayScheduleContextInterface): PayScheduleContextInterface => ({
-        ...ctx,
-        component: PayScheduleFormContextual as ComponentType,
-        payScheduleId: undefined,
-      })),
+      reduce(
+        (ctx: PayScheduleContextInterface): PayScheduleContextInterface => ({
+          ...ctx,
+          component: PayScheduleFormContextual as ComponentType,
+          payScheduleId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.PAY_SCHEDULE_UPDATE,

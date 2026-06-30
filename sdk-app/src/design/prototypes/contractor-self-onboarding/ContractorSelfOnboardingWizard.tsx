@@ -11,7 +11,12 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { Flex } from '@/components/Common'
 
 type SelfOnboardingStep =
-  'landing' | 'profile' | 'address' | 'paymentMethod' | 'documentSigner' | 'summary'
+  | 'landing'
+  | 'profile'
+  | 'address'
+  | 'paymentMethod'
+  | 'documentSigner'
+  | 'summary'
 
 const STEPS_WITH_PROGRESS: SelfOnboardingStep[] = [
   'profile',

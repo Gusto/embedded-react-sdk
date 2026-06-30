@@ -38,20 +38,24 @@ export const informationRequestsMachine = {
     transition(
       informationRequestEvents.INFORMATION_REQUEST_FORM_DONE,
       'list',
-      reduce((ctx: InformationRequestsContextInterface): InformationRequestsContextInterface => ({
-        ...ctx,
-        component: null,
-        selectedRequestId: undefined,
-      })),
+      reduce(
+        (ctx: InformationRequestsContextInterface): InformationRequestsContextInterface => ({
+          ...ctx,
+          component: null,
+          selectedRequestId: undefined,
+        }),
+      ),
     ),
     transition(
       informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL,
       'list',
-      reduce((ctx: InformationRequestsContextInterface): InformationRequestsContextInterface => ({
-        ...ctx,
-        component: null,
-        selectedRequestId: undefined,
-      })),
+      reduce(
+        (ctx: InformationRequestsContextInterface): InformationRequestsContextInterface => ({
+          ...ctx,
+          component: null,
+          selectedRequestId: undefined,
+        }),
+      ),
     ),
   ),
   final: state<MachineTransition>(),

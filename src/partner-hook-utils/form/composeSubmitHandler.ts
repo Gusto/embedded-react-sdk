@@ -42,7 +42,8 @@ interface ComposableFormHookResult {
  * @internal
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
-  ComposableFormHookResult | UseFormReturn<T>
+  | ComposableFormHookResult
+  | UseFormReturn<T>
 
 interface FormValidationResult {
   input: ComposeSubmitInput

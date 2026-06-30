@@ -70,7 +70,9 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
  */
 export const useI18n = (
   namespaces:
-    keyof CustomTypeOptions['resources'] | Array<keyof CustomTypeOptions['resources']> | null,
+    | keyof CustomTypeOptions['resources']
+    | Array<keyof CustomTypeOptions['resources']>
+    | null,
 ) => {
   //Getting our instance of i18n -> supplied by the provider set in GustoProvider
   const { i18n: i18nInstance } = useTranslation()

@@ -123,10 +123,12 @@ const exitFlowTransition = transition(
 const cancelledToLandingTransition = transition(
   componentEvents.RUN_PAYROLL_CANCELLED,
   'landing',
-  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-    ...toLandingReducer(ctx),
-    showPayrollCancelledAlert: true,
-  })),
+  reduce(
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...toLandingReducer(ctx),
+      showPayrollCancelledAlert: true,
+    }),
+  ),
 )
 
 const processedToSubmittedOverviewTransition = transition(
@@ -185,23 +187,27 @@ export const payrollFlowMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
       'blockers',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-        ...updateBreadcrumbs('blockers', ctx),
-        component: PayrollBlockerContextual,
-        showPayrollCancelledAlert: false,
-        ctaConfig: {
-          labelKey: 'exitFlowCta',
-          namespace: 'Payroll.PayrollBlocker',
-        },
-      })),
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('blockers', ctx),
+          component: PayrollBlockerContextual,
+          showPayrollCancelledAlert: false,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollBlocker',
+          },
+        }),
+      ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED,
       'landing',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-        ...ctx,
-        showPayrollCancelledAlert: false,
-      })),
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...ctx,
+          showPayrollCancelledAlert: false,
+        }),
+      ),
     ),
     transition(
       componentEvents.RUN_TRANSITION_PAYROLL,
@@ -226,11 +232,13 @@ export const payrollFlowMachine = {
     transition(
       componentEvents.RUN_OFF_CYCLE_PAYROLL,
       'offCycle',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
-        component: OffCycleFlowContextual,
-        showPayrollCancelledAlert: false,
-      })),
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: OffCycleFlowContextual,
+          showPayrollCancelledAlert: false,
+        }),
+      ),
     ),
   ),
   execution: state<MachineTransition>(
@@ -245,18 +253,20 @@ export const payrollFlowMachine = {
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'submittedReceipts',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-        ...updateBreadcrumbs('submittedReceipts', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('submittedReceipts', ctx, {
+            startDate: ctx.payPeriod?.startDate ?? '',
+            endDate: ctx.payPeriod?.endDate ?? '',
+          }),
+          component: PayrollReceiptsContextual,
+          alerts: undefined,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollReceipts',
+          },
         }),
-        component: PayrollReceiptsContextual,
-        alerts: undefined,
-        ctaConfig: {
-          labelKey: 'exitFlowCta',
-          namespace: 'Payroll.PayrollReceipts',
-        },
-      })),
+      ),
     ),
     cancelledToLandingTransition,
     exitFlowTransition,

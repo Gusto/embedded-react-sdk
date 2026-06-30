@@ -37,7 +37,9 @@ export type RequiredValidation = typeof CompensationErrorCodes.REQUIRED
  * @public
  */
 export type RateValidation = (typeof CompensationErrorCodes)[
-  'REQUIRED' | 'RATE_MINIMUM' | 'RATE_EXEMPT_THRESHOLD']
+  | 'REQUIRED'
+  | 'RATE_MINIMUM'
+  | 'RATE_EXEMPT_THRESHOLD']
 
 /**
  * Validation error codes emitted by the `effectiveDate` field of {@link useCompensationForm}.
@@ -49,7 +51,9 @@ export type RateValidation = (typeof CompensationErrorCodes)[
  * @public
  */
 export type EffectiveDateValidation = (typeof CompensationErrorCodes)[
-  'REQUIRED' | 'EFFECTIVE_DATE_BEFORE_HIRE' | 'EFFECTIVE_DATE_BEFORE_MIN']
+  | 'REQUIRED'
+  | 'EFFECTIVE_DATE_BEFORE_HIRE'
+  | 'EFFECTIVE_DATE_BEFORE_MIN']
 
 /**
  * Props accepted by {@link useCompensationForm}'s `Fields.Title` component.

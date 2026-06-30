@@ -35,8 +35,9 @@ export const createBreadcrumbNavigateTransition = <TContext>() => {
         (ctx: TContext, ev: { payload: { key: string } }) =>
           ev.payload.key === targetState && (canNavigate?.(ctx) ?? true),
       ),
-      reduce((ctx: TContext, ev: BreadcrumbNavigateEvent<TContext>): TContext =>
-        ev.payload.onNavigate(ctx),
+      reduce(
+        (ctx: TContext, ev: BreadcrumbNavigateEvent<TContext>): TContext =>
+          ev.payload.onNavigate(ctx),
       ),
     )
 }
