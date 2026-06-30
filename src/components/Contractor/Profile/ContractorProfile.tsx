@@ -42,35 +42,59 @@ function computeRequiredFields(
 }
 
 /**
- * Props for {@link ContractorProfile}.
+ * Props for {@link ContractorProfile} in admin mode.
  *
  * @remarks
- * Discriminated by `isAdmin`. In admin mode (the default) `contractorId` is
- * optional — omitting it creates a new contractor. In self-onboarding mode
- * (`isAdmin={false}`) `contractorId` is required, because the contractor must
- * already exist for its type (individual vs. business) to be resolved.
+ * Renders the admin create/edit form. When `contractorId` is omitted, the form
+ * creates a new contractor under `companyId`. When provided, it fetches and
+ * updates the existing contractor.
  *
  * @public
  */
-export type ContractorProfileProps = BaseComponentInterface<'Contractor.Profile'> & {
+export interface ContractorProfileAdminProps extends BaseComponentInterface<'Contractor.Profile'> {
   /** UUID of the company the contractor belongs to. */
   companyId: string
   /** Initial values for the contractor profile form fields. */
   defaultValues?: Partial<ContractorDetailsFormData>
-} & (
-    | {
-        /** When `true` (the default), renders the admin create/edit form. */
-        isAdmin?: true
-        /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
-        contractorId?: string
-      }
-    | {
-        /** When `false`, renders the contractor self-onboarding profile. */
-        isAdmin: false
-        /** UUID of the existing contractor completing self-onboarding. Required in self-onboarding mode. */
-        contractorId: string
-      }
-  )
+  /** When `true` (the default), renders the admin create/edit form. */
+  isAdmin?: true
+  /** UUID of an existing contractor to edit. When omitted, the form creates a new contractor. */
+  contractorId?: string
+}
+
+/**
+ * Props for {@link ContractorProfile} in self-onboarding mode.
+ *
+ * @remarks
+ * Renders the contractor self-onboarding profile. The contractor must already
+ * exist so its type (individual vs. business) can be resolved to determine
+ * which fields to display.
+ *
+ * @public
+ */
+export interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'Contractor.Profile'> {
+  /** UUID of the company the contractor belongs to. */
+  companyId: string
+  /** Initial values for the contractor profile form fields. */
+  defaultValues?: Partial<ContractorDetailsFormData>
+  /** When `false`, renders the contractor self-onboarding profile. */
+  isAdmin: false
+  /** UUID of the existing contractor completing self-onboarding. Required in self-onboarding mode. */
+  contractorId: string
+}
+
+/**
+ * Props for {@link ContractorProfile}.
+ *
+ * @remarks
+ * Discriminated by `isAdmin`. See {@link ContractorProfileAdminProps} and
+ * {@link ContractorProfileSelfOnboardingProps} for the specific prop shapes.
+ *
+ * @public
+ */
+export type ContractorProfileProps =
+  | ContractorProfileAdminProps
+  | ContractorProfileSelfOnboardingProps
 
 /**
  * Form for creating or editing a contractor profile, supporting both individual and business contractor types.

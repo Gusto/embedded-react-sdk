@@ -118,7 +118,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "ajv": "^8.20.0",
     "axe-core": "^4.12.1",
-    "cspell": "^9.8.0",
+    "cspell": "^10.0.1",
     "dotenv": "^17.4.2",
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.31.0",

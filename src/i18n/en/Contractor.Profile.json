@@ -6,7 +6,7 @@
     "individualDescription": "Please verify your name and provide your Social Security Number.",
     "businessDescription": "Please verify your business name and provide your EIN.",
     "continue": "Continue",
-    "submitting": "Saving..."
+    "submitting": "Saving…"
   },
   "fields": {
     "selfOnboarding": {
@@ -67,7 +67,7 @@
     "cancel": "Cancel",
     "create": "Create Contractor",
     "update": "Update Contractor",
-    "creating": "Creating...",
-    "updating": "Updating..."
+    "creating": "Creating…",
+    "updating": "Updating…"
   }
 }
