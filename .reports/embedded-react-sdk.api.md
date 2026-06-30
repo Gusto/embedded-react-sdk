@@ -1362,6 +1362,8 @@ declare namespace ContractorOnboarding {
         ContractorListProps,
         ContractorProfile,
         ContractorProfileProps,
+        ContractorProfileAdminProps,
+        ContractorProfileSelfOnboardingProps,
         ContractorDetailsFormData as ContractorProfileFormData,
         Address,
         AddressProps,
@@ -1389,11 +1391,24 @@ export const ContractorOnboardingStatus: {
 // @public
 function ContractorProfile(props: ContractorProfileProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileAdminProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileSelfOnboardingProps" needs to be exported by the entry point index.d.ts
-//
+// @public
+interface ContractorProfileAdminProps extends BaseComponentInterface<'Contractor.Profile'> {
+    companyId: string;
+    contractorId?: string;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    isAdmin?: true;
+}
+
 // @public
 type ContractorProfileProps = ContractorProfileAdminProps | ContractorProfileSelfOnboardingProps;
+
+// @public
+interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'Contractor.Profile'> {
+    companyId: string;
+    contractorId: string;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    isAdmin: false;
+}
 
 // @public
 export function ContractorSelfOnboardingField(props: ContractorSelfOnboardingFieldProps): JSX;
