@@ -93,6 +93,7 @@ const fieldValidators = {
  * Shape of the values managed by the contractor details form.
  *
  * @public
+ * @interface
  */
 export type ContractorDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

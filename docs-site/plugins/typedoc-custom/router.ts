@@ -1,25 +1,39 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import {
+  ArrayType,
   Comment,
   CommentTag,
   type Context,
   DeclarationReflection,
+  IndexedAccessType,
+  IntersectionType,
   PageKind,
   type PageDefinition,
   ProjectReflection,
+  QueryType,
   ReferenceType,
   type Reflection,
   ReflectionGroup,
   ReflectionKind,
   RendererEvent,
   Slugger,
+  type SomeType,
+  TupleType,
+  UnionType,
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
 import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
 import {
+  findHookResultAlias,
+  getFormHookModel,
+  getHookModel,
+  getHookReadyInterface,
+} from './hook-model.ts'
+import {
   componentPropsInterfaces,
   domainFromSources,
+  hasGroup,
   hookDirFromSources,
   isHookSourceFile,
   NAMESPACE_PATHS,
@@ -145,18 +159,133 @@ function getNamespaceIndexSlug(namespaceName: string): string {
 const SYNTHETIC_GROUP_ORDER = [
   'Flow Components',
   'Block Components',
-  'Components',
   'Form Hooks',
   'Data Hooks',
   'Utility Hooks',
   'Hooks',
+  'Fields',
+  'Components',
+  'Component Props',
   'Events',
   'Functions',
   'Variables',
   'Interfaces',
   'Type Aliases',
+  'Validations',
+  'Utility Types',
   'Enumerations',
 ]
+
+// Type-parameter names on a field's `*HookFieldProps` interface whose bound
+// argument is a validation error-code type. A field-props interface may carry
+// other generics (e.g. `RadioGroupHookFieldProps<TErrorCode, TEntry>`), so
+// validation types are matched by parameter name, never by position.
+const VALIDATION_TYPE_PARAMS = new Set(['TErrorCode', 'TOptionalErrorCode'])
+
+/**
+ * Collect the field validation types on a hook page: the error-code types
+ * passed as the `TErrorCode` / `TOptionalErrorCode` generic of a field's props.
+ *
+ * Field props are type aliases of the shape
+ * `HookFieldProps<SomeHookFieldProps<TErrorCode, TOptionalErrorCode>>`, declared
+ * directly as `*FieldProps` members and referenced by each field component's
+ * props parameter. For every such alias we resolve the underlying field-props
+ * interface, then read the arguments bound to its `TErrorCode` /
+ * `TOptionalErrorCode` parameters. An argument counts as a validation type only
+ * when it resolves to a reflection on this page (skipping `never`, inline
+ * unions, and cross-page references), so the page's own `*Validation` aliases
+ * are gathered while entry/value generics like `TEntry` are left alone.
+ */
+function collectFieldValidationTypes(members: DeclarationReflection[]): Set<DeclarationReflection> {
+  const memberSet = new Set(members)
+  const validationTypes = new Set<DeclarationReflection>()
+
+  const collectFromAlias = (alias: DeclarationReflection): void => {
+    if (!(alias.type instanceof ReferenceType) || alias.type.name !== 'HookFieldProps') return
+    const underlyingRef = alias.type.typeArguments?.[0]
+    if (!(underlyingRef instanceof ReferenceType)) return
+    const underlying = underlyingRef.reflection
+    if (!(underlying instanceof DeclarationReflection)) return
+    underlying.typeParameters?.forEach((param, index) => {
+      if (!VALIDATION_TYPE_PARAMS.has(param.name)) return
+      const arg = underlyingRef.typeArguments?.[index]
+      if (
+        arg instanceof ReferenceType &&
+        arg.reflection instanceof DeclarationReflection &&
+        memberSet.has(arg.reflection)
+      ) {
+        validationTypes.add(arg.reflection)
+      }
+    })
+  }
+
+  for (const member of members) {
+    if (member.kind === ReflectionKind.TypeAlias) {
+      collectFromAlias(member)
+    } else if (member.kind === ReflectionKind.Function) {
+      for (const sig of member.signatures ?? []) {
+        const propsRef = sig.parameters?.[0]?.type
+        if (
+          propsRef instanceof ReferenceType &&
+          propsRef.reflection instanceof DeclarationReflection
+        ) {
+          collectFromAlias(propsRef.reflection)
+        }
+      }
+    }
+  }
+
+  return validationTypes
+}
+
+/**
+ * Walk a type and collect the names of every page member it references.
+ *
+ * Matching is by name (against `memberNames`), not object identity: a type
+ * argument's resolved reflection can be a distinct instance from the declared
+ * member that carries the page anchor, yet they share a name. A reference that
+ * resolves to a child reflection (e.g. an error-code property reached via
+ * `typeof X.REQUIRED`) climbs to its nearest enclosing member (the `X` const),
+ * so the full code map is captured rather than a single property. Covers the
+ * type shapes that appear in validation and error-code aliases — `typeof X`,
+ * `typeof X[...]`, unions, intersections, arrays, and tuples.
+ */
+function collectReferencedMembers(
+  type: SomeType | undefined,
+  memberNames: Set<string>,
+  out: Set<string>,
+): void {
+  if (!type) return
+  if (type instanceof ReferenceType) {
+    let refl: Reflection | undefined = type.reflection ?? undefined
+    while (refl && !memberNames.has(refl.name)) {
+      refl = refl.parent
+    }
+    if (refl) out.add(refl.name)
+    for (const arg of type.typeArguments ?? []) collectReferencedMembers(arg, memberNames, out)
+    return
+  }
+  if (type instanceof UnionType || type instanceof IntersectionType) {
+    for (const member of type.types) collectReferencedMembers(member, memberNames, out)
+    return
+  }
+  if (type instanceof ArrayType) {
+    collectReferencedMembers(type.elementType, memberNames, out)
+    return
+  }
+  if (type instanceof TupleType) {
+    for (const element of type.elements) collectReferencedMembers(element, memberNames, out)
+    return
+  }
+  if (type instanceof IndexedAccessType) {
+    collectReferencedMembers(type.objectType, memberNames, out)
+    collectReferencedMembers(type.indexType, memberNames, out)
+    return
+  }
+  if (type instanceof QueryType) {
+    collectReferencedMembers(type.queryType, memberNames, out)
+  }
+}
 
 function kindGroupName(kind: ReflectionKind): string {
   switch (kind) {
@@ -188,11 +317,16 @@ function kindGroupName(kind: ReflectionKind): string {
  *
  * Within each hook-named group the primary hook function (member whose name
  * matches the group title) is sorted to the top.
+ *
+ * When `collapseUtilityTypes` is set (hook pages), the leftover kind-based
+ * groups — Variables, Interfaces, Type Aliases — are merged into one
+ * "Utility Types" group instead of standing as separate sections.
  */
 function groupSyntheticMembers(
   members: DeclarationReflection[],
   owner: DeclarationReflection,
   hookGroupMap?: Map<DeclarationReflection, string>,
+  collapseUtilityTypes = false,
 ): ReflectionGroup[] {
   const byTitle = new Map<string, DeclarationReflection[]>()
   for (const member of members) {
@@ -215,6 +349,112 @@ function groupSyntheticMembers(
       })
     } else {
       groupMembers.sort((a, b) => a.name.localeCompare(b.name))
+    }
+  }
+
+  // On hook pages, fold the generic kind-based buckets — everything not sorted
+  // into a named section (Props, Returns, Fields, Utility Hooks, …) — into a
+  // single "Utility Types" group, alphabetized across the merged set.
+  if (collapseUtilityTypes) {
+    // First lift out the field validation types (the error-code types passed as
+    // a field's `TErrorCode` / `TOptionalErrorCode` generic) into their own
+    // "Validations" section, ahead of the Utility Types catch-all.
+    //
+    // Membership is tracked by NAME against the page's own member objects:
+    // `collectFieldValidationTypes` and the type-graph walk can surface
+    // reflection instances distinct from (though identically named to) the
+    // declared members that own the page's anchors, so resolving each back to
+    // its canonical member keeps anchors intact and dedupes cleanly.
+    const seedRefs = collectFieldValidationTypes(members)
+    if (seedRefs.size > 0) {
+      const membersByName = new Map(members.map(member => [member.name, member]))
+      const memberNames = new Set(membersByName.keys())
+
+      const referenced = (type: SomeType | undefined): Set<string> => {
+        const out = new Set<string>()
+        collectReferencedMembers(type, memberNames, out)
+        return out
+      }
+
+      // Validation types: the transitive closure from each field's `TErrorCode`
+      // / `TOptionalErrorCode` argument over type-alias references. A composite
+      // such as `AmountValidation = RequiredValidation | NegativeAmountValidation`
+      // pulls in both operands even when they are not field generics themselves.
+      // The closure stops at the error-code map, which is a const (variable),
+      // not a type alias.
+      const validations = new Set<DeclarationReflection>()
+      const queue = [...seedRefs]
+        .map(ref => membersByName.get(ref.name))
+        .filter((member): member is DeclarationReflection => member !== undefined)
+      while (queue.length > 0) {
+        const validation = queue.pop()!
+        if (validations.has(validation) || validation.kind !== ReflectionKind.TypeAlias) continue
+        validations.add(validation)
+        for (const name of referenced(validation.type)) {
+          const ref = membersByName.get(name)
+          if (ref?.kind === ReflectionKind.TypeAlias && !validations.has(ref)) queue.push(ref)
+        }
+      }
+      const validationNames = new Set([...validations].map(v => v.name))
+
+      // The full code maps the validations are built from: the `XxxErrorCodes`
+      // const each validation references, plus the `XxxErrorCode` union derived
+      // solely from one of those maps. Found via the type graph, never names.
+      const codeMapNames = new Set<string>()
+      for (const validation of validations) {
+        for (const name of referenced(validation.type)) {
+          if (!validationNames.has(name)) codeMapNames.add(name)
+        }
+      }
+      const errorCodes = new Set<DeclarationReflection>()
+      for (const name of codeMapNames) {
+        const member = membersByName.get(name)
+        if (member) errorCodes.add(member)
+      }
+      for (const member of members) {
+        if (validationNames.has(member.name) || codeMapNames.has(member.name)) continue
+        // Field-props aliases (`HookFieldProps<…>`) inline a code reference but
+        // are not code types — skip them.
+        if (member.type instanceof ReferenceType && member.type.name === 'HookFieldProps') continue
+        const refNames = referenced(member.type)
+        // The union is a type alias derived solely from a code map — it
+        // references one (or more) of them and nothing else on the page.
+        if (refNames.size > 0 && [...refNames].every(name => codeMapNames.has(name))) {
+          errorCodes.add(member)
+        }
+      }
+
+      // Order: full code maps first (the `const` map ahead of its derived
+      // union), then the per-field validation types — each alphabetical.
+      const byKind = (a: DeclarationReflection, b: DeclarationReflection) => {
+        const rank = (r: DeclarationReflection) => (r.kind === ReflectionKind.Variable ? 0 : 1)
+        return rank(a) - rank(b) || a.name.localeCompare(b.name)
+      }
+      const ordered = [
+        ...[...errorCodes].sort(byKind),
+        ...[...validations].sort((a, b) => a.name.localeCompare(b.name)),
+      ]
+
+      const toMove = new Set(ordered.map(member => member.name))
+      for (const title of Array.from(byTitle.keys())) {
+        const remaining = byTitle.get(title)!.filter(member => !toMove.has(member.name))
+        if (remaining.length > 0) byTitle.set(title, remaining)
+        else byTitle.delete(title)
+      }
+      byTitle.set('Validations', ordered)
+    }
+
+    const merged: DeclarationReflection[] = []
+    for (const title of ['Variables', 'Interfaces', 'Type Aliases']) {
+      const bucket = byTitle.get(title)
+      if (bucket) {
+        merged.push(...bucket)
+        byTitle.delete(title)
+      }
+    }
+    if (merged.length > 0) {
+      merged.sort((a, b) => a.name.localeCompare(b.name))
+      byTitle.set('Utility Types', [...(byTitle.get('Utility Types') ?? []), ...merged])
     }
   }
 
@@ -479,7 +719,69 @@ export class SDKRouter extends MemberRouter {
       for (const [hookDir, hookMembers] of byHookDir) {
         const hookNs = new DeclarationReflection(hookDir, ReflectionKind.Namespace, project)
         hookNs.children = hookMembers
-        hookNs.groups = groupSyntheticMembers(hookMembers, hookNs)
+        hookNs.groups = groupSyntheticMembers(hookMembers, hookNs, undefined, true)
+        // Remove inlined types from groups by reflection identity, derived from
+        // the type graph: every hook's Ready interface and its `UseXxxResult`
+        // return-union alias are inlined in the Returns section, and its props
+        // are inlined under Parameters; a form hook additionally inlines its
+        // Fields — the flat interface as the quick-reference table, or the
+        // array alias (`StateTaxFields`) under its own `## Fields` section.
+        // FormData and derived-alias props stay visible as their own sections.
+        const inlined = new Set<DeclarationReflection>()
+        const memberDecls = hookMembers.filter(
+          (m): m is DeclarationReflection => m instanceof DeclarationReflection,
+        )
+        for (const member of hookMembers) {
+          if (
+            !(member instanceof DeclarationReflection) ||
+            member.kind !== ReflectionKind.Function
+          ) {
+            continue
+          }
+          const ready = getHookReadyInterface(member)
+          if (ready) {
+            inlined.add(ready)
+            const resultAlias = findHookResultAlias(memberDecls, ready)
+            if (resultAlias) inlined.add(resultAlias)
+          }
+          const model = getHookModel(member)
+          if (model) {
+            if (model.props.kind === 'interface') {
+              inlined.add(model.props.interface)
+            } else if (model.props.kind === 'union') {
+              inlined.add(model.props.alias)
+              if (model.props.shared) inlined.add(model.props.shared)
+            }
+          }
+          const formModel = getFormHookModel(member)
+          if (formModel?.fieldsInterface) inlined.add(formModel.fieldsInterface)
+          if (formModel?.fieldsArrayAlias) inlined.add(formModel.fieldsArrayAlias)
+        }
+        // Exported field-component functions (e.g. `SignatureField`, taking a
+        // single `*FieldProps` argument) are documented through the props-driven
+        // `## Fields` section, not as standalone members — inline them so they
+        // don't render duplicate `### XxxField` subsections.
+        for (const member of memberDecls) {
+          if (member.kind !== ReflectionKind.Function) continue
+          const paramType = member.signatures?.[0]?.parameters?.[0]?.type
+          if (paramType instanceof ReferenceType && paramType.name.endsWith('FieldProps')) {
+            inlined.add(member)
+          }
+        }
+        // Companion types tagged `@group Fields` (e.g. the per-variant
+        // `StateTaxQuestion*Field` aliases) render inside the page's `## Fields`
+        // section after the fields source-of-truth, not as their own group.
+        for (const member of memberDecls) {
+          if (hasGroup(member, 'Fields')) inlined.add(member)
+        }
+        if (inlined.size > 0) {
+          for (const group of hookNs.groups) {
+            group.children = group.children.filter(
+              c => !(c instanceof DeclarationReflection && inlined.has(c)),
+            )
+          }
+          hookNs.groups = hookNs.groups.filter(g => g.children.length > 0)
+        }
         const hookGuide = hookGuidesByDir.get(hookDir)
         if (hookGuide) this.hookGuides.set(hookNs, hookGuide)
         this.buildSyntheticPage(

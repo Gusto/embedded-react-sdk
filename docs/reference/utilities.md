@@ -63,7 +63,7 @@ return (
 
 ### composeErrorHandler()
 
-> **composeErrorHandler**(`sources`, `submitState?`): [`HookErrorHandling`](#hookerrorhandling)
+> **composeErrorHandler**(`sources`: [`MixedErrorSource`](#mixederrorsource)[], `submitState?`: [`SubmitStateForErrorHandling`](#submitstateforerrorhandling)): [`HookErrorHandling`](#hookerrorhandling)
 
 Merges multiple error sources into a single [HookErrorHandling](#hookerrorhandling).
 
@@ -128,7 +128,7 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 
 ### composeSubmitHandler()
 
-> **composeSubmitHandler**\<`TForms`\>(`forms`, `onAllValid`): `ComposeSubmitHandlerResult`
+> **composeSubmitHandler**\<`TForms`\>(`forms`: readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\], `onAllValid`: () => `Promise`\<`void`\>): `ComposeSubmitHandlerResult`
 
 Coordinates validation and submission across multiple form hooks on the same page.
 
@@ -615,7 +615,7 @@ attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
-| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
 ***
@@ -651,7 +651,7 @@ attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
-| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
@@ -718,7 +718,7 @@ attributes (`label`, `description`).
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
-| `transform?` | (`value`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
+| `transform?` | (`value`: `string`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code. |
 
 ## Type Aliases
@@ -814,7 +814,7 @@ and can be cleared together with `clearSubmitError`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `setSubmitError` | (`error`) => `void` | Sets or clears the submit error. |
+| `setSubmitError` | (`error`: [`SDKError`](index.md#sdkerror) \| `null`) => `void` | Sets or clears the submit error. |
 | `submitError` | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
 ***

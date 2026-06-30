@@ -11,306 +11,61 @@ custom_edit_url: null
 
 # useContractorDetailsForm
 
-## Components
-
-<a id="contractorbusinessnamefield"></a>
-
-### ContractorBusinessNameField
-
-Text input bound to the `businessName` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorBusinessNameFieldProps`](#contractorbusinessnamefieldprops) | [BusinessNameFieldProps](#contractorbusinessnamefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.BusinessName` for business
-contractors, in which case it is required.
-
-***
-
-<a id="contractoreinfield"></a>
-
-### ContractorEinField
-
-Text input bound to the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorEinFieldProps`](#contractoreinfieldprops) | [EinFieldProps](#contractoreinfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Ein` for business contractors.
-Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on
-file, the field shows a masked placeholder and the required rule is waived.
-
-***
-
-<a id="contractoremailfield"></a>
-
-### ContractorEmailField
-
-Text input bound to the `email` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorEmailFieldProps`](#contractoremailfieldprops) | [EmailFieldProps](#contractoremailfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Email` only when
-self-onboarding is enabled, in which case it is required (reported via the
-`REQUIRED` code).
-
-***
-
-<a id="contractorfilenewhirereportfield"></a>
-
-### ContractorFileNewHireReportField
-
-Switch bound to the `fileNewHireReport` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorFileNewHireReportFieldProps`](#contractorfilenewhirereportfieldprops) | [FileNewHireReportFieldProps](#contractorfilenewhirereportfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.FileNewHireReport` only for
-individual contractors. When enabled, a work state must be supplied so the
-new-hire report can be filed.
-
-***
-
-<a id="contractorfirstnamefield"></a>
-
-### ContractorFirstNameField
-
-Text input bound to the `firstName` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorFirstNameFieldProps`](#contractorfirstnamefieldprops) | [FirstNameFieldProps](#contractorfirstnamefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.FirstName` for individual
-contractors, in which case it is required.
-
-***
-
-<a id="contractorhourlyratefield"></a>
-
-### ContractorHourlyRateField
-
-Number input bound to the `hourlyRate` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorHourlyRateFieldProps`](#contractorhourlyratefieldprops) | [HourlyRateFieldProps](#contractorhourlyratefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.HourlyRate` only when
-`wageType` is `Hourly`, in which case it is required.
-
-***
-
-<a id="contractorlastnamefield"></a>
-
-### ContractorLastNameField
-
-Text input bound to the `lastName` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorLastNameFieldProps`](#contractorlastnamefieldprops) | [LastNameFieldProps](#contractorlastnamefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.LastName` for individual
-contractors, in which case it is required.
-
-***
-
-<a id="contractormiddleinitialfield"></a>
-
-### ContractorMiddleInitialField
-
-Text input bound to the `middleInitial` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorMiddleInitialFieldProps`](#contractormiddleinitialfieldprops) | [MiddleInitialFieldProps](#contractormiddleinitialfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.MiddleInitial` for individual
-contractors. Always optional.
-
-***
-
-<a id="contractorselfonboardingfield"></a>
-
-### ContractorSelfOnboardingField
-
-Switch bound to the `selfOnboarding` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorSelfOnboardingFieldProps`](#contractorselfonboardingfieldprops) | [SelfOnboardingFieldProps](#contractorselfonboardingfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.SelfOnboarding` only when the
-field is toggleable (create mode, or an onboarding status that still allows
-inviting the contractor). Always null-check before rendering. When enabled,
-the contractor is invited to enter their own details and SSN/EIN are no
-longer collected by the admin.
-
-***
-
-<a id="contractorssnfield"></a>
-
-### ContractorSsnField
-
-Text input bound to the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorSsnFieldProps`](#contractorssnfieldprops) | [SsnFieldProps](#contractorssnfieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Ssn` for individual contractors.
-Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already
-has an SSN on file, the field shows a masked placeholder and the required
-rule is waived.
-
-***
-
-<a id="contractorstartdatefield"></a>
-
-### ContractorStartDateField
-
-Date picker bound to the `startDate` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorStartDateFieldProps`](#contractorstartdatefieldprops) | [StartDateFieldProps](#contractorstartdatefieldprops). |
-
-#### Remarks
-
-Required on create; can be made required on update via
-`optionalFieldsToRequire`.
-
-***
-
-<a id="contractortypefield"></a>
-
-### ContractorTypeField
-
-Radio group bound to the `type` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorTypeFieldProps`](#contractortypefieldprops) | [TypeFieldProps](#contractortypefieldprops). |
-
-#### Remarks
-
-Selects whether the contractor is an `Individual` or a `Business`. Provide
-`getOptionLabel` to localize the option labels.
-
-***
-
-<a id="contractorwagetypefield"></a>
-
-### ContractorWageTypeField
-
-Radio group bound to the `wageType` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorWageTypeFieldProps`](#contractorwagetypefieldprops) | [WageTypeFieldProps](#contractorwagetypefieldprops). |
-
-#### Remarks
-
-Selects whether the contractor is paid `Fixed` or `Hourly`. Provide
-`getOptionLabel` to localize the option labels.
-
-***
-
-<a id="contractorworkstatefield"></a>
-
-### ContractorWorkStateField
-
-Select bound to the `workState` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`ContractorWorkStateFieldProps`](#contractorworkstatefieldprops) | [WorkStateFieldProps](#contractorworkstatefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.WorkState` for individual
-contractors when `fileNewHireReport` is enabled, in which case it is
-required.
-
-## Form Hooks
-
 <a id="usecontractordetailsform"></a>
 
-### useContractorDetailsForm()
-
-> **useContractorDetailsForm**(`input`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+> **useContractorDetailsForm**(`input`: [`UseContractorDetailsFormProps`](#usecontractordetailsformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
 
 Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
 self-onboarding preference.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`UseContractorDetailsFormProps`](#usecontractordetailsformprops) | See [UseContractorDetailsFormProps](#usecontractordetailsformprops). |
+```tsx title="Example"
+import {
+  useContractorDetailsForm,
+  SDKFormProvider,
+  type UseContractorDetailsFormReady,
+} from '@gusto/embedded-react-sdk'
 
-#### Returns
+function ContractorDetailsPage({
+  companyId,
+  contractorId,
+}: {
+  companyId: string
+  contractorId: string
+}) {
+  const contractorDetails = useContractorDetailsForm({ companyId, contractorId })
 
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+  if (contractorDetails.isLoading) return <div>Loading...</div>
 
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
+  return <ContractorDetailsReady contractorDetails={contractorDetails} />
+}
 
-#### Remarks
+function ContractorDetailsReady({
+  contractorDetails,
+}: {
+  contractorDetails: UseContractorDetailsFormReady
+}) {
+  const { Fields } = contractorDetails.form
+
+  return (
+    <SDKFormProvider formHookResult={contractorDetails}>
+      <form onSubmit={e => { e.preventDefault(); void contractorDetails.actions.onSubmit() }}>
+        <Fields.Type label="Contractor type" />
+        <Fields.WageType label="Wage type" />
+        {Fields.FirstName && <Fields.FirstName label="First name" />}
+        {Fields.LastName && <Fields.LastName label="Last name" />}
+        {Fields.BusinessName && <Fields.BusinessName label="Business name" />}
+        <Fields.StartDate label="Start date" />
+        <button type="submit" disabled={contractorDetails.status.isPending}>Save</button>
+      </form>
+    </SDKFormProvider>
+  )
+}
+```
+
+## Remarks
 
 Returns a discriminated union: a loading variant while the contractor fetch
 resolves, and a ready variant exposing the form's data, pending status,
@@ -321,7 +76,527 @@ SSN/EIN are exposed by contractor type regardless of self-onboarding — each
 consumer decides whether to render them. Self-onboarding is only toggleable
 when the contractor's onboarding status allows it.
 
-## Variables
+## Props
+
+### UseContractorDetailsFormProps
+
+<a id="usecontractordetailsformprops"></a>
+
+Options for [useContractorDetailsForm](#usecontractordetailsform).
+
+**Remarks**
+
+Discriminated by mode: in create mode supply `companyId` and omit
+`contractorId`; in update mode supply `contractorId` (and optionally
+`companyId`).
+
+**Shared options** — apply to every variant.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
+| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
+| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
+| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
+| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |
+
+Supply the fields for exactly one of the following variants:
+
+**Variant 1**
+
+| Property | Type |
+| ------ | ------ |
+| `companyId` | `string` |
+| `contractorId?` | `never` |
+
+**Variant 2**
+
+| Property | Type |
+| ------ | ------ |
+| `contractorId` | `string` |
+| `companyId?` | `string` |
+
+## Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseContractorDetailsFormReady](#usecontractordetailsformready) once ready.
+
+<a id="usecontractordetailsformresult"></a>
+
+### UseContractorDetailsFormResult
+
+> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
+
+Return type of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="usecontractordetailsformready"></a>
+
+### UseContractorDetailsFormReady
+
+The ready-state result returned by [useContractorDetailsForm](#usecontractordetailsform) once data has loaded.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `actions` | `object` | Submit and related actions. |
+| `actions.onSubmit` | (`options?`: [`ContractorDetailsSubmitOptions`](#contractordetailssubmitoptions)) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Contractor`](../../APIModels/index.md#contractor)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
+| `data` | `object` | The loaded contractor data, or `null` in create mode. |
+| `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) \| `null` | The contractor being edited, or `null` in create mode. |
+| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
+| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
+| `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |
+| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
+| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
+| `status` | `object` | Submit status and form mode. |
+| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
+| `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
+
+## Fields
+
+### ContractorDetailsFields
+
+<a id="contractordetailsfields"></a>
+
+The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `StartDate` | `ComponentType`\<[`StartDateFieldProps`](#contractorstartdatefieldprops)\> | Date picker bound to `startDate`. Always available. |
+| `Type` | `ComponentType`\<[`TypeFieldProps`](#contractortypefieldprops)\> | Radio group bound to `type`. Always available. |
+| `WageType` | `ComponentType`\<[`WageTypeFieldProps`](#contractorwagetypefieldprops)\> | Radio group bound to `wageType`. Always available. |
+| `BusinessName` | `ComponentType`\<[`BusinessNameFieldProps`](#contractorbusinessnamefieldprops)\> \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
+| `Ein` | `ComponentType`\<[`EinFieldProps`](#contractoreinfieldprops)\> \| `undefined` | Text input bound to `ein`; available only for business contractors. |
+| `Email` | `ComponentType`\<[`EmailFieldProps`](#contractoremailfieldprops)\> \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
+| `FileNewHireReport` | `ComponentType`\<[`FileNewHireReportFieldProps`](#contractorfilenewhirereportfieldprops)\> \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
+| `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#contractorfirstnamefieldprops)\> \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
+| `HourlyRate` | `ComponentType`\<[`HourlyRateFieldProps`](#contractorhourlyratefieldprops)\> \| `undefined` | Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`. |
+| `LastName` | `ComponentType`\<[`LastNameFieldProps`](#contractorlastnamefieldprops)\> \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
+| `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#contractormiddleinitialfieldprops)\> \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
+| `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#contractorselfonboardingfieldprops)\> \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
+| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#contractorssnfieldprops)\> \| `undefined` | Text input bound to `ssn`; available only for individual contractors. |
+| `WorkState` | `ComponentType`\<[`WorkStateFieldProps`](#contractorworkstatefieldprops)\> \| `undefined` | Select bound to `workState`; available only for individual contractors filing a new-hire report. |
+
+***
+
+### BusinessName
+
+Text input bound to `businessName`; available only for business contractors.
+
+```tsx
+{form.Fields.BusinessName && (
+  <form.Fields.BusinessName
+    label="Business name"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractorbusinessnamefieldprops"></a>
+
+#### ContractorBusinessNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.BusinessName` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### Ein
+
+Text input bound to `ein`; available only for business contractors.
+
+```tsx
+{form.Fields.Ein && (
+  <form.Fields.Ein
+    label="Ein"
+    validationMessages={{ INVALID_EIN: '…', REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractoreinfieldprops"></a>
+
+#### ContractorEinFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### Email
+
+Text input bound to `email`; available only when self-onboarding is enabled.
+
+```tsx
+{form.Fields.Email && (
+  <form.Fields.Email
+    label="Email"
+    validationMessages={{ REQUIRED: '…', INVALID_EMAIL: '…' }}
+  />
+)}
+```
+
+<a id="contractoremailfieldprops"></a>
+
+#### ContractorEmailFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Email` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### FileNewHireReport
+
+Switch bound to `fileNewHireReport`; available only for individual contractors.
+
+```tsx
+{form.Fields.FileNewHireReport && (
+  <form.Fields.FileNewHireReport label="File new hire report" />
+)}
+```
+
+<a id="contractorfilenewhirereportfieldprops"></a>
+
+#### ContractorFileNewHireReportFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](../../component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
+
+_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
+
+***
+
+### FirstName
+
+Text input bound to `firstName`; available only for individual contractors.
+
+```tsx
+{form.Fields.FirstName && (
+  <form.Fields.FirstName
+    label="First name"
+    validationMessages={{ REQUIRED: '…', INVALID_NAME: '…' }}
+  />
+)}
+```
+
+<a id="contractorfirstnamefieldprops"></a>
+
+#### ContractorFirstNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FirstName` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### HourlyRate
+
+Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`.
+
+```tsx
+{form.Fields.HourlyRate && (
+  <form.Fields.HourlyRate
+    label="Hourly rate"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractorhourlyratefieldprops"></a>
+
+#### ContractorHourlyRateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`NumberInputProps`](../../component-inventory.md#numberinputprops)\> | Replaces the default number input UI component; must accept the same props as `NumberInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placeholder` from [NumberInputHookFieldProps](../../utilities.md#numberinputhookfieldprops)._
+
+***
+
+### LastName
+
+Text input bound to `lastName`; available only for individual contractors.
+
+```tsx
+{form.Fields.LastName && (
+  <form.Fields.LastName
+    label="Last name"
+    validationMessages={{ REQUIRED: '…', INVALID_NAME: '…' }}
+  />
+)}
+```
+
+<a id="contractorlastnamefieldprops"></a>
+
+#### ContractorLastNameFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.LastName` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### MiddleInitial
+
+Text input bound to `middleInitial`; available only for individual contractors.
+
+```tsx
+{form.Fields.MiddleInitial && (
+  <form.Fields.MiddleInitial
+    label="Middle initial"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractormiddleinitialfieldprops"></a>
+
+#### ContractorMiddleInitialFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### SelfOnboarding
+
+Switch bound to `selfOnboarding`; available only when toggleable.
+
+```tsx
+{form.Fields.SelfOnboarding && (
+  <form.Fields.SelfOnboarding label="Self onboarding" />
+)}
+```
+
+<a id="contractorselfonboardingfieldprops"></a>
+
+#### ContractorSelfOnboardingFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.SelfOnboarding` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`SwitchProps`](../../component-inventory.md#switchprops)\> | Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. |
+
+_Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../utilities.md#switchhookfieldprops)._
+
+***
+
+### Ssn
+
+Text input bound to `ssn`; available only for individual contractors.
+
+```tsx
+{form.Fields.Ssn && (
+  <form.Fields.Ssn
+    label="Ssn"
+    validationMessages={{ INVALID_SSN: '…', REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractorssnfieldprops"></a>
+
+#### ContractorSsnFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ssn` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`TextInputProps`](../../component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [TextInputHookFieldProps](../../utilities.md#textinputhookfieldprops)._
+
+***
+
+### StartDate
+
+Date picker bound to `startDate`. Always available.
+
+```tsx
+<form.Fields.StartDate
+  label="Start date"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="contractorstartdatefieldprops"></a>
+
+#### ContractorStartDateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`DatePickerProps`](../../component-inventory.md#datepickerprops)\> | Replaces the default date picker UI component; must accept the same props as `DatePickerProps`. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalContainer` from [DatePickerHookFieldProps](../../utilities.md#datepickerhookfieldprops)._
+
+***
+
+### Type
+
+Radio group bound to `type`. Always available.
+
+```tsx
+<form.Fields.Type label="Type" />
+```
+
+<a id="contractortypefieldprops"></a>
+
+#### ContractorTypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Type` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+***
+
+### WageType
+
+Radio group bound to `wageType`. Always available.
+
+```tsx
+<form.Fields.WageType label="Wage type" />
+```
+
+<a id="contractorwagetypefieldprops"></a>
+
+#### ContractorWageTypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+***
+
+### WorkState
+
+Select bound to `workState`; available only for individual contractors filing a new-hire report.
+
+```tsx
+{form.Fields.WorkState && (
+  <form.Fields.WorkState
+    label="Work state"
+    validationMessages={{ REQUIRED: '…' }}
+  />
+)}
+```
+
+<a id="contractorworkstatefieldprops"></a>
+
+#### ContractorWorkStateFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
+
+Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WorkState` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `placeholder` | `string` | Placeholder text displayed when no option is selected. Required so empty dropdowns always communicate the action — pass an empty string only when a default value is guaranteed. |
+| `FieldComponent?` | `ComponentType`\<[`SelectProps`](../../component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
+| `getOptionLabel?` | (`entry`: `string`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHookFieldProps](../../utilities.md#selecthookfieldprops)._
+
+## Validations
 
 <a id="contractordetailserrorcodes"></a>
 
@@ -342,6 +617,170 @@ hook.
 | `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
 | `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
 | `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+
+***
+
+<a id="contractordetailserrorcode"></a>
+
+### ContractorDetailsErrorCode
+
+> **ContractorDetailsErrorCode** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[keyof *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\]
+
+Union of validation error code strings emitted by the contractor details
+form schema.
+
+***
+
+<a id="contractordetailseinrequiredvalidation"></a>
+
+### ContractorDetailsEinRequiredValidation
+
+> **ContractorDetailsEinRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
+
+Required-field error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailseinvalidation"></a>
+
+### ContractorDetailsEinValidation
+
+> **ContractorDetailsEinValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_EIN`
+
+Format-validation error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsemailvalidation"></a>
+
+### ContractorDetailsEmailValidation
+
+> **ContractorDetailsEmailValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"`\]
+
+Validation error codes emitted by the `email` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsnamevalidation"></a>
+
+### ContractorDetailsNameValidation
+
+> **ContractorDetailsNameValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
+
+Validation error codes emitted by the name fields of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsrequiredvalidation"></a>
+
+### ContractorDetailsRequiredValidation
+
+> **ContractorDetailsRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
+
+Error code emitted by fields of [useContractorDetailsForm](#usecontractordetailsform) that only
+produce `REQUIRED`.
+
+***
+
+<a id="contractordetailsssnrequiredvalidation"></a>
+
+### ContractorDetailsSsnRequiredValidation
+
+> **ContractorDetailsSsnRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
+
+Required-field error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsssnvalidation"></a>
+
+### ContractorDetailsSsnValidation
+
+> **ContractorDetailsSsnValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_SSN`
+
+Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+## Utility Types
+<a id="contractordetailsfieldsmetadata"></a>
+
+### ContractorDetailsFieldsMetadata
+
+> **ContractorDetailsFieldsMetadata** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+
+Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsformdata"></a>
+
+### ContractorDetailsFormData
+
+Shape of the values managed by the contractor details form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `businessName` | `string` |
+| `ein` | `string` |
+| `email` | `string` |
+| `fileNewHireReport` | `boolean` |
+| `firstName` | `string` |
+| `hourlyRate` | `number` |
+| `lastName` | `string` |
+| `middleInitial` | `string` |
+| `selfOnboarding` | `boolean` |
+| `ssn` | `string` |
+| `startDate` | `string` |
+| `type` | `"Business"` \| `"Individual"` |
+| `wageType` | `"Fixed"` \| `"Hourly"` |
+| `workState` | `string` |
+
+***
+
+<a id="contractordetailsformfields"></a>
+
+### ContractorDetailsFormFields
+
+> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
+
+Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsformoutputs"></a>
+
+### ContractorDetailsFormOutputs
+
+> **ContractorDetailsFormOutputs** = [`ContractorDetailsFormData`](#contractordetailsformdata)
+
+Shape of the validated values produced by the contractor details form on
+submit.
+
+***
+
+<a id="contractordetailsoptionalfieldstorequire"></a>
+
+### ContractorDetailsOptionalFieldsToRequire
+
+> **ContractorDetailsOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
+
+Keys of optional contractor details fields that can be promoted to required
+via the hook's `optionalFieldsToRequire` option.
+
+***
+
+<a id="contractordetailssubmitoptions"></a>
+
+### ContractorDetailsSubmitOptions
+
+Optional overrides passed to [onSubmit](#usecontractordetailsformready).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId?` | `string` | Override the company identifier supplied to the hook (e.g. after creating the company in the same flow). Only used in create mode. |
 
 ***
 
@@ -376,401 +815,3 @@ Contractor wage type enum (`Fixed` / `Hourly`) re-exported from the API model.
 | ------ | ------ |
 | `Fixed` | `"Fixed"` |
 | `Hourly` | `"Hourly"` |
-
-## Interfaces
-
-<a id="contractordetailsfields"></a>
-
-### ContractorDetailsFields
-
-The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
-
-#### Remarks
-
-Conditionally-visible fields are `undefined` when they do not apply to the
-current `type`, `wageType`, or self-onboarding selection. Always null-check
-before rendering.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `BusinessName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
-| `Ein` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ein`; available only for business contractors. |
-| `Email` | ((`props`) => `Element`) \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
-| `FileNewHireReport` | ((`props`) => `Element`) \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
-| `FirstName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
-| `HourlyRate` | ((`props`) => `Element`) \| `undefined` | Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`. |
-| `LastName` | ((`props`) => `Element`) \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
-| `MiddleInitial` | ((`props`) => `Element`) \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
-| `SelfOnboarding` | ((`props`) => `Element`) \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
-| `Ssn` | ((`props`) => `Element`) \| `undefined` | Text input bound to `ssn`; available only for individual contractors. |
-| `StartDate` | (`props`) => `Element` | Date picker bound to `startDate`. Always available. |
-| `Type` | (`props`) => `Element` | Radio group bound to `type`. Always available. |
-| `WageType` | (`props`) => `Element` | Radio group bound to `wageType`. Always available. |
-| `WorkState` | ((`props`) => `Element`) \| `undefined` | Select bound to `workState`; available only for individual contractors filing a new-hire report. |
-
-***
-
-<a id="contractordetailssubmitoptions"></a>
-
-### ContractorDetailsSubmitOptions
-
-Optional overrides passed to [onSubmit](#usecontractordetailsformready).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId?` | `string` | Override the company identifier supplied to the hook (e.g. after creating the company in the same flow). Only used in create mode. |
-
-***
-
-<a id="usecontractordetailsformready"></a>
-
-### UseContractorDetailsFormReady
-
-The ready-state result returned by [useContractorDetailsForm](#usecontractordetailsform) once data has loaded.
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`ContractorDetailsFormData`](#contractordetailsformdata), [`ContractorDetailsFields`](#contractordetailsfields)\>
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `actions` | `object` | Submit and related actions. |
-| `actions.onSubmit` | (`options?`) => `Promise`\<[`HookSubmitResult`](../../utilities.md#hooksubmitresult)\<[`Contractor`](../../APIModels/index.md#contractor)\> \| `undefined`\> | Validates the form and submits the changes. Returns the created or updated contractor, or `undefined` when validation fails. |
-| `data` | `object` | The loaded contractor data, or `null` in create mode. |
-| `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) \| `null` | The contractor being edited, or `null` in create mode. |
-| `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
-| `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
-| `status` | `object` | Submit status and form mode. |
-| `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
-| `status.mode` | `"create"` \| `"update"` | `'create'` when no `contractorId` was supplied, `'update'` otherwise. |
-
-## Type Aliases
-
-<a id="contractorbusinessnamefieldprops"></a>
-
-### ContractorBusinessNameFieldProps
-
-> **ContractorBusinessNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.BusinessName` component.
-
-***
-
-<a id="contractordetailseinrequiredvalidation"></a>
-
-### ContractorDetailsEinRequiredValidation
-
-> **ContractorDetailsEinRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Required-field error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailseinvalidation"></a>
-
-### ContractorDetailsEinValidation
-
-> **ContractorDetailsEinValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_EIN`
-
-Format-validation error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsemailvalidation"></a>
-
-### ContractorDetailsEmailValidation
-
-> **ContractorDetailsEmailValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"`\]
-
-Validation error codes emitted by the `email` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailserrorcode"></a>
-
-### ContractorDetailsErrorCode
-
-> **ContractorDetailsErrorCode** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[keyof *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\]
-
-Union of validation error code strings emitted by the contractor details
-form schema.
-
-***
-
-<a id="contractordetailsfieldsmetadata"></a>
-
-### ContractorDetailsFieldsMetadata
-
-> **ContractorDetailsFieldsMetadata** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
-Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsformdata"></a>
-
-### ContractorDetailsFormData
-
-> **ContractorDetailsFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
-
-Shape of the values managed by the contractor details form.
-
-***
-
-<a id="contractordetailsformfields"></a>
-
-### ContractorDetailsFormFields
-
-> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsformoutputs"></a>
-
-### ContractorDetailsFormOutputs
-
-> **ContractorDetailsFormOutputs** = [`ContractorDetailsFormData`](#contractordetailsformdata)
-
-Shape of the validated values produced by the contractor details form on
-submit.
-
-***
-
-<a id="contractordetailsnamevalidation"></a>
-
-### ContractorDetailsNameValidation
-
-> **ContractorDetailsNameValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
-
-Validation error codes emitted by the name fields of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsoptionalfieldstorequire"></a>
-
-### ContractorDetailsOptionalFieldsToRequire
-
-> **ContractorDetailsOptionalFieldsToRequire** = `OptionalFieldsToRequire`\<*typeof* `requiredFieldsConfig`\>
-
-Keys of optional contractor details fields that can be promoted to required
-via the hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="contractordetailsrequiredvalidation"></a>
-
-### ContractorDetailsRequiredValidation
-
-> **ContractorDetailsRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Error code emitted by fields of [useContractorDetailsForm](#usecontractordetailsform) that only
-produce `REQUIRED`.
-
-***
-
-<a id="contractordetailsssnrequiredvalidation"></a>
-
-### ContractorDetailsSsnRequiredValidation
-
-> **ContractorDetailsSsnRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Required-field error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsssnvalidation"></a>
-
-### ContractorDetailsSsnValidation
-
-> **ContractorDetailsSsnValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_SSN`
-
-Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractoreinfieldprops"></a>
-
-### ContractorEinFieldProps
-
-> **ContractorEinFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEinValidation`](#contractordetailseinvalidation), [`ContractorDetailsEinRequiredValidation`](#contractordetailseinrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ein` component.
-
-***
-
-<a id="contractoremailfieldprops"></a>
-
-### ContractorEmailFieldProps
-
-> **ContractorEmailFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsEmailValidation`](#contractordetailsemailvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Email` component.
-
-***
-
-<a id="contractorfilenewhirereportfieldprops"></a>
-
-### ContractorFileNewHireReportFieldProps
-
-> **ContractorFileNewHireReportFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FileNewHireReport` component.
-
-***
-
-<a id="contractorfirstnamefieldprops"></a>
-
-### ContractorFirstNameFieldProps
-
-> **ContractorFirstNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.FirstName` component.
-
-***
-
-<a id="contractorhourlyratefieldprops"></a>
-
-### ContractorHourlyRateFieldProps
-
-> **ContractorHourlyRateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`NumberInputHookFieldProps`](../../utilities.md#numberinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.HourlyRate` component.
-
-***
-
-<a id="contractorlastnamefieldprops"></a>
-
-### ContractorLastNameFieldProps
-
-> **ContractorLastNameFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsNameValidation`](#contractordetailsnamevalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.LastName` component.
-
-***
-
-<a id="contractormiddleinitialfieldprops"></a>
-
-### ContractorMiddleInitialFieldProps
-
-> **ContractorMiddleInitialFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.MiddleInitial` component.
-
-***
-
-<a id="contractorselfonboardingfieldprops"></a>
-
-### ContractorSelfOnboardingFieldProps
-
-> **ContractorSelfOnboardingFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SwitchHookFieldProps`](../../utilities.md#switchhookfieldprops)\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.SelfOnboarding` component.
-
-***
-
-<a id="contractorssnfieldprops"></a>
-
-### ContractorSsnFieldProps
-
-> **ContractorSsnFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`TextInputHookFieldProps`](../../utilities.md#textinputhookfieldprops)\<[`ContractorDetailsSsnValidation`](#contractordetailsssnvalidation), [`ContractorDetailsSsnRequiredValidation`](#contractordetailsssnrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Ssn` component.
-
-***
-
-<a id="contractorstartdatefieldprops"></a>
-
-### ContractorStartDateFieldProps
-
-> **ContractorStartDateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`DatePickerHookFieldProps`](../../utilities.md#datepickerhookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation)\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.StartDate` component.
-
-***
-
-<a id="contractortypefieldprops"></a>
-
-### ContractorTypeFieldProps
-
-> **ContractorTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"type"`\]\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.Type` component.
-
-***
-
-<a id="contractorwagetypefieldprops"></a>
-
-### ContractorWageTypeFieldProps
-
-> **ContractorWageTypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<`never`, [`ContractorDetailsFormData`](#contractordetailsformdata)\[`"wageType"`\]\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WageType` component.
-
-***
-
-<a id="contractorworkstatefieldprops"></a>
-
-### ContractorWorkStateFieldProps
-
-> **ContractorWorkStateFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`SelectHookFieldProps`](../../utilities.md#selecthookfieldprops)\<[`ContractorDetailsRequiredValidation`](#contractordetailsrequiredvalidation), `string`\>\>
-
-Props accepted by [useContractorDetailsForm](#usecontractordetailsform)'s `Fields.WorkState` component.
-
-***
-
-<a id="usecontractordetailsformprops"></a>
-
-### UseContractorDetailsFormProps
-
-> **UseContractorDetailsFormProps** = [`UseContractorDetailsFormSharedProps`](#usecontractordetailsformsharedprops) & `object` \| [`UseContractorDetailsFormSharedProps`](#usecontractordetailsformsharedprops) & `object`
-
-Options for [useContractorDetailsForm](#usecontractordetailsform).
-
-#### Remarks
-
-Discriminated by mode: in create mode supply `companyId` and omit
-`contractorId`; in update mode supply `contractorId` (and optionally
-`companyId`).
-
-***
-
-<a id="usecontractordetailsformresult"></a>
-
-### UseContractorDetailsFormResult
-
-> **UseContractorDetailsFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseContractorDetailsFormReady`](#usecontractordetailsformready)
-
-Return type of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="usecontractordetailsformsharedprops"></a>
-
-### UseContractorDetailsFormSharedProps
-
-> **UseContractorDetailsFormSharedProps** = `object`
-
-Shared options merged into both branches of [UseContractorDetailsFormProps](#usecontractordetailsformprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `defaultValues?` | `Partial`\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | Initial values applied before any contractor data loads. |
-| `optionalFieldsToRequire?` | [`ContractorDetailsOptionalFieldsToRequire`](#contractordetailsoptionalfieldstorequire) | Fields that are optional by default but should be promoted to required for this form instance. |
-| `shouldFocusError?` | `boolean` | Whether react-hook-form should focus the first error on validation failure. Defaults to `true`. |
-| `validationMode?` | `UseFormProps`\[`"mode"`\] | When validation runs. Forwarded to react-hook-form's `mode`. Defaults to `'onSubmit'`. |
-| `withSelfOnboardingField?` | `boolean` | Whether to expose the self-onboarding toggle as `form.Fields.SelfOnboarding`. Defaults to `true`. |

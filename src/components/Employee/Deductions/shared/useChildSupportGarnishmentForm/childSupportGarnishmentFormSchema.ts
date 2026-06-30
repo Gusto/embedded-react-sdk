@@ -102,6 +102,7 @@ const fieldValidators = {
  * Shape of the values managed by the child support garnishment form.
  *
  * @public
+ * @interface
  */
 export type ChildSupportGarnishmentFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

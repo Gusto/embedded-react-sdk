@@ -82,7 +82,7 @@ export interface UseSplitPaymentsFormProps {
  * @public
  */
 export interface SplitPaymentsFormFields {
-  /** Bound to `splitBy` — see {@link SplitByField}. */
+  /** Radio group bound to `splitBy`; selects Percentage or Amount split mode. */
   SplitBy: ComponentType<SplitByFieldProps>
   /** One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount. */
   splits: SplitFieldEntry[]
@@ -232,7 +232,7 @@ export function useSplitPaymentsForm({
   optionalFieldsToRequire,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady {
+}: UseSplitPaymentsFormProps): UseSplitPaymentsFormResult {
   const paymentMethodQuery = useEmployeePaymentMethodGet({ employeeId })
   const bankAccountsQuery = useEmployeePaymentMethodsGetBankAccounts({ employeeId })
 

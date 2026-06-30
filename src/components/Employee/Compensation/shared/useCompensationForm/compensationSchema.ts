@@ -120,6 +120,7 @@ const fieldValidators = {
  * (requiredness is enforced on submit per mode).
  *
  * @public
+ * @interface
  */
 export type CompensationFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>

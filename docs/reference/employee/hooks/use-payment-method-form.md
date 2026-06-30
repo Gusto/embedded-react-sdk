@@ -11,59 +11,15 @@ custom_edit_url: null
 
 # usePaymentMethodForm
 
-## Components
-
-<a id="paymentmethodtypefield"></a>
-
-### PaymentMethodTypeField
-
-Radio group bound to the `type` field of [usePaymentMethodForm](#usepaymentmethodform).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`TypeFieldProps`](#typefieldprops) | See [TypeFieldProps](#typefieldprops). |
-
-#### Remarks
-
-Available on the hook result as `form.Fields.Type`. Options are
-`Direct Deposit` and `Check`; defaults to the employee's existing payment
-method type. Supply `getOptionLabel` to translate the option labels.
-
-## Form Hooks
-
 <a id="usepaymentmethodform"></a>
 
-### usePaymentMethodForm()
-
-> **usePaymentMethodForm**(`props`): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+> **usePaymentMethodForm**(`props`: [`UsePaymentMethodFormProps`](#usepaymentmethodformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
 
 Headless React Hook Form hook for updating an employee's payment method.
 
-#### Parameters
+## Example
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UsePaymentMethodFormProps`](#usepaymentmethodformprops) | See [UsePaymentMethodFormProps](#usepaymentmethodformprops). |
-
-#### Returns
-
-[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
-
-A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
-
-#### Remarks
-
-Switches between Direct Deposit and Check. Always operates in update mode —
-every employee has a payment method, defaulting to Check. Switching to Check
-sends a minimal request body; switching to or staying on Direct Deposit
-preserves the existing splits and version so split allocations are not lost
-when only the type changes.
-
-#### Example
-
-```tsx
+```tsx title="Example"
 import {
   usePaymentMethodForm,
   SDKFormProvider,
@@ -98,56 +54,21 @@ function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
 }
 ```
 
-## Variables
+## Remarks
 
-<a id="payment_method_types"></a>
+Switches between Direct Deposit and Check. Always operates in update mode —
+every employee has a payment method, defaulting to Check. Switching to Check
+sends a minimal request body; switching to or staying on Direct Deposit
+preserves the existing splits and version so split allocations are not lost
+when only the type changes.
 
-### PAYMENT\_METHOD\_TYPES
-
-> `const` **PAYMENT\_METHOD\_TYPES**: readonly \[`"Direct Deposit"`, `"Check"`\]
-
-Supported payment method type values: direct deposit and check.
-
-***
-
-<a id="paymentmethodformerrorcodes"></a>
-
-### PaymentMethodFormErrorCodes
-
-> `const` **PaymentMethodFormErrorCodes**: `object`
-
-Validation error codes emitted by the payment method form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-## Interfaces
-
-<a id="paymentmethodformfields"></a>
-
-### PaymentMethodFormFields
-
-Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `Type` | (`props`) => `Element` | Bound to `type` — see [TypeField](#paymentmethodtypefield). |
-
-***
-
-<a id="usepaymentmethodformprops"></a>
+## Props
 
 ### UsePaymentMethodFormProps
 
-Props for [usePaymentMethodForm](#usepaymentmethodform).
+<a id="usepaymentmethodformprops"></a>
 
-#### Properties
+Props for [usePaymentMethodForm](#usepaymentmethodform).
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -157,6 +78,20 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 | `shouldFocusError?` | `boolean` | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. Defaults to `true`. |
 | `validationMode?` | `"onChange"` \| `"onBlur"` \| `"onSubmit"` \| `"onTouched"` \| `"all"` | When validation runs. Passed through to react-hook-form. Defaults to `'onSubmit'`. |
 
+## Returns
+
+[`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+
+A loading-state result while the current payment method is loading, or a [UsePaymentMethodFormReady](#usepaymentmethodformready) once ready.
+
+<a id="usepaymentmethodformresult"></a>
+
+### UsePaymentMethodFormResult
+
+> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
+
+Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.
+
 ***
 
 <a id="usepaymentmethodformready"></a>
@@ -164,12 +99,6 @@ Props for [usePaymentMethodForm](#usepaymentmethodform).
 ### UsePaymentMethodFormReady
 
 Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
-
-#### Extends
-
-- [`BaseFormHookReady`](../../utilities.md#baseformhookready)\<[`FieldsMetadata`](../../utilities.md#fieldsmetadata), [`PaymentMethodFormData`](#paymentmethodformdata), [`PaymentMethodFormFields`](#paymentmethodformfields)\>
-
-#### Properties
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -188,15 +117,64 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `status.isPending` | `boolean` | - |
 | `status.mode` | `"update"` | - |
 
-## Type Aliases
+## Fields
 
-<a id="paymentmethodformdata"></a>
+### PaymentMethodFormFields
 
-### PaymentMethodFormData
+<a id="paymentmethodformfields"></a>
 
-> **PaymentMethodFormData** = `{ [K in keyof typeof fieldValidators]: z.infer<typeof fieldValidators[K]> }`
+Field components exposed by [usePaymentMethodForm](#usepaymentmethodform) on `form.Fields`.
 
-Shape of the values managed by the payment method form.
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `Type` | `ComponentType`\<[`TypeFieldProps`](#typefieldprops)\> | Bound to `type`. |
+
+***
+
+### Type
+
+Bound to `type`.
+
+```tsx
+<form.Fields.Type
+  label="Type"
+  validationMessages={{ REQUIRED: '…' }}
+/>
+```
+
+<a id="typefieldprops"></a>
+
+#### TypeFieldProps
+
+> [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
+
+Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Visible label rendered above the field. |
+| `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](../../component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
+| `getOptionLabel?` | (`entry`: [`PaymentMethodType`](#paymentmethodtype)) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `validationMessages?` | [`ValidationMessages`](../../utilities.md#validationmessages)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation)\> | Custom error text keyed by validation error code. |
+
+_Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
+
+## Validations
+
+<a id="paymentmethodformerrorcodes"></a>
+
+### PaymentMethodFormErrorCodes
+
+> `const` **PaymentMethodFormErrorCodes**: `object`
+
+Validation error codes emitted by the payment method form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
 
 ***
 
@@ -208,6 +186,39 @@ Shape of the values managed by the payment method form.
 
 Union of validation error code strings emitted by the payment method form
 schema.
+
+***
+
+<a id="paymentmethodformrequiredvalidation"></a>
+
+### PaymentMethodFormRequiredValidation
+
+> **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
+
+Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
+
+## Utility Types
+<a id="payment_method_types"></a>
+
+### PAYMENT\_METHOD\_TYPES
+
+> `const` **PAYMENT\_METHOD\_TYPES**: readonly \[`"Direct Deposit"`, `"Check"`\]
+
+Supported payment method type values: direct deposit and check.
+
+***
+
+<a id="paymentmethodformdata"></a>
+
+### PaymentMethodFormData
+
+Shape of the values managed by the payment method form.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| `type` | `"Check"` \| `"Direct Deposit"` |
 
 ***
 
@@ -252,16 +263,6 @@ Shape of the validated values produced by the payment method form on submit.
 
 ***
 
-<a id="paymentmethodformrequiredvalidation"></a>
-
-### PaymentMethodFormRequiredValidation
-
-> **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
-
-Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
-
-***
-
 <a id="paymentmethodtype"></a>
 
 ### PaymentMethodType
@@ -271,21 +272,3 @@ Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) 
 Union of payment method type values that the form accepts.
 
 ***
-
-<a id="typefieldprops"></a>
-
-### TypeFieldProps
-
-> **TypeFieldProps** = [`HookFieldProps`](../../utilities.md#hookfieldprops)\<[`RadioGroupHookFieldProps`](../../utilities.md#radiogrouphookfieldprops)\<[`PaymentMethodFormRequiredValidation`](#paymentmethodformrequiredvalidation), [`PaymentMethodType`](#paymentmethodtype)\>\>
-
-Props accepted by [usePaymentMethodForm](#usepaymentmethodform)'s `Fields.Type` component.
-
-***
-
-<a id="usepaymentmethodformresult"></a>
-
-### UsePaymentMethodFormResult
-
-> **UsePaymentMethodFormResult** = [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UsePaymentMethodFormReady`](#usepaymentmethodformready)
-
-Return type of [usePaymentMethodForm](#usepaymentmethodform) — a discriminated union on `isLoading`.

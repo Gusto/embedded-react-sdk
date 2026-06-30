@@ -54,6 +54,7 @@ export type PaymentMethodFormField = keyof typeof fieldValidators
  * Shape of the values managed by the payment method form.
  *
  * @public
+ * @interface
  */
 export type PaymentMethodFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
