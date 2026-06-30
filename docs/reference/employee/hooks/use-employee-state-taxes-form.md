@@ -130,7 +130,7 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`StateTaxFields`](#statetaxfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission status. `mode` is always `'update'` since state-tax records are created with the employee. |

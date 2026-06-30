@@ -110,7 +110,7 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`PaymentMethodFormData`](#paymentmethodformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. |

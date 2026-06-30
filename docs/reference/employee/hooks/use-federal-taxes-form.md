@@ -113,7 +113,7 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`FederalTaxesFormData`](#federaltaxesformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |

@@ -270,7 +270,7 @@ parsed values (or `undefined` if invalid).
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | `TFields` | - |
 | `form.fieldsMetadata` | `TFieldsMetadata` | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => `TFormData` \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
 | `status` | `object` | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |

@@ -109,7 +109,7 @@ Ready-state return value of [useContractorBankAccountForm](#usecontractorbankacc
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorBankAccountFormFields`](#contractorbankaccountformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`ContractorBankAccountFormData`](#contractorbankaccountformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight create mutation; `mode` is always `'create'`. |

@@ -746,7 +746,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
         Fields: TFields;
         fieldsMetadata: TFieldsMetadata;
         hookFormInternals: HookFormInternals<TFormData>;
-        getFormSubmissionValues: () => Record<string, unknown> | undefined;
+        getFormSubmissionValues: () => TFormData | undefined;
     };
     isLoading: false;
     status: {
