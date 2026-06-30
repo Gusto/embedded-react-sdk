@@ -68,6 +68,64 @@ Look up the flows or blocks your app uses, substitute `:param` placeholders with
 
 See the [endpoint reference tables](../appendix/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
 
+## Content Security Policy
+
+The SDK ships a static stylesheet at `@gusto/embedded-react-sdk/style.css` and injects two runtime `<style>` elements at the browser: one for active theme variables, and one inside the new window opened during a paystub PDF download. Both accept a CSP nonce.
+
+### Passing a nonce
+
+Pass the same per-request nonce your app uses for `style-src 'nonce-…'` to `GustoProvider`. The SDK applies it to every `<style>` element it creates.
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+
+function App({ cspNonce }: { cspNonce: string }) {
+  return (
+    <GustoProvider config={{ baseUrl: '/proxy/' }} nonce={cspNonce}>
+      …
+    </GustoProvider>
+  )
+}
+```
+
+The same prop is available on `GustoProviderCustomUIAdapter`. If a custom UI component you supply injects its own runtime `<style>` or `<script>`, read the nonce with `useNonce`:
+
+```tsx
+import { useEffect } from 'react'
+import { useNonce } from '@gusto/embedded-react-sdk'
+
+function InjectedStyles({ css }: { css: string }) {
+  const nonce = useNonce()
+  useEffect(() => {
+    const el = document.createElement('style')
+    if (nonce) el.nonce = nonce
+    el.textContent = css
+    document.head.appendChild(el)
+    return () => {
+      el.remove()
+    }
+  }, [css, nonce])
+  return null
+}
+```
+
+`useNonce` returns `undefined` when no nonce was supplied.
+
+### Minimum policy
+
+```http
+Content-Security-Policy:
+  style-src 'self' 'nonce-XYZ';
+  style-src-attr 'unsafe-inline';
+  script-src 'self' 'nonce-XYZ';
+  img-src 'self' data:;
+```
+
+- `style-src 'self' 'nonce-XYZ'` covers the bundled stylesheet and the two runtime `<style>` elements once the nonce is wired through `GustoProvider`.
+- `style-src-attr 'unsafe-inline'` is required by inline `style="…"` attributes the SDK uses to apply runtime-computed CSS custom properties (responsive flex and grid layouts, progress-bar fill width, animation timings) and by `react-aria-components` for overlay positioning. The CSP specification does not allow per-attribute nonces, so this directive cannot be tightened further without dropping these features upstream.
+- `script-src 'self' 'nonce-XYZ'` — the SDK does not use `eval` or inject `<script>` elements. The nonce is for your own scripts.
+- `img-src 'self' data:` is only required if your integration uploads images. The SDK converts uploaded files to `data:` URLs before submitting them.
+
 ## FAQ
 
 **Can an authenticated employee access another employee's data?**

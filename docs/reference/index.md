@@ -59,6 +59,47 @@ contract.
 Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
 manually.
 
+## Hooks
+
+<a id="usenonce"></a>
+
+### useNonce()
+
+> **useNonce**(): `string` \| `undefined`
+
+Returns the CSP nonce supplied to [GustoProvider](#gustoprovider), or `undefined` when none was provided.
+
+#### Returns
+
+`string` \| `undefined`
+
+The active nonce, or `undefined` when [GustoProvider](#gustoprovider) was not given a `nonce`.
+
+#### Remarks
+
+Use this when a custom UI component or partner-provided code injects a runtime `<style>` or
+`<script>` element and the integrating app serves a nonce-based Content Security Policy.
+Apply the returned value as the `nonce` property on the created element (e.g.
+`el.nonce = useNonce()`) before appending it to the document.
+
+#### Example
+
+```tsx
+import { useNonce } from '@gusto/embedded-react-sdk'
+
+function InjectThemeStyles({ css }: { css: string }) {
+  const nonce = useNonce()
+  useEffect(() => {
+    const el = document.createElement('style')
+    if (nonce) el.nonce = nonce
+    el.textContent = css
+    document.head.appendChild(el)
+    return () => el.remove()
+  }, [css, nonce])
+  return null
+}
+```
+
 ## Variables
 
 <a id="contractoronboardingstatus"></a>
@@ -457,6 +498,7 @@ you do not supply fall back to the SDK's built-in React Aria implementations.
 | <a id="property-gustoapipropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | <a id="property-gustoapipropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoapipropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
+| <a id="property-gustoapipropsnonce"></a> `nonce?` | `string` | CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window). Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive. Also exposed to custom UI components via `useNonce`. |
 | <a id="property-gustoapipropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoapipropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
 | <a id="property-gustoapipropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
@@ -485,6 +527,7 @@ Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 | <a id="property-gustoprovidercustomuiadapterpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | <a id="property-gustoprovidercustomuiadapterpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoprovidercustomuiadapterpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
+| <a id="property-gustoprovidercustomuiadapterpropsnonce"></a> `nonce?` | `string` | CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window). Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive. Also exposed to custom UI components via `useNonce`. |
 | <a id="property-gustoprovidercustomuiadapterpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoprovidercustomuiadapterpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
 | <a id="property-gustoprovidercustomuiadapterpropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |
@@ -512,6 +555,7 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | <a id="property-gustoproviderpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
 | <a id="property-gustoproviderpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoproviderpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
+| <a id="property-gustoproviderpropsnonce"></a> `nonce?` | `string` | CSP nonce to apply to runtime-injected `<style>` elements (theming, PDF download window). Pass the same per-request nonce your app uses in its `style-src 'nonce-…'` directive. Also exposed to custom UI components via `useNonce`. |
 | <a id="property-gustoproviderpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
 | <a id="property-gustoproviderpropstheme"></a> `theme?` | `Partial`\<[`GustoSDKTheme`](theme-variables.md#gustosdktheme)\> | Theme overrides applied to SDK components. See [GustoSDKTheme](theme-variables.md#gustosdktheme). |

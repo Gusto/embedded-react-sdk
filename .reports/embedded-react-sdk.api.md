@@ -2703,6 +2703,7 @@ export interface GustoProviderProps {
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
     locale?: string;
+    nonce?: string;
     portalContainer?: HTMLElement;
     queryClient?: QueryClient;
     theme?: Partial<GustoSDKTheme>;
@@ -5575,6 +5576,9 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
 
 // @public
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
+
+// @public
+export const useNonce: () => string | undefined;
 
 // Warning: (ae-internal-missing-underscore) The name "useObservability" should be prefixed with an underscore because the declaration is marked as @internal
 //
