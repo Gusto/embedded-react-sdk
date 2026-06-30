@@ -16,4 +16,4 @@ export {
   type ContractorPaymentMethodFormOutputs,
   type ContractorPaymentMethodFormField,
 } from './contractorPaymentMethodSchema'
-export { TypeField, type TypeFieldProps } from './fields'
+export { type TypeFieldProps } from './fields'

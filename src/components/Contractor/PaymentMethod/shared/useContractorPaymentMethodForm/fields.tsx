@@ -16,12 +16,11 @@ export type TypeFieldProps = HookFieldProps<
  * Radio group bound to the `type` field of {@link useContractorPaymentMethodForm}.
  *
  * @remarks
- * Selects whether the contractor is paid by Direct Deposit or Check. Provide
- * `getOptionLabel` to localize the option labels.
+ * Surfaced to partners as `form.Fields.Type`; see {@link ContractorPaymentMethodFormFields}.
  *
  * @param props - See {@link TypeFieldProps}.
  * @returns The rendered radio group bound to `type`.
- * @public
+ * @internal
  */
 export function TypeField(props: TypeFieldProps) {
   return <RadioGroupHookField {...props} name="type" />

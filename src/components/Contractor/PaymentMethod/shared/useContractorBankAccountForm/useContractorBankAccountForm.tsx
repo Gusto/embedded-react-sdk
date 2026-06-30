@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -13,6 +14,12 @@ import {
   type ContractorBankAccountFormOutputs,
   type ContractorBankAccountOptionalFieldsToRequire,
 } from './useContractorBankAccountFormSchema'
+import type {
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+} from './fields'
 import { AccountNumberField, AccountTypeField, NameField, RoutingNumberField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -52,14 +59,21 @@ export interface UseContractorBankAccountFormProps {
  * @public
  */
 export interface ContractorBankAccountFormFields {
-  /** Bound to `name` — see {@link NameField}. */
-  Name: typeof NameField
-  /** Bound to `routingNumber` — see {@link RoutingNumberField}. */
-  RoutingNumber: typeof RoutingNumberField
-  /** Bound to `accountNumber` — see {@link AccountNumberField}. */
-  AccountNumber: typeof AccountNumberField
-  /** Bound to `accountType` — see {@link AccountTypeField}. */
-  AccountType: typeof AccountTypeField
+  /** Bound to `name`. Captures the bank account nickname. */
+  Name: ComponentType<NameFieldProps>
+  /** Bound to `routingNumber`. Validated against a 9-digit numeric pattern. */
+  RoutingNumber: ComponentType<RoutingNumberFieldProps>
+  /**
+   * Bound to `accountNumber`. Pre-filled with the masked account number (e.g.
+   * "XXXX1207"), which is accepted unchanged to keep the existing account; a
+   * newly entered value is validated against the 1–17 digit numeric pattern.
+   */
+  AccountNumber: ComponentType<AccountNumberFieldProps>
+  /**
+   * Bound to `accountType`. Options are `Checking` and `Savings`; defaults to
+   * `Checking`. Supply `getOptionLabel` to translate the option labels.
+   */
+  AccountType: ComponentType<AccountTypeFieldProps>
 }
 
 /**

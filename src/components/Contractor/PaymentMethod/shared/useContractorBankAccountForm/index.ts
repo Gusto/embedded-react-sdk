@@ -18,10 +18,6 @@ export {
   type ContractorBankAccountOptionalFieldsToRequire,
 } from './useContractorBankAccountFormSchema'
 export {
-  NameField,
-  RoutingNumberField,
-  AccountNumberField,
-  AccountTypeField,
   type RequiredValidation as ContractorBankAccountRequiredValidation,
   type RoutingNumberValidation as ContractorBankAccountRoutingNumberValidation,
   type AccountNumberValidation as ContractorBankAccountAccountNumberValidation,

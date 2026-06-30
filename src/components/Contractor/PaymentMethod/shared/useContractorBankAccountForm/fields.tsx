@@ -48,12 +48,11 @@ export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredVali
  * Text input bound to the `name` field of {@link useContractorBankAccountForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.Name`. Captures the bank account
- * nickname.
+ * Surfaced to partners as `form.Fields.Name`; see {@link ContractorBankAccountFormFields}.
  *
  * @param props - See {@link NameFieldProps}.
  * @returns The rendered text input bound to `name`.
- * @public
+ * @internal
  */
 export function NameField(props: NameFieldProps) {
   return <TextInputHookField {...props} name="name" />
@@ -72,12 +71,11 @@ export type RoutingNumberFieldProps = HookFieldProps<
  * Text input bound to the `routingNumber` field of {@link useContractorBankAccountForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.RoutingNumber`. Validated against
- * a 9-digit numeric pattern.
+ * Surfaced to partners as `form.Fields.RoutingNumber`; see {@link ContractorBankAccountFormFields}.
  *
  * @param props - See {@link RoutingNumberFieldProps}.
  * @returns The rendered text input bound to `routingNumber`.
- * @public
+ * @internal
  */
 export function RoutingNumberField(props: RoutingNumberFieldProps) {
   return <TextInputHookField {...props} name="routingNumber" />
@@ -96,14 +94,11 @@ export type AccountNumberFieldProps = HookFieldProps<
  * Text input bound to the `accountNumber` field of {@link useContractorBankAccountForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.AccountNumber`. Pre-filled with
- * the masked account number (e.g. "XXXX1207"), which is accepted unchanged to
- * keep the existing account; a newly entered value is validated against the
- * 1–17 digit numeric pattern.
+ * Surfaced to partners as `form.Fields.AccountNumber`; see {@link ContractorBankAccountFormFields}.
  *
  * @param props - See {@link AccountNumberFieldProps}.
  * @returns The rendered text input bound to `accountNumber`.
- * @public
+ * @internal
  */
 export function AccountNumberField(props: AccountNumberFieldProps) {
   return <TextInputHookField {...props} name="accountNumber" />
@@ -122,13 +117,11 @@ export type AccountTypeFieldProps = HookFieldProps<
  * Radio group bound to the `accountType` field of {@link useContractorBankAccountForm}.
  *
  * @remarks
- * Available on the hook result as `form.Fields.AccountType`. Options are
- * `Checking` and `Savings`; defaults to `Checking`. Supply `getOptionLabel` to
- * translate the option labels.
+ * Surfaced to partners as `form.Fields.AccountType`; see {@link ContractorBankAccountFormFields}.
  *
  * @param props - See {@link AccountTypeFieldProps}.
  * @returns The rendered radio group bound to `accountType`.
- * @public
+ * @internal
  */
 export function AccountTypeField(props: AccountTypeFieldProps) {
   return <RadioGroupHookField {...props} name="accountType" />
