@@ -169,6 +169,22 @@ jobs:
           # Strip anything that shouldn't ship with source.
           rm -rf docs-site/node_modules docs-site/build
 
+          # ---- Step 3a: gitignore precondition check ----
+          # This sync's correctness depends on docs-site/.gitignore NOT
+          # ignoring the downstream-owned snapshot paths. If the SDK ever
+          # re-introduces such rules (as #2167 did, causing snapshots to
+          # silently disappear from the docs repo for two weeks), fail
+          # loudly here rather than letting `git add` quietly skip the
+          # restored snapshots below.
+          for path in docs-site/versions.json docs-site/versioned_docs docs-site/versioned_sidebars; do
+            if git check-ignore -q "$path"; then
+              echo "ERROR: $path is gitignored by the synced docs-site/.gitignore." >&2
+              echo "Cross-repo sync requires this path to be tracked downstream." >&2
+              echo "Remove the corresponding entry from the SDK's docs-site/.gitignore." >&2
+              exit 1
+            fi
+          done
+
           # Restore the versioned files (or initialize empty placeholders if
           # downstream was bare — the snapshot step below populates them).
           for v in versioned_docs versioned_sidebars versions.json; do
