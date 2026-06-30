@@ -5157,7 +5157,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `paymentMethod` | `EmployeePaymentMethod1` | The employee's payment method |
 | `uuid` | `string` | The UUID of the employee in Gusto. |
 | `companyUuid?` | `string` | The UUID of the company the employee is employed by. |
-| `currentEmploymentStatus?` | `EmployeeCurrentEmploymentStatus` \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
+| `currentEmploymentStatus?` | `CurrentEmploymentStatus` \| `null` | The current employment status of the employee. Full-time employees work 30+ hours per week. Part-time employees are split into two groups: those that work 20-29 hours a week, and those that work under 20 hours a week. Variable employees have hours that vary each week. Seasonal employees are hired for 6 months of the year or less. |
 | `customFields?` | `EmployeeCustomField`[] | Custom fields are only included for the employee if the include param has the custom_fields value set |
 | `department?` | `string` \| `null` | The employee's department in the company. |
 | `departmentUuid?` | `string` \| `null` | The UUID of the department the employee is under |
@@ -5169,7 +5169,7 @@ An employee entity extended with the actions permitted on it and a reference to 
 | `managerUuid?` | `string` \| `null` | The UUID of the employee's manager. |
 | `memberPortalInvitationStatus?` | `EmployeeMemberPortalInvitationStatus` \| `null` | Member portal invitation status information. Only included when the include param has the portal_invitations value set. |
 | `onboarded?` | `boolean` | Whether the employee has completed onboarding. |
-| `onboardingDocumentsConfig?` | `EmployeeOnboardingDocumentsConfig` | Configuration for an employee onboarding documents during onboarding |
+| `onboardingDocumentsConfig?` | `OnboardingDocumentsConfig` | Configuration for an employee onboarding documents during onboarding |
 | `onboardingStatus?` | `EmployeeOnboardingStatus1` \| `null` | The current onboarding status of the employee |
 | `partnerPortalInvitationSent?` | `boolean` \| `null` | Whether an external partner portal invitation webhook has been sent for this employee. Only included when the include param has the portal_invitations value set. |
 | `primaryJob?` | `Job` | The employee's primary job, if one is marked primary. |

@@ -73,13 +73,13 @@ Map of contractor onboarding status values returned by the Gusto API.
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
-| <a id="property-contractoronboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `ContractorOnboardingStatus1.AdminOnboardingIncomplete` |
-| <a id="property-contractoronboardingstatusadmin_onboarding_review"></a> `ADMIN_ONBOARDING_REVIEW` | `"admin_onboarding_review"` | `ContractorOnboardingStatus1.AdminOnboardingReview` |
-| <a id="property-contractoronboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `ContractorOnboardingStatus1.OnboardingCompleted` |
-| <a id="property-contractoronboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `ContractorOnboardingStatus1.SelfOnboardingInvited` |
-| <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorOnboardingStatus1.SelfOnboardingNotInvited` |
-| <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorOnboardingStatus1.SelfOnboardingReview` |
-| <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorOnboardingStatus1.SelfOnboardingStarted` |
+| <a id="property-contractoronboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `ContractorApiOnboardingStatus.AdminOnboardingIncomplete` |
+| <a id="property-contractoronboardingstatusadmin_onboarding_review"></a> `ADMIN_ONBOARDING_REVIEW` | `"admin_onboarding_review"` | `ContractorApiOnboardingStatus.AdminOnboardingReview` |
+| <a id="property-contractoronboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `ContractorApiOnboardingStatus.OnboardingCompleted` |
+| <a id="property-contractoronboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `ContractorApiOnboardingStatus.SelfOnboardingInvited` |
+| <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorApiOnboardingStatus.SelfOnboardingNotInvited` |
+| <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorApiOnboardingStatus.SelfOnboardingReview` |
+| <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorApiOnboardingStatus.SelfOnboardingStarted` |
 
 #### Remarks
 
@@ -117,14 +117,14 @@ Map of employee onboarding status values returned by the Gusto API.
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
-| <a id="property-employeeonboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `OnboardingStatus.AdminOnboardingIncomplete` |
-| <a id="property-employeeonboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `OnboardingStatus.OnboardingCompleted` |
-| <a id="property-employeeonboardingstatusself_onboarding_awaiting_admin_review"></a> `SELF_ONBOARDING_AWAITING_ADMIN_REVIEW` | `"self_onboarding_awaiting_admin_review"` | `OnboardingStatus.SelfOnboardingAwaitingAdminReview` |
-| <a id="property-employeeonboardingstatusself_onboarding_completed_by_employee"></a> `SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE` | `"self_onboarding_completed_by_employee"` | `OnboardingStatus.SelfOnboardingCompletedByEmployee` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `OnboardingStatus.SelfOnboardingInvited` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `OnboardingStatus.SelfOnboardingInvitedOverdue` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `OnboardingStatus.SelfOnboardingInvitedStarted` |
-| <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `OnboardingStatus.SelfOnboardingPendingInvite` |
+| <a id="property-employeeonboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `EmployeeApiOnboardingStatus.AdminOnboardingIncomplete` |
+| <a id="property-employeeonboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `EmployeeApiOnboardingStatus.OnboardingCompleted` |
+| <a id="property-employeeonboardingstatusself_onboarding_awaiting_admin_review"></a> `SELF_ONBOARDING_AWAITING_ADMIN_REVIEW` | `"self_onboarding_awaiting_admin_review"` | `EmployeeApiOnboardingStatus.SelfOnboardingAwaitingAdminReview` |
+| <a id="property-employeeonboardingstatusself_onboarding_completed_by_employee"></a> `SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE` | `"self_onboarding_completed_by_employee"` | `EmployeeApiOnboardingStatus.SelfOnboardingCompletedByEmployee` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvited` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvitedOverdue` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvitedStarted` |
+| <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `EmployeeApiOnboardingStatus.SelfOnboardingPendingInvite` |
 
 #### Remarks
 
