@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
-import type { Compensation } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
+import type { Job } from '@gusto/embedded-api-v-2026-06-15/models/components/job'
+import type { Compensation } from '@gusto/embedded-api-v-2026-06-15/models/components/compensation'
 import type { CompensationDefaultValues } from './Compensation'
 import { JobsList } from './JobsList'
 import { EditCompensation } from './EditCompensation'

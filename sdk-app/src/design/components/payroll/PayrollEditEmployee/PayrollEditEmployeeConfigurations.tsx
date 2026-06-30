@@ -1,14 +1,14 @@
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { Employee } from '@gusto/embedded-api-v-2026-06-15/models/components/employee'
 import type {
   PayrollEmployeeCompensationsType,
-  PayrollEmployeeCompensationsTypePaidTimeOff,
-  PayrollEmployeeCompensationsTypeFixedCompensations,
-  PayrollEmployeeCompensationsTypeHourlyCompensations,
-  PayrollEmployeeCompensationsTypeReimbursements,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleshow'
+  PaidTimeOff,
+  FixedCompensations,
+  HourlyCompensations,
+  Reimbursements,
+} from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleShow } from '@gusto/embedded-api-v-2026-06-15/models/components/payscheduleshow'
 import type { PrototypeConfiguration } from '../../../prototypes/prototypeTypes'
 import type { WorkweekRange } from './PayrollEditEmployeePresentation'
 import { PayrollEditEmployeeDemo } from './PayrollEditEmployeeStates'
@@ -66,37 +66,31 @@ function buildEmployee(overrides: Partial<Employee> = {}): Employee {
   } as Employee
 }
 
-function buildHourly(
-  overrides: Partial<PayrollEmployeeCompensationsTypeHourlyCompensations> = {},
-): PayrollEmployeeCompensationsTypeHourlyCompensations {
+function buildHourly(overrides: Partial<HourlyCompensations> = {}): HourlyCompensations {
   return {
     name: 'Regular Hours',
     hours: '40.0',
     jobUuid: PRIMARY_JOB_UUID,
     compensationMultiplier: 1,
     ...overrides,
-  } as PayrollEmployeeCompensationsTypeHourlyCompensations
+  } as HourlyCompensations
 }
 
-function buildTimeOff(
-  overrides: Partial<PayrollEmployeeCompensationsTypePaidTimeOff> = {},
-): PayrollEmployeeCompensationsTypePaidTimeOff {
+function buildTimeOff(overrides: Partial<PaidTimeOff> = {}): PaidTimeOff {
   return {
     name: 'Vacation Hours',
     hours: '0.000',
     ...overrides,
-  } as PayrollEmployeeCompensationsTypePaidTimeOff
+  } as PaidTimeOff
 }
 
-function buildFixed(
-  overrides: Partial<PayrollEmployeeCompensationsTypeFixedCompensations> = {},
-): PayrollEmployeeCompensationsTypeFixedCompensations {
+function buildFixed(overrides: Partial<FixedCompensations> = {}): FixedCompensations {
   return {
     name: 'Bonus',
     amount: '0.00',
     jobUuid: PRIMARY_JOB_UUID,
     ...overrides,
-  } as PayrollEmployeeCompensationsTypeFixedCompensations
+  } as FixedCompensations
 }
 
 const fixedCompensationTypes: PayrollFixedCompensationTypesType[] = [
@@ -213,13 +207,13 @@ const withItemizedReimbursements: PayrollEmployeeCompensationsType = {
       amount: '45.50',
       description: 'Client lunch',
       recurring: false,
-    } as PayrollEmployeeCompensationsTypeReimbursements,
+    } as Reimbursements,
     {
       uuid: 'reimb-2',
       amount: '99.00',
       description: 'Phone stipend',
       recurring: true,
-    } as PayrollEmployeeCompensationsTypeReimbursements,
+    } as Reimbursements,
   ],
 } as PayrollEmployeeCompensationsType
 

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useForm, FormProvider } from 'react-hook-form'
 import React from 'react'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
 import {
   useContractorProfile,
   ContractorType,

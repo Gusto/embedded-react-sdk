@@ -1,5 +1,5 @@
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/contractorsGet'
+import type { Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
 import type { ContractorProfileFormData } from './useContractorProfile'
 import { useContractorProfile } from './useContractorProfile'
 import { ContractorProfileForm } from './ContractorProfileForm'

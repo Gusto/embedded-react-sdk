@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollpayperiodtype'
 import { PayrollLanding } from '../PayrollLanding/PayrollLanding'
 import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxquestion'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2026-06-15/models/components/employeestatetaxquestion'
 import { useStateTaxesSummary } from '../../shared/useStateTaxesSummary'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Loading } from '@/components/Common'

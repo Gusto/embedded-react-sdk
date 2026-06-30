@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import type * as ReactQuery from '@tanstack/react-query'
-import type * as GustoContext from '@gusto/embedded-api-v-2026-02-01/react-query/_context'
+import type * as GustoContext from '@gusto/embedded-api-v-2026-06-15/react-query/_context'
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -39,7 +39,7 @@ const page2Employees = [
 let mockTotalPages = 1
 const buildEmployeesListQueryMock = vi.fn()
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: page1Employees,
@@ -63,7 +63,7 @@ vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/employeesList', () => ({
   },
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/_context', async importOriginal => {
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/_context', async importOriginal => {
   const actual = await importOriginal<typeof GustoContext>()
   return {
     ...actual,
@@ -84,21 +84,21 @@ vi.mock('@tanstack/react-query', async importActual => {
   }
 })
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesAddEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/timeOffPoliciesAddEmployees', () => ({
   useTimeOffPoliciesAddEmployeesMutation: () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesUpdate', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/timeOffPoliciesUpdate', () => ({
   useTimeOffPoliciesUpdateMutation: () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: { timeOffPolicy: { uuid: 'policy-456', employees: [] } },
   }),

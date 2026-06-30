@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/contractorsGet'
 import { contractorName } from '../../components/contractor/shared/contractorName'
 import { ContractorRehireForm } from '../../components/contractor/management/ContractorRehireForm/ContractorRehireForm'
 import { Skeleton } from '../../components/common/Skeleton'
@@ -44,7 +44,7 @@ function ContractorRehireContent() {
       }
 
       const name = contractorName(contractor)
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2026-06-15', 'Contractors'] })
       void navigate(`..?success=${encodeURIComponent(`Rehire scheduled for ${name}`)}`, {
         replace: true,
       })

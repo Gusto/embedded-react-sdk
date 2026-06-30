@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2026-02-01/models/errors/unprocessableentityerror'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2026-06-15/models/errors/unprocessableentityerror'
 import { PolicySettings } from './PolicySettings'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
@@ -21,13 +21,13 @@ const basePolicyData: Record<string, unknown> = {
 
 let mockPolicyData: Record<string, unknown> = { ...basePolicyData }
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: { timeOffPolicy: mockPolicyData },
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesUpdate', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/timeOffPoliciesUpdate', () => ({
   useTimeOffPoliciesUpdateMutation: () => ({
     mutateAsync: mockUpdateTimeOffPolicy,
     isPending: false,
@@ -294,7 +294,7 @@ describe('PolicySettings container', () => {
       mockPolicyData = { ...basePolicyData, accrualMethod: 'per_calendar_year' }
 
       const { UnprocessableEntityError } =
-        await import('@gusto/embedded-api-v-2026-02-01/models/errors/unprocessableentityerror')
+        await import('@gusto/embedded-api-v-2026-06-15/models/errors/unprocessableentityerror')
 
       const duplicateMessage = 'Balance must be less than or equal to max balance (10.0)'
       const apiError = new UnprocessableEntityError(

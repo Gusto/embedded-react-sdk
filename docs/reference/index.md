@@ -31,7 +31,7 @@ custom_edit_url: null
 
 ### ApiProvider
 
-Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
+Wires the `@gusto/embedded-api-v-2026-06-15` client and a React Query client into the React tree.
 
 #### ApiProviderProps
 
@@ -42,7 +42,7 @@ Props for [ApiProvider](#apiprovider).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-apiproviderpropschildren"></a> `children` | `ReactNode` | Subtree that renders inside the API + React Query providers. |
-| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-02-01` requests. |
+| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-06-15` requests. |
 | <a id="property-apiproviderpropsheaders"></a> `headers?` | `HeadersInit` | Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. |
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
@@ -52,7 +52,7 @@ Props for [ApiProvider](#apiprovider).
 Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
 and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
 `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
+successful mutations under the `['@gusto/embedded-api-v-2026-06-15']` key invalidate every SDK
 query automatically. Partners who supply their own `QueryClient` are responsible for matching that
 contract.
 
@@ -73,13 +73,13 @@ Map of contractor onboarding status values returned by the Gusto API.
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
-| <a id="property-contractoronboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `ContractorOnboardingStatus1.AdminOnboardingIncomplete` |
-| <a id="property-contractoronboardingstatusadmin_onboarding_review"></a> `ADMIN_ONBOARDING_REVIEW` | `"admin_onboarding_review"` | `ContractorOnboardingStatus1.AdminOnboardingReview` |
-| <a id="property-contractoronboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `ContractorOnboardingStatus1.OnboardingCompleted` |
-| <a id="property-contractoronboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `ContractorOnboardingStatus1.SelfOnboardingInvited` |
-| <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorOnboardingStatus1.SelfOnboardingNotInvited` |
-| <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorOnboardingStatus1.SelfOnboardingReview` |
-| <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorOnboardingStatus1.SelfOnboardingStarted` |
+| <a id="property-contractoronboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `ContractorApiOnboardingStatus.AdminOnboardingIncomplete` |
+| <a id="property-contractoronboardingstatusadmin_onboarding_review"></a> `ADMIN_ONBOARDING_REVIEW` | `"admin_onboarding_review"` | `ContractorApiOnboardingStatus.AdminOnboardingReview` |
+| <a id="property-contractoronboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `ContractorApiOnboardingStatus.OnboardingCompleted` |
+| <a id="property-contractoronboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `ContractorApiOnboardingStatus.SelfOnboardingInvited` |
+| <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorApiOnboardingStatus.SelfOnboardingNotInvited` |
+| <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorApiOnboardingStatus.SelfOnboardingReview` |
+| <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorApiOnboardingStatus.SelfOnboardingStarted` |
 
 #### Remarks
 
@@ -117,14 +117,14 @@ Map of employee onboarding status values returned by the Gusto API.
 
 | Name | Type | Default value |
 | ------ | ------ | ------ |
-| <a id="property-employeeonboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `OnboardingStatus.AdminOnboardingIncomplete` |
-| <a id="property-employeeonboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `OnboardingStatus.OnboardingCompleted` |
-| <a id="property-employeeonboardingstatusself_onboarding_awaiting_admin_review"></a> `SELF_ONBOARDING_AWAITING_ADMIN_REVIEW` | `"self_onboarding_awaiting_admin_review"` | `OnboardingStatus.SelfOnboardingAwaitingAdminReview` |
-| <a id="property-employeeonboardingstatusself_onboarding_completed_by_employee"></a> `SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE` | `"self_onboarding_completed_by_employee"` | `OnboardingStatus.SelfOnboardingCompletedByEmployee` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `OnboardingStatus.SelfOnboardingInvited` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `OnboardingStatus.SelfOnboardingInvitedOverdue` |
-| <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `OnboardingStatus.SelfOnboardingInvitedStarted` |
-| <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `OnboardingStatus.SelfOnboardingPendingInvite` |
+| <a id="property-employeeonboardingstatusadmin_onboarding_incomplete"></a> `ADMIN_ONBOARDING_INCOMPLETE` | `"admin_onboarding_incomplete"` | `EmployeeApiOnboardingStatus.AdminOnboardingIncomplete` |
+| <a id="property-employeeonboardingstatusonboarding_completed"></a> `ONBOARDING_COMPLETED` | `"onboarding_completed"` | `EmployeeApiOnboardingStatus.OnboardingCompleted` |
+| <a id="property-employeeonboardingstatusself_onboarding_awaiting_admin_review"></a> `SELF_ONBOARDING_AWAITING_ADMIN_REVIEW` | `"self_onboarding_awaiting_admin_review"` | `EmployeeApiOnboardingStatus.SelfOnboardingAwaitingAdminReview` |
+| <a id="property-employeeonboardingstatusself_onboarding_completed_by_employee"></a> `SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE` | `"self_onboarding_completed_by_employee"` | `EmployeeApiOnboardingStatus.SelfOnboardingCompletedByEmployee` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited"></a> `SELF_ONBOARDING_INVITED` | `"self_onboarding_invited"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvited` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvitedOverdue` |
+| <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `EmployeeApiOnboardingStatus.SelfOnboardingInvitedStarted` |
+| <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `EmployeeApiOnboardingStatus.SelfOnboardingPendingInvite` |
 
 #### Remarks
 
@@ -722,7 +722,7 @@ Request interceptors for customizing HTTP requests and responses.
 Pass an instance of this interface to [GustoProvider](#gustoprovider) via `config.hooks` to
 inspect or modify requests and responses across the four lifecycle stages.
 Each entry is an array of objects implementing the corresponding hook type
-from `@gusto/embedded-api-v-2026-02-01/hooks/types`.
+from `@gusto/embedded-api-v-2026-06-15/hooks/types`.
 
 | Stage | When it runs |
 | ----- | ------------ |

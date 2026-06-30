@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-06-15/models/components/employeebankaccount'
 import { useBankForm, type AccountType, type UseBankFormProps } from '../useBankForm'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/companiesGet'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/contractorsGet'
+import { useCompaniesGetSuspense } from '@gusto/embedded-api-v-2026-06-15/react-query/companiesGet'
 import DOMPurify from 'dompurify'
 import { ContractorWelcome } from '../../components/contractor/self-onboarding/ContractorWelcome/ContractorWelcome'
 import { contractorSelfOnboardingEvents } from './events'

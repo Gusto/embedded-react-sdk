@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeaddress'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2026-06-15/models/components/employeeaddress'
 import type { TFunction } from 'i18next'
 import {
   formatPendingHomeAddressLine,

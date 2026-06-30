@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollShow } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
-import { OffCycleReasonType } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
+import type { PayrollShow } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
+import { OffCycleReasonType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -64,7 +64,7 @@ const basePayrollData: PayrollShow = {
 
 let mockPayrollData = { ...basePayrollData }
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/payrollsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/payrollsGet', () => ({
   usePayrollsGet: () => ({
     data: {
       payrollShow: mockPayrollData,
@@ -78,27 +78,27 @@ vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/payrollsGet', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/payrollsSubmit', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/payrollsSubmit', () => ({
   usePayrollsSubmitMutation: () => ({
     mutateAsync: mockSubmitPayroll,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/payrollsCancel', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/payrollsCancel', () => ({
   usePayrollsCancelMutation: () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/bankAccountsGet', () => ({
   useBankAccountsGetSuspense: () => ({
     data: { companyBankAccounts: [{ hiddenAccountNumber: '****1234' }] },
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/wireInRequestsGet', () => ({
   useWireInRequestsGet: () => ({ data: undefined }),
 }))
 
@@ -109,7 +109,7 @@ vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/_context', async importOriginal => {
+vi.mock('@gusto/embedded-api-v-2026-06-15/react-query/_context', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...(actual as Record<string, unknown>),
@@ -117,7 +117,7 @@ vi.mock('@gusto/embedded-api-v-2026-02-01/react-query/_context', async importOri
   }
 })
 
-vi.mock('@gusto/embedded-api-v-2026-02-01/funcs/payrollsGetPayStub', () => ({
+vi.mock('@gusto/embedded-api-v-2026-06-15/funcs/payrollsGetPayStub', () => ({
   payrollsGetPayStub: vi.fn(),
 }))
 

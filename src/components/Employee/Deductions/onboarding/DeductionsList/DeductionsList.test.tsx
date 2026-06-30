@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api-v-2026-06-15/models/components/garnishment'
 import type { UseDeductionsListReady } from '../../shared/useDeductionsList'
 import { DeductionsList } from './DeductionsList'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

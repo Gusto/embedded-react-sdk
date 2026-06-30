@@ -1,4 +1,4 @@
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
 import { AddressForm, type AddressFormValues } from '../../shared/AddressForm/AddressForm'
 import { contractorName } from '../../shared/contractorName'
 import { useBase } from '@/components/Base/useBase'

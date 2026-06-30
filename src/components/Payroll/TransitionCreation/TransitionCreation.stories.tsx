@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2026-06-15/models/operations/postv1companiescompanyidpayrolls'
 import { FormWrapper } from '../../../../.storybook/helpers/FormWrapper'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'

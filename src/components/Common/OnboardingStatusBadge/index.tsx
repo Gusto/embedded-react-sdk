@@ -1,9 +1,9 @@
-import type { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { OnboardingStatus } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { OnboardingStatus as ContractorOnboardingStatus } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
+import type { EmployeeOnboardingStatus1 as EmployeeOnboardingStatus } from '@gusto/embedded-api-v-2026-06-15/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-type OnboardingStatuses = ContractorOnboardingStatus1 | OnboardingStatus
+type OnboardingStatuses = ContractorOnboardingStatus | EmployeeOnboardingStatus
 
 interface OnboardingStatusBadgeProps<T extends OnboardingStatuses> {
   onboarded?: boolean
@@ -29,7 +29,7 @@ export const OnboardingStatusBadge = <T extends OnboardingStatuses>({
 
 interface ContractorOnboardingStatusBadgeProps {
   onboarded?: boolean
-  onboardingStatus?: ContractorOnboardingStatus1 | null
+  onboardingStatus?: ContractorOnboardingStatus | null
 }
 /** @internal */
 export const ContractorOnboardingStatusBadge = (props: ContractorOnboardingStatusBadgeProps) => (
@@ -38,7 +38,7 @@ export const ContractorOnboardingStatusBadge = (props: ContractorOnboardingStatu
 
 interface EmployeeOnboardingStatusBadgeProps {
   onboarded?: boolean
-  onboardingStatus?: OnboardingStatus | null
+  onboardingStatus?: EmployeeOnboardingStatus | null
 }
 /** @internal */
 export const EmployeeOnboardingStatusBadge = (props: EmployeeOnboardingStatusBadgeProps) => (

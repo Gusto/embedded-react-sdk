@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroupwithblockers'
+import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2026-06-15/models/components/contractorpaymentgroupwithblockers'
 import type { InternalAlert } from '../types'
 import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'

@@ -1,5 +1,5 @@
-import { OnboardingStatus } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidonboardingstatus'
-import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import { OnboardingStatus as EmployeeApiOnboardingStatus } from '@gusto/embedded-api-v-2026-06-15/models/operations/putv1employeesemployeeidonboardingstatus'
+import { OnboardingStatus as ContractorApiOnboardingStatus } from '@gusto/embedded-api-v-2026-06-15/models/components/contractor'
 
 /**
  * Event keys emitted by employee-related components.
@@ -544,14 +544,16 @@ export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
  * @public
  */
 export const EmployeeOnboardingStatus = {
-  ADMIN_ONBOARDING_INCOMPLETE: OnboardingStatus.AdminOnboardingIncomplete,
-  SELF_ONBOARDING_PENDING_INVITE: OnboardingStatus.SelfOnboardingPendingInvite,
-  SELF_ONBOARDING_INVITED: OnboardingStatus.SelfOnboardingInvited,
-  SELF_ONBOARDING_INVITED_STARTED: OnboardingStatus.SelfOnboardingInvitedStarted,
-  SELF_ONBOARDING_INVITED_OVERDUE: OnboardingStatus.SelfOnboardingInvitedOverdue,
-  SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: OnboardingStatus.SelfOnboardingCompletedByEmployee,
-  SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: OnboardingStatus.SelfOnboardingAwaitingAdminReview,
-  ONBOARDING_COMPLETED: OnboardingStatus.OnboardingCompleted,
+  ADMIN_ONBOARDING_INCOMPLETE: EmployeeApiOnboardingStatus.AdminOnboardingIncomplete,
+  SELF_ONBOARDING_PENDING_INVITE: EmployeeApiOnboardingStatus.SelfOnboardingPendingInvite,
+  SELF_ONBOARDING_INVITED: EmployeeApiOnboardingStatus.SelfOnboardingInvited,
+  SELF_ONBOARDING_INVITED_STARTED: EmployeeApiOnboardingStatus.SelfOnboardingInvitedStarted,
+  SELF_ONBOARDING_INVITED_OVERDUE: EmployeeApiOnboardingStatus.SelfOnboardingInvitedOverdue,
+  SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE:
+    EmployeeApiOnboardingStatus.SelfOnboardingCompletedByEmployee,
+  SELF_ONBOARDING_AWAITING_ADMIN_REVIEW:
+    EmployeeApiOnboardingStatus.SelfOnboardingAwaitingAdminReview,
+  ONBOARDING_COMPLETED: EmployeeApiOnboardingStatus.OnboardingCompleted,
 } as const
 
 /**
@@ -580,13 +582,13 @@ export const EmployeeSelfOnboardingStatuses = new Set([
  * @public
  */
 export const ContractorOnboardingStatus = {
-  ADMIN_ONBOARDING_INCOMPLETE: ContractorOnboardingStatus1.AdminOnboardingIncomplete,
-  ADMIN_ONBOARDING_REVIEW: ContractorOnboardingStatus1.AdminOnboardingReview,
-  SELF_ONBOARDING_NOT_INVITED: ContractorOnboardingStatus1.SelfOnboardingNotInvited,
-  SELF_ONBOARDING_INVITED: ContractorOnboardingStatus1.SelfOnboardingInvited,
-  SELF_ONBOARDING_STARTED: ContractorOnboardingStatus1.SelfOnboardingStarted,
-  SELF_ONBOARDING_REVIEW: ContractorOnboardingStatus1.SelfOnboardingReview,
-  ONBOARDING_COMPLETED: ContractorOnboardingStatus1.OnboardingCompleted,
+  ADMIN_ONBOARDING_INCOMPLETE: ContractorApiOnboardingStatus.AdminOnboardingIncomplete,
+  ADMIN_ONBOARDING_REVIEW: ContractorApiOnboardingStatus.AdminOnboardingReview,
+  SELF_ONBOARDING_NOT_INVITED: ContractorApiOnboardingStatus.SelfOnboardingNotInvited,
+  SELF_ONBOARDING_INVITED: ContractorApiOnboardingStatus.SelfOnboardingInvited,
+  SELF_ONBOARDING_STARTED: ContractorApiOnboardingStatus.SelfOnboardingStarted,
+  SELF_ONBOARDING_REVIEW: ContractorApiOnboardingStatus.SelfOnboardingReview,
+  ONBOARDING_COMPLETED: ContractorApiOnboardingStatus.OnboardingCompleted,
 } as const
 
 /**

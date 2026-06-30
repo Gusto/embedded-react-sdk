@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { Payroll } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
-import type { WireInRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest'
+import type { Payroll } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollshow'
+import type { WireInRequest } from '@gusto/embedded-api-v-2026-06-15/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'

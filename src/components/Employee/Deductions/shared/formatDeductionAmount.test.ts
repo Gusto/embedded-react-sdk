@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api-v-2026-06-15/models/components/garnishment'
 import { formatDeductionAmount } from './formatDeductionAmount'
 
 const formatters = {

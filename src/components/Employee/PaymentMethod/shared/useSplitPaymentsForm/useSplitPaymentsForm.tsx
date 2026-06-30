@@ -3,11 +3,11 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useForm, useFormState, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod'
-import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodGet'
-import { useEmployeePaymentMethodsGetBankAccounts } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodsGetBankAccounts'
-import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodUpdate'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-06-15/models/components/employeebankaccount'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2026-06-15/models/components/employeepaymentmethod'
+import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2026-06-15/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodsGetBankAccounts } from '@gusto/embedded-api-v-2026-06-15/react-query/employeePaymentMethodsGetBankAccounts'
+import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-06-15/react-query/employeePaymentMethodUpdate'
 import {
   PERCENTAGE_TOTAL_PATH,
   SPLIT_BY_VALUES,

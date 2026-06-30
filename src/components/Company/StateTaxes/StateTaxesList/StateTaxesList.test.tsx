@@ -58,22 +58,6 @@ describe('StateTaxesList', () => {
       state: 'CA',
     })
   })
-
-  describe('backward compatibility: setup_complete without setup_status', () => {
-    it('shows "Complete" badge when setup_complete is true and setup_status is absent', async () => {
-      await waitFor(() => {
-        expect(screen.getByText('Complete')).toBeInTheDocument()
-        expect(screen.getByText('Edit')).toBeInTheDocument()
-      })
-    })
-
-    it('shows "In progress" badge when setup_complete is false and setup_status is absent', async () => {
-      await waitFor(() => {
-        expect(screen.getByText('In progress')).toBeInTheDocument()
-        expect(screen.getByText('Continue setup')).toBeInTheDocument()
-      })
-    })
-  })
 })
 
 function renderWithSingleState(state: object, onEvent = vi.fn()) {
@@ -175,17 +159,13 @@ describe('setup_status: complete + ready_to_run_payroll', () => {
   })
 })
 
-describe('StateTaxesList with legacy setup_complete field only', () => {
-  const onEvent = vi.fn()
-
-  beforeEach(() => {
+describe('StateTaxesList without setup_status (default fallback)', () => {
+  it('defaults to "In progress" + "Continue setup" when setup_status is absent', async () => {
+    const onEvent = vi.fn()
     setupApiTestMocks()
     server.use(
       http.get(`${API_BASE_URL}/v1/companies/:company_id/tax_requirements`, () =>
-        HttpResponse.json([
-          { state: 'TX', setup_complete: true },
-          { state: 'NY', setup_complete: false },
-        ]),
+        HttpResponse.json([{ state: 'NY' }]),
       ),
     )
     render(
@@ -193,17 +173,7 @@ describe('StateTaxesList with legacy setup_complete field only', () => {
         <StateTaxesList companyId="company-123" onEvent={onEvent} />
       </GustoTestProvider>,
     )
-  })
 
-  it('falls back to "Complete" + "Edit" for setup_complete: true', async () => {
-    await waitFor(() => {
-      expect(screen.getByText('Texas')).toBeInTheDocument()
-      expect(screen.getByText('Complete')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
-    })
-  })
-
-  it('falls back to "In progress" + "Continue setup" for setup_complete: false', async () => {
     await waitFor(() => {
       expect(screen.getByText('New York')).toBeInTheDocument()
       expect(screen.getByText('In progress')).toBeInTheDocument()

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
-import type { PaymentPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishmentchildsupport'
+import type { Garnishment } from '@gusto/embedded-api-v-2026-06-15/models/components/garnishment'
+import type { PaymentPeriod } from '@gusto/embedded-api-v-2026-06-15/models/components/garnishmentchildsupport'
 import { useChildSupportGarnishmentForm } from '../useChildSupportGarnishmentForm'
 import type { StateFieldEntry, CountyEntry } from '../useChildSupportGarnishmentForm'
 import { Form } from '@/components/Common/Form'

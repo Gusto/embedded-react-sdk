@@ -1,4 +1,4 @@
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxquestion'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2026-06-15/models/components/employeestatetaxquestion'
 
 /**
  * UI input variant for a state-tax question — determines which field type renders for a given question from the employee state-taxes API.

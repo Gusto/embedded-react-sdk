@@ -1,4 +1,4 @@
-import type { OnboardingStep } from '@gusto/embedded-api-v-2026-02-01/models/components/companyonboardingstatus'
+import type { OnboardingStep } from '@gusto/embedded-api-v-2026-06-15/models/components/companyonboardingstatus'
 import { createCompoundContext } from '@/components/Base'
 
 type OnboardingOverviewContextType = {

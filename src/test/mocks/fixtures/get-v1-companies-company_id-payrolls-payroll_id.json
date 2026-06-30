@@ -50,9 +50,9 @@
           "amount": "0.0"
         }
       ],
-      "gross_pay": 1456.0,
-      "net_pay": 1247.99,
-      "check_amount": 1347.99
+      "gross_pay": "1456.0",
+      "net_pay": "1247.99",
+      "check_amount": "1347.99"
     },
     {
       "excluded": true,
@@ -88,9 +88,9 @@
           "amount": "0.0"
         }
       ],
-      "gross_pay": 3000.0,
-      "net_pay": 2264.53,
-      "check_amount": 2264.53
+      "gross_pay": "3000.0",
+      "net_pay": "2264.53",
+      "check_amount": "2264.53"
     },
     {
       "excluded": false,
@@ -126,9 +126,9 @@
           "amount": "0.0"
         }
       ],
-      "gross_pay": 2692.31,
-      "net_pay": 2079.85,
-      "check_amount": 2079.85
+      "gross_pay": "2692.31",
+      "net_pay": "2079.85",
+      "check_amount": "2079.85"
     }
   ],
   "submission_blockers": [

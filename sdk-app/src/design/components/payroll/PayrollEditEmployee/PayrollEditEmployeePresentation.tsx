@@ -1,15 +1,15 @@
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useMemo, useRef, useState } from 'react'
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { Employee } from '@gusto/embedded-api-v-2026-06-15/models/components/employee'
 import type {
-  PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
+  FixedCompensations as FixedCompensations,
   PayrollEmployeeCompensationsType,
-  PayrollEmployeeCompensationsTypePaidTimeOff,
-  PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleshow'
+  PaidTimeOff,
+  Reimbursements as Reimbursement,
+} from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2026-06-15/models/components/payscheduleshow'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -101,7 +101,7 @@ export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFo
 const buildCompensationFromFormData = (
   formData: PayrollEditEmployeeFormValues,
   employeeCompensation: PayrollEmployeeCompensationsType | undefined,
-  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff[],
+  timeOff: PaidTimeOff[],
   primaryJobUuid?: string,
   payrollCategory: PayrollCategory = PayrollCategory.Regular,
 ): PayrollEmployeeCompensationsType => {
@@ -305,14 +305,14 @@ function HoursDataView({
 type TimeOffFieldComponent = typeof TimeOffField | typeof PayoutTimeOffField
 
 interface TimeOffDataViewProps {
-  timeOffs: PayrollEmployeeCompensationsTypePaidTimeOff[]
+  timeOffs: PaidTimeOff[]
   employee: Employee
   label: string
   Field: TimeOffFieldComponent
 }
 
 function TimeOffDataView({ timeOffs, employee, label, Field }: TimeOffDataViewProps) {
-  const dataViewProps = useDataView<PayrollEmployeeCompensationsTypePaidTimeOff>({
+  const dataViewProps = useDataView<PaidTimeOff>({
     data: timeOffs,
     columns: [
       {

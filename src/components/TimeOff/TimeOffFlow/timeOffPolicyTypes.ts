@@ -1,4 +1,4 @@
-import type { PolicyType } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy'
+import type { PolicyType } from '@gusto/embedded-api-v-2026-06-15/models/components/timeoffpolicy'
 
 /**
  * Time off policy types that can be created through the time off policy management workflow.

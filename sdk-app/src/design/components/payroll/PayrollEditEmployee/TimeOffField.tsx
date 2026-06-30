@@ -1,7 +1,7 @@
 import { useWatch, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
-import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
+import type { Employee } from '@gusto/embedded-api-v-2026-06-15/models/components/employee'
+import type { PaidTimeOff } from '@gusto/embedded-api-v-2026-06-15/models/components/payrollemployeecompensationstype'
 import type { PayrollEditEmployeeFormValues } from './PayrollEditEmployeePresentation'
 import { Flex, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -40,7 +40,7 @@ export const TimeOffBalance = ({
 }
 
 export interface TimeOffTypeCellProps {
-  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  timeOff: PaidTimeOff
   employee: Employee
 }
 
@@ -77,7 +77,7 @@ export const TimeOffTypeCell = ({ timeOff, employee }: TimeOffTypeCellProps) => 
 }
 
 export interface TimeOffFieldProps {
-  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  timeOff: PaidTimeOff
   shouldVisuallyHideLabel?: boolean
 }
 
@@ -105,7 +105,7 @@ export const TimeOffField = ({ timeOff, shouldVisuallyHideLabel }: TimeOffFieldP
 }
 
 export interface PayoutTimeOffFieldProps {
-  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  timeOff: PaidTimeOff
   shouldVisuallyHideLabel?: boolean
 }
 
