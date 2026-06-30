@@ -277,6 +277,12 @@ Props for [OnboardingSummary](#onboardingsummary).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/selfOnboarding/done` | Fired when the contractor acknowledges completion and clicks the Done button | `{ contractorId: string }` |
+
 <a id="paymentmethod"></a>
 
 ## PaymentMethod
