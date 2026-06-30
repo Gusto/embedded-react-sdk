@@ -4,6 +4,7 @@ import {
   type OptionalFieldsToRequire,
   type RequiredFieldConfig,
 } from '@/partner-hook-utils/form/buildFormSchema'
+import { ACCOUNT_NUMBER_REGEX, ROUTING_NUMBER_REGEX } from '@/helpers/validations'
 
 /**
  * Validation error codes emitted by the contractor bank account form schema.
@@ -26,9 +27,6 @@ export const ContractorBankAccountErrorCodes = {
  */
 export type ContractorBankAccountErrorCode =
   (typeof ContractorBankAccountErrorCodes)[keyof typeof ContractorBankAccountErrorCodes]
-
-const ROUTING_NUMBER_REGEX = /^[0-9]{9}$/
-const ACCOUNT_NUMBER_REGEX = /^[0-9]{1,17}$/
 
 /**
  * Supported bank account type values: checking and savings.
