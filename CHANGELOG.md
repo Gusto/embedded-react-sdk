@@ -1,5 +1,50 @@
 # Changelog
 
+## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.3...v0.49.0) (2026-06-30)
+
+### ⚠ Breaking Changes
+
+- **`ContractorProfile` / contractor `OnboardingFlow` `defaultValues` shape changed** (`ContractorProfileFormData`): `contractorType` is renamed to `type` (same `'Individual' | 'Business'` values), and `startDate` is now an ISO date string (`'YYYY-MM-DD'`) instead of a `Date`. All other keys are unchanged.
+
+  ```tsx
+  // Before
+  <ContractorProfile
+    defaultValues={{ contractorType: 'Individual', startDate: new Date('2024-02-15') }}
+  />
+  // After
+  <ContractorProfile defaultValues={{ type: 'Individual', startDate: '2024-02-15' }} />
+  ```
+
+- **`placeholder` is now required on `Components.Select` and the `Fields.*` select wrappers** ([#2197](https://github.com/Gusto/embedded-react-sdk/issues/2197)). Partners overriding `Components.Select` or rendering hook-generated `Fields.X` selects must pass `placeholder`. Partner UI adapters that already accept `placeholder` only need to make the prop required in their own types.
+
+### Features & Enhancements
+
+- Add `showContinueButton` prop to `EmployeeList` ([#2216](https://github.com/Gusto/embedded-react-sdk/issues/2216))
+- Add `Contractor.DocumentsList` component for listing contractor documents ([#2298](https://github.com/Gusto/embedded-react-sdk/issues/2298))
+- Add contractor self-onboarding components: profile ([#2286](https://github.com/Gusto/embedded-react-sdk/issues/2286)), `Landing` ([#2283](https://github.com/Gusto/embedded-react-sdk/issues/2283)), and `OnboardingSummary` ([#2300](https://github.com/Gusto/embedded-react-sdk/issues/2300))
+- Add `useContractorDetailsForm` hook ([#2275](https://github.com/Gusto/embedded-react-sdk/issues/2275)) and `useContractorAddressForm` hook ([#2280](https://github.com/Gusto/embedded-react-sdk/issues/2280))
+- Support a value-aware function for `buildFormSchema` `excludeFields` ([#2272](https://github.com/Gusto/embedded-react-sdk/issues/2272))
+- `StateTaxes`: respect `applicable_if` for conditional field visibility ([#2256](https://github.com/Gusto/embedded-react-sdk/issues/2256))
+- Clarify contractor payment wage type and N/A columns ([#2240](https://github.com/Gusto/embedded-react-sdk/issues/2240))
+
+### Fixes
+
+- `ContractorPayments`: fix hours input not updating correctly ([#2267](https://github.com/Gusto/embedded-react-sdk/issues/2267))
+- `ContractorPayments`: use the SDK `DatePicker` for the payment date input ([#2271](https://github.com/Gusto/embedded-react-sdk/issues/2271))
+- `ContractorPayments`: align numeric columns and table footer ([#2225](https://github.com/Gusto/embedded-react-sdk/issues/2225))
+- `ContractorPayments`: show the create CTA in the header when payments exist, and in the empty state otherwise ([#2215](https://github.com/Gusto/embedded-react-sdk/issues/2215), [#2222](https://github.com/Gusto/embedded-react-sdk/issues/2222))
+- `PayrollOverview`: correct loading copy and gating in the run-payroll flow ([#2254](https://github.com/Gusto/embedded-react-sdk/issues/2254))
+- `Modal`: inherit theme color and font-family inside the dialog ([#2259](https://github.com/Gusto/embedded-react-sdk/issues/2259))
+- `Locations`: render address lines as stacked flex items ([#2227](https://github.com/Gusto/embedded-react-sdk/issues/2227))
+- `PaymentStatement`: use the supporting-text variant and unwrap table cell text ([#2242](https://github.com/Gusto/embedded-react-sdk/issues/2242))
+- `AdminProfile`: replace `switchFieldContainer` with the `Box` component ([#2253](https://github.com/Gusto/embedded-react-sdk/issues/2253))
+- `Employee.EmploymentEligibility`: remove stray apostrophe in the noncitizen description ([#2314](https://github.com/Gusto/embedded-react-sdk/issues/2314))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`typescript-eslint` family, `@playwright/test`, `prettier`, `@commitlint/*`, `release-it`, `react-router-dom`, `vite-plugin-stylelint`, `lint-staged`, `globals`)
+- Bump runtime dependencies (`i18next`, `react-hook-form`)
+
 ## [0.48.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.2...v0.48.3) (2026-06-17)
 
 ### Features & Enhancements
