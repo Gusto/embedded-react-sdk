@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
+import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,6 +31,15 @@ import {
   AdjustForMinimumWageField,
   MinimumWageIdField,
   EffectiveDateField,
+} from './fields'
+import type {
+  TitleFieldProps,
+  FlsaStatusFieldProps,
+  RateFieldProps,
+  PaymentUnitFieldProps,
+  AdjustForMinimumWageFieldProps,
+  MinimumWageIdFieldProps,
+  EffectiveDateFieldProps,
 } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -136,20 +146,20 @@ export interface UseCompensationFormProps {
  * @public
  */
 export interface CompensationFormFields {
-  /** Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. */
-  Title: typeof TitleField
-  /** FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). */
-  FlsaStatus: typeof FlsaStatusField | undefined
-  /** Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. */
-  Rate: typeof RateField | undefined
-  /** Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). */
-  PaymentUnit: typeof PaymentUnitField | undefined
-  /** Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. */
-  AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined
-  /** Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. */
-  MinimumWageId: typeof MinimumWageIdField | undefined
-  /** Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+  /** Bound to `title`. Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. */
+  Title: ComponentType<TitleFieldProps>
+  /** Bound to `flsaStatus`. FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). */
+  FlsaStatus: ComponentType<FlsaStatusFieldProps> | undefined
+  /** Bound to `rate`. Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. */
+  Rate: ComponentType<RateFieldProps> | undefined
+  /** Bound to `paymentUnit`. Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). */
+  PaymentUnit: ComponentType<PaymentUnitFieldProps> | undefined
+  /** Bound to `adjustForMinimumWage`. Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. */
+  AdjustForMinimumWage: ComponentType<AdjustForMinimumWageFieldProps> | undefined
+  /** Bound to `minimumWageId`. Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. */
+  MinimumWageId: ComponentType<MinimumWageIdFieldProps> | undefined
+  /** Bound to `effectiveDate`. Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**

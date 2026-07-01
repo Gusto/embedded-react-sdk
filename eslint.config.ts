@@ -171,7 +171,18 @@ export default [
       'tsdoc-coverage/require-member-comment': 'error',
       'tsdoc-coverage/require-release-tag': 'error',
       'tsdoc-coverage/require-form-data-interface': 'error',
+      'tsdoc-coverage/require-form-fields-component-type': 'error',
       'tsdoc-coverage/require-hook-ready-interface': 'error',
+    },
+  },
+  /**
+   * Public package entry: @internal hook building blocks must not leak here.
+   */
+  {
+    plugins: { 'tsdoc-coverage': tsdocCoverage },
+    files: ['src/index.ts'],
+    rules: {
+      'tsdoc-coverage/no-internal-reexport-from-index': 'error',
     },
   },
 

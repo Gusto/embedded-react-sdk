@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -24,6 +25,13 @@ import {
   TwoPercentShareholderField,
   StateWcCoveredField,
   StateWcClassCodeField,
+} from './fields'
+import type {
+  JobTitleFieldProps,
+  HireDateFieldProps,
+  TwoPercentShareholderFieldProps,
+  StateWcCoveredFieldProps,
+  StateWcClassCodeFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -123,16 +131,16 @@ export interface UseJobFormProps {
  * @public
  */
 export interface JobFormFields {
-  /** Job title text input. `undefined` when `withTitleField: false`. */
-  Title: typeof JobTitleField | undefined
-  /** Hire date picker. `undefined` when `withHireDateField: false`. */
-  HireDate: typeof HireDateField | undefined
-  /** S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
-  TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
-  /** Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
-  StateWcCovered: typeof StateWcCoveredField | undefined
-  /** Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
-  StateWcClassCode: typeof StateWcClassCodeField | undefined
+  /** Bound to `title`. Job title text input. `undefined` when `withTitleField: false`. */
+  Title: ComponentType<JobTitleFieldProps> | undefined
+  /** Bound to `hireDate`. Hire date picker. `undefined` when `withHireDateField: false`. */
+  HireDate: ComponentType<HireDateFieldProps> | undefined
+  /** Bound to `twoPercentShareholder`. S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
+  TwoPercentShareholder: ComponentType<TwoPercentShareholderFieldProps> | undefined
+  /** Bound to `stateWcCovered`. Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
+  StateWcCovered: ComponentType<StateWcCoveredFieldProps> | undefined
+  /** Bound to `stateWcClassCode`. Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
+  StateWcClassCode: ComponentType<StateWcClassCodeFieldProps> | undefined
 }
 
 /**

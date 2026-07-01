@@ -103,7 +103,7 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorPaymentMethodFormFields`](#contractorpaymentmethodformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | `isPending` reflects the in-flight update mutation; `mode` is always `'update'`. `isDirectDeposit` reflects the currently selected type so a composing component can render bank fields and decide whether to submit the bank-account form. |
@@ -212,17 +212,6 @@ Shape of the values managed by the contractor payment method form.
 > **ContractorPaymentMethodFormField** = `"type"`
 
 Field names accepted by the contractor payment method form.
-
-***
-
-<a id="contractorpaymentmethodformoutputs"></a>
-
-### ContractorPaymentMethodFormOutputs
-
-> **ContractorPaymentMethodFormOutputs** = [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)
-
-Shape of the validated values produced by the contractor payment method form
-on submit.
 
 ***
 

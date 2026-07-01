@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -13,6 +14,7 @@ import {
   type PaymentMethodType,
   createPaymentMethodFormSchema,
 } from './usePaymentMethodFormSchema'
+import type { TypeFieldProps } from './fields'
 import { TypeField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -54,7 +56,7 @@ export interface UsePaymentMethodFormProps {
  */
 export interface PaymentMethodFormFields {
   /** Bound to `type`. */
-  Type: typeof TypeField
+  Type: ComponentType<TypeFieldProps>
 }
 
 /**

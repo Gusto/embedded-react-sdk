@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -12,6 +13,12 @@ import {
   type BankFormOptionalFieldsToRequire,
   type BankFormOutputs,
 } from './useBankFormSchema'
+import type {
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+} from './fields'
 import { AccountNumberField, AccountTypeField, NameField, RoutingNumberField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -62,13 +69,13 @@ export interface UseBankFormProps {
  */
 export interface BankFormFields {
   /** Bound to `name`. */
-  Name: typeof NameField
+  Name: ComponentType<NameFieldProps>
   /** Bound to `routingNumber`. */
-  RoutingNumber: typeof RoutingNumberField
+  RoutingNumber: ComponentType<RoutingNumberFieldProps>
   /** Bound to `accountNumber`. */
-  AccountNumber: typeof AccountNumberField
+  AccountNumber: ComponentType<AccountNumberFieldProps>
   /** Bound to `accountType`. */
-  AccountType: typeof AccountTypeField
+  AccountType: ComponentType<AccountTypeFieldProps>
 }
 
 /**

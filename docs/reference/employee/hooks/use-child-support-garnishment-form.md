@@ -134,7 +134,7 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. |
@@ -154,20 +154,20 @@ Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fie
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Amount` | `ComponentType`\<[`AmountFieldProps`](#childsupportgarnishmentamountfieldprops)\> | Percent-of-paycheck input (0–100). Always available. |
-| `PaymentPeriod` | `ComponentType`\<[`PaymentPeriodFieldProps`](#paymentperiodfieldprops)\> | Payment period select. Always available. |
-| `PayPeriodMaximum` | `ComponentType`\<[`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops)\> | Per-pay-period currency cap input. Always available. |
-| `State` | `ComponentType`\<[`StateFieldProps`](#childsupportgarnishmentstatefieldprops)\> | Agency (state) select. Always available. |
-| `CaseNumber` | `ComponentType`\<[`CaseNumberFieldProps`](#casenumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `case_number`. |
-| `FipsCode` | `ComponentType`\<[`FipsCodeFieldProps`](#fipscodefieldprops)\> \| `undefined` | Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
-| `OrderNumber` | `ComponentType`\<[`OrderNumberFieldProps`](#ordernumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `order_number`. |
-| `RemittanceNumber` | `ComponentType`\<[`RemittanceNumberFieldProps`](#remittancenumberfieldprops)\> \| `undefined` | Only available when the selected agency requires `remittance_number`. |
+| `Amount` | `ComponentType`\<[`AmountFieldProps`](#childsupportgarnishmentamountfieldprops)\> | Bound to `amount`. Percent-of-paycheck input (0–100). Always available. |
+| `PaymentPeriod` | `ComponentType`\<[`PaymentPeriodFieldProps`](#paymentperiodfieldprops)\> | Bound to `paymentPeriod`. Payment period select. Always available. |
+| `PayPeriodMaximum` | `ComponentType`\<[`PayPeriodMaximumFieldProps`](#payperiodmaximumfieldprops)\> | Bound to `payPeriodMaximum`. Per-pay-period currency cap input. Always available. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#childsupportgarnishmentstatefieldprops)\> | Bound to `state`. Agency (state) select. Always available. |
+| `CaseNumber` | `ComponentType`\<[`CaseNumberFieldProps`](#casenumberfieldprops)\> \| `undefined` | Bound to `caseNumber`. Only available when the selected agency requires `case_number`. |
+| `FipsCode` | `ComponentType`\<[`FipsCodeFieldProps`](#fipscodefieldprops)\> \| `undefined` | Bound to `fipsCode`. Only available when the selected agency has more than one fips code, or the sole code is county-scoped (not an "all counties" auto-pick). |
+| `OrderNumber` | `ComponentType`\<[`OrderNumberFieldProps`](#ordernumberfieldprops)\> \| `undefined` | Bound to `orderNumber`. Only available when the selected agency requires `order_number`. |
+| `RemittanceNumber` | `ComponentType`\<[`RemittanceNumberFieldProps`](#remittancenumberfieldprops)\> \| `undefined` | Bound to `remittanceNumber`. Only available when the selected agency requires `remittance_number`. |
 
 ***
 
 ### Amount
 
-Percent-of-paycheck input (0–100). Always available.
+Bound to `amount`. Percent-of-paycheck input (0–100). Always available.
 
 ```tsx
 <form.Fields.Amount
@@ -196,7 +196,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### CaseNumber
 
-Only available when the selected agency requires `case_number`.
+Bound to `caseNumber`. Only available when the selected agency requires `case_number`.
 
 ```tsx
 {form.Fields.CaseNumber && (
@@ -227,8 +227,9 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### FipsCode
 
-Only available when the selected agency has more than one fips code, or the
- sole code is county-scoped (not an "all counties" auto-pick).
+Bound to `fipsCode`. Only available when the selected agency has more than
+ one fips code, or the sole code is county-scoped (not an "all counties"
+ auto-pick).
 
 ```tsx
 {form.Fields.FipsCode && (
@@ -261,7 +262,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### OrderNumber
 
-Only available when the selected agency requires `order_number`.
+Bound to `orderNumber`. Only available when the selected agency requires `order_number`.
 
 ```tsx
 {form.Fields.OrderNumber && (
@@ -292,7 +293,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### PaymentPeriod
 
-Payment period select. Always available.
+Bound to `paymentPeriod`. Payment period select. Always available.
 
 ```tsx
 <form.Fields.PaymentPeriod
@@ -323,7 +324,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### PayPeriodMaximum
 
-Per-pay-period currency cap input. Always available.
+Bound to `payPeriodMaximum`. Per-pay-period currency cap input. Always available.
 
 ```tsx
 <form.Fields.PayPeriodMaximum
@@ -352,7 +353,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### RemittanceNumber
 
-Only available when the selected agency requires `remittance_number`.
+Bound to `remittanceNumber`. Only available when the selected agency requires `remittance_number`.
 
 ```tsx
 {form.Fields.RemittanceNumber && (
@@ -383,7 +384,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### State
 
-Agency (state) select. Always available.
+Bound to `state`. Agency (state) select. Always available.
 
 ```tsx
 <form.Fields.State
@@ -554,17 +555,6 @@ Carries per-field `isRequired`, `isDisabled`, label, description, and option
 entries derived from the schema and form state. Use these to drive UI such
 as disabled state or option lists when not relying on the pre-bound
 [ChildSupportGarnishmentFormFields](#childsupportgarnishmentformfields) components.
-
-***
-
-<a id="childsupportgarnishmentformoutputs"></a>
-
-### ChildSupportGarnishmentFormOutputs
-
-> **ChildSupportGarnishmentFormOutputs** = [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)
-
-Shape of the validated values produced by the child support garnishment
-form on submit.
 
 ***
 

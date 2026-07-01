@@ -132,9 +132,9 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 | `data.paySchedule` | [`PayScheduleShow`](../../APIModels/index.md#payscheduleshow) \| `null` | The pay schedule loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
+| `form.Fields` | [`PayScheduleFormFields`](#payscheduleformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`PayScheduleFormData`](#payscheduleformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
@@ -143,27 +143,27 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 
 ## Fields
 
-### PayScheduleFields
+### PayScheduleFormFields
 
-<a id="payschedulefields"></a>
+<a id="payscheduleformfields"></a>
 
 Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `AnchorEndOfPayPeriod` | `ComponentType`\<[`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops)\> | First pay period end date picker. Always available. |
-| `AnchorPayDate` | `ComponentType`\<[`AnchorPayDateFieldProps`](#anchorpaydatefieldprops)\> | First pay date picker. Always available. |
-| `CustomName` | `ComponentType`\<[`CustomNameFieldProps`](#customnamefieldprops)\> | Display name text input. Always available. |
-| `Frequency` | `ComponentType`\<[`FrequencyFieldProps`](#frequencyfieldprops)\> | Frequency selector. Always available. |
-| `CustomTwicePerMonth` | `ComponentType`\<[`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops)\> \| `undefined` | Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
-| `Day1` | `ComponentType`\<[`Day1FieldProps`](#day1fieldprops)\> \| `undefined` | First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
-| `Day2` | `ComponentType`\<[`Day2FieldProps`](#day2fieldprops)\> \| `undefined` | Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
+| `AnchorEndOfPayPeriod` | `ComponentType`\<[`AnchorEndOfPayPeriodFieldProps`](#anchorendofpayperiodfieldprops)\> | Bound to `anchorEndOfPayPeriod`. First pay period end date picker. Always available. |
+| `AnchorPayDate` | `ComponentType`\<[`AnchorPayDateFieldProps`](#anchorpaydatefieldprops)\> | Bound to `anchorPayDate`. First pay date picker. Always available. |
+| `CustomName` | `ComponentType`\<[`CustomNameFieldProps`](#customnamefieldprops)\> | Bound to `customName`. Display name text input. Always available. |
+| `Frequency` | `ComponentType`\<[`FrequencyFieldProps`](#frequencyfieldprops)\> | Bound to `frequency`. Frequency selector. Always available. |
+| `CustomTwicePerMonth` | `ComponentType`\<[`CustomTwicePerMonthFieldProps`](#customtwicepermonthfieldprops)\> \| `undefined` | Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. |
+| `Day1` | `ComponentType`\<[`Day1FieldProps`](#day1fieldprops)\> \| `undefined` | Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. |
+| `Day2` | `ComponentType`\<[`Day2FieldProps`](#day2fieldprops)\> \| `undefined` | Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. |
 
 ***
 
 ### AnchorEndOfPayPeriod
 
-First pay period end date picker. Always available.
+Bound to `anchorEndOfPayPeriod`. First pay period end date picker. Always available.
 
 ```tsx
 <form.Fields.AnchorEndOfPayPeriod
@@ -192,7 +192,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### AnchorPayDate
 
-First pay date picker. Always available.
+Bound to `anchorPayDate`. First pay date picker. Always available.
 
 ```tsx
 <form.Fields.AnchorPayDate
@@ -221,7 +221,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### CustomName
 
-Display name text input. Always available.
+Bound to `customName`. Display name text input. Always available.
 
 ```tsx
 <form.Fields.CustomName
@@ -250,7 +250,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### CustomTwicePerMonth
 
-Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`.
+Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`.
 
 ```tsx
 {form.Fields.CustomTwicePerMonth && (
@@ -278,7 +278,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### Day1
 
-First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy.
+Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy.
 
 ```tsx
 {form.Fields.Day1 && (
@@ -309,7 +309,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### Day2
 
-Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy.
+Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy.
 
 ```tsx
 {form.Fields.Day2 && (
@@ -340,7 +340,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### Frequency
 
-Frequency selector. Always available.
+Bound to `frequency`. Frequency selector. Always available.
 
 ```tsx
 <form.Fields.Frequency
@@ -466,26 +466,6 @@ Shape of the values managed by the pay schedule form.
 | `day1` | `number` |
 | `day2` | `number` |
 | `frequency` | `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"` |
-
-***
-
-<a id="payscheduleformfields"></a>
-
-### PayScheduleFormFields
-
-> **PayScheduleFormFields** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [usePayScheduleForm](#usepayscheduleform).
-
-***
-
-<a id="payscheduleformoutputs"></a>
-
-### PayScheduleFormOutputs
-
-> **PayScheduleFormOutputs** = [`PayScheduleFormData`](#payscheduleformdata)
-
-Shape of the validated values produced by the pay schedule form on submit.
 
 ***
 

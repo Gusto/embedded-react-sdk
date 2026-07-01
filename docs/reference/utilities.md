@@ -257,8 +257,9 @@ parsed values (or `undefined` if invalid).
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
 | `TFieldsMetadata` *extends* [`FieldsMetadata`](#fieldsmetadata) | [`FieldsMetadata`](#fieldsmetadata) | Shape of the per-field metadata exposed by the hook. |
-| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form (the resolver input / `TFieldValues`). |
 | `TFields` *extends* `object` | `Record`\<`string`, `unknown`\> | Shape of the pre-bound `Fields` component map. |
+| `TFormOutputs` | `TFormData` | Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge. |
 
 #### Properties
 
@@ -270,7 +271,7 @@ parsed values (or `undefined` if invalid).
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | `TFields` | - |
 | `form.fieldsMetadata` | `TFieldsMetadata` | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => `TFormOutputs` \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
 | `status` | `object` | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |

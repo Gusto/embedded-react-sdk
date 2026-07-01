@@ -56,12 +56,7 @@ export type ContractorAddressField = keyof typeof fieldValidators
 export type ContractorAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the contractor address form on
- * submit.
- *
- * @public
- */
+/** @internal */
 export type ContractorAddressFormOutputs = ContractorAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────

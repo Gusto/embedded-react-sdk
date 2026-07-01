@@ -80,17 +80,7 @@ export type TypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<never, ContractorDetailsFormData['type']>
 >
 
-/**
- * Radio group bound to the `type` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Selects whether the contractor is an `Individual` or a `Business`. Provide
- * `getOptionLabel` to localize the option labels.
- *
- * @param props - {@link TypeFieldProps}.
- * @returns The rendered radio group bound to `type`.
- * @public
- */
+/** @internal */
 export function TypeField(props: TypeFieldProps) {
   return <RadioGroupHookField {...props} name="type" />
 }
@@ -104,17 +94,7 @@ export type WageTypeFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>
 >
 
-/**
- * Radio group bound to the `wageType` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Selects whether the contractor is paid `Fixed` or `Hourly`. Provide
- * `getOptionLabel` to localize the option labels.
- *
- * @param props - {@link WageTypeFieldProps}.
- * @returns The rendered radio group bound to `wageType`.
- * @public
- */
+/** @internal */
 export function WageTypeField(props: WageTypeFieldProps) {
   return <RadioGroupHookField {...props} name="wageType" />
 }
@@ -126,17 +106,7 @@ export function WageTypeField(props: WageTypeFieldProps) {
  */
 export type StartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<RequiredValidation>>
 
-/**
- * Date picker bound to the `startDate` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Required on create; can be made required on update via
- * `optionalFieldsToRequire`.
- *
- * @param props - {@link StartDateFieldProps}.
- * @returns The rendered date picker bound to `startDate`.
- * @public
- */
+/** @internal */
 export function StartDateField(props: StartDateFieldProps) {
   return <DatePickerHookField {...props} name="startDate" />
 }
@@ -148,17 +118,7 @@ export function StartDateField(props: StartDateFieldProps) {
  */
 export type HourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<RequiredValidation>>
 
-/**
- * Number input bound to the `hourlyRate` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.HourlyRate` only when
- * `wageType` is `Hourly`, in which case it is required.
- *
- * @param props - {@link HourlyRateFieldProps}.
- * @returns The rendered number input bound to `hourlyRate`.
- * @public
- */
+/** @internal */
 export function HourlyRateField(props: HourlyRateFieldProps) {
   return <NumberInputHookField {...props} name="hourlyRate" />
 }
@@ -170,20 +130,7 @@ export function HourlyRateField(props: HourlyRateFieldProps) {
  */
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>
 
-/**
- * Switch bound to the `selfOnboarding` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.SelfOnboarding` only when the
- * field is toggleable (create mode, or an onboarding status that still allows
- * inviting the contractor). Always null-check before rendering. When enabled,
- * the contractor is invited to enter their own details and SSN/EIN are no
- * longer collected by the admin.
- *
- * @param props - {@link SelfOnboardingFieldProps}.
- * @returns The rendered switch bound to `selfOnboarding`.
- * @public
- */
+/** @internal */
 export function SelfOnboardingField(props: SelfOnboardingFieldProps) {
   return <SwitchHookField {...props} name="selfOnboarding" />
 }
@@ -195,18 +142,7 @@ export function SelfOnboardingField(props: SelfOnboardingFieldProps) {
  */
 export type FileNewHireReportFieldProps = HookFieldProps<SwitchHookFieldProps>
 
-/**
- * Switch bound to the `fileNewHireReport` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.FileNewHireReport` only for
- * individual contractors. When enabled, a work state must be supplied so the
- * new-hire report can be filed.
- *
- * @param props - {@link FileNewHireReportFieldProps}.
- * @returns The rendered switch bound to `fileNewHireReport`.
- * @public
- */
+/** @internal */
 export function FileNewHireReportField(props: FileNewHireReportFieldProps) {
   return <SwitchHookField {...props} name="fileNewHireReport" />
 }
@@ -218,18 +154,7 @@ export function FileNewHireReportField(props: FileNewHireReportFieldProps) {
  */
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>
 
-/**
- * Text input bound to the `email` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Email` only when
- * self-onboarding is enabled, in which case it is required (reported via the
- * `REQUIRED` code).
- *
- * @param props - {@link EmailFieldProps}.
- * @returns The rendered text input bound to `email`.
- * @public
- */
+/** @internal */
 export function EmailField(props: EmailFieldProps) {
   return <TextInputHookField {...props} name="email" />
 }
@@ -241,17 +166,7 @@ export function EmailField(props: EmailFieldProps) {
  */
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>
 
-/**
- * Text input bound to the `firstName` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.FirstName` for individual
- * contractors, in which case it is required.
- *
- * @param props - {@link FirstNameFieldProps}.
- * @returns The rendered text input bound to `firstName`.
- * @public
- */
+/** @internal */
 export function FirstNameField(props: FirstNameFieldProps) {
   return <TextInputHookField {...props} name="firstName" />
 }
@@ -263,17 +178,7 @@ export function FirstNameField(props: FirstNameFieldProps) {
  */
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>
 
-/**
- * Text input bound to the `lastName` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.LastName` for individual
- * contractors, in which case it is required.
- *
- * @param props - {@link LastNameFieldProps}.
- * @returns The rendered text input bound to `lastName`.
- * @public
- */
+/** @internal */
 export function LastNameField(props: LastNameFieldProps) {
   return <TextInputHookField {...props} name="lastName" />
 }
@@ -285,17 +190,7 @@ export function LastNameField(props: LastNameFieldProps) {
  */
 export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `middleInitial` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.MiddleInitial` for individual
- * contractors. Always optional.
- *
- * @param props - {@link MiddleInitialFieldProps}.
- * @returns The rendered text input bound to `middleInitial`.
- * @public
- */
+/** @internal */
 export function MiddleInitialField(props: MiddleInitialFieldProps) {
   return <TextInputHookField {...props} name="middleInitial" />
 }
@@ -307,17 +202,7 @@ export function MiddleInitialField(props: MiddleInitialFieldProps) {
  */
 export type BusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `businessName` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.BusinessName` for business
- * contractors, in which case it is required.
- *
- * @param props - {@link BusinessNameFieldProps}.
- * @returns The rendered text input bound to `businessName`.
- * @public
- */
+/** @internal */
 export function BusinessNameField(props: BusinessNameFieldProps) {
   return <TextInputHookField {...props} name="businessName" />
 }
@@ -331,19 +216,7 @@ export type SsnFieldProps = HookFieldProps<
   TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>
 >
 
-/**
- * Text input bound to the `ssn` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Ssn` for individual contractors.
- * Auto-formats input with dashes (`XXX-XX-XXXX`). When the contractor already
- * has an SSN on file, the field shows a masked placeholder and the required
- * rule is waived.
- *
- * @param props - {@link SsnFieldProps}.
- * @returns The rendered text input bound to `ssn`.
- * @public
- */
+/** @internal */
 export function SsnField(props: SsnFieldProps) {
   const metadataContext = useFormFieldsMetadataContext()
   const metadata = props.formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
@@ -367,18 +240,7 @@ export type EinFieldProps = HookFieldProps<
   TextInputHookFieldProps<EinValidation, EinRequiredValidation>
 >
 
-/**
- * Text input bound to the `ein` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Ein` for business contractors.
- * Auto-formats input as `XX-XXXXXXX`. When the contractor already has an EIN on
- * file, the field shows a masked placeholder and the required rule is waived.
- *
- * @param props - {@link EinFieldProps}.
- * @returns The rendered text input bound to `ein`.
- * @public
- */
+/** @internal */
 export function EinField(props: EinFieldProps) {
   const metadataContext = useFormFieldsMetadataContext()
   const metadata = props.formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
@@ -400,18 +262,7 @@ export function EinField(props: EinFieldProps) {
  */
 export type WorkStateFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation, string>>
 
-/**
- * Select bound to the `workState` field of {@link useContractorDetailsForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.WorkState` for individual
- * contractors when `fileNewHireReport` is enabled, in which case it is
- * required.
- *
- * @param props - {@link WorkStateFieldProps}.
- * @returns The rendered select bound to `workState`.
- * @public
- */
+/** @internal */
 export function WorkStateField(props: WorkStateFieldProps) {
   return <SelectHookField {...props} name="workState" />
 }

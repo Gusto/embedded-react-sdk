@@ -236,16 +236,7 @@ export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 
-/**
- * Validated submission shape produced by the {@link useCompensationForm} schema.
- *
- * @remarks
- * Identical to {@link CompensationFormData} — exposed as a separate alias so
- * the input vs. output sides of the schema remain distinguishable in advanced
- * usages.
- *
- * @public
- */
+/** @internal */
 export type CompensationFormOutputs = CompensationFormData
 
 /** @internal */

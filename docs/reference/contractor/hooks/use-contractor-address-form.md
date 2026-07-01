@@ -112,9 +112,9 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 | `data.contractorType` | [`ContractorType`](../../APIModels/index.md#contractortype-1) \| `undefined` | The contractor's type — drives whether the address is labelled "home" (Individual) or "business" (Business). |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorAddressFields`](#contractoraddressfields) | - |
+| `form.Fields` | [`ContractorAddressFormFields`](#contractoraddressformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`ContractorAddressFormData`](#contractoraddressformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
@@ -123,25 +123,25 @@ Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressfo
 
 ## Fields
 
-### ContractorAddressFields
+### ContractorAddressFormFields
 
-<a id="contractoraddressfields"></a>
+<a id="contractoraddressformfields"></a>
 
-Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
+Field components exposed by [useContractorAddressForm](#usecontractoraddressform) on `form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `City` | `ComponentType`\<[`CityFieldProps`](#contractoraddresscityfieldprops)\> | City text input. Required. |
-| `State` | `ComponentType`\<[`StateFieldProps`](#contractoraddressstatefieldprops)\> | State selector. Required. |
-| `Street1` | `ComponentType`\<[`Street1FieldProps`](#contractoraddressstreet1fieldprops)\> | Street address line 1 text input. Required. |
-| `Street2` | `ComponentType`\<[`Street2FieldProps`](#contractoraddressstreet2fieldprops)\> | Street address line 2 text input. Optional. |
-| `Zip` | `ComponentType`\<[`ZipFieldProps`](#contractoraddresszipfieldprops)\> | ZIP code text input. Required. |
+| `City` | `ComponentType`\<[`CityFieldProps`](#contractoraddresscityfieldprops)\> | Bound to `city`. Text input for the city. Required. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#contractoraddressstatefieldprops)\> | Bound to `state`. Select whose options are the standard two-letter US state abbreviations. Supply `getOptionLabel` to localize the option labels. Required. |
+| `Street1` | `ComponentType`\<[`Street1FieldProps`](#contractoraddressstreet1fieldprops)\> | Bound to `street1`. Text input for the first street address line. Required. |
+| `Street2` | `ComponentType`\<[`Street2FieldProps`](#contractoraddressstreet2fieldprops)\> | Bound to `street2`. Text input for the second street address line. Optional. |
+| `Zip` | `ComponentType`\<[`ZipFieldProps`](#contractoraddresszipfieldprops)\> | Bound to `zip`. Text input for the ZIP code. Required; also validates ZIP format and emits `INVALID_ZIP` when the value does not match. |
 
 ***
 
 ### City
 
-City text input. Required.
+Bound to `city`. Text input for the city. Required.
 
 ```tsx
 <form.Fields.City
@@ -170,7 +170,8 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### State
 
-State selector. Required.
+Bound to `state`. Select whose options are the standard two-letter US state
+abbreviations. Supply `getOptionLabel` to localize the option labels. Required.
 
 ```tsx
 <form.Fields.State
@@ -201,7 +202,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### Street1
 
-Street address line 1 text input. Required.
+Bound to `street1`. Text input for the first street address line. Required.
 
 ```tsx
 <form.Fields.Street1
@@ -230,7 +231,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### Street2
 
-Street address line 2 text input. Optional.
+Bound to `street2`. Text input for the second street address line. Optional.
 
 ```tsx
 <form.Fields.Street2
@@ -259,7 +260,8 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### Zip
 
-ZIP code text input. Required.
+Bound to `zip`. Text input for the ZIP code. Required; also validates ZIP
+format and emits `INVALID_ZIP` when the value does not match.
 
 ```tsx
 <form.Fields.Zip
@@ -380,27 +382,6 @@ Shape of the values managed by the contractor address form.
 | `street1` | `string` |
 | `street2` | `string` |
 | `zip` | `string` |
-
-***
-
-<a id="contractoraddressformfields"></a>
-
-### ContractorAddressFormFields
-
-> **ContractorAddressFormFields** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useContractorAddressForm](#usecontractoraddressform).
-
-***
-
-<a id="contractoraddressformoutputs"></a>
-
-### ContractorAddressFormOutputs
-
-> **ContractorAddressFormOutputs** = [`ContractorAddressFormData`](#contractoraddressformdata)
-
-Shape of the validated values produced by the contractor address form on
-submit.
 
 ***
 
