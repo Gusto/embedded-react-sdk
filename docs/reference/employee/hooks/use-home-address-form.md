@@ -403,40 +403,11 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
-<a id="homeaddresserrorcodes"></a>
-
-### HomeAddressErrorCodes
-
-> `const` **HomeAddressErrorCodes**: `object`
-
-Validation error codes emitted by the home address form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_ZIP` | `"INVALID_ZIP"` | `'INVALID_ZIP'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="homeaddresserrorcode"></a>
-
-### HomeAddressErrorCode
-
-> **HomeAddressErrorCode** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[keyof *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\]
-
-Union of validation error code strings emitted by the home address form
-schema.
-
-***
-
 <a id="homeaddressrequiredvalidation"></a>
 
 ### HomeAddressRequiredValidation
 
-> **HomeAddressRequiredValidation** = *typeof* `HomeAddressErrorCodes.REQUIRED`
+> **HomeAddressRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useHomeAddressForm](#usehomeaddressform) fields that only emit `REQUIRED`.
 
@@ -451,7 +422,7 @@ withholding, and effective date fields. See [HomeAddressErrorCodes](#homeaddress
 
 ### ZipValidation
 
-> **ZipValidation** = *typeof* [`HomeAddressErrorCodes`](#homeaddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
+> **ZipValidation** = `"REQUIRED"` \| `"INVALID_ZIP"`
 
 Validation error codes emitted by the `zip` field of [useHomeAddressForm](#usehomeaddressform).
 
@@ -461,11 +432,40 @@ Use these as keys in `validationMessages` on `Fields.Zip`. See
 [HomeAddressErrorCodes](#homeaddresserrorcodes).
 
 ## Utility Types
+<a id="homeaddresserrorcode"></a>
+
+### HomeAddressErrorCode
+
+> **HomeAddressErrorCode** = `"REQUIRED"` \| `"INVALID_ZIP"`
+
+Union of validation error code strings emitted by the home address form
+schema.
+
+***
+
+<a id="homeaddresserrorcodes"></a>
+
+### HomeAddressErrorCodes
+
+> `const` **HomeAddressErrorCodes**: `object`
+
+Validation error codes emitted by the home address form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `INVALID_ZIP` | `"INVALID_ZIP"` |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="homeaddressfield"></a>
 
 ### HomeAddressField
 
-> **HomeAddressField** = keyof *typeof* `fieldValidators`
+> **HomeAddressField** = `"street1"` \| `"city"` \| `"state"` \| `"zip"` \| `"street2"` \| `"effectiveDate"` \| `"courtesyWithholding"`
 
 Field names accepted by the home address form.
 

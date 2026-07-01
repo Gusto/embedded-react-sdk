@@ -305,6 +305,31 @@ _Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../.
 
 ## Validations
 
+<a id="jobrequiredvalidation"></a>
+
+### JobRequiredValidation
+
+> **JobRequiredValidation** = `"REQUIRED"`
+
+The validation error code a [useJobForm](#usejobform) field can produce.
+
+#### Remarks
+
+Currently a single literal — `'REQUIRED'` — surfaced as the key in
+`validationMessages` on each `Fields.*` component. Future schema additions
+may extend the union.
+
+## Utility Types
+<a id="joberrorcode"></a>
+
+### JobErrorCode
+
+> **JobErrorCode** = `"REQUIRED"`
+
+Union of every error code produced by the [useJobForm](#usejobform) schema.
+
+***
+
 <a id="joberrorcodes"></a>
 
 ### JobErrorCodes
@@ -315,9 +340,9 @@ Validation error codes produced by the [useJobForm](#usejobform) schema.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 #### Remarks
 
@@ -337,31 +362,6 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
 
 ***
 
-<a id="joberrorcode"></a>
-
-### JobErrorCode
-
-> **JobErrorCode** = *typeof* [`JobErrorCodes`](#joberrorcodes)\[keyof *typeof* [`JobErrorCodes`](#joberrorcodes)\]
-
-Union of every error code produced by the [useJobForm](#usejobform) schema.
-
-***
-
-<a id="jobrequiredvalidation"></a>
-
-### JobRequiredValidation
-
-> **JobRequiredValidation** = *typeof* `JobErrorCodes.REQUIRED`
-
-The validation error code a [useJobForm](#usejobform) field can produce.
-
-#### Remarks
-
-Currently a single literal — `'REQUIRED'` — surfaced as the key in
-`validationMessages` on each `Fields.*` component. Future schema additions
-may extend the union.
-
-## Utility Types
 <a id="jobfieldsmetadata"></a>
 
 ### JobFieldsMetadata

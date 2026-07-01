@@ -514,7 +514,7 @@ export class SDKRouter extends MemberRouter {
       join(apiModelsDir, '_category_.json'),
       JSON.stringify(
         {
-          label: 'API Models',
+          label: 'API models',
           position: DOMAINS.length + STANDALONE_PAGES.length + 1,
           collapsed: true,
         },

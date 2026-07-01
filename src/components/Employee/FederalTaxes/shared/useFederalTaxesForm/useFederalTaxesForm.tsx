@@ -3,14 +3,14 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax'
-import type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltaxrev2020'
-import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupUpdateFederalTaxes'
+import type { EmployeeFederalTax } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltax'
+import type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltaxrev2020'
+import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupUpdateFederalTaxes'
 import type {
   FilingStatus,
   PutV1EmployeesEmployeeIdFederalTaxesRequestBody,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidfederaltaxes'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidfederaltaxes'
 import {
   createFederalTaxesSchema,
   FILING_STATUS_VALUES,

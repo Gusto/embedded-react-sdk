@@ -1,4 +1,4 @@
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
 import { WorkAddressView } from './WorkAddressView'
 import {
   isUseWorkAddressManagementSuccess,

@@ -31,7 +31,7 @@ custom_edit_url: null
 
 ### ApiProvider
 
-Wires the `@gusto/embedded-api-v-2025-11-15` client and a React Query client into the React tree.
+Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
 
 #### ApiProviderProps
 
@@ -42,7 +42,7 @@ Props for [ApiProvider](#apiprovider).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-apiproviderpropschildren"></a> `children` | `ReactNode` | Subtree that renders inside the API + React Query providers. |
-| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2025-11-15` requests. |
+| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-02-01` requests. |
 | <a id="property-apiproviderpropsheaders"></a> `headers?` | `HeadersInit` | Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. |
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
@@ -52,7 +52,7 @@ Props for [ApiProvider](#apiprovider).
 Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
 and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
 `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2025-11-15']` key invalidate every SDK
+successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
 query automatically. Partners who supply their own `QueryClient` are responsible for matching that
 contract.
 
@@ -210,7 +210,7 @@ The configured provider tree wrapping `children`.
 
 ### I9\_FORM\_NAME
 
-> `const` **I9\_FORM\_NAME**: `"US_I-9"` = `'US_I-9'`
+> `const` **I9\_FORM\_NAME**: `"US_I-9"`
 
 The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
 
@@ -232,13 +232,44 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` | `'Hour'` |
-| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` | `'Month'` |
-| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` | `'Paycheck'` |
-| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` | `'Week'` |
-| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` | `'Year'` |
+| Name | Type |
+| ------ | ------ |
+| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` |
+| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` |
+| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` |
+| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` |
+| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` |
+
+***
+
+<a id="sdkerrorcategories"></a>
+
+### SDKErrorCategories
+
+> `const` **SDKErrorCategories**: `object`
+
+Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
+
+#### Remarks
+
+Use this when you need to reference a category value by name (e.g.
+`SDKErrorCategories.API_ERROR`). Each entry corresponds to one classification:
+
+| Value | When it applies |
+| ----- | --------------- |
+| `api_error` | HTTP error response from the Gusto API (422, 404, 409, 500, etc.) |
+| `validation_error` | Client-side Zod schema validation before the request was sent |
+| `network_error` | Network connectivity failure (connection refused, timeout, abort) |
+| `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
 
 ## Interfaces
 
@@ -783,7 +814,7 @@ Request interceptors for customizing HTTP requests and responses.
 Pass an instance of this interface to [GustoProvider](#gustoprovider) via `config.hooks` to
 inspect or modify requests and responses across the four lifecycle stages.
 Each entry is an array of objects implementing the corresponding hook type
-from `@gusto/embedded-api-v-2025-11-15/hooks/types`.
+from `@gusto/embedded-api-v-2026-02-01/hooks/types`.
 
 | Stage | When it runs |
 | ----- | ------------ |
@@ -948,7 +979,7 @@ Each key names a component's resource namespace.
 
 ### SDKErrorCategory
 
-> **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
+> **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
 

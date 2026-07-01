@@ -1,4 +1,4 @@
-import type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
+import type { Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
 import type { WorkAddressErrorCodes } from './workAddressSchema'
 import type { SelectHookFieldProps } from '@/partner-hook-utils/form/fields/SelectHookField'
 import type { DatePickerHookFieldProps } from '@/partner-hook-utils/form/fields/DatePickerHookField'

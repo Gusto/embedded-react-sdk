@@ -17,11 +17,11 @@ const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
 const SRC_DIR = join(ROOT, 'src')
-const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/funcs')
-const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/models/operations')
+const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2026-02-01/src/funcs')
+const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2026-02-01/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
-const JSON_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-inventory.json')
-const MD_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-reference.md')
+const JSON_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-inventory.json')
+const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
 
 const isVerifyMode = process.argv.includes('--verify')
 
@@ -208,11 +208,11 @@ function collectTransitiveApiImports(
   const funcNames = new Set<string>()
 
   function followSpec(spec: string, getResolved: () => SourceFile | undefined) {
-    if (spec.startsWith('@gusto/embedded-api-v-2025-11-15/react-query/')) {
-      const name = spec.slice('@gusto/embedded-api-v-2025-11-15/react-query/'.length)
+    if (spec.startsWith('@gusto/embedded-api-v-2026-02-01/react-query/')) {
+      const name = spec.slice('@gusto/embedded-api-v-2026-02-01/react-query/'.length)
       if (!name.startsWith('_')) funcNames.add(name)
-    } else if (spec.startsWith('@gusto/embedded-api-v-2025-11-15/funcs/')) {
-      funcNames.add(spec.slice('@gusto/embedded-api-v-2025-11-15/funcs/'.length))
+    } else if (spec.startsWith('@gusto/embedded-api-v-2026-02-01/funcs/')) {
+      funcNames.add(spec.slice('@gusto/embedded-api-v-2026-02-01/funcs/'.length))
     } else if (spec.startsWith('.') || spec.startsWith('@/hooks/')) {
       // Follow relative imports (catches ../shared/ hooks) and cross-cutting utility hooks.
       // Deliberately skip @/components/, @/contexts/, @/helpers/ etc. to avoid
@@ -708,7 +708,7 @@ function validateEndpoints(
 
   if (invalid.length > 0) {
     console.error(
-      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2025-11-15:',
+      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2026-02-01:',
     )
     for (const ep of invalid) console.error(`  ${ep}`)
     console.error('')
@@ -781,7 +781,7 @@ function verify() {
   console.error('This can happen when:')
   console.error('  - A component added or removed an API hook/function import')
   console.error('  - A flow added or removed a block component')
-  console.error('  - The @gusto/embedded-api-v-2025-11-15 package was updated')
+  console.error('  - The @gusto/embedded-api-v-2026-02-01 package was updated')
   console.error('')
   if (committedJson !== freshJson) printDiff(JSON_OUTPUT_PATH, freshJson)
   if (committedMd !== freshMd) printDiff(MD_OUTPUT_PATH, freshMd)

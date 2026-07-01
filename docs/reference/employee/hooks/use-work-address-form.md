@@ -248,39 +248,11 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ## Validations
 
-<a id="workaddresserrorcodes"></a>
-
-### WorkAddressErrorCodes
-
-> `const` **WorkAddressErrorCodes**: `object`
-
-Validation error codes emitted by the work address form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="workaddresserrorcode"></a>
-
-### WorkAddressErrorCode
-
-> **WorkAddressErrorCode** = *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\[keyof *typeof* [`WorkAddressErrorCodes`](#workaddresserrorcodes)\]
-
-Union of validation error code strings emitted by the work address form
-schema.
-
-***
-
 <a id="workaddressrequiredvalidation"></a>
 
 ### WorkAddressRequiredValidation
 
-> **WorkAddressRequiredValidation** = *typeof* `WorkAddressErrorCodes.REQUIRED`
+> **WorkAddressRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useWorkAddressForm](#useworkaddressform) fields that only emit `REQUIRED`.
 
@@ -305,11 +277,39 @@ the hook resolves the current work address itself.
 
 ***
 
+<a id="workaddresserrorcode"></a>
+
+### WorkAddressErrorCode
+
+> **WorkAddressErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the work address form
+schema.
+
+***
+
+<a id="workaddresserrorcodes"></a>
+
+### WorkAddressErrorCodes
+
+> `const` **WorkAddressErrorCodes**: `object`
+
+Validation error codes emitted by the work address form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="workaddressfield"></a>
 
 ### WorkAddressField
 
-> **WorkAddressField** = keyof *typeof* `fieldValidators`
+> **WorkAddressField** = `"effectiveDate"` \| `"locationUuid"`
 
 Field names accepted by the work address form.
 

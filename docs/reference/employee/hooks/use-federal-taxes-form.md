@@ -316,6 +316,31 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ## Validations
 
+<a id="federaltaxesrequiredvalidation"></a>
+
+### FederalTaxesRequiredValidation
+
+> **FederalTaxesRequiredValidation** = `"REQUIRED"`
+
+The required-field error code produced by [useFederalTaxesForm](#usefederaltaxesform) fields.
+
+#### Remarks
+
+Used as the `validationMessages` key for every federal taxes field. See
+[FederalTaxesErrorCodes](#federaltaxeserrorcodes).
+
+## Utility Types
+<a id="federaltaxeserrorcode"></a>
+
+### FederalTaxesErrorCode
+
+> **FederalTaxesErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the federal taxes form
+schema.
+
+***
+
 <a id="federaltaxeserrorcodes"></a>
 
 ### FederalTaxesErrorCodes
@@ -327,42 +352,17 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
-<a id="federaltaxeserrorcode"></a>
-
-### FederalTaxesErrorCode
-
-> **FederalTaxesErrorCode** = *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\[keyof *typeof* [`FederalTaxesErrorCodes`](#federaltaxeserrorcodes)\]
-
-Union of validation error code strings emitted by the federal taxes form
-schema.
-
-***
-
-<a id="federaltaxesrequiredvalidation"></a>
-
-### FederalTaxesRequiredValidation
-
-> **FederalTaxesRequiredValidation** = *typeof* `FederalTaxesErrorCodes.REQUIRED`
-
-The required-field error code produced by [useFederalTaxesForm](#usefederaltaxesform) fields.
-
-#### Remarks
-
-Used as the `validationMessages` key for every federal taxes field. See
-[FederalTaxesErrorCodes](#federaltaxeserrorcodes).
-
-## Utility Types
 <a id="federaltaxesfield"></a>
 
 ### FederalTaxesField
 
-> **FederalTaxesField** = keyof *typeof* `fieldValidators`
+> **FederalTaxesField** = `"deductions"` \| `"extraWithholding"` \| `"filingStatus"` \| `"otherIncome"` \| `"twoJobs"` \| `"dependentsAmount"`
 
 Field names accepted by the federal taxes form.
 
@@ -428,7 +428,7 @@ household, and exempt from withholding.
 
 ### FilingStatusValue
 
-> **FilingStatusValue** = *typeof* [`FILING_STATUS_VALUES`](#filing_status_values)\[`number`\]
+> **FilingStatusValue** = `"Single"` \| `"Married"` \| `"Head of Household"` \| `"Exempt from withholding"`
 
 Union of filing status values that the form accepts.
 

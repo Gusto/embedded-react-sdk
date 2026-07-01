@@ -14,5 +14,7 @@ export function load(app: MarkdownApplication): void {
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKTheme.protectPropsInterfaces, 100)
   app.converter.on(Converter.EVENT_RESOLVE_BEGIN, SDKRouter.reparentDeprecated, 50)
   app.converter.on(Converter.EVENT_RESOLVE_END, SDKRouter.stampGroupTags, 0)
+  app.converter.on(Converter.EVENT_RESOLVE_END, SDKTheme.expandConstDerivedAliases, -100)
+  app.converter.on(Converter.EVENT_RESOLVE_END, SDKTheme.dropRedundantConstDefaults, -100)
   app.converter.on(Converter.EVENT_RESOLVE_END, SDKTheme.removePropsFromGroups, -200)
 }

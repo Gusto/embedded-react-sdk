@@ -4,18 +4,29 @@ import {
   Comment,
   CommentTag,
   DeclarationReflection,
+  IndexedAccessType,
+  IntrinsicType,
+  LiteralType,
   ParameterReflection,
   ProjectReflection,
+  QueryType,
   ReferenceReflection,
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
   SignatureReflection,
   SourceReference,
+  TypeOperatorType,
+  UnionType,
   FileRegistry,
 } from 'typedoc'
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { SDKRouter } from './router'
+import {
+  defaultValueRestatesLiteralType,
+  documentedUnderlyingConst,
+  isOpaqueConstDerivedType,
+} from './theme'
 import {
   componentPropsInterfaces,
   domainFromSources,
@@ -1181,7 +1192,7 @@ describe('buildPages — standalone page routing', () => {
     const pages = router.buildPages(project)
 
     const page = pages.find(p => p.url === 'theme-variables.md')
-    expect((page?.model as DeclarationReflection).name).toBe('Theme Variables')
+    expect((page?.model as DeclarationReflection).name).toBe('Theme variables')
   })
 
   it('standalone members are removed from project groups', () => {
@@ -1486,5 +1497,122 @@ describe('serializeFrontmatter', () => {
   it('serializes custom_edit_url: null as null', () => {
     const result = serializeFrontmatter(sample)
     expect(result).toContain('custom_edit_url: null')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isOpaqueConstDerivedType (gate for expandConstDerivedAliases)
+// ---------------------------------------------------------------------------
+
+describe('isOpaqueConstDerivedType', () => {
+  const project = makeProject()
+  const constRef = ReferenceType.createResolvedReference(
+    'fieldValidators',
+    makeChild(project, 'fieldValidators', ReflectionKind.Variable),
+    project,
+  )
+
+  it('matches `keyof typeof <const>`', () => {
+    expect(isOpaqueConstDerivedType(new TypeOperatorType(new QueryType(constRef), 'keyof'))).toBe(
+      true,
+    )
+  })
+
+  it('matches indexed access (`typeof <const>[…]`)', () => {
+    const indexed = new IndexedAccessType(
+      new QueryType(constRef),
+      new TypeOperatorType(new QueryType(constRef), 'keyof'),
+    )
+    expect(isOpaqueConstDerivedType(indexed)).toBe(true)
+  })
+
+  it('matches a bare `typeof <const>` query', () => {
+    expect(isOpaqueConstDerivedType(new QueryType(constRef))).toBe(true)
+  })
+
+  it('leaves non-keyof type operators (e.g. `readonly`) untouched', () => {
+    expect(
+      isOpaqueConstDerivedType(new TypeOperatorType(new IntrinsicType('string'), 'readonly')),
+    ).toBe(false)
+  })
+
+  it('leaves already-resolved unions and literals untouched', () => {
+    expect(
+      isOpaqueConstDerivedType(new UnionType([new LiteralType('a'), new LiteralType('b')])),
+    ).toBe(false)
+    expect(isOpaqueConstDerivedType(new LiteralType('a'))).toBe(false)
+    expect(isOpaqueConstDerivedType(new IntrinsicType('string'))).toBe(false)
+    expect(isOpaqueConstDerivedType(undefined)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// documentedUnderlyingConst (keeps large documented-const unions as links)
+// ---------------------------------------------------------------------------
+
+describe('documentedUnderlyingConst', () => {
+  const project = makeProject()
+  const constReflection = makeChild(project, 'componentEvents', ReflectionKind.Variable)
+  const resolved = new QueryType(
+    ReferenceType.createResolvedReference('componentEvents', constReflection, project),
+  )
+  const broken = new QueryType(
+    ReferenceType.createBrokenReference('fieldValidators', project, undefined),
+  )
+
+  it('resolves the const behind `keyof typeof <documented const>`', () => {
+    expect(documentedUnderlyingConst(new TypeOperatorType(resolved, 'keyof'))).toBe(constReflection)
+  })
+
+  it('resolves the const behind an indexed access', () => {
+    const indexed = new IndexedAccessType(resolved, new TypeOperatorType(resolved, 'keyof'))
+    expect(documentedUnderlyingConst(indexed)).toBe(constReflection)
+  })
+
+  it('returns null when the underlying const has no reflection (unexported)', () => {
+    expect(documentedUnderlyingConst(new TypeOperatorType(broken, 'keyof'))).toBeNull()
+    expect(documentedUnderlyingConst(broken)).toBeNull()
+  })
+
+  it('returns null for non-const-derived types', () => {
+    expect(documentedUnderlyingConst(new LiteralType('a'))).toBeNull()
+    expect(documentedUnderlyingConst(undefined)).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// defaultValueRestatesLiteralType (drops redundant `as const` default column)
+// ---------------------------------------------------------------------------
+
+describe('defaultValueRestatesLiteralType', () => {
+  function member(type: LiteralType | undefined, defaultValue: string | undefined) {
+    const r = new DeclarationReflection('API_ERROR', ReflectionKind.Property)
+    if (type) r.type = type
+    r.defaultValue = defaultValue
+    return r
+  }
+
+  it('is true when a string default restates its literal type', () => {
+    expect(
+      defaultValueRestatesLiteralType(member(new LiteralType('api_error'), "'api_error'")),
+    ).toBe(true)
+  })
+
+  it('is true for numeric and boolean literal restatements', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType(42), '42'))).toBe(true)
+    expect(defaultValueRestatesLiteralType(member(new LiteralType(true), 'true'))).toBe(true)
+  })
+
+  it('is false when the default differs from the literal type', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType('api_error'), "'other'"))).toBe(
+      false,
+    )
+  })
+
+  it('is false when there is no default or the type is not a literal', () => {
+    expect(defaultValueRestatesLiteralType(member(new LiteralType('api_error'), undefined))).toBe(
+      false,
+    )
+    expect(defaultValueRestatesLiteralType(member(undefined, "'api_error'"))).toBe(false)
   })
 })

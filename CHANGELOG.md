@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.50.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.49.0...v0.50.0) (2026-07-01)
+
+### ⚠ Breaking Changes
+
+- **The field exports `NameField`, `RoutingNumberField`, `AccountNumberField`, `AccountTypeField`, and `ContractorPaymentMethodTypeField` have been removed** ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303)). These fields depend on their form's context and were never functional when imported and rendered on their own, so this only affects direct imports of the symbols. Access them from the relevant hook's `form.Fields`, which wires up the required context:
+
+  ```tsx
+  const { form } = useContractorBankAccountForm({ contractorId })
+  const { Name, RoutingNumber, AccountNumber, AccountType } = form.Fields
+  // ...render <Name />, <RoutingNumber />, etc.
+
+  const paymentMethodForm = useContractorPaymentMethodForm({ contractorId })
+  const { Type } = paymentMethodForm.form.Fields // was ContractorPaymentMethodTypeField
+  ```
+
+### Features & Enhancements
+
+- Add `useContractorBankAccountForm` and `useContractorPaymentMethodForm` hooks for building contractor payment-method and bank-account forms, each exposing its field components on `form.Fields` ([#2301](https://github.com/Gusto/embedded-react-sdk/issues/2301), [#2302](https://github.com/Gusto/embedded-react-sdk/issues/2302))
+- `Contractor.PaymentMethod` now composes the new payment-method and bank-account hooks ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303))
+- Expand const-derived reference types and export `SDKErrorCategories` ([#2320](https://github.com/Gusto/embedded-react-sdk/issues/2320))
+
+### Chores & Maintenance
+
+- Bump `i18next` from 26.3.3 to 26.3.4 ([#2324](https://github.com/Gusto/embedded-react-sdk/issues/2324))
+- Bump dev dependencies (`@commitlint/cli`, `@commitlint/config-conventional`, `typescript-eslint`)
+
 ## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.3...v0.49.0) (2026-06-30)
 
 ### ⚠ Breaking Changes

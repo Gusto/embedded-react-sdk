@@ -232,7 +232,7 @@ jobs:
       - name: Check for stale derived files
         id: check
         run: |
-          git add docs/appendix
+          git add docs/guides
           git add docs/reference
           if git diff --staged --quiet; then
             echo "stale=false" >> $GITHUB_OUTPUT
@@ -249,7 +249,7 @@ jobs:
         with:
           name: derived-src
           path: |
-            docs/appendix
+            docs/guides
             docs/reference
           retention-days: 1
           if-no-files-found: error
@@ -343,7 +343,7 @@ jobs:
       # first means the post-download tree is exactly the generator output, so
       # `git add` stages the deletions (git rm) alongside the additions.
       - name: Clear derived directories before applying artifacts
-        run: rm -rf docs/appendix docs/reference
+        run: rm -rf docs/guides docs/reference
 
       - name: Download derived src files
         uses: actions/download-artifact@v6
@@ -365,7 +365,7 @@ jobs:
 
       - name: Commit and push derived files
         run: |
-          git add docs/appendix
+          git add docs/guides
           git add docs/reference
           git add .reports
           git add src/models/external.ts

@@ -1,4 +1,4 @@
-import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsList'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
 /** @internal */

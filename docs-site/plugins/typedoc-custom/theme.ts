@@ -20,6 +20,7 @@ import {
   TypeOperatorType,
   UnionType,
 } from 'typedoc'
+import type * as ts from 'typescript'
 import { MarkdownPageEvent, MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown'
 import {
   componentPropsInterfaces,
@@ -1109,6 +1110,69 @@ function fieldPropsReflection(type: SomeType | undefined): DeclarationReflection
 }
 
 /**
+ * Whether an alias's type is an opaque const-derived expression — `keyof typeof
+ * <const>`, an indexed access (`typeof <const>[…]`, `(typeof <const>)[number]`),
+ * or a bare `typeof <const>` query. These render as an unresolvable reference to
+ * a (usually module-internal, unexported) const rather than useful text, and are
+ * the only aliases {@link SDKTheme.expandConstDerivedAliases} rewrites.
+ */
+export function isOpaqueConstDerivedType(type: SomeType | undefined): boolean {
+  return (
+    (type instanceof TypeOperatorType && type.operator === 'keyof') ||
+    type instanceof IndexedAccessType ||
+    type instanceof QueryType
+  )
+}
+
+/**
+ * The const a `keyof typeof <const>` / `typeof <const>[…]` / `typeof <const>`
+ * alias reads from, but only when that const is itself a documented reflection —
+ * in which case the opaque form already renders as a useful link and a large
+ * expansion would just be a wall of literals. Returns `null` when the const is
+ * unexported/undocumented (a dead reference worth expanding regardless of size).
+ */
+export function documentedUnderlyingConst(
+  type: SomeType | undefined,
+): DeclarationReflection | null {
+  let query: SomeType | undefined
+  if (type instanceof TypeOperatorType && type.operator === 'keyof') query = type.target
+  else if (type instanceof IndexedAccessType) query = type.objectType
+  else if (type instanceof QueryType) query = type
+  if (!(query instanceof QueryType)) return null
+  const reflection = query.queryType.reflection
+  return reflection instanceof DeclarationReflection ? reflection : null
+}
+
+/** Above this member count, a documented-const union stays a link, not a wall of literals. */
+const MAX_INLINE_LITERALS = 12
+
+/**
+ * The string-literal members of a resolved TS type, or `null` if the type is not
+ * a union (or single) of string literals — in which case the alias is left as-is
+ * rather than rewritten to something lossy.
+ */
+function stringLiteralMembers(type: ts.Type): string[] | null {
+  const parts = type.isUnion() ? type.types : [type]
+  const values: string[] = []
+  for (const part of parts) {
+    if (!part.isStringLiteral()) return null
+    values.push(part.value)
+  }
+  return values.length > 0 ? values : null
+}
+
+/**
+ * Whether a member's rendered `defaultValue` merely restates its literal `type`
+ * — true for every member of an `as const` object (`API_ERROR: 'api_error'`
+ * typed as `"api_error"`), where the "Default value" table column is pure noise.
+ */
+export function defaultValueRestatesLiteralType(reflection: DeclarationReflection): boolean {
+  if (reflection.defaultValue === undefined) return false
+  if (!(reflection.type instanceof LiteralType)) return false
+  return reflection.defaultValue.replace(/^['"]|['"]$/g, '') === String(reflection.type.value)
+}
+
+/**
  * Collect the string-literal validation codes a type resolves to — walking
  * unions, type-alias references, and `typeof XxxErrorCodes.CODE` queries (whose
  * queried property's literal value, or failing that its name, is the code).
@@ -2109,6 +2173,58 @@ export class SDKTheme extends MarkdownTheme {
   static serializeFrontmatter(page: MarkdownPageEvent): void {
     if (!page.frontmatter) return
     page.contents = `${buildFrontmatterYaml(page.frontmatter)}\n\n${page.contents}`
+  }
+
+  // Expand opaque const-derived string-union aliases in place so they render as
+  // `"a" | "b" | "c"` instead of an unresolvable `keyof typeof <internalConst>`
+  // / `typeof <const>[…]` expression. Covers field-name unions (`keyof typeof
+  // fieldValidators`), the error-category union (`typeof SDKErrorCategories[keyof
+  // typeof SDKErrorCategories]`), and `as const` value unions (`(typeof FOO)
+  // [number]`). The referenced const is often module-internal with no reflection,
+  // so resolution goes through the TS type checker — it sees the fully-resolved
+  // literal union regardless. Only aliases whose resolved type is entirely string
+  // literals are rewritten; anything else is left untouched. A large union backed
+  // by a *documented* const (e.g. `EventType` over the exported `componentEvents`)
+  // is left as-is — its opaque form already links to that const, which beats
+  // inlining hundreds of literals.
+  static expandConstDerivedAliases(context: Context): void {
+    // `context.program` throws outside file conversion; at RESOLVE_END read the
+    // (single, entry-point) program directly for a checker that resolves aliases.
+    const checker = context.programs[0]?.getTypeChecker()
+    if (!checker) return
+    for (const reflection of Object.values(context.project.reflections)) {
+      if (!(reflection instanceof DeclarationReflection)) continue
+      if (reflection.kind !== ReflectionKind.TypeAlias) continue
+      if (!isOpaqueConstDerivedType(reflection.type)) continue
+
+      const symbol = context.getSymbolFromReflection(reflection)
+      if (!symbol) continue
+      const literals = stringLiteralMembers(checker.getDeclaredTypeOfSymbol(symbol))
+      if (!literals) continue
+      if (literals.length > MAX_INLINE_LITERALS && documentedUnderlyingConst(reflection.type)) {
+        continue
+      }
+
+      reflection.type =
+        literals.length === 1
+          ? new LiteralType(literals[0]!)
+          : new UnionType(literals.map(value => new LiteralType(value)))
+    }
+  }
+
+  // Drop the redundant "Default value" table column from `as const` object
+  // constants (e.g. `SDKErrorCategories`, the `XxxErrorCodes` maps), where each
+  // member's default merely restates its literal type. The column is genuinely
+  // useful elsewhere (real defaults on params/props), so this only clears the
+  // duplicate values — typeDeclarationTable then omits the column once no member
+  // carries a defaultValue.
+  static dropRedundantConstDefaults(context: Context): void {
+    for (const reflection of Object.values(context.project.reflections)) {
+      if (!(reflection instanceof DeclarationReflection)) continue
+      if (defaultValueRestatesLiteralType(reflection)) {
+        reflection.defaultValue = undefined
+      }
+    }
   }
 
   // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that

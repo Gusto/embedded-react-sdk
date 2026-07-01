@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Component Inventory
-description: Component Inventory reference.
+title: Component inventory
+description: Component inventory reference.
 sidebar_position: 7
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Component Inventory
+# Component inventory
 
 ## Component Props
 

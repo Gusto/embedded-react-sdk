@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Hook Utilities
-description: Hook Utilities reference.
+title: Hook utilities
+description: Hook utilities reference.
 sidebar_position: 8
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Hook Utilities
+# Hook utilities
 
 ## Components
 
@@ -82,7 +82,7 @@ A single `HookErrorHandling` covering every source.
 
 #### Remarks
 
-Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+Accepts any mix of `@gusto/embedded-api-v-2026-02-01` React Query results and SDK hook
 results that already expose an `errorHandling` object (including the value returned by
 [composeSubmitHandler](#composesubmithandler)). Query errors are normalized to `SDKError`, nested hook
 errors are flattened in, and an optional submit-state argument adds a submit error to
@@ -99,7 +99,7 @@ recovery, not a submit callback.
 
 ```tsx
 import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
-import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
 
 function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
@@ -167,7 +167,7 @@ cross-form focus instead.
 
 The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
 can be passed back into [composeErrorHandler](#composeerrorhandler) when you need to add extra
-`@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
+`@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state.
 
 #### Example
 

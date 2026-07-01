@@ -161,39 +161,11 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ## Validations
 
-<a id="paymentmethodformerrorcodes"></a>
-
-### PaymentMethodFormErrorCodes
-
-> `const` **PaymentMethodFormErrorCodes**: `object`
-
-Validation error codes emitted by the payment method form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="paymentmethodformerrorcode"></a>
-
-### PaymentMethodFormErrorCode
-
-> **PaymentMethodFormErrorCode** = *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\[keyof *typeof* [`PaymentMethodFormErrorCodes`](#paymentmethodformerrorcodes)\]
-
-Union of validation error code strings emitted by the payment method form
-schema.
-
-***
-
 <a id="paymentmethodformrequiredvalidation"></a>
 
 ### PaymentMethodFormRequiredValidation
 
-> **PaymentMethodFormRequiredValidation** = *typeof* `PaymentMethodFormErrorCodes.REQUIRED`
+> **PaymentMethodFormRequiredValidation** = `"REQUIRED"`
 
 Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
 
@@ -222,11 +194,39 @@ Shape of the values managed by the payment method form.
 
 ***
 
+<a id="paymentmethodformerrorcode"></a>
+
+### PaymentMethodFormErrorCode
+
+> **PaymentMethodFormErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the payment method form
+schema.
+
+***
+
+<a id="paymentmethodformerrorcodes"></a>
+
+### PaymentMethodFormErrorCodes
+
+> `const` **PaymentMethodFormErrorCodes**: `object`
+
+Validation error codes emitted by the payment method form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="paymentmethodformfield"></a>
 
 ### PaymentMethodFormField
 
-> **PaymentMethodFormField** = keyof *typeof* `fieldValidators`
+> **PaymentMethodFormField** = `"type"`
 
 Field names accepted by the payment method form.
 
@@ -257,7 +257,7 @@ the hook's `optionalFieldsToRequire` option.
 
 ### PaymentMethodType
 
-> **PaymentMethodType** = *typeof* [`PAYMENT_METHOD_TYPES`](#payment_method_types)\[`number`\]
+> **PaymentMethodType** = `"Check"` \| `"Direct Deposit"`
 
 Union of payment method type values that the form accepts.
 

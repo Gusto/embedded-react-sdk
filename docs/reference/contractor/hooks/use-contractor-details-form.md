@@ -602,6 +602,87 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ## Validations
 
+<a id="contractordetailseinrequiredvalidation"></a>
+
+### ContractorDetailsEinRequiredValidation
+
+> **ContractorDetailsEinRequiredValidation** = `"REQUIRED"`
+
+Required-field error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailseinvalidation"></a>
+
+### ContractorDetailsEinValidation
+
+> **ContractorDetailsEinValidation** = `"INVALID_EIN"`
+
+Format-validation error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsemailvalidation"></a>
+
+### ContractorDetailsEmailValidation
+
+> **ContractorDetailsEmailValidation** = `"REQUIRED"` \| `"INVALID_EMAIL"`
+
+Validation error codes emitted by the `email` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsnamevalidation"></a>
+
+### ContractorDetailsNameValidation
+
+> **ContractorDetailsNameValidation** = `"REQUIRED"` \| `"INVALID_NAME"`
+
+Validation error codes emitted by the name fields of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsrequiredvalidation"></a>
+
+### ContractorDetailsRequiredValidation
+
+> **ContractorDetailsRequiredValidation** = `"REQUIRED"`
+
+Error code emitted by fields of [useContractorDetailsForm](#usecontractordetailsform) that only
+produce `REQUIRED`.
+
+***
+
+<a id="contractordetailsssnrequiredvalidation"></a>
+
+### ContractorDetailsSsnRequiredValidation
+
+> **ContractorDetailsSsnRequiredValidation** = `"REQUIRED"`
+
+Required-field error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+***
+
+<a id="contractordetailsssnvalidation"></a>
+
+### ContractorDetailsSsnValidation
+
+> **ContractorDetailsSsnValidation** = `"INVALID_SSN"`
+
+Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
+
+## Utility Types
+<a id="contractordetailserrorcode"></a>
+
+### ContractorDetailsErrorCode
+
+> **ContractorDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"INVALID_EIN"`
+
+Union of validation error code strings emitted by the contractor details
+form schema.
+
+***
+
 <a id="contractordetailserrorcodes"></a>
 
 ### ContractorDetailsErrorCodes
@@ -614,97 +695,16 @@ hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_EIN` | `"INVALID_EIN"` | `'INVALID_EIN'` |
-| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
-| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
-| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `INVALID_EIN` | `"INVALID_EIN"` |
+| `INVALID_EMAIL` | `"INVALID_EMAIL"` |
+| `INVALID_NAME` | `"INVALID_NAME"` |
+| `INVALID_SSN` | `"INVALID_SSN"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
-<a id="contractordetailserrorcode"></a>
-
-### ContractorDetailsErrorCode
-
-> **ContractorDetailsErrorCode** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[keyof *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\]
-
-Union of validation error code strings emitted by the contractor details
-form schema.
-
-***
-
-<a id="contractordetailseinrequiredvalidation"></a>
-
-### ContractorDetailsEinRequiredValidation
-
-> **ContractorDetailsEinRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Required-field error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailseinvalidation"></a>
-
-### ContractorDetailsEinValidation
-
-> **ContractorDetailsEinValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_EIN`
-
-Format-validation error code emitted by the `ein` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsemailvalidation"></a>
-
-### ContractorDetailsEmailValidation
-
-> **ContractorDetailsEmailValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"`\]
-
-Validation error codes emitted by the `email` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsnamevalidation"></a>
-
-### ContractorDetailsNameValidation
-
-> **ContractorDetailsNameValidation** = *typeof* [`ContractorDetailsErrorCodes`](#contractordetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
-
-Validation error codes emitted by the name fields of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsrequiredvalidation"></a>
-
-### ContractorDetailsRequiredValidation
-
-> **ContractorDetailsRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Error code emitted by fields of [useContractorDetailsForm](#usecontractordetailsform) that only
-produce `REQUIRED`.
-
-***
-
-<a id="contractordetailsssnrequiredvalidation"></a>
-
-### ContractorDetailsSsnRequiredValidation
-
-> **ContractorDetailsSsnRequiredValidation** = *typeof* `ContractorDetailsErrorCodes.REQUIRED`
-
-Required-field error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsssnvalidation"></a>
-
-### ContractorDetailsSsnValidation
-
-> **ContractorDetailsSsnValidation** = *typeof* `ContractorDetailsErrorCodes.INVALID_SSN`
-
-Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
-
-## Utility Types
 <a id="contractordetailsfieldsmetadata"></a>
 
 ### ContractorDetailsFieldsMetadata

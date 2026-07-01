@@ -400,6 +400,60 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
+<a id="compensationeffectivedatevalidation"></a>
+
+### CompensationEffectiveDateValidation
+
+> **CompensationEffectiveDateValidation** = `"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`
+
+Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+***
+
+<a id="compensationrequiredvalidation"></a>
+
+### CompensationRequiredValidation
+
+> **CompensationRequiredValidation** = `"REQUIRED"`
+
+The required-field error code produced by [useCompensationForm](#usecompensationform) fields that only emit `REQUIRED`.
+
+#### Remarks
+
+Used as the `validationMessages` key for the title, FLSA status, payment
+unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
+
+***
+
+<a id="ratevalidation"></a>
+
+### RateValidation
+
+> **RateValidation** = `"REQUIRED"` \| `"RATE_MINIMUM"` \| `"RATE_EXEMPT_THRESHOLD"`
+
+Validation error codes emitted by the `rate` field of [useCompensationForm](#usecompensationform).
+
+#### Remarks
+
+Use these as keys in `validationMessages` on `Fields.Rate`. See
+[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
+
+## Utility Types
+<a id="compensationerrorcode"></a>
+
+### CompensationErrorCode
+
+> **CompensationErrorCode** = `"REQUIRED"` \| `"RATE_MINIMUM"` \| `"RATE_EXEMPT_THRESHOLD"` \| `"PAYMENT_UNIT_OWNER"` \| `"PAYMENT_UNIT_COMMISSION"` \| `"RATE_COMMISSION_ZERO"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`
+
+Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
+
+***
+
 <a id="compensationerrorcodes"></a>
 
 ### CompensationErrorCodes
@@ -410,16 +464,16 @@ Validation error codes produced by the [useCompensationForm](#usecompensationfor
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `EFFECTIVE_DATE_BEFORE_HIRE` | `"EFFECTIVE_DATE_BEFORE_HIRE"` | `'EFFECTIVE_DATE_BEFORE_HIRE'` |
-| `EFFECTIVE_DATE_BEFORE_MIN` | `"EFFECTIVE_DATE_BEFORE_MIN"` | `'EFFECTIVE_DATE_BEFORE_MIN'` |
-| `PAYMENT_UNIT_COMMISSION` | `"PAYMENT_UNIT_COMMISSION"` | `'PAYMENT_UNIT_COMMISSION'` |
-| `PAYMENT_UNIT_OWNER` | `"PAYMENT_UNIT_OWNER"` | `'PAYMENT_UNIT_OWNER'` |
-| `RATE_COMMISSION_ZERO` | `"RATE_COMMISSION_ZERO"` | `'RATE_COMMISSION_ZERO'` |
-| `RATE_EXEMPT_THRESHOLD` | `"RATE_EXEMPT_THRESHOLD"` | `'RATE_EXEMPT_THRESHOLD'` |
-| `RATE_MINIMUM` | `"RATE_MINIMUM"` | `'RATE_MINIMUM'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `EFFECTIVE_DATE_BEFORE_HIRE` | `"EFFECTIVE_DATE_BEFORE_HIRE"` |
+| `EFFECTIVE_DATE_BEFORE_MIN` | `"EFFECTIVE_DATE_BEFORE_MIN"` |
+| `PAYMENT_UNIT_COMMISSION` | `"PAYMENT_UNIT_COMMISSION"` |
+| `PAYMENT_UNIT_OWNER` | `"PAYMENT_UNIT_OWNER"` |
+| `RATE_COMMISSION_ZERO` | `"RATE_COMMISSION_ZERO"` |
+| `RATE_EXEMPT_THRESHOLD` | `"RATE_EXEMPT_THRESHOLD"` |
+| `RATE_MINIMUM` | `"RATE_MINIMUM"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 #### Remarks
 
@@ -454,60 +508,6 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
 
 ***
 
-<a id="compensationerrorcode"></a>
-
-### CompensationErrorCode
-
-> **CompensationErrorCode** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[keyof *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\]
-
-Union of every error code produced by the [useCompensationForm](#usecompensationform) schema.
-
-***
-
-<a id="compensationeffectivedatevalidation"></a>
-
-### CompensationEffectiveDateValidation
-
-> **CompensationEffectiveDateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"EFFECTIVE_DATE_BEFORE_HIRE"` \| `"EFFECTIVE_DATE_BEFORE_MIN"`\]
-
-Validation error codes emitted by the `effectiveDate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.EffectiveDate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
-
-***
-
-<a id="compensationrequiredvalidation"></a>
-
-### CompensationRequiredValidation
-
-> **CompensationRequiredValidation** = *typeof* `CompensationErrorCodes.REQUIRED`
-
-The required-field error code produced by [useCompensationForm](#usecompensationform) fields that only emit `REQUIRED`.
-
-#### Remarks
-
-Used as the `validationMessages` key for the title, FLSA status, payment
-unit, and minimum-wage selection fields. See [CompensationErrorCodes](#compensationerrorcodes).
-
-***
-
-<a id="ratevalidation"></a>
-
-### RateValidation
-
-> **RateValidation** = *typeof* [`CompensationErrorCodes`](#compensationerrorcodes)\[`"REQUIRED"` \| `"RATE_MINIMUM"` \| `"RATE_EXEMPT_THRESHOLD"`\]
-
-Validation error codes emitted by the `rate` field of [useCompensationForm](#usecompensationform).
-
-#### Remarks
-
-Use these as keys in `validationMessages` on `Fields.Rate`. See
-[CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
-
-## Utility Types
 <a id="compensationfieldsmetadata"></a>
 
 ### CompensationFieldsMetadata

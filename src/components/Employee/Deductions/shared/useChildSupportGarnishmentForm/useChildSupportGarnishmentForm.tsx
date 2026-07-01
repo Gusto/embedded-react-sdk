@@ -6,13 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import type { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata'
-import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
-import { useGarnishmentsList } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
-import { useGarnishmentsGetChildSupportData } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsGetChildSupportData'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import type { Agencies } from '@gusto/embedded-api-v-2026-02-01/models/components/childsupportdata'
+import { PaymentPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishmentchildsupport'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsUpdate'
+import { useGarnishmentsList } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsList'
+import { useGarnishmentsGetChildSupportData } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsGetChildSupportData'
 import {
   createChildSupportGarnishmentFormSchema,
   getRequiredAttrKeys,

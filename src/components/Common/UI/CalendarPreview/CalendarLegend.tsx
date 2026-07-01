@@ -5,7 +5,7 @@ import type { CalendarPreviewProps } from './CalendarPreviewTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 /**
- * Props for the CalendarLegend subcomponent rendered alongside {@link CalendarPreviewProps | CalendarPreview}.
+ * Props for the CalendarLegend block rendered alongside {@link CalendarPreviewProps | CalendarPreview}.
  *
  * @internal
  */

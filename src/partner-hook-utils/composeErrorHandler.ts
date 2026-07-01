@@ -41,7 +41,7 @@ function isHookResultWithErrorHandling(
  * Merges multiple error sources into a single {@link HookErrorHandling}.
  *
  * @remarks
- * Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+ * Accepts any mix of `@gusto/embedded-api-v-2026-02-01` React Query results and SDK hook
  * results that already expose an `errorHandling` object (including the value returned by
  * {@link composeSubmitHandler}). Query errors are normalized to `SDKError`, nested hook
  * errors are flattened in, and an optional submit-state argument adds a submit error to
@@ -63,7 +63,7 @@ function isHookResultWithErrorHandling(
  * @example
  * ```tsx
  * import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
- * import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+ * import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
  *
  * function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
  *   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })

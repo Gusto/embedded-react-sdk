@@ -288,41 +288,11 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
-<a id="contractoraddresserrorcodes"></a>
-
-### ContractorAddressErrorCodes
-
-> `const` **ContractorAddressErrorCodes**: `object`
-
-Validation error codes emitted by the contractor address form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_ZIP` | `"INVALID_ZIP"` | `'INVALID_ZIP'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="contractoraddresserrorcode"></a>
-
-### ContractorAddressErrorCode
-
-> **ContractorAddressErrorCode** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[keyof *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\]
-
-Union of validation error code strings emitted by the contractor address
-form schema.
-
-***
-
 <a id="contractoraddressrequiredvalidation"></a>
 
 ### ContractorAddressRequiredValidation
 
-> **ContractorAddressRequiredValidation** = *typeof* `ContractorAddressErrorCodes.REQUIRED`
+> **ContractorAddressRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useContractorAddressForm](#usecontractoraddressform) fields that only emit `REQUIRED`.
 
@@ -337,7 +307,7 @@ See [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
 ### ContractorAddressZipValidation
 
-> **ContractorAddressZipValidation** = *typeof* [`ContractorAddressErrorCodes`](#contractoraddresserrorcodes)\[`"REQUIRED"` \| `"INVALID_ZIP"`\]
+> **ContractorAddressZipValidation** = `"REQUIRED"` \| `"INVALID_ZIP"`
 
 Validation error codes emitted by the `zip` field of [useContractorAddressForm](#usecontractoraddressform).
 
@@ -347,11 +317,41 @@ Use these as keys in `validationMessages` on `Fields.Zip`. See
 [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
 ## Utility Types
+<a id="contractoraddresserrorcode"></a>
+
+### ContractorAddressErrorCode
+
+> **ContractorAddressErrorCode** = `"REQUIRED"` \| `"INVALID_ZIP"`
+
+Union of validation error code strings emitted by the contractor address
+form schema.
+
+***
+
+<a id="contractoraddresserrorcodes"></a>
+
+### ContractorAddressErrorCodes
+
+> `const` **ContractorAddressErrorCodes**: `object`
+
+Validation error codes emitted by the contractor address form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `INVALID_ZIP` | `"INVALID_ZIP"` |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="contractoraddressfield"></a>
 
 ### ContractorAddressField
 
-> **ContractorAddressField** = keyof *typeof* `fieldValidators`
+> **ContractorAddressField** = `"street1"` \| `"city"` \| `"state"` \| `"zip"` \| `"street2"`
 
 Field names accepted by the contractor address form.
 

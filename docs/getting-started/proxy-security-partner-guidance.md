@@ -1,22 +1,22 @@
 ---
-title: Proxy Security
+title: Proxy security
 description: Secure the SDK proxy with per-request authentication, endpoint allowlisting, resource ownership checks, and audit logging using the SDK endpoint inventory.
 ---
 
-# Proxy Security
+# Proxy security
 
-The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary -- UI-level restrictions alone are not sufficient since users can make API requests directly.
+The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary—UI-level restrictions alone aren't sufficient because users can make API requests directly.
 
 ## What to do
 
-1. **Authenticate every request.** Verify the user's session on every proxied request, not just at login.
+1. **Authenticate every request.** Verify the user's session on every proxied request, not just at sign-in.
 2. **Allowlist endpoints.** Only forward requests to API endpoints your application actually uses. Deny everything else.
-3. **Validate resource ownership.** Verify that the authenticated user is authorized to access the resource in the URL (e.g., an employee should only reach their own employee ID).
+3. **Validate resource ownership.** Verify that the authenticated user is authorized to access the resource in the URL (for example, an employee should only reach their own employee ID).
 4. **Log proxied requests.** Maintain audit logs for security monitoring and incident response.
 
 ## Getting the endpoint list
 
-Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeId`, etc.) that you replace with session values. The more you resolve, the tighter the allowlist:
+Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeId`, and so on) that you replace with session values. The more you resolve, the tighter the allowlist:
 
 | What you resolve             | Use case                                            |
 | ---------------------------- | --------------------------------------------------- |
@@ -26,7 +26,7 @@ Every SDK component makes a known set of API calls. Paths use named parameters (
 
 ### Option A: JSON endpoint inventory (recommended, any platform)
 
-The SDK ships a machine-readable JSON file listing every block and flow with their endpoints and required variables. It is auto-generated from source on every build and verified in CI.
+The SDK ships a machine-readable JSON file listing every block and flow with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
 
 Import it from the package:
 
@@ -34,7 +34,7 @@ Import it from the package:
 import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 ```
 
-Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/appendix/endpoint-inventory.json` in any language.
+Or load the file directly from `node_modules/@gusto/embedded-react-sdk/docs/guides/endpoint-inventory.json` in any language.
 
 The JSON structure:
 
@@ -66,12 +66,12 @@ Look up the flows or blocks your app uses, substitute `:param` placeholders with
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../appendix/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 
 **Can an authenticated employee access another employee's data?**
-Not if you substitute the employee ID -- the resulting paths only match that employee's endpoints.
+Not if you substitute the employee ID—the resulting paths only match that employee's endpoints.
 
 **How do we restrict some admins from running payroll?**
 Only include payroll endpoints for roles that need them, or request removal of the `payrolls:run` scope entirely.
@@ -81,7 +81,7 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 ## Further reading
 
-- [Proxy examples with role-based access](../appendix/proxy-examples.md)
-- [Endpoint reference tables](../appendix/endpoint-reference.md)
-- [Gusto API Scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
+- [Proxy examples with role-based access](../guides/proxy-examples.md)
+- [Endpoint reference tables](../guides/endpoint-reference.md)
+- [Gusto API scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)
