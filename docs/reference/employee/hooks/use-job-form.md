@@ -147,17 +147,17 @@ Pre-bound field components exposed on `useJobForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `HireDate` | `ComponentType`\<[`HireDateFieldProps`](#hiredatefieldprops)\> \| `undefined` | Hire date picker. `undefined` when `withHireDateField: false`. |
-| `StateWcClassCode` | `ComponentType`\<[`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops)\> \| `undefined` | Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
-| `StateWcCovered` | `ComponentType`\<[`StateWcCoveredFieldProps`](#statewccoveredfieldprops)\> \| `undefined` | Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
-| `Title` | `ComponentType`\<[`JobTitleFieldProps`](#jobtitlefieldprops)\> \| `undefined` | Job title text input. `undefined` when `withTitleField: false`. |
-| `TwoPercentShareholder` | `ComponentType`\<[`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops)\> \| `undefined` | S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
+| `HireDate` | `ComponentType`\<[`HireDateFieldProps`](#hiredatefieldprops)\> \| `undefined` | Bound to `hireDate`. Hire date picker. `undefined` when `withHireDateField: false`. |
+| `StateWcClassCode` | `ComponentType`\<[`StateWcClassCodeFieldProps`](#statewcclasscodefieldprops)\> \| `undefined` | Bound to `stateWcClassCode`. Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. |
+| `StateWcCovered` | `ComponentType`\<[`StateWcCoveredFieldProps`](#statewccoveredfieldprops)\> \| `undefined` | Bound to `stateWcCovered`. Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). |
+| `Title` | `ComponentType`\<[`JobTitleFieldProps`](#jobtitlefieldprops)\> \| `undefined` | Bound to `title`. Job title text input. `undefined` when `withTitleField: false`. |
+| `TwoPercentShareholder` | `ComponentType`\<[`TwoPercentShareholderFieldProps`](#twopercentshareholderfieldprops)\> \| `undefined` | Bound to `twoPercentShareholder`. S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). |
 
 ***
 
 ### HireDate
 
-Hire date picker. `undefined` when `withHireDateField: false`.
+Bound to `hireDate`. Hire date picker. `undefined` when `withHireDateField: false`.
 
 ```tsx
 {form.Fields.HireDate && (
@@ -188,7 +188,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### StateWcClassCode
 
-Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`.
+Bound to `stateWcClassCode`. Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`.
 
 ```tsx
 {form.Fields.StateWcClassCode && (
@@ -221,7 +221,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### StateWcCovered
 
-Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`).
+Bound to `stateWcCovered`. Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`).
 
 ```tsx
 {form.Fields.StateWcCovered && (
@@ -249,7 +249,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### Title
 
-Job title text input. `undefined` when `withTitleField: false`.
+Bound to `title`. Job title text input. `undefined` when `withTitleField: false`.
 
 ```tsx
 {form.Fields.Title && (
@@ -280,7 +280,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### TwoPercentShareholder
 
-S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`).
+Bound to `twoPercentShareholder`. S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`).
 
 ```tsx
 {form.Fields.TwoPercentShareholder && (
@@ -401,21 +401,6 @@ input (the schema preprocessor coerces them).
 | `stateWcCovered` | `boolean` | Whether the employee is covered under Washington state workers' compensation insurance. |
 | `title` | `string` | The employee's job title (e.g. `"Software Engineer"`). |
 | `twoPercentShareholder` | `boolean` | Whether the employee owns 2 % or more of an S-corporation. Affects benefit-deduction tax treatment. |
-
-***
-
-<a id="jobformoutputs"></a>
-
-### JobFormOutputs
-
-> **JobFormOutputs** = [`JobFormData`](#jobformdata)
-
-Validated submission shape produced by the [useJobForm](#usejobform) schema.
-
-#### Remarks
-
-Identical to [JobFormData](#jobformdata) — exposed as a separate alias so the input
-vs. output sides of the schema remain distinguishable in advanced usages.
 
 ***
 

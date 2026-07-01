@@ -189,14 +189,6 @@ export type {
 export {
   useCompensationForm,
   CompensationErrorCodes,
-  createCompensationSchema,
-  TitleField as CompensationTitleField,
-  FlsaStatusField as CompensationFlsaStatusField,
-  RateField as CompensationRateField,
-  PaymentUnitField as CompensationPaymentUnitField,
-  AdjustForMinimumWageField as CompensationAdjustForMinimumWageField,
-  MinimumWageIdField as CompensationMinimumWageIdField,
-  EffectiveDateField as CompensationEffectiveDateField,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 export type {
   CompensationSubmitOptions,
@@ -207,9 +199,7 @@ export type {
   CompensationFormFields,
   CompensationErrorCode,
   CompensationOptionalFieldsToRequire,
-  CompensationSchemaOptions,
   CompensationFormData,
-  CompensationFormOutputs,
   RequiredValidation as CompensationRequiredValidation,
   RateValidation,
   EffectiveDateValidation as CompensationEffectiveDateValidation,
@@ -222,16 +212,7 @@ export type {
   MinimumWageIdFieldProps,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 
-export {
-  useJobForm,
-  JobErrorCodes,
-  createJobSchema,
-  JobTitleField,
-  HireDateField,
-  TwoPercentShareholderField,
-  StateWcCoveredField,
-  StateWcClassCodeField,
-} from '@/components/Employee/Compensation/shared/useJobForm'
+export { useJobForm, JobErrorCodes } from '@/components/Employee/Compensation/shared/useJobForm'
 export type {
   JobSubmitOptions,
   UseJobFormProps,
@@ -242,7 +223,6 @@ export type {
   JobErrorCode,
   JobOptionalFieldsToRequire,
   JobFormData,
-  JobFormOutputs,
   JobRequiredValidation,
   JobTitleFieldProps,
   HireDateFieldProps,

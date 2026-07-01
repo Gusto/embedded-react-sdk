@@ -1071,9 +1071,6 @@ interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee
 }
 
 // @public
-export function CompensationAdjustForMinimumWageField(props: AdjustForMinimumWageFieldProps): JSX;
-
-// @public
 function CompensationCard(props: CompensationCardProps): JSX;
 
 // @public
@@ -1101,9 +1098,6 @@ interface CompensationEditFormProps extends CommonComponentInterface<'Employee.M
 }
 
 // @public
-export function CompensationEffectiveDateField(props: CompensationEffectiveDateFieldProps): JSX;
-
-// @public
 export type CompensationEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<CompensationEffectiveDateValidation>>;
 
 // @public
@@ -1128,9 +1122,6 @@ export const CompensationErrorCodes: {
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata'];
 
 // @public
-export function CompensationFlsaStatusField(props: FlsaStatusFieldProps): JSX;
-
-// @public
 export type CompensationFormData = {
     title: string
     flsaStatus: "Exempt" | "Salaried Nonexempt" | "Nonexempt" | "Owner" | "Commission Only Exempt" | "Commission Only Nonexempt" | undefined
@@ -1143,26 +1134,17 @@ export type CompensationFormData = {
 
 // @public
 export interface CompensationFormFields {
-    AdjustForMinimumWage: typeof CompensationAdjustForMinimumWageField | undefined;
-    EffectiveDate: typeof CompensationEffectiveDateField | undefined;
-    FlsaStatus: typeof CompensationFlsaStatusField | undefined;
-    MinimumWageId: typeof CompensationMinimumWageIdField | undefined;
-    PaymentUnit: typeof CompensationPaymentUnitField | undefined;
-    Rate: typeof CompensationRateField | undefined;
-    Title: typeof CompensationTitleField;
+    AdjustForMinimumWage: ComponentType<AdjustForMinimumWageFieldProps> | undefined;
+    EffectiveDate: ComponentType<CompensationEffectiveDateFieldProps> | undefined;
+    FlsaStatus: ComponentType<FlsaStatusFieldProps> | undefined;
+    MinimumWageId: ComponentType<MinimumWageIdFieldProps> | undefined;
+    PaymentUnit: ComponentType<PaymentUnitFieldProps> | undefined;
+    Rate: ComponentType<RateFieldProps> | undefined;
+    Title: ComponentType<CompensationTitleFieldProps>;
 }
 
 // @public
-export type CompensationFormOutputs = CompensationFormData;
-
-// @public
-export function CompensationMinimumWageIdField(props: MinimumWageIdFieldProps): JSX;
-
-// @public
 export type CompensationOptionalFieldsToRequire = { create?: "title"[] | undefined; update?: ("title" | "flsaStatus" | "paymentUnit" | "rate" | "effectiveDate")[] | undefined; };
-
-// @public
-export function CompensationPaymentUnitField(props: PaymentUnitFieldProps): JSX;
 
 // @public
 interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
@@ -1177,21 +1159,7 @@ interface CompensationProps_2 extends BaseComponentInterface<'Employee.Managemen
 }
 
 // @public
-export function CompensationRateField(props: RateFieldProps): JSX;
-
-// @public
 export type CompensationRequiredValidation = typeof CompensationErrorCodes.REQUIRED;
-
-// Warning: (ae-internal-missing-underscore) The name "CompensationSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CompensationSchemaOptions {
-    hireDate?: string | null;
-    minEffectiveDate?: string | null;
-    mode?: 'create' | 'update';
-    optionalFieldsToRequire?: CompensationOptionalFieldsToRequire;
-    withEffectiveDateField?: boolean;
-}
 
 // @public
 export interface CompensationSubmitOptions {
@@ -1200,9 +1168,6 @@ export interface CompensationSubmitOptions {
     effectiveDate?: string;
     jobId?: string;
 }
-
-// @public
-export function CompensationTitleField(props: CompensationTitleFieldProps): JSX;
 
 // @public
 export type CompensationTitleFieldProps = HookFieldProps<TextInputHookFieldProps<CompensationRequiredValidation>>;
@@ -1956,32 +1921,6 @@ readonly Monthly: "Monthly";
 }>;
 }>;
 
-// Warning: (ae-internal-missing-underscore) The name "createCompensationSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createCompensationSchema(options?: CompensationSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-flsaStatus: z.ZodOptional<z.ZodEnum<{
-Exempt: "Exempt";
-"Salaried Nonexempt": "Salaried Nonexempt";
-Nonexempt: "Nonexempt";
-Owner: "Owner";
-"Commission Only Exempt": "Commission Only Exempt";
-"Commission Only Nonexempt": "Commission Only Nonexempt";
-}>>;
-paymentUnit: z.ZodEnum<{
-Hour: "Hour";
-Week: "Week";
-Month: "Month";
-Year: "Year";
-Paycheck: "Paycheck";
-}>;
-rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-adjustForMinimumWage: z.ZodBoolean;
-minimumWageId: z.ZodString;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -2049,18 +1988,6 @@ state: z.ZodString;
 zip: z.ZodString;
 courtesyWithholding: z.ZodBoolean;
 effectiveDate: z.ZodISODate;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "JobSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createJobSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createJobSchema(options?: JobSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-twoPercentShareholder: z.ZodBoolean;
-stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-stateWcClassCode: z.ZodString;
 }>;
 
 // @public
@@ -3188,9 +3115,6 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 }
 
 // @public
-export function HireDateField(props: HireDateFieldProps): JSX;
-
-// @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
 
 // @public
@@ -3450,15 +3374,12 @@ export type JobFormData = {
 
 // @public
 export interface JobFormFields {
-    HireDate: typeof HireDateField | undefined;
-    StateWcClassCode: typeof StateWcClassCodeField | undefined;
-    StateWcCovered: typeof StateWcCoveredField | undefined;
-    Title: typeof JobTitleField | undefined;
-    TwoPercentShareholder: typeof TwoPercentShareholderField | undefined;
+    HireDate: ComponentType<HireDateFieldProps> | undefined;
+    StateWcClassCode: ComponentType<StateWcClassCodeFieldProps> | undefined;
+    StateWcCovered: ComponentType<StateWcCoveredFieldProps> | undefined;
+    Title: ComponentType<JobTitleFieldProps> | undefined;
+    TwoPercentShareholder: ComponentType<TwoPercentShareholderFieldProps> | undefined;
 }
-
-// @public
-export type JobFormOutputs = JobFormData;
 
 // @public
 export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered")[] | undefined; };
@@ -3479,9 +3400,6 @@ export interface JobSubmitOptions {
     employeeId?: string;
     hireDate?: string;
 }
-
-// @public
-export function JobTitleField(props: JobTitleFieldProps): JSX;
 
 // @public
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequiredValidation>>;
@@ -5158,16 +5076,10 @@ export type StateTaxValidationMessages = ValidationMessages<typeof EmployeeState
 // @public
 export type StateTaxValue = string | number | boolean | Date | null | undefined;
 
-// @public
-export function StateWcClassCodeField(props: StateWcClassCodeFieldProps): JSX;
-
 // Warning: (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
 //
 // @public
 export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>>;
-
-// @public
-export function StateWcCoveredField(props: StateWcCoveredFieldProps): JSX;
 
 // @public
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>;
@@ -5510,9 +5422,6 @@ export function TwoJobsField(props: TwoJobsFieldProps): JSX;
 
 // @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
-
-// @public
-export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProps): JSX;
 
 // @public
 export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldProps>;
