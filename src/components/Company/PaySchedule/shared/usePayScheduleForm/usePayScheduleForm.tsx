@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,6 +26,15 @@ import {
   AnchorEndOfPayPeriodField,
   Day1Field,
   Day2Field,
+} from './fields'
+import type {
+  CustomNameFieldProps,
+  FrequencyFieldProps,
+  CustomTwicePerMonthFieldProps,
+  AnchorPayDateFieldProps,
+  AnchorEndOfPayPeriodFieldProps,
+  Day1FieldProps,
+  Day2FieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -79,21 +89,21 @@ export interface UsePayScheduleFormProps {
  *
  * @public
  */
-export interface PayScheduleFields {
-  /** Display name text input. Always available. */
-  CustomName: typeof CustomNameField
-  /** Frequency selector. Always available. */
-  Frequency: typeof FrequencyField
-  /** Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. */
-  CustomTwicePerMonth: typeof CustomTwicePerMonthField | undefined
-  /** First pay date picker. Always available. */
-  AnchorPayDate: typeof AnchorPayDateField
-  /** First pay period end date picker. Always available. */
-  AnchorEndOfPayPeriod: typeof AnchorEndOfPayPeriodField
-  /** First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. */
-  Day1: typeof Day1Field | undefined
-  /** Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. */
-  Day2: typeof Day2Field | undefined
+export interface PayScheduleFormFields {
+  /** Bound to `customName`. Display name text input. Always available. */
+  CustomName: ComponentType<CustomNameFieldProps>
+  /** Bound to `frequency`. Frequency selector. Always available. */
+  Frequency: ComponentType<FrequencyFieldProps>
+  /** Bound to `customTwicePerMonth`. Twice-per-month strategy radio group. Only available when frequency is `'Twice per month'`. */
+  CustomTwicePerMonth: ComponentType<CustomTwicePerMonthFieldProps> | undefined
+  /** Bound to `anchorPayDate`. First pay date picker. Always available. */
+  AnchorPayDate: ComponentType<AnchorPayDateFieldProps>
+  /** Bound to `anchorEndOfPayPeriod`. First pay period end date picker. Always available. */
+  AnchorEndOfPayPeriod: ComponentType<AnchorEndOfPayPeriodFieldProps>
+  /** Bound to `day1`. First-pay-day-of-month number input. Available when frequency is `'Monthly'`, or `'Twice per month'` with `'custom'` strategy. */
+  Day1: ComponentType<Day1FieldProps> | undefined
+  /** Bound to `day2`. Last-pay-day-of-month number input. Available when frequency is `'Twice per month'` with `'custom'` strategy. */
+  Day2: ComponentType<Day2FieldProps> | undefined
 }
 
 /**
@@ -108,7 +118,7 @@ export interface PayScheduleFields {
 export interface UsePayScheduleFormReady extends BaseFormHookReady<
   FieldsMetadata,
   PayScheduleFormData,
-  PayScheduleFields
+  PayScheduleFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -480,9 +490,3 @@ export type UsePayScheduleFormResult = HookLoadingResult | UsePayScheduleFormRea
  * @public
  */
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link usePayScheduleForm}.
- *
- * @public
- */
-export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields']

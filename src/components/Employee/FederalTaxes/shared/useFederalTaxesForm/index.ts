@@ -6,26 +6,15 @@ export type {
   UseFederalTaxesFormReady,
   FederalTaxesFieldsMetadata,
   FederalTaxesFormFields,
-  FederalTaxesFields,
 } from './useFederalTaxesForm'
 export {
-  createFederalTaxesSchema,
   FederalTaxesErrorCodes,
   FILING_STATUS_VALUES,
   type FederalTaxesErrorCode,
   type FederalTaxesFormData,
-  type FederalTaxesFormOutputs,
   type FederalTaxesField,
   type FilingStatusValue,
 } from './federalTaxesSchema'
-export {
-  FilingStatusField,
-  TwoJobsField,
-  DependentsAmountField,
-  OtherIncomeField,
-  DeductionsField,
-  ExtraWithholdingField,
-} from './fields'
 export type {
   RequiredValidation as FederalTaxesRequiredValidation,
   FilingStatusFieldProps,

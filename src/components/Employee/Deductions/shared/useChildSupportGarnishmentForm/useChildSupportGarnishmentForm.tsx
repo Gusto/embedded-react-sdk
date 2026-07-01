@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -30,6 +31,14 @@ import {
   PaymentPeriodField,
   type CountyEntry,
   type StateFieldEntry,
+  type StateFieldProps,
+  type FipsCodeFieldProps,
+  type CaseNumberFieldProps,
+  type OrderNumberFieldProps,
+  type RemittanceNumberFieldProps,
+  type PayPeriodMaximumFieldProps,
+  type AmountFieldProps,
+  type PaymentPeriodFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -96,23 +105,24 @@ export interface UseChildSupportGarnishmentFormProps {
  * @public
  */
 export interface ChildSupportGarnishmentFormFields {
-  /** Agency (state) select. Always available. */
-  State: typeof StateField
-  /** Only available when the selected agency has more than one fips code, or the
-   *  sole code is county-scoped (not an "all counties" auto-pick). */
-  FipsCode: typeof FipsCodeField | undefined
-  /** Only available when the selected agency requires `case_number`. */
-  CaseNumber: typeof CaseNumberField | undefined
-  /** Only available when the selected agency requires `order_number`. */
-  OrderNumber: typeof OrderNumberField | undefined
-  /** Only available when the selected agency requires `remittance_number`. */
-  RemittanceNumber: typeof RemittanceNumberField | undefined
-  /** Per-pay-period currency cap input. Always available. */
-  PayPeriodMaximum: typeof PayPeriodMaximumField
-  /** Percent-of-paycheck input (0–100). Always available. */
-  Amount: typeof AmountField
-  /** Payment period select. Always available. */
-  PaymentPeriod: typeof PaymentPeriodField
+  /** Bound to `state`. Agency (state) select. Always available. */
+  State: ComponentType<StateFieldProps>
+  /** Bound to `fipsCode`. Only available when the selected agency has more than
+   *  one fips code, or the sole code is county-scoped (not an "all counties"
+   *  auto-pick). */
+  FipsCode: ComponentType<FipsCodeFieldProps> | undefined
+  /** Bound to `caseNumber`. Only available when the selected agency requires `case_number`. */
+  CaseNumber: ComponentType<CaseNumberFieldProps> | undefined
+  /** Bound to `orderNumber`. Only available when the selected agency requires `order_number`. */
+  OrderNumber: ComponentType<OrderNumberFieldProps> | undefined
+  /** Bound to `remittanceNumber`. Only available when the selected agency requires `remittance_number`. */
+  RemittanceNumber: ComponentType<RemittanceNumberFieldProps> | undefined
+  /** Bound to `payPeriodMaximum`. Per-pay-period currency cap input. Always available. */
+  PayPeriodMaximum: ComponentType<PayPeriodMaximumFieldProps>
+  /** Bound to `amount`. Percent-of-paycheck input (0–100). Always available. */
+  Amount: ComponentType<AmountFieldProps>
+  /** Bound to `paymentPeriod`. Payment period select. Always available. */
+  PaymentPeriod: ComponentType<PaymentPeriodFieldProps>
 }
 
 /**

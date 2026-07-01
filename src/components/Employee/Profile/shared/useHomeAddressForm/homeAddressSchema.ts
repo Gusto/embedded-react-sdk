@@ -57,11 +57,7 @@ export type HomeAddressField = keyof typeof fieldValidators
 export type HomeAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the home address form on submit.
- *
- * @public
- */
+/** @internal */
 export type HomeAddressFormOutputs = HomeAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────

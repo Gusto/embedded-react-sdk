@@ -167,9 +167,9 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 | `data.homeAddress` | [`EmployeeAddress`](../../APIModels/index.md#employeeaddress) \| `null` | The address row loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`HomeAddressFields`](#homeaddressfields) | - |
+| `form.Fields` | [`HomeAddressFormFields`](#homeaddressformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`HomeAddressFormData`](#homeaddressformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`HomeAddressFormData`](#homeaddressformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
@@ -178,27 +178,27 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 
 ## Fields
 
-### HomeAddressFields
+### HomeAddressFormFields
 
-<a id="homeaddressfields"></a>
+<a id="homeaddressformfields"></a>
 
 Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `City` | `ComponentType`\<[`CityFieldProps`](#cityfieldprops)\> | City text input. Always available. |
-| `CourtesyWithholding` | `ComponentType`\<[`CourtesyWithholdingFieldProps`](#courtesywithholdingfieldprops)\> | Courtesy withholding checkbox. Always available. |
-| `State` | `ComponentType`\<[`StateFieldProps`](#statefieldprops)\> | State selector. Always available. |
-| `Street1` | `ComponentType`\<[`Street1FieldProps`](#street1fieldprops)\> | Street address line 1 text input. Always available. |
-| `Street2` | `ComponentType`\<[`Street2FieldProps`](#street2fieldprops)\> | Street address line 2 text input. Always available. |
-| `Zip` | `ComponentType`\<[`ZipFieldProps`](#zipfieldprops)\> | ZIP code text input. Always available. |
-| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#homeaddresseffectivedatefieldprops)\> \| `undefined` | Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
+| `City` | `ComponentType`\<[`CityFieldProps`](#cityfieldprops)\> | Bound to `city`. City text input. Always available. |
+| `CourtesyWithholding` | `ComponentType`\<[`CourtesyWithholdingFieldProps`](#courtesywithholdingfieldprops)\> | Bound to `courtesyWithholding`. Courtesy withholding checkbox. Always available. |
+| `State` | `ComponentType`\<[`StateFieldProps`](#statefieldprops)\> | Bound to `state`. State selector. Always available. |
+| `Street1` | `ComponentType`\<[`Street1FieldProps`](#street1fieldprops)\> | Bound to `street1`. Street address line 1 text input. Always available. |
+| `Street2` | `ComponentType`\<[`Street2FieldProps`](#street2fieldprops)\> | Bound to `street2`. Street address line 2 text input. Always available. |
+| `Zip` | `ComponentType`\<[`ZipFieldProps`](#zipfieldprops)\> | Bound to `zip`. ZIP code text input. Always available. |
+| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#homeaddresseffectivedatefieldprops)\> \| `undefined` | Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
 
 ***
 
 ### City
 
-City text input. Always available.
+Bound to `city`. City text input. Always available.
 
 ```tsx
 <form.Fields.City
@@ -227,7 +227,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### CourtesyWithholding
 
-Courtesy withholding checkbox. Always available.
+Bound to `courtesyWithholding`. Courtesy withholding checkbox. Always available.
 
 ```tsx
 <form.Fields.CourtesyWithholding
@@ -256,7 +256,7 @@ _Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../.
 
 ### EffectiveDate
 
-Effective-date picker. Only available when `withEffectiveDateField` is `true`.
+Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`.
 
 ```tsx
 {form.Fields.EffectiveDate && (
@@ -287,7 +287,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### State
 
-State selector. Always available.
+Bound to `state`. State selector. Always available.
 
 ```tsx
 <form.Fields.State
@@ -318,7 +318,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### Street1
 
-Street address line 1 text input. Always available.
+Bound to `street1`. Street address line 1 text input. Always available.
 
 ```tsx
 <form.Fields.Street1
@@ -347,7 +347,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### Street2
 
-Street address line 2 text input. Always available.
+Bound to `street2`. Street address line 2 text input. Always available.
 
 ```tsx
 <form.Fields.Street2
@@ -376,7 +376,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### Zip
 
-ZIP code text input. Always available.
+Bound to `zip`. ZIP code text input. Always available.
 
 ```tsx
 <form.Fields.Zip
@@ -498,26 +498,6 @@ Shape of the values managed by the home address form.
 | `street1` | `string` |
 | `street2` | `string` |
 | `zip` | `string` |
-
-***
-
-<a id="homeaddressformfields"></a>
-
-### HomeAddressFormFields
-
-> **HomeAddressFormFields** = [`UseHomeAddressFormReady`](#usehomeaddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useHomeAddressForm](#usehomeaddressform).
-
-***
-
-<a id="homeaddressformoutputs"></a>
-
-### HomeAddressFormOutputs
-
-> **HomeAddressFormOutputs** = [`HomeAddressFormData`](#homeaddressformdata)
-
-Shape of the validated values produced by the home address form on submit.
 
 ***
 

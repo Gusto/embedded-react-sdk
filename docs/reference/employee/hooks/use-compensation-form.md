@@ -144,7 +144,7 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`CompensationFormData`](#compensationformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state and reactive flags derived from current form input. `isPending` is `true` while a create/update mutation is in flight; `mode` reflects whether the next submit will create or update; the `show*Alert` flags drive FLSA-specific inline warnings. |
@@ -165,19 +165,19 @@ Pre-bound field components exposed on `useCompensationForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Title` | `ComponentType`\<[`TitleFieldProps`](#compensationtitlefieldprops)\> | Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. |
-| `AdjustForMinimumWage` | `ComponentType`\<[`AdjustForMinimumWageFieldProps`](#adjustforminimumwagefieldprops)\> \| `undefined` | Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
-| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#compensationeffectivedatefieldprops)\> \| `undefined` | Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. |
-| `FlsaStatus` | `ComponentType`\<[`FlsaStatusFieldProps`](#flsastatusfieldprops)\> \| `undefined` | FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). |
-| `MinimumWageId` | `ComponentType`\<[`MinimumWageIdFieldProps`](#minimumwageidfieldprops)\> \| `undefined` | Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. |
-| `PaymentUnit` | `ComponentType`\<[`PaymentUnitFieldProps`](#paymentunitfieldprops)\> \| `undefined` | Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). |
-| `Rate` | `ComponentType`\<[`RateFieldProps`](#ratefieldprops)\> \| `undefined` | Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. |
+| `Title` | `ComponentType`\<[`TitleFieldProps`](#compensationtitlefieldprops)\> | Bound to `title`. Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it. |
+| `AdjustForMinimumWage` | `ComponentType`\<[`AdjustForMinimumWageFieldProps`](#adjustforminimumwagefieldprops)\> \| `undefined` | Bound to `adjustForMinimumWage`. Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits. |
+| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#compensationeffectivedatefieldprops)\> \| `undefined` | Bound to `effectiveDate`. Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode. |
+| `FlsaStatus` | `ComponentType`\<[`FlsaStatusFieldProps`](#flsastatusfieldprops)\> \| `undefined` | Bound to `flsaStatus`. FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary). |
+| `MinimumWageId` | `ComponentType`\<[`MinimumWageIdFieldProps`](#minimumwageidfieldprops)\> \| `undefined` | Bound to `minimumWageId`. Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked. |
+| `PaymentUnit` | `ComponentType`\<[`PaymentUnitFieldProps`](#paymentunitfieldprops)\> \| `undefined` | Bound to `paymentUnit`. Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`). |
+| `Rate` | `ComponentType`\<[`RateFieldProps`](#ratefieldprops)\> \| `undefined` | Bound to `rate`. Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate. |
 
 ***
 
 ### AdjustForMinimumWage
 
-Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits.
+Bound to `adjustForMinimumWage`. Minimum-wage adjustment checkbox. `undefined` unless `flsaStatus === Nonexempt`, the employee's work location has minimum wages, and the state supports tip credits.
 
 ```tsx
 {form.Fields.AdjustForMinimumWage && (
@@ -204,7 +204,7 @@ _Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../.
 
 ### EffectiveDate
 
-Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode.
+Bound to `effectiveDate`. Effective-date picker. `undefined` when `withEffectiveDateField: false`; supply the value via `CompensationSubmitOptions.effectiveDate` in that mode.
 
 ```tsx
 {form.Fields.EffectiveDate && (
@@ -239,7 +239,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### FlsaStatus
 
-FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary).
+Bound to `flsaStatus`. FLSA classification select. `undefined` when the status is not user-editable (e.g. secondary jobs that must match the primary).
 
 ```tsx
 {form.Fields.FlsaStatus && (
@@ -272,7 +272,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### MinimumWageId
 
-Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked.
+Bound to `minimumWageId`. Minimum-wage selection. `undefined` unless `Fields.AdjustForMinimumWage` is rendered and checked.
 
 ```tsx
 {form.Fields.MinimumWageId && (
@@ -305,7 +305,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### PaymentUnit
 
-Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`).
+Bound to `paymentUnit`. Payment unit select. `undefined` for commission-only FLSA statuses (the hook forces `paymentUnit=Year`).
 
 ```tsx
 {form.Fields.PaymentUnit && (
@@ -338,7 +338,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### Rate
 
-Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate.
+Bound to `rate`. Compensation amount input. `undefined` for commission-only FLSA statuses, which don't accept a partner-supplied rate.
 
 ```tsx
 {form.Fields.Rate && (
@@ -373,7 +373,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### Title
 
-Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it.
+Bound to `title`. Title text input. Always available. Optional in both modes unless `optionalFieldsToRequire` requires it.
 
 ```tsx
 <form.Fields.Title
@@ -550,22 +550,6 @@ the field can render an empty placeholder when nothing is preselected
 | `paymentUnit` | `"Hour"` \| `"Week"` \| `"Month"` \| `"Year"` \| `"Paycheck"` | - |
 | `rate` | `number` | - |
 | `title` | `string` | Optional in both modes. Setting title here scopes the change to this compensation's `effectiveDate` — pair it with a future-dated comp to schedule a promotion title alongside a rate change. Use `useJobForm.Fields.Title` instead when creating a job (title is required by the API on job creation) or when renaming the active role immediately, and avoid rendering both fields on the same screen. |
-
-***
-
-<a id="compensationformoutputs"></a>
-
-### CompensationFormOutputs
-
-> **CompensationFormOutputs** = [`CompensationFormData`](#compensationformdata)
-
-Validated submission shape produced by the [useCompensationForm](#usecompensationform) schema.
-
-#### Remarks
-
-Identical to [CompensationFormData](#compensationformdata) — exposed as a separate alias so
-the input vs. output sides of the schema remain distinguishable in advanced
-usages.
 
 ***
 

@@ -66,11 +66,7 @@ export type BankFormField = keyof typeof fieldValidators
 export type BankFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the bank account form on submit.
- *
- * @public
- */
+/** @internal */
 export type BankFormOutputs = BankFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>

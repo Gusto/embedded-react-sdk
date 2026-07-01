@@ -8,21 +8,10 @@ export {
   type DeductionFormOptionalFieldsToRequire,
 } from './useDeductionForm'
 export {
-  createDeductionFormSchema,
   DeductionFormErrorCodes,
   type DeductionFormErrorCode,
   type DeductionFormData,
-  type DeductionFormOutputs,
 } from './deductionFormSchema'
-export {
-  DescriptionField,
-  RecurringField,
-  DeductAsPercentageField,
-  AmountField,
-  TotalAmountField,
-  AnnualMaximumField,
-  GarnishmentTypeField,
-} from './fields'
 export type {
   RequiredValidation as DeductionFormRequiredValidation,
   NegativeAmountValidation as DeductionFormNegativeAmountValidation,
