@@ -4,9 +4,6 @@ Allow: /
 # Only the unprefixed canonical /docs/<page> route (the latest released
 # minor) should be indexed.
 #
-# In-development docs that track main in Gusto/embedded-react-sdk.
-Disallow: /docs/next/
-#
 # Snapshots of older minors live at /docs/<X.Y>/<page>. Block by prefix.
 # Extend this list when we ship a new major (e.g. Disallow: /docs/1.).
 Disallow: /docs/0.
