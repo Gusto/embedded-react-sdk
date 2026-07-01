@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, type FocusEventHandler } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -132,6 +132,11 @@ export interface UsePayScheduleFormReady extends BaseFormHookReady<
   actions: {
     /** Validates the form and dispatches the create or update mutation. Returns the saved schedule, or `undefined` if validation failed. */
     onSubmit: () => Promise<HookSubmitResult<PayScheduleShow> | undefined>
+  }
+  /** Form bindings extended with a blur handler for the two anchor date fields. */
+  form: BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFields>['form'] & {
+    /** Wire to `onBlur` on a wrapper around the anchor date field JSXs to clear stale server-side (`type: 'custom'`) errors when the user leaves the group (SDK-923). */
+    handleDateFieldsBlur: FocusEventHandler<HTMLDivElement>
   }
 }
 
@@ -346,6 +351,22 @@ export function usePayScheduleForm({
   const queries = payScheduleId ? [payScheduleQuery, paymentConfigsQuery] : [paymentConfigsQuery]
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
+  // SDK-923: server-side validation errors are mirrored onto the two date fields
+  // as `type: 'custom'` RHF errors, and stick until the page is refreshed because
+  // RHF runs in `onSubmit` mode. Clear them (and the upstream submitError, so
+  // SDKFormProvider's sync effect doesn't re-apply them next render) when the
+  // user leaves the date-field group. Wire this to `onBlur` on a wrapper around
+  // both date-field JSXs in the presentation component.
+  const handleDateFieldsBlur = useCallback<FocusEventHandler<HTMLDivElement>>(() => {
+    const anchorHasCustomError = formMethods.getFieldState('anchorPayDate').error?.type === 'custom'
+    const endHasCustomError =
+      formMethods.getFieldState('anchorEndOfPayPeriod').error?.type === 'custom'
+    if (!anchorHasCustomError && !endHasCustomError) return
+    if (anchorHasCustomError) formMethods.clearErrors('anchorPayDate')
+    if (endHasCustomError) formMethods.clearErrors('anchorEndOfPayPeriod')
+    setSubmitError(null)
+  }, [formMethods, setSubmitError])
+
   const showCustomTwicePerMonth = watchedFrequency === 'Twice per month'
   const showDay1 =
     watchedFrequency === 'Monthly' ||
@@ -463,6 +484,7 @@ export function usePayScheduleForm({
       },
       fieldsMetadata,
       hookFormInternals,
+      handleDateFieldsBlur,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
