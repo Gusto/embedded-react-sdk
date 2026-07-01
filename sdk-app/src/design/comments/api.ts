@@ -18,7 +18,7 @@ class SandboxApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${SANDBOX_API_PREFIX}${path}`, {
     ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
+    headers: { 'Content-Type': 'application/json' },
   })
 
   if (!res.ok) {
@@ -83,7 +83,7 @@ export async function subscribe(prototypeId: number): Promise<void> {
 }
 
 export async function unsubscribe(prototypeId: number): Promise<void> {
-  await request<void>(`/prototypes/${prototypeId}/subscription`, { method: 'DELETE' })
+  await request<undefined>(`/prototypes/${prototypeId}/subscription`, { method: 'DELETE' })
 }
 
 export async function createComment(
@@ -135,5 +135,5 @@ export async function unresolveComment(
 }
 
 export async function deleteComment(prototypeId: number, commentId: number): Promise<void> {
-  await request<void>(`/prototypes/${prototypeId}/comments/${commentId}`, { method: 'DELETE' })
+  await request<undefined>(`/prototypes/${prototypeId}/comments/${commentId}`, { method: 'DELETE' })
 }

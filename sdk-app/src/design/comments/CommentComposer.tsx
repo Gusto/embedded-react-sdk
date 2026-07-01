@@ -133,21 +133,19 @@ export function CommentComposer({
           ref={textareaRef}
           className={styles.textarea}
           value={body}
+          // eslint-disable-next-line jsx-a11y/no-autofocus -- the composer should focus when it opens
           autoFocus={autoFocus}
           placeholder={placeholder}
           onChange={event => {
             setBody(event.target.value)
-            syncMention(
-              event.target.value,
-              event.target.selectionStart ?? event.target.value.length,
-            )
+            syncMention(event.target.value, event.target.selectionStart)
           }}
-          onKeyUp={event =>
-            syncMention(event.currentTarget.value, event.currentTarget.selectionStart ?? 0)
-          }
-          onClick={event =>
-            syncMention(event.currentTarget.value, event.currentTarget.selectionStart ?? 0)
-          }
+          onKeyUp={event => {
+            syncMention(event.currentTarget.value, event.currentTarget.selectionStart)
+          }}
+          onClick={event => {
+            syncMention(event.currentTarget.value, event.currentTarget.selectionStart)
+          }}
           onKeyDown={onKeyDown}
         />
         {menuRect
@@ -192,7 +190,9 @@ export function CommentComposer({
           <select
             className={styles.select}
             value={category}
-            onChange={event => setCategory(event.target.value as CommentCategory | '')}
+            onChange={event => {
+              setCategory(event.target.value as CommentCategory | '')
+            }}
           >
             <option value="">No category</option>
             {COMMENT_CATEGORIES.map(option => (

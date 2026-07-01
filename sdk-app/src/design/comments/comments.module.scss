@@ -507,6 +507,18 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
   color: $accent;
 }
 
+.trayRowVw {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: rgba(91, 61, 245, 0.12);
+  color: $accent-dark;
+}
+
 .unreadDot {
   flex-shrink: 0;
   width: 8px;

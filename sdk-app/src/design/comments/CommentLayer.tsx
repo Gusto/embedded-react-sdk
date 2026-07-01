@@ -1,3 +1,10 @@
+/*
+ * This overlay is a pointer-driven canvas: the container captures placement
+ * clicks and the popovers stop propagation. These are not keyboard-focusable
+ * controls (the pins themselves are <button>s), so the static-interaction a11y
+ * rules don't apply here.
+ */
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import { useEffect } from 'react'
 import type { RefObject } from 'react'
 import styles from './comments.module.scss'
@@ -30,7 +37,9 @@ export function CommentLayer({ containerRef }: { containerRef: RefObject<HTMLEle
       else if (selectedId !== null) select(null)
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+    }
   }, [draft, selectedId, clearDraft, select])
 
   if (!authorized || !active) return null
@@ -89,7 +98,9 @@ export function CommentLayer({ containerRef }: { containerRef: RefObject<HTMLEle
         <div
           className={styles.popover}
           style={{ left: selectedPosition.x, top: selectedPosition.y }}
-          onClick={event => event.stopPropagation()}
+          onClick={event => {
+            event.stopPropagation()
+          }}
         >
           <CommentThread comment={selected} />
         </div>
@@ -99,7 +110,9 @@ export function CommentLayer({ containerRef }: { containerRef: RefObject<HTMLEle
         <div
           className={styles.popover}
           style={{ left: draft.x, top: draft.y }}
-          onClick={event => event.stopPropagation()}
+          onClick={event => {
+            event.stopPropagation()
+          }}
         >
           <div className={styles.threadScroll}>
             <CommentComposer

@@ -11,11 +11,16 @@ export interface SandboxUser {
   builder?: boolean
 }
 
+export interface ElementMetadata {
+  tag: string
+  text: string
+}
+
 export interface CommentAnchor {
   selector: string | null
   offset_x: number | string | null
   offset_y: number | string | null
-  element_metadata: Record<string, unknown> | null
+  element_metadata: ElementMetadata | null
 }
 
 export interface SandboxComment {
@@ -50,7 +55,7 @@ export interface CommentTarget {
   selector: string
   offset_x: number
   offset_y: number
-  element_metadata: Record<string, unknown>
+  element_metadata: ElementMetadata
 }
 
 export interface CreateCommentInput {

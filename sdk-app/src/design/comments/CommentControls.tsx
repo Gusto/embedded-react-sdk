@@ -6,19 +6,31 @@ import { relativeTime } from './format'
 import type { CommentToast } from './CommentsContext'
 import type { SandboxComment } from './types'
 
+/** Splits a recorded route into its pathname and viewport token for display. */
+function splitRoute(path: string): { pathname: string; vw: string | null } {
+  const [pathname = path, query = ''] = path.split('?')
+  return { pathname, vw: new URLSearchParams(query).get('vw') }
+}
+
+/** Human label for a non-default viewport, or null when it's the default/full. */
+function viewportLabel(vw: string | null): string | null {
+  if (!vw || vw === 'large' || vw === 'full') return null
+  return vw.charAt(0).toUpperCase() + vw.slice(1)
+}
+
 function TrayRow({ comment }: { comment: SandboxComment }) {
-  const { selectedId, select, threadHasUnread, routePath } = useComments()
-  const navigate = useNavigate()
+  const { selectedId, openComment, threadHasUnread, routePath } = useComments()
   const replyCount = comment.replies?.length ?? 0
   const onCurrentRoute = comment.route.path === routePath
+  const route = splitRoute(comment.route.path)
+  const vwLabel = viewportLabel(route.vw)
 
   return (
     <button
       type="button"
       className={`${styles.trayRow} ${comment.id === selectedId ? styles.trayRowSelected : ''}`}
       onClick={() => {
-        if (!onCurrentRoute) navigate(comment.route.path)
-        select(comment.id)
+        openComment(comment)
       }}
     >
       {threadHasUnread(comment) ? <span className={styles.unreadDot} /> : null}
@@ -27,7 +39,8 @@ function TrayRow({ comment }: { comment: SandboxComment }) {
           className={`${styles.trayRowRoute} ${onCurrentRoute ? styles.trayRowRouteCurrent : ''}`}
           title={comment.route.path}
         >
-          📍 {comment.route.path}
+          📍 {route.pathname}
+          {vwLabel ? <span className={styles.trayRowVw}>{vwLabel}</span> : null}
         </span>
         <div className={styles.trayRowPreview}>{comment.body}</div>
         <div className={styles.trayRowMeta}>
@@ -127,17 +140,11 @@ function Tray() {
       ) : null}
 
       <div className={`${styles.authStatus} ${!canWrite ? styles.authBad : ''}`}>
-        {me ? (
-          <>
-            {me.avatar_url ? <img className={styles.avatar} src={me.avatar_url} alt="" /> : null}
-            <span>
-              {canWrite ? 'Commenting as ' : 'Read-only — '}
-              {me.name.split('@')[0]}
-            </span>
-          </>
-        ) : (
-          <span>Not signed in — connect to WARP to comment.</span>
-        )}
+        {me?.avatar_url ? <img className={styles.avatar} src={me.avatar_url} alt="" /> : null}
+        <span>
+          {canWrite ? 'Commenting as ' : 'Read-only — '}
+          {me?.name.split('@')[0]}
+        </span>
       </div>
 
       <button
@@ -202,8 +209,12 @@ function ToastCard({ toast }: { toast: CommentToast }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const timer = setTimeout(() => dismissToast(toast.key), 8000)
-    return () => clearTimeout(timer)
+    const timer = setTimeout(() => {
+      dismissToast(toast.key)
+    }, 8000)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [toast.key, dismissToast])
 
   return (
@@ -211,14 +222,19 @@ function ToastCard({ toast }: { toast: CommentToast }) {
       type="button"
       className={styles.toast}
       onClick={() => {
-        navigate(toast.routePath)
+        void navigate(toast.routePath)
         setActive(true)
         setTrayOpen(true)
         dismissToast(toast.key)
       }}
     >
       <div className={styles.toastTitle}>💬 {toast.authorName} commented</div>
-      <div className={styles.toastRoute}>{toast.routePath}</div>
+      <div className={styles.toastRoute}>
+        {splitRoute(toast.routePath).pathname}
+        {viewportLabel(splitRoute(toast.routePath).vw)
+          ? ` · ${viewportLabel(splitRoute(toast.routePath).vw)}`
+          : ''}
+      </div>
       <div className={styles.toastBody}>{toast.body}</div>
     </button>
   )

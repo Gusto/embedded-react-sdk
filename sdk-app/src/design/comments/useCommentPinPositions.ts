@@ -44,14 +44,21 @@ export function useCommentPinPositions(
     window.addEventListener('resize', schedule)
 
     const container = containerRef.current
-    const observer = new ResizeObserver(schedule)
-    if (container) observer.observe(container)
+    const resizeObserver = new ResizeObserver(schedule)
+    if (container) resizeObserver.observe(container)
+
+    // Async-loaded content (e.g. React Query table rows) appears after the first
+    // paint without changing the container's size, so the ResizeObserver never
+    // fires. Watch the subtree so pins re-anchor once their target node mounts.
+    const mutationObserver = new MutationObserver(schedule)
+    if (container) mutationObserver.observe(container, { childList: true, subtree: true })
 
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('scroll', schedule, true)
       window.removeEventListener('resize', schedule)
-      observer.disconnect()
+      resizeObserver.disconnect()
+      mutationObserver.disconnect()
     }
   }, [recompute, containerRef])
 

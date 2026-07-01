@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   createComment,
   createReply,
@@ -58,6 +58,7 @@ interface CommentsContextValue {
   clearDraft: () => void
   selectedId: number | null
   select: (id: number | null) => void
+  openComment: (comment: SandboxComment) => void
   trayOpen: boolean
   setTrayOpen: (value: boolean) => void
 
@@ -97,7 +98,13 @@ function flatten(comments: SandboxComment[]): SandboxComment[] {
 }
 
 export function CommentsProvider({ children }: { children: ReactNode }) {
-  const routePath = useLocation().pathname
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  // Scope/record comments by pathname plus the viewport token only (ignore any
+  // other query params), so a comment remembers the width it was made at.
+  const vw = new URLSearchParams(location.search).get('vw')
+  const routePath = vw ? `${location.pathname}?vw=${vw}` : location.pathname
 
   const [me, setMe] = useState<SandboxUser | null>(null)
   const [prototypeId, setPrototypeId] = useState<number | null>(null)
@@ -130,26 +137,26 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   const authorized = ready && me !== null && me.email.toLowerCase().endsWith('@gusto.com')
 
   useEffect(() => {
-    let cancelled = false
+    const controller = new AbortController()
     void (async () => {
       try {
         const [user, prototype] = await Promise.all([fetchMe(), ensurePrototype()])
-        if (cancelled) return
+        if (controller.signal.aborted) return
         setMe(user)
         setPrototypeId(prototype.id)
         if (user?.can_write) {
           void getSubscription(prototype.id).then(value => {
-            if (!cancelled) setSubscribed(value)
+            if (!controller.signal.aborted) setSubscribed(value)
           })
         }
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : String(err))
+        if (!controller.signal.aborted) setError(err instanceof Error ? err.message : String(err))
       } finally {
-        if (!cancelled) setReady(true)
+        if (!controller.signal.aborted) setReady(true)
       }
     })()
     return () => {
-      cancelled = true
+      controller.abort()
     }
   }, [])
 
@@ -190,7 +197,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     setAllComments(all)
     setParticipants(participantsFrom(all))
 
-    const flat = all.flatMap(comment => [comment, ...(comment.replies ?? [])])
+    const flat = flatten(all)
     const previous = knownRef.current
     const next = new Map<number, string>()
     for (const item of flat) next.set(item.id, item.updated_at)
@@ -254,11 +261,18 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     }
   }, [prototypeId, subscribed])
 
-  // Reset transient interaction state when navigating between designs.
+  // Carries a selection across a route change so opening a comment from another
+  // viewport re-selects it once the destination route settles.
+  const pendingSelectRef = useRef<number | null>(null)
+
+  // Reset transient interaction state when navigating between designs, honoring
+  // any pending cross-route selection.
   useEffect(() => {
     setDraft(null)
     setPlacing(false)
-    setSelectedId(null)
+    setSelectedId(pendingSelectRef.current)
+    if (pendingSelectRef.current !== null) setActive(true)
+    pendingSelectRef.current = null
   }, [routePath])
 
   const refresh = useCallback(async () => {
@@ -272,8 +286,12 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     setPlacing(true)
   }, [])
 
-  const cancelPlacing = useCallback(() => setPlacing(false), [])
-  const clearDraft = useCallback(() => setDraft(null), [])
+  const cancelPlacing = useCallback(() => {
+    setPlacing(false)
+  }, [])
+  const clearDraft = useCallback(() => {
+    setDraft(null)
+  }, [])
 
   const setDraftAt = useCallback((clientX: number, clientY: number, container: HTMLElement) => {
     const target = buildTarget(clientX, clientY)
@@ -286,6 +304,21 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     setSelectedId(id)
     if (id !== null) setActive(true)
   }, [])
+
+  // Opens a comment's thread, navigating to (and restoring the viewport of) its
+  // recorded route first when it lives on a different route/width.
+  const openComment = useCallback(
+    (comment: SandboxComment) => {
+      setActive(true)
+      if (comment.route.path === routePath) {
+        setSelectedId(comment.id)
+      } else {
+        pendingSelectRef.current = comment.id
+        void navigate(comment.route.path)
+      }
+    },
+    [routePath, navigate],
+  )
 
   const submitComment = useCallback(
     async (body: string, category: CommentCategory | null) => {
@@ -410,6 +443,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     clearDraft,
     selectedId,
     select,
+    openComment,
     trayOpen,
     setTrayOpen,
     refresh,
@@ -434,6 +468,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   return <CommentsContext.Provider value={value}>{children}</CommentsContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook is colocated with its provider
 export function useComments(): CommentsContextValue {
   const context = useContext(CommentsContext)
   if (!context) throw new Error('useComments must be used within a CommentsProvider')

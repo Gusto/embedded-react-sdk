@@ -40,7 +40,7 @@ export function splitMentions(text: string): Array<{ text: string; mention: bool
   const segments: Array<{ text: string; mention: boolean }> = []
   let lastIndex = 0
   for (const match of text.matchAll(MENTION_PATTERN)) {
-    const start = match.index ?? 0
+    const start = match.index
     if (start > lastIndex) segments.push({ text: text.slice(lastIndex, start), mention: false })
     segments.push({ text: match[0], mention: true })
     lastIndex = start + match[0].length

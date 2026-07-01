@@ -80,7 +80,9 @@ export function CommentThread({ comment }: { comment: SandboxComment }) {
           <CommentComposer
             submitLabel="Reply"
             placeholder="Reply…"
-            onCancel={() => setReplying(false)}
+            onCancel={() => {
+              setReplying(false)
+            }}
             onSubmit={async body => {
               await submitReply(comment.id, body)
               setReplying(false)
@@ -92,7 +94,9 @@ export function CommentThread({ comment }: { comment: SandboxComment }) {
               <button
                 type="button"
                 className={`${styles.button} ${styles.buttonGhost}`}
-                onClick={() => setReplying(true)}
+                onClick={() => {
+                  setReplying(true)
+                }}
               >
                 Reply
               </button>

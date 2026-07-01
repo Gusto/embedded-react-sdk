@@ -63,7 +63,7 @@ export async function getSandboxToken(): Promise<string | null> {
       redirect: 'manual',
       dispatcher: insecureDispatcher,
     })
-    const setCookies = res.headers.getSetCookie?.() ?? []
+    const setCookies = res.headers.getSetCookie()
     const match = setCookies.map(cookie => /CF_Authorization=([^;]+)/.exec(cookie)).find(Boolean)
     const token = match?.[1] ?? null
 
@@ -80,7 +80,7 @@ export async function getSandboxToken(): Promise<string | null> {
 
 async function readBody(req: Connect.IncomingMessage): Promise<string> {
   let body = ''
-  for await (const chunk of req) body += chunk
+  for await (const chunk of req) body += String(chunk)
   return body
 }
 
@@ -114,9 +114,10 @@ export function registerSandboxCommentsProxy(server: ViteDevServer): void {
         }
 
         const upstreamUrl = `${STAGING_API_BASE}${req.url ?? ''}`
+        const contentType = req.headers['content-type']
         const headers: Record<string, string> = {
           Accept: 'application/json',
-          'Content-Type': (req.headers['content-type'] as string) ?? 'application/json',
+          'Content-Type': typeof contentType === 'string' ? contentType : 'application/json',
         }
         if (token) headers.Authorization = `Bearer ${token}`
 
