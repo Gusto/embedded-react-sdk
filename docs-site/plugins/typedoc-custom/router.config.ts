@@ -56,7 +56,7 @@ export const DOMAINS: DomainConfig[] = [
     namespaces: [{ id: 'Payroll' }],
   },
   {
-    label: 'Time Off',
+    label: 'Time off',
     path: 'time-off',
     namespaces: [{ id: 'TimeOff' }],
   },
@@ -80,7 +80,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
   {
     id: 'theme-variables',
     sources: ['contexts/ThemeProvider'],
-    displayName: 'Theme Variables',
+    displayName: 'Theme variables',
   },
   {
     id: 'component-inventory',
@@ -92,9 +92,9 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
       'components/Common/HorizontalFieldLayout',
       'contexts/ComponentAdapter',
     ],
-    displayName: 'Component Inventory',
+    displayName: 'Component inventory',
   },
-  { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook Utilities' },
+  { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook utilities' },
   {
     id: 'events',
     // Ignore any non-event constants

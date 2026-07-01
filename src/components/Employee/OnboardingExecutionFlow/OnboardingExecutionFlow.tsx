@@ -43,11 +43,11 @@ export interface OnboardingExecutionFlowProps {
  * Guided flow to onboard an employee.
  *
  * @remarks
- * Drives the per-employee, admin-led onboarding steps used by {@link OnboardingFlow} and {@link EmployeeManagement.EmployeeListFlow}. ({@link SelfOnboardingFlow} is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit.
+ * Drives the per-employee, admin-led onboarding steps used by {@link OnboardingFlow} and {@link EmployeeManagement.EmployeeListFlow}. ({@link SelfOnboardingFlow} is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Blocks table) for composing a custom workflow when this orchestration is the wrong fit.
  *
  * Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
  *
- * The flow forwards every event emitted by its sub-components to `onEvent`; see the events table on each sub-component for the full set of events and payloads observable from this flow.
+ * The flow forwards every event emitted by its blocks to `onEvent`; see the events table on each block for the full set of events and payloads observable from this flow.
  *
  * @components
  * - {@link Profile}

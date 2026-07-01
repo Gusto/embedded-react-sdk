@@ -1,5 +1,5 @@
 ---
-title: Integration Guide
+title: Integration guide
 description: Wire the SDK into a React app — versioning, event handling, request interceptors, UI customization, composition, data sources, translation, routing, and errors.
 ---
 
@@ -8,7 +8,7 @@ The integration guide will provide general concepts for building with the Gusto 
 | Section                                                 | Description                                                                                                                                                                                             |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Versioning and Dependency Management](./versioning.md) | Our versioning strategy, release types, and definition of breaking changes                                                                                                                              |
-| [Event Handling](./event-handling.md)                   | How to work with SDK events, useful for: Tracking and analytics Running side effects in your app ([Event Types Reference](../reference/events.md))                                                      |
+| [Event Handling](./event-handling.md)                   | How to work with SDK events, useful for: Tracking and analytics Running side effects in your app ([Event Types Reference](../../reference/events.md))                                                   |
 | [Request Interceptors](./request-interceptors.md)       | How to customize request and response handling for authentication, logging, and other cross-cutting concerns                                                                                            |
 | [Customizing SDK UI](./customizing-sdk-ui.md)           | How to customize the look of SDK components to visually match your application                                                                                                                          |
 | [Composition](./composition.md)                         | How to customize the layout, structure, and organization of SDK components, useful for Adding or removing sections from a given step or interface Inserting your own content inside of an SDK component |

@@ -7,14 +7,14 @@ The Gusto Embedded React SDK UI is highly customizable. It is built to completel
 
 There are two mechanisms that can be used to customize the SDK UI:
 
-- [Theming](../theming/theming.md) - Customizing the SDK UI design variables (e.g., color, typography, shadows, etc.)
+- [Theming](../theming.md) - Customizing the SDK UI design variables (e.g., color, typography, shadows, etc.)
 - [Component Adapters](../component-adapter/component-adapter.md) - Replacing SDK UI components with your own UI components
 
 Theming sets the visual baseline for all of the SDK UI, and it is recommended to use theming as a first pass to match your brand with the SDK. Component adapters are more complex to configure and should be used for advanced use cases if theming falls short.
 
 ## Theming
 
-> See [theming](../theming/theming.md) for a complete usage guide.
+> See [theming](../theming.md) for a complete usage guide.
 
 Theming allows you to set typography and color styles universally and change the entire look of the UI to match your brand by specifying a limited set of values. For example:
 
@@ -90,4 +90,4 @@ function App() {
 
 ## Creating a UI Customization Strategy
 
-[Theming](../theming/theming.md) is the recommended approach for customizing your UI. For advanced customization, where theming is insufficient to completely match your application UI, you can use [component adapters](../component-adapter/component-adapter.md). Even if you opt for adapter usage, setting a theming baseline as outlined above can reduce your workload and maintenance overhead significantly. It's recommended to start with theming and then introduce adapters only as necessary.
+[Theming](../theming.md) is the recommended approach for customizing your UI. For advanced customization, where theming is insufficient to completely match your application UI, you can use [component adapters](../component-adapter/component-adapter.md). Even if you opt for adapter usage, setting a theming baseline as outlined above can reduce your workload and maintenance overhead significantly. It's recommended to start with theming and then introduce adapters only as necessary.

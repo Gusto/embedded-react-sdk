@@ -1,5 +1,5 @@
 ---
-title: Theming UI Components
+title: Theming
 description: Import SDK styles, override theme variables on the GustoProvider theme prop, and apply consistent color, typography, and shadow values across SDK components.
 ---
 
@@ -7,7 +7,7 @@ UI components in the Gusto Embedded React SDK ship with simple baseline styles t
 
 For a complete inventory of available variables, see [theme variables](../reference/theme-variables.md).
 
-> Theming is the recommended approach for customizing your UI. For advanced customization, however, where theming is insufficient to completely match your application UI, you can explore usage of [component adapters](../component-adapter/component-adapter.md) which allow you to completely supply your own components.
+> Theming is the recommended approach for customizing your UI. For advanced customization, however, where theming is insufficient to completely match your application UI, you can explore usage of [component adapters](./component-adapter/component-adapter.md) which allow you to completely supply your own components.
 
 ## Setting up styles
 

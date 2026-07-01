@@ -28,16 +28,16 @@ export default function NotFoundContent(): ReactNode {
           <p className={styles.suggestionsLabel}>Popular pages:</p>
           <ul className={styles.suggestionsList}>
             <li>
-              <Link to="/docs/getting-started">Getting Started</Link>
+              <Link to="/docs/getting-started">Getting started</Link>
             </li>
             <li>
-              <Link to="/docs/integration-guide">Integration Guide</Link>
+              <Link to="/docs/guides/integration-guide">Integration guide</Link>
             </li>
             <li>
-              <Link to="/docs/component-adapter">Component Adapter</Link>
+              <Link to="/docs/guides/component-adapter">Component Adapter</Link>
             </li>
             <li>
-              <Link to="/docs/workflows-overview">Workflows</Link>
+              <Link to="/docs/guides/workflows-overview">Workflows</Link>
             </li>
           </ul>
         </div>

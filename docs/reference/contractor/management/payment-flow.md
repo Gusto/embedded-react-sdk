@@ -32,7 +32,7 @@ function MyApp() {
 <!-- guide-source: src/components/Contractor/Payments/PaymentFlow/GUIDE.md (slot: overview) -->
 ## Payment Workflow
 
-The typical step sequence when composing the subcomponents manually:
+The typical step sequence when composing the blocks manually:
 
 1. [`PaymentsList`](./blocks.md#paymentslist) — browse existing payment groups and start a new one.
 2. [`CreatePayment`](./blocks.md#createpayment) — select a date, edit per-contractor amounts, preview, and submit. Handles Fast ACH blockers and wire transfer requirements inline.
@@ -43,9 +43,9 @@ The typical step sequence when composing the subcomponents manually:
 
 ## Remarks
 
-Composes the contractor payment subcomponents into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
+Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
 
-Events emitted by the subcomponents bubble up through the single `onEvent` handler.
+Events emitted by the blocks bubble up through the single `onEvent` handler.
 
 ## PaymentFlowProps
 

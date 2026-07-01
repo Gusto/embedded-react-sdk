@@ -251,25 +251,28 @@ const config: Config = {
         {
           title: 'Build',
           items: [
-            { label: 'Workflows', to: '/docs/workflows-overview' },
-            { label: 'Event Handling', to: '/docs/integration-guide/event-handling' },
+            { label: 'Workflows', to: '/docs/guides/workflows-overview' },
+            { label: 'Event Handling', to: '/docs/guides/integration-guide/event-handling' },
             { label: 'Hooks', to: '/docs/hooks' },
           ],
         },
         {
           title: 'Customize',
           items: [
-            { label: 'Component Adapter', to: '/docs/component-adapter' },
-            { label: 'Theming', to: '/docs/theming' },
-            { label: 'Translations', to: '/docs/integration-guide/translation' },
-            { label: 'Bring your own data', to: '/docs/integration-guide/providing-your-own-data' },
+            { label: 'Component Adapter', to: '/docs/guides/component-adapter' },
+            { label: 'Theming', to: '/docs/guides/theming' },
+            { label: 'Translations', to: '/docs/guides/integration-guide/translation' },
+            {
+              label: 'Bring your own data',
+              to: '/docs/guides/integration-guide/providing-your-own-data',
+            },
           ],
         },
         {
           title: 'Get Started',
           items: [
             { label: 'What is the SDK?', to: '/docs/' },
-            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Getting started', to: '/docs/getting-started' },
             { label: 'Authentication', to: '/docs/getting-started/authentication' },
           ],
         },

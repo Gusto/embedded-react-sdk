@@ -20,8 +20,8 @@ const SRC_DIR = join(ROOT, 'src')
 const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/funcs')
 const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
-const JSON_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-inventory.json')
-const MD_OUTPUT_PATH = join(ROOT, 'docs/appendix/endpoint-reference.md')
+const JSON_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-inventory.json')
+const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
 
 const isVerifyMode = process.argv.includes('--verify')
 

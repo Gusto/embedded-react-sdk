@@ -22,11 +22,11 @@
       "import": "./dist/*.css",
       "require": "./dist/*.css"
     },
-    "./endpoint-inventory.json": "./docs/appendix/endpoint-inventory.json"
+    "./endpoint-inventory.json": "./docs/guides/endpoint-inventory.json"
   },
   "files": [
     "dist",
-    "docs/appendix/endpoint-inventory.json",
+    "docs/guides/endpoint-inventory.json",
     "./README.md",
     "./CHANGELOG.md"
   ],
