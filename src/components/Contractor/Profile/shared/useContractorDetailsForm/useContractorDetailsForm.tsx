@@ -198,6 +198,51 @@ const canToggleSelfOnboarding = (contractor?: Contractor) => {
  * @param input - See {@link UseContractorDetailsFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseContractorDetailsFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useContractorDetailsForm,
+ *   SDKFormProvider,
+ *   type UseContractorDetailsFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function ContractorDetailsPage({
+ *   companyId,
+ *   contractorId,
+ * }: {
+ *   companyId: string
+ *   contractorId: string
+ * }) {
+ *   const contractorDetails = useContractorDetailsForm({ companyId, contractorId })
+ *
+ *   if (contractorDetails.isLoading) return <div>Loading...</div>
+ *
+ *   return <ContractorDetailsReady contractorDetails={contractorDetails} />
+ * }
+ *
+ * function ContractorDetailsReady({
+ *   contractorDetails,
+ * }: {
+ *   contractorDetails: UseContractorDetailsFormReady
+ * }) {
+ *   const { Fields } = contractorDetails.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={contractorDetails}>
+ *       <form onSubmit={e => { e.preventDefault(); void contractorDetails.actions.onSubmit() }}>
+ *         <Fields.Type label="Contractor type" />
+ *         <Fields.WageType label="Wage type" />
+ *         {Fields.FirstName && <Fields.FirstName label="First name" />}
+ *         {Fields.LastName && <Fields.LastName label="Last name" />}
+ *         {Fields.BusinessName && <Fields.BusinessName label="Business name" />}
+ *         <Fields.StartDate label="Start date" />
+ *         <button type="submit" disabled={contractorDetails.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
  */
 export function useContractorDetailsForm({
   companyId,

@@ -42,6 +42,10 @@
       "allowMultiple": true
     },
     {
+      "tagName": "@groupWith",
+      "syntaxKind": "block"
+    },
+    {
       "tagName": "@category",
       "syntaxKind": "block",
       "allowMultiple": true

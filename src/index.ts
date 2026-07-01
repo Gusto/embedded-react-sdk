@@ -351,10 +351,6 @@ export {
   useContractorBankAccountForm,
   ContractorBankAccountErrorCodes,
   ACCOUNT_TYPES as ContractorBankAccountTypes,
-  NameField as ContractorBankAccountNameField,
-  RoutingNumberField as ContractorBankAccountRoutingNumberField,
-  AccountNumberField as ContractorBankAccountAccountNumberField,
-  AccountTypeField as ContractorBankAccountAccountTypeField,
 } from '@/components/Contractor/PaymentMethod/shared/useContractorBankAccountForm'
 export type {
   UseContractorBankAccountFormProps,
@@ -380,7 +376,6 @@ export type {
 export {
   useContractorPaymentMethodForm,
   ContractorPaymentMethodErrorCodes,
-  TypeField as ContractorPaymentMethodTypeField,
 } from '@/components/Contractor/PaymentMethod/shared/useContractorPaymentMethodForm'
 export type {
   UseContractorPaymentMethodFormProps,
@@ -610,8 +605,18 @@ export type {
   StateTaxValue,
   StateTaxQuestionVariant,
   StateTaxFieldsGroup,
+  StateTaxFields,
   StateTaxQuestionFieldEntry,
+  SharedQuestionMetadata,
+  SelectStateTaxQuestion,
+  RadioStateTaxQuestion,
+  TextStateTaxQuestion,
+  NumberStateTaxQuestion,
+  CurrencyStateTaxQuestion,
+  DateStateTaxQuestion,
   CreateStateFieldsOptions,
+  BaseStateTaxFieldProps,
+  StateTaxValidationMessages,
   SelectStateTaxFieldProps,
   RadioStateTaxFieldProps,
   TextStateTaxFieldProps,

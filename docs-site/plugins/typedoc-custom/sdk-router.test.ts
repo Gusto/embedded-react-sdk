@@ -1012,12 +1012,12 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     expect(hookPageModel.children).toContain(hook)
     expect(hookPageModel.children).toContain(errorCodes)
     expect(hookPageModel.children).toContain(propsIface)
-    // Members are grouped by kind within the page.
+    // The hook function keeps its own group; everything else (variables,
+    // interfaces, type aliases) collapses into a single Utility Types group.
     expect(hookPageModel.groups?.find(g => g.title === 'Functions')?.children).toContain(hook)
-    expect(hookPageModel.groups?.find(g => g.title === 'Variables')?.children).toContain(errorCodes)
-    expect(hookPageModel.groups?.find(g => g.title === 'Interfaces')?.children).toContain(
-      propsIface,
-    )
+    const utilityTypes = hookPageModel.groups?.find(g => g.title === 'Utility Types')?.children
+    expect(utilityTypes).toContain(errorCodes)
+    expect(utilityTypes).toContain(propsIface)
   })
 
   it('hook function in a non-hook directory falls back to @group tag when present', () => {

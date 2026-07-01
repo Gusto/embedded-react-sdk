@@ -151,6 +151,42 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
  * @param props - See {@link UseHomeAddressFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseHomeAddressFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useHomeAddressForm,
+ *   SDKFormProvider,
+ *   type UseHomeAddressFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function HomeAddressPage({ employeeId }: { employeeId: string }) {
+ *   const homeAddress = useHomeAddressForm({ employeeId })
+ *
+ *   if (homeAddress.isLoading) return <div>Loading...</div>
+ *
+ *   return <HomeAddressReady homeAddress={homeAddress} />
+ * }
+ *
+ * function HomeAddressReady({ homeAddress }: { homeAddress: UseHomeAddressFormReady }) {
+ *   const { Fields } = homeAddress.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={homeAddress}>
+ *       <form onSubmit={e => { e.preventDefault(); void homeAddress.actions.onSubmit() }}>
+ *         <Fields.Street1 label="Street address" />
+ *         <Fields.Street2 label="Apt, suite, etc. (optional)" />
+ *         <Fields.City label="City" />
+ *         <Fields.State label="State" />
+ *         <Fields.Zip label="ZIP code" />
+ *         <Fields.CourtesyWithholding label="Courtesy withholding" />
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *         <button type="submit" disabled={homeAddress.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
  */
 export function useHomeAddressForm({
   employeeId,
