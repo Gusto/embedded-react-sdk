@@ -146,7 +146,7 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `data.contractor` | [`Contractor`](../../APIModels/index.md#contractor) \| `null` | The contractor being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`ContractorDetailsFields`](#contractordetailsfields) | - |
+| `form.Fields` | [`ContractorDetailsFormFields`](#contractordetailsformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorDetailsFormData`](#contractordetailsformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
@@ -157,9 +157,9 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 
 ## Fields
 
-### ContractorDetailsFields
+### ContractorDetailsFormFields
 
-<a id="contractordetailsfields"></a>
+<a id="contractordetailsformfields"></a>
 
 The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
 
@@ -169,7 +169,7 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 | `Type` | `ComponentType`\<[`TypeFieldProps`](#contractortypefieldprops)\> | Radio group bound to `type`. Always available. |
 | `WageType` | `ComponentType`\<[`WageTypeFieldProps`](#contractorwagetypefieldprops)\> | Radio group bound to `wageType`. Always available. |
 | `BusinessName` | `ComponentType`\<[`BusinessNameFieldProps`](#contractorbusinessnamefieldprops)\> \| `undefined` | Text input bound to `businessName`; available only for business contractors. |
-| `Ein` | `ComponentType`\<[`EinFieldProps`](#contractoreinfieldprops)\> \| `undefined` | Text input bound to `ein`; available only for business contractors. |
+| `Ein` | `ComponentType`\<[`EinFieldProps`](#contractoreinfieldprops)\> \| `undefined` | Text input bound to `ein`; available only for business contractors. Auto-formats as `XX-XXXXXXX`. When an EIN is already on file the field shows a masked placeholder and the required rule is waived. |
 | `Email` | `ComponentType`\<[`EmailFieldProps`](#contractoremailfieldprops)\> \| `undefined` | Text input bound to `email`; available only when self-onboarding is enabled. |
 | `FileNewHireReport` | `ComponentType`\<[`FileNewHireReportFieldProps`](#contractorfilenewhirereportfieldprops)\> \| `undefined` | Switch bound to `fileNewHireReport`; available only for individual contractors. |
 | `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#contractorfirstnamefieldprops)\> \| `undefined` | Text input bound to `firstName`; available only for individual contractors. |
@@ -177,7 +177,7 @@ The Field components exposed by [useContractorDetailsForm](#usecontractordetails
 | `LastName` | `ComponentType`\<[`LastNameFieldProps`](#contractorlastnamefieldprops)\> \| `undefined` | Text input bound to `lastName`; available only for individual contractors. |
 | `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#contractormiddleinitialfieldprops)\> \| `undefined` | Text input bound to `middleInitial`; available only for individual contractors. |
 | `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#contractorselfonboardingfieldprops)\> \| `undefined` | Switch bound to `selfOnboarding`; available only when toggleable. |
-| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#contractorssnfieldprops)\> \| `undefined` | Text input bound to `ssn`; available only for individual contractors. |
+| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#contractorssnfieldprops)\> \| `undefined` | Text input bound to `ssn`; available only for individual contractors. Auto-formats as `XXX-XX-XXXX`. When an SSN is already on file the field shows a masked placeholder and the required rule is waived. |
 | `WorkState` | `ComponentType`\<[`WorkStateFieldProps`](#contractorworkstatefieldprops)\> \| `undefined` | Select bound to `workState`; available only for individual contractors filing a new-hire report. |
 
 ***
@@ -216,6 +216,8 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 ### Ein
 
 Text input bound to `ein`; available only for business contractors.
+Auto-formats as `XX-XXXXXXX`. When an EIN is already on file the field
+shows a masked placeholder and the required rule is waived.
 
 ```tsx
 {form.Fields.Ein && (
@@ -456,6 +458,8 @@ _Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../
 ### Ssn
 
 Text input bound to `ssn`; available only for individual contractors.
+Auto-formats as `XXX-XX-XXXX`. When an SSN is already on file the field
+shows a masked placeholder and the required rule is waived.
 
 ```tsx
 {form.Fields.Ssn && (
@@ -735,27 +739,6 @@ Shape of the values managed by the contractor details form.
 | `type` | `"Business"` \| `"Individual"` |
 | `wageType` | `"Fixed"` \| `"Hourly"` |
 | `workState` | `string` |
-
-***
-
-<a id="contractordetailsformfields"></a>
-
-### ContractorDetailsFormFields
-
-> **ContractorDetailsFormFields** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useContractorDetailsForm](#usecontractordetailsform).
-
-***
-
-<a id="contractordetailsformoutputs"></a>
-
-### ContractorDetailsFormOutputs
-
-> **ContractorDetailsFormOutputs** = [`ContractorDetailsFormData`](#contractordetailsformdata)
-
-Shape of the validated values produced by the contractor details form on
-submit.
 
 ***
 

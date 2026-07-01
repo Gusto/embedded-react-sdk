@@ -9,14 +9,11 @@ export type {
   ContractorAddressFormFields,
 } from './useContractorAddressForm'
 export {
-  createContractorAddressSchema,
   ContractorAddressErrorCodes,
   type ContractorAddressErrorCode,
   type ContractorAddressFormData,
-  type ContractorAddressFormOutputs,
   type ContractorAddressField,
 } from './contractorAddressSchema'
-export { Street1Field, Street2Field, CityField, StateField, ZipField } from './fields'
 export type {
   RequiredValidation as ContractorAddressRequiredValidation,
   ZipValidation as ContractorAddressZipValidation,

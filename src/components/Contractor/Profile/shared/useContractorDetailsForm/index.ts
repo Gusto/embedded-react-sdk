@@ -8,33 +8,14 @@ export type {
   UseContractorDetailsFormReady,
   ContractorDetailsFieldsMetadata,
   ContractorDetailsFormFields,
-  ContractorDetailsFields,
 } from './useContractorDetailsForm'
 export {
   ContractorType,
   WageType,
   ContractorDetailsErrorCodes,
-  createContractorDetailsSchema,
   type ContractorDetailsErrorCode,
   type ContractorDetailsFormData,
-  type ContractorDetailsFormOutputs,
 } from './contractorDetailsSchema'
-export {
-  TypeField,
-  WageTypeField,
-  StartDateField,
-  HourlyRateField,
-  SelfOnboardingField,
-  FileNewHireReportField,
-  EmailField,
-  FirstNameField,
-  LastNameField,
-  MiddleInitialField,
-  BusinessNameField,
-  SsnField,
-  EinField,
-  WorkStateField,
-} from './fields'
 export type {
   RequiredValidation as ContractorDetailsRequiredValidation,
   NameValidation as ContractorDetailsNameValidation,

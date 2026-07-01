@@ -1692,9 +1692,6 @@ export type ContractorBankAccountRoutingNumberValidation = (typeof ContractorBan
 export const ContractorBankAccountTypes: readonly ["Checking", "Savings"];
 
 // @public
-export function ContractorBusinessNameField(props: ContractorBusinessNameFieldProps): JSX;
-
-// @public
 export type ContractorBusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
 
 // @public
@@ -1719,34 +1716,28 @@ export const ContractorDetailsErrorCodes: {
 };
 
 // @public
-export interface ContractorDetailsFields {
-    BusinessName: typeof ContractorBusinessNameField | undefined;
-    Ein: typeof ContractorEinField | undefined;
-    Email: typeof ContractorEmailField | undefined;
-    FileNewHireReport: typeof ContractorFileNewHireReportField | undefined;
-    FirstName: typeof ContractorFirstNameField | undefined;
-    HourlyRate: typeof ContractorHourlyRateField | undefined;
-    LastName: typeof ContractorLastNameField | undefined;
-    MiddleInitial: typeof ContractorMiddleInitialField | undefined;
-    SelfOnboarding: typeof ContractorSelfOnboardingField | undefined;
-    Ssn: typeof ContractorSsnField | undefined;
-    StartDate: typeof ContractorStartDateField;
-    Type: typeof ContractorTypeField;
-    WageType: typeof ContractorWageTypeField;
-    WorkState: typeof ContractorWorkStateField | undefined;
-}
-
-// @public
 export type ContractorDetailsFieldsMetadata = UseContractorDetailsFormReady['form']['fieldsMetadata'];
 
 // @public
 export type ContractorDetailsFormData = { type: "Business" | "Individual"; wageType: "Fixed" | "Hourly"; startDate: string; hourlyRate: number; selfOnboarding: boolean; fileNewHireReport: boolean; email: string; firstName: string; lastName: string; middleInitial: string; businessName: string; workState: string; ssn: string; ein: string; };
 
 // @public
-export type ContractorDetailsFormFields = UseContractorDetailsFormReady['form']['Fields'];
-
-// @public
-export type ContractorDetailsFormOutputs = ContractorDetailsFormData;
+export interface ContractorDetailsFormFields {
+    BusinessName: ComponentType<ContractorBusinessNameFieldProps> | undefined;
+    Ein: ComponentType<ContractorEinFieldProps> | undefined;
+    Email: ComponentType<ContractorEmailFieldProps> | undefined;
+    FileNewHireReport: ComponentType<ContractorFileNewHireReportFieldProps> | undefined;
+    FirstName: ComponentType<ContractorFirstNameFieldProps> | undefined;
+    HourlyRate: ComponentType<ContractorHourlyRateFieldProps> | undefined;
+    LastName: ComponentType<ContractorLastNameFieldProps> | undefined;
+    MiddleInitial: ComponentType<ContractorMiddleInitialFieldProps> | undefined;
+    SelfOnboarding: ComponentType<ContractorSelfOnboardingFieldProps> | undefined;
+    Ssn: ComponentType<ContractorSsnFieldProps> | undefined;
+    StartDate: ComponentType<ContractorStartDateFieldProps>;
+    Type: ComponentType<ContractorTypeFieldProps>;
+    WageType: ComponentType<ContractorWageTypeFieldProps>;
+    WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
+}
 
 // @public
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
@@ -1769,37 +1760,19 @@ export interface ContractorDetailsSubmitOptions {
 }
 
 // @public
-export function ContractorEinField(props: ContractorEinFieldProps): JSX;
-
-// @public
 export type ContractorEinFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEinValidation, ContractorDetailsEinRequiredValidation>>;
-
-// @public
-export function ContractorEmailField(props: ContractorEmailFieldProps): JSX;
 
 // @public
 export type ContractorEmailFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEmailValidation>>;
 
 // @public
-export function ContractorFileNewHireReportField(props: ContractorFileNewHireReportFieldProps): JSX;
-
-// @public
 export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFieldProps>;
-
-// @public
-export function ContractorFirstNameField(props: ContractorFirstNameFieldProps): JSX;
 
 // @public
 export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
-export function ContractorHourlyRateField(props: ContractorHourlyRateFieldProps): JSX;
-
-// @public
 export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
-
-// @public
-export function ContractorLastNameField(props: ContractorLastNameFieldProps): JSX;
 
 // @public
 export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
@@ -1829,9 +1802,6 @@ declare namespace ContractorManagement {
         PaymentStatementProps
     }
 }
-
-// @public
-export function ContractorMiddleInitialField(props: ContractorMiddleInitialFieldProps): JSX;
 
 // @public
 export type ContractorMiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
@@ -1930,22 +1900,13 @@ interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'C
 }
 
 // @public
-export function ContractorSelfOnboardingField(props: ContractorSelfOnboardingFieldProps): JSX;
-
-// @public
 export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
 
 // @public
-export function ContractorSsnField(props: ContractorSsnFieldProps): JSX;
-
-// @public
 export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
-
-// @public
-export function ContractorStartDateField(props: ContractorStartDateFieldProps): JSX;
 
 // @public
 export type ContractorStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorDetailsRequiredValidation>>;
@@ -1966,19 +1927,10 @@ export const ContractorType: {
 };
 
 // @public
-export function ContractorTypeField(props: ContractorTypeFieldProps): JSX;
-
-// @public
 export type ContractorTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['type']>>;
 
 // @public
-export function ContractorWageTypeField(props: ContractorWageTypeFieldProps): JSX;
-
-// @public
 export type ContractorWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>>;
-
-// @public
-export function ContractorWorkStateField(props: ContractorWorkStateFieldProps): JSX;
 
 // @public
 export type ContractorWorkStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorDetailsRequiredValidation, string>>;
@@ -5859,7 +5811,7 @@ export type UseContractorDetailsFormProps = (UseContractorDetailsFormSharedProps
 });
 
 // @public
-export interface UseContractorDetailsFormReady extends BaseFormHookReady<FieldsMetadata, ContractorDetailsFormData, ContractorDetailsFields> {
+export interface UseContractorDetailsFormReady extends BaseFormHookReady<FieldsMetadata, ContractorDetailsFormData, ContractorDetailsFormFields> {
     actions: {
         onSubmit: (options?: ContractorDetailsSubmitOptions) => Promise<HookSubmitResult<Contractor> | undefined>;
     };
