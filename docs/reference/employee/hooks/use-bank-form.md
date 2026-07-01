@@ -370,16 +370,6 @@ the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="bankformoutputs"></a>
-
-### BankFormOutputs
-
-> **BankFormOutputs** = [`BankFormData`](#bankformdata)
-
-Shape of the validated values produced by the bank account form on submit.
-
-***
-
 <a id="bankformsubmitoptions"></a>
 
 ### BankFormSubmitOptions

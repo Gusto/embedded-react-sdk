@@ -278,9 +278,6 @@ import { z } from 'zod';
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
 
 // @public
-export function AccountNumberField(props: AccountNumberFieldProps): JSX;
-
-// @public
 export type AccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<AccountNumberValidation>>;
 
 // @public
@@ -288,9 +285,6 @@ export type AccountNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typ
 
 // @public
 export type AccountType = (typeof ACCOUNT_TYPES)[number];
-
-// @public
-export function AccountTypeField(props: AccountTypeFieldProps): JSX;
 
 // @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
@@ -686,10 +680,10 @@ export type BankFormField = "name" | "routingNumber" | "accountNumber" | "accoun
 
 // @public
 export interface BankFormFields {
-    AccountNumber: typeof AccountNumberField;
-    AccountType: typeof AccountTypeField;
-    Name: typeof NameField;
-    RoutingNumber: typeof RoutingNumberField;
+    AccountNumber: ComponentType<AccountNumberFieldProps>;
+    AccountType: ComponentType<AccountTypeFieldProps>;
+    Name: ComponentType<NameFieldProps>;
+    RoutingNumber: ComponentType<RoutingNumberFieldProps>;
 }
 
 // @public
@@ -697,9 +691,6 @@ export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata'];
 
 // @public
 export type BankFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type BankFormOutputs = BankFormData;
 
 // @public
 export type BankFormRequiredValidation = typeof BankFormErrorCodes.REQUIRED;
@@ -1944,22 +1935,8 @@ export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProp
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
-// Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createBankFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createBankFormSchema(options?: BankFormSchemaOptions): BuildFormSchemaResult<    {
-name: z.ZodString;
-routingNumber: z.ZodString;
-accountNumber: z.ZodString;
-accountType: z.ZodEnum<{
-Checking: "Checking";
-Savings: "Savings";
-}>;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "ChildSupportGarnishmentFormSchemaOptions" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createChildSupportGarnishmentFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -2088,17 +2065,6 @@ stateWcClassCode: z.ZodString;
 
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPaymentMethodFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPaymentMethodFormSchema(options?: PaymentMethodFormSchemaOptions): BuildFormSchemaResult<    {
-type: z.ZodEnum<{
-Check: "Check";
-"Direct Deposit": "Direct Deposit";
-}>;
-}>;
 
 // @public
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
@@ -3711,9 +3677,6 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
 }
 
 // @public
-export function NameField(props: NameFieldProps): JSX;
-
-// @public
 export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequiredValidation>>;
 
 // @public
@@ -4107,7 +4070,7 @@ export type PaymentMethodFormField = "type";
 
 // @public
 export interface PaymentMethodFormFields {
-    Type: typeof PaymentMethodTypeField;
+    Type: ComponentType<TypeFieldProps>;
 }
 
 // @public
@@ -4115,9 +4078,6 @@ export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form'][
 
 // @public
 export type PaymentMethodFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type PaymentMethodFormOutputs = PaymentMethodFormData;
 
 // @public
 export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorCodes.REQUIRED;
@@ -4153,9 +4113,6 @@ interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'e
 
 // @public
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
-
-// @public
-export function PaymentMethodTypeField(props: TypeFieldProps): JSX;
 
 // @public
 export function PaymentPeriodField(props: PaymentPeriodFieldProps): JSX;
@@ -4778,9 +4735,6 @@ K extends keyof Resources
 
 // @public
 export type Resources = CustomTypeOptions['resources']
-
-// @public
-export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
 
 // @public
 export type RoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RoutingNumberValidation>>;

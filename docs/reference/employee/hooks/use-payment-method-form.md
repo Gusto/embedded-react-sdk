@@ -253,16 +253,6 @@ the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="paymentmethodformoutputs"></a>
-
-### PaymentMethodFormOutputs
-
-> **PaymentMethodFormOutputs** = [`PaymentMethodFormData`](#paymentmethodformdata)
-
-Shape of the validated values produced by the payment method form on submit.
-
-***
-
 <a id="paymentmethodtype"></a>
 
 ### PaymentMethodType
