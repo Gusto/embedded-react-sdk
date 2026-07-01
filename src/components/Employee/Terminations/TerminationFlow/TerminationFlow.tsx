@@ -13,7 +13,11 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * Guided flow to terminate an employee and arrange their final paycheck.
  *
  * @remarks
- * Provides a complete experience for terminating an employee — guides the user through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process. Drives a multi-step flow with breadcrumb navigation between the termination form, the summary, and the dismissal payroll flow (when the partner selects the dismissal payroll option).
+ * This is the flow for ending employment. It sets the termination date, decides how the final
+ * paycheck is handled, and can launch the dismissal payroll as one option. To run the final payroll
+ * on its own for an already-terminated employee, use {@link Payroll.DismissalFlow} directly.
+ *
+ * Provides a complete experience for terminating an employee — guides the user through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process. Drives a multi-step flow with breadcrumb navigation between the termination form, the summary, and the dismissal payroll flow (when the dismissal payroll option is selected).
  *
  * On mount, the flow detects existing terminations: if an active termination exists, the form is pre-populated for editing; if the employee is already terminated, the user is routed to the summary view.
  *

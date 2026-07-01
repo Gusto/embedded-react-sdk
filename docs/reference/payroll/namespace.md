@@ -22,7 +22,7 @@ The Payroll namespace.
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [PayrollFlow](payroll-flow.md) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll between pay schedules. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
 
 ## 🧩 Blocks
 

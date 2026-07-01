@@ -408,6 +408,9 @@ details. On successful submission the signed form is emitted.
 
 ## JobsList
 
+Lists an employee's jobs alongside their compensation details, with controls to add, edit,
+or remove a job.
+
 ### JobsListProps
 
 <a id="jobslistprops"></a>
@@ -419,6 +422,20 @@ details. On successful submission the signed form is emitted.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`EmployeeCompensation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Remarks
+
+Used for employees who hold multiple roles. The primary job's FLSA classification determines
+whether the employee is treated as exempt or nonexempt.
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/job/add` | Fired when the user chooses to add a job | none |
+| `employee/job/edit` | Fired when the user chooses to edit a job | `{ uuid: string }` |
+| `employee/job/deleted` | Fired after a job is successfully deleted | none |
+| `employee/compensations/done` | Fired when the user continues past the jobs list | none |
 
 <a id="landing"></a>
 
