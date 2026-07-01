@@ -1,4 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
+import type { FocusEvent } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { http, HttpResponse } from 'msw'
 import { usePayScheduleForm } from './usePayScheduleForm'
@@ -349,6 +350,65 @@ describe('usePayScheduleForm', () => {
       })
 
       expect(submitResult).toEqual(expect.objectContaining({ mode: 'update' }))
+    })
+  })
+
+  describe('clearing server-side errors on blur (SDK-923)', () => {
+    it('clears custom errors on both anchor date fields when handleDateFieldsBlur fires', async () => {
+      const { result } = renderHook(() => usePayScheduleForm({ companyId: 'company-1' }), {
+        wrapper: GustoTestProvider,
+      })
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const readyResult = result.current
+      assertReady(readyResult)
+      const { formMethods } = readyResult.form.hookFormInternals
+
+      act(() => {
+        formMethods.setError('anchorPayDate', {
+          type: 'custom',
+          message: 'Pay date invalid',
+        })
+        formMethods.setError('anchorEndOfPayPeriod', {
+          type: 'custom',
+          message: 'End of pay period invalid',
+        })
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getFieldState('anchorPayDate').error?.type).toBe('custom')
+        expect(formMethods.getFieldState('anchorEndOfPayPeriod').error?.type).toBe('custom')
+      })
+
+      act(() => {
+        readyResult.form.handleDateFieldsBlur({} as FocusEvent<HTMLDivElement>)
+      })
+
+      expect(formMethods.getFieldState('anchorPayDate').error).toBeUndefined()
+      expect(formMethods.getFieldState('anchorEndOfPayPeriod').error).toBeUndefined()
+    })
+
+    it('leaves non-custom errors (client-side validation) alone', async () => {
+      const { result } = renderHook(() => usePayScheduleForm({ companyId: 'company-1' }), {
+        wrapper: GustoTestProvider,
+      })
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      const readyResult = result.current
+      assertReady(readyResult)
+      const { formMethods } = readyResult.form.hookFormInternals
+
+      act(() => {
+        formMethods.setError('anchorPayDate', { type: 'required', message: 'Required' })
+      })
+
+      act(() => {
+        readyResult.form.handleDateFieldsBlur({} as FocusEvent<HTMLDivElement>)
+      })
+
+      expect(formMethods.getFieldState('anchorPayDate').error?.type).toBe('required')
     })
   })
 })

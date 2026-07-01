@@ -99,19 +99,24 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                         getOptionLabel={(entry: string) => twicePerMonthLabels[entry] ?? entry}
                       />
                     )}
-                    <Fields.AnchorPayDate
-                      label={t('labels.firstPayDate')}
-                      description={t('descriptions.anchorPayDateDescription', {
-                        count: paymentSpeedDays,
-                      })}
-                      validationMessages={{ REQUIRED: t('validations.firstPayDate') }}
-                      minDate={new Date()}
-                    />
-                    <Fields.AnchorEndOfPayPeriod
-                      label={t('labels.firstPayPeriodEndDate')}
-                      description={t('descriptions.anchorEndOfPayPeriodDescription')}
-                      validationMessages={{ REQUIRED: t('validations.firstPayPeriodEndDate') }}
-                    />
+                    <div
+                      style={{ display: 'contents' }}
+                      onBlur={paySchedule.form.handleDateFieldsBlur}
+                    >
+                      <Fields.AnchorPayDate
+                        label={t('labels.firstPayDate')}
+                        description={t('descriptions.anchorPayDateDescription', {
+                          count: paymentSpeedDays,
+                        })}
+                        validationMessages={{ REQUIRED: t('validations.firstPayDate') }}
+                        minDate={new Date()}
+                      />
+                      <Fields.AnchorEndOfPayPeriod
+                        label={t('labels.firstPayPeriodEndDate')}
+                        description={t('descriptions.anchorEndOfPayPeriodDescription')}
+                        validationMessages={{ REQUIRED: t('validations.firstPayPeriodEndDate') }}
+                      />
+                    </div>
                     {Fields.Day1 && (
                       <Fields.Day1
                         label={t('labels.firstPayDayOfTheMonth')}
