@@ -90,6 +90,7 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` | `'contractor/profile/done'` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` | `'contractor/selfOnboarding/done'` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` | `'contractor/selfOnboarding/start'` |
+| `CONTRACTOR_SIGN_DOCUMENT` | `"contractor/documents/sign"` | `'contractor/documents/sign'` |
 | `CONTRACTOR_SUBMIT_DONE` | `"contractor/submit/done"` | `'contractor/submit/done'` |
 | `CONTRACTOR_UPDATE` | `"contractor/update"` | `'contractor/update'` |
 | `CONTRACTOR_UPDATED` | `"contractor/updated"` | `'contractor/updated'` |
