@@ -76,6 +76,10 @@ import { CustomTypeOptions } from 'i18next';
 import { Deductions } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
 import { Document as Document_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
+import { DocumentSigned } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned';
+import { DocumentSignedFields } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned';
+import { DocumentSignedPages } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned';
+import { DocumentSignedRecipientType } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned';
 import { DocumentType as DocumentType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization';
 import { EinVerification } from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails';
 import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
@@ -452,6 +456,10 @@ declare namespace APIModels {
         Fields,
         Pages,
         RecipientType,
+        DocumentSigned,
+        DocumentSignedFields,
+        DocumentSignedPages,
+        DocumentSignedRecipientType,
         EmployeeCurrentEmploymentStatus,
         EmployeeOnboardingStatus1,
         Employee,
@@ -688,7 +696,7 @@ export const BankFormErrorCodes: {
 };
 
 // @public
-export type BankFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+export type BankFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
 
 // @public
 export interface BankFormFields {
@@ -1684,7 +1692,7 @@ export type ContractorBankAccountFieldsMetadata = UseContractorBankAccountFormRe
 export type ContractorBankAccountFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
 
 // @public
-export type ContractorBankAccountFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+export type ContractorBankAccountFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
 
 // @public
 export interface ContractorBankAccountFormFields {
@@ -1776,7 +1784,7 @@ export type ContractorDetailsFormOutputs = ContractorDetailsFormData;
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
 // @public
-export type ContractorDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "ssn" | "ein")[] | undefined; update?: ("hourlyRate" | "startDate" | "firstName" | "lastName" | "middleInitial" | "businessName" | "workState" | "ssn" | "ein")[] | undefined; };
+export type ContractorDetailsOptionalFieldsToRequire = { create?: ("ssn" | "ein" | "middleInitial")[] | undefined; update?: ("hourlyRate" | "businessName" | "ssn" | "ein" | "startDate" | "firstName" | "lastName" | "middleInitial" | "workState")[] | undefined; };
 
 // @public
 export type ContractorDetailsRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
@@ -1964,6 +1972,116 @@ export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldP
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
+
+// Warning: (ae-forgotten-export) The symbol "AgreeValidation" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type ContractorSignatureAgreeFieldProps = HookFieldProps<CheckboxHookFieldProps<AgreeValidation>>;
+
+// @public
+export type ContractorSignatureCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps>;
+
+// Warning: (ae-forgotten-export) The symbol "EinValidation" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "RequiredValidation" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type ContractorSignatureEinFieldProps = HookFieldProps<TextInputHookFieldProps<EinValidation, RequiredValidation>>;
+
+// @public
+export type ContractorSignatureFormData = {
+    name: string
+    businessName: string
+    taxClassification: string
+    llcClassificationCode: string
+    otherText: string
+    foreignPartners: boolean
+    exemptPayeeCode: string
+    exemptionFromFatca: string
+    homeAddressStreet1: string
+    homeAddressStreet2: string
+    homeAddressCity: string
+    homeAddressState: string
+    homeAddressZip: string
+    accountNumber: string
+    companyName: string
+    ssn: string
+    ein: string
+    signatureText: string
+    agree: boolean
+};
+
+// @public
+export type ContractorSignatureFormErrorCode = (typeof ContractorSignatureFormErrorCodes)[keyof typeof ContractorSignatureFormErrorCodes];
+
+// @public
+export const ContractorSignatureFormErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly AGREE_REQUIRED: "AGREE_REQUIRED";
+    readonly INVALID_SSN: "INVALID_SSN";
+    readonly INVALID_EIN: "INVALID_EIN";
+};
+
+// @public
+export interface ContractorSignatureFormFieldComponents {
+    // Warning: (ae-forgotten-export) The symbol "AccountNumberField_2" needs to be exported by the entry point index.d.ts
+    AccountNumber: typeof AccountNumberField_2 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "AgreeField" needs to be exported by the entry point index.d.ts
+    Agree: typeof AgreeField;
+    // Warning: (ae-forgotten-export) The symbol "BusinessNameField" needs to be exported by the entry point index.d.ts
+    BusinessName: typeof BusinessNameField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "CompanyNameField" needs to be exported by the entry point index.d.ts
+    CompanyName: typeof CompanyNameField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "EinField" needs to be exported by the entry point index.d.ts
+    Ein: typeof EinField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "ExemptionFromFatcaField" needs to be exported by the entry point index.d.ts
+    ExemptionFromFatca: typeof ExemptionFromFatcaField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "ExemptPayeeCodeField" needs to be exported by the entry point index.d.ts
+    ExemptPayeeCode: typeof ExemptPayeeCodeField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "ForeignPartnersField" needs to be exported by the entry point index.d.ts
+    ForeignPartners: typeof ForeignPartnersField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "HomeAddressCityField" needs to be exported by the entry point index.d.ts
+    HomeAddressCity: typeof HomeAddressCityField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "HomeAddressStateField_2" needs to be exported by the entry point index.d.ts
+    HomeAddressState: typeof HomeAddressStateField_2 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "HomeAddressStreet1Field" needs to be exported by the entry point index.d.ts
+    HomeAddressStreet1: typeof HomeAddressStreet1Field | undefined;
+    // Warning: (ae-forgotten-export) The symbol "HomeAddressStreet2Field" needs to be exported by the entry point index.d.ts
+    HomeAddressStreet2: typeof HomeAddressStreet2Field | undefined;
+    // Warning: (ae-forgotten-export) The symbol "HomeAddressZipField" needs to be exported by the entry point index.d.ts
+    HomeAddressZip: typeof HomeAddressZipField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "LlcClassificationCodeField" needs to be exported by the entry point index.d.ts
+    LlcClassificationCode: typeof LlcClassificationCodeField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "NameField_2" needs to be exported by the entry point index.d.ts
+    Name: typeof NameField_2 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "OtherTextField" needs to be exported by the entry point index.d.ts
+    OtherText: typeof OtherTextField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "SignatureTextField" needs to be exported by the entry point index.d.ts
+    SignatureText: typeof SignatureTextField | undefined;
+    // Warning: (ae-forgotten-export) The symbol "SsnField_2" needs to be exported by the entry point index.d.ts
+    Ssn: typeof SsnField_2 | undefined;
+    // Warning: (ae-forgotten-export) The symbol "TaxClassificationField" needs to be exported by the entry point index.d.ts
+    TaxClassification: typeof TaxClassificationField | undefined;
+}
+
+// @public
+export type ContractorSignatureFormOutputs = ContractorSignatureFormData;
+
+// @public
+export type ContractorSignatureOptionalFieldsToRequire = { create?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; update?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; };
+
+// @public
+export type ContractorSignatureRadioFieldProps = HookFieldProps<RadioGroupHookFieldProps<RequiredValidation, string>>;
+
+// @public
+export type ContractorSignatureSelectFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation, string>>;
+
+// Warning: (ae-forgotten-export) The symbol "SsnValidation_2" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type ContractorSignatureSsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation_2, RequiredValidation>>;
+
+// @public
+export type ContractorSignatureTextFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>;
 
 // @public
 export function ContractorSsnField(props: ContractorSsnFieldProps): JSX;
@@ -2725,7 +2843,7 @@ export const EmployeeDetailsErrorCodes: {
 };
 
 // @public
-export type EmployeeDetailsField = "email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth";
+export type EmployeeDetailsField = "ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth";
 
 // @public
 export interface EmployeeDetailsFields {
@@ -2751,7 +2869,7 @@ export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fie
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
 
 // @public
-export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("email" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; update?: ("email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; };
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("ssn" | "email" | "middleInitial" | "dateOfBirth")[] | undefined; update?: ("ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -3133,6 +3251,7 @@ export interface FieldMetadata {
     maxDate?: string | null;
     minDate?: string | null;
     name: string;
+    placeholder?: string;
 }
 
 // @public
@@ -5971,6 +6090,36 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<F
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
+export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
+
+// @public
+export interface UseContractorSignatureFormProps {
+    documentUuid: string;
+    optionalFieldsToRequire?: ContractorSignatureOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorSignatureFormReady extends BaseFormHookReady<FieldsMetadata, ContractorSignatureFormData, ContractorSignatureFormFieldComponents> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<DocumentSigned> | undefined>;
+    };
+    data: {
+        document: Document_2;
+        pdfUrl: string | null;
+        hasFields: boolean;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
+
+// @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
 // @public
@@ -6569,7 +6718,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:272:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

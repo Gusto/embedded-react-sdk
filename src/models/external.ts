@@ -103,6 +103,13 @@ export type { Fields } from '@gusto/embedded-api-v-2025-11-15/models/components/
 /** `Pages` entity from the Gusto Embedded API. */
 export type { Pages } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
 export { RecipientType } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+/** `DocumentSigned` entity from the Gusto Embedded API. */
+export type { DocumentSigned } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned'
+/** `DocumentSignedFields` entity from the Gusto Embedded API. */
+export type { DocumentSignedFields } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned'
+/** `DocumentSignedPages` entity from the Gusto Embedded API. */
+export type { DocumentSignedPages } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned'
+export { DocumentSignedRecipientType } from '@gusto/embedded-api-v-2025-11-15/models/components/documentsigned'
 /** `EmployeeCurrentEmploymentStatus` entity from the Gusto Embedded API. */
 export { EmployeeCurrentEmploymentStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 /** `EmployeeOnboardingStatus1` entity from the Gusto Embedded API. */
