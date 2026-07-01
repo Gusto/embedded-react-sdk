@@ -1,5 +1,4 @@
 import { BREAKPOINTS } from '@/shared/constants'
-import type { CustomTypeOptions } from 'i18next'
 import type { Resources } from '@/i18n/types'
 
 export type { Resources, Translations } from '@/i18n/types'
