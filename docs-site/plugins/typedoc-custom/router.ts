@@ -23,7 +23,7 @@ import {
   UnionType,
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
-import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
+import { DOMAINS, I18N_RELOCATION, STANDALONE_PAGES } from './router.config.ts'
 import {
   findHookResultAlias,
   getFormHookModel,
@@ -60,25 +60,19 @@ const API_MODELS_NAMESPACE = 'APIModels'
 const TRANSLATIONS_NAMESPACE = 'Translations'
 
 /**
+ * Group name for the per-i18n-namespace key interfaces (`Translations.CompanyAddresses`,
+ * …) so they render under their own section instead of the generic "Interfaces". The
+ * relocated i18n *types* keep their own `@group` (e.g. "Utility types") and are skipped.
+ */
+const TRANSLATION_INTERFACES_GROUP = 'Translation namespaces'
+
+/**
  * Namespaces rendered as a single flat page — all members anchored on the index,
  * no Flow/Blocks split. These re-export data/entity types, so the component-domain
  * heuristics (splitting `*Flow` members onto their own pages) must not apply, even
  * when a member's name happens to end in "Flow" (e.g. `Translations.PayrollPayrollFlow`).
  */
 const FLAT_NAMESPACES = new Set([API_MODELS_NAMESPACE, TRANSLATIONS_NAMESPACE])
-
-/**
- * Top-level i18n type exports relocated from the project index onto the
- * `Translations` page (grouped under "Types" above the per-namespace key
- * interfaces). `Resources` is the `keyof Resources` map; `ResourceDictionary`
- * and `GlobalResourceDictionary` are the `dictionary` override types. See
- * {@link SDKRouter.relocateI18nTypes}.
- */
-const I18N_RELOCATED_TYPES = new Set([
-  'Resources',
-  'ResourceDictionary',
-  'GlobalResourceDictionary',
-])
 
 /**
  * Map an installed-package source path to its definition on GitHub.
@@ -577,16 +571,18 @@ export class SDKRouter extends MemberRouter {
   }
 
   /**
-   * Relocate the i18n *types* ({@link I18N_RELOCATED_TYPES}) from the project
-   * index onto the `Translations` page, grouped under "Types" above the
-   * per-namespace key interfaces. This is purely a docs move: the public export
-   * paths are unchanged (they remain top-level `@gusto/embedded-react-sdk`
-   * exports), only their rendered location changes, and TypeDoc's relativeUrl
-   * walk keeps every cross-link correct.
+   * Relocate the i18n *types* ({@link I18N_RELOCATION}) from the project index
+   * onto the `Translations` page, keeping each type's natural `@group` section
+   * (e.g. "Utility types"). Selected by source path + `@group` rather than by
+   * name, so new i18n-adjacent utilities added to those files move
+   * automatically. This is purely a docs move: the public export paths are
+   * unchanged (they remain top-level `@gusto/embedded-react-sdk` exports), only
+   * their rendered location changes, and TypeDoc's relativeUrl walk keeps every
+   * cross-link correct.
    *
-   * Must run before GroupPlugin (priority -100) so the stamped `@group` is
-   * honored and the reflections leave `project.groups` (no longer rendered on
-   * the index). Ordering of the "Types" group is set via `groupOrder`.
+   * Must run before GroupPlugin (priority -100) so the reflections leave
+   * `project.groups` (no longer rendered on the index) and are grouped under
+   * `Translations` instead. Group ordering on the page is set via `groupOrder`.
    */
   static relocateI18nTypes(context: Context): void {
     const { project } = context
@@ -598,16 +594,53 @@ export class SDKRouter extends MemberRouter {
     )
     if (!translations) return
 
+    const { sources, groups } = I18N_RELOCATION
     for (const child of [...(project.children ?? [])]) {
       if (!(child instanceof DeclarationReflection)) continue
-      if (!I18N_RELOCATED_TYPES.has(child.name)) continue
+      const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName ?? ''
+      if (!sources.some(fragment => fp.includes(fragment))) continue
+      const inGroup = child.comment?.blockTags.some(
+        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+      )
+      if (!inGroup) continue
 
       project.removeChild(child)
       child.parent = translations
       translations.addChild(child)
+      // Keep the source `@group` intact so each type renders under its natural
+      // section on the Translations page (e.g. "Utility types"); GroupPlugin
+      // rebuilds project.groups from children after this, so removing the child
+      // above is what drops it from the index.
+    }
+  }
+
+  /**
+   * Stamp `@group Translation namespaces` on the per-i18n-namespace key
+   * interfaces (`Translations.CompanyAddresses`, …) so they render under their
+   * own section rather than the generic "Interfaces". The relocated i18n *types*
+   * ({@link relocateI18nTypes}) already carry a `@group` (e.g. "Utility types")
+   * and are skipped, so they stay in their own section.
+   *
+   * Must run before GroupPlugin (priority -100). Group ordering is set via
+   * `groupOrder`.
+   */
+  static groupTranslationInterfaces(context: Context): void {
+    const translations = context.project.children?.find(
+      (c): c is DeclarationReflection =>
+        c instanceof DeclarationReflection &&
+        c.kind === ReflectionKind.Namespace &&
+        c.name === TRANSLATIONS_NAMESPACE,
+    )
+    if (!translations) return
+
+    for (const child of translations.children ?? []) {
+      if (child.kind !== ReflectionKind.Interface) continue
+      if (child.comment?.blockTags.some(t => t.tag === '@group')) continue
 
       if (!child.comment) child.comment = new Comment()
-      child.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Types' }]))
+      child.comment.blockTags.push(
+        new CommentTag('@group', [{ kind: 'text', text: TRANSLATION_INTERFACES_GROUP }]),
+      )
     }
   }
 

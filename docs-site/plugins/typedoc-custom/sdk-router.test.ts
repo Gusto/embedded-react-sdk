@@ -904,35 +904,122 @@ describe('reparentDeprecatedMembers', () => {
 describe('relocateI18nTypes', () => {
   type RelocateContext = Parameters<typeof SDKRouter.relocateI18nTypes>[0]
 
-  it('reparents the i18n types under Translations and stamps them @group Types', () => {
+  // Selection is by source path (i18n/types or types/Helpers) + `@group Utility types`.
+  function makeI18nType(
+    project: ProjectReflection,
+    name: string,
+    kind: ReflectionKind,
+    fullFileName: string,
+  ): DeclarationReflection {
+    const ref = makeChild(project, name, kind)
+    ref.sources = sourceRef(fullFileName)
+    ref.comment = new Comment()
+    ref.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Utility types' }]))
+    return ref
+  }
+
+  it('reparents source+group-matched i18n types under Translations, keeping their natural group', () => {
     const project = makeProject()
     const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
-    const resources = makeChild(project, 'Resources', ReflectionKind.Interface)
-    const dictionary = makeChild(project, 'ResourceDictionary', ReflectionKind.TypeAlias)
-    const globalDictionary = makeChild(project, 'GlobalResourceDictionary', ReflectionKind.Interface)
+    const resources = makeI18nType(
+      project,
+      'Resources',
+      ReflectionKind.Interface,
+      '/workspace/src/i18n/types.d.ts',
+    )
+    const dictionary = makeI18nType(
+      project,
+      'ResourceDictionary',
+      ReflectionKind.TypeAlias,
+      '/workspace/src/types/Helpers.d.ts',
+    )
+    const deepPartial = makeI18nType(
+      project,
+      'DeepPartial',
+      ReflectionKind.TypeAlias,
+      '/workspace/src/types/Helpers.d.ts',
+    )
     const unrelated = makeChild(project, 'APIConfig', ReflectionKind.Interface)
 
     SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
 
-    for (const ref of [resources, dictionary, globalDictionary]) {
+    for (const ref of [resources, dictionary, deepPartial]) {
       expect(ref.parent).toBe(translations)
       expect(translations.children).toContain(ref)
-      const groupTag = ref.comment?.blockTags.find(t => t.tag === '@group')
-      expect(groupTag?.content[0]?.text).toBe('Types')
+      // The source `@group` is left untouched so the type renders under its
+      // natural section (here "Utility types") on the Translations page.
+      const groupTags = ref.comment?.blockTags.filter(t => t.tag === '@group') ?? []
+      expect(groupTags).toHaveLength(1)
+      expect(groupTags[0]?.content[0]?.text).toBe('Utility types')
     }
     // Removed from the project so they no longer render on the index page.
     expect(project.children).not.toContain(resources)
     expect(project.children).toContain(unrelated)
   })
 
+  it('leaves same-file exports outside the matched group in place', () => {
+    const project = makeProject()
+    makeChild(project, 'Translations', ReflectionKind.Namespace)
+    // Same source file as the dictionary types, but no `@group Utility types`.
+    const machineEvent = makeChild(project, 'MachineEventType', ReflectionKind.TypeAlias)
+    machineEvent.sources = sourceRef('/workspace/src/types/Helpers.d.ts')
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    expect(project.children).toContain(machineEvent)
+    expect(machineEvent.parent).toBe(project)
+  })
+
   it('is a no-op when there is no Translations namespace', () => {
     const project = makeProject()
-    const resources = makeChild(project, 'Resources', ReflectionKind.Interface)
+    const resources = makeI18nType(
+      project,
+      'Resources',
+      ReflectionKind.Interface,
+      '/workspace/src/i18n/types.d.ts',
+    )
 
     SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
 
     expect(project.children).toContain(resources)
     expect(resources.parent).toBe(project)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// groupTranslationInterfaces (stamps the leaf key interfaces @group Translation namespaces)
+// ---------------------------------------------------------------------------
+
+describe('groupTranslationInterfaces', () => {
+  type GroupContext = Parameters<typeof SDKRouter.groupTranslationInterfaces>[0]
+
+  const groupOf = (ref: DeclarationReflection): string | undefined =>
+    ref.comment?.blockTags.find(t => t.tag === '@group')?.content[0]?.text
+
+  it('stamps the leaf key interfaces without touching already-grouped members', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const keyInterface = makeChild(translations, 'CompanyAddresses', ReflectionKind.Interface)
+    // A relocated i18n type already carries its own @group and must be left alone.
+    const relocated = makeChild(translations, 'GlobalResourceDictionary', ReflectionKind.Interface)
+    relocated.comment = new Comment()
+    relocated.comment.blockTags.push(
+      new CommentTag('@group', [{ kind: 'text', text: 'Utility types' }]),
+    )
+
+    SDKRouter.groupTranslationInterfaces({ project } as unknown as GroupContext)
+
+    expect(groupOf(keyInterface)).toBe('Translation namespaces')
+    expect(groupOf(relocated)).toBe('Utility types')
+  })
+
+  it('is a no-op when there is no Translations namespace', () => {
+    const project = makeProject()
+    const iface = makeChild(project, 'CompanyAddresses', ReflectionKind.Interface)
+
+    SDKRouter.groupTranslationInterfaces({ project } as unknown as GroupContext)
+
+    expect(iface.comment?.blockTags.some(t => t.tag === '@group')).toBeFalsy()
   })
 })
 

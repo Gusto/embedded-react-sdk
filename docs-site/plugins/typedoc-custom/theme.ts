@@ -1176,6 +1176,14 @@ export function defaultValueRestatesLiteralType(reflection: DeclarationReflectio
 const TRANSLATIONS_NAMESPACE = 'Translations'
 
 /**
+ * The `Resources` map interface (namespace name → its key interface). It shares
+ * the Translations page with the leaf key interfaces but is not one: its property
+ * *values* are those interfaces, so its Type column carries the links to them and
+ * must be kept (unlike the leaf glossaries, whose Type column is dropped).
+ */
+const RESOURCES_MAP_INTERFACE = 'Resources'
+
+/**
  * Whether a reflection lives under the `Translations` namespace (the i18n
  * resource-key interfaces). Their property tables are pure translation-key
  * glossaries, so the `Type` column — always `string` (leaf keys) or `object`
@@ -2556,7 +2564,12 @@ export class SDKThemeContext extends MarkdownThemeContext {
         let result = origPropertiesTable(...args)
         // Translations (translation-key) interfaces are all `string` (leaves) / `object`
         // (groups): the Type column is noise, so drop it for the Default value glossary.
-        if (args[0]?.some(prop => isTranslationsMember(prop))) {
+        // The `Resources` map is the exception — its Type column links each namespace
+        // row to its key interface, so keep it.
+        if (
+          args[0]?.some(prop => isTranslationsMember(prop)) &&
+          args[0]?.[0]?.parent?.name !== RESOURCES_MAP_INTERFACE
+        ) {
           result = dropTableColumn(result, 'Type')
         }
         const lines = result.split('\n')

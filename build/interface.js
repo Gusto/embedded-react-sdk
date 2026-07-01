@@ -75,6 +75,17 @@ declare module 'i18next' {
 }
 
 /**
+ * Every i18n resource namespace mapped to its keys. \`keyof Resources\` yields the
+ * namespace names; \`Resources['Company.Addresses']\` (or {@link Translations.CompanyAddresses})
+ * yields that namespace's keys. Backs i18next \`t()\` typing and \`ResourceDictionary\`.
+ *
+ * @public
+ * @group Utility types
+ */
+export interface Resources {
+${mapEntries}}
+
+/**
  * Per-namespace SDK i18n keys, each namespace browsable as its own reference
  * (e.g. {@link Translations.CompanyAddresses}) with every key's English default.
  * Override defaults through a component's \`dictionary\` prop or the global
@@ -84,16 +95,6 @@ declare module 'i18next' {
  */
 export namespace Translations {
 ${namespaceMembers}}
-
-/**
- * Every i18n resource namespace mapped to its keys. \`keyof Resources\` yields the
- * namespace names; \`Resources['Company.Addresses']\` (or {@link Translations.CompanyAddresses})
- * yields that namespace's keys. Backs i18next \`t()\` typing and \`ResourceDictionary\`.
- *
- * @public
- */
-export interface Resources {
-${mapEntries}}
 `.trim()
 
   // Format with the repo's Prettier config so the committed file passes format:check.

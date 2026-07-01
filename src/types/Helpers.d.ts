@@ -8,6 +8,7 @@ export type { Resources, Translations } from '@/i18n/types'
  * Recursively makes every property of `T` optional, descending into nested objects and arrays.
  *
  * @public
+ * @group Utility types
  */
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
@@ -47,6 +48,7 @@ export type DataAttributes = {
  * Language codes the SDK ships translations for; the top-level keys of {@link ResourceDictionary}.
  *
  * @public
+ * @group Utility types
  */
 export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
 
@@ -57,6 +59,7 @@ export type SupportedLanguages = 'en' // Add more languages here as needed, e.g.
  * For a single component's namespace, use {@link ResourceDictionary} instead.
  *
  * @public
+ * @group Utility types
  */
 export interface GlobalResourceDictionary extends Record<
   SupportedLanguages,
@@ -69,6 +72,7 @@ export interface GlobalResourceDictionary extends Record<
  * {@link GlobalResourceDictionary} (all namespaces).
  *
  * @public
+ * @group Utility types
  */
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
   K extends keyof Resources
