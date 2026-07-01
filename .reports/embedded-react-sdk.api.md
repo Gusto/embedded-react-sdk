@@ -362,9 +362,6 @@ export type AnchorEndOfPayPeriodFieldProps = HookFieldProps<DatePickerHookFieldP
 export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
 
 // @public
-export function AnnualMaximumField(props: AnnualMaximumFieldProps): JSX;
-
-// @public
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // @public
@@ -847,9 +844,6 @@ export interface CardProps {
 }
 
 // @public
-export function CaseNumberField(props: CaseNumberFieldProps): JSX;
-
-// @public
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -894,9 +888,6 @@ export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<In
 }
 
 // @public
-export function ChildSupportAmountField(props: ChildSupportGarnishmentAmountFieldProps): JSX;
-
-// @public
 export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<ChildSupportGarnishmentAmountValidation>>;
 
 // @public
@@ -917,21 +908,18 @@ export const ChildSupportGarnishmentFormErrorCodes: {
 
 // @public
 export interface ChildSupportGarnishmentFormFields {
-    Amount: typeof ChildSupportAmountField;
-    CaseNumber: typeof CaseNumberField | undefined;
-    FipsCode: typeof FipsCodeField | undefined;
-    OrderNumber: typeof OrderNumberField | undefined;
-    PaymentPeriod: typeof PaymentPeriodField;
-    PayPeriodMaximum: typeof PayPeriodMaximumField;
-    RemittanceNumber: typeof RemittanceNumberField | undefined;
-    State: typeof ChildSupportStateField;
+    Amount: ComponentType<ChildSupportGarnishmentAmountFieldProps>;
+    CaseNumber: ComponentType<CaseNumberFieldProps> | undefined;
+    FipsCode: ComponentType<FipsCodeFieldProps> | undefined;
+    OrderNumber: ComponentType<OrderNumberFieldProps> | undefined;
+    PaymentPeriod: ComponentType<PaymentPeriodFieldProps>;
+    PayPeriodMaximum: ComponentType<PayPeriodMaximumFieldProps>;
+    RemittanceNumber: ComponentType<RemittanceNumberFieldProps> | undefined;
+    State: ComponentType<ChildSupportGarnishmentStateFieldProps>;
 }
 
 // @public
 export type ChildSupportGarnishmentFormFieldsMetadata = UseChildSupportGarnishmentFormReady['form']['fieldsMetadata'];
-
-// @public
-export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData;
 
 // @public
 export type ChildSupportGarnishmentNegativeAmountValidation = typeof ChildSupportGarnishmentFormErrorCodes.NEGATIVE_AMOUNT;
@@ -944,9 +932,6 @@ export type ChildSupportGarnishmentRequiredValidation = typeof ChildSupportGarni
 
 // @public
 export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, StateFieldEntry>>;
-
-// @public
-export function ChildSupportStateField(props: ChildSupportGarnishmentStateFieldProps): JSX;
 
 // @public
 export function CityField(props: CityFieldProps): JSX;
@@ -1900,50 +1885,8 @@ export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProp
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
-// Warning: (ae-forgotten-export) The symbol "ChildSupportGarnishmentFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createChildSupportGarnishmentFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createChildSupportGarnishmentFormSchema(input?: ChildSupportGarnishmentFormSchemaOptions): BuildFormSchemaResult<    {
-state: z.ZodString;
-fipsCode: z.ZodString;
-caseNumber: z.ZodString;
-orderNumber: z.ZodString;
-remittanceNumber: z.ZodString;
-payPeriodMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-paymentPeriod: z.ZodEnum<{
-readonly EveryWeek: "Every week";
-readonly EveryOtherWeek: "Every other week";
-readonly TwicePerMonth: "Twice per month";
-readonly Monthly: "Monthly";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createDeductionFormSchema(options: DeductionFormSchemaOptions): BuildFormSchemaResult<    {
-description: z.ZodString;
-recurring: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-deductAsPercentage: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-totalAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-annualMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-garnishmentType: z.ZodEnum<{
-readonly ChildSupport: "child_support";
-readonly FederalTaxLien: "federal_tax_lien";
-readonly StateTaxLien: "state_tax_lien";
-readonly StudentLoan: "student_loan";
-readonly CreditorGarnishment: "creditor_garnishment";
-readonly FederalLoan: "federal_loan";
-readonly OtherGarnishment: "other_garnishment";
-}>;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "EmployeeDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createEmployeeDetailsSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -2207,13 +2150,7 @@ export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidat
 export type DayValidation = (typeof PayScheduleErrorCodes)['REQUIRED' | 'DAY_RANGE'];
 
 // @public
-export function DeductAsPercentageField(props: DeductAsPercentageFieldProps): JSX;
-
-// @public
 export type DeductAsPercentageFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
-
-// @public
-export function DeductionAmountField(props: DeductionAmountFieldProps): JSX;
 
 // @public
 export type DeductionAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormAmountValidation>>;
@@ -2238,13 +2175,13 @@ export const DeductionFormErrorCodes: {
 
 // @public
 export interface DeductionFormFields {
-    Amount: typeof DeductionAmountField;
-    AnnualMaximum: typeof AnnualMaximumField | undefined;
-    DeductAsPercentage: typeof DeductAsPercentageField;
-    Description: typeof DescriptionField;
-    GarnishmentType: typeof GarnishmentTypeField | undefined;
-    Recurring: typeof RecurringField;
-    TotalAmount: typeof TotalAmountField | undefined;
+    Amount: ComponentType<DeductionAmountFieldProps>;
+    AnnualMaximum: ComponentType<AnnualMaximumFieldProps> | undefined;
+    DeductAsPercentage: ComponentType<DeductAsPercentageFieldProps>;
+    Description: ComponentType<DescriptionFieldProps>;
+    GarnishmentType: ComponentType<GarnishmentTypeFieldProps> | undefined;
+    Recurring: ComponentType<RecurringFieldProps>;
+    TotalAmount: ComponentType<TotalAmountFieldProps> | undefined;
 }
 
 // @public
@@ -2255,9 +2192,6 @@ export type DeductionFormNegativeAmountValidation = typeof DeductionFormErrorCod
 
 // @public
 export type DeductionFormOptionalFieldsToRequire = { create?: ("totalAmount" | "annualMaximum")[] | undefined; update?: ("totalAmount" | "annualMaximum")[] | undefined; };
-
-// @public
-export type DeductionFormOutputs = DeductionFormData;
 
 // @public
 export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQUIRED;
@@ -2317,9 +2251,6 @@ export function DependentsAmountField(props: DependentsAmountFieldProps): JSX;
 
 // @public
 export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
-
-// @public
-export function DescriptionField(props: DescriptionFieldProps): JSX;
 
 // @public
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
@@ -2935,9 +2866,6 @@ export type FilingStatusFieldProps = HookFieldProps<SelectHookFieldProps<Federal
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number];
 
 // @public
-export function FipsCodeField(props: FipsCodeFieldProps): JSX;
-
-// @public
 export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, CountyEntry>>;
 
 // @public
@@ -2980,9 +2908,6 @@ export type FormHookResult = {
 
 // @public
 export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PayScheduleRequiredValidation, PayScheduleFrequency>>;
-
-// @public
-export function GarnishmentTypeField(props: GarnishmentTypeFieldProps): JSX;
 
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
@@ -3889,9 +3814,6 @@ export interface OrderedListProps extends BaseListProps {
 }
 
 // @public
-export function OrderNumberField(props: OrderNumberFieldProps): JSX;
-
-// @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -4033,9 +3955,6 @@ interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'e
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 
 // @public
-export function PaymentPeriodField(props: PaymentPeriodFieldProps): JSX;
-
-// @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
 
 // @public
@@ -4073,9 +3992,6 @@ interface PaymentSummaryProps {
 
 // @public
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
-
-// @public
-export function PayPeriodMaximumField(props: PayPeriodMaximumFieldProps): JSX;
 
 // @public
 export type PayPeriodMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<PayPeriodMaximumValidation>>;
@@ -4622,13 +4538,7 @@ export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_
 function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
 
 // @public
-export function RecurringField(props: RecurringFieldProps): JSX;
-
-// @public
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
-
-// @public
-export function RemittanceNumberField(props: RemittanceNumberFieldProps): JSX;
 
 // @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
@@ -5371,9 +5281,6 @@ type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseP
 interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeOff.TimeOffPolicyDetails'> {
     policyId: string;
 }
-
-// @public
-export function TotalAmountField(props: TotalAmountFieldProps): JSX;
 
 // @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;

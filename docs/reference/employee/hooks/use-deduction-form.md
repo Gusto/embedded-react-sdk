@@ -152,19 +152,19 @@ Pre-bound field components exposed on `useDeductionForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Amount` | `ComponentType`\<[`AmountFieldProps`](#deductionamountfieldprops)\> | Deduction amount input. Always available. |
-| `DeductAsPercentage` | `ComponentType`\<[`DeductAsPercentageFieldProps`](#deductaspercentagefieldprops)\> | Fixed-amount vs percentage radio group. Always available. |
-| `Description` | `ComponentType`\<[`DescriptionFieldProps`](#descriptionfieldprops)\> | Description text input. Always available. |
-| `Recurring` | `ComponentType`\<[`RecurringFieldProps`](#recurringfieldprops)\> | Recurring vs one-time radio group. Always available. |
-| `AnnualMaximum` | `ComponentType`\<[`AnnualMaximumFieldProps`](#annualmaximumfieldprops)\> \| `undefined` | Only available when `status.isRecurring` is true. |
-| `GarnishmentType` | `ComponentType`\<[`GarnishmentTypeFieldProps`](#garnishmenttypefieldprops)\> \| `undefined` | Only available when `courtOrdered: true`. |
-| `TotalAmount` | `ComponentType`\<[`TotalAmountFieldProps`](#totalamountfieldprops)\> \| `undefined` | Only available when `status.isRecurring` is true. |
+| `Amount` | `ComponentType`\<[`AmountFieldProps`](#deductionamountfieldprops)\> | Bound to `amount`. Deduction amount input. Always available. |
+| `DeductAsPercentage` | `ComponentType`\<[`DeductAsPercentageFieldProps`](#deductaspercentagefieldprops)\> | Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always available. |
+| `Description` | `ComponentType`\<[`DescriptionFieldProps`](#descriptionfieldprops)\> | Bound to `description`. Description text input. Always available. |
+| `Recurring` | `ComponentType`\<[`RecurringFieldProps`](#recurringfieldprops)\> | Bound to `recurring`. Recurring vs one-time radio group. Always available. |
+| `AnnualMaximum` | `ComponentType`\<[`AnnualMaximumFieldProps`](#annualmaximumfieldprops)\> \| `undefined` | Bound to `annualMaximum`. Only available when `status.isRecurring` is true. |
+| `GarnishmentType` | `ComponentType`\<[`GarnishmentTypeFieldProps`](#garnishmenttypefieldprops)\> \| `undefined` | Bound to `garnishmentType`. Only available when `courtOrdered: true`. |
+| `TotalAmount` | `ComponentType`\<[`TotalAmountFieldProps`](#totalamountfieldprops)\> \| `undefined` | Bound to `totalAmount`. Only available when `status.isRecurring` is true. |
 
 ***
 
 ### Amount
 
-Deduction amount input. Always available.
+Bound to `amount`. Deduction amount input. Always available.
 
 ```tsx
 <form.Fields.Amount
@@ -193,7 +193,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### AnnualMaximum
 
-Only available when `status.isRecurring` is true.
+Bound to `annualMaximum`. Only available when `status.isRecurring` is true.
 
 ```tsx
 {form.Fields.AnnualMaximum && (
@@ -224,7 +224,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### DeductAsPercentage
 
-Fixed-amount vs percentage radio group. Always available.
+Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always available.
 
 ```tsx
 <form.Fields.DeductAsPercentage
@@ -254,7 +254,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### Description
 
-Description text input. Always available.
+Bound to `description`. Description text input. Always available.
 
 ```tsx
 <form.Fields.Description
@@ -283,7 +283,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### GarnishmentType
 
-Only available when `courtOrdered: true`.
+Bound to `garnishmentType`. Only available when `courtOrdered: true`.
 
 ```tsx
 {form.Fields.GarnishmentType && (
@@ -316,7 +316,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### Recurring
 
-Recurring vs one-time radio group. Always available.
+Bound to `recurring`. Recurring vs one-time radio group. Always available.
 
 ```tsx
 <form.Fields.Recurring
@@ -346,7 +346,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### TotalAmount
 
-Only available when `status.isRecurring` is true.
+Bound to `totalAmount`. Only available when `status.isRecurring` is true.
 
 ```tsx
 {form.Fields.TotalAmount && (
@@ -509,15 +509,5 @@ as disabled state or option lists when not relying on the pre-bound
 
 Keys of optional deduction fields that can be promoted to required via the
 hook's `optionalFieldsToRequire` option.
-
-***
-
-<a id="deductionformoutputs"></a>
-
-### DeductionFormOutputs
-
-> **DeductionFormOutputs** = [`DeductionFormData`](#deductionformdata)
-
-Shape of the validated values produced by the deduction form on submit.
 
 ***

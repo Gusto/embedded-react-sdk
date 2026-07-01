@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -15,6 +16,15 @@ import {
   type DeductionFormOutputs,
   type DeductionFormOptionalFieldsToRequire,
 } from './deductionFormSchema'
+import type {
+  DescriptionFieldProps,
+  RecurringFieldProps,
+  DeductAsPercentageFieldProps,
+  AmountFieldProps,
+  TotalAmountFieldProps,
+  AnnualMaximumFieldProps,
+  GarnishmentTypeFieldProps,
+} from './fields'
 import {
   DescriptionField,
   RecurringField,
@@ -107,20 +117,20 @@ export interface UseDeductionFormProps {
  * @public
  */
 export interface DeductionFormFields {
-  /** Description text input. Always available. */
-  Description: typeof DescriptionField
-  /** Recurring vs one-time radio group. Always available. */
-  Recurring: typeof RecurringField
-  /** Fixed-amount vs percentage radio group. Always available. */
-  DeductAsPercentage: typeof DeductAsPercentageField
-  /** Deduction amount input. Always available. */
-  Amount: typeof AmountField
-  /** Only available when `status.isRecurring` is true. */
-  TotalAmount: typeof TotalAmountField | undefined
-  /** Only available when `status.isRecurring` is true. */
-  AnnualMaximum: typeof AnnualMaximumField | undefined
-  /** Only available when `courtOrdered: true`. */
-  GarnishmentType: typeof GarnishmentTypeField | undefined
+  /** Bound to `description`. Description text input. Always available. */
+  Description: ComponentType<DescriptionFieldProps>
+  /** Bound to `recurring`. Recurring vs one-time radio group. Always available. */
+  Recurring: ComponentType<RecurringFieldProps>
+  /** Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always available. */
+  DeductAsPercentage: ComponentType<DeductAsPercentageFieldProps>
+  /** Bound to `amount`. Deduction amount input. Always available. */
+  Amount: ComponentType<AmountFieldProps>
+  /** Bound to `totalAmount`. Only available when `status.isRecurring` is true. */
+  TotalAmount: ComponentType<TotalAmountFieldProps> | undefined
+  /** Bound to `annualMaximum`. Only available when `status.isRecurring` is true. */
+  AnnualMaximum: ComponentType<AnnualMaximumFieldProps> | undefined
+  /** Bound to `garnishmentType`. Only available when `courtOrdered: true`. */
+  GarnishmentType: ComponentType<GarnishmentTypeFieldProps> | undefined
 }
 
 /**

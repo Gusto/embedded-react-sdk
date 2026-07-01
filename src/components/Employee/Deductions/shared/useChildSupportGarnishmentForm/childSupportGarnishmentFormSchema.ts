@@ -108,12 +108,7 @@ export type ChildSupportGarnishmentFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-/**
- * Shape of the validated values produced by the child support garnishment
- * form on submit.
- *
- * @public
- */
+/** @internal */
 export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 
 // ── Required fields config ─────────────────────────────────────────────

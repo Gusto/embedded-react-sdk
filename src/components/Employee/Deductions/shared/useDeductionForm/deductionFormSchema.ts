@@ -68,11 +68,7 @@ export type DeductionFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-/**
- * Shape of the validated values produced by the deduction form on submit.
- *
- * @public
- */
+/** @internal */
 export type DeductionFormOutputs = DeductionFormData
 
 // ── Required fields config ─────────────────────────────────────────────

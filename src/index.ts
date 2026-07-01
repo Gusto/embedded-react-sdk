@@ -112,14 +112,6 @@ export type {
 export {
   useDeductionForm,
   DeductionFormErrorCodes,
-  createDeductionFormSchema,
-  DescriptionField,
-  RecurringField,
-  DeductAsPercentageField,
-  AmountField as DeductionAmountField,
-  TotalAmountField,
-  AnnualMaximumField,
-  GarnishmentTypeField,
 } from '@/components/Employee/Deductions/shared/useDeductionForm'
 export type {
   UseDeductionFormProps,
@@ -130,7 +122,6 @@ export type {
   DeductionFormErrorCode,
   DeductionFormOptionalFieldsToRequire,
   DeductionFormData,
-  DeductionFormOutputs,
   DeductionFormRequiredValidation,
   DeductionFormNegativeAmountValidation,
   DeductionFormAmountValidation,
@@ -147,17 +138,8 @@ export type {
 export {
   useChildSupportGarnishmentForm,
   ChildSupportGarnishmentFormErrorCodes,
-  createChildSupportGarnishmentFormSchema,
   getRequiredAttrKeys,
   SUPPORTED_REQUIRED_ATTR_KEYS,
-  StateField as ChildSupportStateField,
-  FipsCodeField,
-  CaseNumberField,
-  OrderNumberField,
-  RemittanceNumberField,
-  PayPeriodMaximumField,
-  AmountField as ChildSupportAmountField,
-  PaymentPeriodField,
 } from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
 export type {
   UseChildSupportGarnishmentFormProps,
@@ -167,7 +149,6 @@ export type {
   ChildSupportGarnishmentFormFieldsMetadata,
   ChildSupportGarnishmentFormErrorCode,
   ChildSupportGarnishmentFormData,
-  ChildSupportGarnishmentFormOutputs,
   SupportedRequiredAttrKey,
   ChildSupportGarnishmentRequiredValidation,
   ChildSupportGarnishmentNegativeAmountValidation,
