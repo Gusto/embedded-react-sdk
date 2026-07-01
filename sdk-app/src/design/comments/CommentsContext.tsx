@@ -21,6 +21,7 @@ import type { CommentCategory, SandboxComment, SandboxUser } from './types'
 
 const READ_STORAGE_KEY = 'sdk-app-design-comments-read'
 const NOTIFY_STORAGE_KEY = 'sdk-app-design-comments-notify'
+const PAGE_FILTER_STORAGE_KEY = 'sdk-app-design-comments-page-filter'
 const POLL_INTERVAL_MS = 30_000
 
 export interface CommentToast {
@@ -81,6 +82,8 @@ interface CommentsContextValue {
   dismissToast: (key: number) => void
   notificationsEnabled: boolean
   toggleNotifications: () => void
+  currentPageOnly: boolean
+  toggleCurrentPageOnly: () => void
 }
 
 const CommentsContext = createContext<CommentsContextValue | null>(null)
@@ -127,6 +130,9 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<CommentToast[]>([])
   const [notificationsEnabled, setNotificationsEnabled] = useState(
     () => localStorage.getItem(NOTIFY_STORAGE_KEY) !== '0',
+  )
+  const [currentPageOnly, setCurrentPageOnly] = useState(
+    () => localStorage.getItem(PAGE_FILTER_STORAGE_KEY) === '1',
   )
 
   const canWrite = Boolean(me?.can_write)
@@ -246,6 +252,18 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
         /* ignore storage availability errors */
       }
       if (!next) setToasts([])
+      return next
+    })
+  }, [])
+
+  const toggleCurrentPageOnly = useCallback(() => {
+    setCurrentPageOnly(current => {
+      const next = !current
+      try {
+        localStorage.setItem(PAGE_FILTER_STORAGE_KEY, next ? '1' : '0')
+      } catch {
+        /* ignore storage availability errors */
+      }
       return next
     })
   }, [])
@@ -463,6 +481,8 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     dismissToast,
     notificationsEnabled,
     toggleNotifications,
+    currentPageOnly,
+    toggleCurrentPageOnly,
   }
 
   return <CommentsContext.Provider value={value}>{children}</CommentsContext.Provider>

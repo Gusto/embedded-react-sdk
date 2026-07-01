@@ -79,10 +79,17 @@ function Tray() {
     toggleSubscription,
     notificationsEnabled,
     toggleNotifications,
+    currentPageOnly,
+    toggleCurrentPageOnly,
+    routePath,
   } = useComments()
 
-  const open = allComments.filter(comment => !comment.resolved)
-  const resolved = allComments.filter(comment => comment.resolved)
+  const currentPathname = splitRoute(routePath).pathname
+  const visible = currentPageOnly
+    ? allComments.filter(comment => splitRoute(comment.route.path).pathname === currentPathname)
+    : allComments
+  const open = visible.filter(comment => !comment.resolved)
+  const resolved = visible.filter(comment => comment.resolved)
 
   return (
     <div className={styles.tray}>
@@ -159,13 +166,26 @@ function Tray() {
         </span>
       </button>
 
+      <button
+        type="button"
+        className={styles.notifyRow}
+        onClick={toggleCurrentPageOnly}
+        aria-pressed={currentPageOnly}
+      >
+        <span>Only show comments for this page</span>
+        <span className={`${styles.switch} ${currentPageOnly ? styles.switchOn : ''}`}>
+          <span className={styles.switchKnob} />
+        </span>
+      </button>
+
       <div className={styles.trayList}>
         {error ? <div className={styles.empty}>Error: {error}</div> : null}
-        {loading && allComments.length === 0 ? <div className={styles.empty}>Loading…</div> : null}
-        {!loading && allComments.length === 0 && !error ? (
+        {loading && visible.length === 0 ? <div className={styles.empty}>Loading…</div> : null}
+        {!loading && visible.length === 0 && !error ? (
           <div className={styles.empty}>
-            No comments yet.
-            {canWrite ? ' Click “+ Add comment” to leave the first one.' : ''}
+            {currentPageOnly && allComments.length > 0
+              ? 'No comments on this page.'
+              : `No comments yet.${canWrite ? ' Click “+ Add comment” to leave the first one.' : ''}`}
           </div>
         ) : null}
 
