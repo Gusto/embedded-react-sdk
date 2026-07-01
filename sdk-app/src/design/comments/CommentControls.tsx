@@ -225,13 +225,16 @@ function Toasts() {
 }
 
 export function CommentControls() {
-  const { active, trayOpen, setActive, setTrayOpen, unreadCount } = useComments()
+  const { authorized, active, trayOpen, setActive, setTrayOpen, unreadCount } = useComments()
 
   const toggle = () => {
     const next = !trayOpen
     setTrayOpen(next)
     setActive(next)
   }
+
+  // Hidden entirely unless signed in as a Gusto employee.
+  if (!authorized) return null
 
   return (
     <>

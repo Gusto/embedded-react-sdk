@@ -8,6 +8,7 @@ import { CommentComposer } from './CommentComposer'
 
 export function CommentLayer({ containerRef }: { containerRef: RefObject<HTMLElement | null> }) {
   const {
+    authorized,
     active,
     placing,
     comments,
@@ -32,7 +33,7 @@ export function CommentLayer({ containerRef }: { containerRef: RefObject<HTMLEle
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [draft, selectedId, clearDraft, select])
 
-  if (!active) return null
+  if (!authorized || !active) return null
 
   const selected = comments.find(comment => comment.id === selectedId) ?? null
   const selectedPosition = selectedId !== null ? positions.get(selectedId) : undefined

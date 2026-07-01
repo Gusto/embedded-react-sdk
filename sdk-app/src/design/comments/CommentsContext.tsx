@@ -39,6 +39,7 @@ interface DraftState {
 interface CommentsContextValue {
   ready: boolean
   me: SandboxUser | null
+  authorized: boolean
   canWrite: boolean
   prototypeId: number | null
   routePath: string
@@ -122,6 +123,11 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
 
   const canWrite = Boolean(me?.can_write)
 
+  // The dev-server proxy only injects an internal WARP / Cloudflare Access
+  // token, so `me` is populated only for an authenticated Gusto employee. Gate
+  // the entire tool (UI + data) on that — without auth there's nothing to see.
+  const authorized = ready && me !== null && me.email.toLowerCase().endsWith('@gusto.com')
+
   useEffect(() => {
     let cancelled = false
     void (async () => {
@@ -147,7 +153,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const loadComments = useCallback(async () => {
-    if (prototypeId === null) return
+    if (prototypeId === null || !authorized) return
     setLoading(true)
     setError(null)
     try {
@@ -158,7 +164,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }, [prototypeId, routePath])
+  }, [prototypeId, routePath, authorized])
 
   useEffect(() => {
     void loadComments()
@@ -173,7 +179,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   notifyRef.current = notificationsEnabled
 
   const loadDirectory = useCallback(async () => {
-    if (prototypeId === null) return
+    if (prototypeId === null || !authorized) return
     let all: SandboxComment[]
     try {
       all = await listComments(prototypeId)
@@ -205,7 +211,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
       }
     }
     knownRef.current = next
-  }, [prototypeId])
+  }, [prototypeId, authorized])
 
   useEffect(() => {
     if (prototypeId === null) return
@@ -386,6 +392,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   const value: CommentsContextValue = {
     ready,
     me,
+    authorized,
     canWrite,
     prototypeId,
     routePath,
