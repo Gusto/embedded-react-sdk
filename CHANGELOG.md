@@ -34,6 +34,7 @@
 
 ### Chores & Maintenance
 
+- Bump `i18next` from 26.3.3 to 26.3.4 ([#2324](https://github.com/Gusto/embedded-react-sdk/issues/2324))
 - Bump dev dependencies (`@commitlint/cli`, `@commitlint/config-conventional`, `typescript-eslint`)
 
 ## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.3...v0.49.0) (2026-06-30)
