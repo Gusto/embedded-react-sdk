@@ -329,6 +329,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/contractors/:contractorUuid/onboarding_status` |
 |  | PUT | `/v1/contractors/:contractorUuid/onboarding_status` |
 | **ContractorOnboarding.DocumentsList** | GET | `/v1/contractors/:contractorUuid/documents` |
+| **ContractorOnboarding.SignatureForm** | GET | `/v1/documents/:documentUuid` |
+|  | GET | `/v1/documents/:documentUuid/pdf` |
+|  | PUT | `/v1/documents/:documentUuid/sign` |
 
 ## ContractorManagement components
 

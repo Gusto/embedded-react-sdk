@@ -1,0 +1,114 @@
+{
+  "signatureRequired": "Signature required",
+  "instructions": "See the IRS Form W-9 for instructions on completing this form",
+  "downloadPrompt": "<downloadLink>Download document</downloadLink>",
+  "sections": {
+    "exemptions": "Exemptions",
+    "address": "Address",
+    "tin": "Taxpayer Identification Number (TIN)",
+    "certification": "Certification"
+  },
+  "sectionInstructions": {
+    "exemptions": "See section 4 of IRS Form W-9 for instructions.",
+    "address": "See sections 5-7 of IRS Form W-9 for instructions.",
+    "tin": "For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN).",
+    "tinSecondary": "See Part 1 of the IRS Form W-9 for instructions.",
+    "certification": "See Part 2 of the IRS Form W-9 for instructions."
+  },
+  "certificationIntro": "Under penalties of perjury, I certify that:",
+  "certificationPoints": [
+    "The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);",
+    "I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;",
+    "I am a U.S. citizen or other U.S. person (defined below);",
+    "The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."
+  ],
+  "fields": {
+    "name": {
+      "label": "Entity or individual name (1)",
+      "description": "Your individual or business name. For a sole proprietor or disregarded entity, enter the owner's name here, and enter the business/disregarded entity's name in the Business name field below."
+    },
+    "business_name": {
+      "label": "Business name (2)",
+      "description": "The name of your business, if different than above."
+    },
+    "taxClassification": {
+      "label": "Federal tax classification (3)",
+      "description": "Select the type of business you are."
+    },
+    "llcClassificationCode": {
+      "label": "LLC tax classification code",
+      "description": "Select the appropriate code for the LLC, unless it is a disregarded entity. A disregarded entity should instead check the appropriate selection for the tax classification of its owner."
+    },
+    "other_text": {
+      "label": "Other"
+    },
+    "foreign_partners": {
+      "label": "Foreign partners/owners/beneficiaries (3b)",
+      "description": "If you selected \u201cPartnership\u201d, \u201cTrust/Estate\u201d or checked \u201cLLC\u201d and entered \u201cP\u201d as the tax classification, and you are providing this form to a partnership, trust, or estate in which you have an ownership interest, check this box if you have any foreign partners, owners, or beneficiaries."
+    },
+    "exempt_payee_code": {
+      "label": "Exempt payee code"
+    },
+    "exemption_from_FATCA": {
+      "label": "Exemption from FATCA reporting code (4b)",
+      "description": "Enter the code (if any) indicating you are exempt from reporting under the Foreign Account Tax Compliance Act."
+    },
+    "home_address_street_1": {
+      "label": "Street 1"
+    },
+    "home_address_street_2": {
+      "label": "Street 2"
+    },
+    "home_address_city": {
+      "label": "City"
+    },
+    "home_address_state": {
+      "label": "State"
+    },
+    "home_address_zip": {
+      "label": "Zip code"
+    },
+    "account_number": {
+      "label": "Account numbers"
+    },
+    "company_name": {
+      "label": "Requester's name and address"
+    },
+    "ssn": {
+      "label": "Social Security Number (SSN)"
+    },
+    "ein": {
+      "label": "Employer Identification Number (EIN)"
+    },
+    "signature_text": {
+      "label": "Signature"
+    }
+  },
+  "options": {
+    "taxClassification": {
+      "individual_proprietor": "Individual/sole proprietor",
+      "c_corporation": "C-Corporation",
+      "s_corporation": "S-Corporation",
+      "partnership": "Partnership",
+      "trust_estate": "Trust/estate",
+      "limited_liability_company": "LLC",
+      "other": "Other"
+    },
+    "llcClassificationCode": {
+      "placeholder": "Select...",
+      "c": "C = C-Corporation",
+      "s": "S = S-Corporation",
+      "p": "P = Partnership"
+    }
+  },
+  "agreeLabel": "I agree to electronically sign this form.",
+  "validation": {
+    "required": "This field is required.",
+    "agreeRequired": "You must agree to electronically sign this form.",
+    "invalidSsn": "Enter a valid Social Security Number.",
+    "invalidEin": "Enter a valid Employer Identification Number."
+  },
+  "backCta": "Back",
+  "signCta": "Sign",
+  "acknowledgeCta": "Acknowledge"
+}
