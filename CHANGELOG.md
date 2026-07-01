@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.50.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.49.0...v0.50.0) (2026-07-01)
+
+### ⚠ Breaking Changes
+
+- **The standalone field exports `NameField`, `RoutingNumberField`, `AccountNumberField`, `AccountTypeField`, and `ContractorPaymentMethodTypeField` have been removed** ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303)). Access these field components from the relevant hook's `form.Fields` instead.
+
+  ```tsx
+  // Before
+  import {
+    NameField,
+    RoutingNumberField,
+    AccountNumberField,
+    AccountTypeField,
+  } from '@gusto/embedded-react-sdk'
+  // ...render <NameField />, <RoutingNumberField />, etc. directly
+
+  // After
+  const { form } = useContractorBankAccountForm({ contractorId })
+  const { Name, RoutingNumber, AccountNumber, AccountType } = form.Fields
+  // ...render <Name />, <RoutingNumber />, etc.
+
+  // ContractorPaymentMethodTypeField is now form.Fields.Type on useContractorPaymentMethodForm
+  const paymentMethodForm = useContractorPaymentMethodForm({ contractorId })
+  const { Type } = paymentMethodForm.form.Fields
+  ```
+
+### Features & Enhancements
+
+- Add `useContractorBankAccountForm` and `useContractorPaymentMethodForm` hooks for building contractor payment-method and bank-account forms, each exposing its field components on `form.Fields` ([#2301](https://github.com/Gusto/embedded-react-sdk/issues/2301), [#2302](https://github.com/Gusto/embedded-react-sdk/issues/2302))
+- `Contractor.PaymentMethod` now composes the new payment-method and bank-account hooks ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303))
+- Expand const-derived reference types and export `SDKErrorCategories` ([#2320](https://github.com/Gusto/embedded-react-sdk/issues/2320))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@commitlint/cli`, `@commitlint/config-conventional`, `typescript-eslint`)
+
 ## [0.49.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.48.3...v0.49.0) (2026-06-30)
 
 ### ⚠ Breaking Changes
