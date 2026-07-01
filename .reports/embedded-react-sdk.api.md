@@ -36,6 +36,7 @@ import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
 import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
+import { FocusEventHandler } from 'react';
 import { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form';
 import { FunctionComponent } from 'react';
 import { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
@@ -5216,6 +5217,9 @@ export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadat
         payPeriodPreview: PaySchedulePreviewPayPeriod[] | null;
         payPreviewLoading: boolean;
         paymentSpeedDays: number | null;
+    };
+    form: BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFields>['form'] & {
+        handleDateFieldsBlur: FocusEventHandler<HTMLDivElement>;
     };
     status: {
         isPending: boolean;

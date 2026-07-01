@@ -332,11 +332,7 @@ pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
 | `data.payPreviewLoading` | `boolean` | `true` while the pay period preview request is in flight. |
 | `data.paySchedule` | `PayScheduleShow` \| `null` | The pay schedule loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
-| `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`PayScheduleFields`](#payschedulefields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
-| `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
+| `form` | `object` & `object` | Form bindings extended with a blur handler for the two anchor date fields. |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Reactive status flags. |
 | `status.isPending` | `boolean` | `true` while the create or update mutation is in flight. |
