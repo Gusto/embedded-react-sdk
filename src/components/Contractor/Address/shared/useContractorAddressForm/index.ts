@@ -7,7 +7,6 @@ export type {
   UseContractorAddressFormReady,
   ContractorAddressFieldsMetadata,
   ContractorAddressFormFields,
-  ContractorAddressFields,
 } from './useContractorAddressForm'
 export {
   createContractorAddressSchema,

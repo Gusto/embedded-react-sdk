@@ -1582,9 +1582,6 @@ interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.Confir
 export type ContractorAccountType = (typeof ContractorBankAccountTypes)[number];
 
 // @public
-export function ContractorAddressCityField(props: ContractorAddressCityFieldProps): JSX;
-
-// @public
 export type ContractorAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
 
 // @public
@@ -1600,25 +1597,19 @@ export const ContractorAddressErrorCodes: {
 export type ContractorAddressField = "street1" | "street2" | "city" | "state" | "zip";
 
 // @public
-export interface ContractorAddressFields {
-    City: typeof ContractorAddressCityField;
-    State: typeof ContractorAddressStateField;
-    Street1: typeof ContractorAddressStreet1Field;
-    Street2: typeof ContractorAddressStreet2Field;
-    Zip: typeof ContractorAddressZipField;
-}
-
-// @public
 export type ContractorAddressFieldsMetadata = UseContractorAddressFormReady['form']['fieldsMetadata'];
 
 // @public
 export type ContractorAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; };
 
 // @public
-export type ContractorAddressFormFields = UseContractorAddressFormReady['form']['Fields'];
-
-// @public
-export type ContractorAddressFormOutputs = ContractorAddressFormData;
+export interface ContractorAddressFormFields {
+    City: ComponentType<ContractorAddressCityFieldProps>;
+    State: ComponentType<ContractorAddressStateFieldProps>;
+    Street1: ComponentType<ContractorAddressStreet1FieldProps>;
+    Street2: ComponentType<ContractorAddressStreet2FieldProps>;
+    Zip: ComponentType<ContractorAddressZipFieldProps>;
+}
 
 // @public
 export type ContractorAddressOptionalFieldsToRequire = { create?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; update?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; };
@@ -1627,19 +1618,10 @@ export type ContractorAddressOptionalFieldsToRequire = { create?: ("street1" | "
 export type ContractorAddressRequiredValidation = typeof ContractorAddressErrorCodes.REQUIRED;
 
 // @public
-export function ContractorAddressStateField(props: ContractorAddressStateFieldProps): JSX;
-
-// @public
 export type ContractorAddressStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorAddressRequiredValidation, string>>;
 
 // @public
-export function ContractorAddressStreet1Field(props: ContractorAddressStreet1FieldProps): JSX;
-
-// @public
 export type ContractorAddressStreet1FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
-
-// @public
-export function ContractorAddressStreet2Field(props: ContractorAddressStreet2FieldProps): JSX;
 
 // @public
 export type ContractorAddressStreet2FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
@@ -1648,9 +1630,6 @@ export type ContractorAddressStreet2FieldProps = HookFieldProps<TextInputHookFie
 export interface ContractorAddressSubmitOptions {
     contractorId?: string;
 }
-
-// @public
-export function ContractorAddressZipField(props: ContractorAddressZipFieldProps): JSX;
 
 // @public
 export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressZipValidation>>;
@@ -2078,18 +2057,6 @@ rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
 adjustForMinimumWage: z.ZodBoolean;
 minimumWageId: z.ZodString;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "ContractorAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createContractorAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createContractorAddressSchema(options?: ContractorAddressSchemaOptions): BuildFormSchemaResult<    {
-street1: z.ZodString;
-street2: z.ZodString;
-city: z.ZodString;
-state: z.ZodString;
-zip: z.ZodString;
 }>;
 
 // Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
@@ -5832,7 +5799,7 @@ export interface UseContractorAddressFormProps {
 }
 
 // @public
-export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsMetadata, ContractorAddressFormData, ContractorAddressFields> {
+export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsMetadata, ContractorAddressFormData, ContractorAddressFormFields> {
     actions: {
         onSubmit: (options?: ContractorAddressSubmitOptions) => Promise<HookSubmitResult<ContractorAddress> | undefined>;
     };

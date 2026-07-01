@@ -458,12 +458,6 @@ export type {
 export {
   useContractorAddressForm,
   ContractorAddressErrorCodes,
-  createContractorAddressSchema,
-  Street1Field as ContractorAddressStreet1Field,
-  Street2Field as ContractorAddressStreet2Field,
-  CityField as ContractorAddressCityField,
-  StateField as ContractorAddressStateField,
-  ZipField as ContractorAddressZipField,
 } from '@/components/Contractor/Address/shared/useContractorAddressForm'
 export type {
   ContractorAddressSubmitOptions,
@@ -475,7 +469,6 @@ export type {
   ContractorAddressFormFields,
   ContractorAddressErrorCode,
   ContractorAddressFormData,
-  ContractorAddressFormOutputs,
   ContractorAddressField,
   ContractorAddressRequiredValidation,
   ContractorAddressZipValidation,
@@ -484,7 +477,6 @@ export type {
   ContractorAddressCityFieldProps,
   ContractorAddressStateFieldProps,
   ContractorAddressZipFieldProps,
-  ContractorAddressFields,
 } from '@/components/Contractor/Address/shared/useContractorAddressForm'
 
 export {
