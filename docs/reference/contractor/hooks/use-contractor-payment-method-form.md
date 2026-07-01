@@ -156,7 +156,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 ### ContractorPaymentMethodErrorCode
 
-> **ContractorPaymentMethodErrorCode** = *typeof* [`ContractorPaymentMethodErrorCodes`](#contractorpaymentmethoderrorcodes)\[keyof *typeof* [`ContractorPaymentMethodErrorCodes`](#contractorpaymentmethoderrorcodes)\]
+> **ContractorPaymentMethodErrorCode** = `"REQUIRED"`
 
 Union of validation error code strings emitted by the contractor payment
 method form schema.
@@ -175,9 +175,9 @@ hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -209,7 +209,7 @@ Shape of the values managed by the contractor payment method form.
 
 ### ContractorPaymentMethodFormField
 
-> **ContractorPaymentMethodFormField** = keyof *typeof* `fieldValidators`
+> **ContractorPaymentMethodFormField** = `"type"`
 
 Field names accepted by the contractor payment method form.
 
@@ -230,7 +230,7 @@ on submit.
 
 ### ContractorPaymentMethodFormType
 
-> **ContractorPaymentMethodFormType** = *typeof* `PAYMENT_METHOD_TYPES`\[`number`\]
+> **ContractorPaymentMethodFormType** = `"Check"` \| `"Direct Deposit"`
 
 Union of payment method type values that the form accepts.
 

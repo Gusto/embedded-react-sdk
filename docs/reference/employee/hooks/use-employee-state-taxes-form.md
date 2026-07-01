@@ -416,7 +416,7 @@ validation messages.
 
 ### EmployeeStateTaxesErrorCode
 
-> **EmployeeStateTaxesErrorCode** = *typeof* [`EmployeeStateTaxesErrorCodes`](#employeestatetaxeserrorcodes)\[keyof *typeof* [`EmployeeStateTaxesErrorCodes`](#employeestatetaxeserrorcodes)\]
+> **EmployeeStateTaxesErrorCode** = `"REQUIRED"`
 
 Union of validation error code strings emitted by the employee state taxes
 form schema.
@@ -433,9 +433,9 @@ Validation error codes produced by the [useEmployeeStateTaxesForm](#useemployees
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 #### Remarks
 

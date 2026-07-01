@@ -369,42 +369,11 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ## Validations
 
-<a id="payscheduleerrorcodes"></a>
-
-### PayScheduleErrorCodes
-
-> `const` **PayScheduleErrorCodes**: `object`
-
-Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `DAY_RANGE` | `"DAY_RANGE"` | `'DAY_RANGE'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-#### Remarks
-
-Use these as `validationMessages` keys on the corresponding `Fields.*` components.
-
-***
-
-<a id="payscheduleerrorcode"></a>
-
-### PayScheduleErrorCode
-
-> **PayScheduleErrorCode** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[keyof *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\]
-
-Union of validation error code strings emitted by the pay schedule form.
-
-***
-
 <a id="dayvalidation"></a>
 
 ### DayValidation
 
-> **DayValidation** = *typeof* [`PayScheduleErrorCodes`](#payscheduleerrorcodes)\[`"REQUIRED"` \| `"DAY_RANGE"`\]
+> **DayValidation** = `"REQUIRED"` \| `"DAY_RANGE"`
 
 Validation error codes emitted by the `day1` and `day2` fields of [usePayScheduleForm](#usepayscheduleform).
 
@@ -419,7 +388,7 @@ See [PayScheduleErrorCodes](#payscheduleerrorcodes).
 
 ### PayScheduleRequiredValidation
 
-> **PayScheduleRequiredValidation** = *typeof* `PayScheduleErrorCodes.REQUIRED`
+> **PayScheduleRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [usePayScheduleForm](#usepayscheduleform) fields that only emit `REQUIRED`.
 
@@ -429,11 +398,42 @@ Used as the `validationMessages` key for the custom name, frequency, anchor
 pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
 
 ## Utility Types
+<a id="payscheduleerrorcode"></a>
+
+### PayScheduleErrorCode
+
+> **PayScheduleErrorCode** = `"REQUIRED"` \| `"DAY_RANGE"`
+
+Union of validation error code strings emitted by the pay schedule form.
+
+***
+
+<a id="payscheduleerrorcodes"></a>
+
+### PayScheduleErrorCodes
+
+> `const` **PayScheduleErrorCodes**: `object`
+
+Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `DAY_RANGE` | `"DAY_RANGE"` |
+| `REQUIRED` | `"REQUIRED"` |
+
+#### Remarks
+
+Use these as `validationMessages` keys on the corresponding `Fields.*` components.
+
+***
+
 <a id="payschedulefield"></a>
 
 ### PayScheduleField
 
-> **PayScheduleField** = keyof *typeof* `fieldValidators`
+> **PayScheduleField** = `"frequency"` \| `"anchorPayDate"` \| `"anchorEndOfPayPeriod"` \| `"day1"` \| `"day2"` \| `"customName"` \| `"customTwicePerMonth"`
 
 Union of field names managed by the pay schedule form.
 
@@ -493,7 +493,7 @@ Shape of the validated values produced by the pay schedule form on submit.
 
 ### PayScheduleFrequency
 
-> **PayScheduleFrequency** = *typeof* `FREQUENCY_VALUES`\[`number`\]
+> **PayScheduleFrequency** = `"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`
 
 Pay schedule frequency values accepted by [usePayScheduleForm](#usepayscheduleform).
 

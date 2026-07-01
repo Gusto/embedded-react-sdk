@@ -402,40 +402,11 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ## Validations
 
-<a id="signemployeeformerrorcodes"></a>
-
-### SignEmployeeFormErrorCodes
-
-> `const` **SignEmployeeFormErrorCodes**: `object`
-
-Validation error codes emitted by the I-9 sign-employee form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="signemployeeformerrorcode"></a>
-
-### SignEmployeeFormErrorCode
-
-> **SignEmployeeFormErrorCode** = *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\[keyof *typeof* [`SignEmployeeFormErrorCodes`](#signemployeeformerrorcodes)\]
-
-Union of validation error code strings emitted by the I-9 sign-employee
-form schema.
-
-***
-
 <a id="signemployeeformrequiredvalidation"></a>
 
 ### SignEmployeeFormRequiredValidation
 
-> **SignEmployeeFormRequiredValidation** = *typeof* `SignEmployeeFormErrorCodes.REQUIRED`
+> **SignEmployeeFormRequiredValidation** = `"REQUIRED"`
 
 The required-field error code emitted by every field of [useSignEmployeeForm](#usesignemployeeform).
 
@@ -449,7 +420,7 @@ See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 
 ### MAX\_PREPARERS
 
-> `const` **MAX\_PREPARERS**: `4` = `4`
+> `const` **MAX\_PREPARERS**: `4`
 
 Maximum number of I-9 preparers and translators the form supports.
 
@@ -539,11 +510,40 @@ Shape of the values managed by the I-9 sign-employee form.
 
 ***
 
+<a id="signemployeeformerrorcode"></a>
+
+### SignEmployeeFormErrorCode
+
+> **SignEmployeeFormErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the I-9 sign-employee
+form schema.
+
+***
+
+<a id="signemployeeformerrorcodes"></a>
+
+### SignEmployeeFormErrorCodes
+
+> `const` **SignEmployeeFormErrorCodes**: `object`
+
+Validation error codes emitted by the I-9 sign-employee form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="signemployeeformfield"></a>
 
 ### SignEmployeeFormField
 
-> **SignEmployeeFormField** = keyof *typeof* `fieldValidators`
+> **SignEmployeeFormField** = `"signature"` \| `"preparerFirstName"` \| `"preparerLastName"` \| `"preparerStreet1"` \| `"preparerStreet2"` \| `"preparerCity"` \| `"preparerState"` \| `"preparerZip"` \| `"preparerSignature"` \| `"preparerAgree"` \| `"preparer2FirstName"` \| `"preparer2LastName"` \| `"preparer2Street1"` \| `"preparer2Street2"` \| `"preparer2City"` \| `"preparer2State"` \| `"preparer2Zip"` \| `"preparer2Signature"` \| `"preparer2Agree"` \| `"preparer3FirstName"` \| `"preparer3LastName"` \| `"preparer3Street1"` \| `"preparer3Street2"` \| `"preparer3City"` \| `"preparer3State"` \| `"preparer3Zip"` \| `"preparer3Signature"` \| `"preparer3Agree"` \| `"preparer4FirstName"` \| `"preparer4LastName"` \| `"preparer4Street1"` \| `"preparer4Street2"` \| `"preparer4City"` \| `"preparer4State"` \| `"preparer4Zip"` \| `"preparer4Signature"` \| `"preparer4Agree"` \| `"confirmSignature"` \| `"usedPreparer"`
 
 Field names accepted by the I-9 sign-employee form.
 

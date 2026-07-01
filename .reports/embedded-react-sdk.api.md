@@ -4948,8 +4948,14 @@ export interface SDKError {
     raw?: unknown;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SDKErrorCategories" needs to be exported by the entry point index.d.ts
-//
+// @public
+export const SDKErrorCategories: {
+    readonly API_ERROR: "api_error";
+    readonly VALIDATION_ERROR: "validation_error";
+    readonly NETWORK_ERROR: "network_error";
+    readonly INTERNAL_ERROR: "internal_error";
+};
+
 // @public
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories];
 
