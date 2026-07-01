@@ -1351,6 +1351,7 @@ export const componentEvents: {
     readonly CONTRACTOR_INVITE_CONTRACTOR: "contractor/invite/selfOnboarding";
     readonly CONTRACTOR_ONBOARDING_CONTINUE: "contractor/onboarding/continue";
     readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
+    readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
@@ -1894,7 +1895,9 @@ declare namespace ContractorOnboarding {
         ContractorSubmit,
         ContractorSubmitProps,
         DocumentsList,
-        DocumentsListProps
+        DocumentsListProps,
+        SignatureForm_3 as SignatureForm,
+        SignatureFormProps_3 as SignatureFormProps
     }
 }
 
@@ -5206,6 +5209,9 @@ function SignatureForm(props: SignatureFormProps): JSX;
 function SignatureForm_2(props: SignatureFormProps_2): JSX;
 
 // @public
+function SignatureForm_3(props: SignatureFormProps_3): JSX;
+
+// @public
 interface SignatureFormProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     formId: string;
@@ -5217,6 +5223,12 @@ interface SignatureFormProps_2 extends BaseComponentInterface<'Company.Signature
     // @override
     defaultValues?: never;
     formId: string;
+}
+
+// @public
+interface SignatureFormProps_3 extends BaseComponentInterface<'Contractor.SignatureForm'> {
+    contractorId: string;
+    documentUuid: string;
 }
 
 // @public
