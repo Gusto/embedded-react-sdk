@@ -362,13 +362,7 @@ export interface AlertProps {
 }
 
 // @public
-export function AnchorEndOfPayPeriodField(props: AnchorEndOfPayPeriodFieldProps): JSX;
-
-// @public
 export type AnchorEndOfPayPeriodFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
-
-// @public
-export function AnchorPayDateField(props: AnchorPayDateFieldProps): JSX;
 
 // @public
 export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
@@ -2111,25 +2105,6 @@ interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments
     companyId: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PayScheduleSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPayScheduleSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPayScheduleSchema(options?: PayScheduleSchemaOptions): BuildFormSchemaResult<    {
-customName: z.ZodString;
-frequency: z.ZodEnum<{
-"Every week": "Every week";
-"Every other week": "Every other week";
-"Twice per month": "Twice per month";
-Monthly: "Monthly";
-}>;
-customTwicePerMonth: z.ZodString;
-anchorPayDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-anchorEndOfPayPeriod: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-day1: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
 // @public
 function CreateSignatory(props: CreateSignatoryProps): JSX;
 
@@ -2144,15 +2119,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     defaultValues?: CreateSignatoryDefaultValues;
     signatoryId?: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "SignCompanyFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignCompanyFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignCompanyFormSchema(options?: SignCompanyFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-}>;
 
 // Warning: (ae-forgotten-export) The symbol "SignEmployeeFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createSignEmployeeFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
@@ -2250,13 +2216,7 @@ export interface CurrencyStateTaxQuestion extends SharedQuestionMetadata {
 }
 
 // @public
-export function CustomNameField(props: CustomNameFieldProps): JSX;
-
-// @public
 export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PayScheduleRequiredValidation>>;
-
-// @public
-export function CustomTwicePerMonthField(props: CustomTwicePerMonthFieldProps): JSX;
 
 // @public
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
@@ -2345,13 +2305,7 @@ export interface DateStateTaxQuestion extends SharedQuestionMetadata {
 }
 
 // @public
-export function Day1Field(props: Day1FieldProps): JSX;
-
-// @public
 export type Day1FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidation>>;
-
-// @public
-export function Day2Field(props: Day2FieldProps): JSX;
 
 // @public
 export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidation>>;
@@ -3130,9 +3084,6 @@ export type FormHookResult = {
         };
     };
 };
-
-// @public
-export function FrequencyField(props: FrequencyFieldProps): JSX;
 
 // @public
 export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PayScheduleRequiredValidation, PayScheduleFrequency>>;
@@ -4466,27 +4417,21 @@ export const PayScheduleErrorCodes: {
 export type PayScheduleField = "customName" | "frequency" | "customTwicePerMonth" | "anchorPayDate" | "anchorEndOfPayPeriod" | "day1" | "day2";
 
 // @public
-export interface PayScheduleFields {
-    AnchorEndOfPayPeriod: typeof AnchorEndOfPayPeriodField;
-    AnchorPayDate: typeof AnchorPayDateField;
-    CustomName: typeof CustomNameField;
-    CustomTwicePerMonth: typeof CustomTwicePerMonthField | undefined;
-    Day1: typeof Day1Field | undefined;
-    Day2: typeof Day2Field | undefined;
-    Frequency: typeof FrequencyField;
-}
-
-// @public
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata'];
 
 // @public
 export type PayScheduleFormData = { customName: string; frequency: "Every week" | "Every other week" | "Twice per month" | "Monthly"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
 
 // @public
-export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
-
-// @public
-export type PayScheduleFormOutputs = PayScheduleFormData;
+export interface PayScheduleFormFields {
+    AnchorEndOfPayPeriod: ComponentType<AnchorEndOfPayPeriodFieldProps>;
+    AnchorPayDate: ComponentType<AnchorPayDateFieldProps>;
+    CustomName: ComponentType<CustomNameFieldProps>;
+    CustomTwicePerMonth: ComponentType<CustomTwicePerMonthFieldProps> | undefined;
+    Day1: ComponentType<Day1FieldProps> | undefined;
+    Day2: ComponentType<Day2FieldProps> | undefined;
+    Frequency: ComponentType<FrequencyFieldProps>;
+}
 
 // @public
 export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice per month" | "Monthly";
@@ -5029,10 +4974,8 @@ export type SignCompanyFormField = "signature" | "confirmSignature";
 
 // @public
 export interface SignCompanyFormFields {
-    // Warning: (ae-forgotten-export) The symbol "ConfirmSignatureField_2" needs to be exported by the entry point index.d.ts
-    ConfirmSignature: typeof ConfirmSignatureField_2;
-    // Warning: (ae-forgotten-export) The symbol "SignatureField_2" needs to be exported by the entry point index.d.ts
-    Signature: typeof SignatureField_2;
+    ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>;
+    Signature: ComponentType<SignatureFieldProps>;
 }
 
 // @public
@@ -5040,9 +4983,6 @@ export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fie
 
 // @public
 export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type SignCompanyFormOutputs = SignCompanyFormData;
 
 // @public
 export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes.REQUIRED;
@@ -6182,7 +6122,7 @@ export interface UsePayScheduleFormProps {
 }
 
 // @public
-export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFields> {
+export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<PayScheduleShow> | undefined>;
     };

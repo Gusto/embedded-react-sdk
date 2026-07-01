@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { ComponentType } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,6 +14,7 @@ import {
   type SignCompanyFormOutputs,
 } from './signCompanyFormSchema'
 import { SignatureField, ConfirmSignatureField } from './fields'
+import type { SignatureFieldProps, ConfirmSignatureFieldProps } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -52,10 +54,10 @@ export interface UseSignCompanyFormProps {
  * @public
  */
 export interface SignCompanyFormFields {
-  /** Text input for the signer's typed name; always required. */
-  Signature: typeof SignatureField
-  /** Checkbox for confirming the signature and agreeing to the form's terms; always required. */
-  ConfirmSignature: typeof ConfirmSignatureField
+  /** Bound to `signature`. Text input for the signer's typed name; always required. */
+  Signature: ComponentType<SignatureFieldProps>
+  /** Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required. */
+  ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>
 }
 
 /**

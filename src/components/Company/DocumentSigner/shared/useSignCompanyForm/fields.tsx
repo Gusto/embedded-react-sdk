@@ -22,17 +22,7 @@ export type RequiredValidation = typeof SignCompanyFormErrorCodes.REQUIRED
  */
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `signature` field of {@link useSignCompanyForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Signature`. The signer types
- * their full legal name; always required.
- *
- * @param props - {@link SignatureFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered text input bound to `signature`.
- * @public
- */
+/** @internal */
 export function SignatureField(props: SignatureFieldProps) {
   return <TextInputHookField {...props} name="signature" />
 }
@@ -44,17 +34,7 @@ export function SignatureField(props: SignatureFieldProps) {
  */
 export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<RequiredValidation>>
 
-/**
- * Checkbox bound to the `confirmSignature` field of {@link useSignCompanyForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.ConfirmSignature`. The checkbox
- * must be checked to submit; it captures consent to the form's terms.
- *
- * @param props - {@link ConfirmSignatureFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered checkbox bound to `confirmSignature`.
- * @public
- */
+/** @internal */
 export function ConfirmSignatureField(props: ConfirmSignatureFieldProps) {
   return <CheckboxHookField {...props} name="confirmSignature" />
 }

@@ -149,14 +149,14 @@ Field components exposed by [useSignCompanyForm](#usesigncompanyform) on `form.F
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)\> | Checkbox for confirming the signature and agreeing to the form's terms; always required. |
-| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signaturefieldprops)\> | Text input for the signer's typed name; always required. |
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#confirmsignaturefieldprops)\> | Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signaturefieldprops)\> | Bound to `signature`. Text input for the signer's typed name; always required. |
 
 ***
 
 ### ConfirmSignature
 
-Checkbox for confirming the signature and agreeing to the form's terms; always required.
+Bound to `confirmSignature`. Checkbox confirming the signature and agreeing to the form's terms; always required.
 
 ```tsx
 <form.Fields.ConfirmSignature
@@ -185,7 +185,7 @@ _Also accepts `description`, `formHookResult` from [CheckboxHookFieldProps](../.
 
 ### Signature
 
-Text input for the signer's typed name; always required.
+Bound to `signature`. Text input for the signer's typed name; always required.
 
 ```tsx
 <form.Fields.Signature
@@ -301,13 +301,3 @@ Optional fields that may be promoted to required for the sign-company form.
 
 Both fields of this form are already required by default, so passing this
 is typically unnecessary.
-
-***
-
-<a id="signcompanyformoutputs"></a>
-
-### SignCompanyFormOutputs
-
-> **SignCompanyFormOutputs** = [`SignCompanyFormData`](#signcompanyformdata)
-
-Shape of the validated values produced by the sign-company form on submit.
