@@ -1,5 +1,5 @@
 ---
-title: Component Adapter Types
+title: Component Adapter types
 description: TypeScript interfaces that define the Component Adapter contract, including ComponentsContextType, individual component prop types, and import paths.
 order: 4
 ---

@@ -1181,7 +1181,7 @@ describe('buildPages — standalone page routing', () => {
     const pages = router.buildPages(project)
 
     const page = pages.find(p => p.url === 'theme-variables.md')
-    expect((page?.model as DeclarationReflection).name).toBe('Theme Variables')
+    expect((page?.model as DeclarationReflection).name).toBe('Theme variables')
   })
 
   it('standalone members are removed from project groups', () => {

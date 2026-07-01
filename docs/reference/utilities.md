@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Hook Utilities
-description: Hook Utilities reference.
+title: Hook utilities
+description: Hook utilities reference.
 sidebar_position: 8
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Hook Utilities
+# Hook utilities
 
 ## Components
 
