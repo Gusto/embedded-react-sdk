@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import styles from './comments.module.scss'
 import { useComments } from './CommentsContext'
 import { COMMENT_CATEGORIES } from './types'
@@ -55,6 +56,11 @@ export function CommentComposer({
     : []
 
   const showSuggestions = mention !== null && suggestions.length > 0
+
+  // Anchor the menu to the textarea in a body portal so overflow on the popover
+  // / scroll containers can't clip it.
+  const menuRect =
+    showSuggestions && textareaRef.current ? textareaRef.current.getBoundingClientRect() : null
 
   const syncMention = (value: string, caret: number) => {
     setMention(findMention(value, caret))
@@ -144,29 +150,41 @@ export function CommentComposer({
           }
           onKeyDown={onKeyDown}
         />
-        {showSuggestions ? (
-          <ul className={styles.mentionMenu}>
-            {suggestions.map((participant, index) => (
-              <li key={participant.id}>
-                <button
-                  type="button"
-                  className={`${styles.mentionItem} ${index === activeIndex ? styles.mentionItemActive : ''}`}
-                  onMouseDown={event => {
-                    event.preventDefault()
-                    insertMention(participant)
-                  }}
-                >
-                  {participant.avatar_url ? (
-                    <img className={styles.mentionAvatar} src={participant.avatar_url} alt="" />
-                  ) : (
-                    <span className={styles.mentionAvatar} />
-                  )}
-                  <span className={styles.mentionHandle}>@{participant.handle}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        {menuRect
+          ? createPortal(
+              <ul
+                className={styles.mentionMenu}
+                style={{
+                  position: 'fixed',
+                  left: menuRect.left,
+                  top: menuRect.bottom + 4,
+                  width: menuRect.width,
+                  right: 'auto',
+                }}
+              >
+                {suggestions.map((participant, index) => (
+                  <li key={participant.id}>
+                    <button
+                      type="button"
+                      className={`${styles.mentionItem} ${index === activeIndex ? styles.mentionItemActive : ''}`}
+                      onMouseDown={event => {
+                        event.preventDefault()
+                        insertMention(participant)
+                      }}
+                    >
+                      {participant.avatar_url ? (
+                        <img className={styles.mentionAvatar} src={participant.avatar_url} alt="" />
+                      ) : (
+                        <span className={styles.mentionAvatar} />
+                      )}
+                      <span className={styles.mentionHandle}>@{participant.handle}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>,
+              document.body,
+            )
+          : null}
       </div>
 
       <div className={styles.formRow}>
