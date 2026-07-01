@@ -81,11 +81,7 @@ export type FederalTaxesField = keyof typeof fieldValidators
 export type FederalTaxesFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the federal taxes form on submit.
- *
- * @public
- */
+/** @internal */
 export type FederalTaxesFormOutputs = FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────

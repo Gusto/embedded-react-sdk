@@ -1906,19 +1906,6 @@ selfOnboarding: z.ZodBoolean;
 // @internal (undocumented)
 export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
 
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createFederalTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createFederalTaxesSchema(options?: FederalTaxesSchemaOptions): BuildFormSchemaResult<    {
-filingStatus: z.ZodString;
-twoJobs: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-dependentsAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-otherIncome: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-deductions: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-extraWithholding: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
 // Warning: (ae-forgotten-export) The symbol "HomeAddressSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createHomeAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -2222,9 +2209,6 @@ interface DeductionsEditFormProps extends BaseComponentInterface<'Employee.Manag
 }
 
 // @public
-export function DeductionsField(props: DeductionsFieldProps): JSX;
-
-// @public
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
@@ -2245,9 +2229,6 @@ export type DeepPartial<T> = {
     ? DeepPartial<T[P]>
     : T[P]
 }
-
-// @public
-export function DependentsAmountField(props: DependentsAmountFieldProps): JSX;
 
 // @public
 export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -2720,9 +2701,6 @@ interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.Em
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 
 // @public
-export function ExtraWithholdingField(props: ExtraWithholdingFieldProps): JSX;
-
-// @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
@@ -2771,26 +2749,20 @@ export const FederalTaxesErrorCodes: {
 export type FederalTaxesField = "filingStatus" | "twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding";
 
 // @public
-export interface FederalTaxesFields {
-    Deductions: typeof DeductionsField;
-    DependentsAmount: typeof DependentsAmountField;
-    ExtraWithholding: typeof ExtraWithholdingField;
-    FilingStatus: typeof FilingStatusField;
-    OtherIncome: typeof OtherIncomeField;
-    TwoJobs: typeof TwoJobsField;
-}
-
-// @public
 export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata'];
 
 // @public
 export type FederalTaxesFormData = { filingStatus: string; twoJobs: boolean; dependentsAmount: number; otherIncome: number; deductions: number; extraWithholding: number; };
 
 // @public
-export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields'];
-
-// @public
-export type FederalTaxesFormOutputs = FederalTaxesFormData;
+export interface FederalTaxesFormFields {
+    Deductions: ComponentType<DeductionsFieldProps>;
+    DependentsAmount: ComponentType<DependentsAmountFieldProps>;
+    ExtraWithholding: ComponentType<ExtraWithholdingFieldProps>;
+    FilingStatus: ComponentType<FilingStatusFieldProps>;
+    OtherIncome: ComponentType<OtherIncomeFieldProps>;
+    TwoJobs: ComponentType<TwoJobsFieldProps>;
+}
 
 // @public
 export type FederalTaxesOptionalFieldsToRequire = { create?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; update?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; };
@@ -2855,9 +2827,6 @@ export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisu
 
 // @public
 export const FILING_STATUS_VALUES: readonly ["Single", "Married", "Head of Household", "Exempt from withholding"];
-
-// @public
-export function FilingStatusField(props: FilingStatusFieldProps): JSX;
 
 // @public
 export type FilingStatusFieldProps = HookFieldProps<SelectHookFieldProps<FederalTaxesRequiredValidation, FilingStatusValue>>;
@@ -3815,9 +3784,6 @@ export interface OrderedListProps extends BaseListProps {
 
 // @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
-
-// @public
-export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
 
 // @public
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -5325,9 +5291,6 @@ interface TransitionFlowProps {
 }
 
 // @public
-export function TwoJobsField(props: TwoJobsFieldProps): JSX;
-
-// @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
 
 // @public
@@ -5754,7 +5717,7 @@ export interface UseFederalTaxesFormProps {
 }
 
 // @public
-export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFields> {
+export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>;
     };

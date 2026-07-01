@@ -499,14 +499,7 @@ export type {
 export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
-  createFederalTaxesSchema,
   FILING_STATUS_VALUES,
-  FilingStatusField,
-  TwoJobsField,
-  DependentsAmountField,
-  OtherIncomeField,
-  DeductionsField,
-  ExtraWithholdingField,
 } from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
 export {
   useEmployeeStateTaxesForm,
@@ -557,10 +550,8 @@ export type {
   UseFederalTaxesFormReady,
   FederalTaxesFieldsMetadata,
   FederalTaxesFormFields,
-  FederalTaxesFields,
   FederalTaxesErrorCode,
   FederalTaxesFormData,
-  FederalTaxesFormOutputs,
   FederalTaxesField,
   FilingStatusValue,
   FederalTaxesRequiredValidation,
