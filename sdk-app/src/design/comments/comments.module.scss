@@ -488,6 +488,25 @@ $shadow: 0 8px 30px rgba(20, 20, 40, 0.18);
   color: $muted;
 }
 
+.trayRowRoute {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #eef0f6;
+  color: $muted;
+  font-size: 0.7rem;
+}
+
+.trayRowRouteCurrent {
+  background: rgba(91, 61, 245, 0.1);
+  color: $accent;
+}
+
 .unreadDot {
   flex-shrink: 0;
   width: 8px;

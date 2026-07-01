@@ -44,6 +44,7 @@ interface CommentsContextValue {
   prototypeId: number | null
   routePath: string
   comments: SandboxComment[]
+  allComments: SandboxComment[]
   loading: boolean
   error: string | null
 
@@ -344,8 +345,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   // A thread counts as unread if the top-level comment or any of its replies is
   // unread, so a new reply lights up its pin/row (matching the badge count).
   const threadHasUnread = useCallback(
-    (comment: SandboxComment) =>
-      isUnread(comment) || (comment.replies ?? []).some(isUnread),
+    (comment: SandboxComment) => isUnread(comment) || (comment.replies ?? []).some(isUnread),
     [isUnread],
   )
 
@@ -371,9 +371,9 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
 
   const markAllRead = useCallback(() => {
     const next = { ...seen }
-    for (const item of flatten(comments)) next[item.id] = item.updated_at
+    for (const item of flatten(allComments)) next[item.id] = item.updated_at
     persistSeen(next)
-  }, [seen, comments, persistSeen])
+  }, [seen, allComments, persistSeen])
 
   const unreadCount = useMemo(
     () => flatten(allComments).filter(isUnread).length,
@@ -385,9 +385,9 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (selectedId === null || selectedId === selectedRef.current) return
     selectedRef.current = selectedId
-    const found = comments.find(comment => comment.id === selectedId)
+    const found = allComments.find(comment => comment.id === selectedId)
     if (found) markRead(found)
-  }, [selectedId, comments, markRead])
+  }, [selectedId, allComments, markRead])
 
   const value: CommentsContextValue = {
     ready,
@@ -397,6 +397,7 @@ export function CommentsProvider({ children }: { children: ReactNode }) {
     prototypeId,
     routePath,
     comments,
+    allComments,
     loading,
     error,
     active,

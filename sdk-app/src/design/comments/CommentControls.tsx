@@ -7,16 +7,28 @@ import type { CommentToast } from './CommentsContext'
 import type { SandboxComment } from './types'
 
 function TrayRow({ comment }: { comment: SandboxComment }) {
-  const { selectedId, select, threadHasUnread } = useComments()
+  const { selectedId, select, threadHasUnread, routePath } = useComments()
+  const navigate = useNavigate()
   const replyCount = comment.replies?.length ?? 0
+  const onCurrentRoute = comment.route.path === routePath
+
   return (
     <button
       type="button"
       className={`${styles.trayRow} ${comment.id === selectedId ? styles.trayRowSelected : ''}`}
-      onClick={() => select(comment.id)}
+      onClick={() => {
+        if (!onCurrentRoute) navigate(comment.route.path)
+        select(comment.id)
+      }}
     >
       {threadHasUnread(comment) ? <span className={styles.unreadDot} /> : null}
       <div className={styles.trayRowText}>
+        <span
+          className={`${styles.trayRowRoute} ${onCurrentRoute ? styles.trayRowRouteCurrent : ''}`}
+          title={comment.route.path}
+        >
+          📍 {comment.route.path}
+        </span>
         <div className={styles.trayRowPreview}>{comment.body}</div>
         <div className={styles.trayRowMeta}>
           <span>{comment.user.name.split('@')[0]}</span>
@@ -40,7 +52,7 @@ function Tray() {
   const {
     me,
     canWrite,
-    comments,
+    allComments,
     loading,
     error,
     refresh,
@@ -56,8 +68,8 @@ function Tray() {
     toggleNotifications,
   } = useComments()
 
-  const open = comments.filter(comment => !comment.resolved)
-  const resolved = comments.filter(comment => comment.resolved)
+  const open = allComments.filter(comment => !comment.resolved)
+  const resolved = allComments.filter(comment => comment.resolved)
 
   return (
     <div className={styles.tray}>
@@ -142,11 +154,11 @@ function Tray() {
 
       <div className={styles.trayList}>
         {error ? <div className={styles.empty}>Error: {error}</div> : null}
-        {loading && comments.length === 0 ? <div className={styles.empty}>Loading…</div> : null}
-        {!loading && comments.length === 0 && !error ? (
+        {loading && allComments.length === 0 ? <div className={styles.empty}>Loading…</div> : null}
+        {!loading && allComments.length === 0 && !error ? (
           <div className={styles.empty}>
-            No comments on this design yet.
-            {canWrite ? ' Click “+ Add” to leave the first one.' : ''}
+            No comments yet.
+            {canWrite ? ' Click “+ Add comment” to leave the first one.' : ''}
           </div>
         ) : null}
 
@@ -169,7 +181,7 @@ function Tray() {
         ) : null}
       </div>
 
-      {comments.length > 0 ? (
+      {allComments.length > 0 ? (
         <div className={styles.trayHeader}>
           <span className={styles.spacer} />
           <button
