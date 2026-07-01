@@ -1496,9 +1496,6 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(form
 }], onAllValid: () => Promise<void>): ComposeSubmitHandlerResult;
 
 // @public
-export function ConfirmSignatureField(props: SignEmployeeFormConfirmSignatureFieldProps): JSX;
-
-// @public
 export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignCompanyFormRequiredValidation>>;
 
 // @public
@@ -1942,55 +1939,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     defaultValues?: CreateSignatoryDefaultValues;
     signatoryId?: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "SignEmployeeFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignEmployeeFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignEmployeeFormSchema(options?: SignEmployeeFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-usedPreparer: z.ZodEnum<{
-yes: "yes";
-no: "no";
-}>;
-preparerFirstName: z.ZodString;
-preparerLastName: z.ZodString;
-preparerStreet1: z.ZodString;
-preparerStreet2: z.ZodString;
-preparerCity: z.ZodString;
-preparerState: z.ZodString;
-preparerZip: z.ZodString;
-preparerSignature: z.ZodString;
-preparerAgree: z.ZodBoolean;
-preparer2FirstName: z.ZodString;
-preparer2LastName: z.ZodString;
-preparer2Street1: z.ZodString;
-preparer2Street2: z.ZodString;
-preparer2City: z.ZodString;
-preparer2State: z.ZodString;
-preparer2Zip: z.ZodString;
-preparer2Signature: z.ZodString;
-preparer2Agree: z.ZodBoolean;
-preparer3FirstName: z.ZodString;
-preparer3LastName: z.ZodString;
-preparer3Street1: z.ZodString;
-preparer3Street2: z.ZodString;
-preparer3City: z.ZodString;
-preparer3State: z.ZodString;
-preparer3Zip: z.ZodString;
-preparer3Signature: z.ZodString;
-preparer3Agree: z.ZodBoolean;
-preparer4FirstName: z.ZodString;
-preparer4LastName: z.ZodString;
-preparer4Street1: z.ZodString;
-preparer4Street2: z.ZodString;
-preparer4City: z.ZodString;
-preparer4State: z.ZodString;
-preparer4Zip: z.ZodString;
-preparer4Signature: z.ZodString;
-preparer4Agree: z.ZodBoolean;
-}>;
 
 // Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createSplitPaymentsFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
@@ -4681,9 +4629,6 @@ export interface SharedQuestionMetadata {
 }
 
 // @public
-export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
-
-// @public
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
 
 // @public
@@ -4753,24 +4698,18 @@ export const SignEmployeeFormErrorCodes: {
 export type SignEmployeeFormField = "signature" | "confirmSignature" | "usedPreparer" | "preparerFirstName" | "preparerLastName" | "preparerStreet1" | "preparerStreet2" | "preparerCity" | "preparerState" | "preparerZip" | "preparerSignature" | "preparerAgree" | "preparer2FirstName" | "preparer2LastName" | "preparer2Street1" | "preparer2Street2" | "preparer2City" | "preparer2State" | "preparer2Zip" | "preparer2Signature" | "preparer2Agree" | "preparer3FirstName" | "preparer3LastName" | "preparer3Street1" | "preparer3Street2" | "preparer3City" | "preparer3State" | "preparer3Zip" | "preparer3Signature" | "preparer3Agree" | "preparer4FirstName" | "preparer4LastName" | "preparer4Street1" | "preparer4Street2" | "preparer4City" | "preparer4State" | "preparer4Zip" | "preparer4Signature" | "preparer4Agree";
 
 // @public
-export interface SignEmployeeFormFieldComponents {
-    ConfirmSignature: typeof ConfirmSignatureField;
+export interface SignEmployeeFormFields {
+    ConfirmSignature: ComponentType<SignEmployeeFormConfirmSignatureFieldProps>;
     Preparer1: PreparerFieldGroup | undefined;
     Preparer2: PreparerFieldGroup | undefined;
     Preparer3: PreparerFieldGroup | undefined;
     Preparer4: PreparerFieldGroup | undefined;
-    Signature: typeof SignatureField;
-    UsedPreparer: typeof UsedPreparerField | undefined;
+    Signature: ComponentType<SignEmployeeFormSignatureFieldProps>;
+    UsedPreparer: ComponentType<UsedPreparerFieldProps> | undefined;
 }
 
 // @public
-export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields'];
-
-// @public
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata'];
-
-// @public
-export type SignEmployeeFormOutputs = SignEmployeeFormData;
 
 // @public
 export type SignEmployeeFormRequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED;
@@ -5606,9 +5545,6 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
 // @public
-export function UsedPreparerField(props: UsedPreparerFieldProps): JSX;
-
-// @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
@@ -5914,7 +5850,7 @@ export interface UseSignEmployeeFormProps {
 }
 
 // @public
-export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents> {
+export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Form> | undefined>;
         addPreparer?: () => void;
@@ -5924,7 +5860,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
         form: Form;
         pdfUrl: string | null | undefined;
     };
-    form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents>['form'] & {
+    form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields>['form'] & {
         preparers?: {
             count: number;
             canAdd: boolean;
