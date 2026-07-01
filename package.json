@@ -154,7 +154,7 @@
     "stylelint-config-standard": "^40.0.0",
     "ts-morph": "^28.0.0",
     "tsx": "^4.22.4",
-    "typescript-eslint": "^8.62.0",
+    "typescript-eslint": "^8.62.1",
     "vite": "^6.4.3",
     "vite-plugin-checker": "^0.14.4",
     "vite-plugin-circular-dependency": "^0.6.0",
