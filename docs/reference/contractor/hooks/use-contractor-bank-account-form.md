@@ -253,6 +253,59 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
+<a id="contractorbankaccountaccountnumbervalidation"></a>
+
+### ContractorBankAccountAccountNumberValidation
+
+> **ContractorBankAccountAccountNumberValidation** = `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`
+
+Validation error codes emitted by the `accountNumber` field of
+[useContractorBankAccountForm](#usecontractorbankaccountform).
+
+***
+
+<a id="contractorbankaccountrequiredvalidation"></a>
+
+### ContractorBankAccountRequiredValidation
+
+> **ContractorBankAccountRequiredValidation** = `"REQUIRED"`
+
+Validation error code emitted by [useContractorBankAccountForm](#usecontractorbankaccountform) fields
+that only emit `REQUIRED`.
+
+***
+
+<a id="contractorbankaccountroutingnumbervalidation"></a>
+
+### ContractorBankAccountRoutingNumberValidation
+
+> **ContractorBankAccountRoutingNumberValidation** = `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`
+
+Validation error codes emitted by the `routingNumber` field of
+[useContractorBankAccountForm](#usecontractorbankaccountform).
+
+## Utility Types
+<a id="contractoraccounttype"></a>
+
+### ContractorAccountType
+
+> **ContractorAccountType** = `"Checking"` \| `"Savings"`
+
+Union of bank account type values that the form accepts.
+
+***
+
+<a id="contractorbankaccounterrorcode"></a>
+
+### ContractorBankAccountErrorCode
+
+> **ContractorBankAccountErrorCode** = `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"` \| `"INVALID_ACCOUNT_NUMBER"`
+
+Union of validation error code strings emitted by the contractor bank account
+form schema.
+
+***
+
 <a id="contractorbankaccounterrorcodes"></a>
 
 ### ContractorBankAccountErrorCodes
@@ -265,64 +318,11 @@ hook.
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` | `'INVALID_ACCOUNT_NUMBER'` |
-| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` | `'INVALID_ROUTING_NUMBER'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="contractorbankaccounterrorcode"></a>
-
-### ContractorBankAccountErrorCode
-
-> **ContractorBankAccountErrorCode** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\]
-
-Union of validation error code strings emitted by the contractor bank account
-form schema.
-
-***
-
-<a id="contractorbankaccountaccountnumbervalidation"></a>
-
-### ContractorBankAccountAccountNumberValidation
-
-> **ContractorBankAccountAccountNumberValidation** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof `Pick`\<*typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes), `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`\>\]
-
-Validation error codes emitted by the `accountNumber` field of
-[useContractorBankAccountForm](#usecontractorbankaccountform).
-
-***
-
-<a id="contractorbankaccountrequiredvalidation"></a>
-
-### ContractorBankAccountRequiredValidation
-
-> **ContractorBankAccountRequiredValidation** = *typeof* `ContractorBankAccountErrorCodes.REQUIRED`
-
-Validation error code emitted by [useContractorBankAccountForm](#usecontractorbankaccountform) fields
-that only emit `REQUIRED`.
-
-***
-
-<a id="contractorbankaccountroutingnumbervalidation"></a>
-
-### ContractorBankAccountRoutingNumberValidation
-
-> **ContractorBankAccountRoutingNumberValidation** = *typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes)\[keyof `Pick`\<*typeof* [`ContractorBankAccountErrorCodes`](#contractorbankaccounterrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
-
-Validation error codes emitted by the `routingNumber` field of
-[useContractorBankAccountForm](#usecontractorbankaccountform).
-
-## Utility Types
-<a id="contractoraccounttype"></a>
-
-### ContractorAccountType
-
-> **ContractorAccountType** = *typeof* [`ContractorBankAccountTypes`](#contractorbankaccounttypes)\[`number`\]
-
-Union of bank account type values that the form accepts.
+| Name | Type |
+| ------ | ------ |
+| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` |
+| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -357,7 +357,7 @@ Shape of the values managed by the contractor bank account form.
 
 ### ContractorBankAccountFormField
 
-> **ContractorBankAccountFormField** = keyof *typeof* `fieldValidators`
+> **ContractorBankAccountFormField** = `"routingNumber"` \| `"accountNumber"` \| `"name"` \| `"accountType"`
 
 Field names accepted by the contractor bank account form.
 

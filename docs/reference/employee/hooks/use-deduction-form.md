@@ -375,34 +375,6 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ## Validations
 
-<a id="deductionformerrorcodes"></a>
-
-### DeductionFormErrorCodes
-
-> `const` **DeductionFormErrorCodes**: `object`
-
-Validation error codes emitted by the deduction form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="deductionformerrorcode"></a>
-
-### DeductionFormErrorCode
-
-> **DeductionFormErrorCode** = *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\[keyof *typeof* [`DeductionFormErrorCodes`](#deductionformerrorcodes)\]
-
-Union of validation error code strings emitted by the deduction form schema.
-
-***
-
 <a id="deductionformamountvalidation"></a>
 
 ### DeductionFormAmountValidation
@@ -438,7 +410,7 @@ description of each code.
 
 ### DeductionFormNegativeAmountValidation
 
-> **DeductionFormNegativeAmountValidation** = *typeof* `DeductionFormErrorCodes.NEGATIVE_AMOUNT`
+> **DeductionFormNegativeAmountValidation** = `"NEGATIVE_AMOUNT"`
 
 The negative-amount error code produced by [useDeductionForm](#usedeductionform)'s currency fields.
 
@@ -453,7 +425,7 @@ and `Fields.AnnualMaximum`. See [DeductionFormErrorCodes](#deductionformerrorcod
 
 ### DeductionFormRequiredValidation
 
-> **DeductionFormRequiredValidation** = *typeof* `DeductionFormErrorCodes.REQUIRED`
+> **DeductionFormRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useDeductionForm](#usedeductionform) fields that only emit `REQUIRED`.
 
@@ -481,6 +453,34 @@ Shape of the values managed by the deduction form.
 | `garnishmentType` | `"child_support"` \| `"federal_tax_lien"` \| `"state_tax_lien"` \| `"student_loan"` \| `"creditor_garnishment"` \| `"federal_loan"` \| `"other_garnishment"` |
 | `recurring` | `boolean` |
 | `totalAmount` | `number` |
+
+***
+
+<a id="deductionformerrorcode"></a>
+
+### DeductionFormErrorCode
+
+> **DeductionFormErrorCode** = `"REQUIRED"` \| `"NEGATIVE_AMOUNT"`
+
+Union of validation error code strings emitted by the deduction form schema.
+
+***
+
+<a id="deductionformerrorcodes"></a>
+
+### DeductionFormErrorCodes
+
+> `const` **DeductionFormErrorCodes**: `object`
+
+Validation error codes emitted by the deduction form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 

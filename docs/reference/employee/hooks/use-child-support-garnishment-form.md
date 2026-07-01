@@ -412,37 +412,6 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ## Validations
 
-<a id="childsupportgarnishmentformerrorcodes"></a>
-
-### ChildSupportGarnishmentFormErrorCodes
-
-> `const` **ChildSupportGarnishmentFormErrorCodes**: `object`
-
-Validation error codes emitted by the child support garnishment form schema.
-Map these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` | `'NEGATIVE_AMOUNT'` |
-| `PERCENT_OUT_OF_RANGE` | `"PERCENT_OUT_OF_RANGE"` | `'PERCENT_OUT_OF_RANGE'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="childsupportgarnishmentformerrorcode"></a>
-
-### ChildSupportGarnishmentFormErrorCode
-
-> **ChildSupportGarnishmentFormErrorCode** = *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\[keyof *typeof* [`ChildSupportGarnishmentFormErrorCodes`](#childsupportgarnishmentformerrorcodes)\]
-
-Union of validation error code strings emitted by the child support
-garnishment form schema.
-
-***
-
 <a id="childsupportgarnishmentamountvalidation"></a>
 
 ### ChildSupportGarnishmentAmountValidation
@@ -463,7 +432,7 @@ accepts a percentage of paycheck (0–100). See
 
 ### ChildSupportGarnishmentNegativeAmountValidation
 
-> **ChildSupportGarnishmentNegativeAmountValidation** = *typeof* `ChildSupportGarnishmentFormErrorCodes.NEGATIVE_AMOUNT`
+> **ChildSupportGarnishmentNegativeAmountValidation** = `"NEGATIVE_AMOUNT"`
 
 The negative-amount error code produced by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s currency fields.
 
@@ -478,7 +447,7 @@ Used as a `validationMessages` key on `Fields.PayPeriodMaximum`. See
 
 ### ChildSupportGarnishmentPercentValidation
 
-> **ChildSupportGarnishmentPercentValidation** = *typeof* `ChildSupportGarnishmentFormErrorCodes.PERCENT_OUT_OF_RANGE`
+> **ChildSupportGarnishmentPercentValidation** = `"PERCENT_OUT_OF_RANGE"`
 
 The percent-out-of-range error code produced by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform)'s percentage field.
 
@@ -493,7 +462,7 @@ See [ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcod
 
 ### ChildSupportGarnishmentRequiredValidation
 
-> **ChildSupportGarnishmentRequiredValidation** = *typeof* `ChildSupportGarnishmentFormErrorCodes.REQUIRED`
+> **ChildSupportGarnishmentRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) fields that only emit `REQUIRED`.
 
@@ -537,6 +506,37 @@ Shape of the values managed by the child support garnishment form.
 | `payPeriodMaximum` | `number` |
 | `remittanceNumber` | `string` |
 | `state` | `string` |
+
+***
+
+<a id="childsupportgarnishmentformerrorcode"></a>
+
+### ChildSupportGarnishmentFormErrorCode
+
+> **ChildSupportGarnishmentFormErrorCode** = `"REQUIRED"` \| `"NEGATIVE_AMOUNT"` \| `"PERCENT_OUT_OF_RANGE"`
+
+Union of validation error code strings emitted by the child support
+garnishment form schema.
+
+***
+
+<a id="childsupportgarnishmentformerrorcodes"></a>
+
+### ChildSupportGarnishmentFormErrorCodes
+
+> `const` **ChildSupportGarnishmentFormErrorCodes**: `object`
+
+Validation error codes emitted by the child support garnishment form schema.
+Map these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `NEGATIVE_AMOUNT` | `"NEGATIVE_AMOUNT"` |
+| `PERCENT_OUT_OF_RANGE` | `"PERCENT_OUT_OF_RANGE"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 
@@ -631,6 +631,6 @@ subset via `requiredAttrKeys` so callers can drive their own UI on which
 
 ### SupportedRequiredAttrKey
 
-> **SupportedRequiredAttrKey** = *typeof* [`SUPPORTED_REQUIRED_ATTR_KEYS`](#supported_required_attr_keys)\[`number`\]
+> **SupportedRequiredAttrKey** = `"case_number"` \| `"order_number"` \| `"remittance_number"`
 
 Union of child support attribute key strings recognized by the form.

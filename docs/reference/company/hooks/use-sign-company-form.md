@@ -212,39 +212,11 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
-<a id="signcompanyformerrorcodes"></a>
-
-### SignCompanyFormErrorCodes
-
-> `const` **SignCompanyFormErrorCodes**: `object`
-
-Validation error codes emitted by the sign-company-form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="signcompanyformerrorcode"></a>
-
-### SignCompanyFormErrorCode
-
-> **SignCompanyFormErrorCode** = *typeof* [`SignCompanyFormErrorCodes`](#signcompanyformerrorcodes)\[keyof *typeof* [`SignCompanyFormErrorCodes`](#signcompanyformerrorcodes)\]
-
-Union of validation error code strings emitted by the sign-company-form
-schema.
-
-***
-
 <a id="signcompanyformrequiredvalidation"></a>
 
 ### SignCompanyFormRequiredValidation
 
-> **SignCompanyFormRequiredValidation** = *typeof* `SignCompanyFormErrorCodes.REQUIRED`
+> **SignCompanyFormRequiredValidation** = `"REQUIRED"`
 
 The required-field error code emitted by every field of [useSignCompanyForm](#usesigncompanyform).
 
@@ -269,11 +241,39 @@ Shape of the values managed by the sign-company form.
 
 ***
 
+<a id="signcompanyformerrorcode"></a>
+
+### SignCompanyFormErrorCode
+
+> **SignCompanyFormErrorCode** = `"REQUIRED"`
+
+Union of validation error code strings emitted by the sign-company-form
+schema.
+
+***
+
+<a id="signcompanyformerrorcodes"></a>
+
+### SignCompanyFormErrorCodes
+
+> `const` **SignCompanyFormErrorCodes**: `object`
+
+Validation error codes emitted by the sign-company-form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="signcompanyformfield"></a>
 
 ### SignCompanyFormField
 
-> **SignCompanyFormField** = keyof *typeof* `fieldValidators`
+> **SignCompanyFormField** = `"signature"` \| `"confirmSignature"`
 
 Field names accepted by the sign-company form.
 

@@ -659,7 +659,7 @@ the API, the corresponding values are overwritten.
 
 ### OnboardingExecutionInitialState
 
-> **OnboardingExecutionInitialState** = keyof *typeof* `INITIAL_COMPONENT_MAP`
+> **OnboardingExecutionInitialState** = `"employeeProfile"`
 
 The set of steps [OnboardingExecutionFlow](onboarding-execution-flow.md) can be started on.
 

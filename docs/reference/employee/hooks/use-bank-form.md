@@ -243,41 +243,11 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
-<a id="bankformerrorcodes"></a>
-
-### BankFormErrorCodes
-
-> `const` **BankFormErrorCodes**: `object`
-
-Validation error codes emitted by the bank account form schema. Map these
-codes to localized copy in `validationMessages` when composing the hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` | `'INVALID_ACCOUNT_NUMBER'` |
-| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` | `'INVALID_ROUTING_NUMBER'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="bankformerrorcode"></a>
-
-### BankFormErrorCode
-
-> **BankFormErrorCode** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\]
-
-Union of validation error code strings emitted by the bank account form
-schema.
-
-***
-
 <a id="accountnumbervalidation"></a>
 
 ### AccountNumberValidation
 
-> **AccountNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`\>\]
+> **AccountNumberValidation** = `"REQUIRED"` \| `"INVALID_ACCOUNT_NUMBER"`
 
 Validation error codes emitted by the `accountNumber` field of [useBankForm](#usebankform).
 
@@ -287,7 +257,7 @@ Validation error codes emitted by the `accountNumber` field of [useBankForm](#us
 
 ### BankFormRequiredValidation
 
-> **BankFormRequiredValidation** = *typeof* `BankFormErrorCodes.REQUIRED`
+> **BankFormRequiredValidation** = `"REQUIRED"`
 
 Validation error codes emitted by [useBankForm](#usebankform) fields that only emit `REQUIRED`.
 
@@ -297,7 +267,7 @@ Validation error codes emitted by [useBankForm](#usebankform) fields that only e
 
 ### RoutingNumberValidation
 
-> **RoutingNumberValidation** = *typeof* [`BankFormErrorCodes`](#bankformerrorcodes)\[keyof `Pick`\<*typeof* [`BankFormErrorCodes`](#bankformerrorcodes), `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`\>\]
+> **RoutingNumberValidation** = `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"`
 
 Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
 
@@ -316,7 +286,7 @@ Supported bank account type values: checking and savings.
 
 ### AccountType
 
-> **AccountType** = *typeof* [`ACCOUNT_TYPES`](#account_types)\[`number`\]
+> **AccountType** = `"Checking"` \| `"Savings"`
 
 Union of bank account type values that the form accepts.
 
@@ -339,11 +309,41 @@ Shape of the values managed by the bank account form.
 
 ***
 
+<a id="bankformerrorcode"></a>
+
+### BankFormErrorCode
+
+> **BankFormErrorCode** = `"REQUIRED"` \| `"INVALID_ROUTING_NUMBER"` \| `"INVALID_ACCOUNT_NUMBER"`
+
+Union of validation error code strings emitted by the bank account form
+schema.
+
+***
+
+<a id="bankformerrorcodes"></a>
+
+### BankFormErrorCodes
+
+> `const` **BankFormErrorCodes**: `object`
+
+Validation error codes emitted by the bank account form schema. Map these
+codes to localized copy in `validationMessages` when composing the hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `INVALID_ACCOUNT_NUMBER` | `"INVALID_ACCOUNT_NUMBER"` |
+| `INVALID_ROUTING_NUMBER` | `"INVALID_ROUTING_NUMBER"` |
+| `REQUIRED` | `"REQUIRED"` |
+
+***
+
 <a id="bankformfield"></a>
 
 ### BankFormField
 
-> **BankFormField** = keyof *typeof* `fieldValidators`
+> **BankFormField** = `"routingNumber"` \| `"accountNumber"` \| `"name"` \| `"accountType"`
 
 Field names accepted by the bank account form.
 

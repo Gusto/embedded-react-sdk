@@ -371,44 +371,11 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ## Validations
 
-<a id="employeedetailserrorcodes"></a>
-
-### EmployeeDetailsErrorCodes
-
-> `const` **EmployeeDetailsErrorCodes**: `object`
-
-Validation error codes emitted by the employee details form schema. Map
-these codes to localized copy in `validationMessages` when composing the
-hook.
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"` | `'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'` |
-| `INVALID_EMAIL` | `"INVALID_EMAIL"` | `'INVALID_EMAIL'` |
-| `INVALID_NAME` | `"INVALID_NAME"` | `'INVALID_NAME'` |
-| `INVALID_SSN` | `"INVALID_SSN"` | `'INVALID_SSN'` |
-| `REQUIRED` | `"REQUIRED"` | `'REQUIRED'` |
-
-***
-
-<a id="employeedetailserrorcode"></a>
-
-### EmployeeDetailsErrorCode
-
-> **EmployeeDetailsErrorCode** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[keyof *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\]
-
-Union of validation error code strings emitted by the employee details form
-schema.
-
-***
-
 <a id="emailvalidation"></a>
 
 ### EmailValidation
 
-> **EmailValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`\]
+> **EmailValidation** = `"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`
 
 Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
 
@@ -425,7 +392,7 @@ enabled but the email is empty (create mode only). See
 
 ### EmployeeDetailsRequiredValidation
 
-> **EmployeeDetailsRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+> **EmployeeDetailsRequiredValidation** = `"REQUIRED"`
 
 The required-field error code produced by [useEmployeeDetailsForm](#useemployeedetailsform) fields that only emit `REQUIRED`.
 
@@ -440,7 +407,7 @@ birth fields. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ### NameValidation
 
-> **NameValidation** = *typeof* [`EmployeeDetailsErrorCodes`](#employeedetailserrorcodes)\[`"REQUIRED"` \| `"INVALID_NAME"`\]
+> **NameValidation** = `"REQUIRED"` \| `"INVALID_NAME"`
 
 Validation error codes emitted by the name fields of [useEmployeeDetailsForm](#useemployeedetailsform).
 
@@ -456,7 +423,7 @@ description of each code.
 
 ### SsnRequiredValidation
 
-> **SsnRequiredValidation** = *typeof* `EmployeeDetailsErrorCodes.REQUIRED`
+> **SsnRequiredValidation** = `"REQUIRED"`
 
 The required-field error code for the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
 
@@ -471,7 +438,7 @@ an SSN on file, even if `ssn` is included in `optionalFieldsToRequire`.
 
 ### SsnValidation
 
-> **SsnValidation** = *typeof* `EmployeeDetailsErrorCodes.INVALID_SSN`
+> **SsnValidation** = `"INVALID_SSN"`
 
 The format-validation error code emitted by the `ssn` field of [useEmployeeDetailsForm](#useemployeedetailsform).
 
@@ -501,6 +468,39 @@ switch changes the employee's onboarding status as part of an update.
 | `onEmployeeCreated?` | (`employee`: [`Employee`](../../APIModels/index.md#employee)) => `void` | Fired after a new employee is successfully created. |
 | `onEmployeeUpdated?` | (`employee`: [`Employee`](../../APIModels/index.md#employee)) => `void` | Fired after an existing employee is successfully updated. |
 | `onOnboardingStatusUpdated?` | (`status`: `unknown`) => `void` | Fired when an update toggles self-onboarding and the employee's onboarding status changes. |
+
+***
+
+<a id="employeedetailserrorcode"></a>
+
+### EmployeeDetailsErrorCode
+
+> **EmployeeDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`
+
+Union of validation error code strings emitted by the employee details form
+schema.
+
+***
+
+<a id="employeedetailserrorcodes"></a>
+
+### EmployeeDetailsErrorCodes
+
+> `const` **EmployeeDetailsErrorCodes**: `object`
+
+Validation error codes emitted by the employee details form schema. Map
+these codes to localized copy in `validationMessages` when composing the
+hook.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"` |
+| `INVALID_EMAIL` | `"INVALID_EMAIL"` |
+| `INVALID_NAME` | `"INVALID_NAME"` |
+| `INVALID_SSN` | `"INVALID_SSN"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 

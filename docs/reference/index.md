@@ -210,7 +210,7 @@ The configured provider tree wrapping `children`.
 
 ### I9\_FORM\_NAME
 
-> `const` **I9\_FORM\_NAME**: `"US_I-9"` = `'US_I-9'`
+> `const` **I9\_FORM\_NAME**: `"US_I-9"`
 
 The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
 
@@ -232,13 +232,44 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` | `'Hour'` |
-| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` | `'Month'` |
-| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` | `'Paycheck'` |
-| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` | `'Week'` |
-| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` | `'Year'` |
+| Name | Type |
+| ------ | ------ |
+| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` |
+| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` |
+| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` |
+| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` |
+| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` |
+
+***
+
+<a id="sdkerrorcategories"></a>
+
+### SDKErrorCategories
+
+> `const` **SDKErrorCategories**: `object`
+
+Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
+
+#### Remarks
+
+Use this when you need to reference a category value by name (e.g.
+`SDKErrorCategories.API_ERROR`). Each entry corresponds to one classification:
+
+| Value | When it applies |
+| ----- | --------------- |
+| `api_error` | HTTP error response from the Gusto API (422, 404, 409, 500, etc.) |
+| `validation_error` | Client-side Zod schema validation before the request was sent |
+| `network_error` | Network connectivity failure (connection refused, timeout, abort) |
+| `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
 
 ## Interfaces
 
@@ -948,7 +979,7 @@ Each key names a component's resource namespace.
 
 ### SDKErrorCategory
 
-> **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
+> **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
 
