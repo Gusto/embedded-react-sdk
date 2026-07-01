@@ -3,6 +3,7 @@ export {
   type UseContractorSignatureFormProps,
   type UseContractorSignatureFormReady,
   type UseContractorSignatureFormResult,
+  type ContractorSignatureFieldsMetadata,
 } from './useContractorSignatureForm'
 export {
   ContractorSignatureFormErrorCodes,
@@ -13,16 +14,31 @@ export {
   type ContractorSignatureOptionalFieldsToRequire,
   type ContractorSignatureSchemaOptions,
 } from './contractorSignatureFormSchema'
-export {
-  AGREE_FIELD,
-  type ContractorSignatureFormFieldComponents,
-  type ContractorSignatureTextFieldProps,
-  type ContractorSignatureCheckboxFieldProps,
-  type ContractorSignatureAgreeFieldProps,
-  type ContractorSignatureRadioFieldProps,
-  type ContractorSignatureSelectFieldProps,
-  type ContractorSignatureSsnFieldProps,
-  type ContractorSignatureEinFieldProps,
+export { AGREE_FIELD, type ContractorSignatureFormFieldComponents } from './fields'
+export type {
+  RequiredValidation as ContractorSignatureRequiredValidation,
+  AgreeValidation as ContractorSignatureAgreeValidation,
+  SsnValidation as ContractorSignatureSsnValidation,
+  EinValidation as ContractorSignatureEinValidation,
+  NameFieldProps,
+  TaxClassificationFieldProps,
+  HomeAddressStreet1FieldProps,
+  HomeAddressCityFieldProps,
+  HomeAddressStateFieldProps,
+  HomeAddressZipFieldProps,
+  SsnFieldProps as ContractorSignatureSsnFieldProps,
+  EinFieldProps as ContractorSignatureEinFieldProps,
+  SignatureTextFieldProps,
+  AgreeFieldProps as ContractorSignatureAgreeFieldProps,
+  BusinessNameFieldProps,
+  LlcClassificationCodeFieldProps,
+  OtherTextFieldProps,
+  ForeignPartnersFieldProps,
+  ExemptPayeeCodeFieldProps,
+  ExemptionFromFatcaFieldProps,
+  HomeAddressStreet2FieldProps,
+  AccountNumberFieldProps,
+  CompanyNameFieldProps,
 } from './fields'
 export {
   W9_DOCUMENT_NAME,

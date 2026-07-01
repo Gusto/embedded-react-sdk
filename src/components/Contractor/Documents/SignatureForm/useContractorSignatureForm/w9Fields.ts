@@ -1,7 +1,7 @@
 import type {
   Document,
   Fields as DocumentField,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/document'
 import type { ContractorSignatureFormData } from './contractorSignatureFormSchema'
 import { normalizeEin } from '@/helpers/federalEin'
 import { normalizeSSN } from '@/helpers/ssn'

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
 import {
   buildW9Defaults,
   serializeW9Fields,

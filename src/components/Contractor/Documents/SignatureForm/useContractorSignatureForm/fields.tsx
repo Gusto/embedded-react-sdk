@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import type { ContractorSignatureFormErrorCodes } from './contractorSignatureFormSchema'
 import { normalizeEinOrNotApplicable, normalizeSsnOrNotApplicable } from './w9Fields'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
@@ -21,378 +22,295 @@ export const AGREE_FIELD = 'agree'
 
 // ── Shared prop types ─────────────────────────────────────────────────
 
-/** The required-field error code emitted by the W-9 input fields. */
-type RequiredValidation = typeof ContractorSignatureFormErrorCodes.REQUIRED
-/** The consent error code emitted only by the `agree` checkbox. */
-type AgreeValidation = typeof ContractorSignatureFormErrorCodes.AGREE_REQUIRED
-/** The format error code emitted only by the `ssn` field. */
-type SsnValidation = typeof ContractorSignatureFormErrorCodes.INVALID_SSN
-/** The format error code emitted only by the `ein` field. */
-type EinValidation = typeof ContractorSignatureFormErrorCodes.INVALID_EIN
-
 /**
- * Props accepted by the text-input fields of {@link useContractorSignatureForm}.
+ * The required-field error code emitted by most {@link useContractorSignatureForm} fields.
+ *
+ * @remarks
+ * Use as a key in `validationMessages` for text inputs, selects, and radio groups
+ * that only emit the `REQUIRED` error. See {@link ContractorSignatureFormErrorCodes}.
  *
  * @public
  */
-export type ContractorSignatureTextFieldProps = HookFieldProps<
-  TextInputHookFieldProps<RequiredValidation>
->
+export type RequiredValidation = typeof ContractorSignatureFormErrorCodes.REQUIRED
 
 /**
- * Props accepted by the `ForeignPartners` checkbox of {@link useContractorSignatureForm}.
+ * Validation error code emitted by the `Agree` consent checkbox.
+ *
+ * @remarks
+ * Use as a key in `validationMessages` on `Fields.Agree`. See
+ * {@link ContractorSignatureFormErrorCodes}.
  *
  * @public
  */
-export type ContractorSignatureCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps>
+export type AgreeValidation = typeof ContractorSignatureFormErrorCodes.AGREE_REQUIRED
 
 /**
- * Props accepted by the `Agree` consent checkbox of {@link useContractorSignatureForm}.
+ * The format-validation error code emitted by the `ssn` field of {@link useContractorSignatureForm}.
+ *
+ * @remarks
+ * Use as a key in `validationMessages` on `Fields.Ssn`. See
+ * {@link ContractorSignatureFormErrorCodes}.
  *
  * @public
  */
-export type ContractorSignatureAgreeFieldProps = HookFieldProps<
-  CheckboxHookFieldProps<AgreeValidation>
->
+export type SsnValidation = typeof ContractorSignatureFormErrorCodes.INVALID_SSN
 
 /**
- * Props accepted by the radio-group field of {@link useContractorSignatureForm}.
+ * The format-validation error code emitted by the `ein` field of {@link useContractorSignatureForm}.
+ *
+ * @remarks
+ * Use as a key in `validationMessages` on `Fields.Ein`. See
+ * {@link ContractorSignatureFormErrorCodes}.
  *
  * @public
  */
-export type ContractorSignatureRadioFieldProps = HookFieldProps<
+export type EinValidation = typeof ContractorSignatureFormErrorCodes.INVALID_EIN
+
+// ── Field prop types ──────────────────────────────────────────────────
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.Name` component.
+ *
+ * @public
+ */
+export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.TaxClassification` component.
+ *
+ * @public
+ */
+export type TaxClassificationFieldProps = HookFieldProps<
   RadioGroupHookFieldProps<RequiredValidation, string>
 >
 
 /**
- * Props accepted by the select field of {@link useContractorSignatureForm}.
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.HomeAddressStreet1` component.
  *
  * @public
  */
-export type ContractorSignatureSelectFieldProps = HookFieldProps<
-  SelectHookFieldProps<RequiredValidation, string>
+export type HomeAddressStreet1FieldProps = HookFieldProps<
+  TextInputHookFieldProps<RequiredValidation>
 >
 
 /**
- * Props accepted by the `Ssn` field of {@link useContractorSignatureForm}.
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.HomeAddressCity` component.
  *
  * @public
  */
-export type ContractorSignatureSsnFieldProps = HookFieldProps<
+export type HomeAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.HomeAddressState` component.
+ *
+ * @public
+ */
+export type HomeAddressStateFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.HomeAddressZip` component.
+ *
+ * @public
+ */
+export type HomeAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.Ssn` component.
+ *
+ * @public
+ */
+export type SsnFieldProps = HookFieldProps<
   TextInputHookFieldProps<SsnValidation, RequiredValidation>
 >
 
 /**
- * Props accepted by the `Ein` field of {@link useContractorSignatureForm}.
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.Ein` component.
  *
  * @public
  */
-export type ContractorSignatureEinFieldProps = HookFieldProps<
+export type EinFieldProps = HookFieldProps<
   TextInputHookFieldProps<EinValidation, RequiredValidation>
 >
 
-// ── Core fields (always present) ──────────────────────────────────────
-
 /**
- * Text input bound to the `name` field (W-9 line 1, entity or individual name).
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.SignatureText` component.
  *
- * @remarks
- * Available on the hook result as `form.Fields.Name` only when the API returns
- * `name`; `undefined` otherwise — null-check before rendering.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `name`.
  * @public
  */
-export function NameField(props: ContractorSignatureTextFieldProps) {
+export type SignatureTextFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.Agree` component.
+ *
+ * @public
+ */
+export type AgreeFieldProps = HookFieldProps<CheckboxHookFieldProps<AgreeValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.BusinessName` component.
+ *
+ * @public
+ */
+export type BusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.LlcClassificationCode` component.
+ *
+ * @public
+ */
+export type LlcClassificationCodeFieldProps = HookFieldProps<
+  SelectHookFieldProps<RequiredValidation, string>
+>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.OtherText` component.
+ *
+ * @public
+ */
+export type OtherTextFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.ForeignPartners` component.
+ *
+ * @public
+ */
+export type ForeignPartnersFieldProps = HookFieldProps<CheckboxHookFieldProps>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.ExemptPayeeCode` component.
+ *
+ * @public
+ */
+export type ExemptPayeeCodeFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.ExemptionFromFatca` component.
+ *
+ * @public
+ */
+export type ExemptionFromFatcaFieldProps = HookFieldProps<
+  TextInputHookFieldProps<RequiredValidation>
+>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.HomeAddressStreet2` component.
+ *
+ * @public
+ */
+export type HomeAddressStreet2FieldProps = HookFieldProps<
+  TextInputHookFieldProps<RequiredValidation>
+>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.AccountNumber` component.
+ *
+ * @public
+ */
+export type AccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+/**
+ * Props accepted by {@link useContractorSignatureForm}'s `Fields.CompanyName` component.
+ *
+ * @public
+ */
+export type CompanyNameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+
+// ── Core fields (always present) ──────────────────────────────────────
+
+/** @internal */
+export function NameField(props: NameFieldProps) {
   return <TextInputHookField {...props} name="name" />
 }
 
-/**
- * Radio group bound to the synthesized `taxClassification` field (W-9 line 3).
- *
- * @remarks
- * Available on the hook result as `form.Fields.TaxClassification` only when the
- * document carries classification checkboxes; `undefined` otherwise. Collapses
- * the seven W-9 classification checkboxes into one required selection. Selecting
- * `limited_liability_company` reveals `Fields.LlcClassificationCode`; selecting
- * `other` reveals `Fields.OtherText`.
- *
- * @param props - {@link ContractorSignatureRadioFieldProps}.
- * @returns The rendered radio group bound to `taxClassification`.
- * @public
- */
-export function TaxClassificationField(props: ContractorSignatureRadioFieldProps) {
+/** @internal */
+export function TaxClassificationField(props: TaxClassificationFieldProps) {
   return <RadioGroupHookField {...props} name="taxClassification" />
 }
 
-/**
- * Text input bound to the `homeAddressStreet1` field (W-9 line 5).
- *
- * @remarks
- * Available on the hook result as `form.Fields.HomeAddressStreet1` only when the
- * API returns `home_address_street_1`; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `homeAddressStreet1`.
- * @public
- */
-export function HomeAddressStreet1Field(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function HomeAddressStreet1Field(props: HomeAddressStreet1FieldProps) {
   return <TextInputHookField {...props} name="homeAddressStreet1" />
 }
 
-/**
- * Text input bound to the `homeAddressCity` field (W-9 line 6).
- *
- * @remarks
- * Available on the hook result as `form.Fields.HomeAddressCity` only when the
- * API returns `home_address_city`; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `homeAddressCity`.
- * @public
- */
-export function HomeAddressCityField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function HomeAddressCityField(props: HomeAddressCityFieldProps) {
   return <TextInputHookField {...props} name="homeAddressCity" />
 }
 
-/**
- * Text input bound to the `homeAddressState` field (W-9 line 6).
- *
- * @remarks
- * Available on the hook result as `form.Fields.HomeAddressState` only when the
- * API returns `home_address_state`; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `homeAddressState`.
- * @public
- */
-export function HomeAddressStateField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function HomeAddressStateField(props: HomeAddressStateFieldProps) {
   return <TextInputHookField {...props} name="homeAddressState" />
 }
 
-/**
- * Text input bound to the `homeAddressZip` field (W-9 line 6).
- *
- * @remarks
- * Available on the hook result as `form.Fields.HomeAddressZip` only when the
- * API returns `home_address_zip`; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `homeAddressZip`.
- * @public
- */
-export function HomeAddressZipField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function HomeAddressZipField(props: HomeAddressZipFieldProps) {
   return <TextInputHookField {...props} name="homeAddressZip" />
 }
 
-/**
- * Text input bound to the `ssn` field (W-9 Part 1).
- *
- * @remarks
- * Available on the hook result as `form.Fields.Ssn` only when the API returns
- * `ssn`; `undefined` otherwise. Auto-formats numeric input as `XXX-XX-XXXX` while
- * still allowing the literal `N/A` sentinel to be typed (for a taxpayer who
- * supplies an EIN instead), and validates that the value is a real SSN or `N/A`.
- * When the API returns a masked SSN, the field renders empty with the mask as a
- * placeholder and is not required; leaving it untouched keeps the value on file.
- *
- * @param props - {@link ContractorSignatureSsnFieldProps}.
- * @returns The rendered text input bound to `ssn`.
- * @public
- */
-export function SsnField(props: ContractorSignatureSsnFieldProps) {
+/** @internal */
+export function SsnField(props: SsnFieldProps) {
   return <TextInputHookField {...props} name="ssn" transform={normalizeSsnOrNotApplicable} />
 }
 
-/**
- * Text input bound to the `ein` field (W-9 Part 1).
- *
- * @remarks
- * Available on the hook result as `form.Fields.Ein` only when the API returns
- * `ein`; `undefined` otherwise. Auto-formats numeric input as `NN-NNNNNNN` while
- * still allowing the literal `N/A` sentinel to be typed (for a taxpayer who
- * supplies an SSN instead), and validates that the value is a real EIN or `N/A`.
- * When the API returns a masked EIN, the field renders empty with the mask as a
- * placeholder and is not required; leaving it untouched keeps the value on file.
- *
- * @param props - {@link ContractorSignatureEinFieldProps}.
- * @returns The rendered text input bound to `ein`.
- * @public
- */
-export function EinField(props: ContractorSignatureEinFieldProps) {
+/** @internal */
+export function EinField(props: EinFieldProps) {
   return <TextInputHookField {...props} name="ein" transform={normalizeEinOrNotApplicable} />
 }
 
-/**
- * Text input bound to the `signatureText` field (W-9 Part 2).
- *
- * @remarks
- * Available on the hook result as `form.Fields.SignatureText` only when the API
- * returns `signature_text`; `undefined` otherwise. The contractor types their
- * full legal name; required.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `signatureText`.
- * @public
- */
-export function SignatureTextField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function SignatureTextField(props: SignatureTextFieldProps) {
   return <TextInputHookField {...props} name="signatureText" />
 }
 
-/**
- * Checkbox bound to the `agree` field — electronic-signature consent.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Agree`; always present. Must be
- * checked to submit.
- *
- * @param props - {@link ContractorSignatureAgreeFieldProps}.
- * @returns The rendered checkbox bound to `agree`.
- * @public
- */
-export function AgreeField(props: ContractorSignatureAgreeFieldProps) {
+/** @internal */
+export function AgreeField(props: AgreeFieldProps) {
   return <CheckboxHookField {...props} name="agree" />
 }
 
 // ── Variable fields (rendered only when the API returns them) ─────────
 
-/**
- * Text input bound to the `businessName` field (W-9 line 2).
- *
- * @remarks
- * Available on the hook result as `form.Fields.BusinessName` only when the API
- * returns the `business_name` field; `undefined` otherwise — null-check before
- * rendering.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `businessName`.
- * @public
- */
-export function BusinessNameField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function BusinessNameField(props: BusinessNameFieldProps) {
   return <TextInputHookField {...props} name="businessName" />
 }
 
-/**
- * Select bound to the synthesized `llcClassificationCode` field.
- *
- * @remarks
- * Available on the hook result as `form.Fields.LlcClassificationCode` only when
- * the document carries classification checkboxes; `undefined` otherwise. Render
- * it only while `taxClassification` is `limited_liability_company`.
- *
- * @param props - {@link ContractorSignatureSelectFieldProps}.
- * @returns The rendered select bound to `llcClassificationCode`.
- * @public
- */
-export function LlcClassificationCodeField(props: ContractorSignatureSelectFieldProps) {
+/** @internal */
+export function LlcClassificationCodeField(props: LlcClassificationCodeFieldProps) {
   return <SelectHookField {...props} name="llcClassificationCode" />
 }
 
-/**
- * Text input bound to the `otherText` field (free-text "Other" classification).
- *
- * @remarks
- * Available on the hook result as `form.Fields.OtherText` only when the API
- * returns the `other_text` field; `undefined` otherwise. Render it only while
- * `taxClassification` is `other`.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `otherText`.
- * @public
- */
-export function OtherTextField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function OtherTextField(props: OtherTextFieldProps) {
   return <TextInputHookField {...props} name="otherText" />
 }
 
-/**
- * Checkbox bound to the `foreignPartners` field (W-9 line 3b).
- *
- * @remarks
- * Available on the hook result as `form.Fields.ForeignPartners` only when the
- * API returns the `foreign_partners` field; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureCheckboxFieldProps}.
- * @returns The rendered checkbox bound to `foreignPartners`.
- * @public
- */
-export function ForeignPartnersField(props: ContractorSignatureCheckboxFieldProps) {
+/** @internal */
+export function ForeignPartnersField(props: ForeignPartnersFieldProps) {
   return <CheckboxHookField {...props} name="foreignPartners" />
 }
 
-/**
- * Text input bound to the `exemptPayeeCode` field (W-9 line 4a).
- *
- * @remarks
- * Available on the hook result as `form.Fields.ExemptPayeeCode` only when the
- * API returns the `exempt_payee_code` field; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `exemptPayeeCode`.
- * @public
- */
-export function ExemptPayeeCodeField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function ExemptPayeeCodeField(props: ExemptPayeeCodeFieldProps) {
   return <TextInputHookField {...props} name="exemptPayeeCode" />
 }
 
-/**
- * Text input bound to the `exemptionFromFatca` field (W-9 line 4b).
- *
- * @remarks
- * Available on the hook result as `form.Fields.ExemptionFromFatca` only when the
- * API returns the `exemption_from_FATCA` field; `undefined` otherwise. This is a
- * FATCA-exemption code (free text), not a checkbox.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `exemptionFromFatca`.
- * @public
- */
-export function ExemptionFromFatcaField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function ExemptionFromFatcaField(props: ExemptionFromFatcaFieldProps) {
   return <TextInputHookField {...props} name="exemptionFromFatca" />
 }
 
-/**
- * Text input bound to the `homeAddressStreet2` field (W-9 line 5).
- *
- * @remarks
- * Available on the hook result as `form.Fields.HomeAddressStreet2` only when the
- * API returns the `home_address_street_2` field; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `homeAddressStreet2`.
- * @public
- */
-export function HomeAddressStreet2Field(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function HomeAddressStreet2Field(props: HomeAddressStreet2FieldProps) {
   return <TextInputHookField {...props} name="homeAddressStreet2" />
 }
 
-/**
- * Text input bound to the `accountNumber` field (W-9 line 7).
- *
- * @remarks
- * Available on the hook result as `form.Fields.AccountNumber` only when the API
- * returns the `account_number` field; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `accountNumber`.
- * @public
- */
-export function AccountNumberField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function AccountNumberField(props: AccountNumberFieldProps) {
   return <TextInputHookField {...props} name="accountNumber" />
 }
 
-/**
- * Text input bound to the `companyName` field (requester's name and address).
- *
- * @remarks
- * Available on the hook result as `form.Fields.CompanyName` only when the API
- * returns the `company_name` field; `undefined` otherwise.
- *
- * @param props - {@link ContractorSignatureTextFieldProps}.
- * @returns The rendered text input bound to `companyName`.
- * @public
- */
-export function CompanyNameField(props: ContractorSignatureTextFieldProps) {
+/** @internal */
+export function CompanyNameField(props: CompanyNameFieldProps) {
   return <TextInputHookField {...props} name="companyName" />
 }
 
@@ -412,41 +330,41 @@ export function CompanyNameField(props: ContractorSignatureTextFieldProps) {
  */
 export interface ContractorSignatureFormFieldComponents {
   /** Entity or individual name; defined only when the API returns `name`. */
-  Name: typeof NameField | undefined
+  Name: ComponentType<NameFieldProps> | undefined
   /** Federal tax classification radio group; defined only when the document carries classification checkboxes. */
-  TaxClassification: typeof TaxClassificationField | undefined
+  TaxClassification: ComponentType<TaxClassificationFieldProps> | undefined
   /** Street address line 1; defined only when the API returns `home_address_street_1`. */
-  HomeAddressStreet1: typeof HomeAddressStreet1Field | undefined
+  HomeAddressStreet1: ComponentType<HomeAddressStreet1FieldProps> | undefined
   /** City; defined only when the API returns `home_address_city`. */
-  HomeAddressCity: typeof HomeAddressCityField | undefined
+  HomeAddressCity: ComponentType<HomeAddressCityFieldProps> | undefined
   /** State; defined only when the API returns `home_address_state`. */
-  HomeAddressState: typeof HomeAddressStateField | undefined
+  HomeAddressState: ComponentType<HomeAddressStateFieldProps> | undefined
   /** ZIP code; defined only when the API returns `home_address_zip`. */
-  HomeAddressZip: typeof HomeAddressZipField | undefined
+  HomeAddressZip: ComponentType<HomeAddressZipFieldProps> | undefined
   /** Social Security Number; defined only when the API returns `ssn`. */
-  Ssn: typeof SsnField | undefined
+  Ssn: ComponentType<SsnFieldProps> | undefined
   /** Employer Identification Number; defined only when the API returns `ein`. */
-  Ein: typeof EinField | undefined
+  Ein: ComponentType<EinFieldProps> | undefined
   /** Typed signature; defined only when the API returns `signature_text`. */
-  SignatureText: typeof SignatureTextField | undefined
+  SignatureText: ComponentType<SignatureTextFieldProps> | undefined
   /** Electronic-signature consent checkbox; always present (synthesized, not an API field). */
-  Agree: typeof AgreeField
+  Agree: ComponentType<AgreeFieldProps>
   /** Business name; defined only when the API returns `business_name`. */
-  BusinessName: typeof BusinessNameField | undefined
+  BusinessName: ComponentType<BusinessNameFieldProps> | undefined
   /** LLC tax classification code select; defined only when classification checkboxes are present. */
-  LlcClassificationCode: typeof LlcClassificationCodeField | undefined
+  LlcClassificationCode: ComponentType<LlcClassificationCodeFieldProps> | undefined
   /** "Other" free-text classification; defined only when the API returns `other_text`. */
-  OtherText: typeof OtherTextField | undefined
+  OtherText: ComponentType<OtherTextFieldProps> | undefined
   /** Foreign partners checkbox; defined only when the API returns `foreign_partners`. */
-  ForeignPartners: typeof ForeignPartnersField | undefined
+  ForeignPartners: ComponentType<ForeignPartnersFieldProps> | undefined
   /** Exempt payee code; defined only when the API returns `exempt_payee_code`. */
-  ExemptPayeeCode: typeof ExemptPayeeCodeField | undefined
+  ExemptPayeeCode: ComponentType<ExemptPayeeCodeFieldProps> | undefined
   /** FATCA exemption code; defined only when the API returns `exemption_from_FATCA`. */
-  ExemptionFromFatca: typeof ExemptionFromFatcaField | undefined
+  ExemptionFromFatca: ComponentType<ExemptionFromFatcaFieldProps> | undefined
   /** Street address line 2; defined only when the API returns `home_address_street_2`. */
-  HomeAddressStreet2: typeof HomeAddressStreet2Field | undefined
+  HomeAddressStreet2: ComponentType<HomeAddressStreet2FieldProps> | undefined
   /** Account number(s); defined only when the API returns `account_number`. */
-  AccountNumber: typeof AccountNumberField | undefined
+  AccountNumber: ComponentType<AccountNumberFieldProps> | undefined
   /** Requester's name and address; defined only when the API returns `company_name`. */
-  CompanyName: typeof CompanyNameField | undefined
+  CompanyName: ComponentType<CompanyNameFieldProps> | undefined
 }
