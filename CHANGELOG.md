@@ -4,26 +4,15 @@
 
 ### ⚠ Breaking Changes
 
-- **The standalone field exports `NameField`, `RoutingNumberField`, `AccountNumberField`, `AccountTypeField`, and `ContractorPaymentMethodTypeField` have been removed** ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303)). Access these field components from the relevant hook's `form.Fields` instead.
+- **The field exports `NameField`, `RoutingNumberField`, `AccountNumberField`, `AccountTypeField`, and `ContractorPaymentMethodTypeField` have been removed** ([#2303](https://github.com/Gusto/embedded-react-sdk/issues/2303)). These fields depend on their form's context and were never functional when imported and rendered on their own, so this only affects direct imports of the symbols. Access them from the relevant hook's `form.Fields`, which wires up the required context:
 
   ```tsx
-  // Before
-  import {
-    NameField,
-    RoutingNumberField,
-    AccountNumberField,
-    AccountTypeField,
-  } from '@gusto/embedded-react-sdk'
-  // ...render <NameField />, <RoutingNumberField />, etc. directly
-
-  // After
   const { form } = useContractorBankAccountForm({ contractorId })
   const { Name, RoutingNumber, AccountNumber, AccountType } = form.Fields
   // ...render <Name />, <RoutingNumber />, etc.
 
-  // ContractorPaymentMethodTypeField is now form.Fields.Type on useContractorPaymentMethodForm
   const paymentMethodForm = useContractorPaymentMethodForm({ contractorId })
-  const { Type } = paymentMethodForm.form.Fields
+  const { Type } = paymentMethodForm.form.Fields // was ContractorPaymentMethodTypeField
   ```
 
 ### Features & Enhancements
