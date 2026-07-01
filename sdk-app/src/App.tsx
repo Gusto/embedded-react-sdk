@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
@@ -30,6 +30,7 @@ import {
   useDesignSystemState,
 } from './ThemePanel'
 import { RightPanelShell } from './RightPanelShell'
+import { CommentsProvider, CommentLayer, CommentControls } from './design/comments'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -80,6 +81,7 @@ export function App() {
   const designSystemState = useDesignSystemState()
   const { chromeId, setChromeId } = useDemoChrome()
   const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
+  const mainRef = useRef<HTMLElement>(null)
 
   const activePanel: 'theme' | 'settings' | 'code' | null = codePanel.isOpen
     ? 'code'
@@ -286,10 +288,12 @@ export function App() {
   )
   const mainEl = (
     <main
+      ref={mainRef}
       className="main-content"
       style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
     >
       {chromedOutlet}
+      <CommentLayer containerRef={mainRef} />
     </main>
   )
 
@@ -325,35 +329,38 @@ export function App() {
       <ThemeEditorContext.Provider value={themeEditorState}>
         <DesignSystemContext.Provider value={designSystemState}>
           <CurrentComponentProvider>
-            <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-              {bodyEl}
-              {chromeHidden && panelsOpen && (
-                <RightPanelShell floating>{panelsContent}</RightPanelShell>
-              )}
-              {chromeHidden && (
-                <button
-                  type="button"
-                  className="chrome-restore-pill"
-                  onClick={showChrome}
-                  aria-label="Show chrome"
-                >
-                  <span className="chrome-restore-pill-key">\</span> Show chrome
-                </button>
-              )}
-              <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-              <CommandPalette
-                isOpen={commandPalette.isOpen}
-                onClose={commandPalette.close}
-                entries={paletteEntries}
-              />
-              {!isManual && demoManager.tokenStatus === 'expired' && (
-                <TokenExpiredOverlay
-                  onRefresh={demoManager.refreshToken}
-                  isRefreshing={demoManager.isCreatingDemo}
-                  error={demoManager.demoError}
+            <CommentsProvider>
+              <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+                {bodyEl}
+                {chromeHidden && panelsOpen && (
+                  <RightPanelShell floating>{panelsContent}</RightPanelShell>
+                )}
+                {chromeHidden && (
+                  <button
+                    type="button"
+                    className="chrome-restore-pill"
+                    onClick={showChrome}
+                    aria-label="Show chrome"
+                  >
+                    <span className="chrome-restore-pill-key">\</span> Show chrome
+                  </button>
+                )}
+                <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+                <CommandPalette
+                  isOpen={commandPalette.isOpen}
+                  onClose={commandPalette.close}
+                  entries={paletteEntries}
                 />
-              )}
-            </div>
+                {!isManual && demoManager.tokenStatus === 'expired' && (
+                  <TokenExpiredOverlay
+                    onRefresh={demoManager.refreshToken}
+                    isRefreshing={demoManager.isCreatingDemo}
+                    error={demoManager.demoError}
+                  />
+                )}
+                <CommentControls />
+              </div>
+            </CommentsProvider>
           </CurrentComponentProvider>
         </DesignSystemContext.Provider>
       </ThemeEditorContext.Provider>
