@@ -135,7 +135,6 @@ import { InformationRequestType } from '@gusto/embedded-api-v-2025-11-15/models/
 import { InputHTMLAttributes } from 'react';
 import { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job';
 import { JSX } from 'react';
-import { JSXElementConstructor } from 'react';
 import { Juneteenth } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy';
 import { LaborDay } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy';
 import { Licensee } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt';
@@ -224,7 +223,6 @@ import { PresidentsDay } from '@gusto/embedded-api-v-2025-11-15/models/component
 import { QueryClient } from '@tanstack/react-query';
 import { Questions } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxesrequest';
 import { RateType } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirementmetadata';
-import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { RecipientType } from '@gusto/embedded-api-v-2025-11-15/models/components/document';
 import { RecoveryCase } from '@gusto/embedded-api-v-2025-11-15/models/components/recoverycase';
@@ -863,11 +861,6 @@ export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<Fieldse
     options: Array<CheckboxGroupOption>;
     value?: string[];
 }
-
-// Warning: (ae-internal-missing-underscore) The name "CheckboxHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function CheckboxHookField<TErrorCode extends string>(input: CheckboxHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
@@ -1876,12 +1869,6 @@ export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProp
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
-// Warning: (ae-forgotten-export) The symbol "EmployeeStateTaxesSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeStateTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
-
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
 
@@ -1904,20 +1891,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     defaultValues?: CreateSignatoryDefaultValues;
     signatoryId?: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSplitPaymentsFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSplitPaymentsFormSchema(options?: SplitPaymentsFormSchemaOptions): BuildFormSchemaResult<    {
-splitBy: z.ZodEnum<{
-Percentage: "Percentage";
-Amount: "Amount";
-}>;
-splitAmount: z.ZodRecord<z.ZodString, z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodNullable<z.ZodNumber>>>;
-priority: z.ZodRecord<z.ZodString, z.ZodNumber>;
-}>;
 
 // Warning: (ae-internal-missing-underscore) The name "createStateFields" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -1969,11 +1942,6 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
 
 // @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
-
-// Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function DatePickerHookField<TErrorCode extends string>(input: DatePickerHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface DatePickerHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
@@ -2518,9 +2486,6 @@ export interface EmployeeStateTaxesFormData {
 
 // @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
-
-// @public
-export type EmployeeStateTaxesFormOutputs = EmployeeStateTaxesFormData;
 
 // Warning: (ae-forgotten-export) The symbol "FieldsMetadataConfig" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesMetadataConfig" should be prefixed with an underscore because the declaration is marked as @internal
@@ -3379,11 +3344,6 @@ interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireR
 //
 // @internal
 export function normalizeToSDKError(error: unknown): SDKError;
-
-// Warning: (ae-internal-missing-underscore) The name "NumberInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function NumberInputHookField<TErrorCode extends string>(input: NumberInputHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
@@ -4299,11 +4259,6 @@ export interface ProgressBarProps {
     totalSteps: number;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "RadioGroupHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>(input: RadioGroupHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
-
 // @public
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
@@ -4462,11 +4417,6 @@ export class SDKInternalError extends Error {
     // (undocumented)
     readonly category: SDKErrorCategory;
 }
-
-// Warning: (ae-internal-missing-underscore) The name "SelectHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function SelectHookField<TErrorCode extends string, TEntry = unknown>(input: SelectHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
@@ -4705,9 +4655,6 @@ export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form'][
 export type SplitPaymentsFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
-export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
-
-// @public
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
 
 // @public
@@ -4838,11 +4785,6 @@ export type SupportedLanguages = 'en'
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];
 
-// Warning: (ae-internal-missing-underscore) The name "SwitchHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function SwitchHookField<TErrorCode extends string>(input: SwitchHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
-
 // @public
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     FieldComponent?: ComponentType<SwitchProps>;
@@ -4942,11 +4884,6 @@ export interface TextAreaProps extends SharedFieldLayoutProps, Pick<TextareaHTML
     rows?: number;
     value?: string;
 }
-
-// Warning: (ae-internal-missing-underscore) The name "TextInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function TextInputHookField<TErrorCode extends string, TOptionalErrorCode extends string = never>(input: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface TextInputHookFieldProps<TErrorCode extends string = never, TOptionalErrorCode extends string = never> extends BaseFieldProps {

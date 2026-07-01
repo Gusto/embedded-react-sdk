@@ -364,16 +364,6 @@ the hook's `optionalFieldsToRequire` option.
 
 ***
 
-<a id="splitpaymentsformoutputs"></a>
-
-### SplitPaymentsFormOutputs
-
-> **SplitPaymentsFormOutputs** = [`SplitPaymentsFormData`](#splitpaymentsformdata)
-
-Shape of the validated values produced by the split payments form on submit.
-
-***
-
 <a id="workingsplit"></a>
 
 ### WorkingSplit

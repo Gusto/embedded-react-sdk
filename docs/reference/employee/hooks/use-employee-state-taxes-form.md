@@ -483,17 +483,6 @@ The array of per-state field groups exposed by
 
 ***
 
-<a id="employeestatetaxesformoutputs"></a>
-
-### EmployeeStateTaxesFormOutputs
-
-> **EmployeeStateTaxesFormOutputs** = [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)
-
-Shape of the validated values produced by the employee state taxes form on
-submit.
-
-***
-
 <a id="numberstatetaxfieldprops"></a>
 
 ### NumberStateTaxFieldProps
