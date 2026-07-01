@@ -619,3 +619,25 @@ export type {
   UseContractorDocumentsListResult,
   UseContractorDocumentsListReady,
 } from '@/components/Contractor/Documents/DocumentsList/useContractorDocumentsList'
+
+export {
+  useContractorSignatureForm,
+  ContractorSignatureFormErrorCodes,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
+export type {
+  UseContractorSignatureFormProps,
+  UseContractorSignatureFormResult,
+  UseContractorSignatureFormReady,
+  ContractorSignatureFormErrorCode,
+  ContractorSignatureFormData,
+  ContractorSignatureFormOutputs,
+  ContractorSignatureOptionalFieldsToRequire,
+  ContractorSignatureFormFieldComponents,
+  ContractorSignatureTextFieldProps,
+  ContractorSignatureCheckboxFieldProps,
+  ContractorSignatureAgreeFieldProps,
+  ContractorSignatureRadioFieldProps,
+  ContractorSignatureSelectFieldProps,
+  ContractorSignatureSsnFieldProps,
+  ContractorSignatureEinFieldProps,
+} from '@/components/Contractor/Documents/SignatureForm/useContractorSignatureForm'
