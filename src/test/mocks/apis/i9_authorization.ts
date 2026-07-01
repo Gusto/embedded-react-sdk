@@ -1,7 +1,7 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1EmployeesEmployeeIdI9AuthorizationRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidi9authorization'
-import type { I9AuthorizationRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorizationrequestbody'
+import type { GetV1EmployeesEmployeeIdI9AuthorizationRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidi9authorization'
+import type { I9AuthorizationRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorizationrequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

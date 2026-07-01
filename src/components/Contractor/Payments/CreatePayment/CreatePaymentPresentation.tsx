@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { ContractorPayments } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorPayments } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from './helpers'

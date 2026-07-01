@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { ContractorBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorbankaccount'
-import { useContractorPaymentMethodGetBankAccounts } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGetBankAccounts'
-import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodsCreateBankAccount'
+import type { ContractorBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccount'
+import { useContractorPaymentMethodGetBankAccounts } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodGetBankAccounts'
+import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodsCreateBankAccount'
 import {
   ACCOUNT_TYPES,
   createContractorBankAccountSchema,

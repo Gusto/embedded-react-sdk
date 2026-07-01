@@ -1,19 +1,19 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
 import {
   useEmployeeEmploymentsGetTerminationsSuspense,
   invalidateAllEmployeeEmploymentsGetTerminations,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsGetTerminations'
-import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsCreateTermination'
-import { useEmployeeEmploymentsUpdateTerminationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsUpdateTermination'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsGetTerminations'
+import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsCreateTermination'
+import { useEmployeeEmploymentsUpdateTerminationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsUpdateTermination'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsCreateOffCycle'
 import {
   usePaySchedulesGetUnprocessedTerminationPeriods,
   invalidateAllPaySchedulesGetUnprocessedTerminationPeriods,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetUnprocessedTerminationPeriods'
-import { invalidateAllPayrollsList } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
-import { OffCycleReason } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import { invalidateAllPayrollsList } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsList'
+import { OffCycleReason } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import type { PayrollOption } from '../types'
 import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
