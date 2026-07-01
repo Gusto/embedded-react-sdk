@@ -54,7 +54,7 @@ We could provide custom text in a similar manner for any copy on the page.
 
 ## Viewing available translations
 
-For a complete, browsable list of every overridable string, see the [Translations reference](../../reference/Translations/index.md). Each i18n namespace (e.g. `Employee.PaymentMethod`) has its own section listing every key alongside its default English copy — these are exactly the keys you supply under `dictionary`.
+For a complete, browseable list of every overridable string, see the [Translations reference](../../reference/Translations/index.md). Each i18n namespace (e.g. `Employee.PaymentMethod`) has its own section listing every key alongside its default English copy — these are exactly the keys you supply under `dictionary`.
 
 Every dictionary entry is also fully typed. As you type a namespace or key, your IDE surfaces the available options:
 
