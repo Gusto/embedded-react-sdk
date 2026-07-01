@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -15,6 +16,7 @@ import {
   type WorkAddressFormData,
   type WorkAddressFormOutputs,
 } from './workAddressSchema'
+import type { LocationFieldProps, EffectiveDateFieldProps } from './fields'
 import { LocationField, EffectiveDateField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -107,11 +109,11 @@ export interface UseWorkAddressFormProps {
  *
  * @public
  */
-export interface WorkAddressFields {
-  /** Location selector. Always available. */
-  Location: typeof LocationField
-  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+export interface WorkAddressFormFields {
+  /** Bound to `locationUuid`. Location selector. Always available. */
+  Location: ComponentType<LocationFieldProps>
+  /** Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**
@@ -126,7 +128,7 @@ export interface WorkAddressFields {
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   WorkAddressFormData,
-  WorkAddressFields
+  WorkAddressFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -413,9 +415,3 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
  * @public
  */
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link useWorkAddressForm}.
- *
- * @public
- */
-export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields']

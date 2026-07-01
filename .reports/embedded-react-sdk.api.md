@@ -934,9 +934,6 @@ export type ChildSupportGarnishmentRequiredValidation = typeof ChildSupportGarni
 export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, StateFieldEntry>>;
 
 // @public
-export function CityField(props: CityFieldProps): JSX;
-
-// @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "QueryWithError" needs to be exported by the entry point index.d.ts
@@ -1874,48 +1871,16 @@ export type CountyEntry = {
 };
 
 // @public
-export function CourtesyWithholdingField(props: CourtesyWithholdingFieldProps): JSX;
-
-// @public
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
 type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeDetailsSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeDetailsSchema(options?: EmployeeDetailsSchemaOptions): BuildFormSchemaResult<    {
-firstName: z.ZodString;
-middleInitial: z.ZodString;
-lastName: z.ZodString;
-email: z.ZodEmail;
-dateOfBirth: z.ZodISODate;
-ssn: z.ZodString;
-selfOnboarding: z.ZodBoolean;
-}>;
 
 // Warning: (ae-forgotten-export) The symbol "EmployeeStateTaxesSchemaResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createEmployeeStateTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
 export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
-
-// Warning: (ae-forgotten-export) The symbol "HomeAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createHomeAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createHomeAddressSchema(options?: HomeAddressSchemaOptions): BuildFormSchemaResult<    {
-street1: z.ZodString;
-street2: z.ZodString;
-city: z.ZodString;
-state: z.ZodString;
-zip: z.ZodString;
-courtesyWithholding: z.ZodBoolean;
-effectiveDate: z.ZodISODate;
-}>;
 
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
@@ -1941,6 +1906,7 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
 }
 
 // Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "createSplitPaymentsFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -1965,15 +1931,6 @@ export interface CreateStateFieldsOptions {
     // (undocumented)
     isAdmin: boolean;
 }
-
-// Warning: (ae-forgotten-export) The symbol "WorkAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createWorkAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createWorkAddressSchema(options?: WorkAddressSchemaOptions): BuildFormSchemaResult<    {
-locationUuid: z.ZodString;
-effectiveDate: z.ZodISODate;
-}>;
 
 // @public
 export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
@@ -2009,9 +1966,6 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
     // Warning: (ae-forgotten-export) The symbol "DashboardTab" needs to be exported by the entry point index.d.ts
     selectedTab?: DashboardTab;
 }
-
-// @public
-export function DateOfBirthField(props: DateOfBirthFieldProps): JSX;
 
 // @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
@@ -2321,9 +2275,6 @@ interface EditCompensationProps extends CommonComponentInterface<'Employee.Compe
 export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<WorkAddressRequiredValidation>>;
 
 // @public
-export function EmailField(props: EmailFieldProps): JSX;
-
-// @public
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>;
 
 // @public
@@ -2348,27 +2299,21 @@ export const EmployeeDetailsErrorCodes: {
 export type EmployeeDetailsField = "email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth";
 
 // @public
-export interface EmployeeDetailsFields {
-    DateOfBirth: typeof DateOfBirthField;
-    Email: typeof EmailField;
-    FirstName: typeof FirstNameField;
-    LastName: typeof LastNameField;
-    MiddleInitial: typeof MiddleInitialField;
-    SelfOnboarding: typeof SelfOnboardingField | undefined;
-    Ssn: typeof SsnField;
-}
-
-// @public
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
 
 // @public
 export type EmployeeDetailsFormData = { firstName: string; middleInitial: string; lastName: string; email: string; dateOfBirth: string; ssn: string; selfOnboarding: boolean; };
 
 // @public
-export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields'];
-
-// @public
-export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
+export interface EmployeeDetailsFormFields {
+    DateOfBirth: ComponentType<DateOfBirthFieldProps>;
+    Email: ComponentType<EmailFieldProps>;
+    FirstName: ComponentType<FirstNameFieldProps>;
+    LastName: ComponentType<LastNameFieldProps>;
+    MiddleInitial: ComponentType<MiddleInitialFieldProps>;
+    SelfOnboarding: ComponentType<SelfOnboardingFieldProps> | undefined;
+    Ssn: ComponentType<SsnFieldProps>;
+}
 
 // @public
 export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("email" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; update?: ("email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; };
@@ -2786,9 +2731,6 @@ export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number];
 export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, CountyEntry>>;
 
 // @public
-export function FirstNameField(props: FirstNameFieldProps): JSX;
-
-// @public
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
 // @public
@@ -3019,9 +2961,6 @@ interface HomeAddressEditFormProps extends BaseComponentInterface<'Employee.Mana
 }
 
 // @public
-export function HomeAddressEffectiveDateField(props: HomeAddressEffectiveDateFieldProps): JSX;
-
-// @public
 export type HomeAddressEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
@@ -3037,27 +2976,21 @@ export const HomeAddressErrorCodes: {
 export type HomeAddressField = "street1" | "street2" | "city" | "state" | "zip" | "effectiveDate" | "courtesyWithholding";
 
 // @public
-export interface HomeAddressFields {
-    City: typeof CityField;
-    CourtesyWithholding: typeof CourtesyWithholdingField;
-    EffectiveDate: typeof HomeAddressEffectiveDateField | undefined;
-    State: typeof HomeAddressStateField;
-    Street1: typeof Street1Field;
-    Street2: typeof Street2Field;
-    Zip: typeof ZipField;
-}
-
-// @public
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata'];
 
 // @public
 export type HomeAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; courtesyWithholding: boolean; effectiveDate: string; };
 
 // @public
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields'];
-
-// @public
-export type HomeAddressFormOutputs = HomeAddressFormData;
+export interface HomeAddressFormFields {
+    City: ComponentType<CityFieldProps>;
+    CourtesyWithholding: ComponentType<CourtesyWithholdingFieldProps>;
+    EffectiveDate: ComponentType<HomeAddressEffectiveDateFieldProps> | undefined;
+    State: ComponentType<StateFieldProps>;
+    Street1: ComponentType<Street1FieldProps>;
+    Street2: ComponentType<Street2FieldProps>;
+    Zip: ComponentType<ZipFieldProps>;
+}
 
 // @public
 export type HomeAddressOptionalFieldsToRequire = { create?: "street2"[] | undefined; update?: "street2"[] | undefined; };
@@ -3069,9 +3002,6 @@ interface HomeAddressProps extends BaseComponentInterface<'Employee.Management.H
 
 // @public
 export type HomeAddressRequiredValidation = typeof HomeAddressErrorCodes.REQUIRED;
-
-// @public
-export function HomeAddressStateField(props: StateFieldProps): JSX;
 
 // @public
 export interface HomeAddressSubmitOptions {
@@ -3265,9 +3195,6 @@ interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
 }
 
 // @public
-export function LastNameField(props: LastNameFieldProps): JSX;
-
-// @public
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
 
 // @public
@@ -3390,9 +3317,6 @@ export interface MenuProps extends DataAttributes {
     portalContainer?: HTMLElement;
     triggerRef?: RefObject<Element | null>;
 }
-
-// @public
-export function MiddleInitialField(props: MiddleInitialFieldProps): JSX;
 
 // @public
 export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<EmployeeDetailsRequiredValidation>>;
@@ -4594,9 +4518,6 @@ export interface SelectStateTaxQuestion extends SharedQuestionMetadata {
 }
 
 // @public
-export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
-
-// @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
 // @public
@@ -4790,9 +4711,6 @@ export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
 
 // @public
-export function SsnField(props: SsnFieldProps): JSX;
-
-// @public
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>>;
 
 // @public
@@ -4900,13 +4818,7 @@ export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<Job
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>;
 
 // @public
-export function Street1Field(props: Street1FieldProps): JSX;
-
-// @public
 export type Street1FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
-
-// @public
-export function Street2Field(props: Street2FieldProps): JSX;
 
 // @public
 export type Street2FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
@@ -5560,7 +5472,7 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
 });
 
 // @public
-export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFields> {
+export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFormFields> {
     actions: {
         onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee> | undefined>;
     };
@@ -5690,7 +5602,7 @@ export interface UseHomeAddressFormProps {
 }
 
 // @public
-export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFields> {
+export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFormFields> {
     actions: {
         onSubmit: (options?: HomeAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeAddress> | undefined>;
     };
@@ -5931,7 +5843,7 @@ export interface UseWorkAddressFormProps {
 }
 
 // @public
-export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFields> {
+export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFormFields> {
     actions: {
         onSubmit: (callbacks?: WorkAddressSubmitCallbacks, options?: WorkAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>;
     };
@@ -6014,9 +5926,6 @@ interface WorkAddressEditFormProps extends BaseComponentInterface<'Employee.Mana
 }
 
 // @public
-export function WorkAddressEffectiveDateField(props: EffectiveDateFieldProps): JSX;
-
-// @public
 export type WorkAddressErrorCode = (typeof WorkAddressErrorCodes)[keyof typeof WorkAddressErrorCodes];
 
 // @public
@@ -6028,25 +5937,16 @@ export const WorkAddressErrorCodes: {
 export type WorkAddressField = "effectiveDate" | "locationUuid";
 
 // @public
-export interface WorkAddressFields {
-    EffectiveDate: typeof WorkAddressEffectiveDateField | undefined;
-    Location: typeof WorkAddressLocationField;
-}
-
-// @public
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata'];
 
 // @public
 export type WorkAddressFormData = { locationUuid: string; effectiveDate: string; };
 
 // @public
-export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields'];
-
-// @public
-export type WorkAddressFormOutputs = WorkAddressFormData;
-
-// @public
-export function WorkAddressLocationField(props: LocationFieldProps): JSX;
+export interface WorkAddressFormFields {
+    EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined;
+    Location: ComponentType<LocationFieldProps>;
+}
 
 // @public
 export type WorkAddressOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -6079,9 +5979,6 @@ export interface WorkingSplit {
     splitAmount: number | null;
     uuid: string;
 }
-
-// @public
-export function ZipField(props: ZipFieldProps): JSX;
 
 // @public
 export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation>>;

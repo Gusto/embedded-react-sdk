@@ -137,7 +137,7 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | `data.employee` | [`Employee`](../../APIModels/index.md#employee) \| `null` | The employee being edited, or `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`EmployeeDetailsFields`](#employeedetailsfields) | - |
+| `form.Fields` | [`EmployeeDetailsFormFields`](#employeedetailsformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`EmployeeDetailsFormData`](#employeedetailsformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
@@ -148,27 +148,27 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 
 ## Fields
 
-### EmployeeDetailsFields
+### EmployeeDetailsFormFields
 
-<a id="employeedetailsfields"></a>
+<a id="employeedetailsformfields"></a>
 
 The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `DateOfBirth` | `ComponentType`\<[`DateOfBirthFieldProps`](#dateofbirthfieldprops)\> | Date picker bound to `dateOfBirth`. |
-| `Email` | `ComponentType`\<[`EmailFieldProps`](#emailfieldprops)\> | Text input bound to `email`. |
-| `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#firstnamefieldprops)\> | Text input bound to `firstName`. |
-| `LastName` | `ComponentType`\<[`LastNameFieldProps`](#lastnamefieldprops)\> | Text input bound to `lastName`. |
-| `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#middleinitialfieldprops)\> | Text input bound to `middleInitial`. |
-| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#ssnfieldprops)\> | Text input bound to `ssn`. |
-| `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#selfonboardingfieldprops)\> \| `undefined` | Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. |
+| `DateOfBirth` | `ComponentType`\<[`DateOfBirthFieldProps`](#dateofbirthfieldprops)\> | Bound to `dateOfBirth`. Date picker. |
+| `Email` | `ComponentType`\<[`EmailFieldProps`](#emailfieldprops)\> | Bound to `email`. Text input. |
+| `FirstName` | `ComponentType`\<[`FirstNameFieldProps`](#firstnamefieldprops)\> | Bound to `firstName`. Text input. |
+| `LastName` | `ComponentType`\<[`LastNameFieldProps`](#lastnamefieldprops)\> | Bound to `lastName`. Text input. |
+| `MiddleInitial` | `ComponentType`\<[`MiddleInitialFieldProps`](#middleinitialfieldprops)\> | Bound to `middleInitial`. Text input. |
+| `Ssn` | `ComponentType`\<[`SsnFieldProps`](#ssnfieldprops)\> | Bound to `ssn`. Text input. |
+| `SelfOnboarding` | `ComponentType`\<[`SelfOnboardingFieldProps`](#selfonboardingfieldprops)\> \| `undefined` | Bound to `selfOnboarding`. Switch, or `undefined` when the field is not toggleable. |
 
 ***
 
 ### DateOfBirth
 
-Date picker bound to `dateOfBirth`.
+Bound to `dateOfBirth`. Date picker.
 
 ```tsx
 <form.Fields.DateOfBirth
@@ -197,7 +197,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### Email
 
-Text input bound to `email`.
+Bound to `email`. Text input.
 
 ```tsx
 <form.Fields.Email
@@ -230,7 +230,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### FirstName
 
-Text input bound to `firstName`.
+Bound to `firstName`. Text input.
 
 ```tsx
 <form.Fields.FirstName
@@ -259,7 +259,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### LastName
 
-Text input bound to `lastName`.
+Bound to `lastName`. Text input.
 
 ```tsx
 <form.Fields.LastName
@@ -288,7 +288,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### MiddleInitial
 
-Text input bound to `middleInitial`.
+Bound to `middleInitial`. Text input.
 
 ```tsx
 <form.Fields.MiddleInitial
@@ -317,7 +317,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### SelfOnboarding
 
-Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable.
+Bound to `selfOnboarding`. Switch, or `undefined` when the field is not toggleable.
 
 ```tsx
 {form.Fields.SelfOnboarding && (
@@ -344,7 +344,7 @@ _Also accepts `description`, `formHookResult` from [SwitchHookFieldProps](../../
 
 ### Ssn
 
-Text input bound to `ssn`.
+Bound to `ssn`. Text input.
 
 ```tsx
 <form.Fields.Ssn
@@ -541,27 +541,6 @@ Shape of the values managed by the employee details form.
 | `middleInitial` | `string` |
 | `selfOnboarding` | `boolean` |
 | `ssn` | `string` |
-
-***
-
-<a id="employeedetailsformfields"></a>
-
-### EmployeeDetailsFormFields
-
-> **EmployeeDetailsFormFields** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of `form.Fields` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
-
-***
-
-<a id="employeedetailsformoutputs"></a>
-
-### EmployeeDetailsFormOutputs
-
-> **EmployeeDetailsFormOutputs** = [`EmployeeDetailsFormData`](#employeedetailsformdata)
-
-Shape of the validated values produced by the employee details form on
-submit.
 
 ***
 

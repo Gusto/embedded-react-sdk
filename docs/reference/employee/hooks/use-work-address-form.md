@@ -162,7 +162,7 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `data.workAddress` | [`EmployeeWorkAddress`](../../APIModels/index.md#employeeworkaddress) \| `null` | The address row loaded for update; `null` in create mode. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`WorkAddressFields`](#workaddressfields) | - |
+| `form.Fields` | [`WorkAddressFormFields`](#workaddressformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`WorkAddressFormData`](#workaddressformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
@@ -173,22 +173,22 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 
 ## Fields
 
-### WorkAddressFields
+### WorkAddressFormFields
 
-<a id="workaddressfields"></a>
+<a id="workaddressformfields"></a>
 
 Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Location` | `ComponentType`\<[`LocationFieldProps`](#locationfieldprops)\> | Location selector. Always available. |
-| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#effectivedatefieldprops)\> \| `undefined` | Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
+| `Location` | `ComponentType`\<[`LocationFieldProps`](#locationfieldprops)\> | Bound to `locationUuid`. Location selector. Always available. |
+| `EffectiveDate` | `ComponentType`\<[`EffectiveDateFieldProps`](#effectivedatefieldprops)\> \| `undefined` | Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. |
 
 ***
 
 ### EffectiveDate
 
-Effective-date picker. Only available when `withEffectiveDateField` is `true`.
+Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`.
 
 ```tsx
 {form.Fields.EffectiveDate && (
@@ -219,7 +219,7 @@ _Also accepts `description`, `formHookResult`, `maxDate`, `minDate`, `portalCont
 
 ### Location
 
-Location selector. Always available.
+Bound to `locationUuid`. Location selector. Always available.
 
 ```tsx
 <form.Fields.Location
@@ -337,26 +337,6 @@ Shape of the values managed by the work address form.
 | ------ | ------ |
 | `effectiveDate` | `string` |
 | `locationUuid` | `string` |
-
-***
-
-<a id="workaddressformfields"></a>
-
-### WorkAddressFormFields
-
-> **WorkAddressFormFields** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"Fields"`\]
-
-Type of `form.Fields` returned by [useWorkAddressForm](#useworkaddressform).
-
-***
-
-<a id="workaddressformoutputs"></a>
-
-### WorkAddressFormOutputs
-
-> **WorkAddressFormOutputs** = [`WorkAddressFormData`](#workaddressformdata)
-
-Shape of the validated values produced by the work address form on submit.
 
 ***
 

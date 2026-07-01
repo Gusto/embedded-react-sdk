@@ -215,14 +215,6 @@ export type {
 export {
   useEmployeeDetailsForm,
   EmployeeDetailsErrorCodes,
-  createEmployeeDetailsSchema,
-  FirstNameField,
-  MiddleInitialField,
-  LastNameField,
-  EmailField,
-  DateOfBirthField,
-  SsnField,
-  SelfOnboardingField,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 export type {
   EmployeeDetailsSubmitCallbacks,
@@ -235,7 +227,6 @@ export type {
   EmployeeDetailsFormFields,
   EmployeeDetailsErrorCode,
   EmployeeDetailsFormData,
-  EmployeeDetailsFormOutputs,
   EmployeeDetailsField,
   EmployeeDetailsRequiredValidation,
   NameValidation,
@@ -249,7 +240,6 @@ export type {
   SsnFieldProps,
   SelfOnboardingFieldProps,
   SsnRequiredValidation,
-  EmployeeDetailsFields,
 } from '@/components/Employee/Profile/shared/useEmployeeDetailsForm'
 
 export {
@@ -338,9 +328,6 @@ export {
   useWorkAddressForm,
   useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
-  createWorkAddressSchema,
-  LocationField as WorkAddressLocationField,
-  EffectiveDateField as WorkAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 export type {
   WorkAddressSubmitCallbacks,
@@ -354,26 +341,16 @@ export type {
   WorkAddressFormFields,
   WorkAddressErrorCode,
   WorkAddressFormData,
-  WorkAddressFormOutputs,
   WorkAddressField,
   WorkAddressRequiredValidation,
   LocationFieldProps,
   EffectiveDateFieldProps,
-  WorkAddressFields,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
 
 export {
   useHomeAddressForm,
   useCurrentHomeAddressForm,
   HomeAddressErrorCodes,
-  createHomeAddressSchema,
-  Street1Field,
-  Street2Field,
-  CityField,
-  StateField as HomeAddressStateField,
-  ZipField,
-  CourtesyWithholdingField,
-  EffectiveDateField as HomeAddressEffectiveDateField,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 export type {
   HomeAddressSubmitOptions,
@@ -386,7 +363,6 @@ export type {
   HomeAddressFormFields,
   HomeAddressErrorCode,
   HomeAddressFormData,
-  HomeAddressFormOutputs,
   HomeAddressField,
   HomeAddressRequiredValidation,
   ZipValidation,
@@ -397,7 +373,6 @@ export type {
   ZipFieldProps,
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
-  HomeAddressFields,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {

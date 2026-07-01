@@ -49,11 +49,7 @@ export type WorkAddressField = keyof typeof fieldValidators
 export type WorkAddressFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the work address form on submit.
- *
- * @public
- */
+/** @internal */
 export type WorkAddressFormOutputs = WorkAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
