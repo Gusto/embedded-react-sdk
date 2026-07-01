@@ -1926,9 +1926,6 @@ export interface ContractorSignatureFormFieldComponents {
 }
 
 // @public
-export type ContractorSignatureFormOutputs = ContractorSignatureFormData;
-
-// @public
 export type ContractorSignatureHomeAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
 
 // @public

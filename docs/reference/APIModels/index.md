@@ -597,7 +597,7 @@ Input type for the custom field.
 
 > `const` **DocumentSignedRecipientType**: `object`
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/documentsigned.ts#L15)
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L15)
 
 The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
 
@@ -2796,7 +2796,7 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/document.ts:
 
 > **DocumentSigned** = `object`
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsigned.ts:77](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/documentsigned.ts#L77)
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:77](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L77)
 
 `DocumentSigned` entity from the Gusto Embedded API.
 
@@ -2826,7 +2826,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsign
 
 > **DocumentSignedFields** = `object`
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsigned.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/documentsigned.ts#L38)
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L38)
 
 `DocumentSignedFields` entity from the Gusto Embedded API.
 
@@ -2852,7 +2852,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsign
 
 > **DocumentSignedPages** = `object`
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsigned.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/documentsigned.ts#L27)
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L27)
 
 `DocumentSignedPages` entity from the Gusto Embedded API.
 
@@ -2871,7 +2871,7 @@ Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsign
 
 > **DocumentSignedRecipientType** = `ClosedEnum`\<*typeof* [`DocumentSignedRecipientType`](#documentsignedrecipienttype)\>
 
-Defined in: [gusto\_embedded\_v\_2025\_11\_15/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2025_11_15/v0.0.2/gusto_embedded_v_2025_11_15/src/models/components/documentsigned.ts#L15)
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L15)
 
 The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
 
