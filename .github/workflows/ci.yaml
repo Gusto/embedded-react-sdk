@@ -83,6 +83,54 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  # derive-check-i18n: Generate the i18n types declaration (src/i18n/types.d.ts) exactly once.
+  # `derive-check-src` (→ TypeDoc, which reads this file for the Resources reference) consumes
+  # this single artifact so the docs reflect the same translations as the checked-in declaration
+  # and derive-commit pushes a self-consistent set. On main/merge_group/dependabot a stale
+  # declaration fails here.
+  derive-check-i18n:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    outputs:
+      stale: ${{ steps.check.outputs.stale }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Generate i18n types
+        run: npm run i18n:generate
+
+      - name: Check for stale i18n types
+        id: check
+        run: |
+          git add src/i18n/types.d.ts
+          if git diff --staged --quiet; then
+            echo "stale=false" >> $GITHUB_OUTPUT
+          else
+            if [[ "$GITHUB_REF" == "refs/heads/main" ]] || [[ "$GITHUB_ACTOR" == "dependabot[bot]" ]] || [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+              echo "::error::src/i18n/types.d.ts is stale — run 'npm run derive' locally and commit the result."
+              exit 1
+            fi
+            echo "stale=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload derived i18n types
+        uses: actions/upload-artifact@v6
+        with:
+          name: derived-i18n
+          path: src/i18n/types.d.ts
+          retention-days: 1
+          if-no-files-found: error
+
   # Build job: Build the project and cache artifacts
   build:
     needs: [setup, derive-models]
@@ -189,7 +237,7 @@ jobs:
   # On regular branches: outputs stale=true if files changed (derive-commit handles the push).
   # On main, merge_group, and dependabot: fails immediately if files are stale.
   derive-check-src:
-    needs: [setup, derive-models]
+    needs: [setup, derive-models, derive-check-i18n]
     runs-on: ubuntu-latest
     outputs:
       stale: ${{ steps.check.outputs.stale }}
@@ -217,6 +265,15 @@ jobs:
         with:
           name: derived-models
           path: src/models
+
+      # TypeDoc reads src/i18n/types.d.ts for the Resources reference; use the freshly
+      # generated declaration from derive-check-i18n so the docs reflect the same
+      # translations that job verified.
+      - name: Download i18n types
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-i18n
+          path: src/i18n
 
       - name: Derive endpoint inventory and TypeDoc in parallel
         run: |
@@ -314,8 +371,8 @@ jobs:
   # Main, merge_group, and dependabot are gated out at the check layer (they fail on
   # staleness rather than setting stale=true), so derive-commit never runs for them.
   derive-commit:
-    needs: [derive-models, derive-check-src, derive-check-dist]
-    if: needs.derive-models.outputs.stale == 'true' || needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
+    needs: [derive-models, derive-check-i18n, derive-check-src, derive-check-dist]
+    if: needs.derive-models.outputs.stale == 'true' || needs.derive-check-i18n.outputs.stale == 'true' || needs.derive-check-src.outputs.stale == 'true' || needs.derive-check-dist.outputs.stale == 'true'
     # Must use the self-hosted runner group — GitHub-hosted runners are blocked
     # by the org IP allow list and cannot push back to the repository.
     runs-on:
@@ -363,12 +420,19 @@ jobs:
           name: derived-models
           path: src/models
 
+      - name: Download derived i18n types
+        uses: actions/download-artifact@v6
+        with:
+          name: derived-i18n
+          path: src/i18n
+
       - name: Commit and push derived files
         run: |
           git add docs/guides
           git add docs/reference
           git add .reports
           git add src/models/external.ts
+          git add src/i18n/types.d.ts
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --staged --quiet; then
@@ -382,23 +446,26 @@ jobs:
   # Fails when any check job reported stale=true so the gate stays red until
   # derive-commit pushes the fix and CI passes on the new commit.
   derive:
-    needs: [derive-models, derive-check-src, derive-check-dist]
+    needs: [derive-models, derive-check-i18n, derive-check-src, derive-check-dist]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify derive checks passed
         env:
           MODELS: ${{ needs.derive-models.result }}
+          I18N: ${{ needs.derive-check-i18n.result }}
           SRC: ${{ needs.derive-check-src.result }}
           DIST: ${{ needs.derive-check-dist.result }}
           MODELS_STALE: ${{ needs.derive-models.outputs.stale }}
+          I18N_STALE: ${{ needs.derive-check-i18n.outputs.stale }}
           SRC_STALE: ${{ needs.derive-check-src.outputs.stale }}
           DIST_STALE: ${{ needs.derive-check-dist.outputs.stale }}
         run: |
           if [[ "$MODELS" != "success" && "$MODELS" != "skipped" ]]; then exit 1; fi
+          if [[ "$I18N" != "success" && "$I18N" != "skipped" ]]; then exit 1; fi
           if [[ "$SRC" != "success" && "$SRC" != "skipped" ]]; then exit 1; fi
           if [[ "$DIST" != "success" && "$DIST" != "skipped" ]]; then exit 1; fi
-          if [[ "$MODELS_STALE" == "true" || "$SRC_STALE" == "true" || "$DIST_STALE" == "true" ]]; then
+          if [[ "$MODELS_STALE" == "true" || "$I18N_STALE" == "true" || "$SRC_STALE" == "true" || "$DIST_STALE" == "true" ]]; then
             echo "::error::Derived files were stale — an auto-fix commit may be in progress. Re-run CI after it lands, or run 'npm run derive' locally."
             exit 1
           fi

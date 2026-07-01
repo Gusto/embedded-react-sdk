@@ -54,6 +54,8 @@ We could provide custom text in a similar manner for any copy on the page.
 
 ## Viewing available translations
 
-Documenting available translations is still a work in progress. Every entry in the dictionary, however, is typed. This means that if you can begin typing and get available options in your IDE:
+For a complete, browsable list of every overridable string, see the [Translations reference](../../reference/Translations/index.md). Each i18n namespace (e.g. `Employee.PaymentMethod`) has its own section listing every key alongside its default English copy — these are exactly the keys you supply under `dictionary`.
+
+Every dictionary entry is also fully typed. As you type a namespace or key, your IDE surfaces the available options:
 
 ![IDE autocomplete showing typed dictionary entries](https://files.readme.io/8868a0a3673f6a34d8f6da8e1592f36d0ed7d7c98c333d1e13f72a2c4ccc042b-image.png)

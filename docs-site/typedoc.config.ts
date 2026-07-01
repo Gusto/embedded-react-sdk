@@ -22,6 +22,8 @@ export const baseOptions = {
     ...VARIABLE_GROUPS,
     'Functions',
     'Variables',
+    // i18n types relocated onto the Translations page, above its key interfaces.
+    'Types',
     'Interfaces',
     'Type Aliases',
     ...COMPONENT_PROP_GROUPS,

@@ -25,7 +25,9 @@ import { SDKRouter } from './router'
 import {
   defaultValueRestatesLiteralType,
   documentedUnderlyingConst,
+  dropTableColumn,
   isOpaqueConstDerivedType,
+  isTranslationsMember,
 } from './theme'
 import {
   componentPropsInterfaces,
@@ -896,6 +898,45 @@ describe('reparentDeprecatedMembers', () => {
 })
 
 // ---------------------------------------------------------------------------
+// relocateI18nTypes (moves the i18n types onto the Translations page)
+// ---------------------------------------------------------------------------
+
+describe('relocateI18nTypes', () => {
+  type RelocateContext = Parameters<typeof SDKRouter.relocateI18nTypes>[0]
+
+  it('reparents the i18n types under Translations and stamps them @group Types', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const resources = makeChild(project, 'Resources', ReflectionKind.Interface)
+    const dictionary = makeChild(project, 'ResourceDictionary', ReflectionKind.TypeAlias)
+    const globalDictionary = makeChild(project, 'GlobalResourceDictionary', ReflectionKind.Interface)
+    const unrelated = makeChild(project, 'APIConfig', ReflectionKind.Interface)
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    for (const ref of [resources, dictionary, globalDictionary]) {
+      expect(ref.parent).toBe(translations)
+      expect(translations.children).toContain(ref)
+      const groupTag = ref.comment?.blockTags.find(t => t.tag === '@group')
+      expect(groupTag?.content[0]?.text).toBe('Types')
+    }
+    // Removed from the project so they no longer render on the index page.
+    expect(project.children).not.toContain(resources)
+    expect(project.children).toContain(unrelated)
+  })
+
+  it('is a no-op when there is no Translations namespace', () => {
+    const project = makeProject()
+    const resources = makeChild(project, 'Resources', ReflectionKind.Interface)
+
+    SDKRouter.relocateI18nTypes({ project } as unknown as RelocateContext)
+
+    expect(project.children).toContain(resources)
+    expect(resources.parent).toBe(project)
+  })
+})
+
+// ---------------------------------------------------------------------------
 // buildPages — hook directory controls per-hook page membership
 //
 // Each hook directory gets its own page under domain/hooks/. groupSyntheticMembers
@@ -1614,5 +1655,56 @@ describe('defaultValueRestatesLiteralType', () => {
       false,
     )
     expect(defaultValueRestatesLiteralType(member(undefined, "'api_error'"))).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isTranslationsMember (drives the Translations Type-column drop + flat routing)
+// ---------------------------------------------------------------------------
+
+describe('isTranslationsMember', () => {
+  it('is true for a reflection nested anywhere under the Translations namespace', () => {
+    const project = makeProject()
+    const translations = makeChild(project, 'Translations', ReflectionKind.Namespace)
+    const iface = makeChild(translations, 'CompanyAddresses', ReflectionKind.Interface)
+    const prop = makeChild(iface, 'title', ReflectionKind.Property)
+    expect(isTranslationsMember(prop)).toBe(true)
+    expect(isTranslationsMember(iface)).toBe(true)
+  })
+
+  it('is false outside the Translations namespace', () => {
+    const project = makeProject()
+    const other = makeChild(project, 'APIModels', ReflectionKind.Namespace)
+    const iface = makeChild(other, 'Employee', ReflectionKind.Interface)
+    expect(isTranslationsMember(iface)).toBe(false)
+    expect(isTranslationsMember(undefined)).toBe(false)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// dropTableColumn
+// ---------------------------------------------------------------------------
+
+describe('dropTableColumn', () => {
+  const table = [
+    '| Property | Type | Default value |',
+    '| --- | --- | --- |',
+    '| `title` | `string` | `"Hi"` |',
+  ].join('\n')
+
+  it('removes the named column from header, separator, and body rows', () => {
+    const result = dropTableColumn(table, 'Type')
+    expect(result).toBe(
+      ['| Property | Default value |', '| --- | --- |', '| `title` | `"Hi"` |'].join('\n'),
+    )
+  })
+
+  it('returns the input unchanged when the column is absent', () => {
+    expect(dropTableColumn(table, 'Nonexistent')).toBe(table)
+  })
+
+  it('leaves non-table lines untouched', () => {
+    const withHeading = `### Foo\n\n${table}`
+    expect(dropTableColumn(withHeading, 'Type').startsWith('### Foo\n\n')).toBe(true)
   })
 })
