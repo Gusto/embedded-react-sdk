@@ -1,10 +1,32 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { PaymentMethod } from './PaymentMethod'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import {
+  handleCreateContractorBankAccount,
+  handleUpdateContractorPaymentMethod,
+} from '@/test/mocks/apis/contractor_payment_method'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+
+const createdBankAccount = {
+  uuid: 'new-bank-uuid',
+  contractor_uuid: 'contractor-123',
+  name: 'New Bank',
+  routing_number: '266905059',
+  hidden_account_number: 'XXXX3123',
+  account_type: 'Checking',
+}
+
+const updatedPaymentMethod = {
+  version: 'updated-version',
+  type: 'Direct Deposit',
+  split_by: 'Percentage',
+  splits: [],
+}
 
 describe('Contractor PaymentMethod', () => {
   const onEvent = vi.fn()
@@ -21,19 +43,77 @@ describe('Contractor PaymentMethod', () => {
 
     const nameField = await screen.findByLabelText('Account nickname')
     expect(nameField).toHaveValue('BoA Checking Account')
+
+    // The masked account number is seeded as the field value (the keep-existing sentinel).
+    const accountField = screen.getByLabelText('Account number')
+    expect(accountField).toHaveValue('XXXX1207')
   })
 
-  it('fails to submit with touched bank information and incorrect account number', async () => {
-    const nameField = await screen.findByLabelText('Routing number')
-    await user.type(nameField, '123456789')
+  it('shows bank account fields when Direct Deposit is selected', async () => {
+    expect(await screen.findByLabelText('Account nickname')).toBeInTheDocument()
+    expect(screen.getByLabelText('Routing number')).toBeInTheDocument()
+    expect(screen.getByLabelText('Account number')).toBeInTheDocument()
+    expect(screen.getByLabelText('Checking')).toBeInTheDocument()
+    expect(screen.getByLabelText('Savings')).toBeInTheDocument()
+  })
+
+  it('hides bank account fields when Check is selected', async () => {
+    const checkRadio = await screen.findByLabelText('Check')
+    await user.click(checkRadio)
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+    })
+    expect(screen.queryByLabelText('Routing number')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Account number')).not.toBeInTheDocument()
+  })
+
+  it('blocks submit when an invalid account number is entered', async () => {
+    const createResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(createdBankAccount, { status: 201 }),
+    )
+    server.use(handleCreateContractorBankAccount(createResolver))
+
+    const accountField = await screen.findByLabelText('Account number')
+    await user.clear(accountField)
+    await user.type(accountField, 'not-a-number')
 
     const submitButton = screen.getByRole('button', { name: 'Continue' })
     await user.click(submitButton)
 
     expect(onEvent).not.toHaveBeenCalled()
+    expect(createResolver).not.toHaveBeenCalled()
+  })
+
+  it('blocks submit when the account nickname is cleared', async () => {
+    const nameField = await screen.findByLabelText('Account nickname')
+    await user.clear(nameField)
+
+    const submitButton = screen.getByRole('button', { name: 'Continue' })
+    await user.click(submitButton)
+
+    await screen.findByText('Account nickname is required')
+    expect(onEvent).not.toHaveBeenCalled()
+  })
+
+  it('blocks submit when the routing number is invalid', async () => {
+    const routingField = await screen.findByLabelText('Routing number')
+    await user.clear(routingField)
+    await user.type(routingField, '123')
+
+    const submitButton = screen.getByRole('button', { name: 'Continue' })
+    await user.click(submitButton)
+
+    await screen.findByText('Routing number is required (9-digits)')
+    expect(onEvent).not.toHaveBeenCalled()
   })
 
   it('submits with correct bank account information', async () => {
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(updatedPaymentMethod),
+    )
+    server.use(handleUpdateContractorPaymentMethod(updateResolver))
+
     const field = await screen.findByLabelText('Account number')
     await user.clear(field)
     await user.type(field, '123123123')
@@ -43,14 +123,107 @@ describe('Contractor PaymentMethod', () => {
 
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
-        expect.any(Object),
-      )
-      expect(onEvent).toHaveBeenCalledWith(
         componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED,
         expect.any(Object),
       )
       expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
     })
+    // The Direct Deposit path only creates the bank account, which updates the
+    // payment method server-side — no separate payment method update is made.
+    expect(updateResolver).not.toHaveBeenCalled()
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
+      expect.anything(),
+    )
+  })
+
+  it('submits an unchanged Direct Deposit by sending the masked sentinel', async () => {
+    let createBody: Record<string, unknown> | null = null
+    const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      createBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json(createdBankAccount, { status: 201 })
+    })
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(updatedPaymentMethod),
+    )
+    server.use(
+      handleCreateContractorBankAccount(createResolver),
+      handleUpdateContractorPaymentMethod(updateResolver),
+    )
+
+    await screen.findByLabelText('Account nickname')
+    const submitButton = screen.getByRole('button', { name: 'Continue' })
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+    })
+    // Account number left unchanged (the masked token): the API treats it as
+    // "keep the existing account," so the create call sends the mask and no
+    // separate payment method update is made.
+    expect(createResolver).toHaveBeenCalledTimes(1)
+    expect(createBody).toMatchObject({ account_number: 'XXXX1207' })
+    expect(updateResolver).not.toHaveBeenCalled()
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED,
+      expect.any(Object),
+    )
+  })
+
+  it('submits Check without creating a bank account', async () => {
+    let updateBody: Record<string, unknown> | null = null
+    const createResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(createdBankAccount, { status: 201 }),
+    )
+    const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateBody = (await request.json()) as Record<string, unknown>
+      return HttpResponse.json({ ...updatedPaymentMethod, type: 'Check' })
+    })
+    server.use(
+      handleCreateContractorBankAccount(createResolver),
+      handleUpdateContractorPaymentMethod(updateResolver),
+    )
+
+    const checkRadio = await screen.findByLabelText('Check')
+    await user.click(checkRadio)
+
+    const submitButton = screen.getByRole('button', { name: 'Continue' })
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
+    })
+    expect(createResolver).not.toHaveBeenCalled()
+    expect(updateResolver).toHaveBeenCalledTimes(1)
+    expect(updateBody).toMatchObject({ type: 'Check' })
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED,
+      expect.anything(),
+    )
+  })
+
+  it('creates the bank account on Direct Deposit submit without updating the payment method', async () => {
+    const createResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(createdBankAccount, { status: 201 }),
+    )
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(updatedPaymentMethod),
+    )
+    server.use(
+      handleCreateContractorBankAccount(createResolver),
+      handleUpdateContractorPaymentMethod(updateResolver),
+    )
+
+    const field = await screen.findByLabelText('Account number')
+    await user.clear(field)
+    await user.type(field, '123123123')
+
+    const submitButton = screen.getByRole('button', { name: 'Continue' })
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(createResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(updateResolver).not.toHaveBeenCalled()
   })
 })

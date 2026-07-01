@@ -4207,7 +4207,7 @@ function PaymentMethod(input: PaymentMethodProps): JSX;
 function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 
 // @public
-function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
+function PaymentMethod_3(input: PaymentMethodProps_3): JSX;
 
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
