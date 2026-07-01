@@ -3,12 +3,12 @@ import { screen, waitFor } from '@testing-library/react'
 import {
   type Employee,
   EmployeePaymentMethod1,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
-import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype'
+import { FlsaStatusType } from '@gusto/embedded-api-v-2026-02-01/models/components/flsastatustype'
 import userEvent from '@testing-library/user-event'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

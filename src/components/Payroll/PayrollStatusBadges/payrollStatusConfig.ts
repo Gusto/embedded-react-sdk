@@ -1,5 +1,5 @@
-import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprocessingrequest'
-import { WireInRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/wireinrequest'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollprocessingrequest'
+import { WireInRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest'
 import { normalizeToDate, getHoursUntil, getDaysUntil } from '@/helpers/dateFormatting'
 
 /** @internal */

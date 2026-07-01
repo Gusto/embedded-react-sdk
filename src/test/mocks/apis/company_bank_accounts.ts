@@ -1,8 +1,8 @@
 import type { HttpResponseResolver } from 'msw'
 import { http, HttpResponse, type PathParams } from 'msw'
-import type { GetV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidbankaccounts'
-import type { PostV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidbankaccounts'
-import type { CompanyBankAccountVerifyRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccountverifyrequest'
+import type { GetV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidbankaccounts'
+import type { PostV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidbankaccounts'
+import type { CompanyBankAccountVerifyRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccountverifyrequest'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

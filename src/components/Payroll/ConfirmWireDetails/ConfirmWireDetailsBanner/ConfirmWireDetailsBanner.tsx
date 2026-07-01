@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
-import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsList'
 import { useState, useEffect } from 'react'
 import type { ConfirmationAlert } from '../types'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'

@@ -1,5 +1,5 @@
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidjobs'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidjobs'
 import { CompensationHistory as CompensationHistoryView } from '../../../components/employee/management/CompensationHistory/CompensationHistory'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'

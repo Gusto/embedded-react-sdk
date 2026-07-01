@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { isRequirementApplicable, type StateTaxesFormValues } from './applicableIf'
-import type { TaxRequirement } from '@gusto/embedded-api-v-2025-11-15/models/components/taxrequirement'
+import type { TaxRequirement } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirement'
 
 const req = (overrides: Partial<TaxRequirement> = {}): TaxRequirement => ({
   key: 'rate',

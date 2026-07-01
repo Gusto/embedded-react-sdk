@@ -4,8 +4,8 @@ import userEvent from '@testing-library/user-event'
 import {
   type PayrollShow,
   OffCycleReasonType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

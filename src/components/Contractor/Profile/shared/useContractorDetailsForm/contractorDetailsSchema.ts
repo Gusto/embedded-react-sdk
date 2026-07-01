@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   WageType as ApiWageType,
   ContractorType as ApiContractorType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 import {
   buildFormSchema,
   type RequiredFieldConfig,

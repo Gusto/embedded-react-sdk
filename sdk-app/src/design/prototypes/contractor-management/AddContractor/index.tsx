@@ -60,7 +60,7 @@ export function AddContractor() {
             variant="secondary"
             onClick={() => {
               queryClient.removeQueries({
-                queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors', 'list'],
+                queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Contractors', 'list'],
               })
               void navigate('..')
             }}

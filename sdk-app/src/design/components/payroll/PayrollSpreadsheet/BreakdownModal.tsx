@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
 import styles from './PayrollSpreadsheet.module.scss'
 import { type ColumnDef, type Workweek, formatCellValue, sumBreakdown } from './shared'
 import { Flex } from '@/components/Common'

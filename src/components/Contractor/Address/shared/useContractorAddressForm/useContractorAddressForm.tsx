@@ -5,11 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type {
   Contractor,
   ContractorType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress'
-import { useContractorsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
-import { useContractorsGetAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGetAddress'
-import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateAddress'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/contractoraddress'
+import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsGetAddress } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetAddress'
+import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdateAddress'
 import {
   createContractorAddressSchema,
   type ContractorAddressOptionalFieldsToRequire,

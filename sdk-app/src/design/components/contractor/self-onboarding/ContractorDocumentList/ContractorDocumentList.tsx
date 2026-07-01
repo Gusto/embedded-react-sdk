@@ -1,4 +1,4 @@
-import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

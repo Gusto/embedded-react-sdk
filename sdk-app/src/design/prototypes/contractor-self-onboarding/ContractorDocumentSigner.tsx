@@ -2,9 +2,9 @@ import { Suspense, useState } from 'react'
 import {
   useContractorDocumentsGetAllSuspense,
   invalidateContractorDocumentsGetAll,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGetAll'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsGetAll'
 import { useQueryClient } from '@tanstack/react-query'
-import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
+import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
 import { ContractorDocumentList } from '../../components/contractor/self-onboarding/ContractorDocumentList/ContractorDocumentList'
 import { ContractorSignatureForm } from './ContractorSignatureForm'
 import { contractorSelfOnboardingEvents } from './events'
