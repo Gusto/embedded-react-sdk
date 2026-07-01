@@ -3241,6 +3241,12 @@ export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTax
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
 
 // @public
+export interface GlobalResourceDictionary extends Record<
+SupportedLanguages,
+Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>
+> {}
+
+// @public
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
     children?: default_2.ReactNode;
     components?: Partial<ComponentsContextType>;
@@ -3263,7 +3269,7 @@ export interface GustoProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
-    dictionary?: ResourceDictionary;
+    dictionary?: GlobalResourceDictionary;
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
@@ -4916,10 +4922,221 @@ type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
 K extends keyof Resources
 ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
-: Record<SupportedLanguages, Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>>
+: GlobalResourceDictionary
 
 // @public
-export type Resources = CustomTypeOptions['resources']
+export interface Resources {
+    // (undocumented)
+    'Company.Addresses': Translations.CompanyAddresses
+    // (undocumented)
+    'Company.AssignSignatory': Translations.CompanyAssignSignatory
+    // (undocumented)
+    'Company.BankAccount': Translations.CompanyBankAccount
+    // (undocumented)
+    'Company.DocumentList': Translations.CompanyDocumentList
+    // (undocumented)
+    'Company.FederalTaxes': Translations.CompanyFederalTaxes
+    // (undocumented)
+    'Company.Industry': Translations.CompanyIndustry
+    // (undocumented)
+    'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
+    // (undocumented)
+    'Company.PaySchedule': Translations.CompanyPaySchedule
+    // (undocumented)
+    'Company.SignatureForm': Translations.CompanySignatureForm
+    // (undocumented)
+    'Company.StateTaxes': Translations.CompanyStateTaxes
+    // (undocumented)
+    'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
+    // (undocumented)
+    'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
+    // (undocumented)
+    'Company.TimeOff.HolidayPolicy': Translations.CompanyTimeOffHolidayPolicy
+    // (undocumented)
+    'Company.TimeOff.PolicyDetail': Translations.CompanyTimeOffPolicyDetail
+    // (undocumented)
+    'Company.TimeOff.SelectEmployees': Translations.CompanyTimeOffSelectEmployees
+    // (undocumented)
+    'Company.TimeOff.SelectPolicyType': Translations.CompanyTimeOffSelectPolicyType
+    // (undocumented)
+    'Company.TimeOff.TimeOffPolicies': Translations.CompanyTimeOffTimeOffPolicies
+    // (undocumented)
+    'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
+    // (undocumented)
+    'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
+    // (undocumented)
+    'Contractor.Address': Translations.ContractorAddress
+    // (undocumented)
+    'Contractor.ContractorList': Translations.ContractorContractorList
+    // (undocumented)
+    'Contractor.DocumentsList': Translations.ContractorDocumentsList
+    // (undocumented)
+    'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.NewHireReport': Translations.ContractorNewHireReport
+    // (undocumented)
+    'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
+    // (undocumented)
+    'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+    // (undocumented)
+    'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+    // (undocumented)
+    'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
+    // (undocumented)
+    'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
+    // (undocumented)
+    'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
+    // (undocumented)
+    'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
+    // (undocumented)
+    'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.Submit': Translations.ContractorSubmit
+    // (undocumented)
+    'Employee.BankAccount': Translations.EmployeeBankAccount
+    // (undocumented)
+    'Employee.BankFormBody': Translations.EmployeeBankFormBody
+    // (undocumented)
+    'Employee.Compensation': Translations.EmployeeCompensation
+    // (undocumented)
+    'Employee.Dashboard': Translations.EmployeeDashboard
+    // (undocumented)
+    'Employee.Deductions': Translations.EmployeeDeductions
+    // (undocumented)
+    'Employee.DeductionsForm': Translations.EmployeeDeductionsForm
+    // (undocumented)
+    'Employee.DocumentManager': Translations.EmployeeDocumentManager
+    // (undocumented)
+    'Employee.DocumentSigner': Translations.EmployeeDocumentSigner
+    // (undocumented)
+    'Employee.EmployeeDocuments': Translations.EmployeeEmployeeDocuments
+    // (undocumented)
+    'Employee.EmployeeList': Translations.EmployeeEmployeeList
+    // (undocumented)
+    'Employee.EmploymentEligibility': Translations.EmployeeEmploymentEligibility
+    // (undocumented)
+    'Employee.FederalTaxes': Translations.EmployeeFederalTaxes
+    // (undocumented)
+    'Employee.FederalTaxesView': Translations.EmployeeFederalTaxesView
+    // (undocumented)
+    'Employee.HomeAddress': Translations.EmployeeHomeAddress
+    // (undocumented)
+    'Employee.I9SignatureForm': Translations.EmployeeI9SignatureForm
+    // (undocumented)
+    'Employee.Landing': Translations.EmployeeLanding
+    // (undocumented)
+    'Employee.Management.Compensation': Translations.EmployeeManagementCompensation
+    // (undocumented)
+    'Employee.Management.Deductions': Translations.EmployeeManagementDeductions
+    // (undocumented)
+    'Employee.Management.Documents': Translations.EmployeeManagementDocuments
+    // (undocumented)
+    'Employee.Management.FederalTaxes': Translations.EmployeeManagementFederalTaxes
+    // (undocumented)
+    'Employee.Management.HomeAddress': Translations.EmployeeManagementHomeAddress
+    // (undocumented)
+    'Employee.Management.PaymentMethod': Translations.EmployeeManagementPaymentMethod
+    // (undocumented)
+    'Employee.Management.PaymentMethodBankForm': Translations.EmployeeManagementPaymentMethodBankForm
+    // (undocumented)
+    'Employee.Management.PaymentMethodSplitForm': Translations.EmployeeManagementPaymentMethodSplitForm
+    // (undocumented)
+    'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
+    // (undocumented)
+    'Employee.Management.Profile': Translations.EmployeeManagementProfile
+    // (undocumented)
+    'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
+    // (undocumented)
+    'Employee.Management.WorkAddress': Translations.EmployeeManagementWorkAddress
+    // (undocumented)
+    'Employee.ManagementEmployeeList': Translations.EmployeeManagementEmployeeList
+    // (undocumented)
+    'Employee.OnboardingSummary': Translations.EmployeeOnboardingSummary
+    // (undocumented)
+    'Employee.PaymentMethod': Translations.EmployeePaymentMethod
+    // (undocumented)
+    'Employee.PaySchedules': Translations.EmployeePaySchedules
+    // (undocumented)
+    'Employee.Profile': Translations.EmployeeProfile
+    // (undocumented)
+    'Employee.SplitPaycheck': Translations.EmployeeSplitPaycheck
+    // (undocumented)
+    'Employee.SplitPaymentsFormBody': Translations.EmployeeSplitPaymentsFormBody
+    // (undocumented)
+    'Employee.StateTaxes': Translations.EmployeeStateTaxes
+    // (undocumented)
+    'Employee.StateTaxesView': Translations.EmployeeStateTaxesView
+    // (undocumented)
+    'Employee.Terminations.TerminateEmployee': Translations.EmployeeTerminationsTerminateEmployee
+    // (undocumented)
+    'Employee.Terminations.TerminationFlow': Translations.EmployeeTerminationsTerminationFlow
+    // (undocumented)
+    'Employee.Terminations.TerminationSummary': Translations.EmployeeTerminationsTerminationSummary
+    // (undocumented)
+    'InformationRequests.InformationRequestForm': Translations.InformationRequestsInformationRequestForm
+    // (undocumented)
+    'InformationRequests.InformationRequestList': Translations.InformationRequestsInformationRequestList
+    // (undocumented)
+    'Payroll.Common': Translations.PayrollCommon
+    // (undocumented)
+    'Payroll.ConfirmWireDetailsBanner': Translations.PayrollConfirmWireDetailsBanner
+    // (undocumented)
+    'Payroll.ConfirmWireDetailsForm': Translations.PayrollConfirmWireDetailsForm
+    // (undocumented)
+    'Payroll.Dismissal': Translations.PayrollDismissal
+    // (undocumented)
+    'Payroll.EmployeeSelection': Translations.PayrollEmployeeSelection
+    // (undocumented)
+    'Payroll.GrossUpModal': Translations.PayrollGrossUpModal
+    // (undocumented)
+    'Payroll.OffCycle': Translations.PayrollOffCycle
+    // (undocumented)
+    'Payroll.OffCycleCreation': Translations.PayrollOffCycleCreation
+    // (undocumented)
+    'Payroll.OffCycleDeductionsSetting': Translations.PayrollOffCycleDeductionsSetting
+    // (undocumented)
+    'Payroll.OffCyclePayPeriodDateForm': Translations.PayrollOffCyclePayPeriodDateForm
+    // (undocumented)
+    'Payroll.OffCycleReasonSelection': Translations.PayrollOffCycleReasonSelection
+    // (undocumented)
+    'Payroll.OffCycleTaxWithholding': Translations.PayrollOffCycleTaxWithholding
+    // (undocumented)
+    'Payroll.PayrollBlocker': Translations.PayrollPayrollBlocker
+    // (undocumented)
+    'Payroll.PayrollConfiguration': Translations.PayrollPayrollConfiguration
+    // (undocumented)
+    'Payroll.PayrollEditEmployee': Translations.PayrollPayrollEditEmployee
+    // (undocumented)
+    'Payroll.PayrollFlow': Translations.PayrollPayrollFlow
+    // (undocumented)
+    'Payroll.PayrollHistory': Translations.PayrollPayrollHistory
+    // (undocumented)
+    'Payroll.PayrollLanding': Translations.PayrollPayrollLanding
+    // (undocumented)
+    'Payroll.PayrollList': Translations.PayrollPayrollList
+    // (undocumented)
+    'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
+    // (undocumented)
+    'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+    // (undocumented)
+    'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
+    // (undocumented)
+    'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+    // (undocumented)
+    'Payroll.Transition': Translations.PayrollTransition
+    // (undocumented)
+    'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
+    // (undocumented)
+    'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+    // (undocumented)
+    'Payroll.WireInstructions': Translations.PayrollWireInstructions
+    // (undocumented)
+    common: Translations.common
+    // (undocumented)
+    InformationRequests: Translations.InformationRequests
+}
 
 // @public
 export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
@@ -5703,6 +5920,9 @@ interface TransitionFlowProps {
     payScheduleUuid: string;
     startDate: string;
 }
+
+// @public
+export namespace Translations { /* per-namespace i18n key interfaces, recreated from the translation JSON — body omitted from report; see src/i18n/types.d.ts and the Translations reference */ }
 
 // @public
 export function TwoJobsField(props: TwoJobsFieldProps): JSX;
