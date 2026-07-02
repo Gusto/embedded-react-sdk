@@ -290,9 +290,12 @@ export interface {Domain}FormFields {
 // Module-level pure builder for the per-field metadata. Extracting it lets
 // {Domain}FieldsMetadata be inferred from its return type (below), which is the
 // only way to type each field's variant precisely (FieldMetadata vs
-// FieldMetadataWithOptions). See .claude/hooks-implementation.md → Fields Metadata.
-// Omit this and keep the generic `FieldsMetadata` ONLY for runtime-keyed hooks
-// (dotted/per-entry paths, branch-dependent key sets).
+// FieldMetadataWithOptions). This is the default (static, finite key set). If the
+// key set varies by a runtime discriminator or is minted at runtime (UUIDs,
+// API-driven names), name the type a different way — discriminated union,
+// static-core + template-literal Record, or a template-literal index signature.
+// See .claude/hooks-implementation.md → "Choosing the metadata type by key
+// structure". Either way the metadata type is always named — never left generic.
 function build{Domain}FieldsMetadata(
   base: Record<keyof {Domain}FormData, FieldMetadata>,
   flags: { /* showFoo: boolean, ... */ },
@@ -402,8 +405,11 @@ export function use{Domain}Form(props: Use{Domain}FormProps): HookLoadingResult 
 }
 
 export type Use{Domain}FormResult = HookLoadingResult | Use{Domain}FormReady
-// Inferred from the builder — precise per-field types. Runtime-keyed hooks
-// instead keep: export type {Domain}FieldsMetadata = Use{Domain}FormReady['form']['fieldsMetadata']
+// Inferred from the builder — precise per-field types (static, finite key set).
+// For the other tiers, name the type directly instead: a discriminated union of
+// variants, or `` Record<`prefix.${string}`, FieldMetadata | FieldMetadataWithOptions> ``
+// for runtime-minted keys. See hooks-implementation.md → "Choosing the metadata
+// type by key structure". Never `Use{Domain}FormReady['form']['fieldsMetadata']`.
 export type {Domain}FieldsMetadata = ReturnType<typeof build{Domain}FieldsMetadata>
 // {Domain}FormFields is the same as the interface declared above; no alias
 // needed unless you named the interface differently (e.g. EmployeeDetailsFields

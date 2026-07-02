@@ -359,9 +359,9 @@ generic `FieldsMetadata` index signature.
    field's _value_, not its presence. A conditional-spread key
    (`...(cond ? { ssn: X } : {})`) makes the inferred type lopsided; instead write
    `ssn: withFlags(base.ssn, cond ? { placeholder } : {})` so `ssn` is always a
-   `FieldMetadata`. (`useContractorSignatureForm` is the one convertible hook that
-   needs this normalization; a hook whose _key set_ genuinely varies by branch is
-   a runtime-keyed exception below, not a candidate for this pattern.)
+   `FieldMetadata`. (`useContractorSignatureForm` needs this normalization.) A hook
+   whose _key set_ genuinely varies by branch or is minted at runtime uses a
+   different shape — see "Choosing the metadata type by key structure" below.
 
 **Why this shape.** Inferring the type from a constant is the same move as
 `type {Domain}FormData = z.infer<typeof fieldValidators>`: the type tracks the
@@ -374,14 +374,46 @@ generated reference: `form.fieldsMetadata` renders as a single link to a
 per-field `{Domain}FieldsMetadata` table showing each field's variant, instead of
 an opaque index signature. (SDK-1073.)
 
-**When to keep the generic `FieldsMetadata` instead.** Hooks whose metadata keys
-are computed at runtime — dotted per-entry/per-collection paths, or key sets that
-differ by branch — can't be enumerated in a static type. Leave these on the bare
-`FieldsMetadata` index signature (first `BaseFormHookReady` arg) and keep the
-`= Use{Domain}FormReady['form']['fieldsMetadata']` alias. Current exceptions:
-`useSplitPaymentsForm` (`splitAmount.${uuid}`), `useEmployeeStateTaxesForm`
-(`states.${STATE}.${field}`), `useSignEmployeeForm` (I-9 preparer keys present
-only when `isI9`).
+**Choosing the metadata type by key structure.** The builder-inferred object
+above is the default, but the right shape depends on whether the key universe is
+finite and known at build time. The deciding question is **"is the universe of
+keys finite and known at build time?"** — _not_ "do the keys vary." All four
+tiers are now in use; **no hook remains on the bare generic `FieldsMetadata`** —
+every hook names its metadata type.
+
+| Key structure | Type shape | Example |
+| --- | --- | --- |
+| **Static, finite** — every key known at build time | Builder-inferred object: `ReturnType<typeof build{Domain}FieldsMetadata>` (the pattern above) | most hooks (`useJobForm`, …) |
+| **Branch-varying, finite** — fixed universe of keys, but which subset is present depends on a runtime discriminator | **Discriminated union** of fixed object variants; partners narrow with an `in` check | `useSignEmployeeForm` (I-9 vs. not) |
+| **Static core + runtime-minted tail** — some named keys always present, plus dynamic dotted paths | Named core object **intersected** with a template-literal `Record`: `` { splitBy: … } & Record<`splitAmount.${string}`, FieldMetadata> `` | `useSplitPaymentsForm` |
+| **Fully runtime-minted keys** — no key knowable at build time (UUIDs, API-driven names) | Template-literal index signature: `` Record<`states.${string}.${string}`, FieldMetadata \| FieldMetadataWithOptions> ``; cast the derived metadata to it at the hook boundary | `useEmployeeStateTaxesForm` |
+
+`useSignEmployeeForm`'s keys _vary_ (I-9 adds preparer fields) but the universe is
+fixed and enumerable → union. `useEmployeeStateTaxesForm`'s keys are _minted from
+runtime data_ (API question keys) → irreducible index signature. Same "varies at
+runtime" symptom, opposite answer — the universe-finiteness is what decides.
+
+**Rules that fell out of the rollout (violate these and it silently breaks):**
+
+- **A base/variant metadata alias must be a `type`, not an `interface`.**
+  `FieldsMetadata` is an index-signature type (`{ [k: string]: … }`), and
+  TypeScript won't give an `interface` an implicit index signature (interfaces are
+  open to merging), so an `interface` fails the `BaseFormHookReady<…>` constraint.
+  Type-literal aliases satisfy it.
+- **Reference exported named types inside template-literal / union metadata types
+  — never inline `(typeof CONST)[number]` for an unexported const.** API Extractor
+  flags the const as `ae-forgotten-export`. `useEmployeeStateTaxesForm` uses the
+  public `StateAbbreviation` (from `@/shared/constants`), `useSplitPaymentsForm`
+  uses `SplitByValue`; export a named type if you need one.
+- **Give each key exactly one type.** When overriding select/radio entries on a
+  `Record<keyof {Domain}FormData, FieldMetadata>` base, `Omit` the option keys and
+  redeclare them explicitly — `` Omit<Record<keyof {Domain}FormData, FieldMetadata>, 'kind'> & { kind: FieldMetadataWithOptions<Kind> } `` — so a key renders as one
+  clean type, not `FieldMetadata & FieldMetadataWithOptions`.
+- **`@interface` tag:** put it on object-shaped aliases (union variants,
+  static-core intersections) so TypeDoc renders a Properties table. **Omit** it on
+  a pure index-signature `Record` alias — that renders cleanly as `= Record<…>`
+  with linked value types, whereas `@interface` gives a near-empty "Indexable"
+  block.
 
 **Supporting infrastructure — already built, do not rebuild:**
 
@@ -394,28 +426,31 @@ only when `isI9`).
   for the builder.
 - `renderFieldsMetadataAlias` in `docs-site/plugins/typedoc-custom/theme.ts`
   collapses the expanded ready-state rows into a single link and renders the
-  `### {Domain}FieldsMetadata` section as the per-field table.
+  `### {Domain}FieldsMetadata` section as the per-field table. For a pure
+  index-signature alias (no per-field rows to collapse) it just links the
+  `form.fieldsMetadata` row to the alias section — otherwise TypeDoc leaves it as
+  the unresolved `TFieldsMetadata` type parameter. `expandDtsTypeof` applies only
+  to the `ReturnType<typeof build…>` (static-object) tier.
 
-**Converting an existing hook.** List every form hook's metadata alias with
-`grep -rln "export type [A-Za-z]*FieldsMetadata" src/components` (20 hooks). A
-hook is already converted iff its file contains
-`FieldsMetadata = ReturnType<typeof build` — the rest are the rollout targets.
-(Don't grep for `BaseFormHookReady<FieldsMetadata,` — the generic argument is
-usually wrapped across lines, so a single-line pattern misses most of them.)
-Apply steps 1–4 to each unconverted hook **except** the three runtime-keyed
-exceptions above (they legitimately keep the generic `FieldsMetadata`). Verify:
+**Adding a new hook (the rollout is complete).** All 20 form hooks name their
+metadata type; none remain on the bare generic `FieldsMetadata`. List them with
+`grep -rln "export type [A-Za-z]*FieldsMetadata" src/components`. For a new hook,
+pick the tier from the table above by key structure, then verify:
 
 ```bash
 npx tsc --noEmit
 npm run test -- --run <path>/use{Name}Form.test.tsx     # then the full suite
-npm run docs:api:generate                                # page shows a per-field
-                                                         # ### {Domain}FieldsMetadata
-                                                         # table + a single
-                                                         # form.fieldsMetadata link row
-npm run build && npm run api-report:derive               # report has no
-                                                         # build{Domain}FieldsMetadata
-                                                         # symbol; ae-forgotten-export
-                                                         # count unchanged (21)
+npm run docs:api:generate                                # form.fieldsMetadata is a
+                                                         # single link to the named
+                                                         # {Domain}FieldsMetadata alias
+                                                         # (never the raw
+                                                         # `TFieldsMetadata` — if you
+                                                         # see that, the theme fix or
+                                                         # alias section is missing)
+npm run build && npm run api-report:derive               # ae-forgotten-export count
+                                                         # unchanged (currently 19);
+                                                         # no build{Domain}FieldsMetadata
+                                                         # symbol leaks (static tier)
 ```
 
 #### Redacted Fields (`fieldsWithRedactedValues`)
