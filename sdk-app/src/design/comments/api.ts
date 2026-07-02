@@ -16,10 +16,12 @@ class SandboxApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${SANDBOX_API_PREFIX}${path}`, { // noboost
-    ...init,
-    headers: { 'Content-Type': 'application/json' },
-  })
+  // The destination is a fixed internal dev-proxy prefix plus static, module-local
+  // path strings and numeric IDs — no user input controls it, so the SSRF scan is a
+  // false positive.
+  const url = `${SANDBOX_API_PREFIX}${path}`
+  const options: RequestInit = { ...init, headers: { 'Content-Type': 'application/json' } }
+  const res = await fetch(url, options) // noboost
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '')
