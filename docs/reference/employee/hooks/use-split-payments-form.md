@@ -246,7 +246,7 @@ required by the hook; the rest are required.
 
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
 
-## Utility Types
+## Utility types
 <a id="split_by_values"></a>
 
 ### SPLIT\_BY\_VALUES

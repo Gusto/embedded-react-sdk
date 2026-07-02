@@ -271,7 +271,7 @@ The required-field error code produced by [useWorkAddressForm](#useworkaddressfo
 Used as the `validationMessages` key for the location and effective date fields.
 See `WorkAddressErrorCodes`.
 
-## Utility Types
+## Utility types
 <a id="usecurrentworkaddressformprops"></a>
 
 ### UseCurrentWorkAddressFormProps

@@ -457,7 +457,7 @@ The format-validation error code emitted by the `ssn` field of [useEmployeeDetai
 Use as a key in `validationMessages` on `Fields.Ssn`. See
 [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="employeedetailssubmitcallbacks"></a>
 
 ### EmployeeDetailsSubmitCallbacks

@@ -169,7 +169,7 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 
 Validation error codes emitted by [usePaymentMethodForm](#usepaymentmethodform) fields that only emit `REQUIRED`.
 
-## Utility Types
+## Utility types
 <a id="payment_method_types"></a>
 
 ### PAYMENT\_METHOD\_TYPES

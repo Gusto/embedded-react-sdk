@@ -284,7 +284,7 @@ that only emit `REQUIRED`.
 Validation error codes emitted by the `routingNumber` field of
 [useContractorBankAccountForm](#usecontractorbankaccountform).
 
-## Utility Types
+## Utility types
 <a id="contractoraccounttype"></a>
 
 ### ContractorAccountType

@@ -502,7 +502,7 @@ Validation error codes emitted by the `payPeriodMaximum` field of [useChildSuppo
 Use these as keys in `validationMessages` on `Fields.PayPeriodMaximum`. See
 [ChildSupportGarnishmentFormErrorCodes](#childsupportgarnishmentformerrorcodes) for the full description of each code.
 
-## Utility Types
+## Utility types
 <a id="childsupportgarnishmentformdata"></a>
 
 ### ChildSupportGarnishmentFormData

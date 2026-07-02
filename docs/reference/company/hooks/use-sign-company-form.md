@@ -225,7 +225,7 @@ The required-field error code emitted by every field of [useSignCompanyForm](#us
 Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="signcompanyformdata"></a>
 
 ### SignCompanyFormData

@@ -457,7 +457,7 @@ Validation error codes emitted by the `rate` field of [useCompensationForm](#use
 Use these as keys in `validationMessages` on `Fields.Rate`. See
 [CompensationErrorCodes](#compensationerrorcodes) for the full description of each code.
 
-## Utility Types
+## Utility types
 <a id="compensationerrorcode"></a>
 
 ### CompensationErrorCode

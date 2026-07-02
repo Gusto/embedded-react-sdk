@@ -271,7 +271,7 @@ Validation error codes emitted by [useBankForm](#usebankform) fields that only e
 
 Validation error codes emitted by the `routingNumber` field of [useBankForm](#usebankform).
 
-## Utility Types
+## Utility types
 <a id="account_types"></a>
 
 ### ACCOUNT\_TYPES

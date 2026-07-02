@@ -428,7 +428,7 @@ The required-field error code emitted by every field of [useSignEmployeeForm](#u
 Use this as the `validationMessages` key for any sign-employee-form field.
 See [SignEmployeeFormErrorCodes](#signemployeeformerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="max_preparers"></a>
 
 ### MAX\_PREPARERS

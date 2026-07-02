@@ -309,7 +309,7 @@ read-only question metadata from the API and a bound text field, exposed as
 
 _Also includes `description`, `label`, `questionId` from [SharedQuestionMetadata](#sharedquestionmetadata)._
 
-## Utility Hooks
+## Utility hooks
 
 <a id="usestatefields"></a>
 
@@ -332,7 +332,7 @@ Memoizes the bound field components for a state-taxes form, avoiding unnecessary
 
 An array of [StateTaxFieldsGroup](#statetaxfieldsgroup) — one entry per state, each with a `questions` array of bound field components.
 
-## Utility Types
+## Utility types
 
 <a id="basestatetaxfieldprops"></a>
 

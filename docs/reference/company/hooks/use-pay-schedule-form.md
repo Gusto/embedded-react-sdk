@@ -408,7 +408,7 @@ The required-field error code produced by [usePayScheduleForm](#usepayschedulefo
 Used as the `validationMessages` key for the custom name, frequency, anchor
 pay date, and anchor end-of-pay-period fields. See [PayScheduleErrorCodes](#payscheduleerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="payscheduleerrorcode"></a>
 
 ### PayScheduleErrorCode

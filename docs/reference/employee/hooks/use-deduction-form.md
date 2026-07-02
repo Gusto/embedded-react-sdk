@@ -449,7 +449,7 @@ Used as the `validationMessages` key for the description, recurring,
 deduct-as-percentage, and garnishment-type fields. See
 [DeductionFormErrorCodes](#deductionformerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="deductionformdata"></a>
 
 ### DeductionFormData

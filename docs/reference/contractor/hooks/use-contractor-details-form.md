@@ -677,7 +677,7 @@ Required-field error code emitted by the `ssn` field of [useContractorDetailsFor
 
 Format-validation error code emitted by the `ssn` field of [useContractorDetailsForm](#usecontractordetailsform).
 
-## Utility Types
+## Utility types
 <a id="contractordetailserrorcode"></a>
 
 ### ContractorDetailsErrorCode

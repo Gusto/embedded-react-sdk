@@ -151,7 +151,7 @@ Props accepted by [useContractorPaymentMethodForm](#usecontractorpaymentmethodfo
 
 _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](../../utilities.md#radiogrouphookfieldprops)._
 
-## Utility Types
+## Utility types
 <a id="contractorpaymentmethoderrorcode"></a>
 
 ### ContractorPaymentMethodErrorCode

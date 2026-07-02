@@ -334,7 +334,7 @@ The required-field error code produced by [useFederalTaxesForm](#usefederaltaxes
 Used as the `validationMessages` key for every federal taxes field. See
 [FederalTaxesErrorCodes](#federaltaxeserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="federaltaxeserrorcode"></a>
 
 ### FederalTaxesErrorCode

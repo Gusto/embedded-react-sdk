@@ -102,7 +102,7 @@ Ready state of [useEmployeeList](#useemployeelist).
 | `status.isFetching` | `boolean` | - |
 | `status.isPending` | `boolean` | - |
 
-## Utility Types
+## Utility types
 
 <a id="employeeaction"></a>
 

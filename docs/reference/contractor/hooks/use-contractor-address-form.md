@@ -321,7 +321,7 @@ Validation error codes emitted by the `zip` field of [useContractorAddressForm](
 Use these as keys in `validationMessages` on `Fields.Zip`. See
 [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="contractoraddresserrorcode"></a>
 
 ### ContractorAddressErrorCode

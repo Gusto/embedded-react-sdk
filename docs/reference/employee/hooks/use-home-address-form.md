@@ -441,7 +441,7 @@ Validation error codes emitted by the `zip` field of [useHomeAddressForm](#useho
 Use these as keys in `validationMessages` on `Fields.Zip`. See
 [HomeAddressErrorCodes](#homeaddresserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="homeaddresserrorcode"></a>
 
 ### HomeAddressErrorCode

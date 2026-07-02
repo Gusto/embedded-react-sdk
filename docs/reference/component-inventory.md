@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # Component inventory
 
-## Component Props
+## Component props
 
 <a id="alertprops"></a>
 
@@ -1324,7 +1324,7 @@ Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a dist
 | `isRequired?` | `boolean` | Indicates if the field is required |
 | `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
-## Utility Types
+## Utility types
 
 <a id="baselistprops"></a>
 

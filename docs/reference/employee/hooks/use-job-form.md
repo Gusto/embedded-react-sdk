@@ -333,7 +333,7 @@ Currently a single literal — `'REQUIRED'` — surfaced as the key in
 `validationMessages` on each `Fields.*` component. Future schema additions
 may extend the union.
 
-## Utility Types
+## Utility types
 <a id="joberrorcode"></a>
 
 ### JobErrorCode
