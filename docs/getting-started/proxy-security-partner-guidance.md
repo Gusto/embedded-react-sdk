@@ -81,7 +81,7 @@ The JSON inventory is auto-derived on every build and verified in CI. Upgrading 
 
 ## Further reading
 
-- [Proxy examples with role-based access](../guides/proxy-examples.md)
+- [Proxy examples with role-based access](../guides/integration-guide/proxy-examples.md)
 - [Endpoint reference tables](../guides/endpoint-reference.md)
 - [Gusto API scopes](https://docs.gusto.com/embedded-payroll/docs/scopes)
 - [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference)
