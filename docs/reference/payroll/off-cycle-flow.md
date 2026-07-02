@@ -50,7 +50,7 @@ Props for OffCycleFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
 | `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 | `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
 

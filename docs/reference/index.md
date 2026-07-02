@@ -445,7 +445,7 @@ shape mixed into every public SDK feature component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](events.md#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | <a id="property-basecomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | <a id="property-basecomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
 | <a id="property-basecomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -910,41 +910,6 @@ Recursively makes every property of `T` optional, descending into nested objects
 > **ObservabilityMetricUnit** = `"ms"` \| `"count"` \| `"bytes"` \| `"percent"`
 
 Unit of measure for an [ObservabilityMetric](#observabilitymetric).
-
-***
-
-<a id="oneventtype"></a>
-
-### OnEventType
-
-> **OnEventType**\<`K`, `T`\> = (`type`: `K`, `data?`: `T`) => `void`
-
-Callback signature for an SDK component event emitter, invoked with an event key and optional payload.
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `K` | The discriminating event-key type, typically a [componentEvents](events.md#componentevents) member. |
-| `T` | The shape of the optional event payload. |
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `type` | `K` |
-| `data?` | `T` |
-
-#### Returns
-
-`void`
-
-#### Remarks
-
-Supply a function of this shape as the `onEvent` prop on any SDK feature component.
-The `type` argument is always one of the constants from `componentEvents`. The `data`
-argument is event-specific — some events carry no payload while others include the full
-API response body. Refer to each component's event table for details.
 
 ***
 

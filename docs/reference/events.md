@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # Events
 
-## Events
+## Component events
 
 <a id="componentevents"></a>
 
@@ -332,7 +332,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 />
 ```
 
-***
+## Utility types
 
 <a id="eventtype"></a>
 
@@ -359,3 +359,38 @@ const handleEvent = (type: EventType, data: unknown) => {
   }
 }
 ```
+
+***
+
+<a id="oneventtype"></a>
+
+### OnEventType
+
+> **OnEventType**\<`K`, `T`\> = (`type`: `K`, `data?`: `T`) => `void`
+
+Callback signature for an SDK component event emitter, invoked with an event key and optional payload.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `K` | The discriminating event-key type, typically a [componentEvents](#componentevents) member. |
+| `T` | The shape of the optional event payload. |
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `type` | `K` |
+| `data?` | `T` |
+
+#### Returns
+
+`void`
+
+#### Remarks
+
+Supply a function of this shape as the `onEvent` prop on any SDK feature component.
+The `type` argument is always one of the constants from `componentEvents`. The `data`
+argument is event-specific — some events carry no payload while others include the full
+API response body. Refer to each component's event table for details.

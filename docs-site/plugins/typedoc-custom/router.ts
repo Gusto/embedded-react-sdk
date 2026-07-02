@@ -166,13 +166,14 @@ const SYNTHETIC_GROUP_ORDER = [
   'Fields',
   'Components',
   'Component Props',
-  'Events',
+  'Event names',
   'Functions',
   'Variables',
   'Interfaces',
   'Type Aliases',
   'Validations',
   'Utility Types',
+  'Utility types',
   'Enumerations',
 ]
 

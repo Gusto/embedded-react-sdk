@@ -50,7 +50,7 @@ Props for OnboardingExecutionFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
 | `defaultValues?` | [`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues) | Default values for individual flow step components. |
 | `initialEmployeeId?` | `string` | The associated employee identifier to resume onboarding for. Omit to begin onboarding a new employee. |
 | `initialOnboardingStatus?` | `"admin_onboarding_incomplete"` \| `"self_onboarding_pending_invite"` \| `"self_onboarding_invited"` \| `"self_onboarding_invited_started"` \| `"self_onboarding_invited_overdue"` \| `"self_onboarding_completed_by_employee"` \| `"self_onboarding_awaiting_admin_review"` \| `"onboarding_completed"` | The current onboarding status of the employee being onboarded. Drives skip behavior for self-onboarding and document steps. |

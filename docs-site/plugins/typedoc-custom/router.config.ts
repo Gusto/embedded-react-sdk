@@ -97,9 +97,10 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
   { id: 'utilities', sources: ['partner-hook-utils'], displayName: 'Hook utilities' },
   {
     id: 'events',
-    // Ignore any non-event constants
-    sources: ['shared/constants'],
-    groups: ['Events'],
+    // `shared/constants` supplies the event catalog + EventType; `Base/useBase` supplies
+    // OnEventType. The `groups` filter keeps out any non-event constants sharing those paths.
+    sources: ['shared/constants', 'components/Base/useBase'],
+    groups: ['Event names', 'Utility types'],
     displayName: 'Events',
   },
 ]
