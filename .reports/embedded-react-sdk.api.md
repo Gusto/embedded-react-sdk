@@ -1120,7 +1120,7 @@ export interface CompensationFormFields {
 }
 
 // @public
-export type CompensationOptionalFieldsToRequire = { create?: "title"[] | undefined; update?: ("title" | "flsaStatus" | "paymentUnit" | "rate" | "effectiveDate")[] | undefined; };
+export type CompensationOptionalFieldsToRequire = { create?: ("title" | "minimumWageId")[] | undefined; update?: ("title" | "flsaStatus" | "paymentUnit" | "rate" | "effectiveDate" | "minimumWageId")[] | undefined; };
 
 // @public
 interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
@@ -1667,7 +1667,7 @@ export interface ContractorDetailsFormFields {
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
 // @public
-export type ContractorDetailsOptionalFieldsToRequire = { create?: ("ssn" | "ein" | "middleInitial")[] | undefined; update?: ("hourlyRate" | "businessName" | "ssn" | "ein" | "startDate" | "firstName" | "lastName" | "middleInitial" | "workState")[] | undefined; };
+export type ContractorDetailsOptionalFieldsToRequire = { create?: ("ssn" | "ein" | "email" | "middleInitial")[] | undefined; update?: ("hourlyRate" | "businessName" | "ssn" | "ein" | "startDate" | "email" | "firstName" | "lastName" | "middleInitial" | "workState")[] | undefined; };
 
 // @public
 export type ContractorDetailsRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
@@ -1735,6 +1735,8 @@ declare namespace ContractorOnboarding {
         OnboardingFlow_3 as OnboardingFlow,
         OnboardingFlowProps_3 as OnboardingFlowProps,
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
+        SelfOnboardingFlow_2 as SelfOnboardingFlow,
+        SelfOnboardingFlowProps_2 as SelfOnboardingFlowProps,
         Landing_2 as Landing,
         LandingProps_2 as LandingProps,
         OnboardingSummary_2 as OnboardingSummary,
@@ -2393,7 +2395,7 @@ export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<Wo
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>;
 
 // @public
-export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL' | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING'];
+export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL'];
 
 // @public
 export type EmployeeAction = 'edit' | 'delete' | 'cancel_self_onboarding' | 'review' | 'dismiss' | 'rehire';
@@ -2407,7 +2409,6 @@ export const EmployeeDetailsErrorCodes: {
     readonly INVALID_NAME: "INVALID_NAME";
     readonly INVALID_EMAIL: "INVALID_EMAIL";
     readonly INVALID_SSN: "INVALID_SSN";
-    readonly EMAIL_REQUIRED_FOR_SELF_ONBOARDING: "EMAIL_REQUIRED_FOR_SELF_ONBOARDING";
 };
 
 // @public
@@ -3257,7 +3258,7 @@ export interface JobFormFields {
 }
 
 // @public
-export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered")[] | undefined; };
+export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered" | "stateWcClassCode")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered" | "stateWcClassCode")[] | undefined; };
 
 // @public
 export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED;
@@ -4164,7 +4165,7 @@ export interface PayScheduleFormFields {
 export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice per month" | "Monthly";
 
 // @public
-export type PayScheduleOptionalFieldsToRequire = { create?: "customTwicePerMonth"[] | undefined; update?: "customTwicePerMonth"[] | undefined; };
+export type PayScheduleOptionalFieldsToRequire = { create?: ("customTwicePerMonth" | "day1" | "day2")[] | undefined; update?: ("customTwicePerMonth" | "day1" | "day2")[] | undefined; };
 
 // @public
 interface PayScheduleProps extends BaseComponentInterface<'Company.PaySchedule'> {
@@ -4831,10 +4832,19 @@ export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
 
 // @public
+const SelfOnboardingFlow_2: (input: SelfOnboardingFlowProps_2) => JSX;
+
+// @public
 interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     employeeId: string;
     withEmployeeI9?: boolean;
+}
+
+// @public
+interface SelfOnboardingFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+    contractorId: string;
 }
 
 // @public
