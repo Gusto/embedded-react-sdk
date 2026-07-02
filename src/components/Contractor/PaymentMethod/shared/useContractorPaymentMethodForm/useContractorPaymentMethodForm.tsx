@@ -22,6 +22,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -66,7 +67,7 @@ export interface ContractorPaymentMethodFormFields {
  * @public
  */
 export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ContractorPaymentMethodFieldsMetadata,
   ContractorPaymentMethodFormData,
   ContractorPaymentMethodFormFields
 > {
@@ -85,6 +86,18 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<
   actions: {
     onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>
   }
+}
+
+/** @internal */
+function buildContractorPaymentMethodFieldsMetadata(
+  base: Record<keyof ContractorPaymentMethodFormData, FieldMetadata>,
+) {
+  const typeOptions = PAYMENT_METHOD_TYPES.map(value => ({ value, label: value }))
+  return {
+    type: withOptions<ContractorPaymentMethodFormType>(base.type, typeOptions, [
+      ...PAYMENT_METHOD_TYPES,
+    ]),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -181,15 +194,8 @@ export function useContractorPaymentMethodForm({
     setSubmitError,
   })
 
-  const typeOptions = PAYMENT_METHOD_TYPES.map(value => ({ value, label: value }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    ...baseMetadata,
-    type: withOptions<ContractorPaymentMethodFormType>(baseMetadata.type, typeOptions, [
-      ...PAYMENT_METHOD_TYPES,
-    ]),
-  }
+  const fieldsMetadata = buildContractorPaymentMethodFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<ContractorPaymentMethod> | undefined> => {
     if (!paymentMethod) {
@@ -262,5 +268,6 @@ export type UseContractorPaymentMethodFormResult =
  *
  * @public
  */
-export type ContractorPaymentMethodFieldsMetadata =
-  UseContractorPaymentMethodFormReady['form']['fieldsMetadata']
+export type ContractorPaymentMethodFieldsMetadata = ReturnType<
+  typeof buildContractorPaymentMethodFieldsMetadata
+>

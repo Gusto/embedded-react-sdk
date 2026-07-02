@@ -49,11 +49,13 @@ import {
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -84,7 +86,7 @@ export interface UseContractorSignatureFormProps {
  * @public
  */
 export interface UseContractorSignatureFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ContractorSignatureFieldsMetadata,
   ContractorSignatureFormData,
   ContractorSignatureFormFieldComponents
 > {
@@ -127,8 +129,9 @@ export type UseContractorSignatureFormResult = HookLoadingResult | UseContractor
  *
  * @public
  */
-export type ContractorSignatureFieldsMetadata =
-  UseContractorSignatureFormReady['form']['fieldsMetadata']
+export type ContractorSignatureFieldsMetadata = ReturnType<
+  typeof buildContractorSignatureFieldsMetadata
+>
 
 function buildFields(
   presentFieldNames: Set<string>,
@@ -174,6 +177,49 @@ function buildFields(
     AccountNumber: presentFieldNames.has('accountNumber') ? AccountNumberField : undefined,
     CompanyName: presentFieldNames.has('companyName') ? CompanyNameField : undefined,
   }
+}
+
+/** @internal */
+function buildContractorSignatureFieldsMetadata(
+  base: Record<keyof ContractorSignatureFormData, FieldMetadata>,
+  { ssnPlaceholder, einPlaceholder }: { ssnPlaceholder?: string; einPlaceholder?: string },
+) {
+  const taxClassificationOptions = TAX_CLASSIFICATION_OPTION_KEYS.map(key => ({
+    value: key,
+    label: key,
+  }))
+  const llcClassificationOptions = LLC_CLASSIFICATION_CODES.map(code => ({
+    value: code,
+    label: code,
+  }))
+
+  return {
+    name: base.name,
+    businessName: base.businessName,
+    taxClassification: withOptions(base.taxClassification, taxClassificationOptions, [
+      ...TAX_CLASSIFICATION_OPTION_KEYS,
+    ]),
+    llcClassificationCode: withOptions(base.llcClassificationCode, llcClassificationOptions, [
+      ...LLC_CLASSIFICATION_CODES,
+    ]),
+    otherText: base.otherText,
+    foreignPartners: base.foreignPartners,
+    exemptPayeeCode: base.exemptPayeeCode,
+    exemptionFromFatca: base.exemptionFromFatca,
+    homeAddressStreet1: base.homeAddressStreet1,
+    homeAddressStreet2: base.homeAddressStreet2,
+    homeAddressCity: base.homeAddressCity,
+    homeAddressState: base.homeAddressState,
+    homeAddressZip: base.homeAddressZip,
+    accountNumber: base.accountNumber,
+    companyName: base.companyName,
+    // The masked value drives the redacted SSN/EIN placeholder. `buildFormSchema`
+    // already set `hasRedactedValue` and exempted the field from required validation.
+    ssn: withFlags(base.ssn, ssnPlaceholder ? { placeholder: ssnPlaceholder } : {}),
+    ein: withFlags(base.ein, einPlaceholder ? { placeholder: einPlaceholder } : {}),
+    signatureText: base.signatureText,
+    agree: base.agree,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -296,36 +342,14 @@ export function useContractorSignatureForm({
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 
-  const fieldsMetadata = useMemo<FieldsMetadata>(() => {
-    const taxClassificationOptions = TAX_CLASSIFICATION_OPTION_KEYS.map(key => ({
-      value: key,
-      label: key,
-    }))
-    const llcClassificationOptions = LLC_CLASSIFICATION_CODES.map(code => ({
-      value: code,
-      label: code,
-    }))
-
-    return {
-      ...baseMetadata,
-      taxClassification: withOptions(baseMetadata.taxClassification, taxClassificationOptions, [
-        ...TAX_CLASSIFICATION_OPTION_KEYS,
-      ]),
-      llcClassificationCode: withOptions(
-        baseMetadata.llcClassificationCode,
-        llcClassificationOptions,
-        [...LLC_CLASSIFICATION_CODES],
-      ),
-      // The masked value drives the redacted SSN/EIN placeholder. `buildFormSchema`
-      // already set `hasRedactedValue` and exempted the field from required validation.
-      ...(redaction.ssnPlaceholder
-        ? { ssn: { ...baseMetadata.ssn, placeholder: redaction.ssnPlaceholder } }
-        : {}),
-      ...(redaction.einPlaceholder
-        ? { ein: { ...baseMetadata.ein, placeholder: redaction.einPlaceholder } }
-        : {}),
-    }
-  }, [baseMetadata, redaction])
+  const fieldsMetadata = useMemo(
+    () =>
+      buildContractorSignatureFieldsMetadata(baseMetadata, {
+        ssnPlaceholder: redaction.ssnPlaceholder,
+        einPlaceholder: redaction.einPlaceholder,
+      }),
+    [baseMetadata, redaction],
+  )
 
   const signMutation = useContractorDocumentsSignMutation()
   const isPending = signMutation.isPending

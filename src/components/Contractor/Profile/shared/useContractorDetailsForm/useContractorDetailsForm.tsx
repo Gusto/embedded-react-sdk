@@ -56,6 +56,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -168,7 +169,7 @@ export interface ContractorDetailsFormFields {
  * @public
  */
 export interface UseContractorDetailsFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ContractorDetailsFieldsMetadata,
   ContractorDetailsFormData,
   ContractorDetailsFormFields
 > {
@@ -203,6 +204,42 @@ const canToggleSelfOnboarding = (contractor?: Contractor) => {
     contractor.onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
     contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
   )
+}
+
+/** @internal */
+function buildContractorDetailsFieldsMetadata(
+  base: Record<keyof ContractorDetailsFormData, FieldMetadata>,
+) {
+  const typeEntries = [ContractorType.Individual, ContractorType.Business]
+  const wageTypeEntries = [WageType.Hourly, WageType.Fixed]
+  return {
+    type: withOptions(
+      base.type,
+      typeEntries.map(value => ({ value, label: value })),
+      typeEntries,
+    ),
+    wageType: withOptions(
+      base.wageType,
+      wageTypeEntries.map(value => ({ value, label: value })),
+      wageTypeEntries,
+    ),
+    startDate: base.startDate,
+    hourlyRate: base.hourlyRate,
+    selfOnboarding: base.selfOnboarding,
+    fileNewHireReport: base.fileNewHireReport,
+    email: base.email,
+    firstName: base.firstName,
+    lastName: base.lastName,
+    middleInitial: base.middleInitial,
+    businessName: base.businessName,
+    ssn: base.ssn,
+    ein: base.ein,
+    workState: withOptions(
+      base.workState,
+      STATES_ABBR.map(abbr => ({ value: abbr, label: abbr })),
+      STATES_ABBR,
+    ),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -360,27 +397,7 @@ export function useContractorDetailsForm({
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-
-  const typeEntries = [ContractorType.Individual, ContractorType.Business]
-  const wageTypeEntries = [WageType.Hourly, WageType.Fixed]
-  const fieldsMetadata = {
-    ...baseMetadata,
-    type: withOptions(
-      baseMetadata.type,
-      typeEntries.map(value => ({ value, label: value })),
-      typeEntries,
-    ),
-    wageType: withOptions(
-      baseMetadata.wageType,
-      wageTypeEntries.map(value => ({ value, label: value })),
-      wageTypeEntries,
-    ),
-    workState: withOptions(
-      baseMetadata.workState,
-      STATES_ABBR.map(abbr => ({ value: abbr, label: abbr })),
-      STATES_ABBR,
-    ),
-  }
+  const fieldsMetadata = buildContractorDetailsFieldsMetadata(baseMetadata)
 
   const onSubmit = async (
     options?: ContractorDetailsSubmitOptions,
@@ -537,5 +554,6 @@ export type UseContractorDetailsFormResult = HookLoadingResult | UseContractorDe
  *
  * @public
  */
-export type ContractorDetailsFieldsMetadata =
-  UseContractorDetailsFormReady['form']['fieldsMetadata']
+export type ContractorDetailsFieldsMetadata = ReturnType<
+  typeof buildContractorDetailsFieldsMetadata
+>

@@ -28,6 +28,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -82,7 +83,7 @@ export interface ContractorBankAccountFormFields {
  * @public
  */
 export interface UseContractorBankAccountFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ContractorBankAccountFieldsMetadata,
   ContractorBankAccountFormData,
   ContractorBankAccountFormFields
 > {
@@ -96,6 +97,21 @@ export interface UseContractorBankAccountFormReady extends BaseFormHookReady<
   actions: {
     onSubmit: () => Promise<HookSubmitResult<ContractorBankAccount> | undefined>
   }
+}
+
+/** @internal */
+function buildContractorBankAccountFieldsMetadata(
+  base: Record<keyof ContractorBankAccountFormData, FieldMetadata>,
+) {
+  const accountTypeOptions = ACCOUNT_TYPES.map(value => ({ value, label: value }))
+  return {
+    name: base.name,
+    routingNumber: base.routingNumber,
+    accountNumber: base.accountNumber,
+    accountType: withOptions<ContractorAccountType>(base.accountType, accountTypeOptions, [
+      ...ACCOUNT_TYPES,
+    ]),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -213,17 +229,8 @@ export function useContractorBankAccountForm({
     setSubmitError,
   })
 
-  const accountTypeOptions = ACCOUNT_TYPES.map(value => ({ value, label: value }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    name: baseMetadata.name,
-    routingNumber: baseMetadata.routingNumber,
-    accountNumber: baseMetadata.accountNumber,
-    accountType: withOptions<ContractorAccountType>(baseMetadata.accountType, accountTypeOptions, [
-      ...ACCOUNT_TYPES,
-    ]),
-  }
+  const fieldsMetadata = buildContractorBankAccountFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<ContractorBankAccount> | undefined> => {
     let submitResult: HookSubmitResult<ContractorBankAccount> | undefined
@@ -300,5 +307,6 @@ export type UseContractorBankAccountFormResult =
  *
  * @public
  */
-export type ContractorBankAccountFieldsMetadata =
-  UseContractorBankAccountFormReady['form']['fieldsMetadata']
+export type ContractorBankAccountFieldsMetadata = ReturnType<
+  typeof buildContractorBankAccountFieldsMetadata
+>

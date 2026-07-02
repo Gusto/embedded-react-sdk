@@ -32,6 +32,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -104,7 +105,7 @@ export interface ContractorAddressFormFields {
  * @public
  */
 export interface UseContractorAddressFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ContractorAddressFieldsMetadata,
   ContractorAddressFormData,
   ContractorAddressFormFields
 > {
@@ -125,6 +126,23 @@ export interface UseContractorAddressFormReady extends BaseFormHookReady<
       options?: ContractorAddressSubmitOptions,
     ) => Promise<HookSubmitResult<ContractorAddress> | undefined>
   }
+}
+
+/** @internal */
+function buildContractorAddressFieldsMetadata(
+  base: Record<keyof ContractorAddressFormData, FieldMetadata>,
+) {
+  const stateOptions = STATES_ABBR.map(abbr => ({
+    value: abbr,
+    label: abbr,
+  }))
+  return {
+    street1: base.street1,
+    street2: base.street2,
+    city: base.city,
+    state: withOptions(base.state, stateOptions, STATES_ABBR),
+    zip: base.zip,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -239,19 +257,8 @@ export function useContractorAddressForm({
     setSubmitError,
   })
 
-  const stateOptions = STATES_ABBR.map(abbr => ({
-    value: abbr,
-    label: abbr,
-  }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    street1: baseMetadata.street1,
-    street2: baseMetadata.street2,
-    city: baseMetadata.city,
-    state: withOptions(baseMetadata.state, stateOptions, STATES_ABBR),
-    zip: baseMetadata.zip,
-  }
+  const fieldsMetadata = buildContractorAddressFieldsMetadata(baseMetadata)
 
   const onSubmit = async (
     options?: ContractorAddressSubmitOptions,
@@ -349,5 +356,6 @@ export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAd
  *
  * @public
  */
-export type ContractorAddressFieldsMetadata =
-  UseContractorAddressFormReady['form']['fieldsMetadata']
+export type ContractorAddressFieldsMetadata = ReturnType<
+  typeof buildContractorAddressFieldsMetadata
+>
