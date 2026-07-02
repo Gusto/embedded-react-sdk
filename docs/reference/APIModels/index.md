@@ -591,6 +591,26 @@ Input type for the custom field.
 
 ***
 
+<a id="documentsignedrecipienttype"></a>
+
+### DocumentSignedRecipientType
+
+> `const` **DocumentSignedRecipientType**: `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L15)
+
+The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-documentsignedrecipienttypecompany"></a> `Company` | `"Company"` |
+| <a id="property-documentsignedrecipienttypecontractor"></a> `Contractor` | `"Contractor"` |
+| <a id="property-documentsignedrecipienttypeemployee"></a> `Employee` | `"Employee"` |
+
+***
+
 <a id="documenttype"></a>
 
 ### DocumentType
@@ -2767,6 +2787,93 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/document.ts:
 | <a id="property-documenttitle"></a> `title?` | `string` | The title of the document |
 | <a id="property-documentuuid"></a> `uuid?` | `string` | The UUID of the document |
 | <a id="property-documentyear"></a> `year?` | `number` \| `null` | The year of this document. This value is nullable and will not be present on all documents. |
+
+***
+
+<a id="documentsigned"></a>
+
+### DocumentSigned
+
+> **DocumentSigned** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:77](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L77)
+
+`DocumentSigned` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-documentsigneddescription"></a> `description?` | `string` | The description of the document |
+| <a id="property-documentsigneddraft"></a> `draft?` | `boolean` | If the document is in a draft state |
+| <a id="property-documentsignedfields"></a> `fields?` | [`DocumentSignedFields`](#documentsignedfields)[] | List of the document's fields and associated data. Values reflect the data provided at signing. |
+| <a id="property-documentsignedname"></a> `name?` | `string` | The type identifier of the document |
+| <a id="property-documentsignedpages"></a> `pages?` | [`DocumentSignedPages`](#documentsignedpages)[] | List of the document's pages and associated image URLs. |
+| <a id="property-documentsignedquarter"></a> `quarter?` | `number` \| `null` | The quarter of this document. This value is nullable and will not be present on all documents. |
+| <a id="property-documentsignedrecipienttype"></a> `recipientType?` | [`DocumentSignedRecipientType`](#documentsignedrecipienttype-1) | The type of recipient associated with the document (will be `Contractor` for Contractor Documents) |
+| <a id="property-documentsignedrecipientuuid"></a> `recipientUuid?` | `string` | Unique identifier for the recipient associated with the document |
+| <a id="property-documentsignedrequiressigning"></a> `requiresSigning?` | `boolean` | A boolean flag that indicates whether the document needs signing or not. Note that this value will change after the document is signed. |
+| <a id="property-documentsignedsignedat"></a> `signedAt?` | `string` \| `null` | When the document was signed (will be `null` if unsigned) |
+| <a id="property-documentsignedtitle"></a> `title?` | `string` | The title of the document |
+| <a id="property-documentsigneduuid"></a> `uuid?` | `string` | The UUID of the document |
+| <a id="property-documentsignedyear"></a> `year?` | `number` \| `null` | The year of this document. This value is nullable and will not be present on all documents. |
+
+***
+
+<a id="documentsignedfields"></a>
+
+### DocumentSignedFields
+
+> **DocumentSignedFields** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:38](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L38)
+
+`DocumentSignedFields` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-documentsignedfieldsdatatype"></a> `dataType?` | `string` | The field's data type |
+| <a id="property-documentsignedfieldsheight"></a> `height?` | `number` \| `null` | Height of the field. May be null when the field has no positioning information. |
+| <a id="property-documentsignedfieldskey"></a> `key?` | `string` \| `null` | Unique identifier of the field. May be null for custom fields that do not correspond to a known Gusto-managed key mapping. |
+| <a id="property-documentsignedfieldspagenumber"></a> `pageNumber?` | `number` \| `null` | Page number of the field. May be null when the field has no positioning information. |
+| <a id="property-documentsignedfieldsrequired"></a> `required?` | `boolean` | Whether the field is required |
+| <a id="property-documentsignedfieldsvalue"></a> `value?` | `string` \| `null` | Value of the field |
+| <a id="property-documentsignedfieldswidth"></a> `width?` | `number` \| `null` | Width of the field. May be null when the field has no positioning information. |
+| <a id="property-documentsignedfieldsx"></a> `x?` | `number` \| `null` | X-coordinate location of the field on the page. May be null when the field has no positioning information. |
+| <a id="property-documentsignedfieldsy"></a> `y?` | `number` \| `null` | Y-coordinate location of the field on the page. May be null when the field has no positioning information. |
+
+***
+
+<a id="documentsignedpages"></a>
+
+### DocumentSignedPages
+
+> **DocumentSignedPages** = `object`
+
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:27](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L27)
+
+`DocumentSignedPages` entity from the Gusto Embedded API.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-documentsignedpagesimageurl"></a> `imageUrl?` | `string` | Image URL for the page |
+| <a id="property-documentsignedpagespagenumber"></a> `pageNumber?` | `number` | Page number |
+
+***
+
+<a id="documentsignedrecipienttype-1"></a>
+
+### DocumentSignedRecipientType
+
+> **DocumentSignedRecipientType** = `ClosedEnum`\<*typeof* [`DocumentSignedRecipientType`](#documentsignedrecipienttype)\>
+
+Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/documentsigned.ts:15](https://github.com/Gusto/gusto-typescript-client/blob/gusto_embedded_v_2026_02_01/v0.0.1/gusto_embedded_v_2026_02_01/src/models/components/documentsigned.ts#L15)
+
+The type of recipient associated with the document (will be `Contractor` for Contractor Documents)
 
 ***
 

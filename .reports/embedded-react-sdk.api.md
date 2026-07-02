@@ -76,6 +76,10 @@ import { CustomTypeOptions } from 'i18next';
 import { Deductions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
 import { Document as Document_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/document';
+import { DocumentSigned } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedFields } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedPages } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedRecipientType } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
 import { DocumentType as DocumentType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization';
 import { EinVerification } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
 import { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
@@ -435,6 +439,10 @@ declare namespace APIModels {
         Fields,
         Pages,
         RecipientType,
+        DocumentSigned,
+        DocumentSignedFields,
+        DocumentSignedPages,
+        DocumentSignedRecipientType,
         EmployeeCurrentEmploymentStatus,
         EmployeeOnboardingStatus1,
         Employee,
@@ -671,7 +679,7 @@ export const BankFormErrorCodes: {
 };
 
 // @public
-export type BankFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+export type BankFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
 
 // @public
 export interface BankFormFields {
@@ -1585,7 +1593,7 @@ export type ContractorBankAccountFieldsMetadata = UseContractorBankAccountFormRe
 export type ContractorBankAccountFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
 
 // @public
-export type ContractorBankAccountFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+export type ContractorBankAccountFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
 
 // @public
 export interface ContractorBankAccountFormFields {
@@ -1665,7 +1673,7 @@ export interface ContractorDetailsFormFields {
 export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
 
 // @public
-export type ContractorDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "ssn" | "ein")[] | undefined; update?: ("hourlyRate" | "startDate" | "firstName" | "lastName" | "middleInitial" | "businessName" | "workState" | "ssn" | "ein")[] | undefined; };
+export type ContractorDetailsOptionalFieldsToRequire = { create?: ("ssn" | "ein" | "middleInitial")[] | undefined; update?: ("hourlyRate" | "businessName" | "ssn" | "ein" | "startDate" | "firstName" | "lastName" | "middleInitial" | "workState")[] | undefined; };
 
 // @public
 export type ContractorDetailsRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
@@ -1826,6 +1834,138 @@ export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldP
 
 // @public
 export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
+
+// @public
+export type ContractorSignatureAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureAgreeFieldProps = HookFieldProps<CheckboxHookFieldProps<ContractorSignatureAgreeValidation>>;
+
+// @public
+export type ContractorSignatureAgreeValidation = typeof ContractorSignatureFormErrorCodes.AGREE_REQUIRED;
+
+// @public
+export type ContractorSignatureBusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureCompanyNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureEinFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureEinValidation, ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureEinValidation = typeof ContractorSignatureFormErrorCodes.INVALID_EIN;
+
+// @public
+export type ContractorSignatureExemptionFromFatcaFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureExemptPayeeCodeFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureFieldsMetadata = UseContractorSignatureFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorSignatureForeignPartnersFieldProps = HookFieldProps<CheckboxHookFieldProps>;
+
+// @public
+export type ContractorSignatureFormData = {
+    name: string
+    businessName: string
+    taxClassification: string
+    llcClassificationCode: string
+    otherText: string
+    foreignPartners: boolean
+    exemptPayeeCode: string
+    exemptionFromFatca: string
+    homeAddressStreet1: string
+    homeAddressStreet2: string
+    homeAddressCity: string
+    homeAddressState: string
+    homeAddressZip: string
+    accountNumber: string
+    companyName: string
+    ssn: string
+    ein: string
+    signatureText: string
+    agree: boolean
+};
+
+// @public
+export type ContractorSignatureFormErrorCode = (typeof ContractorSignatureFormErrorCodes)[keyof typeof ContractorSignatureFormErrorCodes];
+
+// @public
+export const ContractorSignatureFormErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly AGREE_REQUIRED: "AGREE_REQUIRED";
+    readonly INVALID_SSN: "INVALID_SSN";
+    readonly INVALID_EIN: "INVALID_EIN";
+};
+
+// @public
+export interface ContractorSignatureFormFieldComponents {
+    AccountNumber: ComponentType<ContractorSignatureAccountNumberFieldProps> | undefined;
+    Agree: ComponentType<ContractorSignatureAgreeFieldProps>;
+    BusinessName: ComponentType<ContractorSignatureBusinessNameFieldProps> | undefined;
+    CompanyName: ComponentType<ContractorSignatureCompanyNameFieldProps> | undefined;
+    Ein: ComponentType<ContractorSignatureEinFieldProps> | undefined;
+    ExemptionFromFatca: ComponentType<ContractorSignatureExemptionFromFatcaFieldProps> | undefined;
+    ExemptPayeeCode: ComponentType<ContractorSignatureExemptPayeeCodeFieldProps> | undefined;
+    ForeignPartners: ComponentType<ContractorSignatureForeignPartnersFieldProps> | undefined;
+    HomeAddressCity: ComponentType<ContractorSignatureHomeAddressCityFieldProps> | undefined;
+    HomeAddressState: ComponentType<ContractorSignatureHomeAddressStateFieldProps> | undefined;
+    HomeAddressStreet1: ComponentType<ContractorSignatureHomeAddressStreet1FieldProps> | undefined;
+    HomeAddressStreet2: ComponentType<ContractorSignatureHomeAddressStreet2FieldProps> | undefined;
+    HomeAddressZip: ComponentType<ContractorSignatureHomeAddressZipFieldProps> | undefined;
+    LlcClassificationCode: ComponentType<ContractorSignatureLlcClassificationCodeFieldProps> | undefined;
+    Name: ComponentType<ContractorSignatureNameFieldProps> | undefined;
+    OtherText: ComponentType<ContractorSignatureOtherTextFieldProps> | undefined;
+    SignatureText: ComponentType<ContractorSignatureSignatureTextFieldProps> | undefined;
+    Ssn: ComponentType<ContractorSignatureSsnFieldProps> | undefined;
+    TaxClassification: ComponentType<ContractorSignatureTaxClassificationFieldProps> | undefined;
+}
+
+// @public
+export type ContractorSignatureHomeAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStateFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStreet1FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStreet2FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureLlcClassificationCodeFieldProps = HookFieldProps<SelectHookFieldProps<ContractorSignatureRequiredValidation, string>>;
+
+// @public
+export type ContractorSignatureNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureOptionalFieldsToRequire = { create?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; update?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; };
+
+// @public
+export type ContractorSignatureOtherTextFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureRequiredValidation = typeof ContractorSignatureFormErrorCodes.REQUIRED;
+
+// @public
+export type ContractorSignatureSignatureTextFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureSsnValidation, ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureSsnValidation = typeof ContractorSignatureFormErrorCodes.INVALID_SSN;
+
+// @public
+export type ContractorSignatureTaxClassificationFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorSignatureRequiredValidation, string>>;
 
 // @public
 export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
@@ -2264,7 +2404,7 @@ export const EmployeeDetailsErrorCodes: {
 };
 
 // @public
-export type EmployeeDetailsField = "email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth";
+export type EmployeeDetailsField = "ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth";
 
 // @public
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
@@ -2284,7 +2424,7 @@ export interface EmployeeDetailsFormFields {
 }
 
 // @public
-export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("email" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; update?: ("email" | "firstName" | "lastName" | "middleInitial" | "ssn" | "dateOfBirth")[] | undefined; };
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("ssn" | "email" | "middleInitial" | "dateOfBirth")[] | undefined; update?: ("ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -2654,6 +2794,7 @@ export interface FieldMetadata {
     maxDate?: string | null;
     minDate?: string | null;
     name: string;
+    placeholder?: string;
 }
 
 // @public
@@ -5571,6 +5712,36 @@ export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<F
 export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
 
 // @public
+export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
+
+// @public
+export interface UseContractorSignatureFormProps {
+    documentUuid: string;
+    optionalFieldsToRequire?: ContractorSignatureOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorSignatureFormReady extends BaseFormHookReady<FieldsMetadata, ContractorSignatureFormData, ContractorSignatureFormFieldComponents> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<DocumentSigned> | undefined>;
+    };
+    data: {
+        document: Document_2;
+        pdfUrl: string | null;
+        hasFields: boolean;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
+
+// @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
 // @public
@@ -6151,7 +6322,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:271:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:273:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
