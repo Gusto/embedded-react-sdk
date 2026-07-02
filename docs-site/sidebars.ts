@@ -51,7 +51,6 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'guides/workflows-overview',
-        'hooks/hooks',
         'guides/proxy-examples',
         'guides/endpoint-reference',
       ],

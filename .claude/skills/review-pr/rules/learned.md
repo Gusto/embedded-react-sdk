@@ -142,7 +142,7 @@ onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, result.data)
 ### LEARNED-006: Partner-Facing Hooks Must Conform to the Canonical Spec
 
 - **Severity:** warning
-- **Rule:** Any new `use*Form` hook intended for the public partner surface — or any SDK component being migrated to consume one — must conform to the canonical specs in `.claude/commands/create-hook.md` (scaffolding/structure) and `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` (migration playbook). This means the hook lives at `src/components/<Domain>/<Feature>/shared/use<Name>Form/` with the five-file layout (`use*Form.tsx`, `<camelDomain>Schema.ts`, `fields.tsx`, `index.ts`, `use*Form.test.tsx`); the schema follows `ErrorCodes → fieldValidators → requiredFieldsConfig → buildFormSchema` (no inline `.optional()` except the documented enum-placeholder escape hatch); the hook returns the discriminated union with `errorHandling` in both branches and `HookSubmitResult<TEntity>` from `onSubmit`; field components are thin `*HookField` wrappers; partner-facing exports are wired through the feature barrel and `src/index.ts`; and a corresponding `docs/hooks/use<Name>Form.md` is added or updated. "Different but works" is not acceptable — partners rely on the consistency of these patterns. When flagging, cite the specific section of the canonical doc in the suggested fix.
+- **Rule:** Any new `use*Form` hook intended for the public partner surface — or any SDK component being migrated to consume one — must conform to the canonical specs in `.claude/commands/create-hook.md` (scaffolding/structure) and `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` (migration playbook). This means the hook lives at `src/components/<Domain>/<Feature>/shared/use<Name>Form/` with the five-file layout (`use*Form.tsx`, `<camelDomain>Schema.ts`, `fields.tsx`, `index.ts`, `use*Form.test.tsx`); the schema follows `ErrorCodes → fieldValidators → requiredFieldsConfig → buildFormSchema` (no inline `.optional()` except the documented enum-placeholder escape hatch); the hook returns the discriminated union with `errorHandling` in both branches and `HookSubmitResult<TEntity>` from `onSubmit`; field components are thin `*HookField` wrappers; partner-facing exports are wired through the feature barrel and `src/index.ts`; and the exported symbols carry TSDoc so the partner-facing reference under `docs/reference/**` regenerates (no hand-written `docs/hooks/` page). "Different but works" is not acceptable — partners rely on the consistency of these patterns. When flagging, cite the specific section of the canonical doc in the suggested fix.
 
 #### Bad Example
 
@@ -152,7 +152,7 @@ onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, result.data)
 // - inlines z.object(...) instead of using buildFormSchema
 // - returns { isLoading, isReady, errors, submit } (custom shape, not the discriminated union)
 // - exports buildFormSchema-style internals from the public barrel
-// - no docs/hooks/useNewThingForm.md added
+// - no TSDoc on the exported symbols (partner-facing reference can't regenerate)
 export function useNewThingForm(props: Props) {
   const schema = z.object({ name: z.string().min(1), startDate: z.string().optional() })
   const { handleSubmit, formState } = useForm({ resolver: zodResolver(schema) })

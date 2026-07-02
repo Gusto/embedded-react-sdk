@@ -114,7 +114,7 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 ### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
 
-Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
+Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state in the same error surface.
 
 ### Component & Feature Conventions
 

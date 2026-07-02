@@ -10,7 +10,7 @@ The package name `@gusto/embedded-api-v-<DATE>` appears in:
 2. **Hardcoded `queryKey` literals** — `queryKey: ['@gusto/embedded-api-v-<OLD>', ...]`
 3. **JSDoc references** in `createSdkQueryClient.ts:4` and `ApiProvider.tsx:35` docstring
 4. **CLAUDE.md / AGENTS.md / src/CLAUDE.md** — instruction file references
-5. **`docs/hooks/*.md` / `docs/api/*.md` / `docs/reference/*.md`** — partner-facing docs
+5. **`docs/api/*.md` / `docs/reference/*.md`** — partner-facing docs
 6. **`build/deriveEndpointInventory.ts`** — derive script
 7. **`e2e/utils/validationErrorCollector.test.ts`** — e2e helper test
 8. **`package.json`** — dependency name
@@ -57,7 +57,6 @@ sed -i '' "s|@gusto/embedded-api-v-${OLD}|@gusto/embedded-api-v-${NEW}|g" \
   AGENTS.md \
   CLAUDE.md \
   src/CLAUDE.md \
-  docs/hooks/*.md \
   docs/api/*.md \
   docs/reference/*.md \
   build/deriveEndpointInventory.ts \
