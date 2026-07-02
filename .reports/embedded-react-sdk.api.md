@@ -4918,6 +4918,12 @@ export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefi
 export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes.REQUIRED;
 
 // @public
+export type SignEmployeeBaseFieldsMetadata = {
+    signature: FieldMetadata;
+    confirmSignature: FieldMetadata;
+};
+
+// @public
 export type SignEmployeeFormConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
@@ -4946,13 +4952,22 @@ export interface SignEmployeeFormFields {
 }
 
 // @public
-export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata'];
+export type SignEmployeeFormFieldsMetadata = SignEmployeeBaseFieldsMetadata | SignEmployeeI9FieldsMetadata;
 
 // @public
 export type SignEmployeeFormRequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED;
 
 // @public
 export type SignEmployeeFormSignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignEmployeeFormRequiredValidation>>;
+
+// @public
+export type SignEmployeeI9FieldsMetadata = Omit<Record<keyof SignEmployeeFormData, FieldMetadata>, 'usedPreparer' | 'preparerState' | 'preparer2State' | 'preparer3State' | 'preparer4State'> & {
+    usedPreparer: FieldMetadataWithOptions<boolean>;
+    preparerState: FieldMetadataWithOptions<StateAbbreviation>;
+    preparer2State: FieldMetadataWithOptions<StateAbbreviation>;
+    preparer3State: FieldMetadataWithOptions<StateAbbreviation>;
+    preparer4State: FieldMetadataWithOptions<StateAbbreviation>;
+};
 
 // @public
 export const SPLIT_BY_VALUES: readonly ["Percentage", "Amount"];
@@ -6092,7 +6107,7 @@ export interface UseSignEmployeeFormProps {
 }
 
 // @public
-export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields> {
+export interface UseSignEmployeeFormReady extends BaseFormHookReady<SignEmployeeFormFieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Form> | undefined>;
         addPreparer?: () => void;
@@ -6102,7 +6117,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
         form: Form;
         pdfUrl: string | null | undefined;
     };
-    form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields>['form'] & {
+    form: BaseFormHookReady<SignEmployeeFormFieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields>['form'] & {
         preparers?: {
             count: number;
             canAdd: boolean;

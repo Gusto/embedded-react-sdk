@@ -532,6 +532,8 @@ export type {
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
   SignEmployeeFormFieldsMetadata,
+  SignEmployeeBaseFieldsMetadata,
+  SignEmployeeI9FieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,
   SignEmployeeFormErrorCode,

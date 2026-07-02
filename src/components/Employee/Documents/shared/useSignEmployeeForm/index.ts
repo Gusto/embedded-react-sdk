@@ -5,6 +5,8 @@ export type {
   UseSignEmployeeFormReady,
   SignEmployeeFormFields,
   SignEmployeeFormFieldsMetadata,
+  SignEmployeeBaseFieldsMetadata,
+  SignEmployeeI9FieldsMetadata,
   PreparerFieldGroup,
 } from './useSignEmployeeForm'
 export {
