@@ -30,9 +30,9 @@ export function breakpointToParam(key: BreakpointOption): string {
   return key ?? 'full'
 }
 
-/** Parses a `?vw=` token back to a breakpoint, defaulting to `large` when absent/invalid. */
+/** Parses a `?vw=` token back to a breakpoint, defaulting to Full (unconstrained) when absent/invalid. */
 export function parseBreakpointParam(param: string | null): BreakpointOption {
   if (param === 'full') return null
   const match = SWITCHER_OPTIONS.find(option => option.key === param)
-  return match ? match.key : 'large'
+  return match ? match.key : null
 }

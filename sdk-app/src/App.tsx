@@ -31,8 +31,31 @@ import {
 } from './ThemePanel'
 import { RightPanelShell } from './RightPanelShell'
 import { CommentsProvider, CommentLayer, CommentControls } from './design/comments'
+import { useComments } from './design/comments/CommentsContext'
+import { BreakpointSwitcher } from './design/BreakpointSwitcher'
+import { useViewportBreakpoint } from './design/useViewportBreakpoint'
+import type { BreakpointOption } from './design/breakpointConstants'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
+
+/**
+ * App-wide viewport switcher. Rendered inside CommentsProvider so it can slide
+ * clear of the comments tray drawer when it's open.
+ */
+function ViewportSwitcher({
+  breakpoint,
+  onChange,
+}: {
+  breakpoint: BreakpointOption
+  onChange: (key: BreakpointOption) => void
+}) {
+  const { trayOpen } = useComments()
+  return (
+    <div className={`viewport-switcher${trayOpen ? ' viewport-switcher-shifted' : ''}`}>
+      <BreakpointSwitcher value={breakpoint} onChange={onChange} />
+    </div>
+  )
+}
 
 function entitiesFromManualConfig(config: ManualConfig): EntityIds {
   return {
@@ -82,6 +105,7 @@ export function App() {
   const { chromeId, setChromeId } = useDemoChrome()
   const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
   const mainRef = useRef<HTMLElement>(null)
+  const viewport = useViewportBreakpoint()
 
   const activePanel: 'theme' | 'settings' | 'code' | null = codePanel.isOpen
     ? 'code'
@@ -286,13 +310,26 @@ export function App() {
   ) : (
     outletEl
   )
+  // Design routes constrain their own preview column (DesignLayout); everywhere
+  // else the switcher constrains the whole content area via a centered frame.
+  const framedOutlet =
+    appMode === 'design' ? (
+      chromedOutlet
+    ) : (
+      <div
+        className="viewport-frame"
+        style={viewport.maxWidth ? { maxWidth: viewport.maxWidth } : undefined}
+      >
+        {chromedOutlet}
+      </div>
+    )
   const mainEl = (
     <main
       ref={mainRef}
       className="main-content"
       style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
     >
-      {chromedOutlet}
+      {framedOutlet}
       <CommentLayer containerRef={mainRef} />
     </main>
   )
@@ -359,6 +396,10 @@ export function App() {
                   />
                 )}
                 <CommentControls />
+                <ViewportSwitcher
+                  breakpoint={viewport.breakpoint}
+                  onChange={viewport.setBreakpoint}
+                />
               </div>
             </CommentsProvider>
           </CurrentComponentProvider>

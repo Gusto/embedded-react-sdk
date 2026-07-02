@@ -30,16 +30,3 @@
     display: none;
   }
 }
-
-.switcherContainer {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 100;
-  transition: right 0.2s ease;
-}
-
-// Slide clear of the comments tray drawer (320px wide) when it's open.
-.switcherContainerShifted {
-  right: calc(320px + 1.5rem);
-}
