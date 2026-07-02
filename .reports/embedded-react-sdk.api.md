@@ -5033,6 +5033,9 @@ export type SsnRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
 export type SsnValidation = typeof EmployeeDetailsErrorCodes.INVALID_SSN;
 
 // @public
+export type StateAbbreviation = (typeof STATES_ABBR)[number];
+
+// @public
 export type StateFieldEntry = {
     state: string;
     name: string;
@@ -5041,6 +5044,9 @@ export type StateFieldEntry = {
 
 // @public
 export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressRequiredValidation, string>>;
+
+// @public
+export const STATES_ABBR: readonly ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
 // @public
 function StateTaxes(input: StateTaxesProps): JSX;

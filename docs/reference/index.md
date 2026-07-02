@@ -272,6 +272,17 @@ Use this when you need to reference a category value by name (e.g.
 | `network_error` | Network connectivity failure (connection refused, timeout, abort) |
 | `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
 
+***
+
+<a id="states_abbr"></a>
+
+### STATES\_ABBR
+
+> `const` **STATES\_ABBR**: readonly \[`"AL"`, `"AK"`, `"AZ"`, `"AR"`, `"CA"`, `"CO"`, `"CT"`, `"DE"`, `"DC"`, `"FL"`, `"GA"`, `"HI"`, `"ID"`, `"IL"`, `"IN"`, `"IA"`, `"KS"`, `"KY"`, `"LA"`, `"ME"`, `"MD"`, `"MA"`, `"MI"`, `"MN"`, `"MS"`, `"MO"`, `"MT"`, `"NE"`, `"NV"`, `"NH"`, `"NJ"`, `"NM"`, `"NY"`, `"NC"`, `"ND"`, `"OH"`, `"OK"`, `"OR"`, `"PA"`, `"RI"`, `"SC"`, `"SD"`, `"TN"`, `"TX"`, `"UT"`, `"VT"`, `"VA"`, `"WA"`, `"WV"`, `"WI"`, `"WY"`\]
+
+Two-letter US state abbreviations (including `'DC'`), in the order presented
+in state selection controls.
+
 ## Interfaces
 
 <a id="aftererrorhook"></a>
@@ -941,6 +952,17 @@ API response body. Refer to each component's event table for details.
 > **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
+
+***
+
+<a id="stateabbreviation"></a>
+
+### StateAbbreviation
+
+> **StateAbbreviation** = *typeof* [`STATES_ABBR`](#states_abbr)\[`number`\]
+
+A two-letter US state abbreviation (including `'DC'`). Derived from
+[STATES\_ABBR](#states_abbr).
 
 ## API Models
 

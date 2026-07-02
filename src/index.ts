@@ -18,8 +18,9 @@ export {
   ContractorSelfOnboardingStatuses,
   PAY_PERIODS,
   I9_FORM_NAME,
+  STATES_ABBR,
 } from '@/shared/constants'
-export type { EventType } from '@/shared/constants'
+export type { EventType, StateAbbreviation } from '@/shared/constants'
 export type {
   BeforeCreateRequestHook,
   BeforeRequestHook,
