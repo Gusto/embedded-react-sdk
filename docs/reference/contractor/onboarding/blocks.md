@@ -159,9 +159,9 @@ Props for [DocumentSigner](#documentsigner).
 | ------ | ------ | ------ |
 | `contractorId` | `string` | The associated contractor identifier. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | [`DocumentsListProps`](#documentslistprops)\[`"dictionary"`\] | Overrides for the document list copy shown by the signing flow. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDocumentsList`](../../Translations/index.md#contractordocumentslist)\>\> | Overrides for the document list copy shown by the signing flow. |
 
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
 
 ### Remarks
 
