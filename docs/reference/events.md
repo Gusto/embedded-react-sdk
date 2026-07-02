@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # Events
 
-## Component events
+## Event names
 
 <a id="componentevents"></a>
 

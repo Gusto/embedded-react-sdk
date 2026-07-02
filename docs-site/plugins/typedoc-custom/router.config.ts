@@ -145,3 +145,19 @@ export type StandalonePageConfig = {
   /** Page H1 and synthetic namespace name. */
   displayName: string
 }
+
+/**
+ * Top-level exports relocated from the project index onto the `Translations`
+ * page (grouped under "Types" above the per-namespace key interfaces). Matched
+ * by source path + `@group`, mirroring {@link STANDALONE_PAGES}: a reflection is
+ * moved when its source path contains any `sources` fragment AND it carries a
+ * matching `@group` tag. Targeting the i18n source files narrows the group match
+ * so an unrelated `@group Utility types` export elsewhere can't leak onto the
+ * page. Captures the override types (`Resources`, `ResourceDictionary`,
+ * `GlobalResourceDictionary`) plus i18n-adjacent utilities (`DeepPartial`,
+ * `SupportedLanguages`). See {@link SDKRouter.relocateI18nTypes}.
+ */
+export const I18N_RELOCATION: { sources: string[]; groups: string[] } = {
+  sources: ['i18n/types', 'types/Helpers'],
+  groups: ['Utility types'],
+}

@@ -48,7 +48,9 @@ export type {
 } from '@/components/Base'
 export type {
   ResourceDictionary,
+  GlobalResourceDictionary,
   Resources,
+  Translations,
   DeepPartial,
   SupportedLanguages,
 } from '@/types/Helpers'

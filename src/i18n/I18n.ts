@@ -1,8 +1,9 @@
 /// <reference types="vite/client" />
 import { useTranslation } from 'react-i18next'
 import type { CustomTypeOptions } from 'i18next'
+import type { Resources } from './types'
 import { LRUCache } from '@/helpers/LRUCache'
-import type { ResourceDictionary, Resources } from '@/types/Helpers'
+import type { ResourceDictionary } from '@/types/Helpers'
 
 /** @internal */
 export const defaultNS = 'common'
@@ -105,7 +106,7 @@ export const useI18n = (
  * @internal
  */
 export const useComponentDictionary = <K extends keyof Resources>(
-  ns: keyof CustomTypeOptions['resources'],
+  ns: K,
   resource?: ResourceDictionary<K> | null,
 ) => {
   const { i18n: i18nInstance } = useTranslation()

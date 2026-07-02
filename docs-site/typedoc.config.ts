@@ -24,6 +24,8 @@ export const baseOptions = {
     'Variables',
     'Interfaces',
     'Type Aliases',
+    // Per-i18n-namespace key interfaces on the Translations page
+    'Translation namespaces',
     ...COMPONENT_PROP_GROUPS,
     '*',
   ],

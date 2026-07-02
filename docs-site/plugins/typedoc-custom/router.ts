@@ -23,7 +23,7 @@ import {
   UnionType,
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
-import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
+import { DOMAINS, I18N_RELOCATION, STANDALONE_PAGES } from './router.config.ts'
 import {
   findHookResultAlias,
   getFormHookModel,
@@ -51,6 +51,28 @@ import {
  * directory name as-is since it's absent from NAMESPACE_PATHS.
  */
 const API_MODELS_NAMESPACE = 'APIModels'
+
+/**
+ * The `Translations` namespace (referenced by the `Resources` map interface in
+ * src/i18n/types.d.ts) holding each i18n namespace's overridable message keys,
+ * browsable as `Translations.CompanyAddresses`.
+ */
+const TRANSLATIONS_NAMESPACE = 'Translations'
+
+/**
+ * Group name for the per-i18n-namespace key interfaces (`Translations.CompanyAddresses`,
+ * …) so they render under their own section instead of the generic "Interfaces". The
+ * relocated i18n *types* keep their own `@group` (e.g. "Utility types") and are skipped.
+ */
+const TRANSLATION_INTERFACES_GROUP = 'Translation namespaces'
+
+/**
+ * Namespaces rendered as a single flat page — all members anchored on the index,
+ * no Flow/Blocks split. These re-export data/entity types, so the component-domain
+ * heuristics (splitting `*Flow` members onto their own pages) must not apply, even
+ * when a member's name happens to end in "Flow" (e.g. `Translations.PayrollPayrollFlow`).
+ */
+const FLAT_NAMESPACES = new Set([API_MODELS_NAMESPACE, TRANSLATIONS_NAMESPACE])
 
 /**
  * Map an installed-package source path to its definition on GitHub.
@@ -523,6 +545,22 @@ export class SDKRouter extends MemberRouter {
         2,
       ) + '\n',
     )
+
+    // Translations (i18n translation keys) — pinned after API Models.
+    const translationsDir = join(outDir, TRANSLATIONS_NAMESPACE)
+    mkdirSync(translationsDir, { recursive: true })
+    writeFileSync(
+      join(translationsDir, '_category_.json'),
+      JSON.stringify(
+        {
+          label: 'Translations',
+          position: DOMAINS.length + STANDALONE_PAGES.length + 2,
+          collapsed: true,
+        },
+        null,
+        2,
+      ) + '\n',
+    )
   }
 
   // Must run before CommentPlugin's RESOLVE_BEGIN handler (priority 0) so that
@@ -531,6 +569,80 @@ export class SDKRouter extends MemberRouter {
   // before CommentPlugin (0).
   static reparentDeprecated(context: Context): void {
     reparentDeprecatedMembers(context.project)
+  }
+
+  /**
+   * Relocate the i18n *types* ({@link I18N_RELOCATION}) from the project index
+   * onto the `Translations` page, keeping each type's natural `@group` section
+   * (e.g. "Utility types"). Selected by source path + `@group` rather than by
+   * name, so new i18n-adjacent utilities added to those files move
+   * automatically. This is purely a docs move: the public export paths are
+   * unchanged (they remain top-level `@gusto/embedded-react-sdk` exports), only
+   * their rendered location changes, and TypeDoc's relativeUrl walk keeps every
+   * cross-link correct.
+   *
+   * Must run before GroupPlugin (priority -100) so the reflections leave
+   * `project.groups` (no longer rendered on the index) and are grouped under
+   * `Translations` instead. Group ordering on the page is set via `groupOrder`.
+   */
+  static relocateI18nTypes(context: Context): void {
+    const { project } = context
+    const translations = project.children?.find(
+      (c): c is DeclarationReflection =>
+        c instanceof DeclarationReflection &&
+        c.kind === ReflectionKind.Namespace &&
+        c.name === TRANSLATIONS_NAMESPACE,
+    )
+    if (!translations) return
+
+    const { sources, groups } = I18N_RELOCATION
+    for (const child of [...(project.children ?? [])]) {
+      if (!(child instanceof DeclarationReflection)) continue
+      const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName ?? ''
+      if (!sources.some(fragment => fp.includes(fragment))) continue
+      const inGroup = child.comment?.blockTags.some(
+        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+      )
+      if (!inGroup) continue
+
+      project.removeChild(child)
+      child.parent = translations
+      translations.addChild(child)
+      // Keep the source `@group` intact so each type renders under its natural
+      // section on the Translations page (e.g. "Utility types"); GroupPlugin
+      // rebuilds project.groups from children after this, so removing the child
+      // above is what drops it from the index.
+    }
+  }
+
+  /**
+   * Stamp `@group Translation namespaces` on the per-i18n-namespace key
+   * interfaces (`Translations.CompanyAddresses`, …) so they render under their
+   * own section rather than the generic "Interfaces". The relocated i18n *types*
+   * ({@link relocateI18nTypes}) already carry a `@group` (e.g. "Utility types")
+   * and are skipped, so they stay in their own section.
+   *
+   * Must run before GroupPlugin (priority -100). Group ordering is set via
+   * `groupOrder`.
+   */
+  static groupTranslationInterfaces(context: Context): void {
+    const translations = context.project.children?.find(
+      (c): c is DeclarationReflection =>
+        c instanceof DeclarationReflection &&
+        c.kind === ReflectionKind.Namespace &&
+        c.name === TRANSLATIONS_NAMESPACE,
+    )
+    if (!translations) return
+
+    for (const child of translations.children ?? []) {
+      if (child.kind !== ReflectionKind.Interface) continue
+      if (child.comment?.blockTags.some(t => t.tag === '@group')) continue
+
+      if (!child.comment) child.comment = new Comment()
+      child.comment.blockTags.push(
+        new CommentTag('@group', [{ kind: 'text', text: TRANSLATION_INTERFACES_GROUP }]),
+      )
+    }
   }
 
   // Must run before GroupPlugin (priority -100). EventDispatcher fires higher priorities first,
@@ -854,7 +966,9 @@ export class SDKRouter extends MemberRouter {
 
     if (reflection.kind === ReflectionKind.Namespace) {
       const children = (reflection as DeclarationReflection).children ?? []
-      const flows = children.filter(c => c.name.endsWith('Flow'))
+      const flows = FLAT_NAMESPACES.has(reflection.name)
+        ? []
+        : children.filter(c => c.name.endsWith('Flow'))
 
       if (flows.length > 0) {
         // Each Flow component gets its own page; block components share blocks.md.
