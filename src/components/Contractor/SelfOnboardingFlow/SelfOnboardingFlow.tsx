@@ -31,7 +31,7 @@ export type { SelfOnboardingFlowProps } from './SelfOnboardingComponents'
  * @param props - See {@link SelfOnboardingFlowProps}.
  * @returns The multi-step self-onboarding flow.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"
