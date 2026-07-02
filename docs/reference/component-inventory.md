@@ -1110,7 +1110,7 @@ Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, al
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| `as?` | `"div"` \| `"span"` \| `"p"` \| `"pre"` | `'p'` | HTML element to render the text as |
+| `as?` | `"div"` \| `"p"` \| `"span"` \| `"pre"` | `'p'` | HTML element to render the text as |
 | `children?` | `ReactNode` | | Content to be displayed |
 | `className?` | `string` | | - |
 | `id?` | `string` | | - |

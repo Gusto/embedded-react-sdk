@@ -1276,6 +1276,7 @@ export const componentEvents: {
     readonly CONTRACTOR_INVITE_CONTRACTOR: "contractor/invite/selfOnboarding";
     readonly CONTRACTOR_ONBOARDING_CONTINUE: "contractor/onboarding/continue";
     readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
+    readonly CONTRACTOR_SIGN_DOCUMENT: "contractor/documents/sign";
     readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
@@ -1761,8 +1762,12 @@ declare namespace ContractorOnboarding {
         NewHireReportProps,
         ContractorSubmit,
         ContractorSubmitProps,
+        DocumentSigner_3 as DocumentSigner,
+        DocumentSignerProps_3 as DocumentSignerProps,
         DocumentsList,
-        DocumentsListProps
+        DocumentsListProps,
+        SignatureForm_3 as SignatureForm,
+        SignatureFormProps_3 as SignatureFormProps
     }
 }
 
@@ -2340,6 +2345,9 @@ function DocumentSigner(props: DocumentSignerProps): JSX;
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
 // @public
+function DocumentSigner_3(props: DocumentSignerProps_3): JSX;
+
+// @public
 interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     withEmployeeI9?: boolean;
@@ -2349,6 +2357,12 @@ interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentS
 interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
     companyId: string;
     signatoryId?: string;
+}
+
+// @public
+interface DocumentSignerProps_3 extends Omit<BaseComponentInterface<'Contractor.DocumentsList'>, 'dictionary'> {
+    contractorId: string;
+    dictionary?: DocumentsListProps['dictionary'];
 }
 
 // @public
@@ -4570,6 +4584,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
     // (undocumented)
+    'Contractor.SignatureForm': Translations.ContractorSignatureForm
+    // (undocumented)
     'Contractor.Submit': Translations.ContractorSubmit
     // (undocumented)
     'Employee.BankAccount': Translations.EmployeeBankAccount
@@ -4873,6 +4889,9 @@ function SignatureForm(props: SignatureFormProps): JSX;
 function SignatureForm_2(props: SignatureFormProps_2): JSX;
 
 // @public
+function SignatureForm_3(props: SignatureFormProps_3): JSX;
+
+// @public
 interface SignatureFormProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     formId: string;
@@ -4884,6 +4903,12 @@ interface SignatureFormProps_2 extends BaseComponentInterface<'Company.Signature
     // @override
     defaultValues?: never;
     formId: string;
+}
+
+// @public
+interface SignatureFormProps_3 extends BaseComponentInterface<'Contractor.SignatureForm'> {
+    contractorId: string;
+    documentUuid: string;
 }
 
 // @public
