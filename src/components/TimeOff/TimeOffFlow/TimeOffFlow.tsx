@@ -33,8 +33,6 @@ import { Flow } from '@/components/Flow/Flow'
  * | `timeOff/addEmployeesToPolicy` | User adds employees from a policy detail | `{ policyId: string }` |
  * | `timeOff/holidayAddEmployees` | User adds employees from holiday detail | — |
  * | `timeOff/editHolidayPolicy` | User edits the holiday policy | — |
- * | `timeOff/viewHolidayEmployees` | User switches to the holiday employees tab | — |
- * | `timeOff/viewHolidaySchedule` | User switches to the holiday schedule tab | — |
  * | `timeOff/policyCreate/error` | Policy creation fails | `{ alert?: { type, title, content? } }` |
  * | `timeOff/policySettings/error` | Policy settings update fails | `{ alert?: { type, title, content? } }` |
  * | `timeOff/addEmployees/error` | Adding employees to a policy fails | `{ alert?: { type, title, content? } }` |
@@ -53,8 +51,7 @@ import { Flow } from '@/components/Flow/Flow'
  * - {@link TimeOffPolicyDetail}
  * - {@link HolidaySelectionForm}
  * - {@link AddEmployeesHoliday}
- * - {@link ViewHolidayEmployees}
- * - {@link ViewHolidaySchedule}
+ * - {@link ViewHolidayPolicyDetails}
  *
  * @param props - {@link TimeOffFlowProps} with the company identifier and event handler.
  * @returns The composed time off policy management flow.

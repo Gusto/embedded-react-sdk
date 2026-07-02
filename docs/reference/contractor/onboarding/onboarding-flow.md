@@ -14,6 +14,23 @@ custom_edit_url: null
 
 Guided flow for admins to onboard a contractor to the company.
 
+## Remarks
+
+Renders a multi-step experience that collects every piece of information
+required to add a contractor to a company. Begins on the contractor list
+and transitions into the per-step screens when "Add contractor" or a row's
+"Edit"/"Continue" action is invoked; the submit step returns to the list.
+The flow is driven by an internal state machine and wraps each step in
+error and suspense boundaries.
+
+Each step of the flow is also exported as a standalone block (see the
+Blocks table) for composing a custom workflow when this orchestration
+is the wrong fit.
+
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
+payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -33,23 +50,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Renders a multi-step experience that collects every piece of information
-required to add a contractor to a company. Begins on the contractor list
-and transitions into the per-step screens when "Add contractor" or a row's
-"Edit"/"Continue" action is invoked; the submit step returns to the list.
-The flow is driven by an internal state machine and wraps each step in
-error and suspense boundaries.
-
-Each step of the flow is also exported as a standalone block (see the
-Blocks table) for composing a custom workflow when this orchestration
-is the wrong fit.
-
-The flow forwards every event emitted by its blocks to `onEvent`;
-see the events table on each block for the full set of events and
-payloads observable from this flow.
-
 ## OnboardingFlowProps
 
 <a id="onboardingflowprops"></a>
@@ -59,7 +59,7 @@ Props for OnboardingFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
 
 _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._

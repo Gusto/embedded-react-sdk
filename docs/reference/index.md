@@ -12,18 +12,24 @@ custom_edit_url: null
 
 # @gusto/embedded-react-sdk
 
+## Component namespaces
+
+| Namespace | Description |
+| ------ | ------ |
+| [CompanyOnboarding](company/onboarding/index.md) | Flows and blocks for onboarding a company. |
+| [ContractorManagement](contractor/management/index.md) | Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details. |
+| [ContractorOnboarding](contractor/onboarding/index.md) | Flows and blocks for onboarding contractors. |
+| [EmployeeManagement](employee/management/index.md) | Flows and blocks for managing an employee after onboarding. |
+| [EmployeeOnboarding](employee/onboarding/index.md) | Flows and blocks for onboarding employees. |
+| [InformationRequests](company/information-requests/index.md) | Flows and blocks for viewing and responding to information requests from Gusto. |
+| [Payroll](payroll/namespace.md) | Flows and blocks for running and managing payroll across a company's pay schedules. |
+| [TimeOff](time-off/namespace.md) | Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday. |
+
 ## Namespaces
 
 | Namespace | Description |
 | ------ | ------ |
-| [CompanyOnboarding](company/onboarding/index.md) | - |
-| [ContractorManagement](contractor/management/index.md) | - |
-| [ContractorOnboarding](contractor/onboarding/index.md) | - |
-| [EmployeeManagement](employee/management/index.md) | Flows and blocks for managing an employee after onboarding. |
-| [EmployeeOnboarding](employee/onboarding/index.md) | Flows and blocks for onboarding employees. |
-| [InformationRequests](company/information-requests/index.md) | - |
-| [Payroll](payroll/namespace.md) | The Payroll namespace. |
-| [TimeOff](time-off/namespace.md) | - |
+| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |
 | [Translations](Translations/index.md) | Per-namespace SDK i18n keys, each namespace browsable as its own reference (e.g. [Translations.CompanyAddresses](Translations/index.md#companyaddresses)) with every key's English default. Override defaults through a component's `dictionary` prop or the global `GustoProvider` dictionary. |
 
 ## Components
@@ -33,6 +39,18 @@ custom_edit_url: null
 ### ApiProvider
 
 Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
+
+#### Remarks
+
+Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
+and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
+`afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
+successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
+query automatically. Partners who supply their own `QueryClient` are responsible for matching that
+contract.
+
+Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
+manually.
 
 #### ApiProviderProps
 
@@ -48,18 +66,6 @@ Props for [ApiProvider](#apiprovider).
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
 
-#### Remarks
-
-Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
-and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
-`afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
-query automatically. Partners who supply their own `QueryClient` are responsible for matching that
-contract.
-
-Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
-manually.
-
 ## Variables
 
 <a id="contractoronboardingstatus"></a>
@@ -69,6 +75,11 @@ manually.
 > `const` **ContractorOnboardingStatus**: `object`
 
 Map of contractor onboarding status values returned by the Gusto API.
+
+#### Remarks
+
+Use these keys to compare against the `onboardingStatus` field on a contractor
+record. The values mirror the strings returned by the API.
 
 #### Type Declaration
 
@@ -81,11 +92,6 @@ Map of contractor onboarding status values returned by the Gusto API.
 | <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorOnboardingStatus1.SelfOnboardingNotInvited` |
 | <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorOnboardingStatus1.SelfOnboardingReview` |
 | <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorOnboardingStatus1.SelfOnboardingStarted` |
-
-#### Remarks
-
-Use these keys to compare against the `onboardingStatus` field on a contractor
-record. The values mirror the strings returned by the API.
 
 ***
 
@@ -114,6 +120,11 @@ onboarding flow.
 
 Map of employee onboarding status values returned by the Gusto API.
 
+#### Remarks
+
+Use these keys to compare against the `onboardingStatus` field on an employee
+record. The values mirror the strings returned by the API.
+
 #### Type Declaration
 
 | Name | Type | Default value |
@@ -126,11 +137,6 @@ Map of employee onboarding status values returned by the Gusto API.
 | <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `OnboardingStatus.SelfOnboardingInvitedOverdue` |
 | <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `OnboardingStatus.SelfOnboardingInvitedStarted` |
 | <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `OnboardingStatus.SelfOnboardingPendingInvite` |
-
-#### Remarks
-
-Use these keys to compare against the `onboardingStatus` field on an employee
-record. The values mirror the strings returned by the API.
 
 ***
 
@@ -251,15 +257,6 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
-| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
-| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
-| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
-
 #### Remarks
 
 Use this when you need to reference a category value by name (e.g.
@@ -271,6 +268,15 @@ Use this when you need to reference a category value by name (e.g.
 | `validation_error` | Client-side Zod schema validation before the request was sent |
 | `network_error` | Network connectivity failure (connection refused, timeout, abort) |
 | `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
 
 ## Interfaces
 
@@ -448,7 +454,7 @@ shape mixed into every public SDK feature component.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| <a id="property-basecomponentinterfaceonevent"></a> `onEvent` | [`OnEventType`](events.md#oneventtype)\<[`EventType`](events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | <a id="property-basecomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | <a id="property-basecomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
 | <a id="property-basecomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
@@ -900,41 +906,6 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 
 ***
 
-<a id="oneventtype"></a>
-
-### OnEventType
-
-> **OnEventType**\<`K`, `T`\> = (`type`: `K`, `data?`: `T`) => `void`
-
-Callback signature for an SDK component event emitter, invoked with an event key and optional payload.
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `K` | The discriminating event-key type, typically a [componentEvents](events.md#componentevents) member. |
-| `T` | The shape of the optional event payload. |
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `type` | `K` |
-| `data?` | `T` |
-
-#### Returns
-
-`void`
-
-#### Remarks
-
-Supply a function of this shape as the `onEvent` prop on any SDK feature component.
-The `type` argument is always one of the constants from `componentEvents`. The `data`
-argument is event-specific — some events carry no payload while others include the full
-API response body. Refer to each component's event table for details.
-
-***
-
 <a id="sdkerrorcategory"></a>
 
 ### SDKErrorCategory
@@ -942,9 +913,3 @@ API response body. Refer to each component's event table for details.
 > **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
-
-## API Models
-
-| Namespace | Description |
-| ------ | ------ |
-| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |

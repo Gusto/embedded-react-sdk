@@ -70,7 +70,7 @@ export interface TerminateEmployeeFormData {
  * @param props - See {@link TerminateEmployeeProps}.
  * @returns The termination form.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

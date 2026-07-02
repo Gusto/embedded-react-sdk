@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a content container with an optional overflow menu and a leading action slot.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface CardProps {
   /**

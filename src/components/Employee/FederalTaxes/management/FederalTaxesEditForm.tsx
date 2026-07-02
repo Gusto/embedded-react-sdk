@@ -39,7 +39,7 @@ export interface FederalTaxesEditFormProps extends BaseComponentInterface<'Emplo
  * @param props - See {@link FederalTaxesEditFormProps}.
  * @returns The rendered federal taxes edit form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function FederalTaxesEditForm({ FallbackComponent, ...props }: FederalTaxesEditFormProps) {
   return (

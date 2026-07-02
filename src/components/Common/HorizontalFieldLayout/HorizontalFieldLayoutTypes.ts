@@ -12,6 +12,7 @@ import type {
  *
  * @public
  * @interface
+ * @group Utility types
  */
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps
 

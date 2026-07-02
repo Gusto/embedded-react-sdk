@@ -51,6 +51,7 @@ import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/Pay
  * which fall back to built-in SDK implementations when omitted.
  *
  * @public
+ * @group Utility types
  *
  * @example Partial override with GustoProvider
  * ```tsx

@@ -23,16 +23,18 @@ flowchart
   PolicySettings -->|"timeOff/policySettings/done"| AddEmployeesToPolicy
   AddEmployeesToPolicy -->|"timeOff/addEmployees/done"| TimeOffPolicyDetail["TimeOffPolicyDetail"]
   HolidaySelectionForm -->|"timeOff/holidaySelection/done"| AddEmployeesHoliday["AddEmployeesHoliday"]
-  AddEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| ViewHolidayEmployees["ViewHolidayEmployees"]
+  AddEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| ViewHolidayPolicyDetails["ViewHolidayPolicyDetails"]
   TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
-  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
+  ViewHolidayPolicyDetails -->|"timeOff/backToList"| PolicyList
   class policyType branch
   class unlimited branch
 ```
 
 ### Manage an existing policy
 
-Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`); from the holiday view you can edit the holiday selection (`timeOff/editHolidayPolicy`), add employees (`timeOff/holidayAddEmployees`), or view the observed-holiday schedule (`timeOff/viewHolidaySchedule`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
+Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`).
+
+The holiday detail view (`ViewHolidayPolicyDetails`) presents the observed holidays and enrolled employees as two tabs; switching tabs is internal to the view and emits no flow event. From it you can edit the holiday selection (`timeOff/editHolidayPolicy`) or add employees (`timeOff/holidayAddEmployees`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
 
 ```mermaid
 flowchart LR
@@ -42,12 +44,11 @@ flowchart LR
   TimeOffPolicyDetail <--> PolicySettings["PolicySettings"]
   TimeOffPolicyDetail <--> AddEmployeesToPolicy["AddEmployeesToPolicy"]
   TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
-  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayEmployees["ViewHolidayEmployees"]
-  ViewHolidayEmployees <--> HolidaySelectionForm["HolidaySelectionForm"]
-  ViewHolidayEmployees <--> AddEmployeesHoliday["AddEmployeesHoliday"]
-  ViewHolidayEmployees <--> ViewHolidaySchedule["ViewHolidaySchedule"]
-  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
-  linkStyle 2,3,4,7,8,9 stroke-width:2.5px
+  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayPolicyDetails["ViewHolidayPolicyDetails"]
+  ViewHolidayPolicyDetails <--> HolidaySelectionForm["HolidaySelectionForm"]
+  ViewHolidayPolicyDetails <--> AddEmployeesHoliday["AddEmployeesHoliday"]
+  ViewHolidayPolicyDetails -->|"timeOff/backToList"| PolicyList
+  linkStyle 2,3,4,7,8 stroke-width:2.5px
 ```
 
 ## Policy types

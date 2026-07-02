@@ -22,19 +22,6 @@ Provides form context to field components so they can read metadata, control,
 and error state without an explicit `formHookResult` prop on each field.
 Server-side field errors are automatically synced onto their corresponding fields.
 
-#### Type Parameters
-
-| Type Parameter | Default type |
-| ------ | ------ |
-| `TFormData` *extends* `FieldValues` | `FieldValues` |
-| `TFieldsMetadata` *extends* \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `__namedParameters` | `SDKFormProviderProps`\<`TFormData`, `TFieldsMetadata`\> |
-
 #### Example
 
 ```tsx
@@ -57,6 +44,19 @@ return (
 )
 ```
 
+#### Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `TFormData` *extends* `FieldValues` | `FieldValues` |
+| `TFieldsMetadata` *extends* \{ \[K in string \| number \| symbol\]: FieldMetadata \| FieldMetadataWithOptions\<unknown\> \} | `Record`\<`string`, [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>\> |
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `__namedParameters` | `SDKFormProviderProps`\<`TFormData`, `TFieldsMetadata`\> |
+
 ## Functions
 
 <a id="composeerrorhandler"></a>
@@ -66,19 +66,6 @@ return (
 > **composeErrorHandler**(`sources`: [`MixedErrorSource`](#mixederrorsource)[], `submitState?`: [`SubmitStateForErrorHandling`](#submitstateforerrorhandling)): [`HookErrorHandling`](#hookerrorhandling)
 
 Merges multiple error sources into a single [HookErrorHandling](#hookerrorhandling).
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `sources` | [`MixedErrorSource`](#mixederrorsource)[] | Error sources to merge. Each entry is either a React Query result or an object with an `errorHandling` property. |
-| `submitState?` | [`SubmitStateForErrorHandling`](#submitstateforerrorhandling) | Optional screen-level submit state to fold into the result. |
-
-#### Returns
-
-[`HookErrorHandling`](#hookerrorhandling)
-
-A single `HookErrorHandling` covering every source.
 
 #### Remarks
 
@@ -122,6 +109,19 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 }
 ```
 
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `sources` | [`MixedErrorSource`](#mixederrorsource)[] | Error sources to merge. Each entry is either a React Query result or an object with an `errorHandling` property. |
+| `submitState?` | [`SubmitStateForErrorHandling`](#submitstateforerrorhandling) | Optional screen-level submit state to fold into the result. |
+
+#### Returns
+
+[`HookErrorHandling`](#hookerrorhandling)
+
+A single `HookErrorHandling` covering every source.
+
 ***
 
 <a id="composesubmithandler"></a>
@@ -131,25 +131,6 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 > **composeSubmitHandler**\<`TForms`\>(`forms`: readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\], `onAllValid`: () => `Promise`\<`void`\>): `ComposeSubmitHandlerResult`
 
 Coordinates validation and submission across multiple form hooks on the same page.
-
-#### Type Parameters
-
-| Type Parameter | Description |
-| ------ | ------ |
-| `TForms` *extends* readonly `FieldValues`[] | Tuple of form value shapes, one per slot of `forms`. |
-
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `forms` | readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\] | Form hook results and/or raw `UseFormReturn` instances to coordinate. |
-| `onAllValid` | () => `Promise`\<`void`\> | Async callback invoked once every form has passed validation. |
-
-#### Returns
-
-`ComposeSubmitHandlerResult`
-
-A ComposeSubmitHandlerResult with a unified `handleSubmit` and aggregated `errorHandling`.
 
 #### Remarks
 
@@ -185,6 +166,25 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 
 return <form onSubmit={handleSubmit}>...</form>
 ```
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `TForms` *extends* readonly `FieldValues`[] | Tuple of form value shapes, one per slot of `forms`. |
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `forms` | readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\] | Form hook results and/or raw `UseFormReturn` instances to coordinate. |
+| `onAllValid` | () => `Promise`\<`void`\> | Async callback invoked once every form has passed validation. |
+
+#### Returns
+
+`ComposeSubmitHandlerResult`
+
+A ComposeSubmitHandlerResult with a unified `handleSubmit` and aggregated `errorHandling`.
 
 ## Interfaces
 
@@ -736,14 +736,14 @@ attributes (`label`, `description`).
 
 Map of form-field name to [FieldMetadata](#fieldmetadata) or [FieldMetadataWithOptions](#fieldmetadatawithoptions).
 
-#### Index Signature
-
-\[`key`: `string`\]: [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>
-
 #### Remarks
 
 Exposed on every form hook as `form.fieldsMetadata` so field components can look
 up their own metadata by name.
+
+#### Index Signature
+
+\[`key`: `string`\]: [`FieldMetadata`](#fieldmetadata) \| [`FieldMetadataWithOptions`](#fieldmetadatawithoptions)\<`unknown`\>
 
 ***
 
@@ -832,16 +832,16 @@ and can be cleared together with `clearSubmitError`.
 
 Maps every error code a schema field can produce to a display string.
 
-#### Type Parameters
-
-| Type Parameter | Default type | Description |
-| ------ | ------ | ------ |
-| `TErrorCode` *extends* `string` | - | Error codes the field is guaranteed to produce. |
-| `TOptionalErrorCode` *extends* `string` | `never` | Error codes that only apply in some configurations. |
-
 #### Remarks
 
 Passed as the `validationMessages` prop on hook field components. The
 required code set (`TErrorCode`) must be fully covered; codes in
 `TOptionalErrorCode` may be omitted. When a message is missing, the field
 falls back to displaying the raw error code.
+
+#### Type Parameters
+
+| Type Parameter | Default type | Description |
+| ------ | ------ | ------ |
+| `TErrorCode` *extends* `string` | - | Error codes the field is guaranteed to produce. |
+| `TOptionalErrorCode` *extends* `string` | `never` | Error codes that only apply in some configurations. |

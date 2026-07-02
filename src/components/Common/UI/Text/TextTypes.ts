@@ -5,7 +5,7 @@ import type { HTMLAttributes, ReactNode } from 'react'
  * Renders body text as `<p>`, `<span>`, `<div>`, or `<pre>`, with size, weight, alignment, and variant options.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'className' | 'id'> {
   /**

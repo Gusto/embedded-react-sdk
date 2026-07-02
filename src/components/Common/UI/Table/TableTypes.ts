@@ -4,7 +4,7 @@ import type { ReactNode, TableHTMLAttributes } from 'react'
  * Shape of a single cell your `Table` implementation receives for headers, rows, and footers.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface TableData {
   /**
@@ -21,7 +21,7 @@ export interface TableData {
  * Shape of a single row your `Table` implementation receives, containing an ordered list of cells.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface TableRow {
   /**
@@ -39,7 +39,7 @@ export interface TableRow {
  * Renders a table with column headers, body rows, an optional footer row, and an optional empty state.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface TableProps extends Pick<
   TableHTMLAttributes<HTMLTableElement>,

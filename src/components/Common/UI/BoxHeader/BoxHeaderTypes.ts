@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
  * Renders the header section of a Box, combining a title, optional description, and an optional inline action slot.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface BoxHeaderProps {
   /**

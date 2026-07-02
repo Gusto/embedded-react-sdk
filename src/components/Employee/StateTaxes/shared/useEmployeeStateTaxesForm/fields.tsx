@@ -310,7 +310,7 @@ function buildEntry(
  * @param isAdmin - When `true`, admin-only questions are included; when `false`, they are filtered out.
  * @returns An array of {@link StateTaxFieldsGroup} — one entry per state, each with a `questions` array of bound field components.
  * @public
- * @group Utility Hooks
+ * @group Utility hooks
  */
 export function useStateFields(
   employeeStateTaxes: EmployeeStateTaxesList[],
