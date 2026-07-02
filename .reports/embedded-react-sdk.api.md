@@ -5030,7 +5030,11 @@ export interface SplitPaymentsFormFields {
 }
 
 // @public
-export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata'];
+export type SplitPaymentsFormFieldsMetadata = {
+    splitBy: FieldMetadataWithOptions<SplitByValue>;
+    splitAmount: FieldMetadata;
+    priority: FieldMetadata;
+} & Record<`splitAmount.${string}`, FieldMetadata>;
 
 // @public
 export type SplitPaymentsFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -6145,7 +6149,7 @@ export interface UseSplitPaymentsFormProps {
 }
 
 // @public
-export interface UseSplitPaymentsFormReady extends BaseFormHookReady<FieldsMetadata, SplitPaymentsFormData, SplitPaymentsFormFields> {
+export interface UseSplitPaymentsFormReady extends BaseFormHookReady<SplitPaymentsFormFieldsMetadata, SplitPaymentsFormData, SplitPaymentsFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>;
         reorderSplits: (orderedUuids: string[]) => void;

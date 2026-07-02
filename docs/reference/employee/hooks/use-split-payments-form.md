@@ -126,7 +126,7 @@ Ready-state return value of [useSplitPaymentsForm](#usesplitpaymentsform).
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`SplitPaymentsFormFields`](#splitpaymentsformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`SplitPaymentsFormFieldsMetadata`](#splitpaymentsformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`SplitPaymentsFormData`](#splitpaymentsformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SplitPaymentsFormData`](#splitpaymentsformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -347,9 +347,26 @@ Field names accepted by the split payments form.
 
 ### SplitPaymentsFormFieldsMetadata
 
-> **SplitPaymentsFormFieldsMetadata** = [`UseSplitPaymentsFormReady`](#usesplitpaymentsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
-
 Per-field metadata exposed on `form.fieldsMetadata` for [useSplitPaymentsForm](#usesplitpaymentsform).
+
+#### Remarks
+
+The three named fields are always present. In addition, one dynamic entry is
+keyed by full form path per split — `splitAmount.<bankAccountUuid>` — so the
+number and identity of those keys depend on the employee's bank accounts at
+runtime.
+
+#### Indexable
+
+> \[`key`: `` `splitAmount.${string}` ``\]: [`FieldMetadata`](../../utilities.md#fieldmetadata)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `priority` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The `priority` container field. |
+| `splitAmount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The `splitAmount` container field. Per-split values live at `splitAmount.<uuid>`. |
+| `splitBy` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Percentage"` \| `"Amount"`\> | Split mode selector (by percentage or by fixed amount). |
 
 ***
 
