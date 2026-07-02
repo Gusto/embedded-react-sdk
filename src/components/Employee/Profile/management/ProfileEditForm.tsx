@@ -132,7 +132,6 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
               validationMessages={{
                 REQUIRED: t('form.validations.email'),
                 INVALID_EMAIL: t('form.validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('form.validations.email'),
               }}
             />
             <Fields.Ssn

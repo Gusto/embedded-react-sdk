@@ -36,9 +36,18 @@ export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Par
 }>
 
 /**
- * Union of field names in `TConfig` whose base rule is `'update'` or `'never'`
- * — i.e. fields that are optional on create and therefore eligible to be
- * promoted to required in create mode.
+ * A predicate (value-conditional) requiredness rule. Matches any function
+ * signature so predicate rules are recognized regardless of their parameter or
+ * return types. Such fields are never statically required in a given mode, so
+ * they're eligible for promotion — see {@link OptionalOnCreate}.
+ */
+type PredicateRule = (...args: never[]) => unknown
+
+/**
+ * Union of field names in `TConfig` that are not statically required in create
+ * mode and are therefore eligible to be promoted to required in create mode:
+ * fields whose base rule is `'update'`, `'never'`, or a predicate. Promoting a
+ * predicate field upgrades it from conditionally required to always required.
  *
  * The template-literal wrapper \`\` `${...}` \`\` is intentional: wrapping a
  * conditional-mapped-type index access in a template literal forces TypeScript
@@ -49,18 +58,18 @@ export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Par
  * resolved concrete union (e.g. `"stateWcCovered" | "twoPercentShareholder"`).
  */
 type OptionalOnCreate<TConfig> = `${{
-  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never
+  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' | PredicateRule ? K : never
 }[keyof TConfig & string]}`
 
 /**
- * Union of field names in `TConfig` whose base rule is `'create'` or `'never'`
- * — i.e. fields that are optional on update and therefore eligible to be
- * promoted to required in update mode.
+ * Union of field names in `TConfig` that are not statically required in update
+ * mode and are therefore eligible to be promoted to required in update mode:
+ * fields whose base rule is `'create'`, `'never'`, or a predicate.
  *
  * See {@link OptionalOnCreate} for why the template-literal wrapper is here.
  */
 type OptionalOnUpdate<TConfig> = `${{
-  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never
+  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' | PredicateRule ? K : never
 }[keyof TConfig & string]}`
 
 /**
@@ -68,7 +77,9 @@ type OptionalOnUpdate<TConfig> = `${{
  *
  * Only fields whose base rule allows the override appear in the `create` /
  * `update` arrays — fields that are already required in a given mode are
- * excluded from that mode's list at the type level.
+ * excluded from that mode's list at the type level. Value-conditional
+ * (predicate) fields are eligible in both modes; listing one promotes it from
+ * conditionally required to always required for that mode.
  *
  * @typeParam TConfig - The {@link RequiredFieldConfig} that constrains which fields are eligible.
  * @internal
