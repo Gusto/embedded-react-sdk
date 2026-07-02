@@ -163,7 +163,7 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`WorkAddressFormFields`](#workaddressformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`WorkAddressFieldsMetadata`](#workaddressfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`WorkAddressFormData`](#workaddressformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`WorkAddressFormData`](#workaddressformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -319,7 +319,10 @@ Field names accepted by the work address form.
 
 ### WorkAddressFieldsMetadata
 
-> **WorkAddressFieldsMetadata** = [`UseWorkAddressFormReady`](#useworkaddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `effectiveDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `locationUuid` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`Location`](../../APIModels/index.md#location)\> |
 
 Type of `form.fieldsMetadata` returned by [useWorkAddressForm](#useworkaddressform).
 

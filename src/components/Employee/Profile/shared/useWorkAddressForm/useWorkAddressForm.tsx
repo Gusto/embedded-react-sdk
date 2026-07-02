@@ -25,6 +25,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -34,6 +35,23 @@ import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
 
 export type { WorkAddressOptionalFieldsToRequire } from './workAddressSchema'
+
+/** @internal */
+function buildWorkAddressFieldsMetadata(
+  base: Record<keyof WorkAddressFormData, FieldMetadata>,
+  {
+    locationOptions,
+    companyLocations,
+  }: {
+    locationOptions: Array<{ label: string; value: string }>
+    companyLocations: Location[]
+  },
+) {
+  return {
+    locationUuid: withOptions<Location>(base.locationUuid, locationOptions, companyLocations),
+    effectiveDate: base.effectiveDate,
+  } satisfies FieldsMetadata
+}
 
 /**
  * Optional callbacks passed to {@link UseWorkAddressFormReady.actions.onSubmit | onSubmit}.
@@ -126,7 +144,7 @@ export interface WorkAddressFormFields {
  * @public
  */
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  WorkAddressFieldsMetadata,
   WorkAddressFormData,
   WorkAddressFormFields
 > {
@@ -270,14 +288,10 @@ export function useWorkAddressForm({
   }))
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    locationUuid: withOptions<Location>(
-      baseMetadata.locationUuid,
-      locationOptions,
-      companyLocations ?? [],
-    ),
-    effectiveDate: baseMetadata.effectiveDate,
-  }
+  const fieldsMetadata = buildWorkAddressFieldsMetadata(baseMetadata, {
+    locationOptions,
+    companyLocations: companyLocations ?? [],
+  })
 
   const onSubmit = async (
     callbacks?: WorkAddressSubmitCallbacks,
@@ -414,4 +428,4 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
  *
  * @public
  */
-export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata']
+export type WorkAddressFieldsMetadata = ReturnType<typeof buildWorkAddressFieldsMetadata>

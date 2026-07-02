@@ -138,7 +138,7 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`EmployeeDetailsFormFields`](#employeedetailsformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`EmployeeDetailsFieldsMetadata`](#employeedetailsfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`EmployeeDetailsFormData`](#employeedetailsformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeDetailsFormData`](#employeedetailsformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -518,7 +518,15 @@ Field names accepted by the employee details form.
 
 ### EmployeeDetailsFieldsMetadata
 
-> **EmployeeDetailsFieldsMetadata** = [`UseEmployeeDetailsFormReady`](#useemployeedetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `dateOfBirth` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `email` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `firstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `lastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `middleInitial` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `selfOnboarding` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `ssn` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Shape of `form.fieldsMetadata` returned by [useEmployeeDetailsForm](#useemployeedetailsform).
 

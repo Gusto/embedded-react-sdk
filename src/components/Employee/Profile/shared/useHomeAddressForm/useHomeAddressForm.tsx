@@ -39,6 +39,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -48,6 +49,22 @@ import { SDKInternalError } from '@/types/sdkError'
 import { STATES_ABBR } from '@/shared/constants'
 
 export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
+
+/** @internal */
+function buildHomeAddressFieldsMetadata(
+  base: Record<keyof HomeAddressFormData, FieldMetadata>,
+  { stateOptions }: { stateOptions: Array<{ label: string; value: string }> },
+) {
+  return {
+    street1: base.street1,
+    street2: base.street2,
+    city: base.city,
+    state: withOptions(base.state, stateOptions, STATES_ABBR),
+    zip: base.zip,
+    courtesyWithholding: base.courtesyWithholding,
+    effectiveDate: base.effectiveDate,
+  } satisfies FieldsMetadata
+}
 
 /**
  * Optional overrides passed to {@link UseHomeAddressFormReady.actions.onSubmit | onSubmit}.
@@ -131,7 +148,7 @@ export interface HomeAddressFormFields {
  * @public
  */
 export interface UseHomeAddressFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  HomeAddressFieldsMetadata,
   HomeAddressFormData,
   HomeAddressFormFields
 > {
@@ -279,15 +296,7 @@ export function useHomeAddressForm({
   }))
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    street1: baseMetadata.street1,
-    street2: baseMetadata.street2,
-    city: baseMetadata.city,
-    state: withOptions(baseMetadata.state, stateOptions, STATES_ABBR),
-    zip: baseMetadata.zip,
-    courtesyWithholding: baseMetadata.courtesyWithholding,
-    effectiveDate: baseMetadata.effectiveDate,
-  }
+  const fieldsMetadata = buildHomeAddressFieldsMetadata(baseMetadata, { stateOptions })
 
   const onSubmit = async (
     options?: HomeAddressSubmitOptions,
@@ -426,4 +435,4 @@ export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormRea
  *
  * @public
  */
-export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
+export type HomeAddressFieldsMetadata = ReturnType<typeof buildHomeAddressFieldsMetadata>
