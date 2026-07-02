@@ -25,6 +25,8 @@
  * To add a domain: append an entry. `path` doubles as the source-dir lookup
  * (`time-off` → `src/components/TimeOff`), so a GUIDE.md there is slotted into the hub.
  */
+import { CUSTOM_GROUPS, type CustomGroupTag } from '../../typedoc-utils.ts'
+
 export const DOMAINS: DomainConfig[] = [
   {
     label: 'Companies',
@@ -100,7 +102,7 @@ export const STANDALONE_PAGES: StandalonePageConfig[] = [
     // `shared/constants` supplies the event catalog + EventType; `Base/useBase` supplies
     // OnEventType. The `groups` filter keeps out any non-event constants sharing those paths.
     sources: ['shared/constants', 'components/Base/useBase'],
-    groups: ['Event names', 'Utility types'],
+    groups: [CUSTOM_GROUPS.eventNames, CUSTOM_GROUPS.utilityTypes],
     displayName: 'Events',
   },
 ]
@@ -141,7 +143,7 @@ export type StandalonePageConfig = {
   /** Source-path fragments; a reflection is routed here if its path contains any of them. */
   sources: string[]
   /** Optional `@group` names; when set, only reflections in a matching group are included. */
-  groups?: string[]
+  groups?: CustomGroupTag[]
   /** Page H1 and synthetic namespace name. */
   displayName: string
 }
@@ -157,7 +159,7 @@ export type StandalonePageConfig = {
  * `GlobalResourceDictionary`) plus i18n-adjacent utilities (`DeepPartial`,
  * `SupportedLanguages`). See {@link SDKRouter.relocateI18nTypes}.
  */
-export const I18N_RELOCATION: { sources: string[]; groups: string[] } = {
+export const I18N_RELOCATION: { sources: string[]; groups: CustomGroupTag[] } = {
   sources: ['i18n/types', 'types/Helpers'],
-  groups: ['Utility types'],
+  groups: [CUSTOM_GROUPS.utilityTypes],
 }

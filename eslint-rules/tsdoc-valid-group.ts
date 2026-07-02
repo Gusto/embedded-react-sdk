@@ -1,21 +1,9 @@
 import { ESLintUtils } from '@typescript-eslint/utils'
 import type { TSESTree } from '@typescript-eslint/utils'
 import { getTSDocComment } from './utils'
-import {
-  COMPONENT_GROUPS,
-  HOOK_GROUPS,
-  COMPONENT_PROP_GROUPS,
-  VARIABLE_GROUPS,
-  NAMESPACE_GROUPS,
-} from '../docs-site/typedoc-utils.mjs'
+import { VALID_GROUPS } from '../docs-site/typedoc-utils.ts'
 
-const VALID_GROUPS = new Set([
-  ...COMPONENT_GROUPS,
-  ...HOOK_GROUPS,
-  ...COMPONENT_PROP_GROUPS,
-  ...VARIABLE_GROUPS,
-  ...NAMESPACE_GROUPS,
-])
+const SORTED_VALID_GROUPS = [...VALID_GROUPS].sort()
 
 interface GroupMatch {
   value: string
@@ -50,7 +38,7 @@ export default ESLintUtils.RuleCreator.withoutDocs({
   meta: {
     type: 'problem',
     docs: {
-      description: `Require @group tag values to be one of the SDK's custom groups (${[...COMPONENT_GROUPS, ...HOOK_GROUPS].join(', ')})`,
+      description: `Require @group tag values to be one of the SDK's custom groups (${SORTED_VALID_GROUPS.join(', ')})`,
     },
     schema: [],
     messages: {

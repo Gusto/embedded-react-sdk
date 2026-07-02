@@ -24,6 +24,7 @@ import {
 } from 'typedoc'
 import { MemberRouter } from 'typedoc-plugin-markdown'
 import { DOMAINS, I18N_RELOCATION, STANDALONE_PAGES } from './router.config.ts'
+import { CUSTOM_GROUPS, GROUP_ORDER } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
   getFormHookModel,
@@ -58,13 +59,6 @@ const API_MODELS_NAMESPACE = 'APIModels'
  * browsable as `Translations.CompanyAddresses`.
  */
 const TRANSLATIONS_NAMESPACE = 'Translations'
-
-/**
- * Group name for the per-i18n-namespace key interfaces (`Translations.CompanyAddresses`,
- * …) so they render under their own section instead of the generic "Interfaces". The
- * relocated i18n *types* keep their own `@group` (e.g. "Utility types") and are skipped.
- */
-const TRANSLATION_INTERFACES_GROUP = 'Translation namespaces'
 
 /**
  * Namespaces rendered as a single flat page — all members anchored on the index,
@@ -176,27 +170,6 @@ function getNamespaceIndexSlug(namespaceName: string): string {
   }
   return 'index'
 }
-
-// Group order mirrors typedoc.config.ts so synthetic pages stay consistent.
-const SYNTHETIC_GROUP_ORDER = [
-  'Flow components',
-  'Block components',
-  'Form hooks',
-  'Data hooks',
-  'Utility hooks',
-  'Hooks',
-  'Fields',
-  'Components',
-  'Component props',
-  'Event names',
-  'Functions',
-  'Variables',
-  'Interfaces',
-  'Type Aliases',
-  'Validations',
-  'Utility types',
-  'Enumerations',
-]
 
 // Type-parameter names on a field's `*HookFieldProps` interface whose bound
 // argument is a validation error-code type. A field-props interface may carry
@@ -463,7 +436,7 @@ function groupSyntheticMembers(
         if (remaining.length > 0) byTitle.set(title, remaining)
         else byTitle.delete(title)
       }
-      byTitle.set('Validations', ordered)
+      byTitle.set(CUSTOM_GROUPS.validations, ordered)
     }
 
     const merged: DeclarationReflection[] = []
@@ -476,13 +449,16 @@ function groupSyntheticMembers(
     }
     if (merged.length > 0) {
       merged.sort((a, b) => a.name.localeCompare(b.name))
-      byTitle.set('Utility types', [...(byTitle.get('Utility types') ?? []), ...merged])
+      byTitle.set(CUSTOM_GROUPS.utilityTypes, [
+        ...(byTitle.get(CUSTOM_GROUPS.utilityTypes) ?? []),
+        ...merged,
+      ])
     }
   }
 
   const ordered = [
-    ...SYNTHETIC_GROUP_ORDER.filter(t => byTitle.has(t)),
-    ...Array.from(byTitle.keys()).filter(t => !SYNTHETIC_GROUP_ORDER.includes(t)),
+    ...GROUP_ORDER.filter(t => byTitle.has(t)),
+    ...Array.from(byTitle.keys()).filter(t => !GROUP_ORDER.includes(t)),
   ]
   return ordered.map(title => {
     const group = new ReflectionGroup(title, owner)
@@ -522,7 +498,8 @@ export class SDKRouter extends MemberRouter {
         mkdirSync(hooksDir, { recursive: true })
         writeFileSync(
           join(hooksDir, '_category_.json'),
-          JSON.stringify({ label: 'Hooks', position: 100, collapsed: true }, null, 2) + '\n',
+          JSON.stringify({ label: CUSTOM_GROUPS.hooks, position: 100, collapsed: true }, null, 2) +
+            '\n',
         )
       }
     }
@@ -639,7 +616,7 @@ export class SDKRouter extends MemberRouter {
 
       if (!child.comment) child.comment = new Comment()
       child.comment.blockTags.push(
-        new CommentTag('@group', [{ kind: 'text', text: TRANSLATION_INTERFACES_GROUP }]),
+        new CommentTag('@group', [{ kind: 'text', text: CUSTOM_GROUPS.translationNamespaces }]),
       )
     }
   }
@@ -681,11 +658,11 @@ export class SDKRouter extends MemberRouter {
           reflection.parent.kind === ReflectionKind.Namespace
         group = inNamespace
           ? /Flow$/.test(reflection.name)
-            ? 'Flow components'
-            : 'Block components'
-          : 'Components'
+            ? CUSTOM_GROUPS.flowComponents
+            : CUSTOM_GROUPS.blockComponents
+          : CUSTOM_GROUPS.components
       } else if (/^use[A-Z]/.test(reflection.name)) {
-        group = /Form$/.test(reflection.name) ? 'Form hooks' : 'Hooks'
+        group = /Form$/.test(reflection.name) ? CUSTOM_GROUPS.formHooks : CUSTOM_GROUPS.hooks
       } else {
         continue
       }
@@ -884,7 +861,7 @@ export class SDKRouter extends MemberRouter {
         // `StateTaxQuestion*Field` aliases) render inside the page's `## Fields`
         // section after the fields source-of-truth, not as their own group.
         for (const member of memberDecls) {
-          if (hasGroup(member, 'Fields')) inlined.add(member)
+          if (hasGroup(member, CUSTOM_GROUPS.fields)) inlined.add(member)
         }
         if (inlined.size > 0) {
           for (const group of hookNs.groups) {
@@ -907,7 +884,11 @@ export class SDKRouter extends MemberRouter {
       hookPageNsList.sort((a, b) => a.name.localeCompare(b.name))
 
       // Index page lists all hook pages for this domain.
-      const hooksIndexNs = new DeclarationReflection('Hooks', ReflectionKind.Namespace, project)
+      const hooksIndexNs = new DeclarationReflection(
+        CUSTOM_GROUPS.hooks,
+        ReflectionKind.Namespace,
+        project,
+      )
       hooksIndexNs.comment = new Comment()
       hooksIndexNs.comment.blockTags.push(new CommentTag('@hooksIndex', []))
       hooksIndexNs.children = hookPageNsList

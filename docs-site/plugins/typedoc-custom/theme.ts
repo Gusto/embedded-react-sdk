@@ -43,6 +43,7 @@ import {
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
 import { TYPE_EMOJIS } from './router.config.ts'
+import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
   formHookModelForPage,
@@ -288,7 +289,7 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
     parts.push(context.partials.memberContainer(block, { headingLevel: 2 }))
   }
   if (utilities.length > 0) {
-    parts.push('## Utility types')
+    parts.push(`## ${CUSTOM_GROUPS.utilityTypes}`)
     for (const util of utilities) {
       parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
     }
@@ -840,7 +841,7 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
  * their own H2 group header.
  */
 function removeComponentsHeader(rendered: string): string {
-  return rendered.replace(/^## Components\s*\n\n?/m, '')
+  return rendered.replace(new RegExp(`^## ${CUSTOM_GROUPS.components}\\s*\\n\\n?`, 'm'), '')
 }
 
 /**
@@ -1661,7 +1662,7 @@ function buildFlatFieldsSection(
     sections.push(renderGroupBlock(groupRef))
   }
 
-  const markdown = ['## Fields', '', sections.join('\n\n***\n\n')].join('\n')
+  const markdown = [`## ${CUSTOM_GROUPS.fields}`, '', sections.join('\n\n***\n\n')].join('\n')
   return { markdown, relocated }
 }
 
@@ -1697,7 +1698,7 @@ function buildFieldsTable(
   if (fieldChildren.length === 0) return null
 
   // Pair each exposed field with its component by props-type identity.
-  const fieldsGroup = hookNs.groups?.find(g => g.title === 'Components')
+  const fieldsGroup = hookNs.groups?.find(g => g.title === CUSTOM_GROUPS.components)
   const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
   const componentByPropsId = new Map<number, DeclarationReflection>()
   for (const comp of fieldComponents) {
@@ -1796,7 +1797,7 @@ function buildFieldsTable(
   // A hard-coded `## Fields` parent groups the interface and its field
   // components as siblings; the interface keeps its symbol name (and anchor,
   // so cross-references stay valid) at H3.
-  const parts: string[] = ['## Fields', '', `### ${fieldsInterface.name}`]
+  const parts: string[] = [`## ${CUSTOM_GROUPS.fields}`, '', `### ${fieldsInterface.name}`]
   if (context.router.hasUrl(fieldsInterface) && context.options.getValue('useHTMLAnchors')) {
     parts.push(`<a id="${context.router.getAnchor(fieldsInterface)}"></a>`)
   }
@@ -1949,7 +1950,7 @@ function buildFieldsArraySection(
   }
   const companions = (hookNs.children ?? [])
     .filter((c): c is DeclarationReflection => c instanceof DeclarationReflection)
-    .filter(c => hasGroup(c, 'Fields'))
+    .filter(c => hasGroup(c, CUSTOM_GROUPS.fields))
   const ordered = [alias, ...orderByGroupWith(companions, alias)]
   // `@groupWith` is a layout directive consumed by orderByGroupWith above, not
   // documentation — drop it so it doesn't render as a "Group With" block on the
@@ -1969,7 +1970,7 @@ function buildFieldsArraySection(
       ).trimEnd(),
     )
     .join('\n\n***\n\n')
-  return `## Fields\n\n${body}`
+  return `## ${CUSTOM_GROUPS.fields}\n\n${body}`
 }
 
 /**
@@ -2001,7 +2002,7 @@ function injectAfterReturns(rendered: string, section: string): string {
  * they have no per-field Parameters table and are referenced as link targets.
  */
 function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<string> {
-  const group = hookNs.groups?.find(g => g.title === 'Components')
+  const group = hookNs.groups?.find(g => g.title === CUSTOM_GROUPS.components)
   const names = new Set<string>()
   for (const comp of (group?.children ?? []) as DeclarationReflection[]) {
     const paramType = comp.signatures?.[0]?.parameters?.[0]?.type
@@ -2027,7 +2028,9 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
   if (dropAliasNames.size === 0) return rendered
 
   const lines = rendered.split('\n')
-  const taSectionStart = lines.findIndex(l => /^##\s+Utility types\s*$/.test(l))
+  const taSectionStart = lines.findIndex(l =>
+    new RegExp(`^##\\s+${CUSTOM_GROUPS.utilityTypes}\\s*$`).test(l),
+  )
   if (taSectionStart === -1) return rendered
 
   let taSectionEnd = lines.length

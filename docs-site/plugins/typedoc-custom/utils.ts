@@ -13,6 +13,14 @@ import {
 } from 'typedoc'
 import { MarkdownPageEvent } from 'typedoc-plugin-markdown'
 import { DOMAINS, STANDALONE_PAGES } from './router.config.ts'
+import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
+
+/** The `@group` names whose members render as component pages. */
+const COMPONENT_GROUP_NAMES = new Set<string>([
+  CUSTOM_GROUPS.flowComponents,
+  CUSTOM_GROUPS.blockComponents,
+  CUSTOM_GROUPS.components,
+])
 
 /** Derived from DOMAINS — do not edit directly.
  *  Maps each namespace id to its output directory prefix. */
@@ -373,7 +381,7 @@ export function isComponent(reflection: DeclarationReflection): boolean {
     reflection.comment?.blockTags.some(
       tag =>
         tag.tag === '@group' &&
-        /[Cc]omponents$/.test(Comment.combineDisplayParts(tag.content).trim()),
+        COMPONENT_GROUP_NAMES.has(Comment.combineDisplayParts(tag.content).trim()),
     ) ?? false
   )
 }
@@ -411,8 +419,6 @@ export function pageTitle(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
 
   if (isDomainHub(decl)) return decl.name
-  if (decl.name === 'Hooks') return 'Hooks'
-  if (decl.name === 'Block components') return 'Sub-components'
 
   return decl.name
 }

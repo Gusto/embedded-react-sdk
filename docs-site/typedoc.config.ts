@@ -1,12 +1,6 @@
 import { type TypeDocOptions, OptionDefaults } from 'typedoc'
 import { type PluginOptions } from 'typedoc-plugin-markdown'
-import {
-  COMPONENT_GROUPS,
-  HOOK_GROUPS,
-  COMPONENT_PROP_GROUPS,
-  VARIABLE_GROUPS,
-  NAMESPACE_GROUPS,
-} from './typedoc-utils.mjs'
+import { GROUP_ORDER } from './typedoc-utils.ts'
 
 export const baseOptions = {
   plugin: ['./plugins/typedoc-custom/index.ts'],
@@ -15,22 +9,7 @@ export const baseOptions = {
   entryPoints: ['../src/index.ts'],
   out: '../docs/reference',
 
-  groupOrder: [
-    'Domains',
-    ...NAMESPACE_GROUPS,
-    'Namespaces',
-    ...HOOK_GROUPS,
-    ...COMPONENT_GROUPS,
-    ...VARIABLE_GROUPS,
-    'Functions',
-    'Variables',
-    'Interfaces',
-    'Type Aliases',
-    // Per-i18n-namespace key interfaces on the Translations page
-    'Translation namespaces',
-    ...COMPONENT_PROP_GROUPS,
-    '*',
-  ],
+  groupOrder: GROUP_ORDER,
 
   indexFormat: 'table',
   propertyMembersFormat: 'table',
