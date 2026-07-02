@@ -4,13 +4,15 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: TimeOff
-description: TimeOff reference.
+description: Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
 ---
 
 # TimeOff
+
+Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday.
 
 ## 🚂 Workflows
 

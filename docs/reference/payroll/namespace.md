@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Payroll
-description: The Payroll namespace.
+description: Flows and blocks for running and managing payroll across a company's pay schedules.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # Payroll
 
-The Payroll namespace.
+Flows and blocks for running and managing payroll across a company's pay schedules.
 
 ## 🚂 Workflows
 

@@ -16,14 +16,14 @@ custom_edit_url: null
 
 | Namespace | Description |
 | ------ | ------ |
-| [CompanyOnboarding](company/onboarding/index.md) | - |
-| [ContractorManagement](contractor/management/index.md) | - |
-| [ContractorOnboarding](contractor/onboarding/index.md) | - |
+| [CompanyOnboarding](company/onboarding/index.md) | Flows and blocks for onboarding a company. |
+| [ContractorManagement](contractor/management/index.md) | Flows and blocks for managing contractors after onboarding — payments, payment methods, and profile details. |
+| [ContractorOnboarding](contractor/onboarding/index.md) | Flows and blocks for onboarding contractors. |
 | [EmployeeManagement](employee/management/index.md) | Flows and blocks for managing an employee after onboarding. |
 | [EmployeeOnboarding](employee/onboarding/index.md) | Flows and blocks for onboarding employees. |
-| [InformationRequests](company/information-requests/index.md) | - |
-| [Payroll](payroll/namespace.md) | The Payroll namespace. |
-| [TimeOff](time-off/namespace.md) | - |
+| [InformationRequests](company/information-requests/index.md) | Flows and blocks for viewing and responding to information requests from Gusto. |
+| [Payroll](payroll/namespace.md) | Flows and blocks for running and managing payroll across a company's pay schedules. |
+| [TimeOff](time-off/namespace.md) | Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday. |
 | [Translations](Translations/index.md) | Per-namespace SDK i18n keys, each namespace browsable as its own reference (e.g. [Translations.CompanyAddresses](Translations/index.md#companyaddresses)) with every key's English default. Override defaults through a component's `dictionary` prop or the global `GustoProvider` dictionary. |
 
 ## Components
