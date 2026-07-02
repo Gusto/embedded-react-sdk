@@ -40,11 +40,20 @@ export const MissingRequirements = () => {
     >
       {onboardingSteps && (
         <RequirementsList
-          requirements={onboardingSteps.map(step => ({
-            completed: step.completed!,
-            title: t(`stepTitles.${step.id!}`),
-            description: t(`stepDescriptions.${step.id!}`),
-          }))}
+          requirements={onboardingSteps
+            .filter(
+              (
+                step,
+              ): step is typeof step & {
+                id: NonNullable<typeof step.id>
+                completed: boolean
+              } => step.id !== undefined && step.completed !== undefined,
+            )
+            .map(step => ({
+              completed: step.completed,
+              title: t(`stepTitles.${step.id}`),
+              description: t(`stepDescriptions.${step.id}`),
+            }))}
         />
       )}
     </Components.Box>
