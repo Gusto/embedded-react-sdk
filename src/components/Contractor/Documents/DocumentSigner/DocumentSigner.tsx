@@ -15,8 +15,10 @@ import { useComponentDictionary } from '@/i18n/I18n'
  *
  * @public
  */
-export interface DocumentSignerProps
-  extends Omit<BaseComponentInterface<'Contractor.DocumentsList'>, 'dictionary'> {
+export interface DocumentSignerProps extends Omit<
+  BaseComponentInterface<'Contractor.DocumentsList'>,
+  'dictionary'
+> {
   /** The associated contractor identifier. */
   contractorId: string
   /** Overrides for the document list copy shown by the signing flow. */
