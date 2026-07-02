@@ -83,7 +83,9 @@ export interface UsePaymentMethodFormReady extends BaseFormHookReady<
 }
 
 /** @internal */
-function buildPaymentMethodFieldsMetadata(base: Record<keyof PaymentMethodFormData, FieldMetadata>) {
+function buildPaymentMethodFieldsMetadata(
+  base: Record<keyof PaymentMethodFormData, FieldMetadata>,
+) {
   return {
     type: withOptions<PaymentMethodType>(
       base.type,

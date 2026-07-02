@@ -381,12 +381,12 @@ keys finite and known at build time?"** — _not_ "do the keys vary." All four
 tiers are now in use; **no hook remains on the bare generic `FieldsMetadata`** —
 every hook names its metadata type.
 
-| Key structure | Type shape | Example |
-| --- | --- | --- |
-| **Static, finite** — every key known at build time | Builder-inferred object: `ReturnType<typeof build{Domain}FieldsMetadata>` (the pattern above) | most hooks (`useJobForm`, …) |
-| **Branch-varying, finite** — fixed universe of keys, but which subset is present depends on a runtime discriminator | **Discriminated union** of fixed object variants; partners narrow with an `in` check | `useSignEmployeeForm` (I-9 vs. not) |
-| **Static core + runtime-minted tail** — some named keys always present, plus dynamic dotted paths | Named core object **intersected** with a template-literal `Record`: `` { splitBy: … } & Record<`splitAmount.${string}`, FieldMetadata> `` | `useSplitPaymentsForm` |
-| **Fully runtime-minted keys** — no key knowable at build time (UUIDs, API-driven names) | Template-literal index signature: `` Record<`states.${string}.${string}`, FieldMetadata \| FieldMetadataWithOptions> ``; cast the derived metadata to it at the hook boundary | `useEmployeeStateTaxesForm` |
+| Key structure                                                                                                       | Type shape                                                                                                                                                                  | Example                             |
+| ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **Static, finite** — every key known at build time                                                                  | Builder-inferred object: `ReturnType<typeof build{Domain}FieldsMetadata>` (the pattern above)                                                                               | most hooks (`useJobForm`, …)        |
+| **Branch-varying, finite** — fixed universe of keys, but which subset is present depends on a runtime discriminator | **Discriminated union** of fixed object variants; partners narrow with an `in` check                                                                                        | `useSignEmployeeForm` (I-9 vs. not) |
+| **Static core + runtime-minted tail** — some named keys always present, plus dynamic dotted paths                   | Named core object **intersected** with a template-literal `Record`: ``{ splitBy: … } & Record<`splitAmount.${string}`, FieldMetadata>``                                     | `useSplitPaymentsForm`              |
+| **Fully runtime-minted keys** — no key knowable at build time (UUIDs, API-driven names)                             | Template-literal index signature: ``Record<`states.${string}.${string}`, FieldMetadata \| FieldMetadataWithOptions>``; cast the derived metadata to it at the hook boundary | `useEmployeeStateTaxesForm`         |
 
 `useSignEmployeeForm`'s keys _vary_ (I-9 adds preparer fields) but the universe is
 fixed and enumerable → union. `useEmployeeStateTaxesForm`'s keys are _minted from
@@ -407,7 +407,7 @@ runtime" symptom, opposite answer — the universe-finiteness is what decides.
   uses `SplitByValue`; export a named type if you need one.
 - **Give each key exactly one type.** When overriding select/radio entries on a
   `Record<keyof {Domain}FormData, FieldMetadata>` base, `Omit` the option keys and
-  redeclare them explicitly — `` Omit<Record<keyof {Domain}FormData, FieldMetadata>, 'kind'> & { kind: FieldMetadataWithOptions<Kind> } `` — so a key renders as one
+  redeclare them explicitly — `Omit<Record<keyof {Domain}FormData, FieldMetadata>, 'kind'> & { kind: FieldMetadataWithOptions<Kind> }` — so a key renders as one
   clean type, not `FieldMetadata & FieldMetadataWithOptions`.
 - **`@interface` tag:** put it on object-shaped aliases (union variants,
   static-core intersections) so TypeDoc renders a Properties table. **Omit** it on

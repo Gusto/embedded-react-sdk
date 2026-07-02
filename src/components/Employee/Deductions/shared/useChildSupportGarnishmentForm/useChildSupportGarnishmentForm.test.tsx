@@ -226,9 +226,9 @@ describe('useChildSupportGarnishmentForm', () => {
 
       const updated = result.current
       assertReady(updated)
-      expect(updated.form.fieldsMetadata.caseNumber?.isRequired).toBe(true)
-      expect(updated.form.fieldsMetadata.orderNumber?.isRequired).toBe(true)
-      expect(updated.form.fieldsMetadata.remittanceNumber?.isRequired).toBe(false)
+      expect(updated.form.fieldsMetadata.caseNumber.isRequired).toBe(true)
+      expect(updated.form.fieldsMetadata.orderNumber.isRequired).toBe(true)
+      expect(updated.form.fieldsMetadata.remittanceNumber.isRequired).toBe(false)
     })
   })
 

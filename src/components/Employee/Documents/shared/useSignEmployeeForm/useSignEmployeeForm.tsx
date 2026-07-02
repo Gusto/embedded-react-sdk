@@ -318,8 +318,7 @@ export type SignEmployeeI9FieldsMetadata = Omit<
  * @public
  */
 export type SignEmployeeFormFieldsMetadata =
-  | SignEmployeeBaseFieldsMetadata
-  | SignEmployeeI9FieldsMetadata
+  SignEmployeeBaseFieldsMetadata | SignEmployeeI9FieldsMetadata
 
 function buildSignEmployeeFieldsMetadata(
   baseMetadata: Record<keyof SignEmployeeFormData, FieldMetadata>,
