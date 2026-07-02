@@ -75,12 +75,7 @@ export type EmployeeDetailsField = Exclude<keyof typeof fieldValidators, 'selfOn
 export type EmployeeDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the employee details form on
- * submit.
- *
- * @public
- */
+/** @internal */
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
 // ── Required fields config ─────────────────────────────────────────────

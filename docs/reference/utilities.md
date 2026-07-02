@@ -82,7 +82,7 @@ A single `HookErrorHandling` covering every source.
 
 #### Remarks
 
-Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+Accepts any mix of `@gusto/embedded-api-v-2026-02-01` React Query results and SDK hook
 results that already expose an `errorHandling` object (including the value returned by
 [composeSubmitHandler](#composesubmithandler)). Query errors are normalized to `SDKError`, nested hook
 errors are flattened in, and an optional submit-state argument adds a submit error to
@@ -99,7 +99,7 @@ recovery, not a submit callback.
 
 ```tsx
 import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
-import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
 
 function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
@@ -167,7 +167,7 @@ cross-form focus instead.
 
 The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
 can be passed back into [composeErrorHandler](#composeerrorhandler) when you need to add extra
-`@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
+`@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state.
 
 #### Example
 
@@ -257,8 +257,9 @@ parsed values (or `undefined` if invalid).
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
 | `TFieldsMetadata` *extends* [`FieldsMetadata`](#fieldsmetadata) | [`FieldsMetadata`](#fieldsmetadata) | Shape of the per-field metadata exposed by the hook. |
-| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form (the resolver input / `TFieldValues`). |
 | `TFields` *extends* `object` | `Record`\<`string`, `unknown`\> | Shape of the pre-bound `Fields` component map. |
+| `TFormOutputs` | `TFormData` | Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge. |
 
 #### Properties
 
@@ -270,7 +271,7 @@ parsed values (or `undefined` if invalid).
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | `TFields` | - |
 | `form.fieldsMetadata` | `TFieldsMetadata` | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => `TFormOutputs` \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
 | `status` | `object` | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |

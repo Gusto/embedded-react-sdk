@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FilingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidfederaltaxes'
+import { FilingStatus } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidfederaltaxes'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
@@ -81,11 +81,7 @@ export type FederalTaxesField = keyof typeof fieldValidators
 export type FederalTaxesFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the federal taxes form on submit.
- *
- * @public
- */
+/** @internal */
 export type FederalTaxesFormOutputs = FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────

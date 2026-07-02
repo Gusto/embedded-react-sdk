@@ -1,11 +1,11 @@
-import type { JSX } from 'react'
+import type { ComponentType, JSX } from 'react'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
-import { useEmployeeFormsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGet'
-import { useEmployeeFormsGetPdf } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGetPdf'
-import { useEmployeeFormsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsSign'
+import type { Form } from '@gusto/embedded-api-v-2026-02-01/models/components/form'
+import { useEmployeeFormsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsGet'
+import { useEmployeeFormsGetPdf } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsGetPdf'
+import { useEmployeeFormsSignMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsSign'
 import {
   createSignEmployeeFormSchema,
   MAX_PREPARERS,
@@ -18,6 +18,9 @@ import {
   SignatureField,
   ConfirmSignatureField,
   UsedPreparerField,
+  type SignatureFieldProps,
+  type ConfirmSignatureFieldProps,
+  type UsedPreparerFieldProps,
   type PreparerTextFieldProps,
   type PreparerSelectFieldProps,
   type PreparerCheckboxFieldProps,
@@ -180,13 +183,13 @@ export interface UseSignEmployeeFormProps {
  *
  * @public
  */
-export interface SignEmployeeFormFieldComponents {
-  /** Text input for the employee's typed signature; always present. */
-  Signature: typeof SignatureField
-  /** Checkbox for the employee's electronic-signature consent; always present. */
-  ConfirmSignature: typeof ConfirmSignatureField
-  /** Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. */
-  UsedPreparer: typeof UsedPreparerField | undefined
+export interface SignEmployeeFormFields {
+  /** Bound to `signature`. Text input for the employee's typed signature; always present. */
+  Signature: ComponentType<SignatureFieldProps>
+  /** Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present. */
+  ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>
+  /** Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. */
+  UsedPreparer: ComponentType<UsedPreparerFieldProps> | undefined
   /** First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. */
   Preparer1: PreparerFieldGroup | undefined
   /** Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. */
@@ -205,7 +208,7 @@ export interface SignEmployeeFormFieldComponents {
 export interface UseSignEmployeeFormReady extends BaseFormHookReady<
   FieldsMetadata,
   SignEmployeeFormData,
-  SignEmployeeFormFieldComponents
+  SignEmployeeFormFields
 > {
   /** Loaded data — the form entity and a preview PDF URL. */
   data: {
@@ -231,11 +234,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<
     removePreparer?: () => void
   }
   /** Form bindings — `Fields`, `fieldsMetadata`, and I-9 preparer state. */
-  form: BaseFormHookReady<
-    FieldsMetadata,
-    SignEmployeeFormData,
-    SignEmployeeFormFieldComponents
-  >['form'] & {
+  form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields>['form'] & {
     /** Preparer-section state. Defined only for I-9 forms. */
     preparers?: {
       /** Current number of preparer sections, between 0 and 4. */
@@ -538,9 +537,3 @@ export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormR
  * @public
  */
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata']
-/**
- * Shape of the `form.Fields` object returned by {@link useSignEmployeeForm}.
- *
- * @public
- */
-export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields']

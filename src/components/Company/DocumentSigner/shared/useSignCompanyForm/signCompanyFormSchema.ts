@@ -51,11 +51,7 @@ export type SignCompanyFormField = keyof typeof fieldValidators
 export type SignCompanyFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the sign-company form on submit.
- *
- * @public
- */
+/** @internal */
 export type SignCompanyFormOutputs = SignCompanyFormData
 
 // ── Required fields config ─────────────────────────────────────────────

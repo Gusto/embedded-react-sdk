@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import type {
   Garnishment,
   GarnishmentType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
 import { StandardDeductionForm } from './StandardDeductionForm'
 import { ChildSupportFormView } from './ChildSupportFormView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

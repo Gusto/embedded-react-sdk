@@ -8,12 +8,9 @@ export type {
 } from './useContractorPaymentMethodForm'
 export {
   ContractorPaymentMethodErrorCodes,
-  PAYMENT_METHOD_TYPES,
-  createContractorPaymentMethodSchema,
   type ContractorPaymentMethodErrorCode,
   type ContractorPaymentMethodFormType,
   type ContractorPaymentMethodFormData,
-  type ContractorPaymentMethodFormOutputs,
   type ContractorPaymentMethodFormField,
 } from './contractorPaymentMethodSchema'
 export { type TypeFieldProps } from './fields'

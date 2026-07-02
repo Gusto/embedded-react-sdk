@@ -1,9 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLocationsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsUpdate'
-import { useLocationsRetrieveSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsRetrieve'
-import { useLocationsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsCreate'
-import { type Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
+import { useLocationsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsUpdate'
+import { useLocationsRetrieveSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsRetrieve'
+import { useLocationsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsCreate'
+import { type Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
 import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import type { LocationFormInputs } from './Form'
@@ -98,7 +98,7 @@ function Root({
       // and the form seeds with a stale addressType on first open.
       const refreshLocationsCache = () =>
         queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Locations'],
+          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Locations'],
           refetchType: 'all',
         })
 

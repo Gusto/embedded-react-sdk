@@ -1,4 +1,4 @@
-import type { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
+import type { PaymentPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishmentchildsupport'
 import type { ChildSupportGarnishmentFormErrorCodes } from './childSupportGarnishmentFormSchema'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
 import type { NumberInputHookFieldProps } from '@/partner-hook-utils/form/fields/NumberInputHookField'
@@ -100,18 +100,7 @@ export type StateFieldProps = HookFieldProps<
   SelectHookFieldProps<RequiredValidation, StateFieldEntry>
 >
 
-/**
- * Select bound to the `state` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.State`. Always rendered. The
- * selected agency drives which subsequent fields are required and visible
- * (`FipsCode`, `CaseNumber`, `OrderNumber`, `RemittanceNumber`).
- *
- * @param props - {@link StateFieldProps} — accepts the standard hook field props plus `getOptionLabel` for agency display.
- * @returns The rendered select bound to `state`.
- * @public
- */
+/** @internal */
 export function StateField(props: StateFieldProps) {
   return <SelectHookField {...props} name="state" />
 }
@@ -144,20 +133,7 @@ export type FipsCodeFieldProps = HookFieldProps<
   SelectHookFieldProps<RequiredValidation, CountyEntry>
 >
 
-/**
- * Select bound to the `fipsCode` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.FipsCode` only when the selected
- * agency offers multiple counties. When the agency has a single "all counties"
- * code, the hook auto-fills the value and exposes the field as `undefined` —
- * always null-check before rendering. Options are dynamically populated from
- * the FIPS codes the selected agency declares.
- *
- * @param props - {@link FipsCodeFieldProps} — accepts the standard hook field props plus `getOptionLabel` for county display.
- * @returns The rendered select bound to `fipsCode`.
- * @public
- */
+/** @internal */
 export function FipsCodeField(props: FipsCodeFieldProps) {
   return <SelectHookField {...props} name="fipsCode" />
 }
@@ -171,18 +147,7 @@ export function FipsCodeField(props: FipsCodeFieldProps) {
  */
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `caseNumber` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.CaseNumber` only when the
- * selected agency requires a case number (`status.requiredAttrKeys.has('case_number')`).
- * Always null-check before rendering.
- *
- * @param props - {@link CaseNumberFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered text input bound to `caseNumber`.
- * @public
- */
+/** @internal */
 export function CaseNumberField(props: CaseNumberFieldProps) {
   return <TextInputHookField {...props} name="caseNumber" />
 }
@@ -194,18 +159,7 @@ export function CaseNumberField(props: CaseNumberFieldProps) {
  */
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `orderNumber` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.OrderNumber` only when the
- * selected agency requires an order number (`status.requiredAttrKeys.has('order_number')`).
- * Always null-check before rendering.
- *
- * @param props - {@link OrderNumberFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered text input bound to `orderNumber`.
- * @public
- */
+/** @internal */
 export function OrderNumberField(props: OrderNumberFieldProps) {
   return <TextInputHookField {...props} name="orderNumber" />
 }
@@ -217,18 +171,7 @@ export function OrderNumberField(props: OrderNumberFieldProps) {
  */
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
-/**
- * Text input bound to the `remittanceNumber` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.RemittanceNumber` only when the
- * selected agency requires a remittance number (`status.requiredAttrKeys.has('remittance_number')`).
- * Always null-check before rendering.
- *
- * @param props - {@link RemittanceNumberFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered text input bound to `remittanceNumber`.
- * @public
- */
+/** @internal */
 export function RemittanceNumberField(props: RemittanceNumberFieldProps) {
   return <TextInputHookField {...props} name="remittanceNumber" />
 }
@@ -244,17 +187,7 @@ export type PayPeriodMaximumFieldProps = HookFieldProps<
   NumberInputHookFieldProps<PayPeriodMaximumValidation>
 >
 
-/**
- * Number input bound to the `payPeriodMaximum` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.PayPeriodMaximum`. Always
- * rendered. Carries the per-pay-period currency cap for the garnishment.
- *
- * @param props - {@link PayPeriodMaximumFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered number input bound to `payPeriodMaximum`.
- * @public
- */
+/** @internal */
 export function PayPeriodMaximumField(props: PayPeriodMaximumFieldProps) {
   return <NumberInputHookField {...props} name="payPeriodMaximum" />
 }
@@ -268,18 +201,7 @@ export function PayPeriodMaximumField(props: PayPeriodMaximumFieldProps) {
  */
 export type AmountFieldProps = HookFieldProps<NumberInputHookFieldProps<AmountValidation>>
 
-/**
- * Number input bound to the `amount` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Amount`. Always rendered.
- * Accepts a percentage of paycheck in the range 0–100 — the API stores
- * child-support amounts as percentages rather than fixed currency values.
- *
- * @param props - {@link AmountFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered number input bound to `amount`.
- * @public
- */
+/** @internal */
 export function AmountField(props: AmountFieldProps) {
   return <NumberInputHookField {...props} name="amount" />
 }
@@ -295,17 +217,7 @@ export type PaymentPeriodFieldProps = HookFieldProps<
   SelectHookFieldProps<RequiredValidation, PaymentPeriod>
 >
 
-/**
- * Select bound to the `paymentPeriod` field of {@link useChildSupportGarnishmentForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.PaymentPeriod`. Always rendered.
- * Options: `Every week`, `Every other week`, `Twice per month`, `Monthly`.
- *
- * @param props - {@link PaymentPeriodFieldProps} — accepts the standard hook field props plus `getOptionLabel` for payment-period display.
- * @returns The rendered select bound to `paymentPeriod`.
- * @public
- */
+/** @internal */
 export function PaymentPeriodField(props: PaymentPeriodFieldProps) {
   return <SelectHookField {...props} name="paymentPeriod" />
 }

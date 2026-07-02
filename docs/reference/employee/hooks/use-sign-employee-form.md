@@ -125,27 +125,27 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 
 ## Fields
 
-### SignEmployeeFormFieldComponents
+### SignEmployeeFormFields
 
-<a id="signemployeeformfieldcomponents"></a>
+<a id="signemployeeformfields"></a>
 
 Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)\> | Checkbox for the employee's electronic-signature consent; always present. |
-| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signemployeeformsignaturefieldprops)\> | Text input for the employee's typed signature; always present. |
+| `ConfirmSignature` | `ComponentType`\<[`ConfirmSignatureFieldProps`](#signemployeeformconfirmsignaturefieldprops)\> | Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present. |
+| `Signature` | `ComponentType`\<[`SignatureFieldProps`](#signemployeeformsignaturefieldprops)\> | Bound to `signature`. Text input for the employee's typed signature; always present. |
 | `Preparer1` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | First preparer field group; defined only for I-9 forms when `preparers.count >= 1`. |
 | `Preparer2` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Second preparer field group; defined only for I-9 forms when `preparers.count >= 2`. |
 | `Preparer3` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Third preparer field group; defined only for I-9 forms when `preparers.count >= 3`. |
 | `Preparer4` | [`PreparerFieldGroup`](#preparerfieldgroup) \| `undefined` | Fourth preparer field group; defined only for I-9 forms when `preparers.count >= 4`. |
-| `UsedPreparer` | `ComponentType`\<[`UsedPreparerFieldProps`](#usedpreparerfieldprops)\> \| `undefined` | Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
+| `UsedPreparer` | `ComponentType`\<[`UsedPreparerFieldProps`](#usedpreparerfieldprops)\> \| `undefined` | Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms. |
 
 ***
 
 ### ConfirmSignature
 
-Checkbox for the employee's electronic-signature consent; always present.
+Bound to `confirmSignature`. Checkbox for the employee's electronic-signature consent; always present.
 
 ```tsx
 <form.Fields.ConfirmSignature
@@ -273,7 +273,7 @@ See [`PreparerFieldGroup`](#preparerfieldgroup) for all sub-fields.
 
 ### Signature
 
-Text input for the employee's typed signature; always present.
+Bound to `signature`. Text input for the employee's typed signature; always present.
 
 ```tsx
 <form.Fields.Signature
@@ -302,7 +302,7 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### UsedPreparer
 
-Radio group asking whether a preparer/translator assisted; defined only for I-9 forms.
+Bound to `usedPreparer`. Radio group asking whether a preparer/translator assisted; defined only for I-9 forms.
 
 ```tsx
 {form.Fields.UsedPreparer && (
@@ -549,16 +549,6 @@ Field names accepted by the I-9 sign-employee form.
 
 ***
 
-<a id="signemployeeformfields"></a>
-
-### SignEmployeeFormFields
-
-> **SignEmployeeFormFields** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"Fields"`\]
-
-Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
 <a id="signemployeeformfieldsmetadata"></a>
 
 ### SignEmployeeFormFieldsMetadata
@@ -566,16 +556,5 @@ Shape of the `form.Fields` object returned by [useSignEmployeeForm](#usesignempl
 > **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
 
 Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
-
-***
-
-<a id="signemployeeformoutputs"></a>
-
-### SignEmployeeFormOutputs
-
-> **SignEmployeeFormOutputs** = [`SignEmployeeFormData`](#signemployeeformdata)
-
-Shape of the validated values produced by the I-9 sign-employee form on
-submit.
 
 ***

@@ -59,11 +59,7 @@ export type PaymentMethodFormField = keyof typeof fieldValidators
 export type PaymentMethodFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the payment method form on submit.
- *
- * @public
- */
+/** @internal */
 export type PaymentMethodFormOutputs = PaymentMethodFormData
 
 const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>

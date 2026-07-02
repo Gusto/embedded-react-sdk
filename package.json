@@ -31,9 +31,9 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run i18n:generate && vite build",
-    "api-report:derive": "api-extractor run --local --config .reports/config/api-extractor.json",
-    "derive": "npm run models:derive && npm run build && npm run endpoints:derive && npm run api-report:derive && npm run docs:api:generate",
+    "build": "npm run build:clean && vite build",
+    "api-report:derive": "api-extractor run --local --config .reports/config/api-extractor.json && node ./build/collapseApiReportTranslations.mjs",
+    "derive": "npm run models:derive && npm run i18n:generate && npm run build && npm run endpoints:derive && npm run api-report:derive && npm run docs:api:generate",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
     "models:derive": "npx tsx ./build/deriveExternalModels.ts",
@@ -179,7 +179,7 @@
     "markdown-it": "^14.2.0"
   },
   "dependencies": {
-    "@gusto/embedded-api-v-2025-11-15": "^0.0.2",
+    "@gusto/embedded-api-v-2026-02-01": "^0.0.1",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.4.0",
     "@internationalized/date": "^3.12.2",

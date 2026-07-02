@@ -1,9 +1,10 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount'
-import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodCreate'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount'
+import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodCreate'
 import {
   ACCOUNT_TYPES,
   type AccountType,
@@ -12,6 +13,12 @@ import {
   type BankFormOptionalFieldsToRequire,
   type BankFormOutputs,
 } from './useBankFormSchema'
+import type {
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+} from './fields'
 import { AccountNumberField, AccountTypeField, NameField, RoutingNumberField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -62,13 +69,13 @@ export interface UseBankFormProps {
  */
 export interface BankFormFields {
   /** Bound to `name`. */
-  Name: typeof NameField
+  Name: ComponentType<NameFieldProps>
   /** Bound to `routingNumber`. */
-  RoutingNumber: typeof RoutingNumberField
+  RoutingNumber: ComponentType<RoutingNumberFieldProps>
   /** Bound to `accountNumber`. */
-  AccountNumber: typeof AccountNumberField
+  AccountNumber: ComponentType<AccountNumberFieldProps>
   /** Bound to `accountType`. */
-  AccountType: typeof AccountTypeField
+  AccountType: ComponentType<AccountTypeFieldProps>
 }
 
 /**

@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
+import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
-import { useContractorsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
-import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsCreate'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdate'
+import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody'
+import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsCreate'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdate'
 import {
   ContractorType,
   WageType,
@@ -31,6 +32,22 @@ import {
   SsnField,
   EinField,
   WorkStateField,
+} from './fields'
+import type {
+  TypeFieldProps,
+  WageTypeFieldProps,
+  StartDateFieldProps,
+  HourlyRateFieldProps,
+  SelfOnboardingFieldProps,
+  FileNewHireReportFieldProps,
+  EmailFieldProps,
+  FirstNameFieldProps,
+  LastNameFieldProps,
+  MiddleInitialFieldProps,
+  BusinessNameFieldProps,
+  SsnFieldProps,
+  EinFieldProps,
+  WorkStateFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -106,35 +123,43 @@ export type UseContractorDetailsFormProps =
  *
  * @public
  */
-export interface ContractorDetailsFields {
+export interface ContractorDetailsFormFields {
   /** Radio group bound to `type`. Always available. */
-  Type: typeof TypeField
+  Type: ComponentType<TypeFieldProps>
   /** Radio group bound to `wageType`. Always available. */
-  WageType: typeof WageTypeField
+  WageType: ComponentType<WageTypeFieldProps>
   /** Date picker bound to `startDate`. Always available. */
-  StartDate: typeof StartDateField
+  StartDate: ComponentType<StartDateFieldProps>
   /** Number input bound to `hourlyRate`; available only when `wageType` is `Hourly`. */
-  HourlyRate: typeof HourlyRateField | undefined
+  HourlyRate: ComponentType<HourlyRateFieldProps> | undefined
   /** Switch bound to `selfOnboarding`; available only when toggleable. */
-  SelfOnboarding: typeof SelfOnboardingField | undefined
+  SelfOnboarding: ComponentType<SelfOnboardingFieldProps> | undefined
   /** Switch bound to `fileNewHireReport`; available only for individual contractors. */
-  FileNewHireReport: typeof FileNewHireReportField | undefined
+  FileNewHireReport: ComponentType<FileNewHireReportFieldProps> | undefined
   /** Text input bound to `email`; available only when self-onboarding is enabled. */
-  Email: typeof EmailField | undefined
+  Email: ComponentType<EmailFieldProps> | undefined
   /** Text input bound to `firstName`; available only for individual contractors. */
-  FirstName: typeof FirstNameField | undefined
+  FirstName: ComponentType<FirstNameFieldProps> | undefined
   /** Text input bound to `lastName`; available only for individual contractors. */
-  LastName: typeof LastNameField | undefined
+  LastName: ComponentType<LastNameFieldProps> | undefined
   /** Text input bound to `middleInitial`; available only for individual contractors. */
-  MiddleInitial: typeof MiddleInitialField | undefined
+  MiddleInitial: ComponentType<MiddleInitialFieldProps> | undefined
   /** Text input bound to `businessName`; available only for business contractors. */
-  BusinessName: typeof BusinessNameField | undefined
-  /** Text input bound to `ssn`; available only for individual contractors. */
-  Ssn: typeof SsnField | undefined
-  /** Text input bound to `ein`; available only for business contractors. */
-  Ein: typeof EinField | undefined
+  BusinessName: ComponentType<BusinessNameFieldProps> | undefined
+  /**
+   * Text input bound to `ssn`; available only for individual contractors.
+   * Auto-formats as `XXX-XX-XXXX`. When an SSN is already on file the field
+   * shows a masked placeholder and the required rule is waived.
+   */
+  Ssn: ComponentType<SsnFieldProps> | undefined
+  /**
+   * Text input bound to `ein`; available only for business contractors.
+   * Auto-formats as `XX-XXXXXXX`. When an EIN is already on file the field
+   * shows a masked placeholder and the required rule is waived.
+   */
+  Ein: ComponentType<EinFieldProps> | undefined
   /** Select bound to `workState`; available only for individual contractors filing a new-hire report. */
-  WorkState: typeof WorkStateField | undefined
+  WorkState: ComponentType<WorkStateFieldProps> | undefined
 }
 
 /**
@@ -145,7 +170,7 @@ export interface ContractorDetailsFields {
 export interface UseContractorDetailsFormReady extends BaseFormHookReady<
   FieldsMetadata,
   ContractorDetailsFormData,
-  ContractorDetailsFields
+  ContractorDetailsFormFields
 > {
   /** The loaded contractor data, or `null` in create mode. */
   data: {
@@ -514,10 +539,3 @@ export type UseContractorDetailsFormResult = HookLoadingResult | UseContractorDe
  */
 export type ContractorDetailsFieldsMetadata =
   UseContractorDetailsFormReady['form']['fieldsMetadata']
-
-/**
- * Shape of `form.Fields` returned by {@link useContractorDetailsForm}.
- *
- * @public
- */
-export type ContractorDetailsFormFields = UseContractorDetailsFormReady['form']['Fields']

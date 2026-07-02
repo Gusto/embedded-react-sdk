@@ -11,7 +11,6 @@ export {
   EmployeeStateTaxesErrorCodes,
   type EmployeeStateTaxesErrorCode,
   type EmployeeStateTaxesFormData,
-  type EmployeeStateTaxesFormOutputs,
   type EmployeeStateTaxesSchemaOptions,
   type EmployeeStateTaxesQuestionMeta,
   type EmployeeStateTaxesMetadataConfig,

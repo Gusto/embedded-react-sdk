@@ -1,15 +1,16 @@
 import { useMemo } from 'react'
+import type { ComponentType } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type {
   Contractor,
   ContractorType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress'
-import { useContractorsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
-import { useContractorsGetAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGetAddress'
-import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateAddress'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/contractoraddress'
+import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsGetAddress } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetAddress'
+import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdateAddress'
 import {
   createContractorAddressSchema,
   type ContractorAddressOptionalFieldsToRequire,
@@ -17,6 +18,13 @@ import {
   type ContractorAddressFormOutputs,
 } from './contractorAddressSchema'
 import { Street1Field, Street2Field, CityField, StateField, ZipField } from './fields'
+import type {
+  Street1FieldProps,
+  Street2FieldProps,
+  CityFieldProps,
+  StateFieldProps,
+  ZipFieldProps,
+} from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -63,21 +71,27 @@ export interface UseContractorAddressFormProps {
 }
 
 /**
- * Pre-bound field components exposed on `useContractorAddressForm().form.Fields`.
+ * Field components exposed by {@link useContractorAddressForm} on `form.Fields`.
  *
  * @public
  */
-export interface ContractorAddressFields {
-  /** Street address line 1 text input. Required. */
-  Street1: typeof Street1Field
-  /** Street address line 2 text input. Optional. */
-  Street2: typeof Street2Field
-  /** City text input. Required. */
-  City: typeof CityField
-  /** State selector. Required. */
-  State: typeof StateField
-  /** ZIP code text input. Required. */
-  Zip: typeof ZipField
+export interface ContractorAddressFormFields {
+  /** Bound to `street1`. Text input for the first street address line. Required. */
+  Street1: ComponentType<Street1FieldProps>
+  /** Bound to `street2`. Text input for the second street address line. Optional. */
+  Street2: ComponentType<Street2FieldProps>
+  /** Bound to `city`. Text input for the city. Required. */
+  City: ComponentType<CityFieldProps>
+  /**
+   * Bound to `state`. Select whose options are the standard two-letter US state
+   * abbreviations. Supply `getOptionLabel` to localize the option labels. Required.
+   */
+  State: ComponentType<StateFieldProps>
+  /**
+   * Bound to `zip`. Text input for the ZIP code. Required; also validates ZIP
+   * format and emits `INVALID_ZIP` when the value does not match.
+   */
+  Zip: ComponentType<ZipFieldProps>
 }
 
 /**
@@ -92,7 +106,7 @@ export interface ContractorAddressFields {
 export interface UseContractorAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   ContractorAddressFormData,
-  ContractorAddressFields
+  ContractorAddressFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -337,9 +351,3 @@ export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAd
  */
 export type ContractorAddressFieldsMetadata =
   UseContractorAddressFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link useContractorAddressForm}.
- *
- * @public
- */
-export type ContractorAddressFormFields = UseContractorAddressFormReady['form']['Fields']

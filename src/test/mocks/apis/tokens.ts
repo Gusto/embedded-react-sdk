@@ -1,6 +1,6 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1TokenInfoRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1tokeninfo'
+import type { GetV1TokenInfoRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1tokeninfo'
 import { API_BASE_URL } from '@/test/constants'
 
 const getTokenInfo = http.get<PathParams, GetV1TokenInfoRequest>(

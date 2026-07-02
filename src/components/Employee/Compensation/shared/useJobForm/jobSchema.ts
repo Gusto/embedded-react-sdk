@@ -67,15 +67,7 @@ export type JobFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-/**
- * Validated submission shape produced by the {@link useJobForm} schema.
- *
- * @remarks
- * Identical to {@link JobFormData} — exposed as a separate alias so the input
- * vs. output sides of the schema remain distinguishable in advanced usages.
- *
- * @public
- */
+/** @internal */
 export type JobFormOutputs = JobFormData
 
 const requiredFieldsConfig = {

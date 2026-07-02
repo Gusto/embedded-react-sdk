@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   WageType as ApiWageType,
   ContractorType as ApiContractorType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 import {
   buildFormSchema,
   type RequiredFieldConfig,
@@ -99,12 +99,7 @@ export type ContractorDetailsFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-/**
- * Shape of the validated values produced by the contractor details form on
- * submit.
- *
- * @public
- */
+/** @internal */
 export type ContractorDetailsFormOutputs = ContractorDetailsFormData
 
 // ── Required fields config ─────────────────────────────────────────────

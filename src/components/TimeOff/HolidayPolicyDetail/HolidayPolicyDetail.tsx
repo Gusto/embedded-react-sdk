@@ -4,9 +4,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   useHolidayPayPoliciesGetSuspense,
   invalidateAllHolidayPayPoliciesGet,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
-import { useHolidayPayPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesRemoveEmployees'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesRemoveEmployees'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
 import { getDefaultHolidayItems } from '../shared/holidayHelpers'
 import { HolidayPolicyDetailPresentation } from './HolidayPolicyDetailPresentation'
 import type { HolidayPolicyDetailEmployee } from './HolidayPolicyDetailTypes'

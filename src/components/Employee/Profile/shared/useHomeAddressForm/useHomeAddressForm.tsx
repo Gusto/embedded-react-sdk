@@ -1,18 +1,28 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
-import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesRetrieveHomeAddress'
-import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesCreate'
-import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesUpdate'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeaddress'
+import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesRetrieveHomeAddress'
+import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesCreate'
+import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesUpdate'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import {
   createHomeAddressSchema,
   type HomeAddressOptionalFieldsToRequire,
   type HomeAddressFormData,
   type HomeAddressFormOutputs,
 } from './homeAddressSchema'
+import type {
+  Street1FieldProps,
+  Street2FieldProps,
+  CityFieldProps,
+  StateFieldProps,
+  ZipFieldProps,
+  CourtesyWithholdingFieldProps,
+  EffectiveDateFieldProps,
+} from './fields'
 import {
   Street1Field,
   Street2Field,
@@ -94,21 +104,21 @@ export interface UseHomeAddressFormProps {
  *
  * @public
  */
-export interface HomeAddressFields {
-  /** Street address line 1 text input. Always available. */
-  Street1: typeof Street1Field
-  /** Street address line 2 text input. Always available. */
-  Street2: typeof Street2Field
-  /** City text input. Always available. */
-  City: typeof CityField
-  /** State selector. Always available. */
-  State: typeof StateField
-  /** ZIP code text input. Always available. */
-  Zip: typeof ZipField
-  /** Courtesy withholding checkbox. Always available. */
-  CourtesyWithholding: typeof CourtesyWithholdingField
-  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+export interface HomeAddressFormFields {
+  /** Bound to `street1`. Street address line 1 text input. Always available. */
+  Street1: ComponentType<Street1FieldProps>
+  /** Bound to `street2`. Street address line 2 text input. Always available. */
+  Street2: ComponentType<Street2FieldProps>
+  /** Bound to `city`. City text input. Always available. */
+  City: ComponentType<CityFieldProps>
+  /** Bound to `state`. State selector. Always available. */
+  State: ComponentType<StateFieldProps>
+  /** Bound to `zip`. ZIP code text input. Always available. */
+  Zip: ComponentType<ZipFieldProps>
+  /** Bound to `courtesyWithholding`. Courtesy withholding checkbox. Always available. */
+  CourtesyWithholding: ComponentType<CourtesyWithholdingFieldProps>
+  /** Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**
@@ -123,7 +133,7 @@ export interface HomeAddressFields {
 export interface UseHomeAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   HomeAddressFormData,
-  HomeAddressFields
+  HomeAddressFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -417,9 +427,3 @@ export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormRea
  * @public
  */
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link useHomeAddressForm}.
- *
- * @public
- */
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']

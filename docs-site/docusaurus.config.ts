@@ -140,6 +140,16 @@ const config: Config = {
           }),
         },
         blog: false,
+        sitemap: {
+          // robots.txt blocks crawlers from fetching older-minor snapshots; keep
+          // them out of the sitemap too, so it advertises only the canonical,
+          // unprefixed /docs/<page> (the latest minor, driven by lastVersion).
+          // versions[0] is that latest minor served unprefixed, so slice(1) drops
+          // just the /docs/<X.Y>/ snapshots — no maintenance as new minors land.
+          ignorePatterns: hasVersions ? versions.slice(1).map(v => `/docs/${v}/**`) : [],
+          changefreq: 'weekly',
+          priority: 0.5,
+        },
         theme: {
           customCss: ['./src/css/custom.css'],
         },

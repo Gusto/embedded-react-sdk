@@ -111,9 +111,9 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 | `data.employeeFederalTax` | [`EmployeeFederalTax`](../../APIModels/index.md#employeefederaltax) | The current federal tax record for the employee. |
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
-| `form.Fields` | [`FederalTaxesFields`](#federaltaxesfields) | - |
+| `form.Fields` | [`FederalTaxesFormFields`](#federaltaxesformfields) | - |
 | `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => [`FederalTaxesFormData`](#federaltaxesformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
 | `status` | `object` | Submission state. `mode` is always `'update'` — the federal tax record is created with the employee, so this hook has no create mode. |
@@ -122,26 +122,26 @@ Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once d
 
 ## Fields
 
-### FederalTaxesFields
+### FederalTaxesFormFields
 
-<a id="federaltaxesfields"></a>
+<a id="federaltaxesformfields"></a>
 
 Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `Deductions` | `ComponentType`\<[`DeductionsFieldProps`](#deductionsfieldprops)\> | Deductions (Step 4b) currency input. |
-| `DependentsAmount` | `ComponentType`\<[`DependentsAmountFieldProps`](#dependentsamountfieldprops)\> | Dependents amount (Step 3) currency input. |
-| `ExtraWithholding` | `ComponentType`\<[`ExtraWithholdingFieldProps`](#extrawithholdingfieldprops)\> | Extra withholding (Step 4c) currency input. |
-| `FilingStatus` | `ComponentType`\<[`FilingStatusFieldProps`](#filingstatusfieldprops)\> | Filing status select. |
-| `OtherIncome` | `ComponentType`\<[`OtherIncomeFieldProps`](#otherincomefieldprops)\> | Other income (Step 4a) currency input. |
-| `TwoJobs` | `ComponentType`\<[`TwoJobsFieldProps`](#twojobsfieldprops)\> | Multiple-jobs (Step 2c) radio group. |
+| `Deductions` | `ComponentType`\<[`DeductionsFieldProps`](#deductionsfieldprops)\> | Bound to `deductions`. Deductions (Step 4b) currency input. |
+| `DependentsAmount` | `ComponentType`\<[`DependentsAmountFieldProps`](#dependentsamountfieldprops)\> | Bound to `dependentsAmount`. Dependents amount (Step 3) currency input. |
+| `ExtraWithholding` | `ComponentType`\<[`ExtraWithholdingFieldProps`](#extrawithholdingfieldprops)\> | Bound to `extraWithholding`. Extra withholding (Step 4c) currency input. |
+| `FilingStatus` | `ComponentType`\<[`FilingStatusFieldProps`](#filingstatusfieldprops)\> | Bound to `filingStatus`. Filing status select. |
+| `OtherIncome` | `ComponentType`\<[`OtherIncomeFieldProps`](#otherincomefieldprops)\> | Bound to `otherIncome`. Other income (Step 4a) currency input. |
+| `TwoJobs` | `ComponentType`\<[`TwoJobsFieldProps`](#twojobsfieldprops)\> | Bound to `twoJobs`. Multiple-jobs (Step 2c) radio group. |
 
 ***
 
 ### Deductions
 
-Deductions (Step 4b) currency input.
+Bound to `deductions`. Deductions (Step 4b) currency input.
 
 ```tsx
 <form.Fields.Deductions
@@ -170,7 +170,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### DependentsAmount
 
-Dependents amount (Step 3) currency input.
+Bound to `dependentsAmount`. Dependents amount (Step 3) currency input.
 
 ```tsx
 <form.Fields.DependentsAmount
@@ -199,7 +199,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### ExtraWithholding
 
-Extra withholding (Step 4c) currency input.
+Bound to `extraWithholding`. Extra withholding (Step 4c) currency input.
 
 ```tsx
 <form.Fields.ExtraWithholding
@@ -228,7 +228,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### FilingStatus
 
-Filing status select.
+Bound to `filingStatus`. Filing status select.
 
 ```tsx
 <form.Fields.FilingStatus
@@ -259,7 +259,7 @@ _Also accepts `description`, `formHookResult`, `portalContainer` from [SelectHoo
 
 ### OtherIncome
 
-Other income (Step 4a) currency input.
+Bound to `otherIncome`. Other income (Step 4a) currency input.
 
 ```tsx
 <form.Fields.OtherIncome
@@ -288,7 +288,7 @@ _Also accepts `description`, `format`, `formHookResult`, `max`, `min`, `placehol
 
 ### TwoJobs
 
-Multiple-jobs (Step 2c) radio group.
+Bound to `twoJobs`. Multiple-jobs (Step 2c) radio group.
 
 ```tsx
 <form.Fields.TwoJobs
@@ -399,32 +399,6 @@ Shape of the values managed by the federal taxes form.
 | `filingStatus` | `string` |
 | `otherIncome` | `number` |
 | `twoJobs` | `boolean` |
-
-***
-
-<a id="federaltaxesformfields"></a>
-
-### FederalTaxesFormFields
-
-> **FederalTaxesFormFields** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"Fields"`\]
-
-Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
-
-#### Remarks
-
-Alias for the `Fields` shape on [UseFederalTaxesFormReady](#usefederaltaxesformready). Use this
-type when typing a presentational component that consumes the hook's
-fields.
-
-***
-
-<a id="federaltaxesformoutputs"></a>
-
-### FederalTaxesFormOutputs
-
-> **FederalTaxesFormOutputs** = [`FederalTaxesFormData`](#federaltaxesformdata)
-
-Shape of the validated values produced by the federal taxes form on submit.
 
 ***
 

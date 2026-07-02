@@ -1,6 +1,6 @@
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
-import { useContractorsGetAddressSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGetAddress'
-import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateAddress'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsGetAddressSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetAddress'
+import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdateAddress'
 import {
   AddressForm,
   type AddressFormValues,
