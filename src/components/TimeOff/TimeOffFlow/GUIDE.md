@@ -32,7 +32,7 @@ flowchart
 
 ### Manage an existing policy
 
-Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`); from the holiday view you can edit the holiday selection (`timeOff/editHolidayPolicy`), add employees (`timeOff/holidayAddEmployees`), or view the observed-holiday schedule (`timeOff/viewHolidaySchedule`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
+Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`). The holiday detail view has two tabs — the employee list and the observed-holiday schedule — and switching between them (`timeOff/viewHolidaySchedule`, `timeOff/viewHolidayEmployees`) stays within that view rather than navigating elsewhere; from either tab you can edit the holiday selection (`timeOff/editHolidayPolicy`) or add employees (`timeOff/holidayAddEmployees`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
 
 ```mermaid
 flowchart LR
@@ -42,12 +42,11 @@ flowchart LR
   TimeOffPolicyDetail <--> PolicySettings["PolicySettings"]
   TimeOffPolicyDetail <--> AddEmployeesToPolicy["AddEmployeesToPolicy"]
   TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
-  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayEmployees["ViewHolidayEmployees"]
-  ViewHolidayEmployees <--> HolidaySelectionForm["HolidaySelectionForm"]
-  ViewHolidayEmployees <--> AddEmployeesHoliday["AddEmployeesHoliday"]
-  ViewHolidayEmployees <--> ViewHolidaySchedule["ViewHolidaySchedule"]
-  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
-  linkStyle 2,3,4,7,8,9 stroke-width:2.5px
+  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| HolidayPolicyDetail["HolidayPolicyDetail<br/>(Employees | Schedule tabs)"]
+  HolidayPolicyDetail <--> HolidaySelectionForm["HolidaySelectionForm"]
+  HolidayPolicyDetail <--> AddEmployeesHoliday["AddEmployeesHoliday"]
+  HolidayPolicyDetail -->|"timeOff/backToList"| PolicyList
+  linkStyle 2,3,4,7,8 stroke-width:2.5px
 ```
 
 ## Policy types
