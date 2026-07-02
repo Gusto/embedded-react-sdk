@@ -3271,7 +3271,7 @@ export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "
 // @public
 export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED;
 
-// @public (undocumented)
+// @public
 function JobsList(props: JobsListProps): JSX;
 
 // @public (undocumented)

@@ -19,6 +19,17 @@ Headless hook for creating or updating a contractor's profile details —
 individual vs. business type, wage type, names, SSN/EIN, work state, and the
 self-onboarding preference.
 
+## Remarks
+
+Returns a discriminated union: a loading variant while the contractor fetch
+resolves, and a ready variant exposing the form's data, pending status,
+submit action, error handling, and bound `Fields`. Field visibility is
+driven by the current `type` and `wageType` (self-onboarding only toggles the
+`Email` field); fields that do not apply are `undefined` on `form.Fields`.
+SSN/EIN are exposed by contractor type regardless of self-onboarding — each
+consumer decides whether to render them. Self-onboarding is only toggleable
+when the contractor's onboarding status allows it.
+
 ## Example
 
 ```tsx title="Example"
@@ -64,17 +75,6 @@ function ContractorDetailsReady({
   )
 }
 ```
-
-## Remarks
-
-Returns a discriminated union: a loading variant while the contractor fetch
-resolves, and a ready variant exposing the form's data, pending status,
-submit action, error handling, and bound `Fields`. Field visibility is
-driven by the current `type` and `wageType` (self-onboarding only toggles the
-`Email` field); fields that do not apply are `undefined` on `form.Fields`.
-SSN/EIN are exposed by contractor type regardless of self-onboarding — each
-consumer decides whether to render them. Self-onboarding is only toggleable
-when the contractor's onboarding status allows it.
 
 ## Props
 
@@ -162,6 +162,12 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 <a id="contractordetailsformfields"></a>
 
 The Field components exposed by [useContractorDetailsForm](#usecontractordetailsform) as `form.Fields`.
+
+**Remarks**
+
+Conditionally-visible fields are `undefined` when they do not apply to the
+current `type`, `wageType`, or self-onboarding selection. Always null-check
+before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |

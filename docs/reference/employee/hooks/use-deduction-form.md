@@ -17,6 +17,21 @@ custom_edit_url: null
 
 Headless hook for creating or updating a non-child-support deduction.
 
+## Remarks
+
+Both variants — post-tax custom deductions and court-ordered garnishments —
+share the same field set (description, frequency, deduct-as-percentage,
+amount, optional caps) and differ only in whether the deduction is
+court-ordered and carries a `garnishmentType`. Set `courtOrdered: true` to
+surface the garnishment-type select; set it to `false` for a custom post-tax
+deduction.
+
+Presence or absence of `garnishmentId` selects the API verb: omit it to POST
+a new deduction, supply it to PUT updates against the existing row. For
+child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform)
+instead — those require agency-keyed required attributes (case number,
+order number, remittance number, county) that this hook doesn't model.
+
 ## Example
 
 ```tsx title="Example"
@@ -56,21 +71,6 @@ function CustomDeductionPage({ employeeId, garnishmentId }: { employeeId: string
   )
 }
 ```
-
-## Remarks
-
-Both variants — post-tax custom deductions and court-ordered garnishments —
-share the same field set (description, frequency, deduct-as-percentage,
-amount, optional caps) and differ only in whether the deduction is
-court-ordered and carries a `garnishmentType`. Set `courtOrdered: true` to
-surface the garnishment-type select; set it to `false` for a custom post-tax
-deduction.
-
-Presence or absence of `garnishmentId` selects the API verb: omit it to POST
-a new deduction, supply it to PUT updates against the existing row. For
-child-support garnishments, use [useChildSupportGarnishmentForm](use-child-support-garnishment-form.md#usechildsupportgarnishmentform)
-instead — those require agency-keyed required attributes (case number,
-order number, remittance number, county) that this hook doesn't model.
 
 ## Props
 
@@ -124,6 +124,13 @@ ready. In create mode the hook returns the ready branch immediately.
 
 Ready-state shape returned by [useDeductionForm](#usedeductionform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the deduction-specific `data`, `status`, `actions`, and `form.Fields` shape.
+Static, entity-derived values live under `data.*`; reactive values that
+flip with form input live under `status.*`.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
@@ -149,6 +156,13 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 <a id="deductionformfields"></a>
 
 Pre-bound field components exposed on `useDeductionForm().form.Fields`.
+
+**Remarks**
+
+Each property is either the field component or `undefined`. A field is
+`undefined` when conditions for rendering it aren't met — see each member
+for its visibility rule. Always null-check conditional fields (e.g.
+`{Fields.TotalAmount && <Fields.TotalAmount ... />}`) before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |

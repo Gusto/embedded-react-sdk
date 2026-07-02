@@ -14,6 +14,19 @@ custom_edit_url: null
 
 Hub for viewing and managing all employees, including onboarding new ones.
 
+## Remarks
+
+Drop-in entry point for managing all employees in a company. Begins on the
+management employee list and routes into [DashboardFlow](dashboard-flow.md),
+[TerminationFlow](termination-flow.md), or [OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) based on the
+action the admin invokes on a row (or the "Add employee" CTA). A "Back to
+employees" header is added to each sub-flow so the admin can return to the
+list at any time.
+
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
+payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -29,19 +42,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Drop-in entry point for managing all employees in a company. Begins on the
-management employee list and routes into [DashboardFlow](dashboard-flow.md),
-[TerminationFlow](termination-flow.md), or [OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) based on the
-action the admin invokes on a row (or the "Add employee" CTA). A "Back to
-employees" header is added to each sub-flow so the admin can return to the
-list at any time.
-
-The flow forwards every event emitted by its blocks to `onEvent`;
-see the events table on each block for the full set of events and
-payloads observable from this flow.
-
 ## EmployeeListFlowProps
 
 <a id="employeelistflowprops"></a>
@@ -51,7 +51,7 @@ Props for EmployeeListFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 

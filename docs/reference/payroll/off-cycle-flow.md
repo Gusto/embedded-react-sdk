@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Guided flow to create and run a bonus or correction payroll.
 
+## Remarks
+
+Guides the user through configuring pay period dates, selecting a reason, choosing
+employees, and setting deduction and tax withholding preferences, then transitions
+into the standard payroll execution experience (configuration, overview, submission,
+receipts). All off-cycle payroll types share the same execution steps as regular
+payrolls — only the creation step differs.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -33,14 +41,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Guides the user through configuring pay period dates, selecting a reason, choosing
-employees, and setting deduction and tax withholding preferences, then transitions
-into the standard payroll execution experience (configuration, overview, submission,
-receipts). All off-cycle payroll types share the same execution steps as regular
-payrolls — only the creation step differs.
-
 ## OffCycleFlowProps
 
 <a id="offcycleflowprops"></a>
@@ -50,7 +50,7 @@ Props for OffCycleFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
 | `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 | `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
 

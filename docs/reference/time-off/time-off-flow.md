@@ -14,6 +14,12 @@ custom_edit_url: null
 
 Hub for creating and managing a company's time off policies.
 
+## Remarks
+
+Composes the time off list, policy-type selection, configuration, settings, employee assignment, and policy detail screens into a single multi-step flow. Sick and vacation policies share a common creation path (configure → settings → add employees); holiday policies follow a separate path (select federal holidays → add employees). All policy types can be viewed, edited, and removed from the unified policy list.
+
+The flow emits these events as users navigate:
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -29,12 +35,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Composes the time off list, policy-type selection, configuration, settings, employee assignment, and policy detail screens into a single multi-step flow. Sick and vacation policies share a common creation path (configure → settings → add employees); holiday policies follow a separate path (select federal holidays → add employees). All policy types can be viewed, edited, and removed from the unified policy list.
-
-The flow emits these events as users navigate:
-
 ## TimeOffFlowProps
 
 <a id="timeoffflowprops"></a>
@@ -44,7 +44,7 @@ Props for TimeOffFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
@@ -69,8 +69,6 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `timeOff/addEmployeesToPolicy` | User adds employees from a policy detail | `{ policyId: string }` |
 | `timeOff/holidayAddEmployees` | User adds employees from holiday detail | — |
 | `timeOff/editHolidayPolicy` | User edits the holiday policy | — |
-| `timeOff/viewHolidayEmployees` | User switches to the holiday employees tab | — |
-| `timeOff/viewHolidaySchedule` | User switches to the holiday schedule tab | — |
 | `timeOff/policyCreate/error` | Policy creation fails | `{ alert?: { type, title, content? } }` |
 | `timeOff/policySettings/error` | Policy settings update fails | `{ alert?: { type, title, content? } }` |
 | `timeOff/addEmployees/error` | Adding employees to a policy fails | `{ alert?: { type, title, content? } }` |
@@ -92,8 +90,7 @@ Only one holiday policy can exist per company; the policy-type selector disables
 | [TimeOffPolicyDetail](blocks.md#timeoffpolicydetail) | Detail view for a sick or vacation time-off policy. |
 | [HolidaySelectionForm](blocks.md#holidayselectionform) | Lets a user select which US federal holidays are observed by the company's holiday pay policy. |
 | [AddEmployeesHoliday](blocks.md#addemployeesholiday) | Employee selection screen for assigning employees to a company's holiday pay policy. |
-| [ViewHolidayEmployees](blocks.md#viewholidayemployees) | Displays the holiday policy detail view with the employees tab selected. |
-| [ViewHolidaySchedule](blocks.md#viewholidayschedule) | Displays the holiday policy detail view with the holidays tab selected. |
+| [ViewHolidayPolicyDetails](blocks.md#viewholidaypolicydetails) | Displays the holiday pay policy for a company with tabbed views of the included holidays and the enrolled employees. |
 
 <!-- guide-source: src/components/TimeOff/TimeOffFlow/GUIDE.md (slot: appendix) -->
 ## Step flow
@@ -117,16 +114,18 @@ flowchart
   PolicySettings -->|"timeOff/policySettings/done"| AddEmployeesToPolicy
   AddEmployeesToPolicy -->|"timeOff/addEmployees/done"| TimeOffPolicyDetail["TimeOffPolicyDetail"]
   HolidaySelectionForm -->|"timeOff/holidaySelection/done"| AddEmployeesHoliday["AddEmployeesHoliday"]
-  AddEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| ViewHolidayEmployees["ViewHolidayEmployees"]
+  AddEmployeesHoliday -->|"timeOff/holidayAddEmployees/done"| ViewHolidayPolicyDetails["ViewHolidayPolicyDetails"]
   TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
-  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
+  ViewHolidayPolicyDetails -->|"timeOff/backToList"| PolicyList
   class policyType branch
   class unlimited branch
 ```
 
 ### Manage an existing policy
 
-Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`); from the holiday view you can edit the holiday selection (`timeOff/editHolidayPolicy`), add employees (`timeOff/holidayAddEmployees`), or view the observed-holiday schedule (`timeOff/viewHolidaySchedule`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
+Opening a policy routes by type to its detail view, which acts as a sub-hub. From the non-holiday detail view you can edit the policy (`timeOff/editPolicy`), change its settings (`timeOff/changeSettings`), or add employees (`timeOff/addEmployeesToPolicy`).
+
+The holiday detail view (`ViewHolidayPolicyDetails`) presents the observed holidays and enrolled employees as two tabs; switching tabs is internal to the view and emits no flow event. From it you can edit the holiday selection (`timeOff/editHolidayPolicy`) or add employees (`timeOff/holidayAddEmployees`). Each action returns to its detail view; `timeOff/backToList` returns to the list.
 
 ```mermaid
 flowchart LR
@@ -136,12 +135,11 @@ flowchart LR
   TimeOffPolicyDetail <--> PolicySettings["PolicySettings"]
   TimeOffPolicyDetail <--> AddEmployeesToPolicy["AddEmployeesToPolicy"]
   TimeOffPolicyDetail -->|"timeOff/backToList"| PolicyList
-  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayEmployees["ViewHolidayEmployees"]
-  ViewHolidayEmployees <--> HolidaySelectionForm["HolidaySelectionForm"]
-  ViewHolidayEmployees <--> AddEmployeesHoliday["AddEmployeesHoliday"]
-  ViewHolidayEmployees <--> ViewHolidaySchedule["ViewHolidaySchedule"]
-  ViewHolidayEmployees -->|"timeOff/backToList"| PolicyList
-  linkStyle 2,3,4,7,8,9 stroke-width:2.5px
+  PolicyList -->|"timeOff/viewPolicy<br/>(holiday)"| ViewHolidayPolicyDetails["ViewHolidayPolicyDetails"]
+  ViewHolidayPolicyDetails <--> HolidaySelectionForm["HolidaySelectionForm"]
+  ViewHolidayPolicyDetails <--> AddEmployeesHoliday["AddEmployeesHoliday"]
+  ViewHolidayPolicyDetails -->|"timeOff/backToList"| PolicyList
+  linkStyle 2,3,4,7,8 stroke-width:2.5px
 ```
 
 ## Policy types

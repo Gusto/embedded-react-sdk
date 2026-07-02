@@ -17,6 +17,12 @@ custom_edit_url: null
 
 Standalone data hook for a contractor's documents.
 
+## Remarks
+
+Wraps the `contractorDocumentsGetAll` query in the standard
+[BaseHookReady](../../utilities.md#basehookready) shape. Read-only — viewing or signing a document is
+handled by the screen the parent routes to, so this hook exposes no actions.
+
 ## Example
 
 ```tsx title="Example"
@@ -36,12 +42,6 @@ function ContractorDocuments({ contractorId }: { contractorId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Wraps the `contractorDocumentsGetAll` query in the standard
-[BaseHookReady](../../utilities.md#basehookready) shape. Read-only — viewing or signing a document is
-handled by the screen the parent routes to, so this hook exposes no actions.
 
 ## Props
 

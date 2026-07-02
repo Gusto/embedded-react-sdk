@@ -15,6 +15,7 @@ import type { SDKError } from '@/types/sdkError'
  * @typeParam K - The discriminating event-key type, typically a {@link componentEvents} member.
  * @typeParam T - The shape of the optional event payload.
  * @public
+ * @group Utility types
  */
 export type OnEventType<K, T> = (type: K, data?: T) => void
 

@@ -6,6 +6,7 @@ import {
   HOOK_GROUPS,
   COMPONENT_PROP_GROUPS,
   VARIABLE_GROUPS,
+  NAMESPACE_GROUPS,
 } from '../docs-site/typedoc-utils.mjs'
 
 const VALID_GROUPS = new Set([
@@ -13,6 +14,7 @@ const VALID_GROUPS = new Set([
   ...HOOK_GROUPS,
   ...COMPONENT_PROP_GROUPS,
   ...VARIABLE_GROUPS,
+  ...NAMESPACE_GROUPS,
 ])
 
 interface GroupMatch {

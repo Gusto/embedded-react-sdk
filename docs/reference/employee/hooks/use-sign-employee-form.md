@@ -17,6 +17,23 @@ custom_edit_url: null
 
 Headless hook for signing an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification.
 
+## Remarks
+
+The hook fetches the form metadata and PDF, then exposes the
+[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+`onSubmit`, and error handling. The hook inspects the form's `name` to
+detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
+`Fields.Preparer1`–`Preparer4` field groups become defined, along with
+`actions.addPreparer` / `actions.removePreparer` and `form.preparers`
+state. Selecting `usedPreparer: 'yes'` automatically reveals the first
+preparer section; switching back to `'no'` removes all preparer sections
+and unregisters their fields.
+
+Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
+`useCompensationForm`, `useWorkAddressForm`), this hook does not accept
+`defaultValues`, `requiredFields`, or `validationMode` — the form shape is
+fixed and all fields except preparer street-2 are required.
+
 ## Example
 
 ```tsx title="Example"
@@ -54,23 +71,6 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
   )
 }
 ```
-
-## Remarks
-
-The hook fetches the form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
-`onSubmit`, and error handling. The hook inspects the form's `name` to
-detect I-9 forms; when the form is an I-9, `Fields.UsedPreparer` and the
-`Fields.Preparer1`–`Preparer4` field groups become defined, along with
-`actions.addPreparer` / `actions.removePreparer` and `form.preparers`
-state. Selecting `usedPreparer: 'yes'` automatically reveals the first
-preparer section; switching back to `'no'` removes all preparer sections
-and unregisters their fields.
-
-Unlike the CRUD-oriented form hooks (`useEmployeeDetailsForm`,
-`useCompensationForm`, `useWorkAddressForm`), this hook does not accept
-`defaultValues`, `requiredFields`, or `validationMode` — the form shape is
-fixed and all fields except preparer street-2 are required.
 
 ## Props
 
@@ -130,6 +130,13 @@ Ready-state shape returned by [useSignEmployeeForm](#usesignemployeeform) once t
 <a id="signemployeeformfields"></a>
 
 Field components exposed by [useSignEmployeeForm](#usesignemployeeform) on `form.Fields`.
+
+**Remarks**
+
+`Signature` and `ConfirmSignature` are always present. `UsedPreparer` and
+the `Preparer1`–`Preparer4` field groups are only defined when the form
+being signed is an I-9 and the preparer count has reached that index —
+always null-check before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -337,6 +344,12 @@ _Also accepts `description`, `formHookResult` from [RadioGroupHookFieldProps](..
 <a id="preparerfieldgroup"></a>
 
 Field group exposed for each I-9 preparer/translator on [useSignEmployeeForm](#usesignemployeeform).
+
+**Remarks**
+
+Each preparer (1–4) exposes the same nine sub-fields covering name,
+address, signature, and consent. Render the sub-fields directly on the
+group, e.g. `<Fields.Preparer1.FirstName />`.
 
 | Field | Component |
 | ------ | ------ |

@@ -17,6 +17,14 @@ custom_edit_url: null
 
 Headless hook for creating or updating an employee's profile details — name, email, SSN, date of birth, and self-onboarding preference.
 
+## Remarks
+
+Returns a discriminated union: a loading variant while the underlying
+employee fetch resolves, and a ready variant exposing the form's data,
+pending status, submit action, error handling, and bound `Fields`.
+Self-onboarding is only toggleable when the employee's onboarding status
+allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
+
 ## Example
 
 ```tsx title="Example"
@@ -58,14 +66,6 @@ function EmployeeDetailsReady({ employeeDetails }: { employeeDetails: UseEmploye
   )
 }
 ```
-
-## Remarks
-
-Returns a discriminated union: a loading variant while the underlying
-employee fetch resolves, and a ready variant exposing the form's data,
-pending status, submit action, error handling, and bound `Fields`.
-Self-onboarding is only toggleable when the employee's onboarding status
-allows it; otherwise `form.Fields.SelfOnboarding` is `undefined`.
 
 ## Props
 
@@ -129,6 +129,11 @@ Return type of [useEmployeeDetailsForm](#useemployeedetailsform).
 
 The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsform) once data has loaded.
 
+**Remarks**
+
+Provides the form's `data` snapshot, pending `status`, submit `actions`,
+error handling, and the `form.Fields` map.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit and related actions. |
@@ -153,6 +158,11 @@ The ready-state result returned by [useEmployeeDetailsForm](#useemployeedetailsf
 <a id="employeedetailsformfields"></a>
 
 The Field components exposed by [useEmployeeDetailsForm](#useemployeedetailsform) as `form.Fields`.
+
+**Remarks**
+
+Each entry is a component bound to a specific form field. `SelfOnboarding`
+may be `undefined` when the field is not toggleable.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |

@@ -20,6 +20,13 @@ The set of questions is driven by the API response per state, so
 `form.Fields` is an array of state groups with discriminated, render-ready
 `Field` components rather than a fixed named object.
 
+## Remarks
+
+The state-tax record(s) are created automatically with the employee, so this
+hook is always in update mode. When the form has no states with submittable
+answers (e.g. an employee in a no-income-tax state), submit resolves with
+the existing record list without making a network request.
+
 ## Example
 
 ```tsx title="Example"
@@ -71,13 +78,6 @@ function StateTaxesFormReady({
   )
 }
 ```
-
-## Remarks
-
-The state-tax record(s) are created automatically with the employee, so this
-hook is always in update mode. When the form has no states with submittable
-answers (e.g. an employee in a no-income-tax state), submit resolves with
-the existing record list without making a network request.
 
 ## Props
 
@@ -431,18 +431,18 @@ form schema.
 
 Validation error codes produced by the [useEmployeeStateTaxesForm](#useemployeestatetaxesform) schema.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` |
-
 #### Remarks
 
 Use these constants as the keys in a field's `validationMessages` prop to
 map an error code to a user-facing message. The state-taxes form surfaces
 only a single error code: every required field that is empty emits
 `REQUIRED`.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 

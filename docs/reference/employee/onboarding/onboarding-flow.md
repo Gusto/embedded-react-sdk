@@ -14,6 +14,25 @@ custom_edit_url: null
 
 Guided flow to onboard multiple employees, one at a time.
 
+## Remarks
+
+Renders a multi-step experience that collects every piece of information
+required to add an employee to payroll. Begins on the employee list and
+transitions into the onboarding execution flow when "Add employee" or a
+row's "Edit"/"Review" action is invoked; returning from the execution flow
+surfaces the list again. The flow is driven by an internal state machine
+and wraps each step in error and suspense boundaries.
+
+The per-employee steps live in [OnboardingExecutionFlow](onboarding-execution-flow.md), which is also
+exported as a standalone block — along with each individual step — for
+composing a custom workflow when this orchestration is the wrong fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
+
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
+payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -34,25 +53,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Renders a multi-step experience that collects every piece of information
-required to add an employee to payroll. Begins on the employee list and
-transitions into the onboarding execution flow when "Add employee" or a
-row's "Edit"/"Review" action is invoked; returning from the execution flow
-surfaces the list again. The flow is driven by an internal state machine
-and wraps each step in error and suspense boundaries.
-
-The per-employee steps live in [OnboardingExecutionFlow](onboarding-execution-flow.md), which is also
-exported as a standalone block — along with each individual step — for
-composing a custom workflow when this orchestration is the wrong fit. See the
-[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
-for how to recompose these blocks into your own flow.
-
-The flow forwards every event emitted by its blocks to `onEvent`;
-see the events table on each block for the full set of events and
-payloads observable from this flow.
-
 ## OnboardingFlowProps
 
 <a id="onboardingflowprops"></a>
@@ -62,7 +62,7 @@ Props for OnboardingFlow.
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
 | `companyId` | `string` | | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues)\> | | Default values for individual flow step components. |
 | `isSelfOnboardingEnabled?` | `boolean` | | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. Defaults to `true`. |
 | `showContinueButton?` | `boolean` | `false` | Controls visibility of the Continue button in the employee list. When `true`, shows a Continue button allowing navigation to the next step. Use this when the employee onboarding flow is embedded as a step within a larger flow (e.g., company onboarding). When `false` (default), hides the Continue button. Use this for standalone employee onboarding where the list is the terminal screen. |

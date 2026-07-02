@@ -17,6 +17,15 @@ custom_edit_url: null
 
 Form hook for creating or updating a company pay schedule.
 
+## Remarks
+
+When `payScheduleId` is supplied the hook loads that schedule and issues an
+update on submit; when omitted it operates in create mode. While both anchor
+date fields are filled in, the hook fetches a live pay period calendar
+preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
+the company's payment configuration and is useful for surfacing UI hints
+about how far ahead the first pay date must be.
+
 ## Example
 
 ```tsx title="Example"
@@ -69,15 +78,6 @@ function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleForm
 }
 ```
 
-## Remarks
-
-When `payScheduleId` is supplied the hook loads that schedule and issues an
-update on submit; when omitted it operates in create mode. While both anchor
-date fields are filled in, the hook fetches a live pay period calendar
-preview exposed on `data.payPeriodPreview`. `data.paymentSpeedDays` reflects
-the company's payment configuration and is useful for surfacing UI hints
-about how far ahead the first pay date must be.
-
 ## Props
 
 ### UsePayScheduleFormProps
@@ -121,6 +121,11 @@ Discriminated union returned by [usePayScheduleForm](#usepayscheduleform).
 
 Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with the
+pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
@@ -148,6 +153,12 @@ Ready-state shape returned by [usePayScheduleForm](#usepayscheduleform) once dat
 <a id="payscheduleformfields"></a>
 
 Pre-bound field components exposed on `usePayScheduleForm().form.Fields`.
+
+**Remarks**
+
+`CustomTwicePerMonth`, `Day1`, and `Day2` are conditionally `undefined` based
+on the selected frequency and twice-per-month strategy — always null-check them
+before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -416,16 +427,16 @@ Union of validation error code strings emitted by the pay schedule form.
 
 Validation error codes emitted by [usePayScheduleForm](#usepayscheduleform) fields.
 
+#### Remarks
+
+Use these as `validationMessages` keys on the corresponding `Fields.*` components.
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | `DAY_RANGE` | `"DAY_RANGE"` |
 | `REQUIRED` | `"REQUIRED"` |
-
-#### Remarks
-
-Use these as `validationMessages` keys on the corresponding `Fields.*` components.
 
 ***
 

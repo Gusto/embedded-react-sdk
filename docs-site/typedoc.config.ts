@@ -5,6 +5,7 @@ import {
   HOOK_GROUPS,
   COMPONENT_PROP_GROUPS,
   VARIABLE_GROUPS,
+  NAMESPACE_GROUPS,
 } from './typedoc-utils.mjs'
 
 export const baseOptions = {
@@ -16,6 +17,7 @@ export const baseOptions = {
 
   groupOrder: [
     'Domains',
+    ...NAMESPACE_GROUPS,
     'Namespaces',
     ...HOOK_GROUPS,
     ...COMPONENT_GROUPS,
@@ -65,6 +67,10 @@ export const baseOptions = {
   useHTMLAnchors: true,
   validation: { invalidLink: true },
   formatWithPrettier: false,
+
+  // Render @remarks/@example in their authored position (with the comment summary),
+  // ahead of the Type Declaration / Properties table, instead of after it.
+  blockTagsPreserveOrder: ['@remarks', '@example'],
 
   // Custom block tags. `@components` lists the components/hooks a flow composes
   // (rendered as a table by the SDK theme); `@events` documents events separately

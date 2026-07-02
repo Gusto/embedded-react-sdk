@@ -17,33 +17,6 @@ custom_edit_url: null
 
 Headless hook for creating or updating a compensation row on a job — FLSA classification, pay rate, payment unit, effective date, and optional minimum-wage adjustment.
 
-## Example
-
-```tsx title="Example"
-import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
-
-function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
-  const comp = useCompensationForm({ employeeId, jobId })
-  if (comp.isLoading) return null
-
-  const { Fields } = comp.form
-  return (
-    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
-      <SDKFormProvider formHookResult={comp}>
-        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
-        <Fields.Rate label="Compensation amount" />
-        <Fields.PaymentUnit label="Payment unit" />
-        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
-      </SDKFormProvider>
-      {comp.status.willDeleteSecondaryJobs && (
-        <p>Saving will remove this employee's secondary jobs.</p>
-      )}
-      <button type="submit" disabled={comp.status.isPending}>Save</button>
-    </form>
-  )
-}
-```
-
 ## Remarks
 
 Companion hook to `useJobForm`. Jobs and their compensations are separate
@@ -71,6 +44,33 @@ commission-only and owner classifications). When
 `willDeleteSecondaryJobs` is `true` in update mode, the hook also locks
 the `effectiveDate` field (forces to today, renders disabled) until the
 FLSA selection is reverted.
+
+## Example
+
+```tsx title="Example"
+import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+
+function CompensationForm({ employeeId, jobId }: { employeeId: string; jobId: string }) {
+  const comp = useCompensationForm({ employeeId, jobId })
+  if (comp.isLoading) return null
+
+  const { Fields } = comp.form
+  return (
+    <form onSubmit={e => { e.preventDefault(); comp.actions.onSubmit() }}>
+      <SDKFormProvider formHookResult={comp}>
+        {Fields.FlsaStatus && <Fields.FlsaStatus label="Employee type" />}
+        <Fields.Rate label="Compensation amount" />
+        <Fields.PaymentUnit label="Payment unit" />
+        {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+      </SDKFormProvider>
+      {comp.status.willDeleteSecondaryJobs && (
+        <p>Saving will remove this employee's secondary jobs.</p>
+      )}
+      <button type="submit" disabled={comp.status.isPending}>Save</button>
+    </form>
+  )
+}
+```
 
 ## Props
 
@@ -129,6 +129,13 @@ presentational components). Discriminate on `isLoading` to narrow to
 
 Ready-state shape returned by [useCompensationForm](#usecompensationform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the compensation-specific `data`, `status`, `actions`, and `form.Fields`
+shape. Static, entity-derived values live under `data.*`; reactive values
+that flip with form input live under `status.*`.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
@@ -162,6 +169,13 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 <a id="compensationformfields"></a>
 
 Pre-bound field components exposed on `useCompensationForm().form.Fields`.
+
+**Remarks**
+
+Each property is either the field component or `undefined`. A field is
+`undefined` when conditions for rendering it aren't met — see each member
+for its visibility rule. Always null-check conditional fields (e.g.
+`{Fields.FlsaStatus && <Fields.FlsaStatus ... />}`) before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -462,19 +476,6 @@ Union of every error code produced by the [useCompensationForm](#usecompensation
 
 Validation error codes produced by the [useCompensationForm](#usecompensationform) schema.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `EFFECTIVE_DATE_BEFORE_HIRE` | `"EFFECTIVE_DATE_BEFORE_HIRE"` |
-| `EFFECTIVE_DATE_BEFORE_MIN` | `"EFFECTIVE_DATE_BEFORE_MIN"` |
-| `PAYMENT_UNIT_COMMISSION` | `"PAYMENT_UNIT_COMMISSION"` |
-| `PAYMENT_UNIT_OWNER` | `"PAYMENT_UNIT_OWNER"` |
-| `RATE_COMMISSION_ZERO` | `"RATE_COMMISSION_ZERO"` |
-| `RATE_EXEMPT_THRESHOLD` | `"RATE_EXEMPT_THRESHOLD"` |
-| `RATE_MINIMUM` | `"RATE_MINIMUM"` |
-| `REQUIRED` | `"REQUIRED"` |
-
 #### Remarks
 
 Use these constants as the keys in a field's `validationMessages` prop to
@@ -505,6 +506,19 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
   }}
 />
 ```
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `EFFECTIVE_DATE_BEFORE_HIRE` | `"EFFECTIVE_DATE_BEFORE_HIRE"` |
+| `EFFECTIVE_DATE_BEFORE_MIN` | `"EFFECTIVE_DATE_BEFORE_MIN"` |
+| `PAYMENT_UNIT_COMMISSION` | `"PAYMENT_UNIT_COMMISSION"` |
+| `PAYMENT_UNIT_OWNER` | `"PAYMENT_UNIT_OWNER"` |
+| `RATE_COMMISSION_ZERO` | `"RATE_COMMISSION_ZERO"` |
+| `RATE_EXEMPT_THRESHOLD` | `"RATE_EXEMPT_THRESHOLD"` |
+| `RATE_MINIMUM` | `"RATE_MINIMUM"` |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 

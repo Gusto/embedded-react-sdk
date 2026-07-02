@@ -17,6 +17,14 @@ custom_edit_url: null
 
 Headless React Hook Form hook for updating an employee's payment method.
 
+## Remarks
+
+Switches between Direct Deposit and Check. Always operates in update mode —
+every employee has a payment method, defaulting to Check. Switching to Check
+sends a minimal request body; switching to or staying on Direct Deposit
+preserves the existing splits and version so split allocations are not lost
+when only the type changes.
+
 ## Example
 
 ```tsx title="Example"
@@ -53,14 +61,6 @@ function PaymentMethodScreen({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Switches between Direct Deposit and Check. Always operates in update mode —
-every employee has a payment method, defaulting to Check. Switching to Check
-sends a minimal request body; switching to or staying on Direct Deposit
-preserves the existing splits and version so split allocations are not lost
-when only the type changes.
 
 ## Props
 

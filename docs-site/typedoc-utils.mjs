@@ -8,4 +8,7 @@ export const HOOK_GROUPS = ['Form Hooks', 'Data Hooks', 'Utility Hooks', 'Hooks'
 export const COMPONENT_PROP_GROUPS = ['Component Props', 'Fields', 'Utility Types']
 
 /** Valid @group names for exported variable and type constants, in order they should be displayed in docs */
-export const VARIABLE_GROUPS = ['Events']
+export const VARIABLE_GROUPS = ['Event names', 'Utility types']
+
+/** Valid @group names for namespace exports, in order they should be displayed in docs */
+export const NAMESPACE_GROUPS = ['Component namespaces']
