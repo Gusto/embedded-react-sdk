@@ -1742,6 +1742,8 @@ declare namespace ContractorOnboarding {
         OnboardingFlow_3 as OnboardingFlow,
         OnboardingFlowProps_3 as OnboardingFlowProps,
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
+        SelfOnboardingFlow_2 as SelfOnboardingFlow,
+        SelfOnboardingFlowProps_2 as SelfOnboardingFlowProps,
         Landing_2 as Landing,
         LandingProps_2 as LandingProps,
         OnboardingSummary_2 as OnboardingSummary,
@@ -4854,10 +4856,19 @@ export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
 
 // @public
+const SelfOnboardingFlow_2: (input: SelfOnboardingFlowProps_2) => JSX;
+
+// @public
 interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
     companyId: string;
     employeeId: string;
     withEmployeeI9?: boolean;
+}
+
+// @public
+interface SelfOnboardingFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+    contractorId: string;
 }
 
 // @public
