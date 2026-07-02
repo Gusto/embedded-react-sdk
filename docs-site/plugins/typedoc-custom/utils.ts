@@ -421,8 +421,6 @@ export function pageTitle(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
 
   if (isDomainHub(decl)) return decl.name
-  if (decl.name === CUSTOM_GROUPS.hooks) return CUSTOM_GROUPS.hooks
-  if (decl.name === CUSTOM_GROUPS.blockComponents) return 'Sub-components'
 
   return decl.name
 }

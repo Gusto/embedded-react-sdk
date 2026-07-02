@@ -1518,14 +1518,6 @@ describe('pageTitle', () => {
     expect(pageTitle(page)).toBe('DashboardFlow')
   })
 
-  it('returns "Sub-components" for a sub-components page', () => {
-    const page = makePage(
-      new DeclarationReflection('Block components', ReflectionKind.Namespace),
-      'employee/management/blocks.md',
-    )
-    expect(pageTitle(page)).toBe('Sub-components')
-  })
-
   it('returns the namespace name for a regular namespace page', () => {
     const page = makePage(
       new DeclarationReflection('Payroll', ReflectionKind.Namespace),
