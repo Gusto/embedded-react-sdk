@@ -17,6 +17,7 @@ custom_edit_url: null
 | Component | Description |
 | --------- | ----------- |
 | [OnboardingFlow](onboarding-flow.md) | Guided flow for admins to onboard a contractor to the company. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Guided flow for contractors to complete their own onboarding. |
 
 ## 🧩 Blocks
 
@@ -26,8 +27,10 @@ custom_edit_url: null
 | [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
 | [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
 | [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
+| [DocumentSigner](blocks.md#documentsigner) | Contractor onboarding step for reading and signing required contractor documents. |
 | [DocumentsList](blocks.md#documentslist) | Lists a contractor's documents and lets the contractor open each one for signing. |
 | [Landing](blocks.md#landing) | Landing page for the contractor self-onboarding flow. Displays a welcome message and the list of onboarding steps the contractor needs to complete. |
 | [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
 | [OnboardingSummary](blocks.md#onboardingsummary) | Confirmation screen shown at the end of the contractor self-onboarding flow. Lets the contractor know their information has been submitted and emits `contractor/selfOnboarding/done` when they acknowledge it. |
 | [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [SignatureForm](blocks.md#signatureform) | Standalone form for signing an individual contractor document (W-9). |

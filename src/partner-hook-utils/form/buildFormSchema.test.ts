@@ -584,12 +584,70 @@ describe('buildFormSchema', () => {
         mode: 'create',
         optionalFieldsToRequire: {
           create: ['dependent'],
-        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
+        },
       })
 
       const result = schema.safeParse({ toggle: false, dependent: '' })
       expect(result.success).toBe(false)
       expect(getErrorFields(result)).toContain('dependent')
+    })
+  })
+
+  describe('promotable predicate fields', () => {
+    const fieldValidators = {
+      toggle: z.boolean(),
+      dependent: z.string(),
+    }
+
+    const requiredFieldsConfig = {
+      dependent: (data: { toggle: boolean }) => data.toggle,
+    } as const
+
+    it('a predicate field is assignable to optionalFieldsToRequire without a cast', () => {
+      // Type-level proof that the framework exposes predicate ("sometimes")
+      // fields as promotable. If OptionalOnCreate/OptionalOnUpdate stopped
+      // including predicate rules, this annotation would fail to compile.
+      const optionalFieldsToRequire: OptionalFieldsToRequire<typeof requiredFieldsConfig> = {
+        create: ['dependent'],
+        update: ['dependent'],
+      }
+
+      expect(optionalFieldsToRequire.create).toContain('dependent')
+    })
+
+    it('promoting a predicate field makes it required regardless of the predicate', () => {
+      const [schema, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        optionalFieldsToRequire: { create: ['dependent'] },
+      })
+
+      const toggleOff = schema.safeParse({ toggle: false, dependent: '' })
+      expect(toggleOff.success).toBe(false)
+      expect(getErrorFields(toggleOff)).toContain('dependent')
+
+      const toggleOn = schema.safeParse({ toggle: true, dependent: '' })
+      expect(toggleOn.success).toBe(false)
+      expect(getErrorFields(toggleOn)).toContain('dependent')
+
+      expect(getFieldsMetadata({ toggle: false }).dependent.isRequired).toBe(true)
+    })
+
+    it('an unpromoted predicate field stays conditional', () => {
+      const [schema, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
+
+      const toggleOff = schema.safeParse({ toggle: false, dependent: '' })
+      expect(toggleOff.success).toBe(true)
+
+      const toggleOn = schema.safeParse({ toggle: true, dependent: '' })
+      expect(toggleOn.success).toBe(false)
+      expect(getErrorFields(toggleOn)).toContain('dependent')
+
+      expect(getFieldsMetadata({ toggle: false }).dependent.isRequired).toBe(false)
+      expect(getFieldsMetadata({ toggle: true }).dependent.isRequired).toBe(true)
     })
   })
 
@@ -759,7 +817,7 @@ describe('buildFormSchema', () => {
         mode: 'create',
         optionalFieldsToRequire: {
           create: ['minimumWageId'],
-        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
+        },
       })
       const metadata = getFieldsMetadata({ adjustForMinimumWage: false })
 
@@ -867,9 +925,7 @@ describe('buildFormSchema', () => {
           mode: 'create',
           optionalFieldsToRequire: {
             create: ['dependent'],
-          } as unknown as OptionalFieldsToRequire<{
-            dependent: (data: Record<string, unknown>) => boolean
-          }>,
+          },
         },
       )
       expect(predicateDeps).toEqual([])

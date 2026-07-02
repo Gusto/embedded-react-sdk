@@ -146,7 +146,6 @@ const EmployeeDetailsErrorCodes = {
   INVALID_NAME: 'INVALID_NAME',
   INVALID_EMAIL: 'INVALID_EMAIL',
   INVALID_SSN: 'INVALID_SSN',
-  EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
 } as const
 ```
 
@@ -238,20 +237,19 @@ Text input for the employee's last name. Validates that the value contains only 
 
 Text input for the employee's personal email address.
 
-| Prop                 | Type                                                                                      | Required |
-| -------------------- | ----------------------------------------------------------------------------------------- | -------- |
-| `label`              | `string`                                                                                  | Yes      |
-| `description`        | `ReactNode`                                                                               | No       |
-| `validationMessages` | `{ REQUIRED: string, INVALID_EMAIL: string, EMAIL_REQUIRED_FOR_SELF_ONBOARDING: string }` | No       |
-| `FieldComponent`     | `ComponentType<TextInputProps>`                                                           | No       |
+| Prop                 | Type                                          | Required |
+| -------------------- | --------------------------------------------- | -------- |
+| `label`              | `string`                                      | Yes      |
+| `description`        | `ReactNode`                                   | No       |
+| `validationMessages` | `{ REQUIRED: string, INVALID_EMAIL: string }` | No       |
+| `FieldComponent`     | `ComponentType<TextInputProps>`               | No       |
 
 **Validation codes:**
 
-| Code                                 | When it triggers                                                 |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| `REQUIRED`                           | Field is empty and marked required via `requiredFields`          |
-| `INVALID_EMAIL`                      | Non-empty value that is not a valid email format                 |
-| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | Self-onboarding is enabled but email is empty (create mode only) |
+| Code            | When it triggers                                                                                                 |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `REQUIRED`      | Email is empty and required — either self-onboarding is enabled or it was promoted via `optionalFieldsToRequire` |
+| `INVALID_EMAIL` | Non-empty value that is not a valid email format                                                                 |
 
 ```tsx
 <Fields.Email
@@ -260,7 +258,6 @@ Text input for the employee's personal email address.
   validationMessages={{
     REQUIRED: 'Email is required',
     INVALID_EMAIL: 'Enter a valid email address',
-    EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
   }}
 />
 ```
@@ -466,7 +463,6 @@ function EmployeeDetailsFormReady({
           validationMessages={{
             REQUIRED: 'Email is required',
             INVALID_EMAIL: 'Enter a valid email address',
-            EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
           }}
         />
 
@@ -570,7 +566,6 @@ function EmployeeDetailsFormReady({
         validationMessages={{
           REQUIRED: 'Email is required',
           INVALID_EMAIL: 'Enter a valid email address',
-          EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
         }}
       />
 

@@ -329,6 +329,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/contractors/:contractorUuid/onboarding_status` |
 |  | PUT | `/v1/contractors/:contractorUuid/onboarding_status` |
 | **ContractorOnboarding.DocumentsList** | GET | `/v1/contractors/:contractorUuid/documents` |
+| **ContractorOnboarding.SignatureForm** | GET | `/v1/documents/:documentUuid` |
+|  | GET | `/v1/documents/:documentUuid/pdf` |
+|  | PUT | `/v1/documents/:documentUuid/sign` |
 
 ## ContractorManagement components
 
@@ -360,6 +363,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **CompanyOnboarding.OnboardingFlow** | CompanyOnboarding.BankAccount, CompanyOnboarding.DocumentSigner, CompanyOnboarding.FederalTaxes, CompanyOnboarding.Industry, CompanyOnboarding.Locations, CompanyOnboarding.OnboardingOverview, CompanyOnboarding.PaySchedule, CompanyOnboarding.StateTaxes, EmployeeOnboarding.OnboardingFlow |
 | **ContractorManagement.PaymentFlow** | ContractorManagement.CreatePayment, ContractorManagement.PaymentHistory, ContractorManagement.PaymentStatement, ContractorManagement.PaymentSummary, ContractorManagement.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
+| **ContractorOnboarding.SelfOnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorProfile, ContractorOnboarding.DocumentSigner, ContractorOnboarding.Landing, ContractorOnboarding.OnboardingSummary, ContractorOnboarding.PaymentMethod |
 | **EmployeeManagement.DashboardFlow** | EmployeeManagement.Compensation, EmployeeManagement.Deductions, EmployeeManagement.Documents, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeManagement.TerminationFlow** | EmployeeManagement.TerminateEmployee, EmployeeManagement.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |

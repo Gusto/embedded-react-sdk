@@ -542,7 +542,6 @@ import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
   validationMessages={{
     REQUIRED: 'Email is required',
     INVALID_EMAIL: 'Please enter a valid email address',
-    EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
   }}
 />
 ```

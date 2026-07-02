@@ -76,11 +76,11 @@ Confirm clean before reporting.
 
 Before auditing a specific symbol type, read the relevant guide:
 
-| Symbol type | Guide                                |
-| ----------- | ------------------------------------ |
-| Hooks       | `.claude/tsdoc-guides/hooks.md`      |
-| Components  | `.claude/tsdoc-guides/components.md` |
-| Flows       | `.claude/tsdoc-guides/flows.md`      |
+| Symbol type | Guide                              |
+| ----------- | ---------------------------------- |
+| Hooks       | `.claude/doc-guides/hooks.md`      |
+| Components  | `.claude/doc-guides/components.md` |
+| Flows       | `.claude/doc-guides/flows.md`      |
 
 ## ESLint compliance
 
