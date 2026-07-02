@@ -21,191 +21,6 @@ Per-namespace SDK i18n keys, each namespace browsable as its own reference
 Override defaults through a component's `dictionary` prop or the global
 `GustoProvider` dictionary.
 
-## Utility types
-
-<a id="deeppartial"></a>
-
-### DeepPartial
-
-> **DeepPartial**\<`T`\> = `{ [P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P] }`
-
-Recursively makes every property of `T` optional, descending into nested objects and arrays.
-
-#### Type Parameters
-
-| Type Parameter |
-| ------ |
-| `T` |
-
-***
-
-<a id="globalresourcedictionary"></a>
-
-### GlobalResourceDictionary
-
-Translation overrides for **every** SDK namespace at once, keyed by language then
-namespace — the global dictionary accepted by [GustoProvider](../index.md#gustoprovider). Each namespace
-maps to a deep-partial of its keys (see [Resources](#resources)); override only what you need.
-For a single component's namespace, use [ResourceDictionary](#resourcedictionary) instead.
-
-#### Extends
-
-- `Record`\<[`SupportedLanguages`](#supportedlanguages), `Partial`\<`{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }`\>\>
-
-#### Properties
-
-| Property |
-| ------ |
-| <a id="property-globalresourcedictionaryen"></a> `en` |
-
-***
-
-<a id="resourcedictionary"></a>
-
-### ResourceDictionary
-
-> **ResourceDictionary**\<`K`\> = `K` *extends* keyof [`Resources`](#resources) ? `Record`\<[`SupportedLanguages`](#supportedlanguages), [`DeepPartial`](#deeppartial)\<[`Resources`](#resources)\[`K`\]\>\> : [`GlobalResourceDictionary`](#globalresourcedictionary)
-
-Translation overrides for a single resource namespace `K`, keyed by language (e.g.
-`ResourceDictionary<'Company.Addresses'>`). With no `K`, resolves to
-[GlobalResourceDictionary](#globalresourcedictionary) (all namespaces).
-
-#### Type Parameters
-
-| Type Parameter | Default type |
-| ------ | ------ |
-| `K` *extends* keyof [`Resources`](#resources) \| `undefined` | `undefined` |
-
-***
-
-<a id="resources"></a>
-
-### Resources
-
-Every i18n resource namespace mapped to its keys. `keyof Resources` yields the
-namespace names; `Resources['Company.Addresses']` (or [Translations.CompanyAddresses](#companyaddresses))
-yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary`.
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| <a id="property-resourcescommon"></a> `common` | [`common`](#common) |
-| <a id="property-resourcescompanyaddresses"></a> `Company.Addresses` | [`CompanyAddresses`](#companyaddresses) |
-| <a id="property-resourcescompanyassignsignatory"></a> `Company.AssignSignatory` | [`CompanyAssignSignatory`](#companyassignsignatory) |
-| <a id="property-resourcescompanybankaccount"></a> `Company.BankAccount` | [`CompanyBankAccount`](#companybankaccount) |
-| <a id="property-resourcescompanydocumentlist"></a> `Company.DocumentList` | [`CompanyDocumentList`](#companydocumentlist) |
-| <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
-| <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
-| <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
-| <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
-| <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
-| <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
-| <a id="property-resourcescompanystatetaxes"></a> `Company.StateTaxes` | [`CompanyStateTaxes`](#companystatetaxes) |
-| <a id="property-resourcescompanytimeoffcreatetimeoffpolicy"></a> `Company.TimeOff.CreateTimeOffPolicy` | [`CompanyTimeOffCreateTimeOffPolicy`](#companytimeoffcreatetimeoffpolicy) |
-| <a id="property-resourcescompanytimeoffemployeetable"></a> `Company.TimeOff.EmployeeTable` | [`CompanyTimeOffEmployeeTable`](#companytimeoffemployeetable) |
-| <a id="property-resourcescompanytimeoffholidaypolicy"></a> `Company.TimeOff.HolidayPolicy` | [`CompanyTimeOffHolidayPolicy`](#companytimeoffholidaypolicy) |
-| <a id="property-resourcescompanytimeoffpolicydetail"></a> `Company.TimeOff.PolicyDetail` | [`CompanyTimeOffPolicyDetail`](#companytimeoffpolicydetail) |
-| <a id="property-resourcescompanytimeoffselectemployees"></a> `Company.TimeOff.SelectEmployees` | [`CompanyTimeOffSelectEmployees`](#companytimeoffselectemployees) |
-| <a id="property-resourcescompanytimeoffselectpolicytype"></a> `Company.TimeOff.SelectPolicyType` | [`CompanyTimeOffSelectPolicyType`](#companytimeoffselectpolicytype) |
-| <a id="property-resourcescompanytimeofftimeoffpolicies"></a> `Company.TimeOff.TimeOffPolicies` | [`CompanyTimeOffTimeOffPolicies`](#companytimeofftimeoffpolicies) |
-| <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
-| <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
-| <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
-| <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
-| <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
-| <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
-| <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
-| <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
-| <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
-| <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
-| <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
-| <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
-| <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
-| <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
-| <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
-| <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
-| <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |
-| <a id="property-resourcesemployeebankformbody"></a> `Employee.BankFormBody` | [`EmployeeBankFormBody`](#employeebankformbody) |
-| <a id="property-resourcesemployeecompensation"></a> `Employee.Compensation` | [`EmployeeCompensation`](#employeecompensation) |
-| <a id="property-resourcesemployeedashboard"></a> `Employee.Dashboard` | [`EmployeeDashboard`](#employeedashboard) |
-| <a id="property-resourcesemployeedeductions"></a> `Employee.Deductions` | [`EmployeeDeductions`](#employeedeductions) |
-| <a id="property-resourcesemployeedeductionsform"></a> `Employee.DeductionsForm` | [`EmployeeDeductionsForm`](#employeedeductionsform) |
-| <a id="property-resourcesemployeedocumentmanager"></a> `Employee.DocumentManager` | [`EmployeeDocumentManager`](#employeedocumentmanager) |
-| <a id="property-resourcesemployeedocumentsigner"></a> `Employee.DocumentSigner` | [`EmployeeDocumentSigner`](#employeedocumentsigner) |
-| <a id="property-resourcesemployeeemployeedocuments"></a> `Employee.EmployeeDocuments` | [`EmployeeEmployeeDocuments`](#employeeemployeedocuments) |
-| <a id="property-resourcesemployeeemployeelist"></a> `Employee.EmployeeList` | [`EmployeeEmployeeList`](#employeeemployeelist) |
-| <a id="property-resourcesemployeeemploymenteligibility"></a> `Employee.EmploymentEligibility` | [`EmployeeEmploymentEligibility`](#employeeemploymenteligibility) |
-| <a id="property-resourcesemployeefederaltaxes"></a> `Employee.FederalTaxes` | [`EmployeeFederalTaxes`](#employeefederaltaxes) |
-| <a id="property-resourcesemployeefederaltaxesview"></a> `Employee.FederalTaxesView` | [`EmployeeFederalTaxesView`](#employeefederaltaxesview) |
-| <a id="property-resourcesemployeehomeaddress"></a> `Employee.HomeAddress` | [`EmployeeHomeAddress`](#employeehomeaddress) |
-| <a id="property-resourcesemployeei9signatureform"></a> `Employee.I9SignatureForm` | [`EmployeeI9SignatureForm`](#employeei9signatureform) |
-| <a id="property-resourcesemployeelanding"></a> `Employee.Landing` | [`EmployeeLanding`](#employeelanding) |
-| <a id="property-resourcesemployeemanagementcompensation"></a> `Employee.Management.Compensation` | [`EmployeeManagementCompensation`](#employeemanagementcompensation) |
-| <a id="property-resourcesemployeemanagementdeductions"></a> `Employee.Management.Deductions` | [`EmployeeManagementDeductions`](#employeemanagementdeductions) |
-| <a id="property-resourcesemployeemanagementdocuments"></a> `Employee.Management.Documents` | [`EmployeeManagementDocuments`](#employeemanagementdocuments) |
-| <a id="property-resourcesemployeemanagementfederaltaxes"></a> `Employee.Management.FederalTaxes` | [`EmployeeManagementFederalTaxes`](#employeemanagementfederaltaxes) |
-| <a id="property-resourcesemployeemanagementhomeaddress"></a> `Employee.Management.HomeAddress` | [`EmployeeManagementHomeAddress`](#employeemanagementhomeaddress) |
-| <a id="property-resourcesemployeemanagementpaymentmethod"></a> `Employee.Management.PaymentMethod` | [`EmployeeManagementPaymentMethod`](#employeemanagementpaymentmethod) |
-| <a id="property-resourcesemployeemanagementpaymentmethodbankform"></a> `Employee.Management.PaymentMethodBankForm` | [`EmployeeManagementPaymentMethodBankForm`](#employeemanagementpaymentmethodbankform) |
-| <a id="property-resourcesemployeemanagementpaymentmethodsplitform"></a> `Employee.Management.PaymentMethodSplitForm` | [`EmployeeManagementPaymentMethodSplitForm`](#employeemanagementpaymentmethodsplitform) |
-| <a id="property-resourcesemployeemanagementpaystubs"></a> `Employee.Management.Paystubs` | [`EmployeeManagementPaystubs`](#employeemanagementpaystubs) |
-| <a id="property-resourcesemployeemanagementprofile"></a> `Employee.Management.Profile` | [`EmployeeManagementProfile`](#employeemanagementprofile) |
-| <a id="property-resourcesemployeemanagementstatetaxes"></a> `Employee.Management.StateTaxes` | [`EmployeeManagementStateTaxes`](#employeemanagementstatetaxes) |
-| <a id="property-resourcesemployeemanagementworkaddress"></a> `Employee.Management.WorkAddress` | [`EmployeeManagementWorkAddress`](#employeemanagementworkaddress) |
-| <a id="property-resourcesemployeemanagementemployeelist"></a> `Employee.ManagementEmployeeList` | [`EmployeeManagementEmployeeList`](#employeemanagementemployeelist) |
-| <a id="property-resourcesemployeeonboardingsummary"></a> `Employee.OnboardingSummary` | [`EmployeeOnboardingSummary`](#employeeonboardingsummary) |
-| <a id="property-resourcesemployeepaymentmethod"></a> `Employee.PaymentMethod` | [`EmployeePaymentMethod`](#employeepaymentmethod) |
-| <a id="property-resourcesemployeepayschedules"></a> `Employee.PaySchedules` | [`EmployeePaySchedules`](#employeepayschedules) |
-| <a id="property-resourcesemployeeprofile"></a> `Employee.Profile` | [`EmployeeProfile`](#employeeprofile) |
-| <a id="property-resourcesemployeesplitpaycheck"></a> `Employee.SplitPaycheck` | [`EmployeeSplitPaycheck`](#employeesplitpaycheck) |
-| <a id="property-resourcesemployeesplitpaymentsformbody"></a> `Employee.SplitPaymentsFormBody` | [`EmployeeSplitPaymentsFormBody`](#employeesplitpaymentsformbody) |
-| <a id="property-resourcesemployeestatetaxes"></a> `Employee.StateTaxes` | [`EmployeeStateTaxes`](#employeestatetaxes) |
-| <a id="property-resourcesemployeestatetaxesview"></a> `Employee.StateTaxesView` | [`EmployeeStateTaxesView`](#employeestatetaxesview) |
-| <a id="property-resourcesemployeeterminationsterminateemployee"></a> `Employee.Terminations.TerminateEmployee` | [`EmployeeTerminationsTerminateEmployee`](#employeeterminationsterminateemployee) |
-| <a id="property-resourcesemployeeterminationsterminationflow"></a> `Employee.Terminations.TerminationFlow` | [`EmployeeTerminationsTerminationFlow`](#employeeterminationsterminationflow) |
-| <a id="property-resourcesemployeeterminationsterminationsummary"></a> `Employee.Terminations.TerminationSummary` | [`EmployeeTerminationsTerminationSummary`](#employeeterminationsterminationsummary) |
-| <a id="property-resourcesinformationrequests"></a> `InformationRequests` | [`InformationRequests`](#informationrequests) |
-| <a id="property-resourcesinformationrequestsinformationrequestform"></a> `InformationRequests.InformationRequestForm` | [`InformationRequestsInformationRequestForm`](#informationrequestsinformationrequestform) |
-| <a id="property-resourcesinformationrequestsinformationrequestlist"></a> `InformationRequests.InformationRequestList` | [`InformationRequestsInformationRequestList`](#informationrequestsinformationrequestlist) |
-| <a id="property-resourcespayrollcommon"></a> `Payroll.Common` | [`PayrollCommon`](#payrollcommon) |
-| <a id="property-resourcespayrollconfirmwiredetailsbanner"></a> `Payroll.ConfirmWireDetailsBanner` | [`PayrollConfirmWireDetailsBanner`](#payrollconfirmwiredetailsbanner) |
-| <a id="property-resourcespayrollconfirmwiredetailsform"></a> `Payroll.ConfirmWireDetailsForm` | [`PayrollConfirmWireDetailsForm`](#payrollconfirmwiredetailsform) |
-| <a id="property-resourcespayrolldismissal"></a> `Payroll.Dismissal` | [`PayrollDismissal`](#payrolldismissal) |
-| <a id="property-resourcespayrollemployeeselection"></a> `Payroll.EmployeeSelection` | [`PayrollEmployeeSelection`](#payrollemployeeselection) |
-| <a id="property-resourcespayrollgrossupmodal"></a> `Payroll.GrossUpModal` | [`PayrollGrossUpModal`](#payrollgrossupmodal) |
-| <a id="property-resourcespayrolloffcycle"></a> `Payroll.OffCycle` | [`PayrollOffCycle`](#payrolloffcycle) |
-| <a id="property-resourcespayrolloffcyclecreation"></a> `Payroll.OffCycleCreation` | [`PayrollOffCycleCreation`](#payrolloffcyclecreation) |
-| <a id="property-resourcespayrolloffcycledeductionssetting"></a> `Payroll.OffCycleDeductionsSetting` | [`PayrollOffCycleDeductionsSetting`](#payrolloffcycledeductionssetting) |
-| <a id="property-resourcespayrolloffcyclepayperioddateform"></a> `Payroll.OffCyclePayPeriodDateForm` | [`PayrollOffCyclePayPeriodDateForm`](#payrolloffcyclepayperioddateform) |
-| <a id="property-resourcespayrolloffcyclereasonselection"></a> `Payroll.OffCycleReasonSelection` | [`PayrollOffCycleReasonSelection`](#payrolloffcyclereasonselection) |
-| <a id="property-resourcespayrolloffcycletaxwithholding"></a> `Payroll.OffCycleTaxWithholding` | [`PayrollOffCycleTaxWithholding`](#payrolloffcycletaxwithholding) |
-| <a id="property-resourcespayrollpayrollblocker"></a> `Payroll.PayrollBlocker` | [`PayrollPayrollBlocker`](#payrollpayrollblocker) |
-| <a id="property-resourcespayrollpayrollconfiguration"></a> `Payroll.PayrollConfiguration` | [`PayrollPayrollConfiguration`](#payrollpayrollconfiguration) |
-| <a id="property-resourcespayrollpayrolleditemployee"></a> `Payroll.PayrollEditEmployee` | [`PayrollPayrollEditEmployee`](#payrollpayrolleditemployee) |
-| <a id="property-resourcespayrollpayrollflow"></a> `Payroll.PayrollFlow` | [`PayrollPayrollFlow`](#payrollpayrollflow) |
-| <a id="property-resourcespayrollpayrollhistory"></a> `Payroll.PayrollHistory` | [`PayrollPayrollHistory`](#payrollpayrollhistory) |
-| <a id="property-resourcespayrollpayrolllanding"></a> `Payroll.PayrollLanding` | [`PayrollPayrollLanding`](#payrollpayrolllanding) |
-| <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
-| <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
-| <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
-| <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
-| <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
-| <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
-| <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
-| <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |
-| <a id="property-resourcespayrollwireinstructions"></a> `Payroll.WireInstructions` | [`PayrollWireInstructions`](#payrollwireinstructions) |
-
-***
-
-<a id="supportedlanguages"></a>
-
-### SupportedLanguages
-
-> **SupportedLanguages** = `"en"`
-
-Language codes the SDK ships translations for; the top-level keys of [ResourceDictionary](#resourcedictionary).
-
 ## Translation namespaces
 
 <a id="common"></a>
@@ -4989,3 +4804,188 @@ Translation keys for the `Payroll.WireInstructions` i18n namespace.
 | <a id="property-payrollwireinstructionsselectlabelpayroll"></a> `selectLabelPayroll` | `"Payroll for {{payrollRange}}"` |
 | <a id="property-payrollwireinstructionssubtitle"></a> `subtitle` | `"This info tells your bank how much and where to send the wire transfer. Make sure to send a wire transfer—we will not accept ACH transfers. Afterwards, confirm below that you have completed this step."` |
 | <a id="property-payrollwireinstructionstitle"></a> `title` | `"Wire instructions"` |
+
+## Utility types
+
+<a id="deeppartial"></a>
+
+### DeepPartial
+
+> **DeepPartial**\<`T`\> = `{ [P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P] }`
+
+Recursively makes every property of `T` optional, descending into nested objects and arrays.
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+***
+
+<a id="globalresourcedictionary"></a>
+
+### GlobalResourceDictionary
+
+Translation overrides for **every** SDK namespace at once, keyed by language then
+namespace — the global dictionary accepted by [GustoProvider](../index.md#gustoprovider). Each namespace
+maps to a deep-partial of its keys (see [Resources](#resources)); override only what you need.
+For a single component's namespace, use [ResourceDictionary](#resourcedictionary) instead.
+
+#### Extends
+
+- `Record`\<[`SupportedLanguages`](#supportedlanguages), `Partial`\<`{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }`\>\>
+
+#### Properties
+
+| Property |
+| ------ |
+| <a id="property-globalresourcedictionaryen"></a> `en` |
+
+***
+
+<a id="resourcedictionary"></a>
+
+### ResourceDictionary
+
+> **ResourceDictionary**\<`K`\> = `K` *extends* keyof [`Resources`](#resources) ? `Record`\<[`SupportedLanguages`](#supportedlanguages), [`DeepPartial`](#deeppartial)\<[`Resources`](#resources)\[`K`\]\>\> : [`GlobalResourceDictionary`](#globalresourcedictionary)
+
+Translation overrides for a single resource namespace `K`, keyed by language (e.g.
+`ResourceDictionary<'Company.Addresses'>`). With no `K`, resolves to
+[GlobalResourceDictionary](#globalresourcedictionary) (all namespaces).
+
+#### Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `K` *extends* keyof [`Resources`](#resources) \| `undefined` | `undefined` |
+
+***
+
+<a id="resources"></a>
+
+### Resources
+
+Every i18n resource namespace mapped to its keys. `keyof Resources` yields the
+namespace names; `Resources['Company.Addresses']` (or [Translations.CompanyAddresses](#companyaddresses))
+yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary`.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-resourcescommon"></a> `common` | [`common`](#common) |
+| <a id="property-resourcescompanyaddresses"></a> `Company.Addresses` | [`CompanyAddresses`](#companyaddresses) |
+| <a id="property-resourcescompanyassignsignatory"></a> `Company.AssignSignatory` | [`CompanyAssignSignatory`](#companyassignsignatory) |
+| <a id="property-resourcescompanybankaccount"></a> `Company.BankAccount` | [`CompanyBankAccount`](#companybankaccount) |
+| <a id="property-resourcescompanydocumentlist"></a> `Company.DocumentList` | [`CompanyDocumentList`](#companydocumentlist) |
+| <a id="property-resourcescompanyfederaltaxes"></a> `Company.FederalTaxes` | [`CompanyFederalTaxes`](#companyfederaltaxes) |
+| <a id="property-resourcescompanyindustry"></a> `Company.Industry` | [`CompanyIndustry`](#companyindustry) |
+| <a id="property-resourcescompanylocations"></a> `Company.Locations` | [`CompanyLocations`](#companylocations) |
+| <a id="property-resourcescompanyonboardingoverview"></a> `Company.OnboardingOverview` | [`CompanyOnboardingOverview`](#companyonboardingoverview) |
+| <a id="property-resourcescompanypayschedule"></a> `Company.PaySchedule` | [`CompanyPaySchedule`](#companypayschedule) |
+| <a id="property-resourcescompanysignatureform"></a> `Company.SignatureForm` | [`CompanySignatureForm`](#companysignatureform) |
+| <a id="property-resourcescompanystatetaxes"></a> `Company.StateTaxes` | [`CompanyStateTaxes`](#companystatetaxes) |
+| <a id="property-resourcescompanytimeoffcreatetimeoffpolicy"></a> `Company.TimeOff.CreateTimeOffPolicy` | [`CompanyTimeOffCreateTimeOffPolicy`](#companytimeoffcreatetimeoffpolicy) |
+| <a id="property-resourcescompanytimeoffemployeetable"></a> `Company.TimeOff.EmployeeTable` | [`CompanyTimeOffEmployeeTable`](#companytimeoffemployeetable) |
+| <a id="property-resourcescompanytimeoffholidaypolicy"></a> `Company.TimeOff.HolidayPolicy` | [`CompanyTimeOffHolidayPolicy`](#companytimeoffholidaypolicy) |
+| <a id="property-resourcescompanytimeoffpolicydetail"></a> `Company.TimeOff.PolicyDetail` | [`CompanyTimeOffPolicyDetail`](#companytimeoffpolicydetail) |
+| <a id="property-resourcescompanytimeoffselectemployees"></a> `Company.TimeOff.SelectEmployees` | [`CompanyTimeOffSelectEmployees`](#companytimeoffselectemployees) |
+| <a id="property-resourcescompanytimeoffselectpolicytype"></a> `Company.TimeOff.SelectPolicyType` | [`CompanyTimeOffSelectPolicyType`](#companytimeoffselectpolicytype) |
+| <a id="property-resourcescompanytimeofftimeoffpolicies"></a> `Company.TimeOff.TimeOffPolicies` | [`CompanyTimeOffTimeOffPolicies`](#companytimeofftimeoffpolicies) |
+| <a id="property-resourcescompanytimeofftimeoffpolicydetails"></a> `Company.TimeOff.TimeOffPolicyDetails` | [`CompanyTimeOffTimeOffPolicyDetails`](#companytimeofftimeoffpolicydetails) |
+| <a id="property-resourcescompanytimeofftimeoffrequests"></a> `Company.TimeOff.TimeOffRequests` | [`CompanyTimeOffTimeOffRequests`](#companytimeofftimeoffrequests) |
+| <a id="property-resourcescontractoraddress"></a> `Contractor.Address` | [`ContractorAddress`](#contractoraddress) |
+| <a id="property-resourcescontractorcontractorlist"></a> `Contractor.ContractorList` | [`ContractorContractorList`](#contractorcontractorlist) |
+| <a id="property-resourcescontractordocumentslist"></a> `Contractor.DocumentsList` | [`ContractorDocumentsList`](#contractordocumentslist) |
+| <a id="property-resourcescontractorlanding"></a> `Contractor.Landing` | [`ContractorLanding`](#contractorlanding) |
+| <a id="property-resourcescontractornewhirereport"></a> `Contractor.NewHireReport` | [`ContractorNewHireReport`](#contractornewhirereport) |
+| <a id="property-resourcescontractoronboardingsummary"></a> `Contractor.OnboardingSummary` | [`ContractorOnboardingSummary`](#contractoronboardingsummary) |
+| <a id="property-resourcescontractorpaymentmethod"></a> `Contractor.PaymentMethod` | [`ContractorPaymentMethod`](#contractorpaymentmethod) |
+| <a id="property-resourcescontractorpaymentscreatepayment"></a> `Contractor.Payments.CreatePayment` | [`ContractorPaymentsCreatePayment`](#contractorpaymentscreatepayment) |
+| <a id="property-resourcescontractorpaymentspaymenthistory"></a> `Contractor.Payments.PaymentHistory` | [`ContractorPaymentsPaymentHistory`](#contractorpaymentspaymenthistory) |
+| <a id="property-resourcescontractorpaymentspaymentslist"></a> `Contractor.Payments.PaymentsList` | [`ContractorPaymentsPaymentsList`](#contractorpaymentspaymentslist) |
+| <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
+| <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
+| <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
+| <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |
+| <a id="property-resourcesemployeebankformbody"></a> `Employee.BankFormBody` | [`EmployeeBankFormBody`](#employeebankformbody) |
+| <a id="property-resourcesemployeecompensation"></a> `Employee.Compensation` | [`EmployeeCompensation`](#employeecompensation) |
+| <a id="property-resourcesemployeedashboard"></a> `Employee.Dashboard` | [`EmployeeDashboard`](#employeedashboard) |
+| <a id="property-resourcesemployeedeductions"></a> `Employee.Deductions` | [`EmployeeDeductions`](#employeedeductions) |
+| <a id="property-resourcesemployeedeductionsform"></a> `Employee.DeductionsForm` | [`EmployeeDeductionsForm`](#employeedeductionsform) |
+| <a id="property-resourcesemployeedocumentmanager"></a> `Employee.DocumentManager` | [`EmployeeDocumentManager`](#employeedocumentmanager) |
+| <a id="property-resourcesemployeedocumentsigner"></a> `Employee.DocumentSigner` | [`EmployeeDocumentSigner`](#employeedocumentsigner) |
+| <a id="property-resourcesemployeeemployeedocuments"></a> `Employee.EmployeeDocuments` | [`EmployeeEmployeeDocuments`](#employeeemployeedocuments) |
+| <a id="property-resourcesemployeeemployeelist"></a> `Employee.EmployeeList` | [`EmployeeEmployeeList`](#employeeemployeelist) |
+| <a id="property-resourcesemployeeemploymenteligibility"></a> `Employee.EmploymentEligibility` | [`EmployeeEmploymentEligibility`](#employeeemploymenteligibility) |
+| <a id="property-resourcesemployeefederaltaxes"></a> `Employee.FederalTaxes` | [`EmployeeFederalTaxes`](#employeefederaltaxes) |
+| <a id="property-resourcesemployeefederaltaxesview"></a> `Employee.FederalTaxesView` | [`EmployeeFederalTaxesView`](#employeefederaltaxesview) |
+| <a id="property-resourcesemployeehomeaddress"></a> `Employee.HomeAddress` | [`EmployeeHomeAddress`](#employeehomeaddress) |
+| <a id="property-resourcesemployeei9signatureform"></a> `Employee.I9SignatureForm` | [`EmployeeI9SignatureForm`](#employeei9signatureform) |
+| <a id="property-resourcesemployeelanding"></a> `Employee.Landing` | [`EmployeeLanding`](#employeelanding) |
+| <a id="property-resourcesemployeemanagementcompensation"></a> `Employee.Management.Compensation` | [`EmployeeManagementCompensation`](#employeemanagementcompensation) |
+| <a id="property-resourcesemployeemanagementdeductions"></a> `Employee.Management.Deductions` | [`EmployeeManagementDeductions`](#employeemanagementdeductions) |
+| <a id="property-resourcesemployeemanagementdocuments"></a> `Employee.Management.Documents` | [`EmployeeManagementDocuments`](#employeemanagementdocuments) |
+| <a id="property-resourcesemployeemanagementfederaltaxes"></a> `Employee.Management.FederalTaxes` | [`EmployeeManagementFederalTaxes`](#employeemanagementfederaltaxes) |
+| <a id="property-resourcesemployeemanagementhomeaddress"></a> `Employee.Management.HomeAddress` | [`EmployeeManagementHomeAddress`](#employeemanagementhomeaddress) |
+| <a id="property-resourcesemployeemanagementpaymentmethod"></a> `Employee.Management.PaymentMethod` | [`EmployeeManagementPaymentMethod`](#employeemanagementpaymentmethod) |
+| <a id="property-resourcesemployeemanagementpaymentmethodbankform"></a> `Employee.Management.PaymentMethodBankForm` | [`EmployeeManagementPaymentMethodBankForm`](#employeemanagementpaymentmethodbankform) |
+| <a id="property-resourcesemployeemanagementpaymentmethodsplitform"></a> `Employee.Management.PaymentMethodSplitForm` | [`EmployeeManagementPaymentMethodSplitForm`](#employeemanagementpaymentmethodsplitform) |
+| <a id="property-resourcesemployeemanagementpaystubs"></a> `Employee.Management.Paystubs` | [`EmployeeManagementPaystubs`](#employeemanagementpaystubs) |
+| <a id="property-resourcesemployeemanagementprofile"></a> `Employee.Management.Profile` | [`EmployeeManagementProfile`](#employeemanagementprofile) |
+| <a id="property-resourcesemployeemanagementstatetaxes"></a> `Employee.Management.StateTaxes` | [`EmployeeManagementStateTaxes`](#employeemanagementstatetaxes) |
+| <a id="property-resourcesemployeemanagementworkaddress"></a> `Employee.Management.WorkAddress` | [`EmployeeManagementWorkAddress`](#employeemanagementworkaddress) |
+| <a id="property-resourcesemployeemanagementemployeelist"></a> `Employee.ManagementEmployeeList` | [`EmployeeManagementEmployeeList`](#employeemanagementemployeelist) |
+| <a id="property-resourcesemployeeonboardingsummary"></a> `Employee.OnboardingSummary` | [`EmployeeOnboardingSummary`](#employeeonboardingsummary) |
+| <a id="property-resourcesemployeepaymentmethod"></a> `Employee.PaymentMethod` | [`EmployeePaymentMethod`](#employeepaymentmethod) |
+| <a id="property-resourcesemployeepayschedules"></a> `Employee.PaySchedules` | [`EmployeePaySchedules`](#employeepayschedules) |
+| <a id="property-resourcesemployeeprofile"></a> `Employee.Profile` | [`EmployeeProfile`](#employeeprofile) |
+| <a id="property-resourcesemployeesplitpaycheck"></a> `Employee.SplitPaycheck` | [`EmployeeSplitPaycheck`](#employeesplitpaycheck) |
+| <a id="property-resourcesemployeesplitpaymentsformbody"></a> `Employee.SplitPaymentsFormBody` | [`EmployeeSplitPaymentsFormBody`](#employeesplitpaymentsformbody) |
+| <a id="property-resourcesemployeestatetaxes"></a> `Employee.StateTaxes` | [`EmployeeStateTaxes`](#employeestatetaxes) |
+| <a id="property-resourcesemployeestatetaxesview"></a> `Employee.StateTaxesView` | [`EmployeeStateTaxesView`](#employeestatetaxesview) |
+| <a id="property-resourcesemployeeterminationsterminateemployee"></a> `Employee.Terminations.TerminateEmployee` | [`EmployeeTerminationsTerminateEmployee`](#employeeterminationsterminateemployee) |
+| <a id="property-resourcesemployeeterminationsterminationflow"></a> `Employee.Terminations.TerminationFlow` | [`EmployeeTerminationsTerminationFlow`](#employeeterminationsterminationflow) |
+| <a id="property-resourcesemployeeterminationsterminationsummary"></a> `Employee.Terminations.TerminationSummary` | [`EmployeeTerminationsTerminationSummary`](#employeeterminationsterminationsummary) |
+| <a id="property-resourcesinformationrequests"></a> `InformationRequests` | [`InformationRequests`](#informationrequests) |
+| <a id="property-resourcesinformationrequestsinformationrequestform"></a> `InformationRequests.InformationRequestForm` | [`InformationRequestsInformationRequestForm`](#informationrequestsinformationrequestform) |
+| <a id="property-resourcesinformationrequestsinformationrequestlist"></a> `InformationRequests.InformationRequestList` | [`InformationRequestsInformationRequestList`](#informationrequestsinformationrequestlist) |
+| <a id="property-resourcespayrollcommon"></a> `Payroll.Common` | [`PayrollCommon`](#payrollcommon) |
+| <a id="property-resourcespayrollconfirmwiredetailsbanner"></a> `Payroll.ConfirmWireDetailsBanner` | [`PayrollConfirmWireDetailsBanner`](#payrollconfirmwiredetailsbanner) |
+| <a id="property-resourcespayrollconfirmwiredetailsform"></a> `Payroll.ConfirmWireDetailsForm` | [`PayrollConfirmWireDetailsForm`](#payrollconfirmwiredetailsform) |
+| <a id="property-resourcespayrolldismissal"></a> `Payroll.Dismissal` | [`PayrollDismissal`](#payrolldismissal) |
+| <a id="property-resourcespayrollemployeeselection"></a> `Payroll.EmployeeSelection` | [`PayrollEmployeeSelection`](#payrollemployeeselection) |
+| <a id="property-resourcespayrollgrossupmodal"></a> `Payroll.GrossUpModal` | [`PayrollGrossUpModal`](#payrollgrossupmodal) |
+| <a id="property-resourcespayrolloffcycle"></a> `Payroll.OffCycle` | [`PayrollOffCycle`](#payrolloffcycle) |
+| <a id="property-resourcespayrolloffcyclecreation"></a> `Payroll.OffCycleCreation` | [`PayrollOffCycleCreation`](#payrolloffcyclecreation) |
+| <a id="property-resourcespayrolloffcycledeductionssetting"></a> `Payroll.OffCycleDeductionsSetting` | [`PayrollOffCycleDeductionsSetting`](#payrolloffcycledeductionssetting) |
+| <a id="property-resourcespayrolloffcyclepayperioddateform"></a> `Payroll.OffCyclePayPeriodDateForm` | [`PayrollOffCyclePayPeriodDateForm`](#payrolloffcyclepayperioddateform) |
+| <a id="property-resourcespayrolloffcyclereasonselection"></a> `Payroll.OffCycleReasonSelection` | [`PayrollOffCycleReasonSelection`](#payrolloffcyclereasonselection) |
+| <a id="property-resourcespayrolloffcycletaxwithholding"></a> `Payroll.OffCycleTaxWithholding` | [`PayrollOffCycleTaxWithholding`](#payrolloffcycletaxwithholding) |
+| <a id="property-resourcespayrollpayrollblocker"></a> `Payroll.PayrollBlocker` | [`PayrollPayrollBlocker`](#payrollpayrollblocker) |
+| <a id="property-resourcespayrollpayrollconfiguration"></a> `Payroll.PayrollConfiguration` | [`PayrollPayrollConfiguration`](#payrollpayrollconfiguration) |
+| <a id="property-resourcespayrollpayrolleditemployee"></a> `Payroll.PayrollEditEmployee` | [`PayrollPayrollEditEmployee`](#payrollpayrolleditemployee) |
+| <a id="property-resourcespayrollpayrollflow"></a> `Payroll.PayrollFlow` | [`PayrollPayrollFlow`](#payrollpayrollflow) |
+| <a id="property-resourcespayrollpayrollhistory"></a> `Payroll.PayrollHistory` | [`PayrollPayrollHistory`](#payrollpayrollhistory) |
+| <a id="property-resourcespayrollpayrolllanding"></a> `Payroll.PayrollLanding` | [`PayrollPayrollLanding`](#payrollpayrolllanding) |
+| <a id="property-resourcespayrollpayrolllist"></a> `Payroll.PayrollList` | [`PayrollPayrollList`](#payrollpayrolllist) |
+| <a id="property-resourcespayrollpayrolloverview"></a> `Payroll.PayrollOverview` | [`PayrollPayrollOverview`](#payrollpayrolloverview) |
+| <a id="property-resourcespayrollpayrollreceipts"></a> `Payroll.PayrollReceipts` | [`PayrollPayrollReceipts`](#payrollpayrollreceipts) |
+| <a id="property-resourcespayrollrecoverycaseslist"></a> `Payroll.RecoveryCasesList` | [`PayrollRecoveryCasesList`](#payrollrecoverycaseslist) |
+| <a id="property-resourcespayrollrecoverycasesresubmit"></a> `Payroll.RecoveryCasesResubmit` | [`PayrollRecoveryCasesResubmit`](#payrollrecoverycasesresubmit) |
+| <a id="property-resourcespayrolltransition"></a> `Payroll.Transition` | [`PayrollTransition`](#payrolltransition) |
+| <a id="property-resourcespayrolltransitioncreation"></a> `Payroll.TransitionCreation` | [`PayrollTransitionCreation`](#payrolltransitioncreation) |
+| <a id="property-resourcespayrolltransitionpayrollalert"></a> `Payroll.TransitionPayrollAlert` | [`PayrollTransitionPayrollAlert`](#payrolltransitionpayrollalert) |
+| <a id="property-resourcespayrollwireinstructions"></a> `Payroll.WireInstructions` | [`PayrollWireInstructions`](#payrollwireinstructions) |
+
+***
+
+<a id="supportedlanguages"></a>
+
+### SupportedLanguages
+
+> **SupportedLanguages** = `"en"`
+
+Language codes the SDK ships translations for; the top-level keys of [ResourceDictionary](#resourcedictionary).

@@ -1142,7 +1142,78 @@ Renders an unordered (bulleted) list of items.
 | `aria-labelledby?` | `string` | ID of an element that labels this list |
 | `className?` | `string` | Optional custom class name |
 
-## Interfaces
+## Utility types
+
+<a id="baselistprops"></a>
+
+### BaseListProps
+
+Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
+
+#### Extended by
+
+- [`OrderedListProps`](#orderedlistprops)
+- [`UnorderedListProps`](#unorderedlistprops)
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `items` | `ReactNode`[] | The list items to render |
+| `aria-describedby?` | `string` | ID of an element that describes this list |
+| `aria-label?` | `string` | Accessibility label for the list |
+| `aria-labelledby?` | `string` | ID of an element that labels this list |
+| `className?` | `string` | Optional custom class name |
+
+***
+
+<a id="breadcrumb"></a>
+
+### Breadcrumb
+
+Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
+| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
+| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
+
+***
+
+<a id="checkboxgroupoption"></a>
+
+### CheckboxGroupOption
+
+Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text or content for the checkbox option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+| `description?` | `ReactNode` | Optional description text for the checkbox option |
+| `isDisabled?` | `boolean` | Disables this specific checkbox option |
+
+***
+
+<a id="comboboxoption"></a>
+
+### ComboBoxOption
+
+Option entry for the ComboBox dropdown list.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Value of the option that will be passed to onChange |
+
+***
 
 <a id="componentscontexttype"></a>
 
@@ -1247,153 +1318,6 @@ function App() {
 | `UnorderedList` | `FunctionComponent`\<[`UnorderedListProps`](#unorderedlistprops)\> | HTML `<ul>` for an unordered list of items. |
 | `PaginationControl?` | `FunctionComponent`\<[`PaginationControlProps`](#paginationcontrolprops)\> | Pagination controls for list views. Defaults to the SDK's built-in pagination UI when omitted. |
 | `PayrollLoading?` | `FunctionComponent`\<[`PayrollLoadingProps`](#payrollloadingprops)\> | Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. |
-
-***
-
-<a id="sharedfieldlayoutprops"></a>
-
-### SharedFieldLayoutProps
-
-Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
-so each control exposes a consistent surface for labeling, helper text, and validation messaging.
-
-#### Extends
-
-- `DataAttributes`
-
-#### Extended by
-
-- [`TextInputProps`](#textinputprops)
-- [`SelectProps`](#selectprops)
-- [`NumberInputProps`](#numberinputprops)
-- [`DatePickerProps`](#datepickerprops)
-- [`RadioGroupProps`](#radiogroupprops)
-- [`CheckboxGroupProps`](#checkboxgroupprops)
-- [`ComboBoxProps`](#comboboxprops)
-- [`MultiSelectComboBoxProps`](#multiselectcomboboxprops)
-- [`TextAreaProps`](#textareaprops)
-
-#### Indexable
-
-> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text for the field |
-| `description?` | `ReactNode` | Optional description text for the field |
-| `errorMessage?` | `string` | Error message to display when the field is invalid |
-| `isRequired?` | `boolean` | Indicates if the field is required |
-| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
-
-***
-
-<a id="sharedhorizontalfieldlayoutprops"></a>
-
-### SharedHorizontalFieldLayoutProps
-
-Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
-
-#### Remarks
-
-Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
-Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.
-
-#### Extended by
-
-- [`CheckboxProps`](#checkboxprops)
-- [`SwitchProps`](#switchprops)
-- [`RadioProps`](#radioprops)
-
-#### Indexable
-
-> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text for the field |
-| `description?` | `ReactNode` | Optional description text for the field |
-| `errorMessage?` | `string` | Error message to display when the field is invalid |
-| `isRequired?` | `boolean` | Indicates if the field is required |
-| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
-
-## Utility types
-
-<a id="baselistprops"></a>
-
-### BaseListProps
-
-Shared props accepted by both `OrderedList` and `UnorderedList` implementations.
-
-#### Extended by
-
-- [`OrderedListProps`](#orderedlistprops)
-- [`UnorderedListProps`](#unorderedlistprops)
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `items` | `ReactNode`[] | The list items to render |
-| `aria-describedby?` | `string` | ID of an element that describes this list |
-| `aria-label?` | `string` | Accessibility label for the list |
-| `aria-labelledby?` | `string` | ID of an element that labels this list |
-| `className?` | `string` | Optional custom class name |
-
-***
-
-<a id="breadcrumb"></a>
-
-### Breadcrumb
-
-Single entry in a [Breadcrumbs](#breadcrumbsprops) trail.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`. |
-| `label` | `ReactNode` | Display content rendered for the breadcrumb. |
-| `isClickable?` | `boolean` | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
-
-***
-
-<a id="checkboxgroupoption"></a>
-
-### CheckboxGroupOption
-
-Option entry rendered as a single checkbox within a [CheckboxGroup](#checkboxgroupprops).
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `ReactNode` | Label text or content for the checkbox option |
-| `value` | `string` | Value of the option that will be passed to onChange |
-| `description?` | `ReactNode` | Optional description text for the checkbox option |
-| `isDisabled?` | `boolean` | Disables this specific checkbox option |
-
-***
-
-<a id="comboboxoption"></a>
-
-### ComboBoxOption
-
-Option entry for the ComboBox dropdown list.
-
-#### Properties
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Value of the option that will be passed to onChange |
 
 ***
 
@@ -1506,6 +1430,82 @@ Option entry your `Select` implementation receives in the `options` array when r
 | ------ | ------ | ------ |
 | `label` | `string` | Display text for the option |
 | `value` | `string` | Value of the option that will be passed to onChange |
+
+***
+
+<a id="sharedfieldlayoutprops"></a>
+
+### SharedFieldLayoutProps
+
+Common layout props shared by form controls — label, description, error message, required state, and visual label hiding.
+
+#### Remarks
+
+Extended by the props interfaces of UI primitive components (such as `TextInputProps`, `SelectProps`, and `CheckboxGroupProps`)
+so each control exposes a consistent surface for labeling, helper text, and validation messaging.
+
+#### Extends
+
+- `DataAttributes`
+
+#### Extended by
+
+- [`TextInputProps`](#textinputprops)
+- [`SelectProps`](#selectprops)
+- [`NumberInputProps`](#numberinputprops)
+- [`DatePickerProps`](#datepickerprops)
+- [`RadioGroupProps`](#radiogroupprops)
+- [`CheckboxGroupProps`](#checkboxgroupprops)
+- [`ComboBoxProps`](#comboboxprops)
+- [`MultiSelectComboBoxProps`](#multiselectcomboboxprops)
+- [`TextAreaProps`](#textareaprops)
+
+#### Indexable
+
+> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text for the field |
+| `description?` | `ReactNode` | Optional description text for the field |
+| `errorMessage?` | `string` | Error message to display when the field is invalid |
+| `isRequired?` | `boolean` | Indicates if the field is required |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
+
+***
+
+<a id="sharedhorizontalfieldlayoutprops"></a>
+
+### SharedHorizontalFieldLayoutProps
+
+Shared layout props consumed by horizontally-laid-out form controls — label, description, error message, required state, and visual label hiding.
+
+#### Remarks
+
+Extended by props interfaces for inline controls such as `CheckboxProps`, `RadioProps`, and `SwitchProps`.
+Alias of [SharedFieldLayoutProps](#sharedfieldlayoutprops) — exposed as a distinct name to mirror the horizontal layout used by these controls.
+
+#### Extended by
+
+- [`CheckboxProps`](#checkboxprops)
+- [`SwitchProps`](#switchprops)
+- [`RadioProps`](#radioprops)
+
+#### Indexable
+
+> \[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `label` | `ReactNode` | Label text for the field |
+| `description?` | `ReactNode` | Optional description text for the field |
+| `errorMessage?` | `string` | Error message to display when the field is invalid |
+| `isRequired?` | `boolean` | Indicates if the field is required |
+| `shouldVisuallyHideLabel?` | `boolean` | Hides the label visually while keeping it accessible to screen readers |
 
 ***
 
