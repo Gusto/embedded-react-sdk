@@ -75,7 +75,7 @@ export interface OnboardingFlowProps extends BaseComponentInterface<never> {
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step onboarding flow with internal navigation between the employee list and the per-step screens.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"

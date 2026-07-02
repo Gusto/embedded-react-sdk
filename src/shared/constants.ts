@@ -480,7 +480,7 @@ export const timeOffEvents = {
  * a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
  *
  * @public
- * @group Events
+ * @group Event names
  *
  * @example
  * ```tsx
@@ -524,7 +524,7 @@ export const componentEvents = {
  * the specific event keys you care about.
  *
  * @public
- * @group Events
+ * @group Utility types
  *
  * @example
  * ```tsx

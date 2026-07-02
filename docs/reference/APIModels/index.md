@@ -200,14 +200,14 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/contractorcr
 
 The contractor’s wage type.
 
+#### Remarks
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | <a id="property-contractorcreaterequestbodywagetypefixed"></a> `Fixed` | `"Fixed"` |
 | <a id="property-contractorcreaterequestbodywagetypehourly"></a> `Hourly` | `"Hourly"` |
-
-#### Remarks
 
 ***
 
@@ -558,14 +558,14 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/contractorup
 
 The contractor’s wage type.
 
+#### Remarks
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | <a id="property-contractorupdaterequestbodywagetypefixed"></a> `Fixed` | `"Fixed"` |
 | <a id="property-contractorupdaterequestbodywagetypehourly"></a> `Hourly` | `"Hourly"` |
-
-#### Remarks
 
 ***
 
@@ -786,6 +786,12 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/federaltaxde
 
 The status of EIN verification:
 
+#### Remarks
+
+- `pending`: The EIN verification process has not completed (or the company does not yet have an EIN).
+- `verified`: The EIN has been successfully verified as a valid EIN with the IRS.
+- `failed`: The company's EIN did not pass verification. Common issues are being entered incorrectly or not matching the company's legal name.
+
 #### Type Declaration
 
 | Name | Type |
@@ -793,12 +799,6 @@ The status of EIN verification:
 | <a id="property-federaltaxdetailsstatusfailed"></a> `Failed` | `"failed"` |
 | <a id="property-federaltaxdetailsstatuspending"></a> `Pending` | `"pending"` |
 | <a id="property-federaltaxdetailsstatusverified"></a> `Verified` | `"verified"` |
-
-#### Remarks
-
-- `pending`: The EIN verification process has not completed (or the company does not yet have an EIN).
-- `verified`: The EIN has been successfully verified as a valid EIN with the IRS.
-- `failed`: The company's EIN did not pass verification. Common issues are being entered incorrectly or not matching the company's legal name.
 
 ***
 
@@ -812,17 +812,17 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/federaltaxde
 
 The form used by the company for federal tax filing. One of:
 
+#### Remarks
+
+- 941 (Quarterly federal tax return form)
+- 944 (Annual federal tax return form)
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | <a id="property-filingformninehundredandfortyfour"></a> `NineHundredAndFortyFour` | `"944"` |
 | <a id="property-filingformninehundredandfortyone"></a> `NineHundredAndFortyOne` | `"941"` |
-
-#### Remarks
-
-- 941 (Quarterly federal tax return form)
-- 944 (Annual federal tax return form)
 
 ***
 
@@ -1040,6 +1040,12 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/paymentconfi
 
 Payment speed. READ-ONLY.
 
+#### Remarks
+
+- `1-day`: Next-day ACH (only for partners that opt in).
+- `2-day`: Two-day ACH.
+- `4-day`: Standard ACH.
+
 #### Type Declaration
 
 | Name | Type |
@@ -1047,12 +1053,6 @@ Payment speed. READ-ONLY.
 | <a id="property-paymentspeedfourminusday"></a> `FourMinusDay` | `"4-day"` |
 | <a id="property-paymentspeedoneminusday"></a> `OneMinusDay` | `"1-day"` |
 | <a id="property-paymentspeedtwominusday"></a> `TwoMinusDay` | `"2-day"` |
-
-#### Remarks
-
-- `1-day`: Next-day ACH (only for partners that opt in).
-- `2-day`: Two-day ACH.
-- `4-day`: Standard ACH.
 
 ***
 
@@ -1328,17 +1328,6 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/payschedulef
 
 The frequency that employees on this pay schedule are paid with Gusto.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| <a id="property-payschedulefrequencyannually"></a> `Annually` | `"Annually"` |
-| <a id="property-payschedulefrequencyeveryotherweek"></a> `EveryOtherWeek` | `"Every other week"` |
-| <a id="property-payschedulefrequencyeveryweek"></a> `EveryWeek` | `"Every week"` |
-| <a id="property-payschedulefrequencymonthly"></a> `Monthly` | `"Monthly"` |
-| <a id="property-payschedulefrequencyquarterly"></a> `Quarterly` | `"Quarterly"` |
-| <a id="property-payschedulefrequencytwicepermonth"></a> `TwicePerMonth` | `"Twice per month"` |
-
 #### Remarks
 
 READ-ONLY in responses. Possible values:
@@ -1349,6 +1338,17 @@ READ-ONLY in responses. Possible values:
 - `Monthly`: Employees are paid once per month; use day_1 for the pay day.
 - `Quarterly`: Employees are paid every three months.
 - `Annually`: Employees are paid once per year.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-payschedulefrequencyannually"></a> `Annually` | `"Annually"` |
+| <a id="property-payschedulefrequencyeveryotherweek"></a> `EveryOtherWeek` | `"Every other week"` |
+| <a id="property-payschedulefrequencyeveryweek"></a> `EveryWeek` | `"Every week"` |
+| <a id="property-payschedulefrequencymonthly"></a> `Monthly` | `"Monthly"` |
+| <a id="property-payschedulefrequencyquarterly"></a> `Quarterly` | `"Quarterly"` |
+| <a id="property-payschedulefrequencytwicepermonth"></a> `TwicePerMonth` | `"Twice per month"` |
 
 ***
 
@@ -1409,17 +1409,17 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/taxrequireme
 
 [for `workers_compensation_rate`] The type of rate being collected. Either:
 
+#### Remarks
+
+- `percent`: A percentage formatted as a decimal, e.g. `0.01` for 1%
+  - `currency_per_hour`: A dollar amount per hour, e.g. `3.24` for $3.24/hr
+
 #### Type Declaration
 
 | Name | Type |
 | ------ | ------ |
 | <a id="property-ratetypecurrencyperhour"></a> `CurrencyPerHour` | `"currency_per_hour"` |
 | <a id="property-ratetypepercent"></a> `Percent` | `"percent"` |
-
-#### Remarks
-
-- `percent`: A percentage formatted as a decimal, e.g. `0.01` for 1%
-  - `currency_per_hour`: A dollar amount per hour, e.g. `3.24` for $3.24/hr
 
 ***
 
@@ -1496,6 +1496,12 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/taxrequireme
 
 The current status of the state tax setup.
 
+#### Remarks
+
+- `not_started`: No requirements have been filled
+- `in_progress`: Some requirements have been filled, or default rates are applied
+- `complete`: All requirements have been filled without default rates
+
 #### Type Declaration
 
 | Name | Type |
@@ -1503,12 +1509,6 @@ The current status of the state tax setup.
 | <a id="property-setupstatuscomplete"></a> `Complete` | `"complete"` |
 | <a id="property-setupstatusinprogress"></a> `InProgress` | `"in_progress"` |
 | <a id="property-setupstatusnotstarted"></a> `NotStarted` | `"not_started"` |
-
-#### Remarks
-
-- `not_started`: No requirements have been filled
-- `in_progress`: Some requirements have been filled, or default rates are applied
-- `complete`: All requirements have been filled without default rates
 
 ***
 
@@ -1551,6 +1551,17 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/taxrequireme
 
 Describes the type of requirement - each type may have additional metadata properties to describe possible values, formats, etc.
 
+#### Remarks
+
+- `text`: free-text input, no additional requirements
+- `currency`: a value representing a dollar amount, e.g. `374.55` representing `$374.55`
+- `radio`: choose one of options provided, see `options`
+- `select`: choose one of options provided, see `options`
+- `percent`: A decimal value representing a percentage, e.g. `0.034` representing `3.4%`
+- `account_number`: An account number for a tax agency, more information provided by `mask` and `prefix`
+- `tax_rate`: A decimal value representing a tax rate, e.g. `0.034` representing a tax rate of `3.4%`, see `validation` for additional validation guidance
+- `workers_compensation_rate`: A decimal value representing a percentage, see `risk_class_code`, `risk_class_description`, and `rate_type`
+
 #### Type Declaration
 
 | Name | Type |
@@ -1563,17 +1574,6 @@ Describes the type of requirement - each type may have additional metadata prope
 | <a id="property-taxrequirementmetadatatypetaxrate"></a> `TaxRate` | `"tax_rate"` |
 | <a id="property-taxrequirementmetadatatypetext"></a> `Text` | `"text"` |
 | <a id="property-taxrequirementmetadatatypeworkerscompensationrate"></a> `WorkersCompensationRate` | `"workers_compensation_rate"` |
-
-#### Remarks
-
-- `text`: free-text input, no additional requirements
-- `currency`: a value representing a dollar amount, e.g. `374.55` representing `$374.55`
-- `radio`: choose one of options provided, see `options`
-- `select`: choose one of options provided, see `options`
-- `percent`: A decimal value representing a percentage, e.g. `0.034` representing `3.4%`
-- `account_number`: An account number for a tax agency, more information provided by `mask` and `prefix`
-- `tax_rate`: A decimal value representing a tax rate, e.g. `0.034` representing a tax rate of `3.4%`, see `validation` for additional validation guidance
-- `workers_compensation_rate`: A decimal value representing a percentage, see `risk_class_code`, `risk_class_description`, and `rate_type`
 
 ***
 
@@ -1625,6 +1625,12 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/companybanka
 
 The verification status of the bank account.
 
+#### Remarks
+
+'awaiting_deposits' means the bank account is just created and money is being transferred.
+'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint.
+'verified' means the bank account is verified.
+
 #### Type Declaration
 
 | Name | Type |
@@ -1632,12 +1638,6 @@ The verification status of the bank account.
 | <a id="property-verificationstatusawaitingdeposits"></a> `AwaitingDeposits` | `"awaiting_deposits"` |
 | <a id="property-verificationstatusreadyforverification"></a> `ReadyForVerification` | `"ready_for_verification"` |
 | <a id="property-verificationstatusverified"></a> `Verified` | `"verified"` |
-
-#### Remarks
-
-'awaiting_deposits' means the bank account is just created and money is being transferred.
-'ready_for_verification' means the micro-deposits are completed and the verification process can begin by using the verify endpoint.
-'verified' means the bank account is verified.
 
 ***
 
@@ -1651,6 +1651,11 @@ Defined in: [gusto\_embedded\_v\_2026\_02\_01/src/models/components/companybanka
 
 The verification type of the bank account.
 
+#### Remarks
+
+'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits.
+'plaid' means the bank account is connected through Plaid.
+
 #### Type Declaration
 
 | Name | Type |
@@ -1658,11 +1663,6 @@ The verification type of the bank account.
 | <a id="property-verificationtypebankdeposits"></a> `BankDeposits` | `"bank_deposits"` |
 | <a id="property-verificationtypeplaid"></a> `Plaid` | `"plaid"` |
 | <a id="property-verificationtypeplaidexternal"></a> `PlaidExternal` | `"plaid_external"` |
-
-#### Remarks
-
-'bank_deposits' means the bank account is connected by entering routing and accounting numbers and verifying through micro-deposits.
-'plaid' means the bank account is connected through Plaid.
 
 ***
 

@@ -13,7 +13,26 @@ export interface JobsListProps extends BaseComponentInterface<'Employee.Compensa
   employeeId: string
 }
 
-/** @public */
+/**
+ * Lists an employee's jobs alongside their compensation details, with controls to add, edit,
+ * or remove a job.
+ *
+ * @remarks
+ * Used for employees who hold multiple roles. The primary job's FLSA classification determines
+ * whether the employee is treated as exempt or nonexempt.
+ *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `employee/job/add` | Fired when the user chooses to add a job | none |
+ * | `employee/job/edit` | Fired when the user chooses to edit a job | `{ uuid: string }` |
+ * | `employee/job/deleted` | Fired after a job is successfully deleted | none |
+ * | `employee/compensations/done` | Fired when the user continues past the jobs list | none |
+ *
+ * @param props - See {@link JobsListProps}.
+ * @returns The employee's jobs list.
+ * @public
+ */
 export function JobsList(props: JobsListProps) {
   useComponentDictionary('Employee.Compensation', props.dictionary)
   return (

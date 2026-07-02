@@ -18,6 +18,22 @@ custom_edit_url: null
 Headless hook for signing a contractor document — collects the document's
 fields plus a typed signature and consent.
 
+## Remarks
+
+This hook implements the W-9 — the only signable contractor document the API
+exposes today (`taxpayer_identification_form_w_9`). The field surface is
+declared statically (`form.Fields`), like the other SDK form hooks: core
+fields are always present, while variable fields are exposed only when the API
+returns them (otherwise `undefined`) — a presence-based safety check, so a
+field the API drops is skipped rather than rendered as an orphan. The seven
+federal tax-classification checkboxes are collapsed into a single required
+radio group with conditional LLC-code and "Other" sub-fields, and on submit
+the selection is mapped back to the W-9 wire format. Pre-filled values (name,
+address, TIN, etc.) are editable inputs; the signing `date` is omitted so the
+API auto-fills it. A document that returns no recognized W-9 fields renders
+as acknowledge-only (`data.hasFields` is `false`). Consult
+`form.fieldsMetadata` for per-field required flags and select/radio options.
+
 ## Example
 
 ```tsx title="Example"
@@ -56,22 +72,6 @@ function SignDocumentReady({
   )
 }
 ```
-
-## Remarks
-
-This hook implements the W-9 — the only signable contractor document the API
-exposes today (`taxpayer_identification_form_w_9`). The field surface is
-declared statically (`form.Fields`), like the other SDK form hooks: core
-fields are always present, while variable fields are exposed only when the API
-returns them (otherwise `undefined`) — a presence-based safety check, so a
-field the API drops is skipped rather than rendered as an orphan. The seven
-federal tax-classification checkboxes are collapsed into a single required
-radio group with conditional LLC-code and "Other" sub-fields, and on submit
-the selection is mapped back to the W-9 wire format. Pre-filled values (name,
-address, TIN, etc.) are editable inputs; the signing `date` is omitted so the
-API auto-fills it. A document that returns no recognized W-9 fields renders
-as acknowledge-only (`data.hasFields` is `false`). Consult
-`form.fieldsMetadata` for per-field required flags and select/radio options.
 
 ## Props
 
@@ -137,6 +137,16 @@ document metadata has loaded.
 <a id="contractorsignatureformfieldcomponents"></a>
 
 Field components exposed by [useContractorSignatureForm](#usecontractorsignatureform) on `form.Fields`.
+
+**Remarks**
+
+Every field is presence-gated against the API response and is `undefined`
+when the document didn't return its backing field — always null-check before
+rendering. This guards against the document API diverging (dropping or
+renaming a field) by skipping fields it no longer returns, mirroring the
+stable signing flow. `Agree` is the sole exception: it's a synthesized
+electronic-signature consent checkbox with no API field, so it's always
+present.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -806,7 +816,7 @@ The format-validation error code emitted by the `ssn` field of [useContractorSig
 Use as a key in `validationMessages` on `Fields.Ssn`. See
 [ContractorSignatureFormErrorCodes](#contractorsignatureformerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="contractorsignaturefieldsmetadata"></a>
 
 ### ContractorSignatureFieldsMetadata
@@ -900,6 +910,11 @@ form schema.
 
 Validation error codes produced by the contractor signature form schema.
 
+#### Remarks
+
+Use these constants as the keys in a field's `validationMessages` prop to map
+an error code to a user-facing message.
+
 #### Type Declaration
 
 | Name | Type | Description |
@@ -908,11 +923,6 @@ Validation error codes produced by the contractor signature form schema.
 | `INVALID_EIN` | `"INVALID_EIN"` | The Employer Identification Number is not a valid EIN. |
 | `INVALID_SSN` | `"INVALID_SSN"` | The Social Security Number is not a valid SSN. |
 | `REQUIRED` | `"REQUIRED"` | A required field was left empty. |
-
-#### Remarks
-
-Use these constants as the keys in a field's `validationMessages` prop to map
-an error code to a user-facing message.
 
 ***
 

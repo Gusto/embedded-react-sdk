@@ -17,6 +17,10 @@ custom_edit_url: null
 
 Headless hook for updating an employee's federal tax (W-4) withholding information — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
 
+## Remarks
+
+The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
+
 ## Example
 
 ```tsx title="Example"
@@ -49,10 +53,6 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Remarks
-
-The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates. By default only `filingStatus` is required; promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required via `optionalFieldsToRequire.update`.
 
 ## Props
 
@@ -102,6 +102,11 @@ presentational components). Discriminate on `isLoading` to narrow to
 ### UseFederalTaxesFormReady
 
 Ready-state shape returned by [useFederalTaxesForm](#usefederaltaxesform) once data has loaded.
+
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the federal-taxes specific `data`, `status`, and `actions`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -329,7 +334,7 @@ The required-field error code produced by [useFederalTaxesForm](#usefederaltaxes
 Used as the `validationMessages` key for every federal taxes field. See
 [FederalTaxesErrorCodes](#federaltaxeserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="federaltaxeserrorcode"></a>
 
 ### FederalTaxesErrorCode

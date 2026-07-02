@@ -41,7 +41,7 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
  * @param props - See {@link DeductionsProps}.
  * @returns The deductions onboarding step.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

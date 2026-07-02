@@ -17,6 +17,18 @@ custom_edit_url: null
 
 Headless React Hook Form hook for splitting an employee's Direct Deposit across multiple bank accounts.
 
+## Remarks
+
+Supports two split modes: Percentage (whole-number shares that sum to 100)
+and Amount (dollar amounts, with the last-priority split absorbing the
+remainder). Always operates in update mode against the employee's existing
+payment method.
+
+The Percentage sum-to-100 invariant is surfaced via
+`status.hasPercentageImbalance` (not as a per-field error). With the default
+`validationMode: 'onSubmit'`, the imbalance flag appears after the first
+failed Save and clears live as the user corrects the total.
+
 ## Example
 
 ```tsx title="Example"
@@ -63,18 +75,6 @@ function SplitPaycheckReady({ splitForm }: { splitForm: UseSplitPaymentsFormRead
   )
 }
 ```
-
-## Remarks
-
-Supports two split modes: Percentage (whole-number shares that sum to 100)
-and Amount (dollar amounts, with the last-priority split absorbing the
-remainder). Always operates in update mode against the employee's existing
-payment method.
-
-The Percentage sum-to-100 invariant is surfaced via
-`status.hasPercentageImbalance` (not as a per-field error). With the default
-`validationMode: 'onSubmit'`, the imbalance flag appears after the first
-failed Save and clears live as the user corrects the total.
 
 ## Props
 
@@ -246,7 +246,7 @@ required by the hook; the rest are required.
 
 Validation error codes emitted by [useSplitPaymentsForm](#usesplitpaymentsform) fields that only emit `REQUIRED`.
 
-## Utility Types
+## Utility types
 <a id="split_by_values"></a>
 
 ### SPLIT\_BY\_VALUES

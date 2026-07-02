@@ -1,11 +1,6 @@
 import { type TypeDocOptions, OptionDefaults } from 'typedoc'
 import { type PluginOptions } from 'typedoc-plugin-markdown'
-import {
-  COMPONENT_GROUPS,
-  HOOK_GROUPS,
-  COMPONENT_PROP_GROUPS,
-  VARIABLE_GROUPS,
-} from './typedoc-utils.mjs'
+import { GROUP_ORDER } from './typedoc-utils.ts'
 
 export const baseOptions = {
   plugin: ['./plugins/typedoc-custom/index.ts'],
@@ -14,21 +9,7 @@ export const baseOptions = {
   entryPoints: ['../src/index.ts'],
   out: '../docs/reference',
 
-  groupOrder: [
-    'Domains',
-    'Namespaces',
-    ...HOOK_GROUPS,
-    ...COMPONENT_GROUPS,
-    ...VARIABLE_GROUPS,
-    'Functions',
-    'Variables',
-    'Interfaces',
-    'Type Aliases',
-    // Per-i18n-namespace key interfaces on the Translations page
-    'Translation namespaces',
-    ...COMPONENT_PROP_GROUPS,
-    '*',
-  ],
+  groupOrder: GROUP_ORDER,
 
   indexFormat: 'table',
   propertyMembersFormat: 'table',
@@ -65,6 +46,10 @@ export const baseOptions = {
   useHTMLAnchors: true,
   validation: { invalidLink: true },
   formatWithPrettier: false,
+
+  // Render @remarks/@example in their authored position (with the comment summary),
+  // ahead of the Type Declaration / Properties table, instead of after it.
+  blockTagsPreserveOrder: ['@remarks', '@example'],
 
   // Custom block tags. `@components` lists the components/hooks a flow composes
   // (rendered as a table by the SDK theme); `@events` documents events separately

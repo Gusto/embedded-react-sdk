@@ -54,7 +54,7 @@ export interface TerminationSummaryProps extends BaseComponentInterface<'Employe
  * @param props - See {@link TerminationSummaryProps}.
  * @returns The termination summary view.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

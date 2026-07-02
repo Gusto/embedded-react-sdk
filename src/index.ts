@@ -6,7 +6,6 @@ export * from '@/contexts'
  * re-exported from the Gusto Embedded API client so their shapes are
  * documented here in the SDK reference.
  *
- * @group API Models
  * @public
  */
 export type * as APIModels from '@/models/external'

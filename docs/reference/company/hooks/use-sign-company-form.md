@@ -17,6 +17,15 @@ custom_edit_url: null
 
 Headless hook for signing a company form — displays the form PDF and collects a typed signature with confirmation checkbox.
 
+## Remarks
+
+The hook fetches the company form metadata and PDF, then exposes the
+[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
+`onSubmit`, and error handling. Use `data.companyForm` to display the
+form's title and description, and `data.pdfUrl` to render the document for
+review before signing. Both `signature` and `confirmSignature` are always
+required.
+
 ## Example
 
 ```tsx title="Example"
@@ -73,15 +82,6 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
   )
 }
 ```
-
-## Remarks
-
-The hook fetches the company form metadata and PDF, then exposes the
-[BaseFormHookReady](../../utilities.md#baseformhookready) contract with `Fields`, `fieldsMetadata`,
-`onSubmit`, and error handling. Use `data.companyForm` to display the
-form's title and description, and `data.pdfUrl` to render the document for
-review before signing. Both `signature` and `confirmSignature` are always
-required.
 
 ## Props
 
@@ -225,7 +225,7 @@ The required-field error code emitted by every field of [useSignCompanyForm](#us
 Use this as the `validationMessages` key for any sign-company-form field.
 See [SignCompanyFormErrorCodes](#signcompanyformerrorcodes).
 
-## Utility Types
+## Utility types
 <a id="signcompanyformdata"></a>
 
 ### SignCompanyFormData

@@ -4,13 +4,15 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: CompanyOnboarding
-description: CompanyOnboarding reference.
+description: Flows and blocks for onboarding a company.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
 ---
 
 # CompanyOnboarding
+
+Flows and blocks for onboarding a company.
 
 ## 🚂 Workflows
 

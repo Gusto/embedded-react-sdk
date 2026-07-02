@@ -64,7 +64,7 @@ function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
  * @param props - See {@link CompensationProps}.
  * @returns The rendered compensation block.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function Compensation({ dictionary, FallbackComponent, ...props }: CompensationProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)

@@ -19,18 +19,6 @@ custom_edit_url: null
 
 Convenience wrapper around [useHomeAddressForm](#usehomeaddressform) that auto-resolves the employee's current home address.
 
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
-
-#### Returns
-
-[`UseHomeAddressFormResult`](#usehomeaddressformresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
-
 #### Remarks
 
 Lists the employee's home addresses and selects the active one (or the
@@ -62,6 +50,18 @@ function HomeAddressEditor({ employeeId }: { employeeId: string }) {
 }
 ```
 
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseCurrentHomeAddressFormProps`](#usecurrenthomeaddressformprops) | See [UseCurrentHomeAddressFormProps](#usecurrenthomeaddressformprops). |
+
+#### Returns
+
+[`UseHomeAddressFormResult`](#usehomeaddressformresult)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseHomeAddressFormReady](#usehomeaddressformready) once ready.
+
 ***
 
 <a id="usehomeaddressform"></a>
@@ -69,6 +69,12 @@ function HomeAddressEditor({ employeeId }: { employeeId: string }) {
 > **useHomeAddressForm**(`props`: [`UseHomeAddressFormProps`](#usehomeaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseHomeAddressFormReady`](#usehomeaddressformready)
 
 Form hook for creating or editing an employee's home address.
+
+## Remarks
+
+When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
+skip the fetch when the parent already holds the row.
 
 ## Example
 
@@ -106,12 +112,6 @@ function HomeAddressReady({ homeAddress }: { homeAddress: UseHomeAddressFormRead
   )
 }
 ```
-
-## Remarks
-
-When `homeAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
-when omitted it operates in create mode and issues a POST. Pass `initialAddress` to
-skip the fetch when the parent already holds the row.
 
 ## Props
 
@@ -159,6 +159,11 @@ Discriminated union returned by [useHomeAddressForm](#usehomeaddressform).
 
 Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the home-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
@@ -183,6 +188,11 @@ Ready-state shape returned by [useHomeAddressForm](#usehomeaddressform) once dat
 <a id="homeaddressformfields"></a>
 
 Pre-bound field components exposed on `useHomeAddressForm().form.Fields`.
+
+**Remarks**
+
+`EffectiveDate` is `undefined` when `withEffectiveDateField` is `false`.
+Always null-check it before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -431,7 +441,7 @@ Validation error codes emitted by the `zip` field of [useHomeAddressForm](#useho
 Use these as keys in `validationMessages` on `Fields.Zip`. See
 [HomeAddressErrorCodes](#homeaddresserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="homeaddresserrorcode"></a>
 
 ### HomeAddressErrorCode

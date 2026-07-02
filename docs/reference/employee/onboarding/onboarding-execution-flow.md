@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Guided flow to onboard an employee.
 
+## Remarks
+
+Drives the per-employee, admin-led onboarding steps used by [OnboardingFlow](onboarding-flow.md) and [EmployeeManagement.EmployeeListFlow](../management/employee-list-flow.md). ([SelfOnboardingFlow](self-onboarding-flow.md) is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Blocks table) for composing a custom workflow when this orchestration is the wrong fit.
+
+Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
+
+The flow forwards every event emitted by its blocks to `onEvent`; see the events table on each block for the full set of events and payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -33,14 +41,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Drives the per-employee, admin-led onboarding steps used by [OnboardingFlow](onboarding-flow.md) and [EmployeeManagement.EmployeeListFlow](../management/employee-list-flow.md). ([SelfOnboardingFlow](self-onboarding-flow.md) is the separate employee-driven flow and runs its own state machine.) Each step is also exported as a standalone block (see the Blocks table) for composing a custom workflow when this orchestration is the wrong fit.
-
-Self-onboarding statuses cause the federal-taxes, state-taxes, and payment-method steps to be skipped (the employee fills those in themselves); the documents step is also skipped unless `withEmployeeI9` is true and the documents config has not yet been completed.
-
-The flow forwards every event emitted by its blocks to `onEvent`; see the events table on each block for the full set of events and payloads observable from this flow.
-
 ## OnboardingExecutionFlowProps
 
 <a id="onboardingexecutionflowprops"></a>
@@ -50,7 +50,7 @@ Props for OnboardingExecutionFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. |
 | `defaultValues?` | [`OnboardingDefaultValues`](blocks.md#onboardingdefaultvalues) | Default values for individual flow step components. |
 | `initialEmployeeId?` | `string` | The associated employee identifier to resume onboarding for. Omit to begin onboarding a new employee. |
 | `initialOnboardingStatus?` | `"admin_onboarding_incomplete"` \| `"self_onboarding_pending_invite"` \| `"self_onboarding_invited"` \| `"self_onboarding_invited_started"` \| `"self_onboarding_invited_overdue"` \| `"self_onboarding_completed_by_employee"` \| `"self_onboarding_awaiting_admin_review"` \| `"onboarding_completed"` | The current onboarding status of the employee being onboarded. Drives skip behavior for self-onboarding and document steps. |
