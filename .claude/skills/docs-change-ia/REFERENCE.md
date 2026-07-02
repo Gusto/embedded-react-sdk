@@ -86,7 +86,10 @@ Prose that lands at the top of the generated page.
 Prose that lands at the bottom.
 ```
 
-Recognized slots are **`overview`** and **`appendix`** (`GUIDE_SLOTS` in `utils.ts`).
+Recognized slots are **`overview`**, **`appendix`**, and **`advanced`** (`GUIDE_SLOTS` in
+`utils.ts`). Flow and domain-hub pages use `overview` (top of page) and `appendix`
+(bottom); hook pages use a single `advanced` slot, rendered wholesale under a trailing
+`## Advanced` section with its headings bumped one level deeper.
 Untagged/unknown-slot sections fall through to `appendix` with a build warning — content
 is never silently dropped, but tag deliberately. Adding a slot means editing `GUIDE_SLOTS`
 in `utils.ts` and the rendering in `theme.ts` — a code change beyond pure IA work, so

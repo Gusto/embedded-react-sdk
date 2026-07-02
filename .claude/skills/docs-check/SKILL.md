@@ -31,7 +31,7 @@ npm run docs:build    # 3. the real gate — broken links/anchors throw
   relative markdown link, or the navbar/footer `to:` path in `docs-site/docusaurus.config.ts`.
 - **Missing frontmatter** — add `title` and `description` to the named file.
 - **Failure under `docs/reference/**`** — don't hand-edit generated files; see
-`docs-regen`and`docs-change-ia`.
+  `docs-regen` and `docs-change-ia`.
 
 ## Verifying a Flow component's reference page
 
