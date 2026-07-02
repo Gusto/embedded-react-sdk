@@ -4573,6 +4573,8 @@ export interface Resources {
     // (undocumented)
     'Contractor.Profile': Translations.ContractorProfile
     // (undocumented)
+    'Contractor.SignatureForm': Translations.ContractorSignatureForm
+    // (undocumented)
     'Contractor.Submit': Translations.ContractorSubmit
     // (undocumented)
     'Employee.BankAccount': Translations.EmployeeBankAccount

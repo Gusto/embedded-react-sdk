@@ -50,6 +50,7 @@ export interface Resources {
   'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
   'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
   'Contractor.Profile': Translations.ContractorProfile
+  'Contractor.SignatureForm': Translations.ContractorSignatureForm
   'Contractor.Submit': Translations.ContractorSubmit
   'Employee.BankAccount': Translations.EmployeeBankAccount
   'Employee.BankFormBody': Translations.EmployeeBankFormBody
@@ -2445,6 +2446,181 @@ export namespace Translations {
       /** @defaultValue `"Updating…"` */
       updating: string
     }
+  }
+  /** Translation keys for the `Contractor.SignatureForm` i18n namespace. */
+  export interface ContractorSignatureForm {
+    /** @defaultValue `"Signature required"` */
+    signatureRequired: string
+    /** @defaultValue `"See the IRS Form W-9 for instructions on completing this form"` */
+    instructions: string
+    /** @defaultValue `"<downloadLink>Download document</downloadLink>"` */
+    downloadPrompt: string
+    sections: {
+      /** @defaultValue `"Exemptions"` */
+      exemptions: string
+      /** @defaultValue `"Address"` */
+      address: string
+      /** @defaultValue `"Taxpayer Identification Number (TIN)"` */
+      tin: string
+      /** @defaultValue `"Certification"` */
+      certification: string
+    }
+    sectionInstructions: {
+      /** @defaultValue `"See section 4 of IRS Form W-9 for instructions."` */
+      exemptions: string
+      /** @defaultValue `"See sections 5-7 of IRS Form W-9 for instructions."` */
+      address: string
+      /** @defaultValue `"For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN)."` */
+      tin: string
+      /** @defaultValue `"See Part 1 of the IRS Form W-9 for instructions."` */
+      tinSecondary: string
+      /** @defaultValue `"See Part 2 of the IRS Form W-9 for instructions."` */
+      certification: string
+    }
+    /** @defaultValue `"Under penalties of perjury, I certify that:"` */
+    certificationIntro: string
+    certificationPoints: {
+      /** @defaultValue `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` */
+      '0': string
+      /** @defaultValue `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` */
+      '1': string
+      /** @defaultValue `"I am a U.S. citizen or other U.S. person (defined below);"` */
+      '2': string
+      /** @defaultValue `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` */
+      '3': string
+    }
+    fields: {
+      name: {
+        /** @defaultValue `"Entity or individual name (1)"` */
+        label: string
+        /** @defaultValue `"Your individual or business name. For a sole proprietor or disregarded entity, enter the owner's name here, and enter the business/disregarded entity's name in the Business name field below."` */
+        description: string
+      }
+      business_name: {
+        /** @defaultValue `"Business name (2)"` */
+        label: string
+        /** @defaultValue `"The name of your business, if different than above."` */
+        description: string
+      }
+      taxClassification: {
+        /** @defaultValue `"Federal tax classification (3)"` */
+        label: string
+        /** @defaultValue `"Select the type of business you are."` */
+        description: string
+      }
+      llcClassificationCode: {
+        /** @defaultValue `"LLC tax classification code"` */
+        label: string
+        /** @defaultValue `"Select the appropriate code for the LLC, unless it is a disregarded entity. A disregarded entity should instead check the appropriate selection for the tax classification of its owner."` */
+        description: string
+      }
+      other_text: {
+        /** @defaultValue `"Other"` */
+        label: string
+      }
+      foreign_partners: {
+        /** @defaultValue `"Foreign partners/owners/beneficiaries (3b)"` */
+        label: string
+        /** @defaultValue `"If you selected “Partnership”, “Trust/Estate” or checked “LLC” and entered “P” as the tax classification, and you are providing this form to a partnership, trust, or estate in which you have an ownership interest, check this box if you have any foreign partners, owners, or beneficiaries."` */
+        description: string
+      }
+      exempt_payee_code: {
+        /** @defaultValue `"Exempt payee code"` */
+        label: string
+      }
+      exemption_from_FATCA: {
+        /** @defaultValue `"Exemption from FATCA reporting code (4b)"` */
+        label: string
+        /** @defaultValue `"Enter the code (if any) indicating you are exempt from reporting under the Foreign Account Tax Compliance Act."` */
+        description: string
+      }
+      home_address_street_1: {
+        /** @defaultValue `"Street 1"` */
+        label: string
+      }
+      home_address_street_2: {
+        /** @defaultValue `"Street 2"` */
+        label: string
+      }
+      home_address_city: {
+        /** @defaultValue `"City"` */
+        label: string
+      }
+      home_address_state: {
+        /** @defaultValue `"State"` */
+        label: string
+      }
+      home_address_zip: {
+        /** @defaultValue `"Zip code"` */
+        label: string
+      }
+      account_number: {
+        /** @defaultValue `"Account numbers"` */
+        label: string
+      }
+      company_name: {
+        /** @defaultValue `"Requester's name and address"` */
+        label: string
+      }
+      ssn: {
+        /** @defaultValue `"Social Security Number (SSN)"` */
+        label: string
+      }
+      ein: {
+        /** @defaultValue `"Employer Identification Number (EIN)"` */
+        label: string
+      }
+      signature_text: {
+        /** @defaultValue `"Signature"` */
+        label: string
+      }
+    }
+    options: {
+      taxClassification: {
+        /** @defaultValue `"Individual/sole proprietor"` */
+        individual_proprietor: string
+        /** @defaultValue `"C-Corporation"` */
+        c_corporation: string
+        /** @defaultValue `"S-Corporation"` */
+        s_corporation: string
+        /** @defaultValue `"Partnership"` */
+        partnership: string
+        /** @defaultValue `"Trust/estate"` */
+        trust_estate: string
+        /** @defaultValue `"LLC"` */
+        limited_liability_company: string
+        /** @defaultValue `"Other"` */
+        other: string
+      }
+      llcClassificationCode: {
+        /** @defaultValue `"Select..."` */
+        placeholder: string
+        /** @defaultValue `"C = C-Corporation"` */
+        c: string
+        /** @defaultValue `"S = S-Corporation"` */
+        s: string
+        /** @defaultValue `"P = Partnership"` */
+        p: string
+      }
+    }
+    /** @defaultValue `"I agree to electronically sign this form."` */
+    agreeLabel: string
+    validation: {
+      /** @defaultValue `"This field is required."` */
+      required: string
+      /** @defaultValue `"You must agree to electronically sign this form."` */
+      agreeRequired: string
+      /** @defaultValue `"Enter a valid Social Security Number."` */
+      invalidSsn: string
+      /** @defaultValue `"Enter a valid Employer Identification Number."` */
+      invalidEin: string
+    }
+    /** @defaultValue `"Back"` */
+    backCta: string
+    /** @defaultValue `"Sign"` */
+    signCta: string
+    /** @defaultValue `"Acknowledge"` */
+    acknowledgeCta: string
   }
   /** Translation keys for the `Contractor.Submit` i18n namespace. */
   export interface ContractorSubmit {
