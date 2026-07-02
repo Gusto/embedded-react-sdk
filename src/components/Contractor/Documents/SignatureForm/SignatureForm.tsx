@@ -86,40 +86,38 @@ function Root({ documentUuid, dictionary }: SignatureFormProps) {
       <SDKFormProvider formHookResult={hookResult}>
         <FormLayout onSubmit={handleFormSubmit}>
           <Flex flexDirection="column" gap={32} alignItems="stretch">
-            <section>
-              <Flex flexDirection="column" gap={4}>
-                <Components.Heading as="h2">
-                  {document.title ?? t('signatureRequired')}
-                </Components.Heading>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h2">
+                {document.title ?? t('signatureRequired')}
+              </Components.Heading>
+              <Components.Text variant="supporting">
+                <Components.Link
+                  href={W9_INSTRUCTIONS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('instructions')}
+                </Components.Link>
+              </Components.Text>
+              {pdfUrl && (
                 <Components.Text variant="supporting">
-                  <Components.Link
-                    href={W9_INSTRUCTIONS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('instructions')}
-                  </Components.Link>
+                  <Trans
+                    t={t}
+                    i18nKey="downloadPrompt"
+                    components={{
+                      downloadLink: (
+                        <Components.Link
+                          href={pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download={`${document.title || 'document'}.pdf`}
+                        />
+                      ),
+                    }}
+                  />
                 </Components.Text>
-                {pdfUrl && (
-                  <Components.Text variant="supporting">
-                    <Trans
-                      t={t}
-                      i18nKey="downloadPrompt"
-                      components={{
-                        downloadLink: (
-                          <Components.Link
-                            href={pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            download={`${document.title || 'document'}.pdf`}
-                          />
-                        ),
-                      }}
-                    />
-                  </Components.Text>
-                )}
-              </Flex>
-            </section>
+              )}
+            </Flex>
 
             {hasFields && <W9Fields hookResult={hookResult} />}
 
@@ -331,17 +329,23 @@ function W9Fields({ hookResult }: W9FieldsProps) {
 function CertificationDeclaration() {
   const { t } = useTranslation('Contractor.SignatureForm')
   const Components = useComponentContext()
-  const points = Object.values(t('certificationPoints', { returnObjects: true }))
 
   return (
     <Flex flexDirection="column" gap={8}>
       <Components.Text>{t('certificationIntro')}</Components.Text>
       <ol>
-        {points.map((point, index) => (
-          <li key={index}>
-            <Components.Text>{point}</Components.Text>
-          </li>
-        ))}
+        <li>
+          <Components.Text>{t('certificationPoints.taxpayerId')}</Components.Text>
+        </li>
+        <li>
+          <Components.Text>{t('certificationPoints.backupWithholding')}</Components.Text>
+        </li>
+        <li>
+          <Components.Text>{t('certificationPoints.usPerson')}</Components.Text>
+        </li>
+        <li>
+          <Components.Text>{t('certificationPoints.fatca')}</Components.Text>
+        </li>
       </ol>
     </Flex>
   )

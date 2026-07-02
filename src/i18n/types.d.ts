@@ -2481,13 +2481,13 @@ export namespace Translations {
     certificationIntro: string
     certificationPoints: {
       /** @defaultValue `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` */
-      '0': string
+      taxpayerId: string
       /** @defaultValue `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` */
-      '1': string
+      backupWithholding: string
       /** @defaultValue `"I am a U.S. citizen or other U.S. person (defined below);"` */
-      '2': string
+      usPerson: string
       /** @defaultValue `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` */
-      '3': string
+      fatca: string
     }
     fields: {
       name: {
