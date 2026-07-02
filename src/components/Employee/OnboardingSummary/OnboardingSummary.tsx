@@ -13,6 +13,24 @@ import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
 
+const KNOWN_STEP_IDS = [
+  'personal_details',
+  'compensation_details',
+  'add_work_address',
+  'add_home_address',
+  'federal_tax_setup',
+  'state_tax_setup',
+  'direct_deposit_setup',
+  'employee_form_signing',
+  'file_new_hire_report',
+  'admin_review',
+] as const
+
+type KnownStepId = (typeof KNOWN_STEP_IDS)[number]
+
+const isKnownStepId = (id: string | undefined): id is KnownStepId =>
+  id !== undefined && (KNOWN_STEP_IDS as readonly string[]).includes(id)
+
 /**
  * Props for {@link OnboardingSummary}.
  *
@@ -111,13 +129,16 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
               >
                 {onboardingSteps && (
                   <RequirementsList
-                    requirements={onboardingSteps.map(step => ({
-                      completed: step.completed!,
-                      // @ts-expect-error: id has typeof keyof steps
-                      title: t(`steps.${step.id}`, step.title),
-                      // @ts-expect-error: id has typeof keyof stepsDescriptions
-                      description: t(`stepsDescriptions.${step.id}`),
-                    }))}
+                    requirements={onboardingSteps
+                      .filter(
+                        (step): step is typeof step & { id: KnownStepId; completed: boolean } =>
+                          step.completed !== undefined && isKnownStepId(step.id),
+                      )
+                      .map(step => ({
+                        completed: step.completed,
+                        title: t(`steps.${step.id}`),
+                        description: t(`stepsDescriptions.${step.id}`),
+                      }))}
                   />
                 )}
               </Components.Box>
