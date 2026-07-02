@@ -1745,44 +1745,6 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 
 ***
 
-<a id="contractorsubmit"></a>
-
-### ContractorSubmit
-
-Translation keys for the `Contractor.Submit` i18n namespace.
-
-#### Properties
-
-| Property | Default value |
-| ------ | ------ |
-| <a id="property-contractorsubmitdocumentrequirements"></a> `documentRequirements` | |
-| `documentRequirements.alertLabel` | `"The government requires you to have Form W-9 completed and signed."` |
-| `documentRequirements.description` | `"You will need to collect these forms from your contractor manually."` |
-| `documentRequirements.items` | |
-| `documentRequirements.items.0` | |
-| `documentRequirements.items.0.description` | `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` |
-| `documentRequirements.items.0.title` | `"Taxpayer Identification (Form W-9)"` |
-| `documentRequirements.title` | `"Documents"` |
-| <a id="property-contractorsubmitdonecta"></a> `doneCta` | `"Done"` |
-| <a id="property-contractorsubmitdonedescription"></a> `doneDescription` | `"This contractor has been successfully onboarded."` |
-| <a id="property-contractorsubmitdonetitle"></a> `doneTitle` | `"Contractor Onboarded"` |
-| <a id="property-contractorsubmitheading"></a> `heading` | `"Submit contractor"` |
-| <a id="property-contractorsubmitinvitecontractor"></a> `inviteContractor` | |
-| `inviteContractor.description` | `"You are inviting a contractor to complete the onboarding flow. Please double-check that you've entered this contractor's details correctly."` |
-| `inviteContractor.inviteCta` | `"Send invitation"` |
-| `inviteContractor.startDateLabel` | `"Start date"` |
-| `inviteContractor.successMessage` | `"Contractor has been saved & invited to self-onboard!"` |
-| `inviteContractor.title` | `"Review before sending invitation"` |
-| <a id="property-contractorsubmitsubmitcta"></a> `submitCta` | `"Submit and complete onboarding"` |
-| <a id="property-contractorsubmitsubmitdone"></a> `submitDone` | |
-| `submitDone.successMessage` | `"Contractor has been onboarded!"` |
-| <a id="property-contractorsubmittitle"></a> `title` | `"Please note that after submitting"` |
-| <a id="property-contractorsubmitwarningitems"></a> `warningItems` | |
-| `warningItems.0` | `"The contractor type cannot be changed."` |
-| `warningItems.1` | `"The new hire report cannot be modified."` |
-
-***
-
 <a id="contractorsignatureform"></a>
 
 ### ContractorSignatureForm
@@ -1794,8 +1756,14 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractorsignatureformacknowledgecta"></a> `acknowledgeCta` | `"Acknowledge"` |
-| <a id="property-contractorsignatureformagree label"></a> `agreeLabel` | `"I agree to electronically sign this form."` |
+| <a id="property-contractorsignatureformagreelabel"></a> `agreeLabel` | `"I agree to electronically sign this form."` |
 | <a id="property-contractorsignatureformbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-contractorsignatureformcertificationintro"></a> `certificationIntro` | `"Under penalties of perjury, I certify that:"` |
+| <a id="property-contractorsignatureformcertificationpoints"></a> `certificationPoints` | |
+| `certificationPoints.0` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
+| `certificationPoints.1` | `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` |
+| `certificationPoints.2` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
+| `certificationPoints.3` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
 | <a id="property-contractorsignatureformdownloadprompt"></a> `downloadPrompt` | `"<downloadLink>Download document</downloadLink>"` |
 | <a id="property-contractorsignatureformfields"></a> `fields` | |
 | `fields.account_number` | |
@@ -1813,7 +1781,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `fields.exemption_from_FATCA.description` | `"Enter the code (if any) indicating you are exempt from reporting under the Foreign Account Tax Compliance Act."` |
 | `fields.exemption_from_FATCA.label` | `"Exemption from FATCA reporting code (4b)"` |
 | `fields.foreign_partners` | |
-| `fields.foreign_partners.description` | `"If you selected "Partnership", "Trust/Estate" or checked "LLC" and entered "P" as the tax classification, and you are providing this form to a partnership, trust, or estate in which you have an ownership interest, check this box if you have any foreign partners, owners, or beneficiaries."` |
+| `fields.foreign_partners.description` | `"If you selected “Partnership”, “Trust/Estate” or checked “LLC” and entered “P” as the tax classification, and you are providing this form to a partnership, trust, or estate in which you have an ownership interest, check this box if you have any foreign partners, owners, or beneficiaries."` |
 | `fields.foreign_partners.label` | `"Foreign partners/owners/beneficiaries (3b)"` |
 | `fields.home_address_city` | |
 | `fields.home_address_city.label` | `"City"` |
@@ -1866,19 +1834,51 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `sections.certification` | `"Certification"` |
 | `sections.exemptions` | `"Exemptions"` |
 | `sections.tin` | `"Taxpayer Identification Number (TIN)"` |
-| <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
 | <a id="property-contractorsignatureformsignaturerequired"></a> `signatureRequired` | `"Signature required"` |
+| <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
 | <a id="property-contractorsignatureformvalidation"></a> `validation` | |
 | `validation.agreeRequired` | `"You must agree to electronically sign this form."` |
 | `validation.invalidEin` | `"Enter a valid Employer Identification Number."` |
 | `validation.invalidSsn` | `"Enter a valid Social Security Number."` |
 | `validation.required` | `"This field is required."` |
-| <a id="property-contractorsignatureformcertificationintro"></a> `certificationIntro` | `"Under penalties of perjury, I certify that:"` |
-| <a id="property-contractorsignatureformcertificationpoints"></a> `certificationPoints` | |
-| `certificationPoints.0` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
-| `certificationPoints.1` | `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` |
-| `certificationPoints.2` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
-| `certificationPoints.3` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
+
+***
+
+<a id="contractorsubmit"></a>
+
+### ContractorSubmit
+
+Translation keys for the `Contractor.Submit` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorsubmitdocumentrequirements"></a> `documentRequirements` | |
+| `documentRequirements.alertLabel` | `"The government requires you to have Form W-9 completed and signed."` |
+| `documentRequirements.description` | `"You will need to collect these forms from your contractor manually."` |
+| `documentRequirements.items` | |
+| `documentRequirements.items.0` | |
+| `documentRequirements.items.0.description` | `"Verifies your contractor's identity for tax purposes such as generating their Form 1099."` |
+| `documentRequirements.items.0.title` | `"Taxpayer Identification (Form W-9)"` |
+| `documentRequirements.title` | `"Documents"` |
+| <a id="property-contractorsubmitdonecta"></a> `doneCta` | `"Done"` |
+| <a id="property-contractorsubmitdonedescription"></a> `doneDescription` | `"This contractor has been successfully onboarded."` |
+| <a id="property-contractorsubmitdonetitle"></a> `doneTitle` | `"Contractor Onboarded"` |
+| <a id="property-contractorsubmitheading"></a> `heading` | `"Submit contractor"` |
+| <a id="property-contractorsubmitinvitecontractor"></a> `inviteContractor` | |
+| `inviteContractor.description` | `"You are inviting a contractor to complete the onboarding flow. Please double-check that you've entered this contractor's details correctly."` |
+| `inviteContractor.inviteCta` | `"Send invitation"` |
+| `inviteContractor.startDateLabel` | `"Start date"` |
+| `inviteContractor.successMessage` | `"Contractor has been saved & invited to self-onboard!"` |
+| `inviteContractor.title` | `"Review before sending invitation"` |
+| <a id="property-contractorsubmitsubmitcta"></a> `submitCta` | `"Submit and complete onboarding"` |
+| <a id="property-contractorsubmitsubmitdone"></a> `submitDone` | |
+| `submitDone.successMessage` | `"Contractor has been onboarded!"` |
+| <a id="property-contractorsubmittitle"></a> `title` | `"Please note that after submitting"` |
+| <a id="property-contractorsubmitwarningitems"></a> `warningItems` | |
+| `warningItems.0` | `"The contractor type cannot be changed."` |
+| `warningItems.1` | `"The new hire report cannot be modified."` |
 
 ***
 
