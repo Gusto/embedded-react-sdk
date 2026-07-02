@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Hub for viewing and responding to outstanding information requests from Gusto.
 
+## Remarks
+
+Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
+On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
+
+Information requests can also block payroll processing; in that case they are surfaced inline within
+`Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -28,14 +36,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
-On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
-
-Information requests can also block payroll processing; in that case they are surfaced inline within
-`Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
 
 ## InformationRequestsFlowProps
 

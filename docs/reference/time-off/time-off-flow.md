@@ -14,6 +14,12 @@ custom_edit_url: null
 
 Hub for creating and managing a company's time off policies.
 
+## Remarks
+
+Composes the time off list, policy-type selection, configuration, settings, employee assignment, and policy detail screens into a single multi-step flow. Sick and vacation policies share a common creation path (configure → settings → add employees); holiday policies follow a separate path (select federal holidays → add employees). All policy types can be viewed, edited, and removed from the unified policy list.
+
+The flow emits these events as users navigate:
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -28,12 +34,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-Composes the time off list, policy-type selection, configuration, settings, employee assignment, and policy detail screens into a single multi-step flow. Sick and vacation policies share a common creation path (configure → settings → add employees); holiday policies follow a separate path (select federal holidays → add employees). All policy types can be viewed, edited, and removed from the unified policy list.
-
-The flow emits these events as users navigate:
 
 ## TimeOffFlowProps
 

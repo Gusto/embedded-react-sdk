@@ -14,6 +14,19 @@ custom_edit_url: null
 
 Hub for viewing and managing all employees, including onboarding new ones.
 
+## Remarks
+
+Drop-in entry point for managing all employees in a company. Begins on the
+management employee list and routes into [DashboardFlow](dashboard-flow.md),
+[TerminationFlow](termination-flow.md), or [OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) based on the
+action the admin invokes on a row (or the "Add employee" CTA). A "Back to
+employees" header is added to each sub-flow so the admin can return to the
+list at any time.
+
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
+payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -28,19 +41,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-Drop-in entry point for managing all employees in a company. Begins on the
-management employee list and routes into [DashboardFlow](dashboard-flow.md),
-[TerminationFlow](termination-flow.md), or [OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) based on the
-action the admin invokes on a row (or the "Add employee" CTA). A "Back to
-employees" header is added to each sub-flow so the admin can return to the
-list at any time.
-
-The flow forwards every event emitted by its blocks to `onEvent`;
-see the events table on each block for the full set of events and
-payloads observable from this flow.
 
 ## EmployeeListFlowProps
 

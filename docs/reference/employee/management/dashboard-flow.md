@@ -14,21 +14,6 @@ custom_edit_url: null
 
 Hub for viewing and managing a single employee's profile, pay, and documents.
 
-## Example
-
-```tsx title="App.tsx"
-import { EmployeeManagement } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <EmployeeManagement.DashboardFlow
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
 <!-- guide-source: src/components/Employee/Dashboard/GUIDE.md (slot: overview) -->
 ## Tabs
 
@@ -66,6 +51,21 @@ machine also reacts to a subset of these events to swap between the cards
 and edit screens and to surface success alerts. The table below is the
 complete, current set of events observable from `DashboardFlow`, grouped by
 the tab that emits them.
+
+## Example
+
+```tsx title="App.tsx"
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <EmployeeManagement.DashboardFlow
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ## DashboardFlowProps
 

@@ -18,6 +18,15 @@ custom_edit_url: null
 Fetches a paginated list of a company's employees and decorates each entry with the actions
 allowed for its current onboarding state.
 
+## Remarks
+
+`employeeType` maps to a server-side filter and changes which actions appear on each row:
+`'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
+to list every employee.
+
+Page changes use placeholder data: the previous page stays rendered while the next one loads,
+and `status.isFetching` flips to `true` during the request.
+
 ## Example
 
 ```tsx title="Example"
@@ -42,15 +51,6 @@ function EmployeeListPage({ companyId }: { companyId: string }) {
   )
 }
 ```
-
-## Remarks
-
-`employeeType` maps to a server-side filter and changes which actions appear on each row:
-`'active'` adds `dismiss`, `'terminated'` adds `rehire`, `'onboarding'` adds none. Omit it
-to list every employee.
-
-Page changes use placeholder data: the previous page stays rendered while the next one loads,
-and `status.isFetching` flips to `true` during the request.
 
 ## Props
 

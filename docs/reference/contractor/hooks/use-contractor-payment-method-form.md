@@ -17,6 +17,18 @@ custom_edit_url: null
 
 Headless React Hook Form hook for managing a contractor's payment method type.
 
+## Remarks
+
+Owns only the payment method `type` selection (Direct Deposit or Check) and,
+on submit, updates the contractor's payment method via `PUT`. Always operates
+in update mode — every contractor has a payment method, defaulting to Check.
+
+The bank account itself is managed by the separate `useContractorBankAccountForm`
+hook. On the Direct Deposit path the bank-account `POST` updates the payment
+method as a server side-effect, so a composing component submits the bank form
+instead of this hook; this hook's `onSubmit` is used for the Check path.
+`status.isDirectDeposit` lets the component drive that branching.
+
 ## Example
 
 ```tsx title="Example"
@@ -43,18 +55,6 @@ function PaymentTypeScreen({ contractorId }: { contractorId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Owns only the payment method `type` selection (Direct Deposit or Check) and,
-on submit, updates the contractor's payment method via `PUT`. Always operates
-in update mode — every contractor has a payment method, defaulting to Check.
-
-The bank account itself is managed by the separate `useContractorBankAccountForm`
-hook. On the Direct Deposit path the bank-account `POST` updates the payment
-method as a server side-effect, so a composing component submits the bank form
-instead of this hook; this hook's `onSubmit` is used for the Check path.
-`status.isDirectDeposit` lets the component drive that branching.
 
 ## Props
 

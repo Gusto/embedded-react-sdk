@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Hub for running and managing all payrolls across a company's pay schedules.
 
+## Remarks
+
+Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -23,10 +27,6 @@ function RunPayrollPage() {
   return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
-
-## Remarks
-
-Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
 
 ## PayrollFlowProps
 

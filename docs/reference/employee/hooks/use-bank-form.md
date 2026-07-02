@@ -17,6 +17,14 @@ custom_edit_url: null
 
 Headless React Hook Form hook for creating an employee bank account.
 
+## Remarks
+
+Captures the account nickname, routing number, account number, and account
+type. Creating a bank account also updates the employee's payment method on
+the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
+discriminated union; in practice the hook transitions to the ready state
+immediately because it does not fetch any server data.
+
 ## Example
 
 ```tsx title="Example"
@@ -46,14 +54,6 @@ function AddBankAccount({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Captures the account nickname, routing number, account number, and account
-type. Creating a bank account also updates the employee's payment method on
-the Gusto API. Returns the standard `HookLoadingResult | UseBankFormReady`
-discriminated union; in practice the hook transitions to the ready state
-immediately because it does not fetch any server data.
 
 ## Props
 

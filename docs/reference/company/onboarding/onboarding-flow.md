@@ -14,6 +14,12 @@ custom_edit_url: null
 
 Guided flow to onboard a company to Gusto.
 
+## Remarks
+
+The flow begins on the overview screen and steps through locations, federal taxes, industry,
+bank account, employee onboarding, pay schedule, state taxes, and document signing before
+returning to the overview.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -32,12 +38,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-The flow begins on the overview screen and steps through locations, federal taxes, industry,
-bank account, employee onboarding, pay schedule, state taxes, and document signing before
-returning to the overview.
 
 ## OnboardingFlowProps
 

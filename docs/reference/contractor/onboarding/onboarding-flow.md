@@ -14,6 +14,23 @@ custom_edit_url: null
 
 Guided flow for admins to onboard a contractor to the company.
 
+## Remarks
+
+Renders a multi-step experience that collects every piece of information
+required to add a contractor to a company. Begins on the contractor list
+and transitions into the per-step screens when "Add contractor" or a row's
+"Edit"/"Continue" action is invoked; the submit step returns to the list.
+The flow is driven by an internal state machine and wraps each step in
+error and suspense boundaries.
+
+Each step of the flow is also exported as a standalone block (see the
+Blocks table) for composing a custom workflow when this orchestration
+is the wrong fit.
+
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
+payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -32,23 +49,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-Renders a multi-step experience that collects every piece of information
-required to add a contractor to a company. Begins on the contractor list
-and transitions into the per-step screens when "Add contractor" or a row's
-"Edit"/"Continue" action is invoked; the submit step returns to the list.
-The flow is driven by an internal state machine and wraps each step in
-error and suspense boundaries.
-
-Each step of the flow is also exported as a standalone block (see the
-Blocks table) for composing a custom workflow when this orchestration
-is the wrong fit.
-
-The flow forwards every event emitted by its blocks to `onEvent`;
-see the events table on each block for the full set of events and
-payloads observable from this flow.
 
 ## OnboardingFlowProps
 

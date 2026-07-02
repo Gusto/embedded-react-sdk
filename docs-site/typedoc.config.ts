@@ -66,6 +66,10 @@ export const baseOptions = {
   validation: { invalidLink: true },
   formatWithPrettier: false,
 
+  // Render @remarks/@example in their authored position (with the comment summary),
+  // ahead of the Type Declaration / Properties table, instead of after it.
+  blockTagsPreserveOrder: ['@remarks', '@example'],
+
   // Custom block tags. `@components` lists the components/hooks a flow composes
   // (rendered as a table by the SDK theme); `@events` documents events separately
   // from `@remarks`; `@groupWith {@link X}` pins a type to render immediately after

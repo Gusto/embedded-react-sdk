@@ -34,6 +34,18 @@ custom_edit_url: null
 
 Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
 
+#### Remarks
+
+Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
+and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
+`afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
+successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
+query automatically. Partners who supply their own `QueryClient` are responsible for matching that
+contract.
+
+Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
+manually.
+
 #### ApiProviderProps
 
 <a id="apiproviderprops"></a>
@@ -48,18 +60,6 @@ Props for [ApiProvider](#apiprovider).
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
 
-#### Remarks
-
-Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
-and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
-`afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
-query automatically. Partners who supply their own `QueryClient` are responsible for matching that
-contract.
-
-Typically wrapped by [GustoProvider](#gustoprovider); use directly only when composing the provider stack
-manually.
-
 ## Variables
 
 <a id="contractoronboardingstatus"></a>
@@ -69,6 +69,11 @@ manually.
 > `const` **ContractorOnboardingStatus**: `object`
 
 Map of contractor onboarding status values returned by the Gusto API.
+
+#### Remarks
+
+Use these keys to compare against the `onboardingStatus` field on a contractor
+record. The values mirror the strings returned by the API.
 
 #### Type Declaration
 
@@ -81,11 +86,6 @@ Map of contractor onboarding status values returned by the Gusto API.
 | <a id="property-contractoronboardingstatusself_onboarding_not_invited"></a> `SELF_ONBOARDING_NOT_INVITED` | `"self_onboarding_not_invited"` | `ContractorOnboardingStatus1.SelfOnboardingNotInvited` |
 | <a id="property-contractoronboardingstatusself_onboarding_review"></a> `SELF_ONBOARDING_REVIEW` | `"self_onboarding_review"` | `ContractorOnboardingStatus1.SelfOnboardingReview` |
 | <a id="property-contractoronboardingstatusself_onboarding_started"></a> `SELF_ONBOARDING_STARTED` | `"self_onboarding_started"` | `ContractorOnboardingStatus1.SelfOnboardingStarted` |
-
-#### Remarks
-
-Use these keys to compare against the `onboardingStatus` field on a contractor
-record. The values mirror the strings returned by the API.
 
 ***
 
@@ -114,6 +114,11 @@ onboarding flow.
 
 Map of employee onboarding status values returned by the Gusto API.
 
+#### Remarks
+
+Use these keys to compare against the `onboardingStatus` field on an employee
+record. The values mirror the strings returned by the API.
+
 #### Type Declaration
 
 | Name | Type | Default value |
@@ -126,11 +131,6 @@ Map of employee onboarding status values returned by the Gusto API.
 | <a id="property-employeeonboardingstatusself_onboarding_invited_overdue"></a> `SELF_ONBOARDING_INVITED_OVERDUE` | `"self_onboarding_invited_overdue"` | `OnboardingStatus.SelfOnboardingInvitedOverdue` |
 | <a id="property-employeeonboardingstatusself_onboarding_invited_started"></a> `SELF_ONBOARDING_INVITED_STARTED` | `"self_onboarding_invited_started"` | `OnboardingStatus.SelfOnboardingInvitedStarted` |
 | <a id="property-employeeonboardingstatusself_onboarding_pending_invite"></a> `SELF_ONBOARDING_PENDING_INVITE` | `"self_onboarding_pending_invite"` | `OnboardingStatus.SelfOnboardingPendingInvite` |
-
-#### Remarks
-
-Use these keys to compare against the `onboardingStatus` field on an employee
-record. The values mirror the strings returned by the API.
 
 ***
 
@@ -251,15 +251,6 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
-| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
-| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
-| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
-
 #### Remarks
 
 Use this when you need to reference a category value by name (e.g.
@@ -271,6 +262,15 @@ Use this when you need to reference a category value by name (e.g.
 | `validation_error` | Client-side Zod schema validation before the request was sent |
 | `network_error` | Network connectivity failure (connection refused, timeout, abort) |
 | `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
 
 ## Interfaces
 

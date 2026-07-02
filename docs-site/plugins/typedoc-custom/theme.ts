@@ -272,46 +272,6 @@ function renderHookGuidePage(rendered: string, guide: Guide): string {
   return `${rendered.trimEnd()}\n\n## Advanced\n\n${fenced}\n`
 }
 
-/**
- * Reorder a standalone component page's top-level (`##`) sections so the props
- * reference lands last. The default member template emits Props → Remarks →
- * Example, which fronts a reader with the exhaustive props table before they
- * know what the component is or how to call it. This reorders to Example →
- * Remarks → Props: quick-start first, conceptual detail next, full reference
- * last. Everything above the first `##` (H1 + summary) is untouched, and
- * unknown sections keep their original order ahead of the props table.
- */
-function reorderComponentSections(rendered: string): string {
-  const lines = rendered.split('\n')
-  const firstSection = lines.findIndex(l => /^##\s/.test(l))
-  if (firstSection === -1) return rendered
-
-  const preamble = lines.slice(0, firstSection)
-  const sections: { title: string; lines: string[] }[] = []
-  for (const line of lines.slice(firstSection)) {
-    const heading = /^##\s+(.+?)\s*$/.exec(line)
-    if (heading) {
-      sections.push({ title: heading[1]!, lines: [line] })
-    } else {
-      sections[sections.length - 1]!.lines.push(line)
-    }
-  }
-
-  const rank = (title: string): number => {
-    if (/^Examples?$/.test(title)) return 0
-    if (title === 'Remarks') return 1
-    if (/Props$/.test(title)) return 2
-    if (title === 'Events') return 3
-    return 4
-  }
-  const ordered = sections
-    .map((section, index) => ({ section, index }))
-    .sort((a, b) => rank(a.section.title) - rank(b.section.title) || a.index - b.index)
-    .map(({ section }) => section)
-
-  return [...preamble, ...ordered.flatMap(section => section.lines)].join('\n')
-}
-
 function isBlocksPage(model: DeclarationReflection): boolean {
   return model.name === 'Blocks' && model.kind === ReflectionKind.Namespace
 }
@@ -871,77 +831,6 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
   }
 
   return out.join('\n')
-}
-
-/**
- * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
- * sequence: Example → Remarks → Props → Returns → everything else (Fields,
- * Variables, Interfaces, Type Aliases — kept in their original relative order).
- *
- * The Props and Returns sections carry hard-coded headings, so they rank by
- * exact title.
- */
-function reorderHookSections(rendered: string): string {
-  const lines = rendered.split('\n')
-  const firstSection = lines.findIndex(l => /^##\s/.test(l))
-  if (firstSection === -1) return rendered
-
-  const preamble = lines.slice(0, firstSection)
-  const sections: { title: string; lines: string[] }[] = []
-  for (const line of lines.slice(firstSection)) {
-    const heading = /^##\s+(.+?)\s*$/.exec(line)
-    if (heading) {
-      sections.push({ title: heading[1]!, lines: [line] })
-    } else {
-      sections[sections.length - 1]!.lines.push(line)
-    }
-  }
-
-  const rank = (title: string): number => {
-    if (/^Examples?/.test(title)) return 0
-    if (title === 'Remarks') return 1
-    if (title === 'Props') return 2
-    if (title === 'Returns') return 3
-    return 99
-  }
-  const ordered = sections
-    .map((section, index) => ({ section, index }))
-    .sort((a, b) => rank(a.section.title) - rank(b.section.title) || a.index - b.index)
-    .map(({ section }) => section)
-
-  return [...preamble, ...ordered.flatMap(section => section.lines)].join('\n')
-}
-
-/**
- * Move the `## Example` section to the top of the hook page — before props,
- * returns, and remarks — so a reader sees a working example immediately after
- * the hook signature and description.
- */
-function moveExampleToTop(rendered: string): string {
-  const lines = rendered.split('\n')
-  const exampleStart = lines.findIndex(l => /^## Example\s*$/.test(l))
-  if (exampleStart === -1) return rendered
-
-  let exampleEnd = lines.length
-  for (let i = exampleStart + 1; i < lines.length; i++) {
-    if (/^## /.test(lines[i]!)) {
-      exampleEnd = i
-      break
-    }
-  }
-
-  const exampleLines = lines.slice(exampleStart, exampleEnd)
-  const withoutExample = [...lines.slice(0, exampleStart), ...lines.slice(exampleEnd)]
-
-  const firstH2 = withoutExample.findIndex(l => /^## /.test(l))
-  if (firstH2 === -1) return rendered
-
-  return [
-    ...withoutExample.slice(0, firstH2),
-    ...exampleLines,
-    '',
-    ...withoutExample.slice(firstH2),
-  ].join('\n')
 }
 
 /**
@@ -2614,9 +2503,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
         }
 
         let rendered = origReflectionTemplate(page)
-        // Standalone component pages are flow pages; front the Example and
-        // Remarks ahead of the props table for readability.
-        if (isComponent(page.model)) rendered = reorderComponentSections(rendered)
         if (componentsTable) rendered = insertComponentsTable(rendered, componentsTable)
 
         // Hook page: reformat section headings and inject fields table.
@@ -2624,8 +2510,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
           const formModel = formHookModelForPage(page.model)
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
-          rendered = moveExampleToTop(rendered)
-          rendered = reorderHookSections(rendered)
           let relocatedFieldTypes = new Set<string>()
           if (formModel) {
             // A form hook always gets a `## Fields` section — if neither shape

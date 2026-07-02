@@ -42,21 +42,6 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 
 Employee selection screen for assigning employees to a sick or vacation time off policy.
 
-### AddEmployeesToPolicyProps
-
-<a id="addemployeestopolicyprops"></a>
-
-Props for [AddEmployeesToPolicy](#addemployeestopolicy).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `policyId` | `string` | The time off policy identifier. |
-| `policyType` | [`CreatableTimeOffPolicyType`](#creatabletimeoffpolicytype) | The type of policy being edited — `'sick'` or `'vacation'`. |
-
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Displays all active employees with search filtering and pagination. Employees already
@@ -65,13 +50,6 @@ from each employee's existing paid time off data. Starting balances can be manua
 set or overridden per employee. When employees are being moved from another policy a
 reassignment warning is shown, and removing a previously enrolled employee requires
 confirmation.
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
-| `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
 
 ### Example
 
@@ -89,6 +67,28 @@ function MyComponent() {
   )
 }
 ```
+
+### AddEmployeesToPolicyProps
+
+<a id="addemployeestopolicyprops"></a>
+
+Props for [AddEmployeesToPolicy](#addemployeestopolicy).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `policyId` | `string` | The time off policy identifier. |
+| `policyType` | [`CreatableTimeOffPolicyType`](#creatabletimeoffpolicytype) | The type of policy being edited — `'sick'` or `'vacation'`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
+| `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
 
 <a id="holidayselectionform"></a>
 
@@ -130,6 +130,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Form for creating or editing the details of a sick or vacation time off policy — its name and accrual configuration.
 
+### Remarks
+
+Omit `policyId` to create a new policy; pass `policyId` to edit an existing
+one. In edit mode, the form fetches the policy via Suspense and merges the
+derived defaults with any `defaultValues` you supply (your overrides win).
+When editing a policy whose configuration is already complete, the accrual
+method selector is restricted to the matching category (unlimited vs.
+accrual-based).
+
 ### PolicyConfigurationFormProps
 
 <a id="policyconfigurationformprops"></a>
@@ -146,15 +155,6 @@ Props for [PolicyConfigurationForm](#policyconfigurationform).
 | `policyId?` | `string` | When set, the form loads the existing policy and submits an update. |
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Omit `policyId` to create a new policy; pass `policyId` to edit an existing
-one. In edit mode, the form fetches the policy via Suspense and merges the
-derived defaults with any `defaultValues` you supply (your overrides win).
-When editing a policy whose configuration is already complete, the accrual
-method selector is restricted to the matching category (unlimited vs.
-accrual-based).
 
 ### Events
 
@@ -202,6 +202,10 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Configures additional policy limits and rules for a sick or vacation policy. This step is skipped for policies with unlimited accrual.
 
+### Remarks
+
+Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
+
 ### PolicySettingsProps
 
 <a id="policysettingsprops"></a>
@@ -217,10 +221,6 @@ Props for [PolicySettings](#policysettings).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
-
-Fetches the time off policy, derives the accrual method category, and submits updates to the time off policies endpoint. Emits the following events:
-
 ### Events
 
 | Event | Description | Data |
@@ -233,6 +233,14 @@ Fetches the time off policy, derives the accrual method category, and submits up
 ## PolicySettingsPresentation
 
 Presentation-only form for configuring time off policy limits and rules.
+
+### Remarks
+
+Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use [PolicySettings](#policysettings).
+
+The fields shown depend on `accrualMethod`:
+- Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
+- Balance maximum, carry-over limit, and paid-out-on-termination are always shown
 
 ### PolicySettingsPresentationProps
 
@@ -250,19 +258,16 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
 
-### Remarks
-
-Use this component when you need to render the policy settings form without the data-fetching container — provide the `accrualMethod` and handle submission yourself. For the data-connected version, use [PolicySettings](#policysettings).
-
-The fields shown depend on `accrualMethod`:
-- Accrual maximum and waiting period are shown for `'hours_worked'` and `'fixed_per_pay_period'`
-- Balance maximum, carry-over limit, and paid-out-on-termination are always shown
-
 <a id="policytypeselector"></a>
 
 ## PolicyTypeSelector
 
 Selection screen for choosing which kind of time-off policy to create — sick, vacation, or holiday.
+
+### Remarks
+
+The holiday option is omitted when the company already has a holiday pay policy, since a company
+can only have one.
 
 ### PolicyTypeSelectorProps
 
@@ -279,11 +284,6 @@ Props for [PolicyTypeSelector](#policytypeselector).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
-
-The holiday option is omitted when the company already has a holiday pay policy, since a company
-can only have one.
-
 ### Events
 
 | Event | Description | Data |
@@ -296,6 +296,12 @@ can only have one.
 ## TimeOffPolicyDetail
 
 Detail view for a sick or vacation time-off policy.
+
+### Remarks
+
+Loads the policy and its enrolled employees, then renders the tabbed detail view with
+actions for editing the policy, adding or removing employees, and adjusting individual
+balances. Editable actions are only shown for sick and vacation policies.
 
 ### TimeOffPolicyDetailProps
 
@@ -310,12 +316,6 @@ Props for [TimeOffPolicyDetail](#timeoffpolicydetail).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffTimeOffPolicyDetails`](../Translations/index.md#companytimeofftimeoffpolicydetails)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Loads the policy and its enrolled employees, then renders the tabbed detail view with
-actions for editing the policy, adding or removing employees, and adjusting individual
-balances. Editable actions are only shown for sick and vacation policies.
 
 ### Events
 
@@ -332,12 +332,6 @@ balances. Editable actions are only shown for sick and vacation policies.
 
 Presentational detail view for sick and vacation time-off policies.
 
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
-
 ### Remarks
 
 Displays policy configuration and accrual settings in a tabbed interface alongside the
@@ -346,11 +340,22 @@ adding employees, removing employees, and editing individual employee balances. 
 component is fully controlled — pass in the data, selected tab, and dialog state and wire
 up the callbacks. The corresponding container component is [TimeOffPolicyDetail](#timeoffpolicydetail).
 
+### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
+
 <a id="viewholidayemployees"></a>
 
 ## ViewHolidayEmployees
 
 Displays the holiday policy detail view with the employees tab selected.
+
+### Remarks
+
+Shows enrolled employees with search filtering, and provides actions to add employees,
+edit the holiday selection, or remove employees.
 
 ### ViewHolidayEmployeesProps
 
@@ -365,11 +370,6 @@ Props for [ViewHolidayEmployees](#viewholidayemployees).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffHolidayPolicy`](../Translations/index.md#companytimeoffholidaypolicy)\>\> \| `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`CompanyTimeOffPolicyDetail`](../Translations/index.md#companytimeoffpolicydetail)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Shows enrolled employees with search filtering, and provides actions to add employees,
-edit the holiday selection, or remove employees.
 
 ### Events
 

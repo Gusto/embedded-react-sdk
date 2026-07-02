@@ -22,6 +22,31 @@ custom_edit_url: null
 
 Catalog of every event key that an SDK component can emit through `onEvent`.
 
+#### Remarks
+
+Components surface user actions and lifecycle transitions to the integrating
+application through an `onEvent(type, data)` callback. The `type` argument is
+always one of the string values in this object. Use this map to compare
+against the incoming `type` rather than hard-coding strings.
+
+All domain-specific event groups are spread into this object alongside
+a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
+
+#### Example
+
+```tsx
+import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+
+<EmployeeOnboarding
+  companyId={companyId}
+  onEvent={(type, data) => {
+    if (type === componentEvents.EMPLOYEE_ONBOARDING_DONE) {
+      navigate('/employees')
+    }
+  }}
+/>
+```
+
 #### Type Declaration
 
 | Name | Type |
@@ -307,31 +332,6 @@ Catalog of every event key that an SDK component can emit through `onEvent`.
 | `TRANSITION_CREATED` | `"transition/created"` |
 | `TRANSITION_PAYROLL_SKIPPED` | `"transition/payrollSkipped"` |
 
-#### Remarks
-
-Components surface user actions and lifecycle transitions to the integrating
-application through an `onEvent(type, data)` callback. The `type` argument is
-always one of the string values in this object. Use this map to compare
-against the incoming `type` rather than hard-coding strings.
-
-All domain-specific event groups are spread into this object alongside
-a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
-
-#### Example
-
-```tsx
-import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-
-<EmployeeOnboarding
-  companyId={companyId}
-  onEvent={(type, data) => {
-    if (type === componentEvents.EMPLOYEE_ONBOARDING_DONE) {
-      navigate('/employees')
-    }
-  }}
-/>
-```
-
 ## Utility types
 
 <a id="eventtype"></a>
@@ -370,6 +370,13 @@ const handleEvent = (type: EventType, data: unknown) => {
 
 Callback signature for an SDK component event emitter, invoked with an event key and optional payload.
 
+#### Remarks
+
+Supply a function of this shape as the `onEvent` prop on any SDK feature component.
+The `type` argument is always one of the constants from `componentEvents`. The `data`
+argument is event-specific — some events carry no payload while others include the full
+API response body. Refer to each component's event table for details.
+
 #### Type Parameters
 
 | Type Parameter | Description |
@@ -387,10 +394,3 @@ Callback signature for an SDK component event emitter, invoked with an event key
 #### Returns
 
 `void`
-
-#### Remarks
-
-Supply a function of this shape as the `onEvent` prop on any SDK feature component.
-The `type` argument is always one of the constants from `componentEvents`. The `data`
-argument is event-specific — some events carry no payload while others include the full
-API response body. Refer to each component's event table for details.

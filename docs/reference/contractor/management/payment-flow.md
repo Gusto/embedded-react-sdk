@@ -14,21 +14,6 @@ custom_edit_url: null
 
 Hub for creating and managing contractor payments for a company.
 
-## Example
-
-```tsx title="App.tsx"
-import { ContractorManagement } from '@gusto/embedded-react-sdk'
-
-function MyApp() {
-  return (
-    <ContractorManagement.PaymentFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
 <!-- guide-source: src/components/Contractor/Payments/PaymentFlow/GUIDE.md (slot: overview) -->
 ## Payment Workflow
 
@@ -46,6 +31,21 @@ The typical step sequence when composing the blocks manually:
 Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
 
 Events emitted by the blocks bubble up through the single `onEvent` handler.
+
+## Example
+
+```tsx title="App.tsx"
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <ContractorManagement.PaymentFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ## PaymentFlowProps
 

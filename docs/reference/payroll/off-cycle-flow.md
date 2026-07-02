@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Guided flow to create and run a bonus or correction payroll.
 
+## Remarks
+
+Guides the user through configuring pay period dates, selecting a reason, choosing
+employees, and setting deduction and tax withholding preferences, then transitions
+into the standard payroll execution experience (configuration, overview, submission,
+receipts). All off-cycle payroll types share the same execution steps as regular
+payrolls — only the creation step differs.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -32,14 +40,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-Guides the user through configuring pay period dates, selecting a reason, choosing
-employees, and setting deduction and tax withholding preferences, then transitions
-into the standard payroll execution experience (configuration, overview, submission,
-receipts). All off-cycle payroll types share the same execution steps as regular
-payrolls — only the creation step differs.
 
 ## OffCycleFlowProps
 

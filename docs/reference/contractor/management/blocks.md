@@ -16,20 +16,6 @@ custom_edit_url: null
 
 Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers.
 
-### CreatePaymentProps
-
-<a id="createpaymentprops"></a>
-
-Props for [CreatePayment](#createpayment).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | UUID of the company for which to create a contractor payment group. |
-| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsCreatePayment`](../../Translations/index.md#contractorpaymentscreatepayment)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Active, fully onboarded contractors are listed for the given company. Hours and bonuses apply to hourly contractors; wages apply to fixed contractors; reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
@@ -42,17 +28,6 @@ Features:
 - **Live totals** — wage, bonus, reimbursement, and overall totals update as amounts change.
 - **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
 - **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `contractor/payments/edit` | The edit modal was opened for a contractor. | — |
-| `contractor/payments/update` | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
-| `contractor/payments/preview` | The preview API call succeeded. | The contractor payment group preview response. |
-| `contractor/payments/backToEdit` | The user returned from preview to continue editing. | — |
-| `contractor/payments/created` | The payment group was successfully created. | The created contractor payment group response. |
-| `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker. | — |
 
 ### Example
 
@@ -69,11 +44,55 @@ function CreateContractorPayment() {
 }
 ```
 
+### CreatePaymentProps
+
+<a id="createpaymentprops"></a>
+
+Props for [CreatePayment](#createpayment).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | UUID of the company for which to create a contractor payment group. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsCreatePayment`](../../Translations/index.md#contractorpaymentscreatepayment)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/payments/edit` | The edit modal was opened for a contractor. | — |
+| `contractor/payments/update` | A contractor's payment values were updated locally. | The updated form values (hours, wage, bonus, reimbursement, payment method, etc.). |
+| `contractor/payments/preview` | The preview API call succeeded. | The contractor payment group preview response. |
+| `contractor/payments/backToEdit` | The user returned from preview to continue editing. | — |
+| `contractor/payments/created` | The payment group was successfully created. | The created contractor payment group response. |
+| `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker. | — |
+
 <a id="paymenthistory"></a>
 
 ## PaymentHistory
 
 Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel.
+
+### Remarks
+
+Features:
+
+- **Payment group overview** — debit date and group context in the header.
+- **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
+- **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
+
+### Example
+
+```tsx
+import { ContractorManagement } from '@gusto/embedded-react-sdk'
+
+<ContractorManagement.PaymentHistory
+  paymentId="payment-group-uuid"
+  onEvent={() => {}}
+/>
+```
 
 ### PaymentHistoryProps
 
@@ -89,31 +108,12 @@ Props for [PaymentHistory](#paymenthistory).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
-
-Features:
-
-- **Payment group overview** — debit date and group context in the header.
-- **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
-- **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
-
 ### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
 | `contractor/payments/cancel` | An individual contractor payment was successfully canceled. | `{ paymentId: string }` — the individual contractor payment UUID, not the payment group UUID passed as `paymentId` prop |
-
-### Example
-
-```tsx
-import { ContractorManagement } from '@gusto/embedded-react-sdk'
-
-<ContractorManagement.PaymentHistory
-  paymentId="payment-group-uuid"
-  onEvent={() => {}}
-/>
-```
 
 <a id="paymentslist"></a>
 
@@ -173,6 +173,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required.
 
+### Remarks
+
+Features:
+
+- **Success confirmation** — confirms the number of payments scheduled.
+- **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+- **Debit account** — shows the company bank account used for the debit.
+- **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+
 ### PaymentSummaryProps
 
 <a id="paymentsummaryprops"></a>
@@ -184,15 +193,6 @@ Props for [PaymentSummary](#paymentsummary).
 | `companyId` | `string` | UUID of the company that owns the payment group. |
 | `onEvent` | (`type`: [`EventType`](../../events.md#eventtype), `data?`: `unknown`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
 | `paymentGroupId` | `string` | UUID of the contractor payment group to summarize. |
-
-### Remarks
-
-Features:
-
-- **Success confirmation** — confirms the number of payments scheduled.
-- **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
-- **Debit account** — shows the company bank account used for the debit.
-- **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
 
 ### Events
 

@@ -17,6 +17,20 @@ custom_edit_url: null
 
 Headless hook for creating or updating a child-support garnishment.
 
+## Remarks
+
+Unlike standard garnishments, child support requires agency-specific
+attributes (case number, order number, remittance number) that vary by
+state, plus an optional county selection when the state has multiple
+counties. The hook loads the agency catalog from the Gusto API, derives
+which attributes the selected state requires, and exposes the right Fields
+conditionally.
+
+Presence or absence of `garnishmentId` selects the API verb: omit it to
+POST a new garnishment, supply it to PUT updates against the existing row.
+For non-child-support deductions (court-ordered garnishments and post-tax
+custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
+
 ## Example
 
 ```tsx title="Example"
@@ -58,20 +72,6 @@ function ChildSupportPage({ employeeId, garnishmentId }: { employeeId: string; g
   )
 }
 ```
-
-## Remarks
-
-Unlike standard garnishments, child support requires agency-specific
-attributes (case number, order number, remittance number) that vary by
-state, plus an optional county selection when the state has multiple
-counties. The hook loads the agency catalog from the Gusto API, derives
-which attributes the selected state requires, and exposes the right Fields
-conditionally.
-
-Presence or absence of `garnishmentId` selects the API verb: omit it to
-POST a new garnishment, supply it to PUT updates against the existing row.
-For non-child-support deductions (court-ordered garnishments and post-tax
-custom), use [useDeductionForm](use-deduction-form.md#usedeductionform) instead.
 
 ## Props
 
@@ -122,6 +122,13 @@ in update mode, the existing garnishment) is loading;
 
 Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the child-support-specific `data`, `status`, `actions`, and `form.Fields`
+shape. Static, entity-derived values live under `data.*`; reactive values
+that flip with form input live under `status.*`.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submission action. |
@@ -151,6 +158,13 @@ Ready-state shape returned by [useChildSupportGarnishmentForm](#usechildsupportg
 <a id="childsupportgarnishmentformfields"></a>
 
 Pre-bound field components exposed on `useChildSupportGarnishmentForm().form.Fields`.
+
+**Remarks**
+
+Each property is either the field component or `undefined`. A field is
+`undefined` when conditions for rendering it aren't met — see each member
+for its visibility rule. Always null-check conditional fields (e.g.
+`{Fields.FipsCode && <Fields.FipsCode ... />}`) before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |

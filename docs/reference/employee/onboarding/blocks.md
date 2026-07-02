@@ -16,22 +16,6 @@ custom_edit_url: null
 
 Onboarding step for collecting an employee's role and compensation details.
 
-### CompensationProps
-
-<a id="compensationprops"></a>
-
-Props for [Compensation](#compensation).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `startDate` | `string` | The date the employee will start work. |
-| `defaultValues?` | [`CompensationDefaultValues`](#compensationdefaultvalues) | Default values for the compensation form fields. If employee data is available via the API, these values are overwritten. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeCompensation`](../../Translations/index.md#employeecompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Collects the job title, employee type (hourly, salary), compensation
@@ -40,16 +24,6 @@ roles. Automatically routes between editing the only job (when an employee
 has zero or one non-Nonexempt job) and a jobs-list view (when multiple
 roles need to be managed) on first mount; on subsequent refetches the user
 stays on their current step.
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `employee/job/created` | Fired after a job is successfully created | [Job](../../APIModels/index.md#job) |
-| `employee/job/updated` | Fired after a job is successfully updated | [Job](../../APIModels/index.md#job) |
-| `employee/job/deleted` | Fired after a job is successfully deleted | — |
-| `employee/compensation/updated` | Fired after compensation details are updated | [Compensation](#compensation) |
-| `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
 
 ### Example
 
@@ -67,43 +41,41 @@ function MyComponent() {
 }
 ```
 
+### CompensationProps
+
+<a id="compensationprops"></a>
+
+Props for [Compensation](#compensation).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `startDate` | `string` | The date the employee will start work. |
+| `defaultValues?` | [`CompensationDefaultValues`](#compensationdefaultvalues) | Default values for the compensation form fields. If employee data is available via the API, these values are overwritten. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeCompensation`](../../Translations/index.md#employeecompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/job/created` | Fired after a job is successfully created | [Job](../../APIModels/index.md#job) |
+| `employee/job/updated` | Fired after a job is successfully updated | [Job](../../APIModels/index.md#job) |
+| `employee/job/deleted` | Fired after a job is successfully deleted | — |
+| `employee/compensation/updated` | Fired after compensation details are updated | [Compensation](#compensation) |
+| `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
+
 <a id="deductions"></a>
 
 ## Deductions
 
 Onboarding step for collecting an employee's post-tax deductions and court-ordered garnishments.
 
-### DeductionsProps
-
-<a id="deductionsprops"></a>
-
-Props for [Deductions](#deductions).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeDeductions`](../../Translations/index.md#employeedeductions)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-
-_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Renders the employee's current deductions as a list, with an empty state when none exist. Users add or edit deductions inline — post-tax custom deductions or court-ordered garnishments — and can complete the step with or without any active deductions.
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `employee/deductions/add` | Fired when the user opens the form to add a new deduction | — |
-| `employee/deductions/edit` | Fired when the user opens the form to edit an existing deduction | The matching `Garnishment` |
-| `employee/deductions/created` | Fired after a new deduction is saved | The created `Garnishment` |
-| `employee/deductions/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
-| `employee/deductions/deleted` | Fired after a deduction is deleted and others remain | The deleted `Garnishment` |
-| `employee/deductions/deletedEmpty` | Fired after the last deduction is deleted, leaving none | — |
-| `employee/deductions/cancel` | Fired when the user cancels the form while other deductions exist | — |
-| `employee/deductions/cancelEmpty` | Fired when the user cancels the form and no deductions remain | — |
-| `employee/deductions/done` | Fired when the step is complete and the parent flow can advance | — |
 
 ### Example
 
@@ -120,11 +92,44 @@ function MyComponent() {
 }
 ```
 
+### DeductionsProps
+
+<a id="deductionsprops"></a>
+
+Props for [Deductions](#deductions).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeDeductions`](../../Translations/index.md#employeedeductions)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/deductions/add` | Fired when the user opens the form to add a new deduction | — |
+| `employee/deductions/edit` | Fired when the user opens the form to edit an existing deduction | The matching `Garnishment` |
+| `employee/deductions/created` | Fired after a new deduction is saved | The created `Garnishment` |
+| `employee/deductions/updated` | Fired after an existing deduction is updated | The updated `Garnishment` |
+| `employee/deductions/deleted` | Fired after a deduction is deleted and others remain | The deleted `Garnishment` |
+| `employee/deductions/deletedEmpty` | Fired after the last deduction is deleted, leaving none | — |
+| `employee/deductions/cancel` | Fired when the user cancels the form while other deductions exist | — |
+| `employee/deductions/cancelEmpty` | Fired when the user cancels the form and no deductions remain | — |
+| `employee/deductions/done` | Fired when the step is complete and the parent flow can advance | — |
+
 <a id="documentlist"></a>
 
 ## DocumentList
 
 Lists the employee's documents pending signature.
+
+### Remarks
+
+Fetches the employee's forms and renders the list of documents that still
+require signing along with a continue action once everything is signed.
 
 ### DocumentListProps
 
@@ -140,11 +145,6 @@ Props for [DocumentList](#documentlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
-
-Fetches the employee's forms and renders the list of documents that still
-require signing along with a continue action once everything is signed.
-
 ### Events
 
 | Event | Description | Data |
@@ -157,6 +157,13 @@ require signing along with a continue action once everything is signed.
 ## DocumentSigner
 
 Onboarding step for signing employee documents.
+
+### Remarks
+
+Lists the employee's pending forms and routes through the signing UI for each
+one. When `withEmployeeI9` is `true` and the employee's I-9 has not been
+signed, the flow starts on the I-9 employment eligibility step before
+presenting the document list.
 
 ### DocumentSignerProps
 
@@ -172,13 +179,6 @@ Props for [DocumentSigner](#documentsigner).
 | `withEmployeeI9?` | `boolean` | When `true`, the flow routes through I-9 employment eligibility before listing documents for signing. Defaults to `false`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-Lists the employee's pending forms and routes through the signing UI for each
-one. When `withEmployeeI9` is `true` and the employee's I-9 has not been
-signed, the flow starts on the I-9 employment eligibility step before
-presenting the document list.
 
 ### Events
 
@@ -204,6 +204,12 @@ presenting the document list.
 
 Renders a form for creating or editing one of an employee's jobs together with its compensation.
 
+### Remarks
+
+The submit chain saves the job first, then the compensation. The `employee/job_created` or
+`employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
+fires once the compensation is saved and signals the full save is complete.
+
 ### EditCompensationProps
 
 <a id="editcompensationprops"></a>
@@ -224,12 +230,6 @@ Props for [EditCompensation](#editcompensation).
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../../index.md#commoncomponentinterface)._
 
-### Remarks
-
-The submit chain saves the job first, then the compensation. The `employee/job_created` or
-`employee/job_updated` event fires once the job is saved; `employee/compensation_updated`
-fires once the compensation is saved and signals the full save is complete.
-
 ### Events
 
 | Event | Description | Data |
@@ -244,6 +244,13 @@ fires once the compensation is saved and signals the full save is complete.
 
 Onboarding step for selecting which documents the employee must complete.
 
+### Remarks
+
+Shows the I-9 toggle when the employee is self-onboarding (so the employee
+can choose whether their employer will collect I-9 verification) and a
+summary otherwise. Persists the selection to the employee's onboarding
+documents configuration and advances the parent flow.
+
 ### EmployeeDocumentsProps
 
 <a id="employeedocumentsprops"></a>
@@ -257,13 +264,6 @@ Props for [EmployeeDocuments](#employeedocuments).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeEmployeeDocuments`](../../Translations/index.md#employeeemployeedocuments)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-Shows the I-9 toggle when the employee is self-onboarding (so the employee
-can choose whether their employer will collect I-9 verification) and a
-summary otherwise. Persists the selection to the employee's onboarding
-documents configuration and advances the parent flow.
 
 ### Events
 
@@ -310,6 +310,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Captures the employee's I-9 employment eligibility (Section 1) before signing.
 
+### Remarks
+
+Collects the employee's authorization status — U.S. citizen, noncitizen
+national, permanent resident, or alien authorized to work — and any
+document details required for that status. Updates the employee's I-9
+authorization record on submit.
+
 ### EmploymentEligibilityProps
 
 <a id="employmenteligibilityprops"></a>
@@ -324,13 +331,6 @@ Props for [EmploymentEligibility](#employmenteligibility).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
-
-Collects the employee's authorization status — U.S. citizen, noncitizen
-national, permanent resident, or alien authorized to work — and any
-document details required for that status. Updates the employee's I-9
-authorization record on submit.
-
 ### Events
 
 | Event | Description | Data |
@@ -342,6 +342,10 @@ authorization record on submit.
 ## FederalTaxes
 
 Onboarding step for collecting an employee's federal tax (W-4) withholdings — filing status, multiple-jobs flag, dependents, other income, deductions, and extra withholding.
+
+### Remarks
+
+The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
 
 ### FederalTaxesProps
 
@@ -358,10 +362,6 @@ Props for [FederalTaxes](#federaltaxes).
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
-
-The federal tax record is created automatically with the employee, so this step is always in update mode. Only the revised 2020 W-4 format is supported. All fields are required by the bundled form, mirroring the IRS-form UX.
-
 ### Events
 
 | Event | Description | Data |
@@ -374,6 +374,12 @@ The federal tax record is created automatically with the employee, so this step 
 ## I9SignatureForm
 
 Presents the employee's I-9 form for review and signature.
+
+### Remarks
+
+Renders the I-9 PDF, surfaces the current employment-eligibility status, and
+collects the employee's signature along with any preparer or translator
+details. On successful submission the signed form is emitted.
 
 ### I9SignatureFormProps
 
@@ -390,12 +396,6 @@ Props for [I9SignatureForm](#i9signatureform).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
-
-Renders the I-9 PDF, surfaces the current employment-eligibility status, and
-collects the employee's signature along with any preparer or translator
-details. On successful submission the signed form is emitted.
-
 ### Events
 
 | Event | Description | Data |
@@ -411,6 +411,11 @@ details. On successful submission the signed form is emitted.
 Lists an employee's jobs alongside their compensation details, with controls to add, edit,
 or remove a job.
 
+### Remarks
+
+Used for employees who hold multiple roles. The primary job's FLSA classification determines
+whether the employee is treated as exempt or nonexempt.
+
 ### JobsListProps
 
 <a id="jobslistprops"></a>
@@ -422,11 +427,6 @@ or remove a job.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeCompensation`](../../Translations/index.md#employeecompensation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-Used for employees who hold multiple roles. The primary job's FLSA classification determines
-whether the employee is treated as exempt or nonexempt.
 
 ### Events
 
@@ -487,36 +487,11 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Onboarding step for setting up an employee's payment method.
 
-### PaymentMethodProps
-
-<a id="paymentmethodprops"></a>
-
-Props for [PaymentMethod](#paymentmethod).
-
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `employeeId` | `string` | The associated employee identifier. |
-| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `undefined` | Not used — onboarding payment method editing operates on live data. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeePaymentMethod`](../../Translations/index.md#employeepaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `false`. |
-
-_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
 ### Remarks
 
 Lets the employee (or admin acting on their behalf) choose between Direct
 Deposit and Check, add bank accounts, and configure split-paycheck
 allocations across multiple accounts.
-
-### Events
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `employee/paymentMethod/updated` | Fired after the payment method is saved | The updated payment method |
-| `employee/paymentMethod/done` | Fired when payment method setup is complete and the parent flow can advance | — |
-| `employee/bankAccount/created` | Fired after a bank account is successfully added | The created bank account |
-| `employee/bankAccount/deleted` | Fired after a bank account is successfully removed | — |
 
 ### Example
 
@@ -533,11 +508,45 @@ function MyComponent() {
 }
 ```
 
+### PaymentMethodProps
+
+<a id="paymentmethodprops"></a>
+
+Props for [PaymentMethod](#paymentmethod).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `employeeId` | `string` | The associated employee identifier. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `undefined` | Not used — onboarding payment method editing operates on live data. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeePaymentMethod`](../../Translations/index.md#employeepaymentmethod)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `isAdmin?` | `boolean` | Whether the current viewer is an admin. Defaults to `false`. |
+
+_Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `employee/paymentMethod/updated` | Fired after the payment method is saved | The updated payment method |
+| `employee/paymentMethod/done` | Fired when payment method setup is complete and the parent flow can advance | — |
+| `employee/bankAccount/created` | Fired after a bank account is successfully added | The created bank account |
+| `employee/bankAccount/deleted` | Fired after a bank account is successfully removed | — |
+
 <a id="profile"></a>
 
 ## Profile
 
 Onboarding step for collecting an employee's basic profile and addresses.
+
+### Remarks
+
+Switches between an admin-facing variant (collects employee details,
+work address, start date, and an optional self-onboarding invitation
+toggle) and an employee-facing variant (collects employee details and
+home address only — the active work address is read-only) based on
+`isAdmin`. Both variants create the employee on submit when `employeeId`
+is omitted.
 
 ### ProfileProps
 
@@ -556,15 +565,6 @@ Props for [Profile](#profile).
 | `isSelfOnboardingEnabled?` | `boolean` | When `true`, the admin variant exposes the self-onboarding toggle. Defaults to `true`. |
 
 _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-Switches between an admin-facing variant (collects employee details,
-work address, start date, and an optional self-onboarding invitation
-toggle) and an employee-facing variant (collects employee details and
-home address only — the active work address is read-only) based on
-`isAdmin`. Both variants create the employee on submit when `employeeId`
-is omitted.
 
 ### Events
 
@@ -585,6 +585,11 @@ is omitted.
 
 Presents a single employee document for review and signature.
 
+### Remarks
+
+Renders the form's PDF and collects the employee's signature. On successful
+submission the signed form is emitted; cancelling returns to the document list.
+
 ### SignatureFormProps
 
 <a id="signatureformprops"></a>
@@ -599,11 +604,6 @@ Props for [SignatureForm](#signatureform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`EmployeeDocumentSigner`](../../Translations/index.md#employeedocumentsigner)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
-
-### Remarks
-
-Renders the form's PDF and collects the employee's signature. On successful
-submission the signed form is emitted; cancelling returns to the document list.
 
 ### Events
 

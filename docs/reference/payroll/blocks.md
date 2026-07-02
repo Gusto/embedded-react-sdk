@@ -19,6 +19,22 @@ Wire transfer confirmation workflow for payroll funding.
 Displays a banner when wire transfers are awaiting funds and walks the user
 through viewing wire instructions and confirming transfer details via a modal.
 
+### Example
+
+```tsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.ConfirmWireDetails
+      companyId="your-company-id"
+      wireInId="your-wire-in-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
 ### ConfirmWireDetailsProps
 
 <a id="confirmwiredetailsprops"></a>
@@ -45,22 +61,6 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `payroll/wire/form/done` | User completes the wire confirmation form | `{ wireInRequest: WireInRequest }` |
 | `payroll/wire/form/cancel` | User cancels the wire confirmation form | — |
 
-### Example
-
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
-
-function MyComponent() {
-  return (
-    <Payroll.ConfirmWireDetails
-      companyId="your-company-id"
-      wireInId="your-wire-in-id"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
 <a id="dismissalpayperiodselection"></a>
 
 ## DismissalPayPeriodSelection
@@ -68,6 +68,10 @@ function MyComponent() {
 Pay period selection step for the dismissal payroll workflow.
 
 Lists the terminated employee's unprocessed termination pay periods and, on submit, creates an off-cycle payroll with the "Dismissed employee" reason for the selected period. When only one pay period is available it is pre-selected. When both `payrollId` and `employeeId` are supplied the step is skipped and the selection event fires immediately with the existing payroll.
+
+### Remarks
+
+Events:
 
 ### DismissalPayPeriodSelectionProps
 
@@ -84,10 +88,6 @@ Props for [DismissalPayPeriodSelection](#dismissalpayperiodselection).
 | `payrollId?` | `string` | Identifier of an existing dismissal payroll. When provided alongside `employeeId`, pay period selection is skipped and the component immediately emits the selection event. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Events:
 
 ### Events
 
@@ -136,6 +136,12 @@ regular deductions and uses the regular rate.
 
 Radio control for choosing whether an off-cycle payroll skips regular deductions and contributions.
 
+### Remarks
+
+Taxes are always included regardless of the selection. Selecting "Skip" blocks all regular
+deductions and contributions except 401(k); selecting "Include" runs all regular deductions
+and contributions normally.
+
 ### OffCycleDeductionsSettingProps
 
 <a id="offcycledeductionssettingprops"></a>
@@ -150,12 +156,6 @@ Props for [OffCycleDeductionsSetting](#offcycledeductionssetting).
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../index.md#commoncomponentinterface)._
 
-### Remarks
-
-Taxes are always included regardless of the selection. Selecting "Skip" blocks all regular
-deductions and contributions except 401(k); selecting "Include" runs all regular deductions
-and contributions normally.
-
 ### Events
 
 | Event | Description | Data |
@@ -167,6 +167,11 @@ and contributions normally.
 ## OffCycleReasonSelection
 
 Presents the reason selection UI for choosing between a bonus and correction off-cycle payment.
+
+### Remarks
+
+Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
+so a surrounding form can update its state to match.
 
 ### OffCycleReasonSelectionProps
 
@@ -182,11 +187,6 @@ Props for the [OffCycleReasonSelection](#offcyclereasonselection) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
-
-Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
-so a surrounding form can update its state to match.
-
 ### Events
 
 | Event | Description | Data |
@@ -198,6 +198,14 @@ so a surrounding form can update its state to match.
 ## PayrollBlockerList
 
 Displays the list of blockers preventing payroll from being processed for a company.
+
+### Remarks
+
+Blockers indicate issues that must be resolved before a payroll can be calculated or
+submitted, such as missing employee information, invalid tax setups, or incomplete
+company configuration. The component also renders open recovery cases and outstanding
+information requests for the company when present, and re-emits any events those
+embedded surfaces fire through `onEvent`.
 
 ### PayrollBlockerListProps
 
@@ -213,19 +221,15 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
-
-Blockers indicate issues that must be resolved before a payroll can be calculated or
-submitted, such as missing employee information, invalid tax setups, or incomplete
-company configuration. The component also renders open recovery cases and outstanding
-information requests for the company when present, and re-emits any events those
-embedded surfaces fire through `onEvent`.
-
 <a id="payrollconfiguration"></a>
 
 ## PayrollConfiguration
 
 Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll.
+
+### Remarks
+
+Emits the following events:
 
 ### PayrollConfigurationProps
 
@@ -243,10 +247,6 @@ Props for [PayrollConfiguration](#payrollconfiguration).
 | `withReimbursements?` | `boolean` | Whether to show the reimbursements column in the compensation table. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Emits the following events:
 
 ### Events
 
@@ -269,6 +269,23 @@ Editor for an individual employee's compensation within a payroll run.
 
 Allows modification of pay rates, hours, time off, additional earnings,
 reimbursements, and payment method for a single employee on the specified payroll.
+
+### Example
+
+```tsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.PayrollEditEmployee
+      employeeId="your-employee-id"
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
 
 ### PayrollEditEmployeeProps
 
@@ -294,28 +311,18 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `runPayroll/employee/saved` | Fired when employee payroll compensation changes are saved | `{ payrollPrepared, employee }` |
 | `runPayroll/employee/cancelled` | Fired when the user cancels editing employee payroll compensation | — |
 
-### Example
-
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
-
-function MyComponent() {
-  return (
-    <Payroll.PayrollEditEmployee
-      employeeId="your-employee-id"
-      companyId="your-company-id"
-      payrollId="your-payroll-id"
-      onEvent={() => {}}
-    />
-  )
-}
-```
-
 <a id="payrollhistory"></a>
 
 ## PayrollHistory
 
 Displays historical payroll records with filtering and management capabilities.
+
+### Remarks
+
+Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
+check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
+cancelling processed payrolls when they remain within the cancellation window. Each row shows
+the pay period, payroll type, pay date, status, and total pay amount.
 
 ### PayrollHistoryProps
 
@@ -330,13 +337,6 @@ Props for the [PayrollHistory](#payrollhistory) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollHistory`](../Translations/index.md#payrollpayrollhistory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-Lists processed regular, off-cycle, and external payrolls for a company and supports filtering by
-check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
-cancelling processed payrolls when they remain within the cancellation window. Each row shows
-the pay period, payroll type, pay date, status, and total pay amount.
 
 ### Events
 
@@ -407,6 +407,17 @@ deadline, and status. Each row offers actions to run, submit a calculated
 payroll, skip, or delete (for cancellable off-cycle payrolls). A separate
 call-to-action starts an off-cycle payroll.
 
+### Remarks
+
+When the company has unprocessed transition pay periods within the next
+90 days, the Run Payroll action on Regular rows is disabled to prevent a
+regular payroll from being run before the transition is resolved. Off-cycle
+rows and the Run off-cycle action remain enabled, since off-cycle is the
+path used to run a transition payroll. [PayrollLanding](#payrolllanding) pairs this
+list with an alert that lets users run or skip the pending transition; when
+using `PayrollList` directly, render an equivalent resolution surface
+alongside it.
+
 ### PayrollListBlockProps
 
 <a id="payrolllistblockprops"></a>
@@ -419,17 +430,6 @@ Props for [PayrollList](#payrolllist).
 | `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-When the company has unprocessed transition pay periods within the next
-90 days, the Run Payroll action on Regular rows is disabled to prevent a
-regular payroll from being run before the transition is resolved. Off-cycle
-rows and the Run off-cycle action remain enabled, since off-cycle is the
-path used to run a transition payroll. [PayrollLanding](#payrolllanding) pairs this
-list with an alert that lets users run or skip the pending transition; when
-using `PayrollList` directly, render an equivalent resolution surface
-alongside it.
 
 ### Events
 
@@ -449,6 +449,14 @@ Final review screen for a calculated payroll before submission, with submit, can
 and edit controls. After submission, tracks processing status and surfaces the receipt
 and per-employee paystub downloads once complete.
 
+### Remarks
+
+The payroll referenced by `payrollId` must already be calculated; rendering with an
+uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
+wire-in funding) are surfaced inline and the submit action stays disabled until each
+blocker has a selected unblock option. While the payroll is processing, the component
+polls until success or failure and emits the corresponding event.
+
 ### PayrollOverviewProps
 
 <a id="payrolloverviewprops"></a>
@@ -466,14 +474,6 @@ Props for [PayrollOverview](#payrolloverview).
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
-
-### Remarks
-
-The payroll referenced by `payrollId` must already be calculated; rendering with an
-uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH threshold,
-wire-in funding) are surfaced inline and the submit action stays disabled until each
-blocker has a selected unblock option. While the payroll is processing, the component
-polls until success or failure and emits the corresponding event.
 
 ### Events
 
@@ -497,6 +497,16 @@ Displays a detailed receipt for a completed payroll, including the debited total
 breakdown, tax breakdown, and a per-employee summary of payment method, garnishments,
 reimbursements, taxes, and net pay.
 
+### Example
+
+```tsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.PayrollReceipts payrollId="your-payroll-id" onEvent={() => {}} />
+}
+```
+
 ### PayrollReceiptsProps
 
 <a id="payrollreceiptsprops"></a>
@@ -512,27 +522,11 @@ Props for [PayrollReceipts](#payrollreceipts).
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Example
-
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
-
-function MyComponent() {
-  return <Payroll.PayrollReceipts payrollId="your-payroll-id" onEvent={() => {}} />
-}
-```
-
 <a id="recoverycases"></a>
 
 ## RecoveryCases
 
 Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them.
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `RecoveryCasesInternalProps` | Accepts `companyId` (required) and an optional `onEvent` handler. |
 
 ### Remarks
 
@@ -541,6 +535,12 @@ Recovery cases are issues that surface after a payroll has been submitted
 payrolls can run cleanly. This component is also embedded inside
 [PayrollBlockerList](#payrollblockerlist), but can be used standalone when you want a
 dedicated recovery cases surface.
+
+### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | `RecoveryCasesInternalProps` | Accepts `companyId` (required) and an optional `onEvent` handler. |
 
 ### Events
 

@@ -14,6 +14,18 @@ custom_edit_url: null
 
 Guided flow to run a transition payroll when employees move from one pay schedule to another.
 
+## Remarks
+
+When employees switch from an old pay schedule to a new one, the change can leave a gap between
+the last pay period on the old schedule and the first on the new one. A transition payroll covers
+the wages earned during that gap.
+
+Starts on the creation step (configure check date, deductions, and tax withholding for the
+transition pay period). After the payroll is created, the flow hands off to the standard
+payroll execution experience — configure compensation, review, submit, and view receipts.
+
+If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -35,18 +47,6 @@ function MyApp() {
   )
 }
 ```
-
-## Remarks
-
-When employees switch from an old pay schedule to a new one, the change can leave a gap between
-the last pay period on the old schedule and the first on the new one. A transition payroll covers
-the wages earned during that gap.
-
-Starts on the creation step (configure check date, deductions, and tax withholding for the
-transition pay period). After the payroll is created, the flow hands off to the standard
-payroll execution experience — configure compensation, review, submit, and view receipts.
-
-If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
 
 ## TransitionFlowProps
 
