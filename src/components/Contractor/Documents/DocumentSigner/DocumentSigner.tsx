@@ -1,11 +1,11 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
+import type { DocumentsListProps } from '../DocumentsList'
 import {
   DocumentsListContextual,
   type DocumentSignerContextInterface,
 } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
-import type { DocumentsListProps } from '../DocumentsList'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
