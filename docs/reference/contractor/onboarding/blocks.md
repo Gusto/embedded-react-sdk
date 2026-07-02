@@ -143,6 +143,49 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
 
+<a id="documentsigner"></a>
+
+## DocumentSigner
+
+Contractor onboarding step for reading and signing required contractor documents.
+
+### DocumentSignerProps
+
+<a id="documentsignerprops"></a>
+
+Props for [DocumentSigner](#documentsigner).
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `contractorId` | `string` | The associated contractor identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorDocumentsList`](../../Translations/index.md#contractordocumentslist)\>\> | Overrides for the document list copy shown by the signing flow. |
+
+_Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._
+
+### Remarks
+
+Composes the contractor [DocumentsList](#documentslist) and [SignatureForm](#signatureform) into a
+single signing workflow: the document list is shown first, selecting a
+document routes to its signature form, and signing (or navigating back)
+returns to the list. The list refetches automatically once a document is
+signed. The flow completes when every document that requires signing has been
+signed and the user continues.
+
+### Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `contractor/documents/view` | Fired when a document's "Sign" action is selected from the document list | `{ uuid: string; title?: string }` |
+| `contractor/documents/sign` | Fired after a document is successfully signed | The signed document |
+| `contractor/documents/done` | Fired when all required documents have been signed and the parent flow can advance | — |
+| `cancel` | Fired when the user navigates back from the signature form to the document list | — |
+
+### Components
+
+- [DocumentsList](#documentslist)
+- [SignatureForm](#signatureform)
+
 <a id="documentslist"></a>
 
 ## DocumentsList
