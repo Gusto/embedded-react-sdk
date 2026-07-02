@@ -143,7 +143,7 @@ Ready-state shape returned by [useCompensationForm](#usecompensationform) once d
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`CompensationFormFields`](#compensationformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`CompensationFieldsMetadata`](#compensationfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`CompensationFormData`](#compensationformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`CompensationFormData`](#compensationformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -512,7 +512,15 @@ import { CompensationErrorCodes } from '@gusto/embedded-react-sdk'
 
 ### CompensationFieldsMetadata
 
-> **CompensationFieldsMetadata** = [`UseCompensationFormReady`](#usecompensationformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `adjustForMinimumWage` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `effectiveDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `flsaStatus` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`FlsaStatusType`](../../APIModels/index.md#flsastatustype-1)\> |
+| `minimumWageId` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`MinimumWage`](../../APIModels/index.md#minimumwage)\> |
+| `paymentUnit` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`PaymentUnit`](../../APIModels/index.md#paymentunit-1)\> |
+| `rate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `title` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Metadata for each [useCompensationForm](#usecompensationform) field, exposed on `form.fieldsMetadata`.
 

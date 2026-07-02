@@ -42,12 +42,14 @@ import type {
   EffectiveDateFieldProps,
 } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -174,7 +176,7 @@ export interface CompensationFormFields {
  * @public
  */
 export interface UseCompensationFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  CompensationFieldsMetadata,
   CompensationFormData,
   CompensationFormFields
 > {
@@ -321,6 +323,52 @@ const paymentUnitOptions = paymentUnitEntries.map(unit => ({ value: unit, label:
 
 function todayISO(): string {
   return new Date().toISOString().split('T')[0]!
+}
+
+/** @internal */
+function buildCompensationFieldsMetadata(
+  base: Record<keyof CompensationFormData, FieldMetadata>,
+  {
+    willDeleteSecondaryJobs,
+    isCreateMode,
+    isCommissionOnly,
+    isOwner,
+    isAdjustMinimumWageEnabled,
+    effectiveDateMinDate,
+    maximumEffectiveDate,
+    minimumWageOptions,
+    minimumWages,
+  }: {
+    willDeleteSecondaryJobs: boolean
+    isCreateMode: boolean
+    isCommissionOnly: boolean
+    isOwner: boolean
+    isAdjustMinimumWageEnabled: boolean
+    effectiveDateMinDate: string | null
+    maximumEffectiveDate: string | null
+    minimumWageOptions: { value: string; label: string }[]
+    minimumWages: MinimumWage[]
+  },
+) {
+  return {
+    title: base.title,
+    effectiveDate: withFlags(base.effectiveDate, {
+      isDisabled: willDeleteSecondaryJobs && !isCreateMode,
+      minDate: effectiveDateMinDate,
+      maxDate: maximumEffectiveDate,
+    }),
+    flsaStatus: withOptions<FlsaStatusType>(base.flsaStatus, flsaOptions, flsaStatusEntries),
+    rate: withFlags(base.rate, { isDisabled: isCommissionOnly }),
+    paymentUnit: withOptions<PaymentUnit>(
+      withFlags(base.paymentUnit, { isDisabled: isOwner || isCommissionOnly }),
+      paymentUnitOptions,
+      paymentUnitEntries,
+    ),
+    adjustForMinimumWage: withFlags(base.adjustForMinimumWage, {
+      isDisabled: !isAdjustMinimumWageEnabled,
+    }),
+    minimumWageId: withOptions<MinimumWage>(base.minimumWageId, minimumWageOptions, minimumWages),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -711,35 +759,17 @@ export function useCompensationForm({
         .reduce<string | null>((max, d) => (!max || d > max ? d : max), null),
     [internalMinEffectiveDate, hireDate],
   )
-  const fieldsMetadata = {
-    title: baseMetadata.title,
-    effectiveDate: {
-      ...baseMetadata.effectiveDate,
-      isDisabled: willDeleteSecondaryJobs && !isCreateMode,
-      minDate: effectiveDateMinDate,
-      maxDate: maximumEffectiveDate,
-    },
-    flsaStatus: withOptions<FlsaStatusType>(
-      baseMetadata.flsaStatus,
-      flsaOptions,
-      flsaStatusEntries,
-    ),
-    rate: { ...baseMetadata.rate, isDisabled: isCommissionOnly },
-    paymentUnit: withOptions<PaymentUnit>(
-      { ...baseMetadata.paymentUnit, isDisabled: isOwner || isCommissionOnly },
-      paymentUnitOptions,
-      paymentUnitEntries,
-    ),
-    adjustForMinimumWage: {
-      ...baseMetadata.adjustForMinimumWage,
-      isDisabled: !isAdjustMinimumWageEnabled,
-    },
-    minimumWageId: withOptions<MinimumWage>(
-      baseMetadata.minimumWageId,
-      minimumWageOptions,
-      minimumWages,
-    ),
-  }
+  const fieldsMetadata = buildCompensationFieldsMetadata(baseMetadata, {
+    willDeleteSecondaryJobs,
+    isCreateMode,
+    isCommissionOnly,
+    isOwner,
+    isAdjustMinimumWageEnabled,
+    effectiveDateMinDate,
+    maximumEffectiveDate,
+    minimumWageOptions,
+    minimumWages,
+  })
 
   const onSubmit = async (
     options?: CompensationSubmitOptions,
@@ -915,4 +945,4 @@ export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormR
  *
  * @public
  */
-export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata']
+export type CompensationFieldsMetadata = ReturnType<typeof buildCompensationFieldsMetadata>
