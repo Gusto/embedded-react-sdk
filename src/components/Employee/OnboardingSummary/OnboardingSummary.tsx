@@ -4,7 +4,6 @@ import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
-import styles from './OnboardingSummary.module.scss'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { RequirementsList } from '@/components/Common/RequirementsList/RequirementsList'
@@ -81,7 +80,7 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
                     interpolation: { escapeValue: false },
                   })}
                 </Components.Heading>
-                <Components.Text variant="supporting" className={styles.description}>
+                <Components.Text variant="supporting">
                   {t('onboardedAdminDescription')}
                 </Components.Text>
               </Flex>
@@ -130,7 +129,7 @@ const Root = ({ employeeId, className, isAdmin = false }: OnboardingSummaryProps
                   <Components.Heading as="h2" textAlign="center">
                     {t('onboardedSelfSubtitle')}
                   </Components.Heading>
-                  <Components.Text variant="supporting" className={styles.description}>
+                  <Components.Text variant="supporting">
                     {t('onboardedSelfDescription')}
                   </Components.Text>
                 </Flex>
