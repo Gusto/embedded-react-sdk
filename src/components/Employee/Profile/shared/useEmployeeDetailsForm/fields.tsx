@@ -38,15 +38,14 @@ export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'IN
  * Validation error codes emitted by the `email` field of {@link useEmployeeDetailsForm}.
  *
  * @remarks
- * Use these as keys in `validationMessages` on `Fields.Email`. The
- * `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
- * enabled but the email is empty (create mode only). See
- * {@link EmployeeDetailsErrorCodes}.
+ * Use these as keys in `validationMessages` on `Fields.Email`. The `REQUIRED`
+ * code fires when the email is empty and required — either because
+ * self-onboarding is enabled or because the field was promoted via
+ * `optionalFieldsToRequire`. See {@link EmployeeDetailsErrorCodes}.
  *
  * @public
  */
-export type EmailValidation = (typeof EmployeeDetailsErrorCodes)[
-  'REQUIRED' | 'INVALID_EMAIL' | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING']
+export type EmailValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL']
 
 /**
  * The format-validation error code emitted by the `ssn` field of {@link useEmployeeDetailsForm}.
