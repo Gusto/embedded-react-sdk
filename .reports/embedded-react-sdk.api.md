@@ -690,7 +690,7 @@ export interface BankFormFields {
 }
 
 // @public
-export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata'];
+export type BankFormFieldsMetadata = { name: FieldMetadata; routingNumber: FieldMetadata; accountNumber: FieldMetadata; accountType: FieldMetadataWithOptions<"Checking" | "Savings">; };
 
 // @public
 export type BankFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -920,7 +920,7 @@ export interface ChildSupportGarnishmentFormFields {
 }
 
 // @public
-export type ChildSupportGarnishmentFormFieldsMetadata = UseChildSupportGarnishmentFormReady['form']['fieldsMetadata'];
+export type ChildSupportGarnishmentFormFieldsMetadata = { state: FieldMetadataWithOptions<StateFieldEntry>; fipsCode: FieldMetadataWithOptions<CountyEntry>; caseNumber: FieldMetadata; orderNumber: FieldMetadata; remittanceNumber: FieldMetadata; payPeriodMaximum: FieldMetadata; amount: FieldMetadata; paymentPeriod: FieldMetadataWithOptions<"Every week" | "Every other week" | "Twice per month" | "Monthly">; };
 
 // @public
 export type ChildSupportGarnishmentNegativeAmountValidation = typeof ChildSupportGarnishmentFormErrorCodes.NEGATIVE_AMOUNT;
@@ -1102,7 +1102,7 @@ export const CompensationErrorCodes: {
 };
 
 // @public
-export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata'];
+export type CompensationFieldsMetadata = { title: FieldMetadata; effectiveDate: FieldMetadata; flsaStatus: FieldMetadataWithOptions<FlsaStatusType>; rate: FieldMetadata; paymentUnit: FieldMetadataWithOptions<PaymentUnit>; adjustForMinimumWage: FieldMetadata; minimumWageId: FieldMetadataWithOptions<MinimumWage>; };
 
 // @public
 export type CompensationFormData = {
@@ -1528,7 +1528,7 @@ export const ContractorAddressErrorCodes: {
 export type ContractorAddressField = "street1" | "street2" | "city" | "state" | "zip";
 
 // @public
-export type ContractorAddressFieldsMetadata = UseContractorAddressFormReady['form']['fieldsMetadata'];
+export type ContractorAddressFieldsMetadata = { street1: FieldMetadata; street2: FieldMetadata; city: FieldMetadata; state: FieldMetadataWithOptions<"AL" | "AK" | "AZ" | "AR" | "CA" | "CO" | "CT" | "DE" | "DC" | "FL" | "GA" | "HI" | "ID" | "IL" | "IN" | "IA" | "KS" | "KY" | "LA" | "ME" | "MD" | "MA" | "MI" | "MN" | "MS" | "MO" | "MT" | "NE" | "NV" | "NH" | "NJ" | "NM" | "NY" | "NC" | "ND" | "OH" | "OK" | "OR" | "PA" | "RI" | "SC" | "SD" | "TN" | "TX" | "UT" | "VT" | "VA" | "WA" | "WV" | "WI" | "WY">; zip: FieldMetadata; };
 
 // @public
 export type ContractorAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; };
@@ -1588,7 +1588,7 @@ export const ContractorBankAccountErrorCodes: {
 };
 
 // @public
-export type ContractorBankAccountFieldsMetadata = UseContractorBankAccountFormReady['form']['fieldsMetadata'];
+export type ContractorBankAccountFieldsMetadata = { name: FieldMetadata; routingNumber: FieldMetadata; accountNumber: FieldMetadata; accountType: FieldMetadataWithOptions<"Checking" | "Savings">; };
 
 // @public
 export type ContractorBankAccountFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
@@ -1647,7 +1647,7 @@ export const ContractorDetailsErrorCodes: {
 };
 
 // @public
-export type ContractorDetailsFieldsMetadata = UseContractorDetailsFormReady['form']['fieldsMetadata'];
+export type ContractorDetailsFieldsMetadata = { type: FieldMetadataWithOptions<"Business" | "Individual">; wageType: FieldMetadataWithOptions<"Fixed" | "Hourly">; startDate: FieldMetadata; hourlyRate: FieldMetadata; selfOnboarding: FieldMetadata; fileNewHireReport: FieldMetadata; email: FieldMetadata; firstName: FieldMetadata; lastName: FieldMetadata; middleInitial: FieldMetadata; businessName: FieldMetadata; ssn: FieldMetadata; ein: FieldMetadata; workState: FieldMetadataWithOptions<"AL" | "AK" | "AZ" | "AR" | "CA" | "CO" | "CT" | "DE" | "DC" | "FL" | "GA" | "HI" | "ID" | "IL" | "IN" | "IA" | "KS" | "KY" | "LA" | "ME" | "MD" | "MA" | "MI" | "MN" | "MS" | "MO" | "MT" | "NE" | "NV" | "NH" | "NJ" | "NM" | "NY" | "NC" | "ND" | "OH" | "OK" | "OR" | "PA" | "RI" | "SC" | "SD" | "TN" | "TX" | "UT" | "VT" | "VA" | "WA" | "WV" | "WI" | "WY">; };
 
 // @public
 export type ContractorDetailsFormData = { type: "Business" | "Individual"; wageType: "Fixed" | "Hourly"; startDate: string; hourlyRate: number; selfOnboarding: boolean; fileNewHireReport: boolean; email: string; firstName: string; lastName: string; middleInitial: string; businessName: string; workState: string; ssn: string; ein: string; };
@@ -1791,7 +1791,7 @@ export const ContractorPaymentMethodErrorCodes: {
 };
 
 // @public
-export type ContractorPaymentMethodFieldsMetadata = UseContractorPaymentMethodFormReady['form']['fieldsMetadata'];
+export type ContractorPaymentMethodFieldsMetadata = { type: FieldMetadataWithOptions<"Check" | "Direct Deposit">; };
 
 // @public
 export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
@@ -1868,7 +1868,7 @@ export type ContractorSignatureExemptionFromFatcaFieldProps = HookFieldProps<Tex
 export type ContractorSignatureExemptPayeeCodeFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
 
 // @public
-export type ContractorSignatureFieldsMetadata = UseContractorSignatureFormReady['form']['fieldsMetadata'];
+export type ContractorSignatureFieldsMetadata = { name: FieldMetadata; businessName: FieldMetadata; taxClassification: FieldMetadataWithOptions<"other" | "individual_proprietor" | "c_corporation" | "s_corporation" | "partnership" | "trust_estate" | "limited_liability_company">; llcClassificationCode: FieldMetadataWithOptions<"c" | "s" | "p">; otherText: FieldMetadata; foreignPartners: FieldMetadata; exemptPayeeCode: FieldMetadata; exemptionFromFatca: FieldMetadata; homeAddressStreet1: FieldMetadata; homeAddressStreet2: FieldMetadata; homeAddressCity: FieldMetadata; homeAddressState: FieldMetadata; homeAddressZip: FieldMetadata; accountNumber: FieldMetadata; companyName: FieldMetadata; ssn: FieldMetadata; ein: FieldMetadata; signatureText: FieldMetadata; agree: FieldMetadata; };
 
 // @public
 export type ContractorSignatureForeignPartnersFieldProps = HookFieldProps<CheckboxHookFieldProps>;
@@ -2187,7 +2187,7 @@ export interface DeductionFormFields {
 }
 
 // @public
-export type DeductionFormFieldsMetadata = UseDeductionFormReady['form']['fieldsMetadata'];
+export type DeductionFormFieldsMetadata = { description: FieldMetadata; recurring: FieldMetadataWithOptions<boolean>; deductAsPercentage: FieldMetadataWithOptions<boolean>; amount: FieldMetadata; totalAmount: FieldMetadata; annualMaximum: FieldMetadata; garnishmentType: FieldMetadata; };
 
 // @public
 export type DeductionFormNegativeAmountValidation = typeof DeductionFormErrorCodes.NEGATIVE_AMOUNT;
@@ -2421,7 +2421,7 @@ export const EmployeeDetailsErrorCodes: {
 export type EmployeeDetailsField = "ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth";
 
 // @public
-export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
+export type EmployeeDetailsFieldsMetadata = { firstName: FieldMetadata; middleInitial: FieldMetadata; lastName: FieldMetadata; email: FieldMetadata; dateOfBirth: FieldMetadata; ssn: FieldMetadata; selfOnboarding: FieldMetadata; };
 
 // @public
 export type EmployeeDetailsFormData = { firstName: string; middleInitial: string; lastName: string; email: string; dateOfBirth: string; ssn: string; selfOnboarding: boolean; };
@@ -2761,7 +2761,7 @@ export const FederalTaxesErrorCodes: {
 export type FederalTaxesField = "filingStatus" | "twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding";
 
 // @public
-export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata'];
+export type FederalTaxesFieldsMetadata = { filingStatus: FieldMetadataWithOptions<"Single" | "Married" | "Head of Household" | "Exempt from withholding">; twoJobs: FieldMetadataWithOptions<boolean>; dependentsAmount: FieldMetadata; otherIncome: FieldMetadata; deductions: FieldMetadata; extraWithholding: FieldMetadata; };
 
 // @public
 export type FederalTaxesFormData = { filingStatus: string; twoJobs: boolean; dependentsAmount: number; otherIncome: number; deductions: number; extraWithholding: number; };
@@ -3102,7 +3102,7 @@ export const HomeAddressErrorCodes: {
 export type HomeAddressField = "street1" | "street2" | "city" | "state" | "zip" | "effectiveDate" | "courtesyWithholding";
 
 // @public
-export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata'];
+export type HomeAddressFieldsMetadata = { street1: FieldMetadata; street2: FieldMetadata; city: FieldMetadata; state: FieldMetadataWithOptions<"AL" | "AK" | "AZ" | "AR" | "CA" | "CO" | "CT" | "DE" | "DC" | "FL" | "GA" | "HI" | "ID" | "IL" | "IN" | "IA" | "KS" | "KY" | "LA" | "ME" | "MD" | "MA" | "MI" | "MN" | "MS" | "MO" | "MT" | "NE" | "NV" | "NH" | "NJ" | "NM" | "NY" | "NC" | "ND" | "OH" | "OK" | "OR" | "PA" | "RI" | "SC" | "SD" | "TN" | "TX" | "UT" | "VT" | "VA" | "WA" | "WV" | "WI" | "WY">; zip: FieldMetadata; courtesyWithholding: FieldMetadata; effectiveDate: FieldMetadata; };
 
 // @public
 export type HomeAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; courtesyWithholding: boolean; effectiveDate: string; };
@@ -3873,7 +3873,7 @@ export interface PaymentMethodFormFields {
 }
 
 // @public
-export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata'];
+export type PaymentMethodFormFieldsMetadata = { type: FieldMetadataWithOptions<"Check" | "Direct Deposit">; };
 
 // @public
 export type PaymentMethodFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -4167,7 +4167,7 @@ export const PayScheduleErrorCodes: {
 export type PayScheduleField = "customName" | "frequency" | "customTwicePerMonth" | "anchorPayDate" | "anchorEndOfPayPeriod" | "day1" | "day2";
 
 // @public
-export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata'];
+export type PayScheduleFieldsMetadata = { customName: FieldMetadata; frequency: FieldMetadataWithOptions<"Every week" | "Every other week" | "Twice per month" | "Monthly">; customTwicePerMonth: FieldMetadataWithOptions<string>; anchorPayDate: FieldMetadata; anchorEndOfPayPeriod: FieldMetadata; day1: FieldMetadata; day2: FieldMetadata; };
 
 // @public
 export type PayScheduleFormData = { customName: string; frequency: "Every week" | "Every other week" | "Twice per month" | "Monthly"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
@@ -4932,7 +4932,7 @@ export interface SignCompanyFormFields {
 }
 
 // @public
-export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata'];
+export type SignCompanyFormFieldsMetadata = { signature: FieldMetadata; confirmSignature: FieldMetadata; };
 
 // @public
 export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -5500,7 +5500,7 @@ export interface UseBankFormProps {
 }
 
 // @public
-export interface UseBankFormReady extends BaseFormHookReady<FieldsMetadata, BankFormData, BankFormFields> {
+export interface UseBankFormReady extends BaseFormHookReady<BankFormFieldsMetadata, BankFormData, BankFormFields> {
     actions: {
         onSubmit: (options?: BankFormSubmitOptions) => Promise<HookSubmitResult<EmployeeBankAccount> | undefined>;
     };
@@ -5527,7 +5527,7 @@ export interface UseChildSupportGarnishmentFormProps {
 }
 
 // @public
-export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<FieldsMetadata, ChildSupportGarnishmentFormData, ChildSupportGarnishmentFormFields> {
+export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<ChildSupportGarnishmentFormFieldsMetadata, ChildSupportGarnishmentFormData, ChildSupportGarnishmentFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>;
     };
@@ -5564,7 +5564,7 @@ export interface UseCompensationFormProps {
 }
 
 // @public
-export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetadata, CompensationFormData, CompensationFormFields> {
+export interface UseCompensationFormReady extends BaseFormHookReady<CompensationFieldsMetadata, CompensationFormData, CompensationFormFields> {
     actions: {
         onSubmit: (options?: CompensationSubmitOptions) => Promise<HookSubmitResult<Compensation> | undefined>;
     };
@@ -5602,7 +5602,7 @@ export interface UseContractorAddressFormProps {
 }
 
 // @public
-export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsMetadata, ContractorAddressFormData, ContractorAddressFormFields> {
+export interface UseContractorAddressFormReady extends BaseFormHookReady<ContractorAddressFieldsMetadata, ContractorAddressFormData, ContractorAddressFormFields> {
     actions: {
         onSubmit: (options?: ContractorAddressSubmitOptions) => Promise<HookSubmitResult<ContractorAddress> | undefined>;
     };
@@ -5633,7 +5633,7 @@ export interface UseContractorBankAccountFormProps {
 }
 
 // @public
-export interface UseContractorBankAccountFormReady extends BaseFormHookReady<FieldsMetadata, ContractorBankAccountFormData, ContractorBankAccountFormFields> {
+export interface UseContractorBankAccountFormReady extends BaseFormHookReady<ContractorBankAccountFieldsMetadata, ContractorBankAccountFormData, ContractorBankAccountFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<ContractorBankAccount> | undefined>;
     };
@@ -5662,7 +5662,7 @@ export type UseContractorDetailsFormProps = (UseContractorDetailsFormSharedProps
 });
 
 // @public
-export interface UseContractorDetailsFormReady extends BaseFormHookReady<FieldsMetadata, ContractorDetailsFormData, ContractorDetailsFormFields> {
+export interface UseContractorDetailsFormReady extends BaseFormHookReady<ContractorDetailsFieldsMetadata, ContractorDetailsFormData, ContractorDetailsFormFields> {
     actions: {
         onSubmit: (options?: ContractorDetailsSubmitOptions) => Promise<HookSubmitResult<Contractor> | undefined>;
     };
@@ -5717,7 +5717,7 @@ export interface UseContractorPaymentMethodFormProps {
 }
 
 // @public
-export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
+export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<ContractorPaymentMethodFieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
     };
@@ -5746,7 +5746,7 @@ export interface UseContractorSignatureFormProps {
 }
 
 // @public
-export interface UseContractorSignatureFormReady extends BaseFormHookReady<FieldsMetadata, ContractorSignatureFormData, ContractorSignatureFormFieldComponents> {
+export interface UseContractorSignatureFormReady extends BaseFormHookReady<ContractorSignatureFieldsMetadata, ContractorSignatureFormData, ContractorSignatureFormFieldComponents> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<DocumentSigned> | undefined>;
     };
@@ -5791,7 +5791,7 @@ export interface UseDeductionFormProps {
 }
 
 // @public
-export interface UseDeductionFormReady extends BaseFormHookReady<FieldsMetadata, DeductionFormData, DeductionFormFields> {
+export interface UseDeductionFormReady extends BaseFormHookReady<DeductionFormFieldsMetadata, DeductionFormData, DeductionFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Garnishment> | undefined>;
     };
@@ -5829,7 +5829,7 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
 });
 
 // @public
-export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFormFields> {
+export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<EmployeeDetailsFieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFormFields> {
     actions: {
         onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee> | undefined>;
     };
@@ -5922,7 +5922,7 @@ export interface UseFederalTaxesFormProps {
 }
 
 // @public
-export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFormFields> {
+export interface UseFederalTaxesFormReady extends BaseFormHookReady<FederalTaxesFieldsMetadata, FederalTaxesFormData, FederalTaxesFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>;
     };
@@ -5959,7 +5959,7 @@ export interface UseHomeAddressFormProps {
 }
 
 // @public
-export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFormFields> {
+export interface UseHomeAddressFormReady extends BaseFormHookReady<HomeAddressFieldsMetadata, HomeAddressFormData, HomeAddressFormFields> {
     actions: {
         onSubmit: (options?: HomeAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeAddress> | undefined>;
     };
@@ -6030,7 +6030,7 @@ export interface UsePaymentMethodFormProps {
 }
 
 // @public
-export interface UsePaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, PaymentMethodFormData, PaymentMethodFormFields> {
+export interface UsePaymentMethodFormReady extends BaseFormHookReady<PaymentMethodFormFieldsMetadata, PaymentMethodFormData, PaymentMethodFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>;
     };
@@ -6060,7 +6060,7 @@ export interface UsePayScheduleFormProps {
 }
 
 // @public
-export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFormFields> {
+export interface UsePayScheduleFormReady extends BaseFormHookReady<PayScheduleFieldsMetadata, PayScheduleFormData, PayScheduleFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<PayScheduleShow> | undefined>;
     };
@@ -6092,7 +6092,7 @@ export interface UseSignCompanyFormProps {
 }
 
 // @public
-export interface UseSignCompanyFormReady extends BaseFormHookReady<FieldsMetadata, SignCompanyFormData, SignCompanyFormFields> {
+export interface UseSignCompanyFormReady extends BaseFormHookReady<SignCompanyFormFieldsMetadata, SignCompanyFormData, SignCompanyFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Form> | undefined>;
     };
@@ -6200,7 +6200,7 @@ export interface UseWorkAddressFormProps {
 }
 
 // @public
-export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFormFields> {
+export interface UseWorkAddressFormReady extends BaseFormHookReady<WorkAddressFieldsMetadata, WorkAddressFormData, WorkAddressFormFields> {
     actions: {
         onSubmit: (callbacks?: WorkAddressSubmitCallbacks, options?: WorkAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>;
     };
@@ -6294,7 +6294,7 @@ export const WorkAddressErrorCodes: {
 export type WorkAddressField = "effectiveDate" | "locationUuid";
 
 // @public
-export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata'];
+export type WorkAddressFieldsMetadata = { locationUuid: FieldMetadataWithOptions<Location_2>; effectiveDate: FieldMetadata; };
 
 // @public
 export type WorkAddressFormData = { locationUuid: string; effectiveDate: string; };
