@@ -70,7 +70,6 @@ import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2026-0
 import { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
 import { ContractorUpdateRequestBodyType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
 import { ContractorUpdateRequestBodyWageType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
-import { Control } from 'react-hook-form';
 import { CustomFieldType } from '@gusto/embedded-api-v-2026-02-01/models/components/customfieldtype';
 import { CustomTypeOptions } from 'i18next';
 import { Deductions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
@@ -936,12 +935,6 @@ export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFi
 
 // @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
-
-// Warning: (ae-forgotten-export) The symbol "QueryWithError" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "collectErrors" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function collectErrors(queries: QueryWithError[], submitError: SDKError | null): SDKError[];
 
 // @public
 export interface ComboBoxOption {
@@ -2855,22 +2848,6 @@ export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVal
 
 // @public
 export type FlsaStatusFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, FlsaStatusType>>;
-
-// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataContextValue" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export interface FormFieldsMetadataContextValue {
-    // (undocumented)
-    errors: SDKError[];
-    // (undocumented)
-    metadata: FieldsMetadata;
-}
-
-// Warning: (ae-forgotten-export) The symbol "FormFieldsMetadataProviderProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataProvider" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX;
 
 // @public
 export type FormHookResult = {
@@ -5808,11 +5785,6 @@ export interface UseDeductionFormReady extends BaseFormHookReady<DeductionFormFi
 // @public
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 
-// Warning: (ae-internal-missing-underscore) The name "useDeriveFieldsMetadata" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
-
 // @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
@@ -5937,11 +5909,6 @@ export interface UseFederalTaxesFormReady extends BaseFormHookReady<FederalTaxes
 
 // @public
 export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormReady;
-
-// Warning: (ae-internal-missing-underscore) The name "useFieldErrorMessage" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function useFieldErrorMessage<TErrorCode extends string>(fieldName: string, validationMessages?: ValidationMessages<TErrorCode>): string | undefined;
 
 // @public
 export function useHomeAddressForm(input: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady;
@@ -6253,14 +6220,6 @@ export const WageType: {
 
 // @public
 type WithholdingType = 'supplemental' | 'regular';
-
-// Warning: (ae-internal-missing-underscore) The name "withOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Array<{
-    label: string;
-    value: string;
-}>, entries?: readonly TEntry[]): FieldMetadataWithOptions<TEntry>;
 
 // @public
 function WorkAddress(input: WorkAddressProps): JSX;

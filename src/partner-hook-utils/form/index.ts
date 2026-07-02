@@ -6,12 +6,9 @@ export type {
   BaseFieldProps,
   HookFieldProps,
 } from '../types'
-export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'
-export { useDeriveFieldsMetadata } from './useDeriveFieldsMetadata'
-export { useFieldErrorMessage } from './useFieldErrorMessage'
 
 export { composeSubmitHandler } from './composeSubmitHandler'
 
