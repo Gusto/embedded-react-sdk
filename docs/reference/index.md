@@ -436,6 +436,7 @@ shape mixed into every public SDK feature component.
 - [`NewHireReportProps`](contractor/onboarding/blocks.md#newhirereportprops)
 - [`ContractorSubmitProps`](contractor/onboarding/blocks.md#contractorsubmitprops)
 - [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
+- [`SignatureFormProps`](contractor/onboarding/blocks.md#signatureformprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)

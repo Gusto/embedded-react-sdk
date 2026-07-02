@@ -9,7 +9,7 @@ import {
   type OptionalFieldsToRequire,
 } from '@/partner-hook-utils/form/buildFormSchema'
 import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
-import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
+import { SSN_REGEX, EIN_REGEX, NAME_REGEX } from '@/helpers/validations'
 import { normalizeEin } from '@/helpers/federalEin'
 
 /**
@@ -51,8 +51,6 @@ export const ContractorDetailsErrorCodes = {
 export type ContractorDetailsErrorCode =
   (typeof ContractorDetailsErrorCodes)[keyof typeof ContractorDetailsErrorCodes]
 
-const EIN_FORMAT_REGEX = /^\d{2}-\d{7}$/
-
 // ── Field validators ───────────────────────────────────────────────────
 
 const fieldValidators = {
@@ -84,7 +82,7 @@ const fieldValidators = {
     }),
   ein: z
     .string({ error: () => ContractorDetailsErrorCodes.REQUIRED })
-    .refine((v: string) => EIN_FORMAT_REGEX.test(normalizeEin(v)), {
+    .refine((v: string) => EIN_REGEX.test(normalizeEin(v)), {
       message: ContractorDetailsErrorCodes.INVALID_EIN,
     }),
 }

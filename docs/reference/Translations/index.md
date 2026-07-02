@@ -1745,6 +1745,105 @@ Translation keys for the `Contractor.Profile` i18n namespace.
 
 ***
 
+<a id="contractorsignatureform"></a>
+
+### ContractorSignatureForm
+
+Translation keys for the `Contractor.SignatureForm` i18n namespace.
+
+#### Properties
+
+| Property | Default value |
+| ------ | ------ |
+| <a id="property-contractorsignatureformacknowledgecta"></a> `acknowledgeCta` | `"Acknowledge"` |
+| <a id="property-contractorsignatureformagreelabel"></a> `agreeLabel` | `"I agree to electronically sign this form."` |
+| <a id="property-contractorsignatureformbackcta"></a> `backCta` | `"Back"` |
+| <a id="property-contractorsignatureformcertificationintro"></a> `certificationIntro` | `"Under penalties of perjury, I certify that:"` |
+| <a id="property-contractorsignatureformcertificationpoints"></a> `certificationPoints` | |
+| `certificationPoints.backupWithholding` | `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` |
+| `certificationPoints.fatca` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
+| `certificationPoints.taxpayerId` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
+| `certificationPoints.usPerson` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
+| <a id="property-contractorsignatureformdownloadprompt"></a> `downloadPrompt` | `"<downloadLink>Download document</downloadLink>"` |
+| <a id="property-contractorsignatureformfields"></a> `fields` | |
+| `fields.account_number` | |
+| `fields.account_number.label` | `"Account numbers"` |
+| `fields.business_name` | |
+| `fields.business_name.description` | `"The name of your business, if different than above."` |
+| `fields.business_name.label` | `"Business name (2)"` |
+| `fields.company_name` | |
+| `fields.company_name.label` | `"Requester's name and address"` |
+| `fields.ein` | |
+| `fields.ein.label` | `"Employer Identification Number (EIN)"` |
+| `fields.exempt_payee_code` | |
+| `fields.exempt_payee_code.label` | `"Exempt payee code"` |
+| `fields.exemption_from_FATCA` | |
+| `fields.exemption_from_FATCA.description` | `"Enter the code (if any) indicating you are exempt from reporting under the Foreign Account Tax Compliance Act."` |
+| `fields.exemption_from_FATCA.label` | `"Exemption from FATCA reporting code (4b)"` |
+| `fields.foreign_partners` | |
+| `fields.foreign_partners.description` | `"If you selected “Partnership”, “Trust/Estate” or checked “LLC” and entered “P” as the tax classification, and you are providing this form to a partnership, trust, or estate in which you have an ownership interest, check this box if you have any foreign partners, owners, or beneficiaries."` |
+| `fields.foreign_partners.label` | `"Foreign partners/owners/beneficiaries (3b)"` |
+| `fields.home_address_city` | |
+| `fields.home_address_city.label` | `"City"` |
+| `fields.home_address_state` | |
+| `fields.home_address_state.label` | `"State"` |
+| `fields.home_address_street_1` | |
+| `fields.home_address_street_1.label` | `"Street 1"` |
+| `fields.home_address_street_2` | |
+| `fields.home_address_street_2.label` | `"Street 2"` |
+| `fields.home_address_zip` | |
+| `fields.home_address_zip.label` | `"Zip code"` |
+| `fields.llcClassificationCode` | |
+| `fields.llcClassificationCode.description` | `"Select the appropriate code for the LLC, unless it is a disregarded entity. A disregarded entity should instead check the appropriate selection for the tax classification of its owner."` |
+| `fields.llcClassificationCode.label` | `"LLC tax classification code"` |
+| `fields.name` | |
+| `fields.name.description` | `"Your individual or business name. For a sole proprietor or disregarded entity, enter the owner's name here, and enter the business/disregarded entity's name in the Business name field below."` |
+| `fields.name.label` | `"Entity or individual name (1)"` |
+| `fields.other_text` | |
+| `fields.other_text.label` | `"Other"` |
+| `fields.signature_text` | |
+| `fields.signature_text.label` | `"Signature"` |
+| `fields.ssn` | |
+| `fields.ssn.label` | `"Social Security Number (SSN)"` |
+| `fields.taxClassification` | |
+| `fields.taxClassification.description` | `"Select the type of business you are."` |
+| `fields.taxClassification.label` | `"Federal tax classification (3)"` |
+| <a id="property-contractorsignatureforminstructions"></a> `instructions` | `"See the IRS Form W-9 for instructions on completing this form"` |
+| <a id="property-contractorsignatureformoptions"></a> `options` | |
+| `options.llcClassificationCode` | |
+| `options.llcClassificationCode.c` | `"C = C-Corporation"` |
+| `options.llcClassificationCode.p` | `"P = Partnership"` |
+| `options.llcClassificationCode.placeholder` | `"Select..."` |
+| `options.llcClassificationCode.s` | `"S = S-Corporation"` |
+| `options.taxClassification` | |
+| `options.taxClassification.c_corporation` | `"C-Corporation"` |
+| `options.taxClassification.individual_proprietor` | `"Individual/sole proprietor"` |
+| `options.taxClassification.limited_liability_company` | `"LLC"` |
+| `options.taxClassification.other` | `"Other"` |
+| `options.taxClassification.partnership` | `"Partnership"` |
+| `options.taxClassification.s_corporation` | `"S-Corporation"` |
+| `options.taxClassification.trust_estate` | `"Trust/estate"` |
+| <a id="property-contractorsignatureformsectioninstructions"></a> `sectionInstructions` | |
+| `sectionInstructions.address` | `"See sections 5-7 of IRS Form W-9 for instructions."` |
+| `sectionInstructions.certification` | `"See Part 2 of the IRS Form W-9 for instructions."` |
+| `sectionInstructions.exemptions` | `"See section 4 of IRS Form W-9 for instructions."` |
+| `sectionInstructions.tin` | `"For individuals, this is generally your social security number (SSN). For other entities, this will be your employer identification number (EIN)."` |
+| `sectionInstructions.tinSecondary` | `"See Part 1 of the IRS Form W-9 for instructions."` |
+| <a id="property-contractorsignatureformsections"></a> `sections` | |
+| `sections.address` | `"Address"` |
+| `sections.certification` | `"Certification"` |
+| `sections.exemptions` | `"Exemptions"` |
+| `sections.tin` | `"Taxpayer Identification Number (TIN)"` |
+| <a id="property-contractorsignatureformsignaturerequired"></a> `signatureRequired` | `"Signature required"` |
+| <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
+| <a id="property-contractorsignatureformvalidation"></a> `validation` | |
+| `validation.agreeRequired` | `"You must agree to electronically sign this form."` |
+| `validation.invalidEin` | `"Enter a valid Employer Identification Number."` |
+| `validation.invalidSsn` | `"Enter a valid Social Security Number."` |
+| `validation.required` | `"This field is required."` |
+
+***
+
 <a id="contractorsubmit"></a>
 
 ### ContractorSubmit
@@ -4908,6 +5007,7 @@ yields that namespace's keys. Backs i18next `t()` typing and `ResourceDictionary
 | <a id="property-resourcescontractorpaymentspaymentstatement"></a> `Contractor.Payments.PaymentStatement` | [`ContractorPaymentsPaymentStatement`](#contractorpaymentspaymentstatement) |
 | <a id="property-resourcescontractorpaymentspaymentsummary"></a> `Contractor.Payments.PaymentSummary` | [`ContractorPaymentsPaymentSummary`](#contractorpaymentspaymentsummary) |
 | <a id="property-resourcescontractorprofile"></a> `Contractor.Profile` | [`ContractorProfile`](#contractorprofile) |
+| <a id="property-resourcescontractorsignatureform"></a> `Contractor.SignatureForm` | [`ContractorSignatureForm`](#contractorsignatureform) |
 | <a id="property-resourcescontractorsubmit"></a> `Contractor.Submit` | [`ContractorSubmit`](#contractorsubmit) |
 | <a id="property-resourcesemployeebankaccount"></a> `Employee.BankAccount` | [`EmployeeBankAccount`](#employeebankaccount) |
 | <a id="property-resourcesemployeebankformbody"></a> `Employee.BankFormBody` | [`EmployeeBankFormBody`](#employeebankformbody) |

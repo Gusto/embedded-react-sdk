@@ -115,6 +115,7 @@ import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 | `CONTRACTOR_PROFILE_DONE` | `"contractor/profile/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_DONE` | `"contractor/selfOnboarding/done"` |
 | `CONTRACTOR_SELF_ONBOARDING_START` | `"contractor/selfOnboarding/start"` |
+| `CONTRACTOR_SIGN_DOCUMENT` | `"contractor/documents/sign"` |
 | `CONTRACTOR_SUBMIT_DONE` | `"contractor/submit/done"` |
 | `CONTRACTOR_UPDATE` | `"contractor/update"` |
 | `CONTRACTOR_UPDATED` | `"contractor/updated"` |
