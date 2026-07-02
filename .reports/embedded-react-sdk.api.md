@@ -1762,6 +1762,8 @@ declare namespace ContractorOnboarding {
         NewHireReportProps,
         ContractorSubmit,
         ContractorSubmitProps,
+        DocumentSigner_3 as DocumentSigner,
+        DocumentSignerProps_3 as DocumentSignerProps,
         DocumentsList,
         DocumentsListProps,
         SignatureForm_3 as SignatureForm,
@@ -2343,6 +2345,9 @@ function DocumentSigner(props: DocumentSignerProps): JSX;
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
 // @public
+function DocumentSigner_3(props: DocumentSignerProps_3): JSX;
+
+// @public
 interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     withEmployeeI9?: boolean;
@@ -2352,6 +2357,11 @@ interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentS
 interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
     companyId: string;
     signatoryId?: string;
+}
+
+// @public
+interface DocumentSignerProps_3 extends BaseComponentInterface<'Contractor.DocumentsList'> {
+    contractorId: string;
 }
 
 // @public
