@@ -292,7 +292,131 @@ const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control
 - Destructure the tuple from the schema factory: `const [schema, metadataConfig] = create{Domain}Schema({ mode, optionalFieldsToRequire })`
 - Pass `metadataConfig` and the form's `control` to `useDeriveFieldsMetadata` — this reactively resolves `isRequired` for predicate-based rules by watching only the specific form fields that predicates read
 - Enhance select/radio fields with `withOptions<TEntry>(baseMetadata.field, options, entries)`
-- Override `isRequired`/`isDisabled` based on business logic
+- Override `isRequired`/`isDisabled` with `withFlags(baseMetadata.field, { isDisabled })` — see the typing pattern below
+
+`form.fieldsMetadata` carries one entry per form field: a `FieldMetadata`, or a
+`FieldMetadataWithOptions<TEntry>` for select/radio fields. Type it **precisely,
+per field**, by inferring the type from the object the hook builds — not as the
+generic `FieldsMetadata` index signature.
+
+**Pattern — use for every hook whose field-key set is static (known at build time):**
+
+1. Extract the metadata construction into a module-level **pure** builder
+   `build{Domain}FieldsMetadata`. It takes `baseMetadata`
+   (`Record<keyof {Domain}FormData, FieldMetadata>`) plus any presentation flags
+   it closes over, and returns the assembled object closed with
+   `} satisfies FieldsMetadata`:
+
+   ```ts
+   function build{Domain}FieldsMetadata(
+     base: Record<keyof {Domain}FormData, FieldMetadata>,
+     { showFoo }: { showFoo: boolean },
+   ) {
+     return {
+       name: base.name,
+       // withFlags preserves the FieldMetadata type through a flag override. A
+       // bare `{ ...base.foo, isDisabled }` spread widens to an anonymous object
+       // and loses the FieldMetadata name — which sprawls into an 8-row inline
+       // object in the generated reference instead of a single `FieldMetadata`.
+       foo: withFlags(base.foo, { isDisabled: !showFoo }),
+       // withOptions marks a select/radio field → FieldMetadataWithOptions<TEntry>.
+       kind: withOptions<Kind>(base.kind, kindOptions, KINDS),
+     } satisfies FieldsMetadata
+   }
+   ```
+
+2. Infer the public alias from the builder — never hand-write the shape, never
+   index back through the ready interface:
+
+   ```ts
+   export type {Domain}FieldsMetadata = ReturnType<typeof build{Domain}FieldsMetadata>
+   ```
+
+3. Pass that alias as the **first** `BaseFormHookReady` type argument:
+
+   ```ts
+   export interface Use{Domain}FormReady extends BaseFormHookReady<
+     {Domain}FieldsMetadata,
+     {Domain}FormData,
+     {Domain}FormFields
+   > { ... }
+   ```
+
+4. In the hook body, call the builder (import `FieldMetadata` for the param type
+   and `withFlags` from `@/partner-hook-utils/form/withFlags`):
+
+   ```ts
+   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+   const fieldsMetadata = build{Domain}FieldsMetadata(baseMetadata, { showFoo })
+   ```
+
+   If the hook already wraps metadata in `useMemo` (e.g. redaction-dependent),
+   keep the `useMemo` and call the builder inside its callback. React hooks stay
+   in the hook body; only the pure object construction moves out — nothing breaks
+   because the builder closes over already-computed values passed as arguments.
+
+   Keep every key **unconditionally present** — push any condition onto the
+   field's _value_, not its presence. A conditional-spread key
+   (`...(cond ? { ssn: X } : {})`) makes the inferred type lopsided; instead write
+   `ssn: withFlags(base.ssn, cond ? { placeholder } : {})` so `ssn` is always a
+   `FieldMetadata`. (`useContractorSignatureForm` is the one convertible hook that
+   needs this normalization; a hook whose _key set_ genuinely varies by branch is
+   a runtime-keyed exception below, not a candidate for this pattern.)
+
+**Why this shape.** Inferring the type from a constant is the same move as
+`type {Domain}FormData = z.infer<typeof fieldValidators>`: the type tracks the
+value with zero drift, and the compiler rejects a builder that adds/removes a
+field or flips a field's options-ness. It is the **only** way to get per-field
+precision — whether a field carries `options` is a rendering decision the hook
+makes (two `boolean` fields can differ: a radio has options, a checkbox does
+not), so it can't be derived from `{Domain}FormData`. The precise type drives the
+generated reference: `form.fieldsMetadata` renders as a single link to a
+per-field `{Domain}FieldsMetadata` table showing each field's variant, instead of
+an opaque index signature. (SDK-1073.)
+
+**When to keep the generic `FieldsMetadata` instead.** Hooks whose metadata keys
+are computed at runtime — dotted per-entry/per-collection paths, or key sets that
+differ by branch — can't be enumerated in a static type. Leave these on the bare
+`FieldsMetadata` index signature (first `BaseFormHookReady` arg) and keep the
+`= Use{Domain}FormReady['form']['fieldsMetadata']` alias. Current exceptions:
+`useSplitPaymentsForm` (`splitAmount.${uuid}`), `useEmployeeStateTaxesForm`
+(`states.${STATE}.${field}`), `useSignEmployeeForm` (I-9 preparer keys present
+only when `isI9`).
+
+**Supporting infrastructure — already built, do not rebuild:**
+
+- `withFlags(base, flags)` — `src/partner-hook-utils/form/withFlags.ts`. Merges
+  flags while preserving the `FieldMetadata` type. `@internal`, not on the public
+  barrel.
+- `build/expandDtsTypeof.ts` resolves `ReturnType<typeof build{Domain}FieldsMetadata>`
+  in the emitted `.d.ts` to the concrete object type and removes the orphaned
+  unexported `declare function`, so API Extractor emits no `ae-forgotten-export`
+  for the builder.
+- `renderFieldsMetadataAlias` in `docs-site/plugins/typedoc-custom/theme.ts`
+  collapses the expanded ready-state rows into a single link and renders the
+  `### {Domain}FieldsMetadata` section as the per-field table.
+
+**Converting an existing hook.** List every form hook's metadata alias with
+`grep -rln "export type [A-Za-z]*FieldsMetadata" src/components` (20 hooks). A
+hook is already converted iff its file contains
+`FieldsMetadata = ReturnType<typeof build` — the rest are the rollout targets.
+(Don't grep for `BaseFormHookReady<FieldsMetadata,` — the generic argument is
+usually wrapped across lines, so a single-line pattern misses most of them.)
+Apply steps 1–4 to each unconverted hook **except** the three runtime-keyed
+exceptions above (they legitimately keep the generic `FieldsMetadata`). Verify:
+
+```bash
+npx tsc --noEmit
+npm run test -- --run <path>/use{Name}Form.test.tsx     # then the full suite
+npm run docs:api:generate                                # page shows a per-field
+                                                         # ### {Domain}FieldsMetadata
+                                                         # table + a single
+                                                         # form.fieldsMetadata link row
+npm run build && npm run api-report:derive               # report has no
+                                                         # build{Domain}FieldsMetadata
+                                                         # symbol; ae-forgotten-export
+                                                         # count unchanged (21)
+```
 
 #### Redacted Fields (`fieldsWithRedactedValues`)
 

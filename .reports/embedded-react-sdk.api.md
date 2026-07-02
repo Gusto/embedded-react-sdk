@@ -3259,7 +3259,7 @@ export const JobErrorCodes: {
 };
 
 // @public
-export type JobFieldsMetadata = UseJobFormReady['form']['fieldsMetadata'];
+export type JobFieldsMetadata = { title: FieldMetadata; hireDate: FieldMetadata; twoPercentShareholder: FieldMetadata; stateWcCovered: FieldMetadataWithOptions<boolean>; stateWcClassCode: FieldMetadataWithOptions<WARiskClassCode>; };
 
 // @public
 export type JobFormData = {
@@ -5145,8 +5145,6 @@ export type StateTaxValidationMessages = ValidationMessages<typeof EmployeeState
 // @public
 export type StateTaxValue = string | number | boolean | Date | null | undefined;
 
-// Warning: (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>>;
 
@@ -5993,7 +5991,7 @@ export interface UseJobFormProps {
 }
 
 // @public
-export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFormData, JobFormFields> {
+export interface UseJobFormReady extends BaseFormHookReady<JobFieldsMetadata, JobFormData, JobFormFields> {
     actions: {
         onSubmit: (options?: JobSubmitOptions) => Promise<HookSubmitResult<Job> | undefined>;
     };
@@ -6347,6 +6345,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
+// dist/components/Employee/Compensation/shared/useJobForm/useJobForm.d.ts:215:221 - (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
 // dist/partner-hook-utils/types.d.ts:273:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

@@ -913,6 +913,65 @@ function reorderHookSections(rendered: string): string {
 }
 
 /**
+ * Render a form hook's `*FieldsMetadata` alias as a per-field table.
+ *
+ * A form hook infers its metadata type from an unexported builder
+ * (`export type JobFieldsMetadata = ReturnType<typeof buildJobFieldsMetadata>`),
+ * which TypeDoc leaves opaque as `ReturnType<typeof build…>`. Rather than
+ * re-resolve the type graph, this reuses what TypeDoc already resolved: the
+ * ready-state table expands `form.fieldsMetadata` into one
+ * `form.fieldsMetadata.<field>` row per field, each carrying that field's
+ * `FieldMetadata` / `FieldMetadataWithOptions<…>` type. Those rows are
+ * collapsed into a single link to the alias (mirroring how `form.Fields` links
+ * to its `*FormFields` interface), and the alias's own section — opaque
+ * `ReturnType<…>` — is replaced with a `Field | Type` table built from them.
+ *
+ * Hooks whose metadata is a bare `FieldsMetadata` index signature (dynamic
+ * keys, e.g. `useEmployeeStateTaxesForm`) produce no per-field rows, so this is
+ * a no-op for them.
+ */
+function renderFieldsMetadataAlias(rendered: string): string {
+  const lines = rendered.split('\n')
+
+  const fieldRowRe = /^\| `form\.fieldsMetadata\.([^.`]+)` \| (.+?) \| .* \|$/
+  const fields: Array<{ name: string; type: string }> = []
+  const childIdxs = new Set<number>()
+  let parentIdx = -1
+  lines.forEach((line, i) => {
+    if (/^\| `form\.fieldsMetadata` \|/.test(line)) parentIdx = i
+    const match = fieldRowRe.exec(line)
+    if (match) {
+      fields.push({ name: match[1]!, type: match[2]! })
+      childIdxs.add(i)
+    }
+  })
+  if (parentIdx === -1 || fields.length === 0) return rendered
+
+  const headingIdx = lines.findIndex(l => /^### \w*FieldsMetadata\s*$/.test(l))
+  if (headingIdx === -1) return rendered
+  const aliasName = /^### (\w*FieldsMetadata)\s*$/.exec(lines[headingIdx]!)![1]!
+  const anchor =
+    /<a id="([^"]+)"><\/a>/.exec(lines[headingIdx - 2] ?? '')?.[1] ?? aliasName.toLowerCase()
+
+  lines[parentIdx] = `| \`form.fieldsMetadata\` | [\`${aliasName}\`](#${anchor}) | - |`
+
+  const table = [
+    '| Field | Type |',
+    '| ------ | ------ |',
+    ...fields.map(field => `| \`${field.name}\` | ${field.type} |`),
+  ]
+  const aliasDefRe = new RegExp(`^> \\*\\*${aliasName}\\*\\* = .*\\bReturnType\\b.*$`)
+
+  const out: string[] = []
+  lines.forEach((line, i) => {
+    if (childIdxs.has(i)) return
+    if (aliasDefRe.test(line)) out.push(...table)
+    else out.push(line)
+  })
+  return out.join('\n')
+}
+
+/**
  * Move the `## Example` section to the top of the hook page — before props,
  * returns, and remarks — so a reader sees a working example immediately after
  * the hook signature and description.
@@ -2666,6 +2725,7 @@ export class SDKThemeContext extends MarkdownThemeContext {
             rendered,
             new Set([...fieldComponentPropsAliasNames(page.model), ...relocatedFieldTypes]),
           )
+          rendered = renderFieldsMetadataAlias(rendered)
         }
 
         const flowGuide = (this.router as SDKRouter).flowGuides.get(page.model)

@@ -166,6 +166,22 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     }
   }
 
+  // Collect names of unexported function declarations. A form hook infers its
+  // metadata type from an unexported builder — `export type JobFieldsMetadata =
+  // ReturnType<typeof buildJobFieldsMetadata>` — which leaks the builder as
+  // ae-forgotten-export. Treat `typeof <fn>` the same as `typeof <const>`:
+  // resolve the alias to its concrete object type, then drop the orphaned
+  // `declare function`.
+  const unexportedFnNames = new Set<string>()
+  for (const fn of sourceFile.getFunctions()) {
+    const name = fn.getName()
+    if (name && !fn.hasExportKeyword()) unexportedFnNames.add(name)
+  }
+
+  // The `typeof` sources whose whole-alias references are resolved and later
+  // pruned — unexported consts and unexported functions alike.
+  const unexportedTypeofNames = new Set([...unexportedVarNames, ...unexportedFnNames])
+
   // Type aliases marked @internal leak as ae-forgotten-export when referenced by
   // an exported @public alias. Collect them so those references can be expanded to
   // their concrete types in place, leaving the source's @internal reference intact.
@@ -174,7 +190,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     if (hasInternalTag(typeAlias)) internalTypeNames.add(typeAlias.getName())
   }
 
-  if (unexportedVarNames.size === 0 && internalTypeNames.size === 0) return null
+  if (unexportedTypeofNames.size === 0 && internalTypeNames.size === 0) return null
 
   // For each unexported const with a TypeLiteralNode type, collect JSDoc for
   // each property so we can re-attach them after expansion.
@@ -199,7 +215,7 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
   }
 
   const unexportedTypeofPattern =
-    unexportedVarNames.size > 0 ? buildTypeofPattern(unexportedVarNames) : null
+    unexportedTypeofNames.size > 0 ? buildTypeofPattern(unexportedTypeofNames) : null
 
   // Two-pass approach: resolve all types first (using the original checker
   // against the unmodified AST), then apply mutations. Mutating mid-loop via
@@ -336,6 +352,21 @@ export function processSourceFile(sourceFile: SourceFile, checker: ts.TypeChecke
     console.log(
       `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: removed orphaned declare const ${name}`,
     )
+  }
+
+  // Remove unexported function declarations no longer referenced via `typeof`
+  // (e.g. a `buildXFieldsMetadata` whose sole reference was the alias just
+  // expanded). Recompute the text so it reflects the const removals above.
+  const afterConstRemoval = sourceFile.getFullText()
+  for (const fn of sourceFile.getFunctions()) {
+    const name = fn.getName()
+    if (!name || !unexportedFnNames.has(name)) continue
+    if (!new RegExp(`\\btypeof\\s+${name}\\b`).test(afterConstRemoval)) {
+      fn.remove()
+      console.log(
+        `[expand-dts-typeof] ${rel(sourceFile.getFilePath())}: removed orphaned declare function ${name}`,
+      )
+    }
   }
 
   return sourceFile.getFullText()
