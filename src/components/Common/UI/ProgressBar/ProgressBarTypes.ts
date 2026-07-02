@@ -3,7 +3,7 @@
  * Renders a step-based progress indicator for multi-step flows.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface ProgressBarProps {
   /**

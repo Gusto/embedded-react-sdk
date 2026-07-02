@@ -41,7 +41,7 @@ export interface CompensationAddAnotherJobFormProps extends CommonComponentInter
  * @param props - See {@link CompensationAddAnotherJobFormProps}.
  * @returns The rendered add-another-job form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function CompensationAddAnotherJobForm({
   dictionary,

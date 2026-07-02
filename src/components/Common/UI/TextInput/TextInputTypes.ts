@@ -7,7 +7,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Renders a form field wrapping an `<input />` with a label, description, error message, and start/end adornment slots.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface TextInputProps
   extends

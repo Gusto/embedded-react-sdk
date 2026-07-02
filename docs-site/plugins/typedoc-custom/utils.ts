@@ -372,7 +372,8 @@ export function isComponent(reflection: DeclarationReflection): boolean {
   return (
     reflection.comment?.blockTags.some(
       tag =>
-        tag.tag === '@group' && /Components$/.test(Comment.combineDisplayParts(tag.content).trim()),
+        tag.tag === '@group' &&
+        /[Cc]omponents$/.test(Comment.combineDisplayParts(tag.content).trim()),
     ) ?? false
   )
 }
@@ -399,7 +400,7 @@ export function isDomainHub(model: DeclarationReflection | RouterTarget): boolea
  * Derive a human-readable page title for frontmatter from the page model and URL.
  *
  * Synthetic pages (domain hubs, hooks pages, flow/block splits) carry generic
- * model names like "Hooks" or "Flow Components", so we enrich them with the
+ * model names like "Hooks" or "Flow components", so we enrich them with the
  * domain or namespace extracted from the page URL.
  */
 export function pageTitle(page: MarkdownPageEvent): string {
@@ -411,7 +412,7 @@ export function pageTitle(page: MarkdownPageEvent): string {
 
   if (isDomainHub(decl)) return decl.name
   if (decl.name === 'Hooks') return 'Hooks'
-  if (decl.name === 'Block Components') return 'Sub-components'
+  if (decl.name === 'Block components') return 'Sub-components'
 
   return decl.name
 }

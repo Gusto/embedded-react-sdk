@@ -179,22 +179,21 @@ function getNamespaceIndexSlug(namespaceName: string): string {
 
 // Group order mirrors typedoc.config.ts so synthetic pages stay consistent.
 const SYNTHETIC_GROUP_ORDER = [
-  'Flow Components',
-  'Block Components',
-  'Form Hooks',
-  'Data Hooks',
-  'Utility Hooks',
+  'Flow components',
+  'Block components',
+  'Form hooks',
+  'Data hooks',
+  'Utility hooks',
   'Hooks',
   'Fields',
   'Components',
-  'Component Props',
+  'Component props',
   'Event names',
   'Functions',
   'Variables',
   'Interfaces',
   'Type Aliases',
   'Validations',
-  'Utility Types',
   'Utility types',
   'Enumerations',
 ]
@@ -343,7 +342,7 @@ function kindGroupName(kind: ReflectionKind): string {
  *
  * When `collapseUtilityTypes` is set (hook pages), the leftover kind-based
  * groups — Variables, Interfaces, Type Aliases — are merged into one
- * "Utility Types" group instead of standing as separate sections.
+ * "Utility types" group instead of standing as separate sections.
  */
 function groupSyntheticMembers(
   members: DeclarationReflection[],
@@ -376,12 +375,12 @@ function groupSyntheticMembers(
   }
 
   // On hook pages, fold the generic kind-based buckets — everything not sorted
-  // into a named section (Props, Returns, Fields, Utility Hooks, …) — into a
-  // single "Utility Types" group, alphabetized across the merged set.
+  // into a named section (Props, Returns, Fields, Utility hooks, …) — into a
+  // single "Utility types" group, alphabetized across the merged set.
   if (collapseUtilityTypes) {
     // First lift out the field validation types (the error-code types passed as
     // a field's `TErrorCode` / `TOptionalErrorCode` generic) into their own
-    // "Validations" section, ahead of the Utility Types catch-all.
+    // "Validations" section, ahead of the Utility types catch-all.
     //
     // Membership is tracked by NAME against the page's own member objects:
     // `collectFieldValidationTypes` and the type-graph walk can surface
@@ -477,7 +476,7 @@ function groupSyntheticMembers(
     }
     if (merged.length > 0) {
       merged.sort((a, b) => a.name.localeCompare(b.name))
-      byTitle.set('Utility Types', [...(byTitle.get('Utility Types') ?? []), ...merged])
+      byTitle.set('Utility types', [...(byTitle.get('Utility types') ?? []), ...merged])
     }
   }
 
@@ -649,9 +648,9 @@ export class SDKRouter extends MemberRouter {
   // so priority 0 (default) runs before GroupPlugin's -100.
   //
   // Auto-stamps @group tags so GroupPlugin places each member in the right section:
-  //   Components in a namespace  → Flow Components (*Flow) or Block Components (other)
+  //   Components in a namespace  → Flow components (*Flow) or Block components (other)
   //   Components at project level → Components
-  //   Hooks ending with Form      → Form Hooks  (Data Hooks / Utility Hooks come from JSDoc)
+  //   Hooks ending with Form      → Form hooks  (Data hooks / Utility hooks come from JSDoc)
   //   Other hooks                 → Hooks (fallback)
   // Skips reflections that already carry an explicit @group tag from their JSDoc.
   // NOTE: TypeDoc places @group block tags on SignatureReflections, not the parent
@@ -682,11 +681,11 @@ export class SDKRouter extends MemberRouter {
           reflection.parent.kind === ReflectionKind.Namespace
         group = inNamespace
           ? /Flow$/.test(reflection.name)
-            ? 'Flow Components'
-            : 'Block Components'
+            ? 'Flow components'
+            : 'Block components'
           : 'Components'
       } else if (/^use[A-Z]/.test(reflection.name)) {
-        group = /Form$/.test(reflection.name) ? 'Form Hooks' : 'Hooks'
+        group = /Form$/.test(reflection.name) ? 'Form hooks' : 'Hooks'
       } else {
         continue
       }

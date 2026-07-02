@@ -32,7 +32,7 @@ import { Flow } from '@/components/Flow/Flow'
  * @param props - See {@link EmployeeListFlowProps}.
  * @returns The employee list workflow with internal navigation to the dashboard, termination, and onboarding flows.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"

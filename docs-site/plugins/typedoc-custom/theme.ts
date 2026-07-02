@@ -779,7 +779,7 @@ function insertComponentsTable(rendered: string, table: string): string {
 }
 
 /**
- * Remove the hook group heading (`## Hooks`, `## Form Hooks`, etc.) and the
+ * Remove the hook group heading (`## Hooks`, `## Form hooks`, etc.) and the
  * `### hookName()` sub-heading, then shift H4→H2 and H5→H3 for the content
  * inside the hook function section. Each hook page documents exactly one primary
  * hook, so the group heading carries no information and is dropped: it is always
@@ -1334,7 +1334,7 @@ function canRenderFlatFields(fieldsInterface: DeclarationReflection): boolean {
  * declared as `ComponentType<XxxFieldProps>` and/or arrays of field entries —
  * the shape that needs no exported component-function value. Each field's docs
  * are sourced from its `*FieldProps` type (and, for arrays, the entry
- * interface), which are relocated here from "Utility Types" (their anchors are
+ * interface), which are relocated here from "Utility types" (their anchors are
  * preserved so existing links resolve). Returns the markdown plus the set of
  * type names relocated, for the caller to drop from their standalone section.
  *
@@ -2016,18 +2016,18 @@ function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<strin
 }
 
 /**
- * Remove the dropped `*FieldProps` alias entries from the `## Utility Types`
+ * Remove the dropped `*FieldProps` alias entries from the `## Utility types`
  * section. Each names a flat field's props parameter, already documented by the
  * component's expanded Parameters table, so its standalone alias block is pure
  * duplication. Every other alias — `*Validation`, group/variant props, shared
  * base types — is left untouched in place. (Hook pages collapse Variables,
- * Interfaces, and Type Aliases into a single `## Utility Types` group.)
+ * Interfaces, and Type Aliases into a single `## Utility types` group.)
  */
 function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): string {
   if (dropAliasNames.size === 0) return rendered
 
   const lines = rendered.split('\n')
-  const taSectionStart = lines.findIndex(l => /^##\s+Utility Types\s*$/.test(l))
+  const taSectionStart = lines.findIndex(l => /^##\s+Utility types\s*$/.test(l))
   if (taSectionStart === -1) return rendered
 
   let taSectionEnd = lines.length
@@ -2044,7 +2044,7 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
   // lines containing only `***`. Mark the lines of any dropped entry — plus its
   // trailing separator — for removal.
   const linesToRemove = new Set<number>()
-  let i = 1 // skip the ## Utility Types heading line itself
+  let i = 1 // skip the ## Utility types heading line itself
   while (i < taSectionLines.length) {
     if (/^###\s/.test(taSectionLines[i]!) || /^<a id=/.test(taSectionLines[i]!)) {
       const entryStart = i

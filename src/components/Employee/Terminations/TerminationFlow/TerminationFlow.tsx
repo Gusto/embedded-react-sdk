@@ -50,7 +50,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
  * @param props - See {@link TerminationFlowProps}.
  * @returns The multi-step termination workflow.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"
