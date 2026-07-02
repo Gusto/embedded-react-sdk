@@ -427,6 +427,7 @@ shape mixed into every public SDK feature component.
 - [`CreateSignatoryProps`](company/onboarding/blocks.md#createsignatoryprops)
 - [`InviteSignatoryProps`](company/onboarding/blocks.md#invitesignatoryprops)
 - [`OnboardingFlowProps`](contractor/onboarding/onboarding-flow.md#onboardingflowprops)
+- [`SelfOnboardingFlowProps`](contractor/onboarding/self-onboarding-flow.md#selfonboardingflowprops)
 - [`LandingProps`](contractor/onboarding/blocks.md#landingprops)
 - [`OnboardingSummaryProps`](contractor/onboarding/blocks.md#onboardingsummaryprops)
 - [`ContractorListProps`](contractor/onboarding/blocks.md#contractorlistprops)

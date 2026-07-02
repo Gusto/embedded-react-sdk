@@ -19,6 +19,7 @@ Flows and blocks for onboarding contractors.
 | Component | Description |
 | --------- | ----------- |
 | [OnboardingFlow](onboarding-flow.md) | Guided flow for admins to onboard a contractor to the company. |
+| [SelfOnboardingFlow](self-onboarding-flow.md) | Guided flow for contractors to complete their own onboarding. |
 
 ## 🧩 Blocks
 

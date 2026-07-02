@@ -355,6 +355,68 @@ describe('useEmployeeDetailsForm', () => {
       expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'lastName').isRequired).toBe(true)
       expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(true)
     })
+
+    it('rejects submission when selfOnboarding is on and email is empty (baseline, not promoted)', async () => {
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            defaultValues: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              email: '',
+              selfOnboarding: true,
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(true)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).toBeNull()
+    })
+
+    it('accepts submission when selfOnboarding is off and email is empty (baseline, not promoted)', async () => {
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            defaultValues: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              email: '',
+              selfOnboarding: false,
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(false)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+    })
   })
 
   describe('update mode', () => {

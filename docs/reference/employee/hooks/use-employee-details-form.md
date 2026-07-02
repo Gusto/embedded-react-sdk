@@ -212,11 +212,7 @@ Bound to `email`. Text input.
 ```tsx
 <form.Fields.Email
   label="Email"
-  validationMessages={{
-    REQUIRED: '…',
-    INVALID_EMAIL: '…',
-    EMAIL_REQUIRED_FOR_SELF_ONBOARDING: '…',
-  }}
+  validationMessages={{ REQUIRED: '…', INVALID_EMAIL: '…' }}
 />
 ```
 
@@ -385,16 +381,16 @@ _Also accepts `description`, `formHookResult`, `placeholder`, `transform` from [
 
 ### EmailValidation
 
-> **EmailValidation** = `"REQUIRED"` \| `"INVALID_EMAIL"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`
+> **EmailValidation** = `"REQUIRED"` \| `"INVALID_EMAIL"`
 
 Validation error codes emitted by the `email` field of [useEmployeeDetailsForm](#useemployeedetailsform).
 
 #### Remarks
 
-Use these as keys in `validationMessages` on `Fields.Email`. The
-`EMAIL_REQUIRED_FOR_SELF_ONBOARDING` code fires when self-onboarding is
-enabled but the email is empty (create mode only). See
-[EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
+Use these as keys in `validationMessages` on `Fields.Email`. The `REQUIRED`
+code fires when the email is empty and required — either because
+self-onboarding is enabled or because the field was promoted via
+`optionalFieldsToRequire`. See [EmployeeDetailsErrorCodes](#employeedetailserrorcodes).
 
 ***
 
@@ -485,7 +481,7 @@ switch changes the employee's onboarding status as part of an update.
 
 ### EmployeeDetailsErrorCode
 
-> **EmployeeDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"` \| `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"`
+> **EmployeeDetailsErrorCode** = `"REQUIRED"` \| `"INVALID_NAME"` \| `"INVALID_EMAIL"` \| `"INVALID_SSN"`
 
 Union of validation error code strings emitted by the employee details form
 schema.
@@ -506,7 +502,6 @@ hook.
 
 | Name | Type |
 | ------ | ------ |
-| `EMAIL_REQUIRED_FOR_SELF_ONBOARDING` | `"EMAIL_REQUIRED_FOR_SELF_ONBOARDING"` |
 | `INVALID_EMAIL` | `"INVALID_EMAIL"` |
 | `INVALID_NAME` | `"INVALID_NAME"` |
 | `INVALID_SSN` | `"INVALID_SSN"` |

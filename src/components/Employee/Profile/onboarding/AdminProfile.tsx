@@ -329,7 +329,6 @@ function AdminProfileReady({
               validationMessages={{
                 REQUIRED: t('validations.email'),
                 INVALID_EMAIL: t('validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('validations.email'),
               }}
             />
 
