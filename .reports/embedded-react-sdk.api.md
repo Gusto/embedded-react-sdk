@@ -2360,8 +2360,9 @@ interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.Document
 }
 
 // @public
-interface DocumentSignerProps_3 extends BaseComponentInterface<'Contractor.DocumentsList'> {
+interface DocumentSignerProps_3 extends Omit<BaseComponentInterface<'Contractor.DocumentsList'>, 'dictionary'> {
     contractorId: string;
+    dictionary?: DocumentsListProps['dictionary'];
 }
 
 // @public

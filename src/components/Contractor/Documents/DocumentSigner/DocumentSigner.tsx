@@ -5,6 +5,7 @@ import {
   type DocumentSignerContextInterface,
 } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
+import type { DocumentsListProps } from '../DocumentsList'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -14,9 +15,12 @@ import { useComponentDictionary } from '@/i18n/I18n'
  *
  * @public
  */
-export interface DocumentSignerProps extends BaseComponentInterface<'Contractor.DocumentsList'> {
+export interface DocumentSignerProps
+  extends Omit<BaseComponentInterface<'Contractor.DocumentsList'>, 'dictionary'> {
   /** The associated contractor identifier. */
   contractorId: string
+  /** Overrides for the document list copy shown by the signing flow. */
+  dictionary?: DocumentsListProps['dictionary']
 }
 
 function DocumentSignerFlow({ contractorId, onEvent, dictionary }: DocumentSignerProps) {
