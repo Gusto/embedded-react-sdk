@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
-import { useEmployeeAddressesDeleteWorkAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesDeleteWorkAddress'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
+import { useEmployeeAddressesDeleteWorkAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesDeleteWorkAddress'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useWorkAddressForm } from '@/components/Employee/Profile/shared/useWorkAddressForm'
@@ -84,8 +84,7 @@ export interface UseWorkAddressManagementReadySuccess extends BaseHookReady<
 }
 
 type UseWorkAddressManagementReady =
-  | UseWorkAddressManagementReadyEmployeeError
-  | UseWorkAddressManagementReadySuccess
+  UseWorkAddressManagementReadyEmployeeError | UseWorkAddressManagementReadySuccess
 
 /**
  * Return type of {@link useWorkAddressManagement}.

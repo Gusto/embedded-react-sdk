@@ -2,9 +2,3 @@ node_modules/
 .docusaurus/
 build/
 .cache-loader/
-
-# Version snapshots are owned by Gusto/embedded-sdk-docs; only created locally
-# to develop the version-dropdown UI.
-versions.json
-versioned_docs/
-versioned_sidebars/

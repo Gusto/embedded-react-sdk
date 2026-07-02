@@ -2,12 +2,13 @@ import {
   useState,
   useEffect,
   useRef,
-  useCallback,
   useMemo,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react'
-import { buildEntityInspectRequest, type InspectRequest } from './entity-config'
+import { buildEntityInspectRequest } from './entity-config'
+import { CopyTextButton } from './CopyTextButton'
+import { InspectIdButton } from './InspectResponseModal'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
@@ -76,124 +77,8 @@ interface CopyIdButtonProps {
 }
 
 function CopyIdButton({ value, ariaLabel }: CopyIdButtonProps) {
-  const [status, setStatus] = useState<'idle' | 'copied'>('idle')
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(
-    () => () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    },
-    [],
-  )
-
-  const handleClick = useCallback(async () => {
-    if (!value) return
-    try {
-      await navigator.clipboard.writeText(value)
-      setStatus('copied')
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-      timeoutRef.current = setTimeout(() => {
-        setStatus('idle')
-      }, 1500)
-    } catch {
-      // Clipboard unavailable
-    }
-  }, [value])
-
   return (
-    <button
-      type="button"
-      className={styles.btn}
-      onClick={handleClick}
-      disabled={!value}
-      aria-label={ariaLabel}
-    >
-      {status === 'copied' ? 'Copied' : 'Copy ID'}
-    </button>
-  )
-}
-
-function highlightJsonTokens(source: string): ReactNode[] {
-  const tokenRegex =
-    /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g
-  const nodes: ReactNode[] = []
-  let lastIndex = 0
-  let keyCounter = 0
-  let match: RegExpExecArray | null
-  while ((match = tokenRegex.exec(source))) {
-    if (match.index > lastIndex) {
-      nodes.push(source.slice(lastIndex, match.index))
-    }
-    const [whole, str, colon, literal, num] = match
-    if (str !== undefined) {
-      const className = colon ? styles.jsonKey : styles.jsonString
-      nodes.push(
-        <span key={keyCounter++} className={className}>
-          {str}
-        </span>,
-      )
-      if (colon) nodes.push(colon)
-    } else if (literal !== undefined) {
-      nodes.push(
-        <span
-          key={keyCounter++}
-          className={literal === 'null' ? styles.jsonNull : styles.jsonBoolean}
-        >
-          {literal}
-        </span>,
-      )
-    } else if (num !== undefined) {
-      nodes.push(
-        <span key={keyCounter++} className={styles.jsonNumber}>
-          {num}
-        </span>,
-      )
-    } else {
-      nodes.push(whole)
-    }
-    lastIndex = match.index + whole.length
-  }
-  if (lastIndex < source.length) nodes.push(source.slice(lastIndex))
-  return nodes
-}
-
-type InspectFetchState =
-  | { kind: 'loading' }
-  | { kind: 'ok'; body: unknown }
-  | { kind: 'error'; status: number; body: string }
-
-interface InspectState {
-  label: string
-  url: string
-  fetch: InspectFetchState
-}
-
-interface InspectIdButtonProps {
-  label: string
-  request: InspectRequest | null
-  onInspect: (label: string, request: InspectRequest) => void
-}
-
-function InspectIdButton({ label, request, onInspect }: InspectIdButtonProps) {
-  return (
-    <button
-      type="button"
-      className={styles.btn}
-      onClick={() => {
-        if (request) onInspect(label, request)
-      }}
-      disabled={!request}
-      aria-label={`Inspect ${label.toLowerCase()} response`}
-      title={
-        request
-          ? `GET ${request.url.replace(/^\/api/, '')}${
-              request.kind === 'listFilter' ? ` (filtered for ${request.matchUuid})` : ''
-            }`
-          : 'No GET endpoint available'
-      }
-    >
-      🕵️
-    </button>
+    <CopyTextButton value={value} ariaLabel={ariaLabel} idleLabel="Copy ID" copiedLabel="Copied!" />
   )
 }
 
@@ -481,83 +366,6 @@ export function DemoSettingsPanel({
   const [selectedSaveName, setSelectedSaveName] = useState<string>('')
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveDialogName, setSaveDialogName] = useState('')
-  const [inspect, setInspect] = useState<InspectState | null>(null)
-
-  const handleInspect = useCallback((label: string, request: InspectRequest) => {
-    const { url } = request
-    setInspect({ label, url, fetch: { kind: 'loading' } })
-    void (async () => {
-      try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
-        const text = await res.text()
-        if (!res.ok) {
-          setInspect(prev =>
-            prev && prev.url === url
-              ? { ...prev, fetch: { kind: 'error', status: res.status, body: text } }
-              : prev,
-          )
-          return
-        }
-        let parsed: unknown = text
-        try {
-          parsed = JSON.parse(text)
-        } catch {
-          // Non-JSON body — display as-is
-        }
-        if (request.kind === 'listFilter') {
-          const list = Array.isArray(parsed) ? (parsed as Array<Record<string, unknown>>) : []
-          const match = list.find(item => item.uuid === request.matchUuid)
-          if (!match) {
-            setInspect(prev =>
-              prev && prev.url === url
-                ? {
-                    ...prev,
-                    fetch: {
-                      kind: 'error',
-                      status: 404,
-                      body: `No item with uuid ${request.matchUuid} in list of ${list.length} from ${url.replace(/^\/api/, '')}`,
-                    },
-                  }
-                : prev,
-            )
-            return
-          }
-          setInspect(prev =>
-            prev && prev.url === url ? { ...prev, fetch: { kind: 'ok', body: match } } : prev,
-          )
-          return
-        }
-        setInspect(prev =>
-          prev && prev.url === url ? { ...prev, fetch: { kind: 'ok', body: parsed } } : prev,
-        )
-      } catch (err) {
-        setInspect(prev =>
-          prev && prev.url === url
-            ? {
-                ...prev,
-                fetch: {
-                  kind: 'error',
-                  status: 0,
-                  body: err instanceof Error ? err.message : String(err),
-                },
-              }
-            : prev,
-        )
-      }
-    })()
-  }, [])
-
-  useEffect(() => {
-    if (!inspect) return
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setInspect(null)
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => {
-      window.removeEventListener('keydown', handleKey)
-    }
-  }, [inspect])
-
   const saveNames = Object.keys(manualSaves).sort((a, b) => a.localeCompare(b))
 
   useEffect(() => {
@@ -888,7 +696,6 @@ export function DemoSettingsPanel({
                     entities.companyId,
                     entities.companyId,
                   )}
-                  onInspect={handleInspect}
                 />
               </div>
             </div>
@@ -913,7 +720,6 @@ export function DemoSettingsPanel({
                       entities.employeeId,
                       entities.companyId,
                     )}
-                    onInspect={handleInspect}
                   />
                 </>
               }
@@ -939,7 +745,6 @@ export function DemoSettingsPanel({
                       entities.contractorId,
                       entities.companyId,
                     )}
-                    onInspect={handleInspect}
                   />
                 </>
               }
@@ -965,7 +770,6 @@ export function DemoSettingsPanel({
                       entities.payrollId,
                       entities.companyId,
                     )}
-                    onInspect={handleInspect}
                   />
                 </>
               }
@@ -991,7 +795,6 @@ export function DemoSettingsPanel({
                       entities.requestId,
                       entities.companyId,
                     )}
-                    onInspect={handleInspect}
                   />
                 </>
               }
@@ -1017,7 +820,6 @@ export function DemoSettingsPanel({
                       entities.formId,
                       entities.companyId,
                     )}
-                    onInspect={handleInspect}
                   />
                 </>
               }
@@ -1081,55 +883,6 @@ export function DemoSettingsPanel({
           </div>
         </div>
       </div>
-
-      {inspect && (
-        <div className={styles.inspectBackdrop}>
-          <button
-            type="button"
-            className={styles.inspectBackdropDismiss}
-            aria-label="Close inspect dialog"
-            onClick={() => {
-              setInspect(null)
-            }}
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={`${inspect.label} response`}
-            className={styles.inspectModal}
-          >
-            <header className={styles.inspectHeader}>
-              <div>
-                <h4 className={styles.inspectTitle}>{inspect.label} response</h4>
-                <div className={styles.inspectUrl}>GET {inspect.url.replace(/^\/api/, '')}</div>
-              </div>
-              <button
-                type="button"
-                className={styles.btn}
-                onClick={() => {
-                  setInspect(null)
-                }}
-                aria-label="Close inspect dialog"
-              >
-                Close
-              </button>
-            </header>
-            {inspect.fetch.kind === 'loading' && (
-              <div className={styles.inspectBodyMessage}>Loading…</div>
-            )}
-            {inspect.fetch.kind === 'ok' && (
-              <pre className={styles.inspectBody}>
-                {highlightJsonTokens(JSON.stringify(inspect.fetch.body, null, 2))}
-              </pre>
-            )}
-            {inspect.fetch.kind === 'error' && (
-              <pre className={styles.inspectBody}>
-                {`HTTP ${inspect.fetch.status}\n\n${inspect.fetch.body}`}
-              </pre>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

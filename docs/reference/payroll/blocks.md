@@ -29,12 +29,12 @@ Props for the [ConfirmWireDetails](#confirmwiredetails) component.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollConfirmWireDetailsForm`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollConfirmWireDetailsForm`](../Translations/index.md#payrollconfirmwiredetailsform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `wireInId?` | `string` | Optional wire-in request identifier. If not provided, the first active wire-in request is used. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -79,7 +79,7 @@ Props for [DismissalPayPeriodSelection](#dismissalpayperiodselection).
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company the dismissal payroll belongs to. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollDismissal`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollDismissal`](../Translations/index.md#payrolldismissal)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `employeeId?` | `string` | Identifier of the terminated employee. When provided, the available pay periods are filtered to this employee. |
 | `payrollId?` | `string` | Identifier of an existing dismissal payroll. When provided alongside `employeeId`, pay period selection is skipped and the component immediately emits the selection event. |
 
@@ -88,6 +88,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Events:
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -113,12 +115,12 @@ Props for the [OffCycleCreation](#offcyclecreation) component.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollOffCycleCreation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleCreation`](../Translations/index.md#payrolloffcyclecreation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `payrollType?` | [`OffCyclePayrollDateType`](#offcyclepayrolldatetype) | Pre-selected off-cycle reason. The creation form starts with this reason selected. Defaults to `'bonus'`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -144,7 +146,7 @@ Props for [OffCycleDeductionsSetting](#offcycledeductionssetting).
 | ------ | ------ | ------ |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler invoked when the deduction preference changes. See the events table on [OffCycleDeductionsSetting](#offcycledeductionssetting). |
 | `skipRegularDeductions` | `boolean` | Whether regular deductions are currently being skipped. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollOffCycleDeductionsSetting`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleDeductionsSetting`](../Translations/index.md#payrolloffcycledeductionssetting)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterface](../index.md#commoncomponentinterface)._
 
@@ -153,6 +155,8 @@ _Inherits `children`, `className`, `defaultValues` from [CommonComponentInterfac
 Taxes are always included regardless of the selection. Selecting "Skip" blocks all regular
 deductions and contributions except 401(k); selecting "Include" runs all regular deductions
 and contributions normally.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -174,7 +178,7 @@ Props for the [OffCycleReasonSelection](#offcyclereasonselection) component.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollOffCycleReasonSelection`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollOffCycleReasonSelection`](../Translations/index.md#payrolloffcyclereasonselection)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
@@ -182,6 +186,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 Selecting a reason emits the recommended deduction and withholding defaults alongside the chosen value
 so a surrounding form can update its state to match.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -203,7 +209,7 @@ Props for [PayrollBlockerList](#payrollblockerlist).
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollBlocker`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollBlocker`](../Translations/index.md#payrollpayrollblocker)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
@@ -233,7 +239,7 @@ Props for [PayrollConfiguration](#payrollconfiguration).
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollId` | `string` | The associated payroll identifier. |
 | `alerts?` | `ReactNode` | Optional alert components to render above the configuration content. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollConfiguration`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollConfiguration`](../Translations/index.md#payrollpayrollconfiguration)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `withReimbursements?` | `boolean` | Whether to show the reimbursements column in the compensation table. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
@@ -241,6 +247,8 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 ### Remarks
 
 Emits the following events:
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -274,12 +282,12 @@ Props for [PayrollEditEmployee](#payrolleditemployee).
 | `employeeId` | `string` | The associated employee identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollId` | `string` | The associated payroll identifier. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollEditEmployee`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollEditEmployee`](../Translations/index.md#payrollpayrolleditemployee)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -319,7 +327,7 @@ Props for the [PayrollHistory](#payrollhistory) component.
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose processed payrolls should be listed. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollHistory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollHistory`](../Translations/index.md#payrollpayrollhistory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
@@ -329,6 +337,8 @@ Lists processed regular, off-cycle, and external payrolls for a company and supp
 check date (3 months, 6 months, or 1 year), viewing payroll summaries and receipts, and
 cancelling processed payrolls when they remain within the cancellation window. Each row shows
 the pay period, payroll type, pay date, status, and total pay amount.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -354,13 +364,13 @@ Props for [PayrollLanding](#payrolllanding).
 | `companyId` | `string` | The associated company identifier. |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component that replaces the default wire details confirmation UI. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollLanding`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollLanding`](../Translations/index.md#payrollpayrolllanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `showPayrollCancelledAlert?` | `boolean` | When `true`, displays a dismissible success alert indicating a payroll was cancelled. |
 | `withReimbursements?` | `boolean` | Whether to show reimbursement fields throughout the landing flow. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -369,12 +379,22 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `payroll/skipped` | A payroll was skipped | `{ payrollId: string }` |
 | `payroll/deleted` | A cancellable off-cycle payroll was deleted | `{ payrollId: string }` |
 | `runPayroll/offCycle/start` | User clicked the Run off-cycle call-to-action | — |
-| `transition/runPayroll` | User started a pending transition payroll | — |
+| `transition/runPayroll` | User chose to run an unprocessed transition payroll from the Transition Payroll Alert | `{ startDate: string, endDate: string, payScheduleUuid?: string }` |
+| `transition/payrollSkipped` | User skipped an unprocessed transition payroll from the Transition Payroll Alert | `{ startDate: string, endDate: string, payScheduleUuid?: string }` |
 | `runPayroll/summary/viewed` | User opened a payroll's summary view | `{ payrollId: string }` |
 | `runPayroll/receipt/viewed` | User opened a payroll's receipt view | `{ payrollId: string }` |
 | `runPayroll/blockers/viewAll` | User opened the full list of payroll blockers | — |
 | `runPayroll/cancelled` | A payroll was cancelled | `{ payrollId: string, result: object }` |
 | `runPayroll/cancelled/alertDismissed` | User dismissed the payroll-cancelled success alert | — |
+
+When unprocessed transition pay periods exist, the landing surface renders a Transition
+Payroll Alert. It looks ahead 90 days for upcoming transition periods, groups them by pay
+schedule, and offers to run or skip each one. Choosing to run emits `transition/runPayroll`
+(handle it by rendering `Payroll.TransitionFlow` with the supplied dates and pay schedule).
+Skipping opens a confirmation dialog — warning that employees will not be paid for the
+period — then skips the payroll and emits `transition/payrollSkipped`. Transition pay
+periods should be resolved (run or skipped) before regular payrolls are run; the Gusto API
+may reject regular payrolls while unresolved transition periods exist.
 
 <a id="payrolllist"></a>
 
@@ -411,6 +431,8 @@ list with an alert that lets users run or skip the pending transition; when
 using `PayrollList` directly, render an equivalent resolution surface
 alongside it.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/selected` | User selected a payroll to run | `{ payrollUuid, payPeriod }` |
@@ -440,7 +462,7 @@ Props for [PayrollOverview](#payrolloverview).
 | `payrollId` | `string` | Identifier of the payroll being reviewed. The payroll must already be calculated. |
 | `alerts?` | [`PayrollFlowAlert`](#payrollflowalert)[] | Alert banners to display above the payroll summary. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](#confirmwiredetailscomponenttype) | Custom component to replace the default wire details confirmation UI. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollOverview`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollOverview`](../Translations/index.md#payrollpayrolloverview)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the totals and per-employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
@@ -452,6 +474,8 @@ uncalculated payroll throws. Unresolved submission blockers (e.g. fast-ACH thres
 wire-in funding) are surfaced inline and the submit action stays disabled until each
 blocker has a selected unblock option. While the payroll is processing, the component
 polls until success or failure and emits the corresponding event.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -483,7 +507,7 @@ Props for [PayrollReceipts](#payrollreceipts).
 | ------ | ------ | ------ |
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payrollId` | `string` | Identifier of the payroll whose receipt should be displayed. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollPayrollReceipts`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollPayrollReceipts`](../Translations/index.md#payrollpayrollreceipts)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 | `withReimbursements?` | `boolean` | Whether to include reimbursement amounts in the breakdown and employee tables. Defaults to `true`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
@@ -518,6 +542,8 @@ payrolls can run cleanly. This component is also embedded inside
 [PayrollBlockerList](#payrollblockerlist), but can be used standalone when you want a
 dedicated recovery cases surface.
 
+### Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `recoveryCase/resolve` | User opens the resubmit modal for a recovery case | `{ recoveryCaseId: string }` |
@@ -547,11 +573,11 @@ Props for the [TransitionCreation](#transitioncreation) component.
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `payScheduleUuid` | `string` | The UUID of the pay schedule this transition is associated with. |
 | `startDate` | `string` | The start date of the transition pay period (YYYY-MM-DD). |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../index.md#deeppartial)\<`PayrollTransitionCreation`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../Translations/index.md#deeppartial)\<[`PayrollTransitionCreation`](../Translations/index.md#payrolltransitioncreation)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -639,6 +665,10 @@ Flow context shared across the off-cycle payroll flow steps.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
+| `component` | `ComponentType`\<[`CommonComponentInterface`](../index.md#commoncomponentinterface)\<keyof Resources\>\> \| `null` | - |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | - |
+| `ctaConfig?` | `CtaConfig` \| `null` | - |
+| `defaultValues?` | `Record`\<`string`, `unknown`\> | - |
 | `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
 | `payrollType?` | [`OffCycleReason`](#offcyclereason) | Pre-selected off-cycle reason (bonus or correction). |
 | `payrollUuid?` | `string` | Identifier of the off-cycle payroll created during the flow; set once creation completes. |
@@ -766,9 +796,13 @@ Flow context shape carried through the transition payroll state machine.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Company the transition payroll belongs to. |
+| `component` | `ComponentType`\<[`CommonComponentInterface`](../index.md#commoncomponentinterface)\<keyof Resources\>\> \| `null` | - |
 | `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | - |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
+| `ctaConfig?` | `CtaConfig` \| `null` | - |
+| `defaultValues?` | `Record`\<`string`, `unknown`\> | - |
 | `header?` | `FlowHeaderConfig` \| `null` | Optional chrome rendered above the active flow component. When omitted (or set to `null`), no header is shown. |
 | `payrollUuid?` | `string` | UUID of the created transition payroll, populated once creation completes. |
 

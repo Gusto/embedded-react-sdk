@@ -45,6 +45,7 @@ function CompensationFlow({ employeeId, onEvent }: CompensationProps) {
  *
  * The card and form surfaces ({@link CompensationCard}, {@link CompensationEditForm}, {@link CompensationAddJobForm}, {@link CompensationAddAnotherJobForm}) are also exported individually for cases where that orchestration is the wrong fit — for example, when a form needs to render in a modal or drawer, when the card needs to appear read-only with no edit/add affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/compensation/card/editRequested` | Fired when an "Edit" CTA is clicked for a job; the block opens the edit form for that job | `{ employeeId: string, jobId: string }` |

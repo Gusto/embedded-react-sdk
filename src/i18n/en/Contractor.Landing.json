@@ -1,0 +1,13 @@
+{
+  "landingSubtitle": "Welcome, {{contractorName}}! {{companyName}} has invited you to complete your onboarding.",
+  "landingDescription": "We just need a few details from you to get set up.",
+  "stepsSubtitle": "Here's what you'll need to do:",
+  "steps": {
+    "profile": "Complete your profile and tax information",
+    "address": "Add your mailing address",
+    "paymentMethod": "Set up your payment method",
+    "documents": "Review and sign documents"
+  },
+  "getStartedCta": "Get started",
+  "fallbackName": "there"
+}

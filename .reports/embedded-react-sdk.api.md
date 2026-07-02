@@ -4,75 +4,280 @@
 
 ```ts
 
-import { AfterErrorContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { AfterErrorHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { AfterSuccessContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { AfterSuccessHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata';
+import { AccountType as AccountType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount';
+import { AccrualMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicyrequest';
+import { Address } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { AfterErrorContext } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { AfterErrorHook } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { AfterSuccessContext } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { AfterSuccessHook } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { Agencies } from '@gusto/embedded-api-v-2026-02-01/models/components/childsupportdata';
+import { AmountType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
 import { AnchorHTMLAttributes } from 'react';
+import { Answers } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxesrequest';
+import { ApplicableIf } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirement';
 import { AriaAttributes } from 'react';
-import { BeforeCreateRequestContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { BeforeCreateRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { BeforeRequestContext } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
-import { BeforeRequestHook } from '@gusto/embedded-api-v-2025-11-15/hooks/types';
+import { AuthorizationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization';
+import { BeforeCreateRequestContext } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { BeforeCreateRequestHook } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { BeforeRequestContext } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
+import { BeforeRequestHook } from '@gusto/embedded-api-v-2026-02-01/hooks/types';
 import { ButtonHTMLAttributes } from 'react';
-import { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
+import { ChildSupportDataKey } from '@gusto/embedded-api-v-2026-02-01/models/components/childsupportdata';
+import { ChristmasDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { ColumbusDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { CompanyBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount';
+import { CompanyOnboardingStatusRequirements } from '@gusto/embedded-api-v-2026-02-01/models/components/companyonboardingstatus';
+import { Compensation } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation';
 import { ComponentType } from 'react';
-import { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress';
+import { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/contractoraddress';
+import { ContractorBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccount';
+import { ContractorBankAccountAccountType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorbankaccount';
+import { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody';
+import { ContractorCreateRequestBodyType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody';
+import { ContractorCreateRequestBodyWageType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody';
+import { ContractorMemberPortalInvitationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgroup';
+import { ContractorPaymentForGroupPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgroup';
+import { ContractorPaymentForGroupPreview } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgrouppreview';
+import { ContractorPaymentForGroupPreviewPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgrouppreview';
+import { ContractorPaymentForGroupPreviewStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgrouppreview';
+import { ContractorPaymentForGroupPreviewWageType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgrouppreview';
+import { ContractorPaymentForGroupStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgroup';
+import { ContractorPaymentForGroupWageType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentforgroup';
+import { ContractorPaymentGroup } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroup';
+import { ContractorPaymentGroupPreview } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgrouppreview';
+import { ContractorPaymentGroupPreviewStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgrouppreview';
+import { ContractorPaymentGroupPreviewTotals } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgrouppreview';
+import { ContractorPaymentGroupStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroup';
+import { ContractorPaymentGroupTotals } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroup';
+import { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroupwithblockers';
+import { ContractorPaymentGroupWithBlockersStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroupwithblockers';
+import { ContractorPaymentGroupWithBlockersTotals } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgroupwithblockers';
+import { ContractorPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentmethod';
+import { ContractorPaymentMethod1 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorPaymentMethodSplitBy } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentmethod';
+import { ContractorPaymentMethodType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentmethod';
+import { ContractorPaymentReceipt } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentreceipt';
+import { ContractorPaymentReceiptLicensee } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentreceipt';
+import { ContractorPaymentReceiptPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentreceipt';
+import { ContractorPaymentReceiptTotals } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentreceipt';
+import { ContractorPayments } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentreceipt';
+import { ContractorStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorType as ContractorType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
+import { ContractorUpdateRequestBodyType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
+import { ContractorUpdateRequestBodyWageType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody';
 import { Control } from 'react-hook-form';
+import { CustomFieldType } from '@gusto/embedded-api-v-2026-02-01/models/components/customfieldtype';
 import { CustomTypeOptions } from 'i18next';
+import { Deductions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
 import { default as default_2 } from 'react';
-import { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee';
-import { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress';
-import { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount';
-import { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax';
-import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeonboardingstatus';
-import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod';
-import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist';
-import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion';
-import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress';
+import { Document as Document_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/document';
+import { DocumentSigned } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedFields } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedPages } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentSignedRecipientType } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned';
+import { DocumentType as DocumentType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization';
+import { EinVerification } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
+import { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeaddress';
+import { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount';
+import { EmployeeBankAccountAccountType } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount';
+import { EmployeeCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { EmployeeCurrentEmploymentStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeCustomField } from '@gusto/embedded-api-v-2026-02-01/models/components/employeecustomfield';
+import { EmployeeFederalTax } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltax';
+import { EmployeeFederalTaxPre2020 } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltaxpre2020';
+import { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltaxrev2020';
+import { EmployeeMemberPortalInvitationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeOnboardingDocumentsConfig } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeOnboardingStatus1 } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeOnboardingStatus as EmployeeOnboardingStatus_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeonboardingstatus';
+import { EmployeeOnboardingStatusOnboardingStep } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeonboardingstatus';
+import { EmployeePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod';
+import { EmployeePaymentMethod1 } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeePaymentMethodSplitBy } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod';
+import { EmployeePaymentMethodType } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod';
+import { EmployeeStateTaxAnswer } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxanswer';
+import { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxeslist';
+import { EmployeeStateTaxesRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxesrequest';
+import { EmployeeStateTaxInputQuestionFormat } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxinputquestionformat';
+import { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxquestion';
+import { EmployeeStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/employee';
+import { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress';
+import { EntityErrorObject } from '@gusto/embedded-api-v-2026-02-01/models/components/entityerrorobject';
+import { ErrorInfo } from 'react';
 import { FallbackProps } from 'react-error-boundary';
+import { FederalHolidays } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { FederalTaxDetails } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
+import { FederalTaxDetailsStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
+import { Fields } from '@gusto/embedded-api-v-2026-02-01/models/components/document';
 import { FieldsetHTMLAttributes } from 'react';
 import { FieldValues } from 'react-hook-form';
-import { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype';
+import { FilingForm } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
+import { FipsCodes } from '@gusto/embedded-api-v-2026-02-01/models/components/childsupportdata';
+import { FlsaStatusType } from '@gusto/embedded-api-v-2026-02-01/models/components/flsastatustype';
 import { FocusEvent as FocusEvent_2 } from 'react';
-import { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form';
+import { Form } from '@gusto/embedded-api-v-2026-02-01/models/components/form';
 import { FunctionComponent } from 'react';
-import { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
-import { GarnishmentType } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment';
+import { Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment';
+import { GarnishmentChildSupport } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishmentchildsupport';
+import { GarnishmentType } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment';
+import { HolidayPayPolicy } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { HolidayPayPolicyEmployees } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { HomeAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/signatory';
 import { HTMLAttributes } from 'react';
+import { Id } from '@gusto/embedded-api-v-2026-02-01/models/components/companyonboardingstatus';
+import { IdentityVerificationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/signatory';
+import { IndependenceDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { InformationRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest';
+import { InformationRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest';
+import { InformationRequestType } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest';
 import { InputHTMLAttributes } from 'react';
-import { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job';
+import { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job';
 import { JSX } from 'react';
-import { JSXElementConstructor } from 'react';
-import { Location as Location_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/location';
-import { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage';
-import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport';
-import { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation';
-import { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype';
-import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payschedulepreviewpayperiod';
-import { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow';
-import { PolicyType as PolicyType_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy';
+import { Juneteenth } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { LaborDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { Licensee } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { Location as Location_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/location';
+import { MemorialDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { MetadataWithMultipleEntities } from '@gusto/embedded-api-v-2026-02-01/models/components/metadatawithmultipleentities';
+import { MetadataWithOneEntity } from '@gusto/embedded-api-v-2026-02-01/models/components/metadatawithoneentity';
+import { MinimumWage } from '@gusto/embedded-api-v-2026-02-01/models/components/minimumwage';
+import { MinimumWages } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation';
+import { MlkDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { Name } from '@gusto/embedded-api-v-2026-02-01/models/components/paidtimeoff';
+import { NewYearsDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { OffCycleReasonType } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { OnboardingStep } from '@gusto/embedded-api-v-2026-02-01/models/components/companyonboardingstatus';
+import { Options } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxinputquestionformat';
+import { Pages } from '@gusto/embedded-api-v-2026-02-01/models/components/document';
+import { PaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/paidtimeoff';
+import { PaymentMethodBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/paymentmethodbankaccount';
+import { PaymentPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishmentchildsupport';
+import { PaymentSpeed } from '@gusto/embedded-api-v-2026-02-01/models/components/paymentconfigs';
+import { PaymentType } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest';
+import { PaymentUnit } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation';
+import { PayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/payperiod';
+import { PayPeriodPayroll } from '@gusto/embedded-api-v-2026-02-01/models/components/payperiod';
+import { Payroll as Payroll_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollCompanyTaxesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcompanytaxestype';
+import { PayrollCreditBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockertype';
+import { PayrollCreditBlockerTypeStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockertype';
+import { PayrollCreditBlockerTypeUnblockOptions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockertype';
+import { PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi';
+import { PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfiMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionrespondtohighriskfraudrfi';
+import { PayrollCreditBlockerUnblockOptionSubmitBankScreenshot } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot';
+import { PayrollCreditBlockerUnblockOptionSubmitBankScreenshotMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionsubmitbankscreenshot';
+import { PayrollCreditBlockerUnblockOptionSubmitWire } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionsubmitwire';
+import { PayrollCreditBlockerUnblockOptionSubmitWireMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionsubmitwire';
+import { PayrollCreditBlockerUnblockOptionWaitForReverseWire } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionwaitforreversewire';
+import { PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockerunblockoptionwaitforreversewire';
+import { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeFixedCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeHourlyCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollEmployeeCompensationsTypeReimbursements } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollemployeecompensationstype';
+import { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollfixedcompensationtypestype';
+import { PayrollPaymentSpeedChangedType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpaymentspeedchangedtype';
+import { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype';
+import { PayrollPayrollStatusMetaType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayrollstatusmetatype';
+import { PayrollPrepared } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollProcessingRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollprocessingrequest';
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollprocessingrequest';
+import { PayrollReceipt } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { PayrollReceiptEmployeeCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { PayrollReceiptPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { PayrollShow } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowAmountType } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowBenefits } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowDeductions } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowFixedCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowHourlyCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowPaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowReimbursements } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollShowTaxes } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype';
+import { PayrollSubmissionBlockerTypeStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype';
+import { PayrollTaxesType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrolltaxestype';
+import { PayrollTotalsType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrolltotalstype';
+import { PayrollType } from '@gusto/embedded-api-v-2026-02-01/models/components/payperiod';
+import { PayrollUpdateAmountType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdateDeductions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdateFixedCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdateHourlyCompensations } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdatePaidTimeOff } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdatePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollUpdateReimbursements } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollupdate';
+import { PayrollWithholdingPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payroll';
+import { PayScheduleAutoPayrollEnablementBlocker } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleautopayrollenablementblocker';
+import { PayScheduleAutoPayrollEnablementBlockerMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleautopayrollenablementblocker';
+import { PayScheduleFrequency as PayScheduleFrequency_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/payschedulefrequency';
+import { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/payschedulepreviewpayperiod';
+import { PayScheduleShow } from '@gusto/embedded-api-v-2026-02-01/models/components/payscheduleshow';
+import { PlaidStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount';
+import { PolicyType } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy';
+import { PresidentsDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
 import { QueryClient } from '@tanstack/react-query';
-import { ReactElement } from 'react';
+import { Questions } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxesrequest';
+import { RateType } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
 import { ReactNode } from 'react';
+import { RecipientType } from '@gusto/embedded-api-v-2026-02-01/models/components/document';
+import { RecoveryCase } from '@gusto/embedded-api-v-2026-02-01/models/components/recoverycase';
+import { RecoveryCaseStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/recoverycase';
 import { Ref } from 'react';
 import { RefObject } from 'react';
+import { RequiredAttributes } from '@gusto/embedded-api-v-2026-02-01/models/components/childsupportdata';
+import { RequiredQuestions } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest';
+import { ResponseType as ResponseType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest';
 import { SelectHTMLAttributes } from 'react';
-import { Signatory } from '@gusto/embedded-api-v-2025-11-15/models/components/signatory';
+import { SetupStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementstateslist';
+import { Signatory } from '@gusto/embedded-api-v-2026-02-01/models/components/signatory';
+import { States } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxesrequest';
 import { SyntheticEvent } from 'react';
 import { TableHTMLAttributes } from 'react';
+import { Taxes } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { TaxPayerType } from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails';
+import { TaxRequirement } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirement';
+import { TaxRequirementMetadata } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
+import { TaxRequirementMetadataOptions } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
+import { TaxRequirementMetadataType } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
+import { TaxRequirementMetadataValidationType } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
+import { TaxRequirementSet } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementset';
+import { TaxRequirementsState } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementsstate';
+import { TaxRequirementStatesList } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementstateslist';
+import { TaxRequirementsValue } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementsvalue';
+import { Termination } from '@gusto/embedded-api-v-2026-02-01/models/components/termination';
 import { TextareaHTMLAttributes } from 'react';
+import { Thanksgiving } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { TimeOffPolicy } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy';
+import { TimeOffPolicyEmployees } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy';
+import { TimeOffPolicyRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicyrequest';
+import { TimeOffPolicyRequestPolicyType } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicyrequest';
+import { Totals } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt';
+import { UnblockOptions } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype';
+import { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/unprocessedterminationpayperiod';
+import { UpcomingEmployment } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
 import { UseFormProps } from 'react-hook-form';
 import { UseFormReturn } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
+import { Validation } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementmetadata';
+import { VerificationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount';
+import { VerificationType } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount';
+import { VeteransDay } from '@gusto/embedded-api-v-2026-02-01/models/components/holidaypaypolicy';
+import { WageType as WageType_2 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor';
+import { WireInRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest';
+import { WireInRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/wireinrequest';
 import { z } from 'zod';
 
 // @public
 export const ACCOUNT_TYPES: readonly ["Checking", "Savings"];
-
-// @public
-export function AccountNumberField(props: AccountNumberFieldProps): JSX;
 
 // @public
 export type AccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<AccountNumberValidation>>;
@@ -84,13 +289,10 @@ export type AccountNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typ
 export type AccountType = (typeof ACCOUNT_TYPES)[number];
 
 // @public
-export function AccountTypeField(props: AccountTypeFieldProps): JSX;
-
-// @public
 export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<BankFormRequiredValidation, AccountType>>;
 
 // @public
-type AccrualMethod = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
+type AccrualMethod_2 = 'per_hour_paid' | 'per_calendar_year' | 'unlimited';
 
 // @public
 type AccrualMethodFixed = 'per_pay_period' | 'all_at_once';
@@ -114,19 +316,22 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 }
 
 // @public
-function Address(props: AddressProps): JSX;
+function Address_2(input: AddressProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
 //
 // @public
-type AddressDefaultValues = RequireAtLeastOne<Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>>;
+type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
 
 // @public
-interface AddressProps extends BaseComponentInterface<'Contractor.Address'> {
-    children?: ReactNode;
+interface AddressProps {
     className?: string;
     contractorId: string;
     defaultValues?: AddressDefaultValues;
+    dictionary?: ResourceDictionary<'Contractor.Address'>;
+    // Warning: (ae-forgotten-export) The symbol "BaseBoundariesProps" needs to be exported by the entry point index.d.ts
+    FallbackComponent?: BaseBoundariesProps['FallbackComponent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // @public
@@ -153,19 +358,10 @@ export interface AlertProps {
 }
 
 // @public
-export function AnchorEndOfPayPeriodField(props: AnchorEndOfPayPeriodFieldProps): JSX;
-
-// @public
 export type AnchorEndOfPayPeriodFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
 
 // @public
-export function AnchorPayDateField(props: AnchorPayDateFieldProps): JSX;
-
-// @public
 export type AnchorPayDateFieldProps = HookFieldProps<DatePickerHookFieldProps<PayScheduleRequiredValidation>>;
-
-// @public
-export function AnnualMaximumField(props: AnnualMaximumFieldProps): JSX;
 
 // @public
 export type AnnualMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
@@ -176,6 +372,246 @@ export interface APIConfig {
     headers?: HeadersInit;
     hooks?: SDKHooks;
     observability?: ObservabilityHook;
+}
+
+declare namespace APIModels {
+    export {
+        Agencies,
+        FipsCodes,
+        RequiredAttributes,
+        ChildSupportDataKey,
+        PlaidStatus,
+        CompanyBankAccount,
+        AccountType_2 as AccountType,
+        VerificationStatus,
+        VerificationType,
+        CompanyOnboardingStatusRequirements,
+        OnboardingStep,
+        Id,
+        MinimumWages,
+        Compensation,
+        PaymentUnit,
+        ContractorPaymentMethod1,
+        Address,
+        Contractor,
+        ContractorMemberPortalInvitationStatus,
+        UpcomingEmployment,
+        ContractorOnboardingStatus1,
+        ContractorStatus,
+        ContractorType_2 as ContractorType,
+        WageType_2 as WageType,
+        ContractorAddress,
+        ContractorBankAccount,
+        ContractorBankAccountAccountType,
+        ContractorCreateRequestBody,
+        ContractorCreateRequestBodyType,
+        ContractorCreateRequestBodyWageType,
+        ContractorPaymentForGroup,
+        ContractorPaymentForGroupPaymentMethod,
+        ContractorPaymentForGroupStatus,
+        ContractorPaymentForGroupWageType,
+        ContractorPaymentForGroupPreview,
+        ContractorPaymentForGroupPreviewPaymentMethod,
+        ContractorPaymentForGroupPreviewStatus,
+        ContractorPaymentForGroupPreviewWageType,
+        ContractorPaymentGroupTotals,
+        ContractorPaymentGroup,
+        ContractorPaymentGroupStatus,
+        ContractorPaymentGroupPreviewTotals,
+        ContractorPaymentGroupPreview,
+        ContractorPaymentGroupPreviewStatus,
+        ContractorPaymentGroupWithBlockersTotals,
+        ContractorPaymentGroupWithBlockers,
+        ContractorPaymentGroupWithBlockersStatus,
+        ContractorPaymentMethod,
+        ContractorPaymentMethodSplitBy,
+        ContractorPaymentMethodType,
+        ContractorPaymentReceipt,
+        ContractorPayments,
+        ContractorPaymentReceiptLicensee,
+        ContractorPaymentReceiptTotals,
+        ContractorPaymentReceiptPaymentMethod,
+        ContractorUpdateRequestBody,
+        ContractorUpdateRequestBodyType,
+        ContractorUpdateRequestBodyWageType,
+        CustomFieldType,
+        Document_2 as Document,
+        Fields,
+        Pages,
+        RecipientType,
+        DocumentSigned,
+        DocumentSignedFields,
+        DocumentSignedPages,
+        DocumentSignedRecipientType,
+        EmployeeCurrentEmploymentStatus,
+        EmployeeOnboardingStatus1,
+        Employee,
+        EmployeeMemberPortalInvitationStatus,
+        EmployeeOnboardingDocumentsConfig,
+        EmployeePaymentMethod1,
+        EmployeeStatus,
+        EmployeeAddress,
+        EmployeeBankAccount,
+        EmployeeBankAccountAccountType,
+        EmployeeCustomField,
+        EmployeeFederalTax,
+        EmployeeFederalTaxPre2020,
+        EmployeeFederalTaxRev2020,
+        EmployeeOnboardingStatusOnboardingStep,
+        EmployeeOnboardingStatus_2 as EmployeeOnboardingStatus,
+        EmployeePaymentMethod,
+        EmployeePaymentMethodSplitBy,
+        EmployeePaymentMethodType,
+        EmployeeStateTaxAnswer,
+        EmployeeStateTaxesList,
+        Answers,
+        EmployeeStateTaxesRequest,
+        Questions,
+        States,
+        EmployeeStateTaxInputQuestionFormat,
+        Options,
+        EmployeeStateTaxQuestion,
+        EmployeeWorkAddress,
+        EntityErrorObject,
+        FederalTaxDetails,
+        TaxPayerType,
+        EinVerification,
+        FederalTaxDetailsStatus,
+        FilingForm,
+        FlsaStatusType,
+        Form,
+        GarnishmentType,
+        Garnishment,
+        GarnishmentChildSupport,
+        PaymentPeriod,
+        ChristmasDay,
+        ColumbusDay,
+        HolidayPayPolicyEmployees,
+        IndependenceDay,
+        Juneteenth,
+        LaborDay,
+        MemorialDay,
+        MlkDay,
+        NewYearsDay,
+        PresidentsDay,
+        Thanksgiving,
+        VeteransDay,
+        FederalHolidays,
+        HolidayPayPolicy,
+        DocumentType_2 as DocumentType,
+        AuthorizationStatus,
+        InformationRequestType,
+        RequiredQuestions,
+        InformationRequest,
+        InformationRequestStatus,
+        ResponseType_2 as ResponseType,
+        Job,
+        Location_2 as Location,
+        MetadataWithMultipleEntities,
+        MetadataWithOneEntity,
+        MinimumWage,
+        Name,
+        PaidTimeOff,
+        PaymentSpeed,
+        PaymentMethodBankAccount,
+        PayPeriod,
+        PayPeriodPayroll,
+        PayrollType,
+        EmployeeCompensations,
+        OffCycleReasonType,
+        Payroll_2 as Payroll,
+        PayrollShow,
+        PayrollShowBenefits,
+        PayrollShowDeductions,
+        PayrollShowFixedCompensations,
+        PayrollShowHourlyCompensations,
+        PayrollShowPaidTimeOff,
+        PayrollShowPaymentMethod,
+        PayrollShowReimbursements,
+        PayrollShowTaxes,
+        PayrollWithholdingPayPeriodType,
+        PayrollPrepared,
+        PayrollShowAmountType,
+        PayrollCompanyTaxesType,
+        PayrollCreditBlockerTypeUnblockOptions,
+        PayrollCreditBlockerType,
+        PayrollCreditBlockerTypeStatus,
+        PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfiMetadata,
+        PayrollCreditBlockerUnblockOptionRespondToHighRiskFraudRfi,
+        PayrollCreditBlockerUnblockOptionSubmitBankScreenshotMetadata,
+        PayrollCreditBlockerUnblockOptionSubmitBankScreenshot,
+        PayrollCreditBlockerUnblockOptionSubmitWireMetadata,
+        PayrollCreditBlockerUnblockOptionSubmitWire,
+        PayrollCreditBlockerUnblockOptionWaitForReverseWireMetadata,
+        PayrollCreditBlockerUnblockOptionWaitForReverseWire,
+        Deductions,
+        PayrollEmployeeCompensationsType,
+        PayrollEmployeeCompensationsTypeFixedCompensations,
+        PayrollEmployeeCompensationsTypeHourlyCompensations,
+        PayrollEmployeeCompensationsTypePaidTimeOff,
+        PayrollEmployeeCompensationsTypePaymentMethod,
+        PayrollEmployeeCompensationsTypeReimbursements,
+        AmountType,
+        PayrollFixedCompensationTypesType,
+        PayrollPaymentSpeedChangedType,
+        PayrollPayPeriodType,
+        PayrollPayrollStatusMetaType,
+        PayrollProcessingRequest,
+        PayrollProcessingRequestStatus,
+        PayrollReceipt,
+        PayrollReceiptEmployeeCompensations,
+        Taxes,
+        Licensee,
+        Totals,
+        PayrollReceiptPaymentMethod,
+        UnblockOptions,
+        PayrollSubmissionBlockerType,
+        PayrollSubmissionBlockerTypeStatus,
+        PayrollTaxesType,
+        PayrollTotalsType,
+        PayrollUpdateEmployeeCompensations,
+        PayrollUpdatePaidTimeOff,
+        PayrollUpdateReimbursements,
+        PayrollUpdateDeductions,
+        PayrollUpdateFixedCompensations,
+        PayrollUpdateHourlyCompensations,
+        PayrollUpdateAmountType,
+        PayrollUpdatePaymentMethod,
+        PayScheduleAutoPayrollEnablementBlocker,
+        PayScheduleAutoPayrollEnablementBlockerMetadata,
+        PayScheduleFrequency_2 as PayScheduleFrequency,
+        PaySchedulePreviewPayPeriod,
+        PayScheduleShow,
+        RecoveryCase,
+        RecoveryCaseStatus,
+        HomeAddress,
+        IdentityVerificationStatus,
+        Signatory,
+        ApplicableIf,
+        TaxRequirement,
+        TaxRequirementMetadata,
+        TaxRequirementMetadataOptions,
+        Validation,
+        RateType,
+        TaxRequirementMetadataType,
+        TaxRequirementMetadataValidationType,
+        TaxRequirementSet,
+        TaxRequirementsState,
+        TaxRequirementStatesList,
+        SetupStatus,
+        TaxRequirementsValue,
+        Termination,
+        TimeOffPolicyEmployees,
+        TimeOffPolicy,
+        PolicyType,
+        TimeOffPolicyRequest,
+        AccrualMethod,
+        TimeOffPolicyRequestPolicyType,
+        UnprocessedTerminationPayPeriod,
+        WireInRequest,
+        PaymentType,
+        WireInRequestStatus
+    }
 }
 
 // @public
@@ -221,10 +657,13 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
     status?: 'success' | 'warning' | 'error' | 'info';
 }
 
-// Warning: (ae-forgotten-export) The symbol "BankAccountProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function BankAccount(props: BankAccountProps): JSX;
+
+// @public
+interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
+    companyId: string;
+}
 
 // @public
 export type BankFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
@@ -240,14 +679,14 @@ export const BankFormErrorCodes: {
 };
 
 // @public
-export type BankFormField = "name" | "routingNumber" | "accountNumber" | "accountType";
+export type BankFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
 
 // @public
 export interface BankFormFields {
-    AccountNumber: typeof AccountNumberField;
-    AccountType: typeof AccountTypeField;
-    Name: typeof NameField;
-    RoutingNumber: typeof RoutingNumberField;
+    AccountNumber: ComponentType<AccountNumberFieldProps>;
+    AccountType: ComponentType<AccountTypeFieldProps>;
+    Name: ComponentType<NameFieldProps>;
+    RoutingNumber: ComponentType<RoutingNumberFieldProps>;
 }
 
 // @public
@@ -255,9 +694,6 @@ export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata'];
 
 // @public
 export type BankFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type BankFormOutputs = BankFormData;
 
 // @public
 export type BankFormRequiredValidation = typeof BankFormErrorCodes.REQUIRED;
@@ -290,7 +726,7 @@ export interface BaseFieldProps {
 }
 
 // @public
-export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>> {
+export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>, TFormOutputs = TFormData> {
     actions: Record<string, unknown>;
     data: Record<string, unknown>;
     errorHandling: HookErrorHandling;
@@ -298,7 +734,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
         Fields: TFields;
         fieldsMetadata: TFieldsMetadata;
         hookFormInternals: HookFormInternals<TFormData>;
-        getFormSubmissionValues: () => Record<string, unknown> | undefined;
+        getFormSubmissionValues: () => TFormOutputs | undefined;
     };
     isLoading: false;
     status: {
@@ -322,6 +758,14 @@ export interface BaseListProps {
     'aria-labelledby'?: string;
     className?: string;
     items: ReactNode[];
+}
+
+// @public
+export interface BaseStateTaxFieldProps {
+    description?: ReactNode;
+    formHookResult?: FormHookResult;
+    label?: string;
+    validationMessages?: StateTaxValidationMessages;
 }
 
 export { BeforeCreateRequestContext }
@@ -406,9 +850,6 @@ export interface CardProps {
 }
 
 // @public
-export function CaseNumberField(props: CaseNumberFieldProps): JSX;
-
-// @public
 export type CaseNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
 
 // @public
@@ -429,11 +870,6 @@ export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<Fieldse
     value?: string[];
 }
 
-// Warning: (ae-internal-missing-underscore) The name "CheckboxHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function CheckboxHookField<TErrorCode extends string>(input: CheckboxHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
-
 // @public
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     FieldComponent?: ComponentType<CheckboxProps>;
@@ -451,9 +887,6 @@ export interface CheckboxProps extends SharedHorizontalFieldLayoutProps, Pick<In
     onChange?: (value: boolean) => void;
     value?: boolean;
 }
-
-// @public
-export function ChildSupportAmountField(props: ChildSupportGarnishmentAmountFieldProps): JSX;
 
 // @public
 export type ChildSupportGarnishmentAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<ChildSupportGarnishmentAmountValidation>>;
@@ -476,21 +909,18 @@ export const ChildSupportGarnishmentFormErrorCodes: {
 
 // @public
 export interface ChildSupportGarnishmentFormFields {
-    Amount: typeof ChildSupportAmountField;
-    CaseNumber: typeof CaseNumberField | undefined;
-    FipsCode: typeof FipsCodeField | undefined;
-    OrderNumber: typeof OrderNumberField | undefined;
-    PaymentPeriod: typeof PaymentPeriodField;
-    PayPeriodMaximum: typeof PayPeriodMaximumField;
-    RemittanceNumber: typeof RemittanceNumberField | undefined;
-    State: typeof ChildSupportStateField;
+    Amount: ComponentType<ChildSupportGarnishmentAmountFieldProps>;
+    CaseNumber: ComponentType<CaseNumberFieldProps> | undefined;
+    FipsCode: ComponentType<FipsCodeFieldProps> | undefined;
+    OrderNumber: ComponentType<OrderNumberFieldProps> | undefined;
+    PaymentPeriod: ComponentType<PaymentPeriodFieldProps>;
+    PayPeriodMaximum: ComponentType<PayPeriodMaximumFieldProps>;
+    RemittanceNumber: ComponentType<RemittanceNumberFieldProps> | undefined;
+    State: ComponentType<ChildSupportGarnishmentStateFieldProps>;
 }
 
 // @public
 export type ChildSupportGarnishmentFormFieldsMetadata = UseChildSupportGarnishmentFormReady['form']['fieldsMetadata'];
-
-// @public
-export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData;
 
 // @public
 export type ChildSupportGarnishmentNegativeAmountValidation = typeof ChildSupportGarnishmentFormErrorCodes.NEGATIVE_AMOUNT;
@@ -503,12 +933,6 @@ export type ChildSupportGarnishmentRequiredValidation = typeof ChildSupportGarni
 
 // @public
 export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, StateFieldEntry>>;
-
-// @public
-export function ChildSupportStateField(props: ChildSupportGarnishmentStateFieldProps): JSX;
-
-// @public
-export function CityField(props: CityFieldProps): JSX;
 
 // @public
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
@@ -550,15 +974,22 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 declare namespace CompanyOnboarding {
     export {
         OnboardingFlow_2 as OnboardingFlow,
+        OnboardingFlowProps_2 as OnboardingFlowProps,
+        OnboardingFlowDefaultValues,
         OnboardingOverview,
+        OnboardingOverviewProps,
         DocumentSigner_2 as DocumentSigner,
+        DocumentSignerProps_2 as DocumentSignerProps,
         DocumentList_2 as DocumentList,
+        DocumentListProps_2 as DocumentListProps,
         SignatureForm_2 as SignatureForm,
         SignatureFormProps_2 as SignatureFormProps,
         Industry,
         IndustryProps,
         BankAccount,
+        BankAccountProps,
         Locations,
+        LocationsProps,
         LocationForm,
         LocationFormProps,
         LocationsList,
@@ -571,8 +1002,11 @@ declare namespace CompanyOnboarding {
         FederalTaxesProps_3 as FederalTaxesProps,
         FederalTaxesDefaultValues,
         StateTaxes_3 as StateTaxes,
+        StateTaxesProps_3 as StateTaxesProps,
         StateTaxesForm,
+        StateTaxesFormProps,
         StateTaxesList,
+        StateTaxesListProps,
         AssignSignatory,
         AssignSignatoryProps,
         AssignSignatoryDefaultValues,
@@ -620,9 +1054,6 @@ interface CompensationAddJobFormProps extends CommonComponentInterface<'Employee
 }
 
 // @public
-export function CompensationAdjustForMinimumWageField(props: AdjustForMinimumWageFieldProps): JSX;
-
-// @public
 function CompensationCard(props: CompensationCardProps): JSX;
 
 // @public
@@ -650,9 +1081,6 @@ interface CompensationEditFormProps extends CommonComponentInterface<'Employee.M
 }
 
 // @public
-export function CompensationEffectiveDateField(props: CompensationEffectiveDateFieldProps): JSX;
-
-// @public
 export type CompensationEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<CompensationEffectiveDateValidation>>;
 
 // @public
@@ -677,9 +1105,6 @@ export const CompensationErrorCodes: {
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata'];
 
 // @public
-export function CompensationFlsaStatusField(props: FlsaStatusFieldProps): JSX;
-
-// @public
 export type CompensationFormData = {
     title: string
     flsaStatus: "Exempt" | "Salaried Nonexempt" | "Nonexempt" | "Owner" | "Commission Only Exempt" | "Commission Only Nonexempt" | undefined
@@ -692,26 +1117,17 @@ export type CompensationFormData = {
 
 // @public
 export interface CompensationFormFields {
-    AdjustForMinimumWage: typeof CompensationAdjustForMinimumWageField | undefined;
-    EffectiveDate: typeof CompensationEffectiveDateField | undefined;
-    FlsaStatus: typeof CompensationFlsaStatusField | undefined;
-    MinimumWageId: typeof CompensationMinimumWageIdField | undefined;
-    PaymentUnit: typeof CompensationPaymentUnitField | undefined;
-    Rate: typeof CompensationRateField | undefined;
-    Title: typeof CompensationTitleField;
+    AdjustForMinimumWage: ComponentType<AdjustForMinimumWageFieldProps> | undefined;
+    EffectiveDate: ComponentType<CompensationEffectiveDateFieldProps> | undefined;
+    FlsaStatus: ComponentType<FlsaStatusFieldProps> | undefined;
+    MinimumWageId: ComponentType<MinimumWageIdFieldProps> | undefined;
+    PaymentUnit: ComponentType<PaymentUnitFieldProps> | undefined;
+    Rate: ComponentType<RateFieldProps> | undefined;
+    Title: ComponentType<CompensationTitleFieldProps>;
 }
 
 // @public
-export type CompensationFormOutputs = CompensationFormData;
-
-// @public
-export function CompensationMinimumWageIdField(props: MinimumWageIdFieldProps): JSX;
-
-// @public
 export type CompensationOptionalFieldsToRequire = { create?: "title"[] | undefined; update?: ("title" | "flsaStatus" | "paymentUnit" | "rate" | "effectiveDate")[] | undefined; };
-
-// @public
-export function CompensationPaymentUnitField(props: PaymentUnitFieldProps): JSX;
 
 // @public
 interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
@@ -726,21 +1142,7 @@ interface CompensationProps_2 extends BaseComponentInterface<'Employee.Managemen
 }
 
 // @public
-export function CompensationRateField(props: RateFieldProps): JSX;
-
-// @public
 export type CompensationRequiredValidation = typeof CompensationErrorCodes.REQUIRED;
-
-// Warning: (ae-internal-missing-underscore) The name "CompensationSchemaOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface CompensationSchemaOptions {
-    hireDate?: string | null;
-    minEffectiveDate?: string | null;
-    mode?: 'create' | 'update';
-    optionalFieldsToRequire?: CompensationOptionalFieldsToRequire;
-    withEffectiveDateField?: boolean;
-}
 
 // @public
 export interface CompensationSubmitOptions {
@@ -749,9 +1151,6 @@ export interface CompensationSubmitOptions {
     effectiveDate?: string;
     jobId?: string;
 }
-
-// @public
-export function CompensationTitleField(props: CompensationTitleFieldProps): JSX;
 
 // @public
 export type CompensationTitleFieldProps = HookFieldProps<TextInputHookFieldProps<CompensationRequiredValidation>>;
@@ -857,6 +1256,8 @@ export const componentEvents: {
     readonly PAYROLL_EXIT_FLOW: "payroll/saveAndExit";
     readonly RUN_PAYROLL_GROSS_UP_SELECTED: "runPayroll/grossUp/selected";
     readonly RUN_PAYROLL_GROSS_UP_CALCULATED: "runPayroll/grossUp/calculated";
+    readonly CONTRACTOR_SELF_ONBOARDING_START: "contractor/selfOnboarding/start";
+    readonly CONTRACTOR_SELF_ONBOARDING_DONE: "contractor/selfOnboarding/done";
     readonly CONTRACTOR_ADDRESS_UPDATED: "contractor/address/updated";
     readonly CONTRACTOR_ADDRESS_DONE: "contractor/address/done";
     readonly CONTRACTOR_PAYMENT_METHOD_UPDATED: "contractor/paymentMethod/updated";
@@ -874,6 +1275,8 @@ export const componentEvents: {
     readonly CONTRACTOR_ONBOARDING_STATUS_UPDATED: "contractor/onboardingStatus/updated";
     readonly CONTRACTOR_INVITE_CONTRACTOR: "contractor/invite/selfOnboarding";
     readonly CONTRACTOR_ONBOARDING_CONTINUE: "contractor/onboarding/continue";
+    readonly CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: "contractor/documents/view";
+    readonly CONTRACTOR_DOCUMENTS_DONE: "contractor/documents/done";
     readonly PAY_SCHEDULE_CREATE: "paySchedule/create";
     readonly PAY_SCHEDULE_CREATED: "paySchedule/created";
     readonly PAY_SCHEDULE_UPDATE: "paySchedule/update";
@@ -1091,9 +1494,6 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(form
 }], onAllValid: () => Promise<void>): ComposeSubmitHandlerResult;
 
 // @public
-export function ConfirmSignatureField(props: SignEmployeeFormConfirmSignatureFieldProps): JSX;
-
-// @public
 export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignCompanyFormRequiredValidation>>;
 
 // @public
@@ -1107,6 +1507,205 @@ interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.Confir
     companyId: string;
     wireInId?: string;
 }
+
+// @public
+export type ContractorAccountType = (typeof ContractorBankAccountTypes)[number];
+
+// @public
+export type ContractorAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export type ContractorAddressErrorCode = (typeof ContractorAddressErrorCodes)[keyof typeof ContractorAddressErrorCodes];
+
+// @public
+export const ContractorAddressErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_ZIP: "INVALID_ZIP";
+};
+
+// @public
+export type ContractorAddressField = "street1" | "street2" | "city" | "state" | "zip";
+
+// @public
+export type ContractorAddressFieldsMetadata = UseContractorAddressFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; };
+
+// @public
+export interface ContractorAddressFormFields {
+    City: ComponentType<ContractorAddressCityFieldProps>;
+    State: ComponentType<ContractorAddressStateFieldProps>;
+    Street1: ComponentType<ContractorAddressStreet1FieldProps>;
+    Street2: ComponentType<ContractorAddressStreet2FieldProps>;
+    Zip: ComponentType<ContractorAddressZipFieldProps>;
+}
+
+// @public
+export type ContractorAddressOptionalFieldsToRequire = { create?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; update?: ("street1" | "street2" | "city" | "state" | "zip")[] | undefined; };
+
+// @public
+export type ContractorAddressRequiredValidation = typeof ContractorAddressErrorCodes.REQUIRED;
+
+// @public
+export type ContractorAddressStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorAddressRequiredValidation, string>>;
+
+// @public
+export type ContractorAddressStreet1FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export type ContractorAddressStreet2FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressRequiredValidation>>;
+
+// @public
+export interface ContractorAddressSubmitOptions {
+    contractorId?: string;
+}
+
+// @public
+export type ContractorAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorAddressZipValidation>>;
+
+// @public
+export type ContractorAddressZipValidation = (typeof ContractorAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
+
+// @public
+export type ContractorBankAccountAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountAccountNumberValidation>>;
+
+// @public
+export type ContractorBankAccountAccountNumberValidation = (typeof ContractorBankAccountErrorCodes)[keyof Pick<typeof ContractorBankAccountErrorCodes, 'REQUIRED' | 'INVALID_ACCOUNT_NUMBER'>];
+
+// @public
+export type ContractorBankAccountAccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorBankAccountRequiredValidation, ContractorAccountType>>;
+
+// @public
+export type ContractorBankAccountErrorCode = (typeof ContractorBankAccountErrorCodes)[keyof typeof ContractorBankAccountErrorCodes];
+
+// @public
+export const ContractorBankAccountErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_ROUTING_NUMBER: "INVALID_ROUTING_NUMBER";
+    readonly INVALID_ACCOUNT_NUMBER: "INVALID_ACCOUNT_NUMBER";
+};
+
+// @public
+export type ContractorBankAccountFieldsMetadata = UseContractorBankAccountFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorBankAccountFormData = { name: string; routingNumber: string; accountNumber: string; accountType: "Checking" | "Savings"; };
+
+// @public
+export type ContractorBankAccountFormField = "name" | "accountNumber" | "routingNumber" | "accountType";
+
+// @public
+export interface ContractorBankAccountFormFields {
+    AccountNumber: ComponentType<ContractorBankAccountAccountNumberFieldProps>;
+    AccountType: ComponentType<ContractorBankAccountAccountTypeFieldProps>;
+    Name: ComponentType<ContractorBankAccountNameFieldProps>;
+    RoutingNumber: ComponentType<ContractorBankAccountRoutingNumberFieldProps>;
+}
+
+// @public
+export type ContractorBankAccountNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRequiredValidation>>;
+
+// @public
+export type ContractorBankAccountOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
+
+// @public
+export type ContractorBankAccountRequiredValidation = typeof ContractorBankAccountErrorCodes.REQUIRED;
+
+// @public
+export type ContractorBankAccountRoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorBankAccountRoutingNumberValidation>>;
+
+// @public
+export type ContractorBankAccountRoutingNumberValidation = (typeof ContractorBankAccountErrorCodes)[keyof Pick<typeof ContractorBankAccountErrorCodes, 'REQUIRED' | 'INVALID_ROUTING_NUMBER'>];
+
+// @public
+export const ContractorBankAccountTypes: readonly ["Checking", "Savings"];
+
+// @public
+export type ContractorBusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
+// @public
+export type ContractorDetailsEinRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsEinValidation = typeof ContractorDetailsErrorCodes.INVALID_EIN;
+
+// @public
+export type ContractorDetailsEmailValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_EMAIL'];
+
+// @public
+export type ContractorDetailsErrorCode = (typeof ContractorDetailsErrorCodes)[keyof typeof ContractorDetailsErrorCodes];
+
+// @public
+export const ContractorDetailsErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly INVALID_NAME: "INVALID_NAME";
+    readonly INVALID_EMAIL: "INVALID_EMAIL";
+    readonly INVALID_SSN: "INVALID_SSN";
+    readonly INVALID_EIN: "INVALID_EIN";
+};
+
+// @public
+export type ContractorDetailsFieldsMetadata = UseContractorDetailsFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorDetailsFormData = { type: "Business" | "Individual"; wageType: "Fixed" | "Hourly"; startDate: string; hourlyRate: number; selfOnboarding: boolean; fileNewHireReport: boolean; email: string; firstName: string; lastName: string; middleInitial: string; businessName: string; workState: string; ssn: string; ein: string; };
+
+// @public
+export interface ContractorDetailsFormFields {
+    BusinessName: ComponentType<ContractorBusinessNameFieldProps> | undefined;
+    Ein: ComponentType<ContractorEinFieldProps> | undefined;
+    Email: ComponentType<ContractorEmailFieldProps> | undefined;
+    FileNewHireReport: ComponentType<ContractorFileNewHireReportFieldProps> | undefined;
+    FirstName: ComponentType<ContractorFirstNameFieldProps> | undefined;
+    HourlyRate: ComponentType<ContractorHourlyRateFieldProps> | undefined;
+    LastName: ComponentType<ContractorLastNameFieldProps> | undefined;
+    MiddleInitial: ComponentType<ContractorMiddleInitialFieldProps> | undefined;
+    SelfOnboarding: ComponentType<ContractorSelfOnboardingFieldProps> | undefined;
+    Ssn: ComponentType<ContractorSsnFieldProps> | undefined;
+    StartDate: ComponentType<ContractorStartDateFieldProps>;
+    Type: ComponentType<ContractorTypeFieldProps>;
+    WageType: ComponentType<ContractorWageTypeFieldProps>;
+    WorkState: ComponentType<ContractorWorkStateFieldProps> | undefined;
+}
+
+// @public
+export type ContractorDetailsNameValidation = (typeof ContractorDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME'];
+
+// @public
+export type ContractorDetailsOptionalFieldsToRequire = { create?: ("ssn" | "ein" | "middleInitial")[] | undefined; update?: ("hourlyRate" | "businessName" | "ssn" | "ein" | "startDate" | "firstName" | "lastName" | "middleInitial" | "workState")[] | undefined; };
+
+// @public
+export type ContractorDetailsRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsSsnRequiredValidation = typeof ContractorDetailsErrorCodes.REQUIRED;
+
+// @public
+export type ContractorDetailsSsnValidation = typeof ContractorDetailsErrorCodes.INVALID_SSN;
+
+// @public
+export interface ContractorDetailsSubmitOptions {
+    companyId?: string;
+}
+
+// @public
+export type ContractorEinFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEinValidation, ContractorDetailsEinRequiredValidation>>;
+
+// @public
+export type ContractorEmailFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsEmailValidation>>;
+
+// @public
+export type ContractorFileNewHireReportFieldProps = HookFieldProps<SwitchHookFieldProps>;
+
+// @public
+export type ContractorFirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
+
+// @public
+export type ContractorHourlyRateFieldProps = HookFieldProps<NumberInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
+// @public
+export type ContractorLastNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsNameValidation>>;
 
 // @public
 function ContractorList(props: ContractorListProps): JSX;
@@ -1134,17 +1733,26 @@ declare namespace ContractorManagement {
     }
 }
 
+// @public
+export type ContractorMiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsRequiredValidation>>;
+
 declare namespace ContractorOnboarding {
     export {
         OnboardingFlow_3 as OnboardingFlow,
         OnboardingFlowProps_3 as OnboardingFlowProps,
         OnboardingFlowDefaultValues_2 as OnboardingFlowDefaultValues,
+        Landing_2 as Landing,
+        LandingProps_2 as LandingProps,
+        OnboardingSummary_2 as OnboardingSummary,
+        OnboardingSummaryProps_2 as OnboardingSummaryProps,
         ContractorList,
         ContractorListProps,
         ContractorProfile,
         ContractorProfileProps,
-        ContractorProfileFormData,
-        Address,
+        ContractorProfileAdminProps,
+        ContractorProfileSelfOnboardingProps,
+        ContractorDetailsFormData as ContractorProfileFormData,
+        Address_2 as Address,
         AddressProps,
         AddressDefaultValues,
         PaymentMethod_3 as PaymentMethod,
@@ -1152,7 +1760,9 @@ declare namespace ContractorOnboarding {
         NewHireReport,
         NewHireReportProps,
         ContractorSubmit,
-        ContractorSubmitProps
+        ContractorSubmitProps,
+        DocumentsList,
+        DocumentsListProps
     }
 }
 
@@ -1168,22 +1778,200 @@ export const ContractorOnboardingStatus: {
 };
 
 // @public
-function ContractorProfile(props: ContractorProfileProps): JSX;
+export type ContractorPaymentMethodErrorCode = (typeof ContractorPaymentMethodErrorCodes)[keyof typeof ContractorPaymentMethodErrorCodes];
 
-// Warning: (ae-forgotten-export) The symbol "ContractorProfileSchema" needs to be exported by the entry point index.d.ts
+// @public
+export const ContractorPaymentMethodErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+};
+
+// @public
+export type ContractorPaymentMethodFieldsMetadata = UseContractorPaymentMethodFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
+
+// @public
+export type ContractorPaymentMethodFormField = "type";
+
+// @public
+export interface ContractorPaymentMethodFormFields {
+    Type: ComponentType<ContractorPaymentMethodTypeFieldProps>;
+}
+
+// Warning: (ae-forgotten-export) The symbol "PAYMENT_METHOD_TYPES_2" needs to be exported by the entry point index.d.ts
 //
 // @public
-type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>;
+export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHOD_TYPES_2)[number];
 
 // @public
-interface ContractorProfileProps extends BaseComponentInterface<'Contractor.Profile'> {
+export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
+
+// @public
+function ContractorProfile(props: ContractorProfileProps): JSX;
+
+// @public
+interface ContractorProfileAdminProps extends BaseComponentInterface<'Contractor.Profile'> {
     companyId: string;
     contractorId?: string;
-    defaultValues?: Partial<ContractorProfileFormData>;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    isAdmin?: true;
 }
 
 // @public
-export const ContractorSelfOnboardingStatuses: Set<"self_onboarding_invited" | "self_onboarding_not_invited" | "self_onboarding_started" | "self_onboarding_review">;
+type ContractorProfileProps = ContractorProfileAdminProps | ContractorProfileSelfOnboardingProps;
+
+// @public
+interface ContractorProfileSelfOnboardingProps extends BaseComponentInterface<'Contractor.Profile'> {
+    companyId: string;
+    contractorId: string;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    isAdmin: false;
+}
+
+// @public
+export type ContractorSelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
+
+// @public
+export const ContractorSelfOnboardingStatuses: Set<ContractorOnboardingStatus1>;
+
+// @public
+export type ContractorSignatureAccountNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureAgreeFieldProps = HookFieldProps<CheckboxHookFieldProps<ContractorSignatureAgreeValidation>>;
+
+// @public
+export type ContractorSignatureAgreeValidation = typeof ContractorSignatureFormErrorCodes.AGREE_REQUIRED;
+
+// @public
+export type ContractorSignatureBusinessNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureCompanyNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureEinFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureEinValidation, ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureEinValidation = typeof ContractorSignatureFormErrorCodes.INVALID_EIN;
+
+// @public
+export type ContractorSignatureExemptionFromFatcaFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureExemptPayeeCodeFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureFieldsMetadata = UseContractorSignatureFormReady['form']['fieldsMetadata'];
+
+// @public
+export type ContractorSignatureForeignPartnersFieldProps = HookFieldProps<CheckboxHookFieldProps>;
+
+// @public
+export type ContractorSignatureFormData = {
+    name: string
+    businessName: string
+    taxClassification: string
+    llcClassificationCode: string
+    otherText: string
+    foreignPartners: boolean
+    exemptPayeeCode: string
+    exemptionFromFatca: string
+    homeAddressStreet1: string
+    homeAddressStreet2: string
+    homeAddressCity: string
+    homeAddressState: string
+    homeAddressZip: string
+    accountNumber: string
+    companyName: string
+    ssn: string
+    ein: string
+    signatureText: string
+    agree: boolean
+};
+
+// @public
+export type ContractorSignatureFormErrorCode = (typeof ContractorSignatureFormErrorCodes)[keyof typeof ContractorSignatureFormErrorCodes];
+
+// @public
+export const ContractorSignatureFormErrorCodes: {
+    readonly REQUIRED: "REQUIRED";
+    readonly AGREE_REQUIRED: "AGREE_REQUIRED";
+    readonly INVALID_SSN: "INVALID_SSN";
+    readonly INVALID_EIN: "INVALID_EIN";
+};
+
+// @public
+export interface ContractorSignatureFormFieldComponents {
+    AccountNumber: ComponentType<ContractorSignatureAccountNumberFieldProps> | undefined;
+    Agree: ComponentType<ContractorSignatureAgreeFieldProps>;
+    BusinessName: ComponentType<ContractorSignatureBusinessNameFieldProps> | undefined;
+    CompanyName: ComponentType<ContractorSignatureCompanyNameFieldProps> | undefined;
+    Ein: ComponentType<ContractorSignatureEinFieldProps> | undefined;
+    ExemptionFromFatca: ComponentType<ContractorSignatureExemptionFromFatcaFieldProps> | undefined;
+    ExemptPayeeCode: ComponentType<ContractorSignatureExemptPayeeCodeFieldProps> | undefined;
+    ForeignPartners: ComponentType<ContractorSignatureForeignPartnersFieldProps> | undefined;
+    HomeAddressCity: ComponentType<ContractorSignatureHomeAddressCityFieldProps> | undefined;
+    HomeAddressState: ComponentType<ContractorSignatureHomeAddressStateFieldProps> | undefined;
+    HomeAddressStreet1: ComponentType<ContractorSignatureHomeAddressStreet1FieldProps> | undefined;
+    HomeAddressStreet2: ComponentType<ContractorSignatureHomeAddressStreet2FieldProps> | undefined;
+    HomeAddressZip: ComponentType<ContractorSignatureHomeAddressZipFieldProps> | undefined;
+    LlcClassificationCode: ComponentType<ContractorSignatureLlcClassificationCodeFieldProps> | undefined;
+    Name: ComponentType<ContractorSignatureNameFieldProps> | undefined;
+    OtherText: ComponentType<ContractorSignatureOtherTextFieldProps> | undefined;
+    SignatureText: ComponentType<ContractorSignatureSignatureTextFieldProps> | undefined;
+    Ssn: ComponentType<ContractorSignatureSsnFieldProps> | undefined;
+    TaxClassification: ComponentType<ContractorSignatureTaxClassificationFieldProps> | undefined;
+}
+
+// @public
+export type ContractorSignatureHomeAddressCityFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStateFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStreet1FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressStreet2FieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureHomeAddressZipFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureLlcClassificationCodeFieldProps = HookFieldProps<SelectHookFieldProps<ContractorSignatureRequiredValidation, string>>;
+
+// @public
+export type ContractorSignatureNameFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureOptionalFieldsToRequire = { create?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; update?: ("businessName" | "llcClassificationCode" | "otherText" | "foreignPartners" | "exemptPayeeCode" | "exemptionFromFatca" | "homeAddressStreet2" | "accountNumber" | "companyName")[] | undefined; };
+
+// @public
+export type ContractorSignatureOtherTextFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureRequiredValidation = typeof ContractorSignatureFormErrorCodes.REQUIRED;
+
+// @public
+export type ContractorSignatureSignatureTextFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorSignatureSsnValidation, ContractorSignatureRequiredValidation>>;
+
+// @public
+export type ContractorSignatureSsnValidation = typeof ContractorSignatureFormErrorCodes.INVALID_SSN;
+
+// @public
+export type ContractorSignatureTaxClassificationFieldProps = HookFieldProps<RadioGroupHookFieldProps<ContractorSignatureRequiredValidation, string>>;
+
+// @public
+export type ContractorSsnFieldProps = HookFieldProps<TextInputHookFieldProps<ContractorDetailsSsnValidation, ContractorDetailsSsnRequiredValidation>>;
+
+// @public
+export type ContractorStartDateFieldProps = HookFieldProps<DatePickerHookFieldProps<ContractorDetailsRequiredValidation>>;
 
 // @public
 function ContractorSubmit(props: ContractorSubmitProps): JSX;
@@ -1195,199 +1983,39 @@ interface ContractorSubmitProps extends BaseComponentInterface<'Contractor.Submi
 }
 
 // @public
+export const ContractorType: {
+    readonly Individual: "Individual";
+    readonly Business: "Business";
+};
+
+// @public
+export type ContractorTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['type']>>;
+
+// @public
+export type ContractorWageTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorDetailsFormData['wageType']>>;
+
+// @public
+export type ContractorWorkStateFieldProps = HookFieldProps<SelectHookFieldProps<ContractorDetailsRequiredValidation, string>>;
+
+// @public
 export type CountyEntry = {
     fipsCode: string;
     county: string | null;
 };
 
 // @public
-export function CourtesyWithholdingField(props: CourtesyWithholdingFieldProps): JSX;
-
-// @public
 export type CourtesyWithholdingFieldProps = HookFieldProps<CheckboxHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
-type CreatableTimeOffPolicyType = Extract<PolicyType_2, 'sick' | 'vacation'>;
-
-// Warning: (ae-forgotten-export) The symbol "BankFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BuildFormSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createBankFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createBankFormSchema(options?: BankFormSchemaOptions): BuildFormSchemaResult<    {
-name: z.ZodString;
-routingNumber: z.ZodString;
-accountNumber: z.ZodString;
-accountType: z.ZodEnum<{
-Checking: "Checking";
-Savings: "Savings";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "ChildSupportGarnishmentFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createChildSupportGarnishmentFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createChildSupportGarnishmentFormSchema(input?: ChildSupportGarnishmentFormSchemaOptions): BuildFormSchemaResult<    {
-state: z.ZodString;
-fipsCode: z.ZodString;
-caseNumber: z.ZodString;
-orderNumber: z.ZodString;
-remittanceNumber: z.ZodString;
-payPeriodMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-paymentPeriod: z.ZodEnum<{
-readonly EveryWeek: "Every week";
-readonly EveryOtherWeek: "Every other week";
-readonly TwicePerMonth: "Twice per month";
-readonly Monthly: "Monthly";
-}>;
-}>;
-
-// Warning: (ae-internal-missing-underscore) The name "createCompensationSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createCompensationSchema(options?: CompensationSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-flsaStatus: z.ZodOptional<z.ZodEnum<{
-Exempt: "Exempt";
-"Salaried Nonexempt": "Salaried Nonexempt";
-Nonexempt: "Nonexempt";
-Owner: "Owner";
-"Commission Only Exempt": "Commission Only Exempt";
-"Commission Only Nonexempt": "Commission Only Nonexempt";
-}>>;
-paymentUnit: z.ZodEnum<{
-Hour: "Hour";
-Week: "Week";
-Month: "Month";
-Year: "Year";
-Paycheck: "Paycheck";
-}>;
-rate: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-effectiveDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-adjustForMinimumWage: z.ZodBoolean;
-minimumWageId: z.ZodString;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "DeductionFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createDeductionFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createDeductionFormSchema(options: DeductionFormSchemaOptions): BuildFormSchemaResult<    {
-description: z.ZodString;
-recurring: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-deductAsPercentage: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-amount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-totalAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-annualMaximum: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-garnishmentType: z.ZodEnum<{
-readonly ChildSupport: "child_support";
-readonly FederalTaxLien: "federal_tax_lien";
-readonly StateTaxLien: "state_tax_lien";
-readonly StudentLoan: "student_loan";
-readonly CreditorGarnishment: "creditor_garnishment";
-readonly FederalLoan: "federal_loan";
-readonly OtherGarnishment: "other_garnishment";
-}>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeDetailsSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeDetailsSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeDetailsSchema(options?: EmployeeDetailsSchemaOptions): BuildFormSchemaResult<    {
-firstName: z.ZodString;
-middleInitial: z.ZodString;
-lastName: z.ZodString;
-email: z.ZodEmail;
-dateOfBirth: z.ZodISODate;
-ssn: z.ZodString;
-selfOnboarding: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "EmployeeStateTaxesSchemaResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createEmployeeStateTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createEmployeeStateTaxesSchema(employeeStateTaxes: EmployeeStateTaxesList[], options?: EmployeeStateTaxesSchemaOptions): EmployeeStateTaxesSchemaResult;
-
-// Warning: (ae-forgotten-export) The symbol "FederalTaxesSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createFederalTaxesSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createFederalTaxesSchema(options?: FederalTaxesSchemaOptions): BuildFormSchemaResult<    {
-filingStatus: z.ZodString;
-twoJobs: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-dependentsAmount: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-otherIncome: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-deductions: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-extraWithholding: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "HomeAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createHomeAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createHomeAddressSchema(options?: HomeAddressSchemaOptions): BuildFormSchemaResult<    {
-street1: z.ZodString;
-street2: z.ZodString;
-city: z.ZodString;
-state: z.ZodString;
-zip: z.ZodString;
-courtesyWithholding: z.ZodBoolean;
-effectiveDate: z.ZodISODate;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "JobSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createJobSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createJobSchema(options?: JobSchemaOptions): BuildFormSchemaResult<    {
-title: z.ZodString;
-hireDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-twoPercentShareholder: z.ZodBoolean;
-stateWcCovered: z.ZodPipe<z.ZodTransform<boolean | undefined, unknown>, z.ZodBoolean>;
-stateWcClassCode: z.ZodString;
-}>;
+type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>;
 
 // @public
 function CreatePayment(props: CreatePaymentProps): JSX;
-
-// Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPaymentMethodFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPaymentMethodFormSchema(options?: PaymentMethodFormSchemaOptions): BuildFormSchemaResult<    {
-type: z.ZodEnum<{
-Check: "Check";
-"Direct Deposit": "Direct Deposit";
-}>;
-}>;
 
 // @public
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
     companyId: string;
 }
-
-// Warning: (ae-forgotten-export) The symbol "PayScheduleSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createPayScheduleSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createPayScheduleSchema(options?: PayScheduleSchemaOptions): BuildFormSchemaResult<    {
-customName: z.ZodString;
-frequency: z.ZodEnum<{
-"Every week": "Every week";
-"Every other week": "Every other week";
-"Twice per month": "Twice per month";
-Monthly: "Monthly";
-}>;
-customTwicePerMonth: z.ZodString;
-anchorPayDate: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-anchorEndOfPayPeriod: z.ZodPipe<z.ZodTransform<string | null, unknown>, z.ZodNullable<z.ZodISODate>>;
-day1: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
-}>;
 
 // @public
 function CreateSignatory(props: CreateSignatoryProps): JSX;
@@ -1404,77 +2032,6 @@ interface CreateSignatoryProps extends BaseComponentInterface<'Company.AssignSig
     signatoryId?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SignCompanyFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignCompanyFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignCompanyFormSchema(options?: SignCompanyFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SignEmployeeFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSignEmployeeFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSignEmployeeFormSchema(options?: SignEmployeeFormSchemaOptions): BuildFormSchemaResult<    {
-signature: z.ZodString;
-confirmSignature: z.ZodBoolean;
-usedPreparer: z.ZodEnum<{
-yes: "yes";
-no: "no";
-}>;
-preparerFirstName: z.ZodString;
-preparerLastName: z.ZodString;
-preparerStreet1: z.ZodString;
-preparerStreet2: z.ZodString;
-preparerCity: z.ZodString;
-preparerState: z.ZodString;
-preparerZip: z.ZodString;
-preparerSignature: z.ZodString;
-preparerAgree: z.ZodBoolean;
-preparer2FirstName: z.ZodString;
-preparer2LastName: z.ZodString;
-preparer2Street1: z.ZodString;
-preparer2Street2: z.ZodString;
-preparer2City: z.ZodString;
-preparer2State: z.ZodString;
-preparer2Zip: z.ZodString;
-preparer2Signature: z.ZodString;
-preparer2Agree: z.ZodBoolean;
-preparer3FirstName: z.ZodString;
-preparer3LastName: z.ZodString;
-preparer3Street1: z.ZodString;
-preparer3Street2: z.ZodString;
-preparer3City: z.ZodString;
-preparer3State: z.ZodString;
-preparer3Zip: z.ZodString;
-preparer3Signature: z.ZodString;
-preparer3Agree: z.ZodBoolean;
-preparer4FirstName: z.ZodString;
-preparer4LastName: z.ZodString;
-preparer4Street1: z.ZodString;
-preparer4Street2: z.ZodString;
-preparer4City: z.ZodString;
-preparer4State: z.ZodString;
-preparer4Zip: z.ZodString;
-preparer4Signature: z.ZodString;
-preparer4Agree: z.ZodBoolean;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "SplitPaymentsFormSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createSplitPaymentsFormSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createSplitPaymentsFormSchema(options?: SplitPaymentsFormSchemaOptions): BuildFormSchemaResult<    {
-splitBy: z.ZodEnum<{
-Percentage: "Percentage";
-Amount: "Amount";
-}>;
-splitAmount: z.ZodRecord<z.ZodString, z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodNullable<z.ZodNumber>>>;
-priority: z.ZodRecord<z.ZodString, z.ZodNumber>;
-}>;
-
 // Warning: (ae-internal-missing-underscore) The name "createStateFields" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -1488,30 +2045,19 @@ export interface CreateStateFieldsOptions {
     isAdmin: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "WorkAddressSchemaOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-internal-missing-underscore) The name "createWorkAddressSchema" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function createWorkAddressSchema(options?: WorkAddressSchemaOptions): BuildFormSchemaResult<    {
-locationUuid: z.ZodString;
-effectiveDate: z.ZodISODate;
-}>;
-
-// Warning: (ae-forgotten-export) The symbol "BaseStateTaxFieldProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type CurrencyStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface CurrencyStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
-};
+}
 
 // @public
-export function CustomNameField(props: CustomNameFieldProps): JSX;
+export interface CurrencyStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<CurrencyStateTaxFieldProps>;
+    type: 'currency';
+}
 
 // @public
 export type CustomNameFieldProps = HookFieldProps<TextInputHookFieldProps<PayScheduleRequiredValidation>>;
-
-// @public
-export function CustomTwicePerMonthField(props: CustomTwicePerMonthFieldProps): JSX;
 
 // @public
 export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>;
@@ -1535,15 +2081,7 @@ interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
 }
 
 // @public
-export function DateOfBirthField(props: DateOfBirthFieldProps): JSX;
-
-// @public
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
-
-// Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function DatePickerHookField<TErrorCode extends string>(input: DatePickerHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface DatePickerHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
@@ -1589,18 +2127,18 @@ export interface DateRangePickerProps {
 }
 
 // @public
-export type DateStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface DateStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<DatePickerProps>;
-};
+}
 
 // @public
-export function Day1Field(props: Day1FieldProps): JSX;
+export interface DateStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<DateStateTaxFieldProps>;
+    type: 'date';
+}
 
 // @public
 export type Day1FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidation>>;
-
-// @public
-export function Day2Field(props: Day2FieldProps): JSX;
 
 // @public
 export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidation>>;
@@ -1609,13 +2147,7 @@ export type Day2FieldProps = HookFieldProps<NumberInputHookFieldProps<DayValidat
 export type DayValidation = (typeof PayScheduleErrorCodes)['REQUIRED' | 'DAY_RANGE'];
 
 // @public
-export function DeductAsPercentageField(props: DeductAsPercentageFieldProps): JSX;
-
-// @public
 export type DeductAsPercentageFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
-
-// @public
-export function DeductionAmountField(props: DeductionAmountFieldProps): JSX;
 
 // @public
 export type DeductionAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormAmountValidation>>;
@@ -1640,13 +2172,13 @@ export const DeductionFormErrorCodes: {
 
 // @public
 export interface DeductionFormFields {
-    Amount: typeof DeductionAmountField;
-    AnnualMaximum: typeof AnnualMaximumField | undefined;
-    DeductAsPercentage: typeof DeductAsPercentageField;
-    Description: typeof DescriptionField;
-    GarnishmentType: typeof GarnishmentTypeField | undefined;
-    Recurring: typeof RecurringField;
-    TotalAmount: typeof TotalAmountField | undefined;
+    Amount: ComponentType<DeductionAmountFieldProps>;
+    AnnualMaximum: ComponentType<AnnualMaximumFieldProps> | undefined;
+    DeductAsPercentage: ComponentType<DeductAsPercentageFieldProps>;
+    Description: ComponentType<DescriptionFieldProps>;
+    GarnishmentType: ComponentType<GarnishmentTypeFieldProps> | undefined;
+    Recurring: ComponentType<RecurringFieldProps>;
+    TotalAmount: ComponentType<TotalAmountFieldProps> | undefined;
 }
 
 // @public
@@ -1659,16 +2191,13 @@ export type DeductionFormNegativeAmountValidation = typeof DeductionFormErrorCod
 export type DeductionFormOptionalFieldsToRequire = { create?: ("totalAmount" | "annualMaximum")[] | undefined; update?: ("totalAmount" | "annualMaximum")[] | undefined; };
 
 // @public
-export type DeductionFormOutputs = DeductionFormData;
-
-// @public
 export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQUIRED;
 
 // @public
-function Deductions(input: DeductionsProps): JSX;
+function Deductions_2(input: DeductionsProps): JSX;
 
 // @public
-function Deductions_2(input: DeductionsProps_2): JSX;
+function Deductions_3(input: DeductionsProps_2): JSX;
 
 // @public
 function DeductionsCard(props: DeductionsCardProps): JSX;
@@ -1688,9 +2217,6 @@ interface DeductionsEditFormProps extends BaseComponentInterface<'Employee.Manag
     employeeId: string;
     onEvent: BaseComponentInterface['onEvent'];
 }
-
-// @public
-export function DeductionsField(props: DeductionsFieldProps): JSX;
 
 // @public
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -1715,13 +2241,7 @@ export type DeepPartial<T> = {
 }
 
 // @public
-export function DependentsAmountField(props: DependentsAmountFieldProps): JSX;
-
-// @public
 export type DependentsAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
-
-// @public
-export function DescriptionField(props: DescriptionFieldProps): JSX;
 
 // @public
 export type DescriptionFieldProps = HookFieldProps<TextInputHookFieldProps<DeductionFormRequiredValidation>>;
@@ -1778,14 +2298,18 @@ interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payro
 // @public
 function DocumentList(props: DocumentListProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentListProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentList_2(props: DocumentListProps_2): JSX;
 
 // @public
 interface DocumentListProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
+}
+
+// @public
+interface DocumentListProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
 }
 
 // @public
@@ -1812,8 +2336,6 @@ interface DocumentsCardProps {
 // @public
 function DocumentSigner(props: DocumentSignerProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
@@ -1821,6 +2343,20 @@ function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
     employeeId: string;
     withEmployeeI9?: boolean;
+}
+
+// @public
+interface DocumentSignerProps_2 extends BaseComponentInterface<'Company.DocumentList'> {
+    companyId: string;
+    signatoryId?: string;
+}
+
+// @public
+function DocumentsList(props: DocumentsListProps): JSX;
+
+// @public
+interface DocumentsListProps extends BaseComponentInterface<'Contractor.DocumentsList'> {
+    contractorId: string;
 }
 
 // @public
@@ -1847,9 +2383,6 @@ interface EditCompensationProps extends CommonComponentInterface<'Employee.Compe
 export type EffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<WorkAddressRequiredValidation>>;
 
 // @public
-export function EmailField(props: EmailFieldProps): JSX;
-
-// @public
 export type EmailFieldProps = HookFieldProps<TextInputHookFieldProps<EmailValidation>>;
 
 // @public
@@ -1871,18 +2404,7 @@ export const EmployeeDetailsErrorCodes: {
 };
 
 // @public
-export type EmployeeDetailsField = "firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn";
-
-// @public
-export interface EmployeeDetailsFields {
-    DateOfBirth: typeof DateOfBirthField;
-    Email: typeof EmailField;
-    FirstName: typeof FirstNameField;
-    LastName: typeof LastNameField;
-    MiddleInitial: typeof MiddleInitialField;
-    SelfOnboarding: typeof SelfOnboardingField | undefined;
-    Ssn: typeof SsnField;
-}
+export type EmployeeDetailsField = "ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth";
 
 // @public
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata'];
@@ -1891,13 +2413,18 @@ export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form'][
 export type EmployeeDetailsFormData = { firstName: string; middleInitial: string; lastName: string; email: string; dateOfBirth: string; ssn: string; selfOnboarding: boolean; };
 
 // @public
-export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields'];
+export interface EmployeeDetailsFormFields {
+    DateOfBirth: ComponentType<DateOfBirthFieldProps>;
+    Email: ComponentType<EmailFieldProps>;
+    FirstName: ComponentType<FirstNameFieldProps>;
+    LastName: ComponentType<LastNameFieldProps>;
+    MiddleInitial: ComponentType<MiddleInitialFieldProps>;
+    SelfOnboarding: ComponentType<SelfOnboardingFieldProps> | undefined;
+    Ssn: ComponentType<SsnFieldProps>;
+}
 
 // @public
-export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData;
-
-// @public
-export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("middleInitial" | "email" | "dateOfBirth" | "ssn")[] | undefined; update?: ("firstName" | "middleInitial" | "lastName" | "email" | "dateOfBirth" | "ssn")[] | undefined; };
+export type EmployeeDetailsOptionalFieldsToRequire = { create?: ("ssn" | "email" | "middleInitial" | "dateOfBirth")[] | undefined; update?: ("ssn" | "email" | "firstName" | "lastName" | "middleInitial" | "dateOfBirth")[] | undefined; };
 
 // @public
 export type EmployeeDetailsRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED;
@@ -1951,7 +2478,7 @@ declare namespace EmployeeManagement {
         Dashboard,
         DashboardFlowProps,
         DashboardProps,
-        HomeAddress,
+        HomeAddress_2 as HomeAddress,
         HomeAddressCard,
         HomeAddressEditForm,
         HomeAddressProps,
@@ -1991,7 +2518,7 @@ declare namespace EmployeeManagement {
         PaymentMethodSplitFormProps,
         PaystubsCard,
         PaystubsCardProps,
-        Deductions_2 as Deductions,
+        Deductions_3 as Deductions,
         DeductionsCard,
         DeductionsEditForm,
         DeductionsProps_2 as DeductionsProps,
@@ -2026,6 +2553,7 @@ declare namespace EmployeeOnboarding {
         OnboardingExecutionInitialState,
         OnboardingDefaultValues,
         SelfOnboardingFlow,
+        SelfOnboardingFlowProps,
         EmployeeList,
         EmployeeListProps,
         OnboardingSummary,
@@ -2058,7 +2586,7 @@ declare namespace EmployeeOnboarding {
         FederalTaxesProps,
         StateTaxes,
         StateTaxesProps,
-        Deductions,
+        Deductions_2 as Deductions,
         DeductionsProps,
         PaymentMethod,
         PaymentMethodProps
@@ -2098,9 +2626,6 @@ export interface EmployeeStateTaxesFormData {
 
 // @public
 export type EmployeeStateTaxesFormFields = UseEmployeeStateTaxesFormReady['form']['Fields'];
-
-// @public
-export type EmployeeStateTaxesFormOutputs = EmployeeStateTaxesFormData;
 
 // Warning: (ae-forgotten-export) The symbol "FieldsMetadataConfig" needs to be exported by the entry point index.d.ts
 // Warning: (ae-internal-missing-underscore) The name "EmployeeStateTaxesMetadataConfig" should be prefixed with an underscore because the declaration is marked as @internal
@@ -2174,9 +2699,6 @@ interface EmploymentEligibilityProps extends BaseComponentInterface<'Employee.Em
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents];
 
 // @public
-export function ExtraWithholdingField(props: ExtraWithholdingFieldProps): JSX;
-
-// @public
 export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
 
 // @public
@@ -2225,26 +2747,20 @@ export const FederalTaxesErrorCodes: {
 export type FederalTaxesField = "filingStatus" | "twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding";
 
 // @public
-export interface FederalTaxesFields {
-    Deductions: typeof DeductionsField;
-    DependentsAmount: typeof DependentsAmountField;
-    ExtraWithholding: typeof ExtraWithholdingField;
-    FilingStatus: typeof FilingStatusField;
-    OtherIncome: typeof OtherIncomeField;
-    TwoJobs: typeof TwoJobsField;
-}
-
-// @public
 export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata'];
 
 // @public
 export type FederalTaxesFormData = { filingStatus: string; twoJobs: boolean; dependentsAmount: number; otherIncome: number; deductions: number; extraWithholding: number; };
 
 // @public
-export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields'];
-
-// @public
-export type FederalTaxesFormOutputs = FederalTaxesFormData;
+export interface FederalTaxesFormFields {
+    Deductions: ComponentType<DeductionsFieldProps>;
+    DependentsAmount: ComponentType<DependentsAmountFieldProps>;
+    ExtraWithholding: ComponentType<ExtraWithholdingFieldProps>;
+    FilingStatus: ComponentType<FilingStatusFieldProps>;
+    OtherIncome: ComponentType<OtherIncomeFieldProps>;
+    TwoJobs: ComponentType<TwoJobsFieldProps>;
+}
 
 // @public
 export type FederalTaxesOptionalFieldsToRequire = { create?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; update?: ("twoJobs" | "dependentsAmount" | "otherIncome" | "deductions" | "extraWithholding")[] | undefined; };
@@ -2278,6 +2794,7 @@ export interface FieldMetadata {
     maxDate?: string | null;
     minDate?: string | null;
     name: string;
+    placeholder?: string;
 }
 
 // @public
@@ -2311,22 +2828,13 @@ export interface FileInputProps extends Omit<SharedFieldLayoutProps, 'shouldVisu
 export const FILING_STATUS_VALUES: readonly ["Single", "Married", "Head of Household", "Exempt from withholding"];
 
 // @public
-export function FilingStatusField(props: FilingStatusFieldProps): JSX;
-
-// @public
 export type FilingStatusFieldProps = HookFieldProps<SelectHookFieldProps<FederalTaxesRequiredValidation, FilingStatusValue>>;
 
 // @public
 export type FilingStatusValue = (typeof FILING_STATUS_VALUES)[number];
 
 // @public
-export function FipsCodeField(props: FipsCodeFieldProps): JSX;
-
-// @public
 export type FipsCodeFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, CountyEntry>>;
-
-// @public
-export function FirstNameField(props: FirstNameFieldProps): JSX;
 
 // @public
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
@@ -2364,13 +2872,7 @@ export type FormHookResult = {
 };
 
 // @public
-export function FrequencyField(props: FrequencyFieldProps): JSX;
-
-// @public
 export type FrequencyFieldProps = HookFieldProps<SelectHookFieldProps<PayScheduleRequiredValidation, PayScheduleFrequency>>;
-
-// @public
-export function GarnishmentTypeField(props: GarnishmentTypeFieldProps): JSX;
 
 // @public
 export type GarnishmentTypeFieldProps = HookFieldProps<SelectHookFieldProps<DeductionFormRequiredValidation, GarnishmentType>>;
@@ -2384,6 +2886,12 @@ export function getQuestionVariant(question: EmployeeStateTaxQuestion): StateTax
 //
 // @internal (undocumented)
 export function getRequiredAttrKeys(agency?: Agencies | null): Set<SupportedRequiredAttrKey>;
+
+// @public
+export interface GlobalResourceDictionary extends Record<
+SupportedLanguages,
+Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>
+> {}
 
 // @public
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
@@ -2408,7 +2916,7 @@ export interface GustoProviderProps {
     components: ComponentsContextType;
     config: APIConfig;
     currency?: string;
-    dictionary?: ResourceDictionary;
+    dictionary?: GlobalResourceDictionary;
     lng?: string;
     // Warning: (ae-forgotten-export) The symbol "LoadingIndicatorContextProps" needs to be exported by the entry point index.d.ts
     LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator'];
@@ -2503,9 +3011,6 @@ export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, '
 }
 
 // @public
-export function HireDateField(props: HireDateFieldProps): JSX;
-
-// @public
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>;
 
 // @public
@@ -2548,7 +3053,7 @@ interface HolidaySelectionFormProps extends BaseComponentInterface<'Company.Time
 }
 
 // @public
-function HomeAddress(input: HomeAddressProps): JSX;
+function HomeAddress_2(input: HomeAddressProps): JSX;
 
 // @public
 function HomeAddressCard(props: HomeAddressCardProps): JSX;
@@ -2568,9 +3073,6 @@ interface HomeAddressEditFormProps extends BaseComponentInterface<'Employee.Mana
 }
 
 // @public
-export function HomeAddressEffectiveDateField(props: HomeAddressEffectiveDateFieldProps): JSX;
-
-// @public
 export type HomeAddressEffectiveDateFieldProps = HookFieldProps<DatePickerHookFieldProps<HomeAddressRequiredValidation>>;
 
 // @public
@@ -2583,18 +3085,7 @@ export const HomeAddressErrorCodes: {
 };
 
 // @public
-export type HomeAddressField = "effectiveDate" | "state" | "street1" | "street2" | "city" | "zip" | "courtesyWithholding";
-
-// @public
-export interface HomeAddressFields {
-    City: typeof CityField;
-    CourtesyWithholding: typeof CourtesyWithholdingField;
-    EffectiveDate: typeof HomeAddressEffectiveDateField | undefined;
-    State: typeof HomeAddressStateField;
-    Street1: typeof Street1Field;
-    Street2: typeof Street2Field;
-    Zip: typeof ZipField;
-}
+export type HomeAddressField = "street1" | "street2" | "city" | "state" | "zip" | "effectiveDate" | "courtesyWithholding";
 
 // @public
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata'];
@@ -2603,10 +3094,15 @@ export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsM
 export type HomeAddressFormData = { street1: string; street2: string; city: string; state: string; zip: string; courtesyWithholding: boolean; effectiveDate: string; };
 
 // @public
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields'];
-
-// @public
-export type HomeAddressFormOutputs = HomeAddressFormData;
+export interface HomeAddressFormFields {
+    City: ComponentType<CityFieldProps>;
+    CourtesyWithholding: ComponentType<CourtesyWithholdingFieldProps>;
+    EffectiveDate: ComponentType<HomeAddressEffectiveDateFieldProps> | undefined;
+    State: ComponentType<StateFieldProps>;
+    Street1: ComponentType<Street1FieldProps>;
+    Street2: ComponentType<Street2FieldProps>;
+    Zip: ComponentType<ZipFieldProps>;
+}
 
 // @public
 export type HomeAddressOptionalFieldsToRequire = { create?: "street2"[] | undefined; update?: "street2"[] | undefined; };
@@ -2618,9 +3114,6 @@ interface HomeAddressProps extends BaseComponentInterface<'Employee.Management.H
 
 // @public
 export type HomeAddressRequiredValidation = typeof HomeAddressErrorCodes.REQUIRED;
-
-// @public
-export function HomeAddressStateField(props: StateFieldProps): JSX;
 
 // @public
 export interface HomeAddressSubmitOptions {
@@ -2765,15 +3258,12 @@ export type JobFormData = {
 
 // @public
 export interface JobFormFields {
-    HireDate: typeof HireDateField | undefined;
-    StateWcClassCode: typeof StateWcClassCodeField | undefined;
-    StateWcCovered: typeof StateWcCoveredField | undefined;
-    Title: typeof JobTitleField | undefined;
-    TwoPercentShareholder: typeof TwoPercentShareholderField | undefined;
+    HireDate: ComponentType<HireDateFieldProps> | undefined;
+    StateWcClassCode: ComponentType<StateWcClassCodeFieldProps> | undefined;
+    StateWcCovered: ComponentType<StateWcCoveredFieldProps> | undefined;
+    Title: ComponentType<JobTitleFieldProps> | undefined;
+    TwoPercentShareholder: ComponentType<TwoPercentShareholderFieldProps> | undefined;
 }
-
-// @public
-export type JobFormOutputs = JobFormData;
 
 // @public
 export type JobOptionalFieldsToRequire = { create?: ("twoPercentShareholder" | "stateWcCovered")[] | undefined; update?: ("title" | "hireDate" | "twoPercentShareholder" | "stateWcCovered")[] | undefined; };
@@ -2796,13 +3286,13 @@ export interface JobSubmitOptions {
 }
 
 // @public
-export function JobTitleField(props: JobTitleFieldProps): JSX;
-
-// @public
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequiredValidation>>;
 
 // @public
 function Landing(props: LandingProps): JSX;
+
+// @public
+function Landing_2(props: LandingProps_2): JSX;
 
 // @public
 interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
@@ -2811,7 +3301,10 @@ interface LandingProps extends BaseComponentInterface<'Employee.Landing'> {
 }
 
 // @public
-export function LastNameField(props: LastNameFieldProps): JSX;
+interface LandingProps_2 extends BaseComponentInterface<'Contractor.Landing'> {
+    companyId: string;
+    contractorId: string;
+}
 
 // @public
 export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>;
@@ -2887,8 +3380,6 @@ interface LocationFormProps extends BaseComponentInterface<'Company.Locations'> 
     locationId?: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "LocationsProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function Locations(input: LocationsProps): JSX;
 
@@ -2897,6 +3388,11 @@ function LocationsList(props: LocationsListProps): JSX;
 
 // @public
 interface LocationsListProps extends BaseComponentInterface<'Company.Locations'> {
+    companyId: string;
+}
+
+// @public
+interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
     companyId: string;
 }
 
@@ -2933,9 +3429,6 @@ export interface MenuProps extends DataAttributes {
     portalContainer?: HTMLElement;
     triggerRef?: RefObject<Element | null>;
 }
-
-// @public
-export function MiddleInitialField(props: MiddleInitialFieldProps): JSX;
 
 // @public
 export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<EmployeeDetailsRequiredValidation>>;
@@ -2980,9 +3473,6 @@ export interface MultiSelectComboBoxProps extends SharedFieldLayoutProps, Pick<I
 }
 
 // @public
-export function NameField(props: NameFieldProps): JSX;
-
-// @public
 export type NameFieldProps = HookFieldProps<TextInputHookFieldProps<BankFormRequiredValidation>>;
 
 // @public
@@ -3001,11 +3491,6 @@ interface NewHireReportProps extends BaseComponentInterface<'Contractor.NewHireR
 //
 // @internal
 export function normalizeToSDKError(error: unknown): SDKError;
-
-// Warning: (ae-internal-missing-underscore) The name "NumberInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function NumberInputHookField<TErrorCode extends string>(input: NumberInputHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
@@ -3037,9 +3522,15 @@ export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTML
 }
 
 // @public
-export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface NumberStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<NumberInputProps>;
-};
+}
+
+// @public
+export interface NumberStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<NumberStateTaxFieldProps>;
+    type: 'number';
+}
 
 // Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -3199,8 +3690,6 @@ type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 // @public
 const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
@@ -3208,8 +3697,14 @@ const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
 // @public
+type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+    federalTaxes?: FederalTaxesDefaultValues;
+    paySchedule?: PayScheduleDefaultValues;
+}>;
+
+// @public
 type OnboardingFlowDefaultValues_2 = RequireAtLeastOne<{
-    profile?: Partial<ContractorProfileFormData>;
+    profile?: Partial<ContractorDetailsFormData>;
     address?: AddressDefaultValues;
 }>;
 
@@ -3223,23 +3718,40 @@ interface OnboardingFlowProps extends BaseComponentInterface<never> {
 }
 
 // @public
+interface OnboardingFlowProps_2 extends BaseComponentInterface<never> {
+    companyId: string;
+    defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>;
+}
+
+// @public
 interface OnboardingFlowProps_3 extends BaseComponentInterface<never> {
     companyId: string;
     defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues_2>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function OnboardingOverview(props: OnboardingOverviewProps): JSX;
+
+// @public
+interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+    companyId: string;
+}
 
 // @public
 function OnboardingSummary(props: OnboardingSummaryProps): JSX;
 
 // @public
+function OnboardingSummary_2(props: OnboardingSummaryProps_2): JSX;
+
+// @public
 interface OnboardingSummaryProps extends BaseComponentInterface<'Employee.OnboardingSummary'> {
     employeeId: string;
     isAdmin?: boolean;
+}
+
+// @public
+interface OnboardingSummaryProps_2 extends BaseComponentInterface<'Contractor.OnboardingSummary'> {
+    contractorId: string;
 }
 
 // @public
@@ -3250,13 +3762,7 @@ export interface OrderedListProps extends BaseListProps {
 }
 
 // @public
-export function OrderNumberField(props: OrderNumberFieldProps): JSX;
-
-// @public
 export type OrderNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
-
-// @public
-export function OtherIncomeField(props: OtherIncomeFieldProps): JSX;
 
 // @public
 export type OtherIncomeFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
@@ -3313,7 +3819,7 @@ function PaymentMethod(input: PaymentMethodProps): JSX;
 function PaymentMethod_2(input: PaymentMethodProps_2): JSX;
 
 // @public
-function PaymentMethod_3(props: PaymentMethodProps_3): JSX;
+function PaymentMethod_3(input: PaymentMethodProps_3): JSX;
 
 // @public
 function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
@@ -3349,7 +3855,7 @@ export type PaymentMethodFormField = "type";
 
 // @public
 export interface PaymentMethodFormFields {
-    Type: typeof PaymentMethodTypeField;
+    Type: ComponentType<TypeFieldProps>;
 }
 
 // @public
@@ -3357,9 +3863,6 @@ export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form'][
 
 // @public
 export type PaymentMethodFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type PaymentMethodFormOutputs = PaymentMethodFormData;
 
 // @public
 export type PaymentMethodFormRequiredValidation = typeof PaymentMethodFormErrorCodes.REQUIRED;
@@ -3395,12 +3898,6 @@ interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'e
 
 // @public
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
-
-// @public
-export function PaymentMethodTypeField(props: TypeFieldProps): JSX;
-
-// @public
-export function PaymentPeriodField(props: PaymentPeriodFieldProps): JSX;
 
 // @public
 export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildSupportGarnishmentRequiredValidation, PaymentPeriod>>;
@@ -3440,9 +3937,6 @@ interface PaymentSummaryProps {
 
 // @public
 export type PaymentUnitFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, PaymentUnit>>;
-
-// @public
-export function PayPeriodMaximumField(props: PayPeriodMaximumFieldProps): JSX;
 
 // @public
 export type PayPeriodMaximumFieldProps = HookFieldProps<NumberInputHookFieldProps<PayPeriodMaximumValidation>>;
@@ -3659,27 +4153,21 @@ export const PayScheduleErrorCodes: {
 export type PayScheduleField = "customName" | "frequency" | "customTwicePerMonth" | "anchorPayDate" | "anchorEndOfPayPeriod" | "day1" | "day2";
 
 // @public
-export interface PayScheduleFields {
-    AnchorEndOfPayPeriod: typeof AnchorEndOfPayPeriodField;
-    AnchorPayDate: typeof AnchorPayDateField;
-    CustomName: typeof CustomNameField;
-    CustomTwicePerMonth: typeof CustomTwicePerMonthField | undefined;
-    Day1: typeof Day1Field | undefined;
-    Day2: typeof Day2Field | undefined;
-    Frequency: typeof FrequencyField;
-}
-
-// @public
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata'];
 
 // @public
 export type PayScheduleFormData = { customName: string; frequency: "Every week" | "Every other week" | "Twice per month" | "Monthly"; customTwicePerMonth: string; anchorPayDate: string | null; anchorEndOfPayPeriod: string | null; day1: number; day2: number; };
 
 // @public
-export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields'];
-
-// @public
-export type PayScheduleFormOutputs = PayScheduleFormData;
+export interface PayScheduleFormFields {
+    AnchorEndOfPayPeriod: ComponentType<AnchorEndOfPayPeriodFieldProps>;
+    AnchorPayDate: ComponentType<AnchorPayDateFieldProps>;
+    CustomName: ComponentType<CustomNameFieldProps>;
+    CustomTwicePerMonth: ComponentType<CustomTwicePerMonthFieldProps> | undefined;
+    Day1: ComponentType<Day1FieldProps> | undefined;
+    Day2: ComponentType<Day2FieldProps> | undefined;
+    Frequency: ComponentType<FrequencyFieldProps>;
+}
 
 // @public
 export type PayScheduleFrequency = "Every week" | "Every other week" | "Twice per month" | "Monthly";
@@ -3710,7 +4198,7 @@ function PolicyConfigurationForm(props: PolicyConfigurationFormProps): JSX;
 
 // @public
 interface PolicyConfigurationFormData {
-    accrualMethod: AccrualMethod;
+    accrualMethod: AccrualMethod_2;
     accrualMethodFixed?: AccrualMethodFixed;
     accrualRate?: number;
     accrualRateUnit?: number;
@@ -3803,7 +4291,7 @@ interface PolicySettingsProps extends BaseComponentInterface<'Company.TimeOff.Cr
 }
 
 // @public
-type PolicyType = 'sick' | 'vacation' | 'holiday';
+type PolicyType_2 = 'sick' | 'vacation' | 'holiday';
 
 // @public (undocumented)
 type PolicyTypeKey = 'vacation' | 'sick';
@@ -3814,7 +4302,7 @@ function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX;
 // @public
 interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
     companyId: string;
-    defaultPolicyType?: PolicyType;
+    defaultPolicyType?: PolicyType_2;
 }
 
 // @public
@@ -3918,11 +4406,6 @@ export interface ProgressBarProps {
     totalSteps: number;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "RadioGroupHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>(input: RadioGroupHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
-
 // @public
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
@@ -3961,9 +4444,15 @@ export interface RadioProps extends SharedHorizontalFieldLayoutProps, Pick<Input
 }
 
 // @public
-export type RadioStateTaxFieldProps = BaseStateTaxFieldProps & {
+export interface RadioStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
-};
+}
+
+// @public
+export interface RadioStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<RadioStateTaxFieldProps>;
+    type: 'radio';
+}
 
 // @public (undocumented)
 type RateBasedAccrualMethod = 'perPayPeriod' | 'perCalendarYear' | 'perAnniversaryYear' | 'perHourWorked' | 'perHourWorkedNoOvertime' | 'perHourPaid' | 'perHourPaidNoOvertime';
@@ -3989,13 +4478,7 @@ export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_
 function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
 
 // @public
-export function RecurringField(props: RecurringFieldProps): JSX;
-
-// @public
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
-
-// @public
-export function RemittanceNumberField(props: RemittanceNumberFieldProps): JSX;
 
 // @public
 export type RemittanceNumberFieldProps = HookFieldProps<TextInputHookFieldProps<ChildSupportGarnishmentRequiredValidation>>;
@@ -4016,13 +4499,221 @@ type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
 K extends keyof Resources
 ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
-: Record<SupportedLanguages, Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>>
+: GlobalResourceDictionary
 
 // @public
-export type Resources = CustomTypeOptions['resources']
-
-// @public
-export function RoutingNumberField(props: RoutingNumberFieldProps): JSX;
+export interface Resources {
+    // (undocumented)
+    'Company.Addresses': Translations.CompanyAddresses
+    // (undocumented)
+    'Company.AssignSignatory': Translations.CompanyAssignSignatory
+    // (undocumented)
+    'Company.BankAccount': Translations.CompanyBankAccount
+    // (undocumented)
+    'Company.DocumentList': Translations.CompanyDocumentList
+    // (undocumented)
+    'Company.FederalTaxes': Translations.CompanyFederalTaxes
+    // (undocumented)
+    'Company.Industry': Translations.CompanyIndustry
+    // (undocumented)
+    'Company.Locations': Translations.CompanyLocations
+    // (undocumented)
+    'Company.OnboardingOverview': Translations.CompanyOnboardingOverview
+    // (undocumented)
+    'Company.PaySchedule': Translations.CompanyPaySchedule
+    // (undocumented)
+    'Company.SignatureForm': Translations.CompanySignatureForm
+    // (undocumented)
+    'Company.StateTaxes': Translations.CompanyStateTaxes
+    // (undocumented)
+    'Company.TimeOff.CreateTimeOffPolicy': Translations.CompanyTimeOffCreateTimeOffPolicy
+    // (undocumented)
+    'Company.TimeOff.EmployeeTable': Translations.CompanyTimeOffEmployeeTable
+    // (undocumented)
+    'Company.TimeOff.HolidayPolicy': Translations.CompanyTimeOffHolidayPolicy
+    // (undocumented)
+    'Company.TimeOff.PolicyDetail': Translations.CompanyTimeOffPolicyDetail
+    // (undocumented)
+    'Company.TimeOff.SelectEmployees': Translations.CompanyTimeOffSelectEmployees
+    // (undocumented)
+    'Company.TimeOff.SelectPolicyType': Translations.CompanyTimeOffSelectPolicyType
+    // (undocumented)
+    'Company.TimeOff.TimeOffPolicies': Translations.CompanyTimeOffTimeOffPolicies
+    // (undocumented)
+    'Company.TimeOff.TimeOffPolicyDetails': Translations.CompanyTimeOffTimeOffPolicyDetails
+    // (undocumented)
+    'Company.TimeOff.TimeOffRequests': Translations.CompanyTimeOffTimeOffRequests
+    // (undocumented)
+    'Contractor.Address': Translations.ContractorAddress
+    // (undocumented)
+    'Contractor.ContractorList': Translations.ContractorContractorList
+    // (undocumented)
+    'Contractor.DocumentsList': Translations.ContractorDocumentsList
+    // (undocumented)
+    'Contractor.Landing': Translations.ContractorLanding
+    // (undocumented)
+    'Contractor.NewHireReport': Translations.ContractorNewHireReport
+    // (undocumented)
+    'Contractor.OnboardingSummary': Translations.ContractorOnboardingSummary
+    // (undocumented)
+    'Contractor.PaymentMethod': Translations.ContractorPaymentMethod
+    // (undocumented)
+    'Contractor.Payments.CreatePayment': Translations.ContractorPaymentsCreatePayment
+    // (undocumented)
+    'Contractor.Payments.PaymentHistory': Translations.ContractorPaymentsPaymentHistory
+    // (undocumented)
+    'Contractor.Payments.PaymentsList': Translations.ContractorPaymentsPaymentsList
+    // (undocumented)
+    'Contractor.Payments.PaymentStatement': Translations.ContractorPaymentsPaymentStatement
+    // (undocumented)
+    'Contractor.Payments.PaymentSummary': Translations.ContractorPaymentsPaymentSummary
+    // (undocumented)
+    'Contractor.Profile': Translations.ContractorProfile
+    // (undocumented)
+    'Contractor.Submit': Translations.ContractorSubmit
+    // (undocumented)
+    'Employee.BankAccount': Translations.EmployeeBankAccount
+    // (undocumented)
+    'Employee.BankFormBody': Translations.EmployeeBankFormBody
+    // (undocumented)
+    'Employee.Compensation': Translations.EmployeeCompensation
+    // (undocumented)
+    'Employee.Dashboard': Translations.EmployeeDashboard
+    // (undocumented)
+    'Employee.Deductions': Translations.EmployeeDeductions
+    // (undocumented)
+    'Employee.DeductionsForm': Translations.EmployeeDeductionsForm
+    // (undocumented)
+    'Employee.DocumentManager': Translations.EmployeeDocumentManager
+    // (undocumented)
+    'Employee.DocumentSigner': Translations.EmployeeDocumentSigner
+    // (undocumented)
+    'Employee.EmployeeDocuments': Translations.EmployeeEmployeeDocuments
+    // (undocumented)
+    'Employee.EmployeeList': Translations.EmployeeEmployeeList
+    // (undocumented)
+    'Employee.EmploymentEligibility': Translations.EmployeeEmploymentEligibility
+    // (undocumented)
+    'Employee.FederalTaxes': Translations.EmployeeFederalTaxes
+    // (undocumented)
+    'Employee.FederalTaxesView': Translations.EmployeeFederalTaxesView
+    // (undocumented)
+    'Employee.HomeAddress': Translations.EmployeeHomeAddress
+    // (undocumented)
+    'Employee.I9SignatureForm': Translations.EmployeeI9SignatureForm
+    // (undocumented)
+    'Employee.Landing': Translations.EmployeeLanding
+    // (undocumented)
+    'Employee.Management.Compensation': Translations.EmployeeManagementCompensation
+    // (undocumented)
+    'Employee.Management.Deductions': Translations.EmployeeManagementDeductions
+    // (undocumented)
+    'Employee.Management.Documents': Translations.EmployeeManagementDocuments
+    // (undocumented)
+    'Employee.Management.FederalTaxes': Translations.EmployeeManagementFederalTaxes
+    // (undocumented)
+    'Employee.Management.HomeAddress': Translations.EmployeeManagementHomeAddress
+    // (undocumented)
+    'Employee.Management.PaymentMethod': Translations.EmployeeManagementPaymentMethod
+    // (undocumented)
+    'Employee.Management.PaymentMethodBankForm': Translations.EmployeeManagementPaymentMethodBankForm
+    // (undocumented)
+    'Employee.Management.PaymentMethodSplitForm': Translations.EmployeeManagementPaymentMethodSplitForm
+    // (undocumented)
+    'Employee.Management.Paystubs': Translations.EmployeeManagementPaystubs
+    // (undocumented)
+    'Employee.Management.Profile': Translations.EmployeeManagementProfile
+    // (undocumented)
+    'Employee.Management.StateTaxes': Translations.EmployeeManagementStateTaxes
+    // (undocumented)
+    'Employee.Management.WorkAddress': Translations.EmployeeManagementWorkAddress
+    // (undocumented)
+    'Employee.ManagementEmployeeList': Translations.EmployeeManagementEmployeeList
+    // (undocumented)
+    'Employee.OnboardingSummary': Translations.EmployeeOnboardingSummary
+    // (undocumented)
+    'Employee.PaymentMethod': Translations.EmployeePaymentMethod
+    // (undocumented)
+    'Employee.PaySchedules': Translations.EmployeePaySchedules
+    // (undocumented)
+    'Employee.Profile': Translations.EmployeeProfile
+    // (undocumented)
+    'Employee.SplitPaycheck': Translations.EmployeeSplitPaycheck
+    // (undocumented)
+    'Employee.SplitPaymentsFormBody': Translations.EmployeeSplitPaymentsFormBody
+    // (undocumented)
+    'Employee.StateTaxes': Translations.EmployeeStateTaxes
+    // (undocumented)
+    'Employee.StateTaxesView': Translations.EmployeeStateTaxesView
+    // (undocumented)
+    'Employee.Terminations.TerminateEmployee': Translations.EmployeeTerminationsTerminateEmployee
+    // (undocumented)
+    'Employee.Terminations.TerminationFlow': Translations.EmployeeTerminationsTerminationFlow
+    // (undocumented)
+    'Employee.Terminations.TerminationSummary': Translations.EmployeeTerminationsTerminationSummary
+    // (undocumented)
+    'InformationRequests.InformationRequestForm': Translations.InformationRequestsInformationRequestForm
+    // (undocumented)
+    'InformationRequests.InformationRequestList': Translations.InformationRequestsInformationRequestList
+    // (undocumented)
+    'Payroll.Common': Translations.PayrollCommon
+    // (undocumented)
+    'Payroll.ConfirmWireDetailsBanner': Translations.PayrollConfirmWireDetailsBanner
+    // (undocumented)
+    'Payroll.ConfirmWireDetailsForm': Translations.PayrollConfirmWireDetailsForm
+    // (undocumented)
+    'Payroll.Dismissal': Translations.PayrollDismissal
+    // (undocumented)
+    'Payroll.EmployeeSelection': Translations.PayrollEmployeeSelection
+    // (undocumented)
+    'Payroll.GrossUpModal': Translations.PayrollGrossUpModal
+    // (undocumented)
+    'Payroll.OffCycle': Translations.PayrollOffCycle
+    // (undocumented)
+    'Payroll.OffCycleCreation': Translations.PayrollOffCycleCreation
+    // (undocumented)
+    'Payroll.OffCycleDeductionsSetting': Translations.PayrollOffCycleDeductionsSetting
+    // (undocumented)
+    'Payroll.OffCyclePayPeriodDateForm': Translations.PayrollOffCyclePayPeriodDateForm
+    // (undocumented)
+    'Payroll.OffCycleReasonSelection': Translations.PayrollOffCycleReasonSelection
+    // (undocumented)
+    'Payroll.OffCycleTaxWithholding': Translations.PayrollOffCycleTaxWithholding
+    // (undocumented)
+    'Payroll.PayrollBlocker': Translations.PayrollPayrollBlocker
+    // (undocumented)
+    'Payroll.PayrollConfiguration': Translations.PayrollPayrollConfiguration
+    // (undocumented)
+    'Payroll.PayrollEditEmployee': Translations.PayrollPayrollEditEmployee
+    // (undocumented)
+    'Payroll.PayrollFlow': Translations.PayrollPayrollFlow
+    // (undocumented)
+    'Payroll.PayrollHistory': Translations.PayrollPayrollHistory
+    // (undocumented)
+    'Payroll.PayrollLanding': Translations.PayrollPayrollLanding
+    // (undocumented)
+    'Payroll.PayrollList': Translations.PayrollPayrollList
+    // (undocumented)
+    'Payroll.PayrollOverview': Translations.PayrollPayrollOverview
+    // (undocumented)
+    'Payroll.PayrollReceipts': Translations.PayrollPayrollReceipts
+    // (undocumented)
+    'Payroll.RecoveryCasesList': Translations.PayrollRecoveryCasesList
+    // (undocumented)
+    'Payroll.RecoveryCasesResubmit': Translations.PayrollRecoveryCasesResubmit
+    // (undocumented)
+    'Payroll.Transition': Translations.PayrollTransition
+    // (undocumented)
+    'Payroll.TransitionCreation': Translations.PayrollTransitionCreation
+    // (undocumented)
+    'Payroll.TransitionPayrollAlert': Translations.PayrollTransitionPayrollAlert
+    // (undocumented)
+    'Payroll.WireInstructions': Translations.PayrollWireInstructions
+    // (undocumented)
+    common: Translations.common
+    // (undocumented)
+    InformationRequests: Translations.InformationRequests
+}
 
 // @public
 export type RoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<RoutingNumberValidation>>;
@@ -4048,8 +4739,14 @@ export interface SDKError {
     raw?: unknown;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SDKErrorCategories" needs to be exported by the entry point index.d.ts
-//
+// @public
+export const SDKErrorCategories: {
+    readonly API_ERROR: "api_error";
+    readonly VALIDATION_ERROR: "validation_error";
+    readonly NETWORK_ERROR: "network_error";
+    readonly INTERNAL_ERROR: "internal_error";
+};
+
 // @public
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories];
 
@@ -4084,11 +4781,6 @@ export class SDKInternalError extends Error {
     // (undocumented)
     readonly category: SDKErrorCategory;
 }
-
-// Warning: (ae-internal-missing-underscore) The name "SelectHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function SelectHookField<TErrorCode extends string, TEntry = unknown>(input: SelectHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
@@ -4128,21 +4820,29 @@ interface SelectReasonPayload {
 }
 
 // @public
-export type SelectStateTaxFieldProps = BaseStateTaxFieldProps & {
-    placeholder?: string;
+export interface SelectStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<SelectProps>;
-};
+    placeholder?: string;
+}
 
 // @public
-export function SelfOnboardingField(props: SelfOnboardingFieldProps): JSX;
+export interface SelectStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<SelectStateTaxFieldProps>;
+    type: 'select';
+}
 
 // @public
 export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 
-// Warning: (ae-forgotten-export) The symbol "SelfOnboardingFlowProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
+
+// @public
+interface SelfOnboardingFlowProps extends BaseComponentInterface<never> {
+    companyId: string;
+    employeeId: string;
+    withEmployeeI9?: boolean;
+}
 
 // @public
 export interface SharedFieldLayoutProps extends DataAttributes {
@@ -4157,7 +4857,11 @@ export interface SharedFieldLayoutProps extends DataAttributes {
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps;
 
 // @public
-export function SignatureField(props: SignEmployeeFormSignatureFieldProps): JSX;
+export interface SharedQuestionMetadata {
+    description: string | null;
+    label: string;
+    questionId: string;
+}
 
 // @public
 export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCompanyFormRequiredValidation>>;
@@ -4198,10 +4902,8 @@ export type SignCompanyFormField = "signature" | "confirmSignature";
 
 // @public
 export interface SignCompanyFormFields {
-    // Warning: (ae-forgotten-export) The symbol "ConfirmSignatureField_2" needs to be exported by the entry point index.d.ts
-    ConfirmSignature: typeof ConfirmSignatureField_2;
-    // Warning: (ae-forgotten-export) The symbol "SignatureField_2" needs to be exported by the entry point index.d.ts
-    Signature: typeof SignatureField_2;
+    ConfirmSignature: ComponentType<ConfirmSignatureFieldProps>;
+    Signature: ComponentType<SignatureFieldProps>;
 }
 
 // @public
@@ -4209,9 +4911,6 @@ export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fie
 
 // @public
 export type SignCompanyFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
-
-// @public
-export type SignCompanyFormOutputs = SignCompanyFormData;
 
 // @public
 export type SignCompanyFormRequiredValidation = typeof SignCompanyFormErrorCodes.REQUIRED;
@@ -4234,24 +4933,18 @@ export const SignEmployeeFormErrorCodes: {
 export type SignEmployeeFormField = "signature" | "confirmSignature" | "usedPreparer" | "preparerFirstName" | "preparerLastName" | "preparerStreet1" | "preparerStreet2" | "preparerCity" | "preparerState" | "preparerZip" | "preparerSignature" | "preparerAgree" | "preparer2FirstName" | "preparer2LastName" | "preparer2Street1" | "preparer2Street2" | "preparer2City" | "preparer2State" | "preparer2Zip" | "preparer2Signature" | "preparer2Agree" | "preparer3FirstName" | "preparer3LastName" | "preparer3Street1" | "preparer3Street2" | "preparer3City" | "preparer3State" | "preparer3Zip" | "preparer3Signature" | "preparer3Agree" | "preparer4FirstName" | "preparer4LastName" | "preparer4Street1" | "preparer4Street2" | "preparer4City" | "preparer4State" | "preparer4Zip" | "preparer4Signature" | "preparer4Agree";
 
 // @public
-export interface SignEmployeeFormFieldComponents {
-    ConfirmSignature: typeof ConfirmSignatureField;
+export interface SignEmployeeFormFields {
+    ConfirmSignature: ComponentType<SignEmployeeFormConfirmSignatureFieldProps>;
     Preparer1: PreparerFieldGroup | undefined;
     Preparer2: PreparerFieldGroup | undefined;
     Preparer3: PreparerFieldGroup | undefined;
     Preparer4: PreparerFieldGroup | undefined;
-    Signature: typeof SignatureField;
-    UsedPreparer: typeof UsedPreparerField | undefined;
+    Signature: ComponentType<SignEmployeeFormSignatureFieldProps>;
+    UsedPreparer: ComponentType<UsedPreparerFieldProps> | undefined;
 }
 
 // @public
-export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields'];
-
-// @public
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata'];
-
-// @public
-export type SignEmployeeFormOutputs = SignEmployeeFormData;
 
 // @public
 export type SignEmployeeFormRequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED;
@@ -4326,13 +5019,7 @@ export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form'][
 export type SplitPaymentsFormOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
 
 // @public
-export type SplitPaymentsFormOutputs = SplitPaymentsFormData;
-
-// @public
 export type SplitPaymentsFormRequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED;
-
-// @public
-export function SsnField(props: SsnFieldProps): JSX;
 
 // @public
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>>;
@@ -4359,8 +5046,6 @@ function StateTaxes(input: StateTaxesProps): JSX;
 // @public
 function StateTaxes_2(input: StateTaxesProps_2): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesProps_3" needs to be exported by the entry point index.d.ts
-//
 // @public
 function StateTaxes_3(input: StateTaxesProps_3): JSX;
 
@@ -4381,15 +5066,22 @@ interface StateTaxesEditFormProps extends BaseComponentInterface<'Employee.Manag
     employeeId: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 function StateTaxesForm(props: StateTaxesFormProps): JSX;
 
-// Warning: (ae-forgotten-export) The symbol "StateTaxesListProps" needs to be exported by the entry point index.d.ts
-//
+// @public
+interface StateTaxesFormProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+    state: string;
+}
+
 // @public
 function StateTaxesList(props: StateTaxesListProps): JSX;
+
+// @public
+interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+}
 
 // @public
 interface StateTaxesProps extends BaseComponentInterface<'Employee.StateTaxes'> {
@@ -4403,42 +5095,30 @@ interface StateTaxesProps_2 extends BaseComponentInterface<'Employee.Management.
 }
 
 // @public
+interface StateTaxesProps_3 extends BaseComponentInterface<'Company.StateTaxes'> {
+    companyId: string;
+}
+
+// @public
+export type StateTaxFields = StateTaxFieldsGroup[];
+
+// @public
 export interface StateTaxFieldsGroup {
     questions: StateTaxQuestionFieldEntry[];
     state: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SharedQuestionMetadata" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type StateTaxQuestionFieldEntry = ({
-    type: 'select';
-    Field: ComponentType<SelectStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'radio';
-    Field: ComponentType<RadioStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'text';
-    Field: ComponentType<TextStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'number';
-    Field: ComponentType<NumberStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'currency';
-    Field: ComponentType<CurrencyStateTaxFieldProps>;
-} & SharedQuestionMetadata) | ({
-    type: 'date';
-    Field: ComponentType<DateStateTaxFieldProps>;
-} & SharedQuestionMetadata);
+export type StateTaxQuestionFieldEntry = SelectStateTaxQuestion | RadioStateTaxQuestion | TextStateTaxQuestion | NumberStateTaxQuestion | CurrencyStateTaxQuestion | DateStateTaxQuestion;
 
 // @public
 export type StateTaxQuestionVariant = 'select' | 'radio' | 'text' | 'number' | 'currency' | 'date';
 
 // @public
-export type StateTaxValue = string | number | boolean | Date | null | undefined;
+export type StateTaxValidationMessages = ValidationMessages<typeof EmployeeStateTaxesErrorCodes.REQUIRED>;
 
 // @public
-export function StateWcClassCodeField(props: StateWcClassCodeFieldProps): JSX;
+export type StateTaxValue = string | number | boolean | Date | null | undefined;
 
 // Warning: (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
 //
@@ -4446,19 +5126,10 @@ export function StateWcClassCodeField(props: StateWcClassCodeFieldProps): JSX;
 export type StateWcClassCodeFieldProps = HookFieldProps<SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>>;
 
 // @public
-export function StateWcCoveredField(props: StateWcCoveredFieldProps): JSX;
-
-// @public
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>;
 
 // @public
-export function Street1Field(props: Street1FieldProps): JSX;
-
-// @public
 export type Street1FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
-
-// @public
-export function Street2Field(props: Street2FieldProps): JSX;
 
 // @public
 export type Street2FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
@@ -4477,11 +5148,6 @@ export type SupportedLanguages = 'en'
 
 // @public
 export type SupportedRequiredAttrKey = (typeof SUPPORTED_REQUIRED_ATTR_KEYS)[number];
-
-// Warning: (ae-internal-missing-underscore) The name "SwitchHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function SwitchHookField<TErrorCode extends string>(input: SwitchHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
 // @public
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
@@ -4583,11 +5249,6 @@ export interface TextAreaProps extends SharedFieldLayoutProps, Pick<TextareaHTML
     value?: string;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "TextInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function TextInputHookField<TErrorCode extends string, TOptionalErrorCode extends string = never>(input: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
-
 // @public
 export interface TextInputHookFieldProps<TErrorCode extends string = never, TOptionalErrorCode extends string = never> extends BaseFieldProps {
     FieldComponent?: ComponentType<TextInputProps>;
@@ -4621,10 +5282,16 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
 }
 
 // @public
-export type TextStateTaxFieldProps = BaseStateTaxFieldProps & {
-    placeholder?: string;
+export interface TextStateTaxFieldProps extends BaseStateTaxFieldProps {
     FieldComponent?: ComponentType<TextInputProps>;
-};
+    placeholder?: string;
+}
+
+// @public
+export interface TextStateTaxQuestion extends SharedQuestionMetadata {
+    Field: ComponentType<TextStateTaxFieldProps>;
+    type: 'text';
+}
 
 declare namespace TimeOff {
     export {
@@ -4632,11 +5299,11 @@ declare namespace TimeOff {
         PolicyListProps,
         PolicyTypeSelector,
         PolicyTypeSelectorProps,
-        PolicyType,
+        PolicyType_2 as PolicyType,
         PolicyConfigurationForm,
         PolicyConfigurationFormProps,
         PolicyConfigurationFormData,
-        AccrualMethod,
+        AccrualMethod_2 as AccrualMethod,
         AccrualMethodFixed,
         ResetDateType,
         PolicySettings,
@@ -4734,9 +5401,6 @@ interface TimeOffPolicyDetailProps extends BaseComponentInterface<'Company.TimeO
 }
 
 // @public
-export function TotalAmountField(props: TotalAmountFieldProps): JSX;
-
-// @public
 export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<DeductionFormCapValidation>>;
 
 // @public
@@ -4779,13 +5443,10 @@ interface TransitionFlowProps {
 }
 
 // @public
-export function TwoJobsField(props: TwoJobsFieldProps): JSX;
+export namespace Translations { /* per-namespace i18n key interfaces, recreated from the translation JSON — body omitted from report; see src/i18n/types.d.ts and the Translations reference */ }
 
 // @public
 export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<FederalTaxesRequiredValidation, boolean>>;
-
-// @public
-export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProps): JSX;
 
 // @public
 export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldProps>;
@@ -4906,6 +5567,181 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady;
 
 // @public
+export function useContractorAddressForm(input: UseContractorAddressFormProps): HookLoadingResult | UseContractorAddressFormReady;
+
+// @public
+export interface UseContractorAddressFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorAddressFormData>;
+    optionalFieldsToRequire?: ContractorAddressOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorAddressFormReady extends BaseFormHookReady<FieldsMetadata, ContractorAddressFormData, ContractorAddressFormFields> {
+    actions: {
+        onSubmit: (options?: ContractorAddressSubmitOptions) => Promise<HookSubmitResult<ContractorAddress> | undefined>;
+    };
+    data: {
+        contractorAddress: ContractorAddress;
+        contractor: Contractor;
+        contractorType: ContractorType_2 | undefined;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+    };
+}
+
+// @public
+export type UseContractorAddressFormResult = HookLoadingResult | UseContractorAddressFormReady;
+
+// @public
+export function useContractorBankAccountForm(input: UseContractorBankAccountFormProps): HookLoadingResult | UseContractorBankAccountFormReady;
+
+// @public
+export interface UseContractorBankAccountFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorBankAccountFormData>;
+    optionalFieldsToRequire?: ContractorBankAccountOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorBankAccountFormReady extends BaseFormHookReady<FieldsMetadata, ContractorBankAccountFormData, ContractorBankAccountFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorBankAccount> | undefined>;
+    };
+    data: {
+        bankAccount: ContractorBankAccount | undefined;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorBankAccountFormResult = HookLoadingResult | UseContractorBankAccountFormReady;
+
+// @public
+export function useContractorDetailsForm(input: UseContractorDetailsFormProps): HookLoadingResult | UseContractorDetailsFormReady;
+
+// @public
+export type UseContractorDetailsFormProps = (UseContractorDetailsFormSharedProps & {
+    companyId: string;
+    contractorId?: never;
+}) | (UseContractorDetailsFormSharedProps & {
+    contractorId: string;
+    companyId?: string;
+});
+
+// @public
+export interface UseContractorDetailsFormReady extends BaseFormHookReady<FieldsMetadata, ContractorDetailsFormData, ContractorDetailsFormFields> {
+    actions: {
+        onSubmit: (options?: ContractorDetailsSubmitOptions) => Promise<HookSubmitResult<Contractor> | undefined>;
+    };
+    data: {
+        contractor: Contractor | null;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create' | 'update';
+    };
+}
+
+// @public
+export type UseContractorDetailsFormResult = HookLoadingResult | UseContractorDetailsFormReady;
+
+// @public
+export type UseContractorDetailsFormSharedProps = {
+    withSelfOnboardingField?: boolean;
+    optionalFieldsToRequire?: ContractorDetailsOptionalFieldsToRequire;
+    defaultValues?: Partial<ContractorDetailsFormData>;
+    validationMode?: UseFormProps['mode'];
+    shouldFocusError?: boolean;
+};
+
+// @public
+export function useContractorDocumentsList(input: UseContractorDocumentsListParams): UseContractorDocumentsListResult;
+
+// @public
+export interface UseContractorDocumentsListParams {
+    contractorId: string;
+}
+
+// @public
+export type UseContractorDocumentsListReady = BaseHookReady<{
+    documents: Document_2[];
+}, {
+    isFetching: boolean;
+}>;
+
+// @public
+export type UseContractorDocumentsListResult = HookLoadingResult | UseContractorDocumentsListReady;
+
+// @public
+export function useContractorPaymentMethodForm(input: UseContractorPaymentMethodFormProps): HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @public
+export interface UseContractorPaymentMethodFormProps {
+    contractorId: string;
+    defaultValues?: Partial<ContractorPaymentMethodFormData>;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorPaymentMethodFormReady extends BaseFormHookReady<FieldsMetadata, ContractorPaymentMethodFormData, ContractorPaymentMethodFormFields> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<ContractorPaymentMethod> | undefined>;
+    };
+    data: {
+        paymentMethod: ContractorPaymentMethod;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'update';
+        isDirectDeposit: boolean;
+    };
+}
+
+// @public
+export type UseContractorPaymentMethodFormResult = HookLoadingResult | UseContractorPaymentMethodFormReady;
+
+// @public
+export function useContractorSignatureForm(input: UseContractorSignatureFormProps): UseContractorSignatureFormResult;
+
+// @public
+export interface UseContractorSignatureFormProps {
+    documentUuid: string;
+    optionalFieldsToRequire?: ContractorSignatureOptionalFieldsToRequire;
+    shouldFocusError?: boolean;
+    validationMode?: UseFormProps['mode'];
+}
+
+// @public
+export interface UseContractorSignatureFormReady extends BaseFormHookReady<FieldsMetadata, ContractorSignatureFormData, ContractorSignatureFormFieldComponents> {
+    actions: {
+        onSubmit: () => Promise<HookSubmitResult<DocumentSigned> | undefined>;
+    };
+    data: {
+        document: Document_2;
+        pdfUrl: string | null;
+        hasFields: boolean;
+    };
+    status: {
+        isPending: boolean;
+        mode: 'create';
+    };
+}
+
+// @public
+export type UseContractorSignatureFormResult = HookLoadingResult | UseContractorSignatureFormReady;
+
+// @public
 export function useCurrentHomeAddressForm(props: UseCurrentHomeAddressFormProps): UseHomeAddressFormResult;
 
 // @public
@@ -4955,9 +5791,6 @@ export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
 // @public
-export function UsedPreparerField(props: UsedPreparerFieldProps): JSX;
-
-// @public
 export type UsedPreparerFieldProps = HookFieldProps<RadioGroupHookFieldProps<SignEmployeeFormRequiredValidation>>;
 
 // @public
@@ -4973,7 +5806,7 @@ export type UseEmployeeDetailsFormProps = (UseEmployeeDetailsFormSharedProps & {
 });
 
 // @public
-export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFields> {
+export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeDetailsFormData, EmployeeDetailsFormFields> {
     actions: {
         onSubmit: (callbacks?: EmployeeDetailsSubmitCallbacks) => Promise<HookSubmitResult<Employee> | undefined>;
     };
@@ -5037,15 +5870,12 @@ export interface UseEmployeeStateTaxesFormProps {
 }
 
 // @public
-export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]> {
+export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>;
     };
     data: {
         employeeStateTaxes: EmployeeStateTaxesList[];
-    };
-    form: BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFieldsGroup[]>['form'] & {
-        Fields: StateTaxFieldsGroup[];
     };
     status: {
         isPending: boolean;
@@ -5069,7 +5899,7 @@ export interface UseFederalTaxesFormProps {
 }
 
 // @public
-export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFields> {
+export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>;
     };
@@ -5106,7 +5936,7 @@ export interface UseHomeAddressFormProps {
 }
 
 // @public
-export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFields> {
+export interface UseHomeAddressFormReady extends BaseFormHookReady<FieldsMetadata, HomeAddressFormData, HomeAddressFormFields> {
     actions: {
         onSubmit: (options?: HomeAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeAddress> | undefined>;
     };
@@ -5207,7 +6037,7 @@ export interface UsePayScheduleFormProps {
 }
 
 // @public
-export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFields> {
+export interface UsePayScheduleFormReady extends BaseFormHookReady<FieldsMetadata, PayScheduleFormData, PayScheduleFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<PayScheduleShow> | undefined>;
     };
@@ -5266,7 +6096,7 @@ export interface UseSignEmployeeFormProps {
 }
 
 // @public
-export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents> {
+export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<Form> | undefined>;
         addPreparer?: () => void;
@@ -5276,7 +6106,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
         form: Form;
         pdfUrl: string | null | undefined;
     };
-    form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFieldComponents>['form'] & {
+    form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData, SignEmployeeFormFields>['form'] & {
         preparers?: {
             count: number;
             canAdd: boolean;
@@ -5293,7 +6123,7 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<FieldsMetada
 export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady;
 
 // @public
-export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady;
+export function useSplitPaymentsForm(input: UseSplitPaymentsFormProps): UseSplitPaymentsFormResult;
 
 // @public
 export interface UseSplitPaymentsFormProps {
@@ -5347,7 +6177,7 @@ export interface UseWorkAddressFormProps {
 }
 
 // @public
-export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFields> {
+export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadata, WorkAddressFormData, WorkAddressFormFields> {
     actions: {
         onSubmit: (callbacks?: WorkAddressSubmitCallbacks, options?: WorkAddressSubmitOptions) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>;
     };
@@ -5393,6 +6223,12 @@ interface ViewHolidayScheduleProps extends BaseComponentInterface<'Company.TimeO
 }
 
 // @public
+export const WageType: {
+    readonly Fixed: "Fixed";
+    readonly Hourly: "Hourly";
+};
+
+// @public
 type WithholdingType = 'supplemental' | 'regular';
 
 // Warning: (ae-internal-missing-underscore) The name "withOptions" should be prefixed with an underscore because the declaration is marked as @internal
@@ -5424,9 +6260,6 @@ interface WorkAddressEditFormProps extends BaseComponentInterface<'Employee.Mana
 }
 
 // @public
-export function WorkAddressEffectiveDateField(props: EffectiveDateFieldProps): JSX;
-
-// @public
 export type WorkAddressErrorCode = (typeof WorkAddressErrorCodes)[keyof typeof WorkAddressErrorCodes];
 
 // @public
@@ -5438,25 +6271,16 @@ export const WorkAddressErrorCodes: {
 export type WorkAddressField = "effectiveDate" | "locationUuid";
 
 // @public
-export interface WorkAddressFields {
-    EffectiveDate: typeof WorkAddressEffectiveDateField | undefined;
-    Location: typeof WorkAddressLocationField;
-}
-
-// @public
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata'];
 
 // @public
 export type WorkAddressFormData = { locationUuid: string; effectiveDate: string; };
 
 // @public
-export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields'];
-
-// @public
-export type WorkAddressFormOutputs = WorkAddressFormData;
-
-// @public
-export function WorkAddressLocationField(props: LocationFieldProps): JSX;
+export interface WorkAddressFormFields {
+    EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined;
+    Location: ComponentType<LocationFieldProps>;
+}
 
 // @public
 export type WorkAddressOptionalFieldsToRequire = { create?: never[] | undefined; update?: never[] | undefined; };
@@ -5491,9 +6315,6 @@ export interface WorkingSplit {
 }
 
 // @public
-export function ZipField(props: ZipFieldProps): JSX;
-
-// @public
 export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation>>;
 
 // @public
@@ -5501,7 +6322,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:270:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:273:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

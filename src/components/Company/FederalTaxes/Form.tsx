@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import {
   TaxPayerType,
   FilingForm,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/federaltaxdetails'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails'
 import { useFederalTaxes } from './useFederalTaxes'
 import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'

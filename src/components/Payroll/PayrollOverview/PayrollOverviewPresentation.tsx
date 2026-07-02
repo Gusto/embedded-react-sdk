@@ -2,15 +2,15 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
-import type { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollpayperiodtype'
+import type { CompanyBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype'
-import type { PaymentSpeed } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentconfigs'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api-v-2026-02-01/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
@@ -687,8 +687,7 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireAmount'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { wire_in_amount?: string }
-                        | undefined
+                        { wire_in_amount?: string } | undefined
                       const wireAmount = metadata?.wire_in_amount
                       return wireAmount ? formatCurrency(Number(wireAmount)) : '-'
                     },
@@ -697,8 +696,7 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireTransferDeadline'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { wire_in_deadline?: string }
-                        | undefined
+                        { wire_in_deadline?: string } | undefined
                       const wireDeadline = metadata?.wire_in_deadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
@@ -738,8 +736,7 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.debitDate'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { debit_date?: string }
-                        | undefined
+                        { debit_date?: string } | undefined
                       const debitDate = metadata?.debit_date
                       return dateFormatter.formatShortWithYear(debitDate)
                     },

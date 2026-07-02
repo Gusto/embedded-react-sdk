@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react'
 import {
   useContractorPaymentMethodGetSuspense,
   buildContractorPaymentMethodGetQuery,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGet'
-import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodGetBankAccounts'
-import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodsCreateBankAccount'
-import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentMethodUpdate'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodGet'
+import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodGetBankAccounts'
+import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodsCreateBankAccount'
+import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodUpdate'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2026-02-01/react-query/_context'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   PaymentMethodForm,

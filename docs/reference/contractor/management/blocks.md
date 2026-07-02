@@ -26,13 +26,24 @@ Props for [CreatePayment](#createpayment).
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company for which to create a contractor payment group. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsCreatePayment`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsCreatePayment`](../../Translations/index.md#contractorpaymentscreatepayment)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
 
-Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+Active, fully onboarded contractors are listed for the given company. Hours and bonuses apply to hourly contractors; wages apply to fixed contractors; reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+
+Features:
+
+- **Payment date selection** — choose the payment date; a notice shows the resulting payment speed.
+- **Per-contractor editing** — edit hours and bonus (hourly contractors), wage (fixed contractors), and reimbursement (all) in a modal, with a running total.
+- **Payment method** — choose Check or Direct Deposit per contractor.
+- **Live totals** — wage, bonus, reimbursement, and overall totals update as amounts change.
+- **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
+- **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -74,11 +85,19 @@ Props for [PaymentHistory](#paymenthistory).
 | ------ | ------ | ------ |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `paymentId` | `string` | UUID of the contractor payment group to display. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentHistory`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentHistory`](../../Translations/index.md#contractorpaymentspaymenthistory)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
 ### Remarks
+
+Features:
+
+- **Payment group overview** — debit date and group context in the header.
+- **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
+- **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -115,11 +134,11 @@ Props for [PaymentsList](#paymentslist).
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company whose contractor payment groups should be listed. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentsList`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentsList`](../../Translations/index.md#contractorpaymentspaymentslist)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
-### Remarks
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -144,7 +163,7 @@ Props for [PaymentStatement](#paymentstatement).
 | `contractorUuid` | `string` | UUID of the contractor whose payment within the group is being displayed. |
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `paymentGroupId` | `string` | UUID of the contractor payment group the statement belongs to. |
-| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../index.md#deeppartial)\<`ContractorPaymentsPaymentStatement`\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentStatement`](../../Translations/index.md#contractorpaymentspaymentstatement)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
@@ -163,10 +182,19 @@ Props for [PaymentSummary](#paymentsummary).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | UUID of the company that owns the payment group. |
-| `onEvent` | (`type`, `data?`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
+| `onEvent` | (`type`: [`EventType`](../../events.md#eventtype), `data?`: `unknown`) => `void` | Callback invoked when a flow event occurs, e.g. when the user exits. |
 | `paymentGroupId` | `string` | UUID of the contractor payment group to summarize. |
 
 ### Remarks
+
+Features:
+
+- **Success confirmation** — confirms the number of payments scheduled.
+- **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+- **Debit account** — shows the company bank account used for the debit.
+- **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+
+### Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |

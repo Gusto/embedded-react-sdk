@@ -1,6 +1,6 @@
 import { useTranslation, Trans } from 'react-i18next'
-import type { AuthorizationStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/i9authorization'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationGetAuthorization'
+import type { AuthorizationStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2026-02-01/react-query/i9VerificationGetAuthorization'
 import { useSignEmployeeForm, type PreparerFieldGroup } from '../../../shared/useSignEmployeeForm'
 import styles from './I9SignatureForm.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
@@ -34,9 +34,10 @@ export interface I9SignatureFormProps extends BaseComponentInterface<'Employee.I
  * collects the employee's signature along with any preparer or translator
  * details. On successful submission the signed form is emitted.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `employee/forms/sign` | Fired after the I-9 is successfully signed | {@link Form} |
+ * | `employee/forms/sign` | Fired after the I-9 is successfully signed | {@link APIModels.Form} |
  * | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
  * | `cancel` | Fired when the user cancels signing and returns to the document list | — |
  *

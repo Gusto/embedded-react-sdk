@@ -8,14 +8,16 @@ import {
 } from './OnboardingFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 
+export type { OnboardingFlowProps, OnboardingFlowDefaultValues } from './OnboardingFlowComponents'
 /**
- * Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+ * Guided flow to onboard a company to Gusto.
  *
  * @remarks
  * The flow begins on the overview screen and steps through locations, federal taxes, industry,
  * bank account, employee onboarding, pay schedule, state taxes, and document signing before
  * returning to the overview.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/overview/continue` | User chose to continue to the next outstanding onboarding requirement | — |
@@ -29,9 +31,44 @@ import { Flow } from '@/components/Flow/Flow'
  * | `company/stateTaxes/done` | User completed the state taxes step | — |
  * | `company/forms/done` | User completed signing company documents | — |
  *
+ * Each step is also exported as a standalone block (see the Sub-components
+ * table) for composing a custom workflow when this orchestration is the wrong
+ * fit. See the
+ * {@link https://sdk.gusto.com/docs/guides/integration-guide/composition | Composition guide}
+ * for how to recompose these blocks into your own flow.
+ *
+ * @components
+ * - {@link OnboardingOverview}
+ * - {@link Locations}
+ * - {@link FederalTaxes}
+ * - {@link Industry}
+ * - {@link BankAccount}
+ * - {@link EmployeeOnboarding.OnboardingFlow}
+ * - {@link PaySchedule}
+ * - {@link StateTaxes}
+ * - {@link DocumentSigner}
+ *
  * @param props - See {@link OnboardingFlowProps}.
  * @returns The multi-step company onboarding flow with internal navigation between the overview and the per-step screens.
  * @public
+ *
+ * @example
+ * ```tsx title="App.tsx"
+ * import { CompanyOnboarding, type EventType } from '@gusto/embedded-react-sdk'
+ *
+ * function MyApp() {
+ *   return (
+ *     <CompanyOnboarding.OnboardingFlow
+ *       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+ *       onEvent={(eventType: EventType) => {
+ *         if (eventType === 'company/overview/done') {
+ *           // Onboarding complete — navigate to your next screen
+ *         }
+ *       }}
+ *     />
+ *   )
+ * }
+ * ```
  */
 export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
   const onboardingFlow = useMemo(

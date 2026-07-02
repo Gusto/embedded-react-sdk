@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
-import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { type Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { type Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api-v-2026-02-01/models/components/flsastatustype'
 import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import {
   InitialEditCompensationContextual,
@@ -100,6 +100,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Comp
  * roles need to be managed) on first mount; on subsequent refetches the user
  * stays on their current step.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/job/created` | Fired after a job is successfully created | {@link Job} |

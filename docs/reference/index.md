@@ -24,6 +24,7 @@ custom_edit_url: null
 | [InformationRequests](company/information-requests/index.md) | - |
 | [Payroll](payroll/namespace.md) | The Payroll namespace. |
 | [TimeOff](time-off/namespace.md) | - |
+| [Translations](Translations/index.md) | Per-namespace SDK i18n keys, each namespace browsable as its own reference (e.g. [Translations.CompanyAddresses](Translations/index.md#companyaddresses)) with every key's English default. Override defaults through a component's `dictionary` prop or the global `GustoProvider` dictionary. |
 
 ## Components
 
@@ -31,7 +32,7 @@ custom_edit_url: null
 
 ### ApiProvider
 
-Wires the `@gusto/embedded-api-v-2025-11-15` client and a React Query client into the React tree.
+Wires the `@gusto/embedded-api-v-2026-02-01` client and a React Query client into the React tree.
 
 #### ApiProviderProps
 
@@ -42,7 +43,7 @@ Props for [ApiProvider](#apiprovider).
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-apiproviderpropschildren"></a> `children` | `ReactNode` | Subtree that renders inside the API + React Query providers. |
-| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2025-11-15` requests. |
+| <a id="property-apiproviderpropsurl"></a> `url` | `string` | Base URL the SDK uses for all `@gusto/embedded-api-v-2026-02-01` requests. |
 | <a id="property-apiproviderpropsheaders"></a> `headers?` | `HeadersInit` | Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. |
 | <a id="property-apiproviderpropshooks"></a> `hooks?` | [`SDKHooks`](#sdkhooks) | Lifecycle hooks for intercepting and modifying SDK requests and responses. |
 | <a id="property-apiproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). |
@@ -52,7 +53,7 @@ Props for [ApiProvider](#apiprovider).
 Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
 and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
 `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
-successful mutations under the `['@gusto/embedded-api-v-2025-11-15']` key invalidate every SDK
+successful mutations under the `['@gusto/embedded-api-v-2026-02-01']` key invalidate every SDK
 query automatically. Partners who supply their own `QueryClient` are responsible for matching that
 contract.
 
@@ -92,7 +93,7 @@ record. The values mirror the strings returned by the API.
 
 ### ContractorSelfOnboardingStatuses
 
-> `const` **ContractorSelfOnboardingStatuses**: `Set`\<`"self_onboarding_invited"` \| `"self_onboarding_not_invited"` \| `"self_onboarding_started"` \| `"self_onboarding_review"`\>
+> `const` **ContractorSelfOnboardingStatuses**: `Set`\<[`ContractorOnboardingStatus1`](APIModels/index.md#contractoronboardingstatus1-1)\>
 
 Set of [ContractorOnboardingStatus](#contractoronboardingstatus) values that indicate the contractor
 is completing self-onboarding.
@@ -210,7 +211,7 @@ The configured provider tree wrapping `children`.
 
 ### I9\_FORM\_NAME
 
-> `const` **I9\_FORM\_NAME**: `"US_I-9"` = `'US_I-9'`
+> `const` **I9\_FORM\_NAME**: `"US_I-9"`
 
 The form `name` identifying the federal I-9 (Employment Eligibility Verification) document.
 
@@ -232,15 +233,70 @@ Pay period unit values for the `paymentUnit` field on a compensation, describing
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` | `'Hour'` |
-| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` | `'Month'` |
-| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` | `'Paycheck'` |
-| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` | `'Week'` |
-| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` | `'Year'` |
+| Name | Type |
+| ------ | ------ |
+| <a id="property-pay_periodshour"></a> `HOUR` | `"Hour"` |
+| <a id="property-pay_periodsmonth"></a> `MONTH` | `"Month"` |
+| <a id="property-pay_periodspaycheck"></a> `PAYCHECK` | `"Paycheck"` |
+| <a id="property-pay_periodsweek"></a> `WEEK` | `"Week"` |
+| <a id="property-pay_periodsyear"></a> `YEAR` | `"Year"` |
+
+***
+
+<a id="sdkerrorcategories"></a>
+
+### SDKErrorCategories
+
+> `const` **SDKErrorCategories**: `object`
+
+Constant map of [SDKErrorCategory](#sdkerrorcategory) string values keyed by uppercase name.
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| <a id="property-sdkerrorcategoriesapi_error"></a> `API_ERROR` | `"api_error"` |
+| <a id="property-sdkerrorcategoriesinternal_error"></a> `INTERNAL_ERROR` | `"internal_error"` |
+| <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
+| <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
+
+#### Remarks
+
+Use this when you need to reference a category value by name (e.g.
+`SDKErrorCategories.API_ERROR`). Each entry corresponds to one classification:
+
+| Value | When it applies |
+| ----- | --------------- |
+| `api_error` | HTTP error response from the Gusto API (422, 404, 409, 500, etc.) |
+| `validation_error` | Client-side Zod schema validation before the request was sent |
+| `network_error` | Network connectivity failure (connection refused, timeout, abort) |
+| `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
 
 ## Interfaces
+
+<a id="aftererrorhook"></a>
+
+### AfterErrorHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-aftererrorhookaftererror"></a> `afterError` | (`hookCtx`: `HookContext`, `response`: `Response` \| `null`, `error`: `unknown`) => `Awaitable`\<\{ `error`: `unknown`; `response`: `Response` \| `null`; \}\> | A hook that is called after the SDK encounters an error, or a non-successful response. The hook can introduce instrumentation code such as logging, tracing and metrics or modify the response or error values. |
+
+***
+
+<a id="aftersuccesshook"></a>
+
+### AfterSuccessHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-aftersuccesshookaftersuccess"></a> `afterSuccess` | (`hookCtx`: `HookContext`, `response`: `Response`) => `Awaitable`\<`Response`\> | A hook that is called after the SDK receives a response. The hook can introduce instrumentation code such as logging, tracing and metrics or modify the response before it is handled or throw an error to stop the response from being handled. |
+
+***
 
 <a id="apiconfig"></a>
 
@@ -306,6 +362,7 @@ shape mixed into every public SDK feature component.
 - [`TimeOffPolicyDetailProps`](time-off/blocks.md#timeoffpolicydetailprops)
 - [`TimeOffFlowProps`](time-off/time-off-flow.md#timeoffflowprops)
 - [`OnboardingFlowProps`](employee/onboarding/onboarding-flow.md#onboardingflowprops)
+- [`SelfOnboardingFlowProps`](employee/onboarding/self-onboarding-flow.md#selfonboardingflowprops)
 - [`EmployeeListProps`](employee/onboarding/blocks.md#employeelistprops)
 - [`OnboardingSummaryProps`](employee/onboarding/blocks.md#onboardingsummaryprops)
 - [`LandingProps`](employee/onboarding/blocks.md#landingprops)
@@ -345,22 +402,34 @@ shape mixed into every public SDK feature component.
 - [`TerminateEmployeeProps`](employee/management/blocks.md#terminateemployeeprops)
 - [`TerminationSummaryProps`](employee/management/blocks.md#terminationsummaryprops)
 - [`TerminationFlowProps`](employee/management/termination-flow.md#terminationflowprops)
+- [`OnboardingFlowProps`](company/onboarding/onboarding-flow.md#onboardingflowprops)
+- [`OnboardingOverviewProps`](company/onboarding/blocks.md#onboardingoverviewprops)
+- [`DocumentSignerProps`](company/onboarding/blocks.md#documentsignerprops)
+- [`DocumentListProps`](company/onboarding/blocks.md#documentlistprops)
 - [`SignatureFormProps`](company/onboarding/blocks.md#signatureformprops)
 - [`IndustryProps`](company/onboarding/blocks.md#industryprops)
+- [`BankAccountProps`](company/onboarding/blocks.md#bankaccountprops)
+- [`LocationsProps`](company/onboarding/blocks.md#locationsprops)
 - [`LocationFormProps`](company/onboarding/blocks.md#locationformprops)
 - [`LocationsListProps`](company/onboarding/blocks.md#locationslistprops)
 - [`PayScheduleProps`](company/onboarding/blocks.md#payscheduleprops)
 - [`FederalTaxesProps`](company/onboarding/blocks.md#federaltaxesprops)
+- [`StateTaxesProps`](company/onboarding/blocks.md#statetaxesprops)
+- [`StateTaxesFormProps`](company/onboarding/blocks.md#statetaxesformprops)
+- [`StateTaxesListProps`](company/onboarding/blocks.md#statetaxeslistprops)
 - [`AssignSignatoryProps`](company/onboarding/blocks.md#assignsignatoryprops)
 - [`CreateSignatoryProps`](company/onboarding/blocks.md#createsignatoryprops)
 - [`InviteSignatoryProps`](company/onboarding/blocks.md#invitesignatoryprops)
 - [`OnboardingFlowProps`](contractor/onboarding/onboarding-flow.md#onboardingflowprops)
+- [`LandingProps`](contractor/onboarding/blocks.md#landingprops)
+- [`OnboardingSummaryProps`](contractor/onboarding/blocks.md#onboardingsummaryprops)
 - [`ContractorListProps`](contractor/onboarding/blocks.md#contractorlistprops)
-- [`ContractorProfileProps`](contractor/onboarding/blocks.md#contractorprofileprops)
-- [`AddressProps`](contractor/onboarding/blocks.md#addressprops)
+- [`ContractorProfileAdminProps`](contractor/onboarding/blocks.md#contractorprofileadminprops)
+- [`ContractorProfileSelfOnboardingProps`](contractor/onboarding/blocks.md#contractorprofileselfonboardingprops)
 - [`PaymentMethodProps`](contractor/onboarding/blocks.md#paymentmethodprops)
 - [`NewHireReportProps`](contractor/onboarding/blocks.md#newhirereportprops)
 - [`ContractorSubmitProps`](contractor/onboarding/blocks.md#contractorsubmitprops)
+- [`DocumentsListProps`](contractor/onboarding/blocks.md#documentslistprops)
 - [`PaymentFlowProps`](contractor/management/payment-flow.md#paymentflowprops)
 - [`PaymentsListProps`](contractor/management/blocks.md#paymentslistprops)
 - [`CreatePaymentProps`](contractor/management/blocks.md#createpaymentprops)
@@ -371,7 +440,7 @@ shape mixed into every public SDK feature component.
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `TResourceKey` *extends* keyof [`Resources`](#resources) | keyof [`Resources`](#resources) | The i18n resource namespace key whose dictionary entries can be overridden. |
+| `TResourceKey` *extends* keyof [`Resources`](Translations/index.md#resources) | keyof [`Resources`](Translations/index.md#resources) | The i18n resource namespace key whose dictionary entries can be overridden. |
 
 #### Properties
 
@@ -381,9 +450,33 @@ shape mixed into every public SDK feature component.
 | <a id="property-basecomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | <a id="property-basecomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
 | <a id="property-basecomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| <a id="property-basecomponentinterfacedictionary"></a> `dictionary?` | [`ResourceDictionary`](#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| <a id="property-basecomponentinterfacefallbackcomponent"></a> `FallbackComponent?` | (`props`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
-| <a id="property-basecomponentinterfaceloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+| <a id="property-basecomponentinterfacedictionary"></a> `dictionary?` | [`ResourceDictionary`](Translations/index.md#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| <a id="property-basecomponentinterfacefallbackcomponent"></a> `FallbackComponent?` | (`props`: `FallbackProps`) => `Element` | Custom React component rendered in place of the component when an unhandled error is caught by the component-level error boundary. Receives `error` and `resetErrorBoundary` as props. Defaults to the SDK's built-in `InternalError` fallback. |
+| <a id="property-basecomponentinterfaceloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Custom loading indicator rendered while the component's async data is fetching. Overrides the indicator configured on `GustoProvider` for this component instance only. |
+
+***
+
+<a id="beforecreaterequesthook"></a>
+
+### BeforeCreateRequestHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-beforecreaterequesthookbeforecreaterequest"></a> `beforeCreateRequest` | (`hookCtx`: `HookContext`, `input`: `RequestInput`) => `RequestInput` | A hook that is called before the SDK creates a `Request` object. The hook can modify how a request is constructed since certain modifications, like changing the request URL, cannot be done on a request object directly. |
+
+***
+
+<a id="beforerequesthook"></a>
+
+### BeforeRequestHook
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-beforerequesthookbeforerequest"></a> `beforeRequest` | (`hookCtx`: `HookContext`, `request`: `Request`) => `Awaitable`\<`Request`\> | A hook that is called before the SDK sends a request. The hook can introduce instrumentation code such as logging, tracing and metrics or replace the request before it is sent or throw an error to stop the request from being sent. |
 
 ***
 
@@ -406,7 +499,7 @@ Props common to all SDK feature components, including children, an optional clas
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `TResourceKey` *extends* keyof [`Resources`](#resources) | keyof [`Resources`](#resources) | The i18n resource namespace key whose dictionary entries can be overridden. |
+| `TResourceKey` *extends* keyof [`Resources`](Translations/index.md#resources) | keyof [`Resources`](Translations/index.md#resources) | The i18n resource namespace key whose dictionary entries can be overridden. |
 
 #### Properties
 
@@ -415,7 +508,7 @@ Props common to all SDK feature components, including children, an optional clas
 | <a id="property-commoncomponentinterfacechildren"></a> `children?` | `ReactNode` | Optional child content rendered inside the component's layout. |
 | <a id="property-commoncomponentinterfaceclassname"></a> `className?` | `string` | CSS class name applied to the component's root element. |
 | <a id="property-commoncomponentinterfacedefaultvalues"></a> `defaultValues?` | `unknown` | Initial values pre-populated into the component's form fields before the user interacts. The exact shape depends on the specific component — refer to each component's own props type. |
-| <a id="property-commoncomponentinterfacedictionary"></a> `dictionary?` | [`ResourceDictionary`](#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
+| <a id="property-commoncomponentinterfacedictionary"></a> `dictionary?` | [`ResourceDictionary`](Translations/index.md#resourcedictionary)\<`TResourceKey`\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 ***
 
@@ -442,9 +535,9 @@ you do not supply fall back to the SDK's built-in React Aria implementations.
 | <a id="property-gustoapipropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
 | <a id="property-gustoapipropscomponents"></a> `components?` | `Partial`\<[`ComponentsContextType`](component-inventory.md#componentscontexttype)\> | Partial component overrides. Any component you do not supply uses the SDK's default React Aria implementation. |
 | <a id="property-gustoapipropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoapipropsdictionary"></a> `dictionary?` | `Record`\<`"en"`, `Partial`\<\{ `common`: `common`; `Company.Addresses`: `CompanyAddresses`; `Company.AssignSignatory`: `CompanyAssignSignatory`; `Company.BankAccount`: `CompanyBankAccount`; `Company.DocumentList`: `CompanyDocumentList`; `Company.FederalTaxes`: `CompanyFederalTaxes`; `Company.Industry`: `CompanyIndustry`; `Company.Locations`: `CompanyLocations`; `Company.OnboardingOverview`: `CompanyOnboardingOverview`; `Company.PaySchedule`: `CompanyPaySchedule`; `Company.SignatureForm`: `CompanySignatureForm`; `Company.StateTaxes`: `CompanyStateTaxes`; `Company.TimeOff.CreateTimeOffPolicy`: `CompanyTimeOffCreateTimeOffPolicy`; `Company.TimeOff.EmployeeTable`: `CompanyTimeOffEmployeeTable`; `Company.TimeOff.HolidayPolicy`: `CompanyTimeOffHolidayPolicy`; `Company.TimeOff.PolicyDetail`: `CompanyTimeOffPolicyDetail`; `Company.TimeOff.SelectEmployees`: `CompanyTimeOffSelectEmployees`; `Company.TimeOff.SelectPolicyType`: `CompanyTimeOffSelectPolicyType`; `Company.TimeOff.TimeOffPolicies`: `CompanyTimeOffTimeOffPolicies`; `Company.TimeOff.TimeOffPolicyDetails`: `CompanyTimeOffTimeOffPolicyDetails`; `Company.TimeOff.TimeOffRequests`: `CompanyTimeOffTimeOffRequests`; `Contractor.Address`: `ContractorAddress`; `Contractor.ContractorList`: `ContractorContractorList`; `Contractor.NewHireReport`: `ContractorNewHireReport`; `Contractor.PaymentMethod`: `ContractorPaymentMethod`; `Contractor.Payments.CreatePayment`: `ContractorPaymentsCreatePayment`; `Contractor.Payments.PaymentHistory`: `ContractorPaymentsPaymentHistory`; `Contractor.Payments.PaymentsList`: `ContractorPaymentsPaymentsList`; `Contractor.Payments.PaymentStatement`: `ContractorPaymentsPaymentStatement`; `Contractor.Payments.PaymentSummary`: `ContractorPaymentsPaymentSummary`; `Contractor.Profile`: `ContractorProfile`; `Contractor.Submit`: `ContractorSubmit`; `Employee.BankAccount`: `EmployeeBankAccount`; `Employee.BankFormBody`: `EmployeeBankFormBody`; `Employee.Compensation`: `EmployeeCompensation`; `Employee.Dashboard`: `EmployeeDashboard`; `Employee.Deductions`: `EmployeeDeductions`; `Employee.DeductionsForm`: `EmployeeDeductionsForm`; `Employee.DocumentManager`: `EmployeeDocumentManager`; `Employee.DocumentSigner`: `EmployeeDocumentSigner`; `Employee.EmployeeDocuments`: `EmployeeEmployeeDocuments`; `Employee.EmployeeList`: `EmployeeEmployeeList`; `Employee.EmploymentEligibility`: `EmployeeEmploymentEligibility`; `Employee.FederalTaxes`: `EmployeeFederalTaxes`; `Employee.FederalTaxesView`: `EmployeeFederalTaxesView`; `Employee.HomeAddress`: `EmployeeHomeAddress`; `Employee.I9SignatureForm`: `EmployeeI9SignatureForm`; `Employee.Landing`: `EmployeeLanding`; `Employee.Management.Compensation`: `EmployeeManagementCompensation`; `Employee.Management.Deductions`: `EmployeeManagementDeductions`; `Employee.Management.Documents`: `EmployeeManagementDocuments`; `Employee.Management.FederalTaxes`: `EmployeeManagementFederalTaxes`; `Employee.Management.HomeAddress`: `EmployeeManagementHomeAddress`; `Employee.Management.PaymentMethod`: `EmployeeManagementPaymentMethod`; `Employee.Management.PaymentMethodBankForm`: `EmployeeManagementPaymentMethodBankForm`; `Employee.Management.PaymentMethodSplitForm`: `EmployeeManagementPaymentMethodSplitForm`; `Employee.Management.Paystubs`: `EmployeeManagementPaystubs`; `Employee.Management.Profile`: `EmployeeManagementProfile`; `Employee.Management.StateTaxes`: `EmployeeManagementStateTaxes`; `Employee.Management.WorkAddress`: `EmployeeManagementWorkAddress`; `Employee.ManagementEmployeeList`: `EmployeeManagementEmployeeList`; `Employee.OnboardingSummary`: `EmployeeOnboardingSummary`; `Employee.PaymentMethod`: `EmployeePaymentMethod`; `Employee.PaySchedules`: `EmployeePaySchedules`; `Employee.Profile`: `EmployeeProfile`; `Employee.SplitPaycheck`: `EmployeeSplitPaycheck`; `Employee.SplitPaymentsFormBody`: `EmployeeSplitPaymentsFormBody`; `Employee.StateTaxes`: `EmployeeStateTaxes`; `Employee.StateTaxesView`: `EmployeeStateTaxesView`; `Employee.Terminations.TerminateEmployee`: `EmployeeTerminationsTerminateEmployee`; `Employee.Terminations.TerminationFlow`: `EmployeeTerminationsTerminationFlow`; `Employee.Terminations.TerminationSummary`: `EmployeeTerminationsTerminationSummary`; `InformationRequests`: `InformationRequests`; `InformationRequests.InformationRequestForm`: `InformationRequestsInformationRequestForm`; `InformationRequests.InformationRequestList`: `InformationRequestsInformationRequestList`; `Payroll.Common`: `PayrollCommon`; `Payroll.ConfirmWireDetailsBanner`: `PayrollConfirmWireDetailsBanner`; `Payroll.ConfirmWireDetailsForm`: `PayrollConfirmWireDetailsForm`; `Payroll.Dismissal`: `PayrollDismissal`; `Payroll.EmployeeSelection`: `PayrollEmployeeSelection`; `Payroll.GrossUpModal`: `PayrollGrossUpModal`; `Payroll.OffCycle`: `PayrollOffCycle`; `Payroll.OffCycleCreation`: `PayrollOffCycleCreation`; `Payroll.OffCycleDeductionsSetting`: `PayrollOffCycleDeductionsSetting`; `Payroll.OffCyclePayPeriodDateForm`: `PayrollOffCyclePayPeriodDateForm`; `Payroll.OffCycleReasonSelection`: `PayrollOffCycleReasonSelection`; `Payroll.OffCycleTaxWithholding`: `PayrollOffCycleTaxWithholding`; `Payroll.PayrollBlocker`: `PayrollPayrollBlocker`; `Payroll.PayrollConfiguration`: `PayrollPayrollConfiguration`; `Payroll.PayrollEditEmployee`: `PayrollPayrollEditEmployee`; `Payroll.PayrollFlow`: `PayrollPayrollFlow`; `Payroll.PayrollHistory`: `PayrollPayrollHistory`; `Payroll.PayrollLanding`: `PayrollPayrollLanding`; `Payroll.PayrollList`: `PayrollPayrollList`; `Payroll.PayrollOverview`: `PayrollPayrollOverview`; `Payroll.PayrollReceipts`: `PayrollPayrollReceipts`; `Payroll.RecoveryCasesList`: `PayrollRecoveryCasesList`; `Payroll.RecoveryCasesResubmit`: `PayrollRecoveryCasesResubmit`; `Payroll.Transition`: `PayrollTransition`; `Payroll.TransitionCreation`: `PayrollTransitionCreation`; `Payroll.TransitionPayrollAlert`: `PayrollTransitionPayrollAlert`; `Payroll.WireInstructions`: `PayrollWireInstructions`; \}\>\> | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| <a id="property-gustoapipropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | <a id="property-gustoapipropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoapipropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
+| <a id="property-gustoapipropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoapipropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
 | <a id="property-gustoapipropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoapipropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient` to share with the rest of your app. When omitted, the SDK creates its own client configured for Gusto's API. |
@@ -470,9 +563,9 @@ Props for [GustoProviderCustomUIAdapter](#gustoprovidercustomuiadapter).
 | <a id="property-gustoprovidercustomuiadapterpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
 | <a id="property-gustoprovidercustomuiadapterpropschildren"></a> `children?` | `ReactNode` | The application tree that should have access to the SDK. |
 | <a id="property-gustoprovidercustomuiadapterpropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoprovidercustomuiadapterpropsdictionary"></a> `dictionary?` | `Record`\<`"en"`, `Partial`\<\{ `common`: `common`; `Company.Addresses`: `CompanyAddresses`; `Company.AssignSignatory`: `CompanyAssignSignatory`; `Company.BankAccount`: `CompanyBankAccount`; `Company.DocumentList`: `CompanyDocumentList`; `Company.FederalTaxes`: `CompanyFederalTaxes`; `Company.Industry`: `CompanyIndustry`; `Company.Locations`: `CompanyLocations`; `Company.OnboardingOverview`: `CompanyOnboardingOverview`; `Company.PaySchedule`: `CompanyPaySchedule`; `Company.SignatureForm`: `CompanySignatureForm`; `Company.StateTaxes`: `CompanyStateTaxes`; `Company.TimeOff.CreateTimeOffPolicy`: `CompanyTimeOffCreateTimeOffPolicy`; `Company.TimeOff.EmployeeTable`: `CompanyTimeOffEmployeeTable`; `Company.TimeOff.HolidayPolicy`: `CompanyTimeOffHolidayPolicy`; `Company.TimeOff.PolicyDetail`: `CompanyTimeOffPolicyDetail`; `Company.TimeOff.SelectEmployees`: `CompanyTimeOffSelectEmployees`; `Company.TimeOff.SelectPolicyType`: `CompanyTimeOffSelectPolicyType`; `Company.TimeOff.TimeOffPolicies`: `CompanyTimeOffTimeOffPolicies`; `Company.TimeOff.TimeOffPolicyDetails`: `CompanyTimeOffTimeOffPolicyDetails`; `Company.TimeOff.TimeOffRequests`: `CompanyTimeOffTimeOffRequests`; `Contractor.Address`: `ContractorAddress`; `Contractor.ContractorList`: `ContractorContractorList`; `Contractor.NewHireReport`: `ContractorNewHireReport`; `Contractor.PaymentMethod`: `ContractorPaymentMethod`; `Contractor.Payments.CreatePayment`: `ContractorPaymentsCreatePayment`; `Contractor.Payments.PaymentHistory`: `ContractorPaymentsPaymentHistory`; `Contractor.Payments.PaymentsList`: `ContractorPaymentsPaymentsList`; `Contractor.Payments.PaymentStatement`: `ContractorPaymentsPaymentStatement`; `Contractor.Payments.PaymentSummary`: `ContractorPaymentsPaymentSummary`; `Contractor.Profile`: `ContractorProfile`; `Contractor.Submit`: `ContractorSubmit`; `Employee.BankAccount`: `EmployeeBankAccount`; `Employee.BankFormBody`: `EmployeeBankFormBody`; `Employee.Compensation`: `EmployeeCompensation`; `Employee.Dashboard`: `EmployeeDashboard`; `Employee.Deductions`: `EmployeeDeductions`; `Employee.DeductionsForm`: `EmployeeDeductionsForm`; `Employee.DocumentManager`: `EmployeeDocumentManager`; `Employee.DocumentSigner`: `EmployeeDocumentSigner`; `Employee.EmployeeDocuments`: `EmployeeEmployeeDocuments`; `Employee.EmployeeList`: `EmployeeEmployeeList`; `Employee.EmploymentEligibility`: `EmployeeEmploymentEligibility`; `Employee.FederalTaxes`: `EmployeeFederalTaxes`; `Employee.FederalTaxesView`: `EmployeeFederalTaxesView`; `Employee.HomeAddress`: `EmployeeHomeAddress`; `Employee.I9SignatureForm`: `EmployeeI9SignatureForm`; `Employee.Landing`: `EmployeeLanding`; `Employee.Management.Compensation`: `EmployeeManagementCompensation`; `Employee.Management.Deductions`: `EmployeeManagementDeductions`; `Employee.Management.Documents`: `EmployeeManagementDocuments`; `Employee.Management.FederalTaxes`: `EmployeeManagementFederalTaxes`; `Employee.Management.HomeAddress`: `EmployeeManagementHomeAddress`; `Employee.Management.PaymentMethod`: `EmployeeManagementPaymentMethod`; `Employee.Management.PaymentMethodBankForm`: `EmployeeManagementPaymentMethodBankForm`; `Employee.Management.PaymentMethodSplitForm`: `EmployeeManagementPaymentMethodSplitForm`; `Employee.Management.Paystubs`: `EmployeeManagementPaystubs`; `Employee.Management.Profile`: `EmployeeManagementProfile`; `Employee.Management.StateTaxes`: `EmployeeManagementStateTaxes`; `Employee.Management.WorkAddress`: `EmployeeManagementWorkAddress`; `Employee.ManagementEmployeeList`: `EmployeeManagementEmployeeList`; `Employee.OnboardingSummary`: `EmployeeOnboardingSummary`; `Employee.PaymentMethod`: `EmployeePaymentMethod`; `Employee.PaySchedules`: `EmployeePaySchedules`; `Employee.Profile`: `EmployeeProfile`; `Employee.SplitPaycheck`: `EmployeeSplitPaycheck`; `Employee.SplitPaymentsFormBody`: `EmployeeSplitPaymentsFormBody`; `Employee.StateTaxes`: `EmployeeStateTaxes`; `Employee.StateTaxesView`: `EmployeeStateTaxesView`; `Employee.Terminations.TerminateEmployee`: `EmployeeTerminationsTerminateEmployee`; `Employee.Terminations.TerminationFlow`: `EmployeeTerminationsTerminationFlow`; `Employee.Terminations.TerminationSummary`: `EmployeeTerminationsTerminationSummary`; `InformationRequests`: `InformationRequests`; `InformationRequests.InformationRequestForm`: `InformationRequestsInformationRequestForm`; `InformationRequests.InformationRequestList`: `InformationRequestsInformationRequestList`; `Payroll.Common`: `PayrollCommon`; `Payroll.ConfirmWireDetailsBanner`: `PayrollConfirmWireDetailsBanner`; `Payroll.ConfirmWireDetailsForm`: `PayrollConfirmWireDetailsForm`; `Payroll.Dismissal`: `PayrollDismissal`; `Payroll.EmployeeSelection`: `PayrollEmployeeSelection`; `Payroll.GrossUpModal`: `PayrollGrossUpModal`; `Payroll.OffCycle`: `PayrollOffCycle`; `Payroll.OffCycleCreation`: `PayrollOffCycleCreation`; `Payroll.OffCycleDeductionsSetting`: `PayrollOffCycleDeductionsSetting`; `Payroll.OffCyclePayPeriodDateForm`: `PayrollOffCyclePayPeriodDateForm`; `Payroll.OffCycleReasonSelection`: `PayrollOffCycleReasonSelection`; `Payroll.OffCycleTaxWithholding`: `PayrollOffCycleTaxWithholding`; `Payroll.PayrollBlocker`: `PayrollPayrollBlocker`; `Payroll.PayrollConfiguration`: `PayrollPayrollConfiguration`; `Payroll.PayrollEditEmployee`: `PayrollPayrollEditEmployee`; `Payroll.PayrollFlow`: `PayrollPayrollFlow`; `Payroll.PayrollHistory`: `PayrollPayrollHistory`; `Payroll.PayrollLanding`: `PayrollPayrollLanding`; `Payroll.PayrollList`: `PayrollPayrollList`; `Payroll.PayrollOverview`: `PayrollPayrollOverview`; `Payroll.PayrollReceipts`: `PayrollPayrollReceipts`; `Payroll.RecoveryCasesList`: `PayrollRecoveryCasesList`; `Payroll.RecoveryCasesResubmit`: `PayrollRecoveryCasesResubmit`; `Payroll.Transition`: `PayrollTransition`; `Payroll.TransitionCreation`: `PayrollTransitionCreation`; `Payroll.TransitionPayrollAlert`: `PayrollTransitionPayrollAlert`; `Payroll.WireInstructions`: `PayrollWireInstructions`; \}\>\> | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| <a id="property-gustoprovidercustomuiadapterpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | <a id="property-gustoprovidercustomuiadapterpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoprovidercustomuiadapterpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
+| <a id="property-gustoprovidercustomuiadapterpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoprovidercustomuiadapterpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
 | <a id="property-gustoprovidercustomuiadapterpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoprovidercustomuiadapterpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
@@ -497,9 +590,9 @@ Shared configuration props accepted by [GustoProvider](#gustoprovider) and [Gust
 | <a id="property-gustoproviderpropscomponents"></a> `components` | [`ComponentsContextType`](component-inventory.md#componentscontexttype) | Complete map of UI components the SDK renders. Required because this adapter ships no defaults. |
 | <a id="property-gustoproviderpropsconfig"></a> `config` | [`APIConfig`](#apiconfig) | API client configuration, including the proxy `baseUrl`, request hooks, and observability. See [APIConfig](#apiconfig). |
 | <a id="property-gustoproviderpropscurrency"></a> `currency?` | `string` | ISO 4217 currency code used for monetary formatting. Defaults to `'USD'`. |
-| <a id="property-gustoproviderpropsdictionary"></a> `dictionary?` | `Record`\<`"en"`, `Partial`\<\{ `common`: `common`; `Company.Addresses`: `CompanyAddresses`; `Company.AssignSignatory`: `CompanyAssignSignatory`; `Company.BankAccount`: `CompanyBankAccount`; `Company.DocumentList`: `CompanyDocumentList`; `Company.FederalTaxes`: `CompanyFederalTaxes`; `Company.Industry`: `CompanyIndustry`; `Company.Locations`: `CompanyLocations`; `Company.OnboardingOverview`: `CompanyOnboardingOverview`; `Company.PaySchedule`: `CompanyPaySchedule`; `Company.SignatureForm`: `CompanySignatureForm`; `Company.StateTaxes`: `CompanyStateTaxes`; `Company.TimeOff.CreateTimeOffPolicy`: `CompanyTimeOffCreateTimeOffPolicy`; `Company.TimeOff.EmployeeTable`: `CompanyTimeOffEmployeeTable`; `Company.TimeOff.HolidayPolicy`: `CompanyTimeOffHolidayPolicy`; `Company.TimeOff.PolicyDetail`: `CompanyTimeOffPolicyDetail`; `Company.TimeOff.SelectEmployees`: `CompanyTimeOffSelectEmployees`; `Company.TimeOff.SelectPolicyType`: `CompanyTimeOffSelectPolicyType`; `Company.TimeOff.TimeOffPolicies`: `CompanyTimeOffTimeOffPolicies`; `Company.TimeOff.TimeOffPolicyDetails`: `CompanyTimeOffTimeOffPolicyDetails`; `Company.TimeOff.TimeOffRequests`: `CompanyTimeOffTimeOffRequests`; `Contractor.Address`: `ContractorAddress`; `Contractor.ContractorList`: `ContractorContractorList`; `Contractor.NewHireReport`: `ContractorNewHireReport`; `Contractor.PaymentMethod`: `ContractorPaymentMethod`; `Contractor.Payments.CreatePayment`: `ContractorPaymentsCreatePayment`; `Contractor.Payments.PaymentHistory`: `ContractorPaymentsPaymentHistory`; `Contractor.Payments.PaymentsList`: `ContractorPaymentsPaymentsList`; `Contractor.Payments.PaymentStatement`: `ContractorPaymentsPaymentStatement`; `Contractor.Payments.PaymentSummary`: `ContractorPaymentsPaymentSummary`; `Contractor.Profile`: `ContractorProfile`; `Contractor.Submit`: `ContractorSubmit`; `Employee.BankAccount`: `EmployeeBankAccount`; `Employee.BankFormBody`: `EmployeeBankFormBody`; `Employee.Compensation`: `EmployeeCompensation`; `Employee.Dashboard`: `EmployeeDashboard`; `Employee.Deductions`: `EmployeeDeductions`; `Employee.DeductionsForm`: `EmployeeDeductionsForm`; `Employee.DocumentManager`: `EmployeeDocumentManager`; `Employee.DocumentSigner`: `EmployeeDocumentSigner`; `Employee.EmployeeDocuments`: `EmployeeEmployeeDocuments`; `Employee.EmployeeList`: `EmployeeEmployeeList`; `Employee.EmploymentEligibility`: `EmployeeEmploymentEligibility`; `Employee.FederalTaxes`: `EmployeeFederalTaxes`; `Employee.FederalTaxesView`: `EmployeeFederalTaxesView`; `Employee.HomeAddress`: `EmployeeHomeAddress`; `Employee.I9SignatureForm`: `EmployeeI9SignatureForm`; `Employee.Landing`: `EmployeeLanding`; `Employee.Management.Compensation`: `EmployeeManagementCompensation`; `Employee.Management.Deductions`: `EmployeeManagementDeductions`; `Employee.Management.Documents`: `EmployeeManagementDocuments`; `Employee.Management.FederalTaxes`: `EmployeeManagementFederalTaxes`; `Employee.Management.HomeAddress`: `EmployeeManagementHomeAddress`; `Employee.Management.PaymentMethod`: `EmployeeManagementPaymentMethod`; `Employee.Management.PaymentMethodBankForm`: `EmployeeManagementPaymentMethodBankForm`; `Employee.Management.PaymentMethodSplitForm`: `EmployeeManagementPaymentMethodSplitForm`; `Employee.Management.Paystubs`: `EmployeeManagementPaystubs`; `Employee.Management.Profile`: `EmployeeManagementProfile`; `Employee.Management.StateTaxes`: `EmployeeManagementStateTaxes`; `Employee.Management.WorkAddress`: `EmployeeManagementWorkAddress`; `Employee.ManagementEmployeeList`: `EmployeeManagementEmployeeList`; `Employee.OnboardingSummary`: `EmployeeOnboardingSummary`; `Employee.PaymentMethod`: `EmployeePaymentMethod`; `Employee.PaySchedules`: `EmployeePaySchedules`; `Employee.Profile`: `EmployeeProfile`; `Employee.SplitPaycheck`: `EmployeeSplitPaycheck`; `Employee.SplitPaymentsFormBody`: `EmployeeSplitPaymentsFormBody`; `Employee.StateTaxes`: `EmployeeStateTaxes`; `Employee.StateTaxesView`: `EmployeeStateTaxesView`; `Employee.Terminations.TerminateEmployee`: `EmployeeTerminationsTerminateEmployee`; `Employee.Terminations.TerminationFlow`: `EmployeeTerminationsTerminationFlow`; `Employee.Terminations.TerminationSummary`: `EmployeeTerminationsTerminationSummary`; `InformationRequests`: `InformationRequests`; `InformationRequests.InformationRequestForm`: `InformationRequestsInformationRequestForm`; `InformationRequests.InformationRequestList`: `InformationRequestsInformationRequestList`; `Payroll.Common`: `PayrollCommon`; `Payroll.ConfirmWireDetailsBanner`: `PayrollConfirmWireDetailsBanner`; `Payroll.ConfirmWireDetailsForm`: `PayrollConfirmWireDetailsForm`; `Payroll.Dismissal`: `PayrollDismissal`; `Payroll.EmployeeSelection`: `PayrollEmployeeSelection`; `Payroll.GrossUpModal`: `PayrollGrossUpModal`; `Payroll.OffCycle`: `PayrollOffCycle`; `Payroll.OffCycleCreation`: `PayrollOffCycleCreation`; `Payroll.OffCycleDeductionsSetting`: `PayrollOffCycleDeductionsSetting`; `Payroll.OffCyclePayPeriodDateForm`: `PayrollOffCyclePayPeriodDateForm`; `Payroll.OffCycleReasonSelection`: `PayrollOffCycleReasonSelection`; `Payroll.OffCycleTaxWithholding`: `PayrollOffCycleTaxWithholding`; `Payroll.PayrollBlocker`: `PayrollPayrollBlocker`; `Payroll.PayrollConfiguration`: `PayrollPayrollConfiguration`; `Payroll.PayrollEditEmployee`: `PayrollPayrollEditEmployee`; `Payroll.PayrollFlow`: `PayrollPayrollFlow`; `Payroll.PayrollHistory`: `PayrollPayrollHistory`; `Payroll.PayrollLanding`: `PayrollPayrollLanding`; `Payroll.PayrollList`: `PayrollPayrollList`; `Payroll.PayrollOverview`: `PayrollPayrollOverview`; `Payroll.PayrollReceipts`: `PayrollPayrollReceipts`; `Payroll.RecoveryCasesList`: `PayrollRecoveryCasesList`; `Payroll.RecoveryCasesResubmit`: `PayrollRecoveryCasesResubmit`; `Payroll.Transition`: `PayrollTransition`; `Payroll.TransitionCreation`: `PayrollTransitionCreation`; `Payroll.TransitionPayrollAlert`: `PayrollTransitionPayrollAlert`; `Payroll.WireInstructions`: `PayrollWireInstructions`; \}\>\> | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
+| <a id="property-gustoproviderpropsdictionary"></a> `dictionary?` | [`GlobalResourceDictionary`](Translations/index.md#globalresourcedictionary) | Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. |
 | <a id="property-gustoproviderpropslng"></a> `lng?` | `string` | Active i18next language. Defaults to `'en'`. |
-| <a id="property-gustoproviderpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
+| <a id="property-gustoproviderpropsloadercomponent"></a> `LoaderComponent?` | (`__namedParameters`: `object`) => `Element` | Loading indicator rendered while SDK queries are pending. Overrides the SDK default spinner. |
 | <a id="property-gustoproviderpropslocale"></a> `locale?` | `string` | BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. |
 | <a id="property-gustoproviderpropsportalcontainer"></a> `portalContainer?` | `HTMLElement` | Element to use as the portal container for SDK popovers and dropdowns. Useful when rendering inside a modal or shadow root. |
 | <a id="property-gustoproviderpropsqueryclient"></a> `queryClient?` | `QueryClient` | Optional TanStack Query `QueryClient`. When omitted, the SDK creates its own client configured for Gusto's API. |
@@ -583,8 +676,8 @@ const observability: ObservabilityHook = {
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-observabilityhookonerror"></a> `onError?` | (`error`) => `void` | Called when an error is caught by error boundaries or form submission fails. Receives an `ObservabilityError` — an `SDKError` enriched with `componentName` and (for boundary errors) `componentStack`. |
-| <a id="property-observabilityhookonmetric"></a> `onMetric?` | (`metric`) => `void` | Called to track performance metrics for component operations. |
+| <a id="property-observabilityhookonerror"></a> `onError?` | (`error`: [`ObservabilityError`](#observabilityerror)) => `void` | Called when an error is caught by error boundaries or form submission fails. Receives an `ObservabilityError` — an `SDKError` enriched with `componentName` and (for boundary errors) `componentStack`. |
+| <a id="property-observabilityhookonmetric"></a> `onMetric?` | (`metric`: [`ObservabilityMetric`](#observabilitymetric)) => `void` | Called to track performance metrics for component operations. |
 | <a id="property-observabilityhooksanitization"></a> `sanitization?` | [`SanitizationConfig`](#sanitizationconfig) | Configuration for sanitizing data before sending to observability tools. Default: `{ enabled: true, includeRawError: false }` |
 
 ***
@@ -632,8 +725,8 @@ error object is excluded unless `includeRawError` is set to `true`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-sanitizationconfigadditionalsensitivefields"></a> `additionalSensitiveFields?` | `string`[] | Additional field names to treat as sensitive (case-insensitive) |
-| <a id="property-sanitizationconfigcustomerrorsanitizer"></a> `customErrorSanitizer?` | (`error`) => [`ObservabilityError`](#observabilityerror) | Custom sanitization function for errors |
-| <a id="property-sanitizationconfigcustommetricsanitizer"></a> `customMetricSanitizer?` | (`metric`) => [`ObservabilityMetric`](#observabilitymetric) | Custom sanitization function for metrics |
+| <a id="property-sanitizationconfigcustomerrorsanitizer"></a> `customErrorSanitizer?` | (`error`: [`ObservabilityError`](#observabilityerror)) => [`ObservabilityError`](#observabilityerror) | Custom sanitization function for errors |
+| <a id="property-sanitizationconfigcustommetricsanitizer"></a> `customMetricSanitizer?` | (`metric`: [`ObservabilityMetric`](#observabilitymetric)) => [`ObservabilityMetric`](#observabilitymetric) | Custom sanitization function for metrics |
 | <a id="property-sanitizationconfigenabled"></a> `enabled?` | `boolean` | Whether to sanitize error data. Default: true |
 | <a id="property-sanitizationconfigincluderawerror"></a> `includeRawError?` | `boolean` | Whether to include the raw error object on SDKError. Default: false WARNING: Raw errors may contain sensitive data from form inputs or API responses |
 
@@ -722,7 +815,7 @@ Request interceptors for customizing HTTP requests and responses.
 Pass an instance of this interface to [GustoProvider](#gustoprovider) via `config.hooks` to
 inspect or modify requests and responses across the four lifecycle stages.
 Each entry is an array of objects implementing the corresponding hook type
-from `@gusto/embedded-api-v-2025-11-15/hooks/types`.
+from `@gusto/embedded-api-v-2026-02-01/hooks/types`.
 
 | Stage | When it runs |
 | ----- | ------------ |
@@ -756,26 +849,42 @@ const hooks: SDKHooks = {
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| <a id="property-sdkhooksaftererror"></a> `afterError?` | `AfterErrorHook`[] | Hooks executed after error responses (4xx, 5xx) or network failures |
-| <a id="property-sdkhooksaftersuccess"></a> `afterSuccess?` | `AfterSuccessHook`[] | Hooks executed after successful responses (2xx status codes) |
-| <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | `BeforeCreateRequestHook`[] | Hooks executed before creating a Request object |
-| <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | `BeforeRequestHook`[] | Hooks executed after Request creation but before sending |
+| <a id="property-sdkhooksaftererror"></a> `afterError?` | [`AfterErrorHook`](#aftererrorhook)[] | Hooks executed after error responses (4xx, 5xx) or network failures |
+| <a id="property-sdkhooksaftersuccess"></a> `afterSuccess?` | [`AfterSuccessHook`](#aftersuccesshook)[] | Hooks executed after successful responses (2xx status codes) |
+| <a id="property-sdkhooksbeforecreaterequest"></a> `beforeCreateRequest?` | [`BeforeCreateRequestHook`](#beforecreaterequesthook)[] | Hooks executed before creating a Request object |
+| <a id="property-sdkhooksbeforerequest"></a> `beforeRequest?` | [`BeforeRequestHook`](#beforerequesthook)[] | Hooks executed after Request creation but before sending |
 
 ## Type Aliases
 
-<a id="deeppartial"></a>
+<a id="aftererrorcontext"></a>
 
-### DeepPartial
+### AfterErrorContext
 
-> **DeepPartial**\<`T`\> = `{ [P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P] }`
+> **AfterErrorContext** = `HookContext` & `object`
 
-Recursively makes every property of `T` optional, descending into nested objects and arrays.
+***
 
-#### Type Parameters
+<a id="aftersuccesscontext"></a>
 
-| Type Parameter |
-| ------ |
-| `T` |
+### AfterSuccessContext
+
+> **AfterSuccessContext** = `HookContext` & `object`
+
+***
+
+<a id="beforecreaterequestcontext"></a>
+
+### BeforeCreateRequestContext
+
+> **BeforeCreateRequestContext** = `HookContext` & `object`
+
+***
+
+<a id="beforerequestcontext"></a>
+
+### BeforeRequestContext
+
+> **BeforeRequestContext** = `HookContext` & `object`
 
 ***
 
@@ -793,7 +902,7 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 
 ### OnEventType
 
-> **OnEventType**\<`K`, `T`\> = (`type`, `data?`) => `void`
+> **OnEventType**\<`K`, `T`\> = (`type`: `K`, `data?`: `T`) => `void`
 
 Callback signature for an SDK component event emitter, invoked with an event key and optional payload.
 
@@ -824,47 +933,16 @@ API response body. Refer to each component's event table for details.
 
 ***
 
-<a id="resourcedictionary"></a>
-
-### ResourceDictionary
-
-> **ResourceDictionary**\<`K`\> = `K` *extends* keyof [`Resources`](#resources) ? `Record`\<[`SupportedLanguages`](#supportedlanguages), [`DeepPartial`](#deeppartial)\<[`Resources`](#resources)\[`K`\]\>\> : `Record`\<[`SupportedLanguages`](#supportedlanguages), `Partial`\<`{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }`\>\>
-
-Supported keys to provide as a dictionary - global GustoProvider dictionary with all resources and component specific dictionaries
-
-#### Type Parameters
-
-| Type Parameter | Default type |
-| ------ | ------ |
-| `K` *extends* keyof [`Resources`](#resources) \| `undefined` | `undefined` |
-
-***
-
-<a id="resources"></a>
-
-### Resources
-
-> **Resources** = `CustomTypeOptions`\[`"resources"`\]
-
-The full set of SDK i18n resource namespaces and their string keys.
-Each key names a component's resource namespace.
-
-***
-
 <a id="sdkerrorcategory"></a>
 
 ### SDKErrorCategory
 
-> **SDKErrorCategory** = *typeof* `SDKErrorCategories`\[keyof *typeof* `SDKErrorCategories`\]
+> **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
 
-***
+## API Models
 
-<a id="supportedlanguages"></a>
-
-### SupportedLanguages
-
-> **SupportedLanguages** = `"en"`
-
-Language codes the SDK ships translations for; the top-level keys of [ResourceDictionary](#resourcedictionary).
+| Namespace | Description |
+| ------ | ------ |
+| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |

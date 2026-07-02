@@ -1,10 +1,11 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
-import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodGet'
-import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodUpdate'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod'
+import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodUpdate'
 import {
   PAYMENT_METHOD_TYPES,
   type PaymentMethodFormData,
@@ -13,6 +14,7 @@ import {
   type PaymentMethodType,
   createPaymentMethodFormSchema,
 } from './usePaymentMethodFormSchema'
+import type { TypeFieldProps } from './fields'
 import { TypeField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -53,8 +55,8 @@ export interface UsePaymentMethodFormProps {
  * @public
  */
 export interface PaymentMethodFormFields {
-  /** Bound to `type` — see {@link TypeField}. */
-  Type: typeof TypeField
+  /** Bound to `type`. */
+  Type: ComponentType<TypeFieldProps>
 }
 
 /**

@@ -12,15 +12,24 @@ custom_edit_url: null
 
 # OffCycleFlow
 
-Multi-step flow for creating and running an off-cycle payroll (bonus or correction).
+Guided flow to create and run a bonus or correction payroll.
 
 ## Example
 
-```tsx
-import { Payroll } from '@gusto/embedded-react-sdk'
+```tsx title="App.tsx"
+import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+  return (
+    <Payroll.OffCycleFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'runPayroll/submitted') {
+          // Payroll submitted — navigate to your next screen
+        }
+      }}
+    />
+  )
 }
 ```
 
@@ -31,14 +40,6 @@ employees, and setting deduction and tax withholding preferences, then transitio
 into the standard payroll execution experience (configuration, overview, submission,
 receipts). All off-cycle payroll types share the same execution steps as regular
 payrolls — only the creation step differs.
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
-| `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
-
-Once the flow transitions to execution, all standard run-payroll events are emitted
-(e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
 
 ## OffCycleFlowProps
 
@@ -52,3 +53,48 @@ Props for OffCycleFlow.
 | `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked when the flow emits an event. See the events table on OffCycleFlow. |
 | `payrollType?` | [`OffCycleReason`](blocks.md#offcyclereason) | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 | `withReimbursements?` | `boolean` | Optional flag to show/hide reimbursement fields throughout the flow. Defaults to true. |
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | User navigates via the flow breadcrumb header | `{ key: string }` |
+| `offCycle/created` | Off-cycle payroll has been created and the flow transitions to execution | `{ payrollUuid: string }` |
+
+Once the flow transitions to execution, all standard run-payroll events are emitted
+(e.g. `runPayroll/calculated`, `runPayroll/submitted`, `runPayroll/processed`).
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [OffCycleCreation](blocks.md#offcyclecreation) | Creation form for off-cycle (bonus or correction) payrolls. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+
+<!-- guide-source: src/components/Payroll/OffCycle/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow opens on the creation step, where the off-cycle payroll is configured (pay period dates, reason, employees, deductions, and tax withholding). Once created, it hands off to the shared `PayrollExecutionFlow` for configuration, overview, submission, and receipts.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> CreateOffCyclePayroll["OffCycleCreation"]
+  CreateOffCyclePayroll -->|"offCycle/created"| Execution["PayrollExecutionFlow"]
+  Execution -->|"breadcrumb/navigate"| CreateOffCyclePayroll
+  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class Execution flow
+```
+
+The breadcrumb header lets the user navigate from execution back to the creation step (`breadcrumb/navigate` with `key: 'createOffCyclePayroll'`). Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
+
+## Off-cycle reasons
+
+The creation step supports two off-cycle reasons, each seeding different deduction and withholding defaults. Changing the reason updates these defaults automatically.
+
+| Reason     | Use                                              | Default deductions         | Default withholding |
+| ---------- | ------------------------------------------------ | -------------------------- | ------------------- |
+| Bonus      | Pay a bonus, gift, or commission                 | Skip regular deductions    | Supplemental rate   |
+| Correction | Run a correction payment outside the schedule    | Include regular deductions | Regular rate        |
+
+When deductions are skipped, all regular deductions and contributions are blocked except 401(k); taxes are always included regardless of the selection.
+<!-- /guide-source (slot: appendix) -->

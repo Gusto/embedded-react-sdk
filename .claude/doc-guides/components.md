@@ -4,7 +4,7 @@ Read this when documenting React component symbols — block components, UI comp
 
 ## Events table
 
-Every exported React component's `@remarks` must include an events table listing every `onEvent` the component can emit:
+Every exported React component must have an `@events` block listing every `onEvent` the component can emit:
 
 ```text
 | Event | Description | Data |
@@ -50,7 +50,12 @@ Document the component itself separately from its props interface. The dominant 
  * Summary of what the component does.
  *
  * @remarks
- * <events table>
+ * <optional prose — observable behavior, integration notes>
+ *
+ * @events
+ * | Event | Description | Data |
+ * | ----- | ----------- | ---- |
+ * | `domain/action` | What triggers it | — |
  *
  * @param props - See {@link ContractorSubmitProps}.
  * @returns The rendered <thing>.

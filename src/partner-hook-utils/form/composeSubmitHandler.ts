@@ -42,8 +42,7 @@ interface ComposableFormHookResult {
  * @internal
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
-  | ComposableFormHookResult
-  | UseFormReturn<T>
+  ComposableFormHookResult | UseFormReturn<T>
 
 interface FormValidationResult {
   input: ComposeSubmitInput
@@ -150,7 +149,7 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  *
  * The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
  * can be passed back into {@link composeErrorHandler} when you need to add extra
- * `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
+ * `@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state.
  *
  * @typeParam TForms - Tuple of form value shapes, one per slot of `forms`.
  * @param forms - Form hook results and/or raw `UseFormReturn` instances to coordinate.

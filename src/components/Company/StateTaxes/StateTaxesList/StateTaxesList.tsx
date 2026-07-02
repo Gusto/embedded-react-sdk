@@ -1,4 +1,4 @@
-import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/taxRequirementsGetAll'
+import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/taxRequirementsGetAll'
 import { Head } from './Head'
 import { StateTaxesListProvider } from './context'
 import { Actions } from './Actions'
@@ -10,7 +10,12 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
+/**
+ * Props for the {@link StateTaxesList} component.
+ *
+ * @public
+ */
+export interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes'> {
   /** The associated company identifier. */
   companyId: string
 }
@@ -21,6 +26,7 @@ interface StateTaxesListProps extends BaseComponentInterface<'Company.StateTaxes
  * @remarks
  * Standalone building block used internally by the orchestrated `StateTaxes` component for its list view. Use this directly when you need full control over navigation between the list and form views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |

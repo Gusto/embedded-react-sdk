@@ -1,6 +1,6 @@
-import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsGet'
-import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
-import { useContractorPaymentsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentsDelete'
+import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentGroupsGet'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsList'
+import { useContractorPaymentsDeleteMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentsDelete'
 import { useTranslation } from 'react-i18next'
 import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 import { useComponentDictionary } from '@/i18n'
@@ -21,6 +21,13 @@ export interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.
  * Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel.
  *
  * @remarks
+ * Features:
+ *
+ * - **Payment group overview** — debit date and group context in the header.
+ * - **Per-contractor table** — contractor, wage type, payment method, hours, wage, bonus, reimbursement, and total for each payment.
+ * - **Row actions** — view an individual contractor payment, or cancel it when the payment is cancelable.
+ *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |

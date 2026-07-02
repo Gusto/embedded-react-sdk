@@ -10,22 +10,23 @@ Hooks let you own the layout while the SDK manages data fetching, validation, su
 
 ## Available Form Hooks
 
-| Hook                             | Description                                                                                        | Reference                                                             |
-| -------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `useEmployeeDetailsForm`         | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)        | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)                 |
-| `useJobForm`                     | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)     | [useJobForm](./useJobForm.md)                                         |
-| `useCompensationForm`            | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date) | [useCompensationForm](./useCompensationForm.md)                       |
-| `useWorkAddressForm`             | Create or update an employee's work address (company location select, effective date)              | [useWorkAddressForm](./useWorkAddressForm.md)                         |
-| `useFederalTaxesForm`            | Update an employee's federal tax (W-4) withholding information                                     | [useFederalTaxesForm](./useFederalTaxesForm.md)                       |
-| `useEmployeeStateTaxesForm`      | Update an employee's state tax withholding answers (dynamic, per-state question groups)            | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md)           |
-| `usePayScheduleForm`             | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        | [usePayScheduleForm](./usePayScheduleForm.md)                         |
-| `useSignCompanyForm`             | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)                         |
-| `useSignEmployeeForm`            | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)                       |
-| `useBankForm`                    | Create a bank account for an employee (nickname, routing/account number, account type)             | [useBankForm](./useBankForm.md)                                       |
-| `usePaymentMethodForm`           | Switch an employee's payment method between Direct Deposit and Check                               | [usePaymentMethodForm](./usePaymentMethodForm.md)                     |
-| `useSplitPaymentsForm`           | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)       | [useSplitPaymentsForm](./useSplitPaymentsForm.md)                     |
-| `useDeductionForm`               | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)      | [useDeductionForm](./useDeductionForm.md)                             |
-| `useChildSupportGarnishmentForm` | Create or update a child-support garnishment (agency-keyed required attributes, county selection)  | [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md) |
+| Hook                             | Description                                                                                           | Reference                                                                                |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `useEmployeeDetailsForm`         | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)           | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)                                    |
+| `useJobForm`                     | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)        | [useJobForm](./useJobForm.md)                                                            |
+| `useCompensationForm`            | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date)    | [useCompensationForm](./useCompensationForm.md)                                          |
+| `useWorkAddressForm`             | Create or update an employee's work address (company location select, effective date)                 | [useWorkAddressForm](./useWorkAddressForm.md)                                            |
+| `useFederalTaxesForm`            | Update an employee's federal tax (W-4) withholding information                                        | [useFederalTaxesForm](./useFederalTaxesForm.md)                                          |
+| `useEmployeeStateTaxesForm`      | Update an employee's state tax withholding answers (dynamic, per-state question groups)               | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md)                              |
+| `usePayScheduleForm`             | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)           | [usePayScheduleForm](./usePayScheduleForm.md)                                            |
+| `useSignCompanyForm`             | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                              | [useSignCompanyForm](./useSignCompanyForm.md)                                            |
+| `useSignEmployeeForm`            | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                     | [useSignEmployeeForm](./useSignEmployeeForm.md)                                          |
+| `useBankForm`                    | Create a bank account for an employee (nickname, routing/account number, account type)                | [useBankForm](./useBankForm.md)                                                          |
+| `usePaymentMethodForm`           | Switch an employee's payment method between Direct Deposit and Check                                  | [usePaymentMethodForm](./usePaymentMethodForm.md)                                        |
+| `useSplitPaymentsForm`           | Split a paycheck across multiple bank accounts (Percentage or Fixed amount, with reordering)          | [useSplitPaymentsForm](./useSplitPaymentsForm.md)                                        |
+| `useDeductionForm`               | Create or update a non-child-support deduction (court-ordered garnishment or post-tax custom)         | [useDeductionForm](./useDeductionForm.md)                                                |
+| `useChildSupportGarnishmentForm` | Create or update a child-support garnishment (agency-keyed required attributes, county selection)     | [useChildSupportGarnishmentForm](./useChildSupportGarnishmentForm.md)                    |
+| `useContractorDetailsForm`       | Create or update a contractor profile (individual/business type, wage type, SSN/EIN, self-onboarding) | [useContractorDetailsForm](../reference/contractor/hooks/use-contractor-details-form.md) |
 
 ## Available Data Hooks
 
@@ -177,7 +178,7 @@ You can also mix approaches on the same page — for example, `SDKFormProvider` 
 
 ### Component Adapter integration
 
-By default, every field component renders through the SDK's [Component Adapter](../component-adapter/component-adapter.md). If you've configured a Component Adapter for your app (e.g., mapping to your own design system), hook fields will automatically render using your custom components. If no adapter is configured, fields render using the SDK's built-in React Aria-driven components.
+By default, every field component renders through the SDK's [Component Adapter](../guides/component-adapter/component-adapter.md). If you've configured a Component Adapter for your app (e.g., mapping to your own design system), hook fields will automatically render using your custom components. If no adapter is configured, fields render using the SDK's built-in React Aria-driven components.
 
 This means hooks inherit whatever UI customization you've already set up at the `GustoProvider` level -- no extra configuration needed.
 
@@ -382,7 +383,7 @@ interface HookErrorHandling {
 
 ### Multi-hook screens
 
-When a screen pulls from more than one SDK hook (or mixes SDK hooks with additional `@gusto/embedded-api-v-2025-11-15` queries), combine their error state into one banner and one retry/dismiss flow using `composeErrorHandler` / `composeSubmitHandler`. See [Composing Multiple Hooks](#composing-multiple-hooks).
+When a screen pulls from more than one SDK hook (or mixes SDK hooks with additional `@gusto/embedded-api-v-2026-02-01` queries), combine their error state into one banner and one retry/dismiss flow using `composeErrorHandler` / `composeSubmitHandler`. See [Composing Multiple Hooks](#composing-multiple-hooks).
 
 ### SDKError shape
 
@@ -469,7 +470,7 @@ const { errors, clearSubmitError } = employeeDetails.errorHandling
 
 Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields so they appear inline alongside client-side validation errors. When using `SDKFormProvider`, the provider handles this syncing via context. When using the `formHookResult` prop, each field resolves errors directly from `formHookResult.errorHandling.errors` — no provider is needed.
 
-For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../integration-guide/error-handling.md) and [Observability](../integration-guide/observability.md).
+For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../guides/integration-guide/error-handling.md) and [Observability](../guides/integration-guide/observability.md).
 
 ---
 
@@ -561,7 +562,7 @@ Error codes for each hook are exported alongside the hook:
 
 ## Composing Multiple Hooks
 
-A screen that combines multiple SDK hooks, or mixes SDK hooks with additional `@gusto/embedded-api-v-2025-11-15` queries, produces multiple `errorHandling` objects and (for form screens) multiple submit flows. Two small helpers stitch them together:
+A screen that combines multiple SDK hooks, or mixes SDK hooks with additional `@gusto/embedded-api-v-2026-02-01` queries, produces multiple `errorHandling` objects and (for form screens) multiple submit flows. Two small helpers stitch them together:
 
 - **`composeErrorHandler([sources])`** — merges many error sources into a single `HookErrorHandling`.
 - **`composeSubmitHandler([forms], onAllValid)`** — coordinates validation and ordered submits across forms, and returns `{ handleSubmit, errorHandling }` where `errorHandling` is built from those forms via `composeErrorHandler` under the hood.
@@ -571,11 +572,11 @@ A screen that combines multiple SDK hooks, or mixes SDK hooks with additional `@
 Use `composeErrorHandler` to produce a single `errorHandling` bag for any screen that reads from multiple sources. It accepts any mix of:
 
 - **SDK hook results** — objects with an `errorHandling` property (e.g., `useEmployeeDetailsForm`, `useCompensationForm`, or the return value of `composeSubmitHandler`).
-- **`@gusto/embedded-api-v-2025-11-15` React Query results** — objects with `error` and `refetch` properties.
+- **`@gusto/embedded-api-v-2026-02-01` React Query results** — objects with `error` and `refetch` properties.
 
 ```tsx
 import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
-import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
 
 function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
@@ -598,7 +599,7 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 }
 ```
 
-`employeeDetails` is an SDK hook result (its `errorHandling` is delegated into), while `formsListQuery` is a raw `@gusto/embedded-api-v-2025-11-15` query (its `error` is normalized and its `refetch` is wired into `retryQueries`). The same call works for any combination of the two shapes.
+`employeeDetails` is an SDK hook result (its `errorHandling` is delegated into), while `formsListQuery` is a raw `@gusto/embedded-api-v-2026-02-01` query (its `error` is normalized and its `refetch` is wired into `retryQueries`). The same call works for any combination of the two shapes.
 
 The returned `errorHandling` has the same shape as any SDK hook's `errorHandling`:
 
@@ -623,7 +624,7 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 )
 ```
 
-If the same screen also has extra `@gusto/embedded-api-v-2025-11-15` queries that should feed the same error banner, pass the `composeSubmitHandler` result back into `composeErrorHandler` alongside those queries — the result already satisfies `composeErrorHandler`'s input shape:
+If the same screen also has extra `@gusto/embedded-api-v-2026-02-01` queries that should feed the same error banner, pass the `composeSubmitHandler` result back into `composeErrorHandler` alongside those queries — the result already satisfies `composeErrorHandler`'s input shape:
 
 ```tsx
 const submitResult = composeSubmitHandler([employeeDetails, compensation], onAllValid)

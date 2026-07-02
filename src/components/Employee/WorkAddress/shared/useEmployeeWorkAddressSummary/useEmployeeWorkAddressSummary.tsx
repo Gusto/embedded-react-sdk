@@ -1,5 +1,5 @@
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesGetWorkAddresses'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 
@@ -24,8 +24,7 @@ type UseEmployeeWorkAddressSummaryReady = BaseHookReady<
  * @public
  */
 export type UseEmployeeWorkAddressSummaryResult =
-  | HookLoadingResult
-  | UseEmployeeWorkAddressSummaryReady
+  HookLoadingResult | UseEmployeeWorkAddressSummaryReady
 
 /**
  * Read-only data hook for the employee work address summary card.

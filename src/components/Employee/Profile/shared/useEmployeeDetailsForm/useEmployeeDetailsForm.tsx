@@ -1,13 +1,14 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useEmployeesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesCreate'
-import { useEmployeesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdate'
-import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingStatus'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import { useEmployeesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import { useEmployeesCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesCreate'
+import { useEmployeesUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesUpdate'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesUpdateOnboardingStatus'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import {
   createEmployeeDetailsSchema,
   type EmployeeDetailsOptionalFieldsToRequire,
@@ -22,6 +23,15 @@ import {
   DateOfBirthField,
   SsnField,
   SelfOnboardingField,
+} from './fields'
+import type {
+  FirstNameFieldProps,
+  MiddleInitialFieldProps,
+  LastNameFieldProps,
+  EmailFieldProps,
+  DateOfBirthFieldProps,
+  SsnFieldProps,
+  SelfOnboardingFieldProps,
 } from './fields'
 import { normalizeToISOString } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
@@ -51,6 +61,7 @@ export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSc
  * switch changes the employee's onboarding status as part of an update.
  *
  * @public
+ * @group Utility Types
  */
 export interface EmployeeDetailsSubmitCallbacks {
   /** Fired after a new employee is successfully created. */
@@ -88,6 +99,7 @@ export type UseEmployeeDetailsFormSharedProps = {
  * `companyId`).
  *
  * @public
+ * @group Utility Types
  */
 export type UseEmployeeDetailsFormProps =
   | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
@@ -97,29 +109,26 @@ export type UseEmployeeDetailsFormProps =
  * The Field components exposed by {@link useEmployeeDetailsForm} as `form.Fields`.
  *
  * @remarks
- * Each entry is a component bound to a specific form field — see
- * {@link FirstNameField}, {@link MiddleInitialField}, {@link LastNameField},
- * {@link EmailField}, {@link DateOfBirthField}, {@link SsnField}, and
- * {@link SelfOnboardingField}. `SelfOnboarding` may be `undefined` when
- * the field is not toggleable.
+ * Each entry is a component bound to a specific form field. `SelfOnboarding`
+ * may be `undefined` when the field is not toggleable.
  *
  * @public
  */
-export interface EmployeeDetailsFields {
-  /** Text input bound to `firstName`. See {@link FirstNameField}. */
-  FirstName: typeof FirstNameField
-  /** Text input bound to `middleInitial`. See {@link MiddleInitialField}. */
-  MiddleInitial: typeof MiddleInitialField
-  /** Text input bound to `lastName`. See {@link LastNameField}. */
-  LastName: typeof LastNameField
-  /** Text input bound to `email`. See {@link EmailField}. */
-  Email: typeof EmailField
-  /** Date picker bound to `dateOfBirth`. See {@link DateOfBirthField}. */
-  DateOfBirth: typeof DateOfBirthField
-  /** Text input bound to `ssn`. See {@link SsnField}. */
-  Ssn: typeof SsnField
-  /** Switch bound to `selfOnboarding`, or `undefined` when the field is not toggleable. See {@link SelfOnboardingField}. */
-  SelfOnboarding: typeof SelfOnboardingField | undefined
+export interface EmployeeDetailsFormFields {
+  /** Bound to `firstName`. Text input. */
+  FirstName: ComponentType<FirstNameFieldProps>
+  /** Bound to `middleInitial`. Text input. */
+  MiddleInitial: ComponentType<MiddleInitialFieldProps>
+  /** Bound to `lastName`. Text input. */
+  LastName: ComponentType<LastNameFieldProps>
+  /** Bound to `email`. Text input. */
+  Email: ComponentType<EmailFieldProps>
+  /** Bound to `dateOfBirth`. Date picker. */
+  DateOfBirth: ComponentType<DateOfBirthFieldProps>
+  /** Bound to `ssn`. Text input. */
+  Ssn: ComponentType<SsnFieldProps>
+  /** Bound to `selfOnboarding`. Switch, or `undefined` when the field is not toggleable. */
+  SelfOnboarding: ComponentType<SelfOnboardingFieldProps> | undefined
 }
 
 /**
@@ -134,7 +143,7 @@ export interface EmployeeDetailsFields {
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
   FieldsMetadata,
   EmployeeDetailsFormData,
-  EmployeeDetailsFields
+  EmployeeDetailsFormFields
 > {
   /** The loaded employee data, or `null` in create mode. */
   data: {
@@ -446,10 +455,3 @@ export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetail
  * @public
  */
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata']
-
-/**
- * Shape of `form.Fields` returned by {@link useEmployeeDetailsForm}.
- *
- * @public
- */
-export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields']

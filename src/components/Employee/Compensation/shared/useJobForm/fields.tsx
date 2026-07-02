@@ -33,19 +33,7 @@ export type JobRequiredValidation = typeof JobErrorCodes.REQUIRED
  */
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequiredValidation>>
 
-/**
- * Text input bound to the `title` field of {@link useJobForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.Title` when `withTitleField` is
- * `true` (the default). On update flows where another form owns the title
- * (e.g. compensation edits), set `withTitleField: false` on `useJobForm` and
- * render the compensation form's title field instead.
- *
- * @param props - {@link JobTitleFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered text input bound to `title`.
- * @public
- */
+/** @internal */
 export function JobTitleField(props: JobTitleFieldProps) {
   return <TextInputHookField {...props} name="title" />
 }
@@ -57,20 +45,7 @@ export function JobTitleField(props: JobTitleFieldProps) {
  */
 export type HireDateFieldProps = HookFieldProps<DatePickerHookFieldProps<JobRequiredValidation>>
 
-/**
- * Date picker bound to the `hireDate` field of {@link useJobForm}.
- *
- * @remarks
- * Available on the hook result as `form.Fields.HireDate` when
- * `withHireDateField` is `true` (the default). When `false`, supply the value
- * via `JobSubmitOptions.hireDate` at submit time — useful when the hire date
- * is derived from external context (e.g. the employee's `startDate` during
- * onboarding).
- *
- * @param props - {@link HireDateFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered date picker bound to `hireDate`.
- * @public
- */
+/** @internal */
 export function HireDateField(props: HireDateFieldProps) {
   return <DatePickerHookField {...props} name="hireDate" />
 }
@@ -82,18 +57,7 @@ export function HireDateField(props: HireDateFieldProps) {
  */
 export type TwoPercentShareholderFieldProps = HookFieldProps<CheckboxHookFieldProps>
 
-/**
- * Checkbox bound to the `twoPercentShareholder` field of {@link useJobForm}.
- *
- * @remarks
- * Indicates whether the employee is a 2% shareholder in an S-Corporation.
- * Available on the hook result as `form.Fields.TwoPercentShareholder` only
- * when the company is taxable as an S-Corp (see `data.showTwoPercentShareholder`).
- *
- * @param props - {@link TwoPercentShareholderFieldProps} — accepts the standard hook field props (label, description, FieldComponent override).
- * @returns The rendered checkbox bound to `twoPercentShareholder`.
- * @public
- */
+/** @internal */
 export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProps) {
   return <CheckboxHookField {...props} name="twoPercentShareholder" />
 }
@@ -105,19 +69,7 @@ export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProp
  */
 export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>
 
-/**
- * Radio group bound to the `stateWcCovered` field of {@link useJobForm}.
- *
- * @remarks
- * Captures whether the employee is covered by Washington state workers'
- * compensation. Available on the hook result as `form.Fields.StateWcCovered`
- * only when the employee's active work address is in Washington (see
- * `data.showStateWc`).
- *
- * @param props - {@link StateWcCoveredFieldProps} — accepts the standard hook field props (label, description, getOptionLabel, FieldComponent override).
- * @returns The rendered radio group bound to `stateWcCovered`.
- * @public
- */
+/** @internal */
 export function StateWcCoveredField(props: StateWcCoveredFieldProps) {
   return <RadioGroupHookField {...props} name="stateWcCovered" />
 }
@@ -131,20 +83,7 @@ export type StateWcClassCodeFieldProps = HookFieldProps<
   SelectHookFieldProps<JobRequiredValidation, WARiskClassCode>
 >
 
-/**
- * Select dropdown bound to the `stateWcClassCode` field of {@link useJobForm}.
- *
- * @remarks
- * Populated with Washington state workers' compensation risk class codes.
- * Available on the hook result as `form.Fields.StateWcClassCode` only when
- * the active work address is in Washington and `stateWcCovered` is `true`.
- * The schema enforces this field as required whenever it is rendered,
- * independent of `optionalFieldsToRequire`.
- *
- * @param props - {@link StateWcClassCodeFieldProps} — accepts the standard hook field props (label, description, validationMessages, FieldComponent override).
- * @returns The rendered select bound to `stateWcClassCode`.
- * @public
- */
+/** @internal */
 export function StateWcClassCodeField(props: StateWcClassCodeFieldProps) {
   return <SelectHookField {...props} name="stateWcClassCode" />
 }

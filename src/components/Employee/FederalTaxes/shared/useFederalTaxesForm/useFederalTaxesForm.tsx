@@ -1,15 +1,16 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeFederalTax } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltax'
-import type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2025-11-15/models/components/employeefederaltaxrev2020'
-import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupUpdateFederalTaxes'
+import type { EmployeeFederalTax } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltax'
+import type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api-v-2026-02-01/models/components/employeefederaltaxrev2020'
+import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupUpdateFederalTaxes'
 import type {
   FilingStatus,
   PutV1EmployeesEmployeeIdFederalTaxesRequestBody,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidfederaltaxes'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidfederaltaxes'
 import {
   createFederalTaxesSchema,
   FILING_STATUS_VALUES,
@@ -18,6 +19,14 @@ import {
   type FederalTaxesFormOutputs,
   type FilingStatusValue,
 } from './federalTaxesSchema'
+import type {
+  FilingStatusFieldProps,
+  TwoJobsFieldProps,
+  DependentsAmountFieldProps,
+  OtherIncomeFieldProps,
+  DeductionsFieldProps,
+  ExtraWithholdingFieldProps,
+} from './fields'
 import {
   FilingStatusField,
   TwoJobsField,
@@ -69,19 +78,19 @@ export interface UseFederalTaxesFormProps {
  *
  * @public
  */
-export interface FederalTaxesFields {
-  /** Filing status select. */
-  FilingStatus: typeof FilingStatusField
-  /** Multiple-jobs (Step 2c) radio group. */
-  TwoJobs: typeof TwoJobsField
-  /** Dependents amount (Step 3) currency input. */
-  DependentsAmount: typeof DependentsAmountField
-  /** Other income (Step 4a) currency input. */
-  OtherIncome: typeof OtherIncomeField
-  /** Deductions (Step 4b) currency input. */
-  Deductions: typeof DeductionsField
-  /** Extra withholding (Step 4c) currency input. */
-  ExtraWithholding: typeof ExtraWithholdingField
+export interface FederalTaxesFormFields {
+  /** Bound to `filingStatus`. Filing status select. */
+  FilingStatus: ComponentType<FilingStatusFieldProps>
+  /** Bound to `twoJobs`. Multiple-jobs (Step 2c) radio group. */
+  TwoJobs: ComponentType<TwoJobsFieldProps>
+  /** Bound to `dependentsAmount`. Dependents amount (Step 3) currency input. */
+  DependentsAmount: ComponentType<DependentsAmountFieldProps>
+  /** Bound to `otherIncome`. Other income (Step 4a) currency input. */
+  OtherIncome: ComponentType<OtherIncomeFieldProps>
+  /** Bound to `deductions`. Deductions (Step 4b) currency input. */
+  Deductions: ComponentType<DeductionsFieldProps>
+  /** Bound to `extraWithholding`. Extra withholding (Step 4c) currency input. */
+  ExtraWithholding: ComponentType<ExtraWithholdingFieldProps>
 }
 
 /**
@@ -96,7 +105,7 @@ export interface FederalTaxesFields {
 export interface UseFederalTaxesFormReady extends BaseFormHookReady<
   FieldsMetadata,
   FederalTaxesFormData,
-  FederalTaxesFields
+  FederalTaxesFormFields
 > {
   /** The loaded federal tax record. */
   data: {
@@ -356,15 +365,3 @@ export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormR
  * @public
  */
 export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata']
-
-/**
- * Pre-bound field components exposed on `useFederalTaxesForm().form.Fields`.
- *
- * @remarks
- * Alias for the `Fields` shape on {@link UseFederalTaxesFormReady}. Use this
- * type when typing a presentational component that consumes the hook's
- * fields.
- *
- * @public
- */
-export type FederalTaxesFormFields = UseFederalTaxesFormReady['form']['Fields']

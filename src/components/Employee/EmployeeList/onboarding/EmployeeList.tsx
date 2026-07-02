@@ -1,4 +1,4 @@
-import type { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { OnboardingStatus } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeeList } from '../shared/useEmployeeList'
 import { EmployeeListView } from './EmployeeListView'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
@@ -98,8 +98,7 @@ function EmployeeListRoot({
  * Renders a paginated list of a company's employees with per-row onboarding actions (edit,
  * delete, review, cancel self-onboarding) and an "Add employee" entry point.
  *
- * @remarks
- *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/create` | Fired when the user clicks "Add employee". | — |

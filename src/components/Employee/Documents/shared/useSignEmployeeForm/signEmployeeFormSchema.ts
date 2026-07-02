@@ -241,16 +241,12 @@ export type SignEmployeeFormField = keyof typeof fieldValidators
  * Shape of the values managed by the I-9 sign-employee form.
  *
  * @public
+ * @interface
  */
 export type SignEmployeeFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
-/**
- * Shape of the validated values produced by the I-9 sign-employee form on
- * submit.
- *
- * @public
- */
+/** @internal */
 export type SignEmployeeFormOutputs = SignEmployeeFormData
 
 // ── Required fields config ─────────────────────────────────────────────

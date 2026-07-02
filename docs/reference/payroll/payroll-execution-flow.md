@@ -12,8 +12,27 @@ custom_edit_url: null
 
 # PayrollExecutionFlow
 
-Shared execution flow that runs the configuration, overview, submission, and receipt steps for a
-single payroll.
+Guided flow to configure, review, and submit a single payroll.
+
+## Example
+
+```tsx title="App.tsx"
+import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <Payroll.PayrollExecutionFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      payrollId="0987fcea-7b59-4907-a301-f232b5aff508"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'runPayroll/submitted') {
+          // Payroll submitted — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
 
 ## Remarks
 
@@ -23,10 +42,29 @@ payrolls. Render it directly when you have built your own payroll-creation step 
 the user off to the standard execution experience without re-implementing it. The flow ships
 with breadcrumb navigation and the standard wire-confirmation UX.
 
+## PayrollExecutionFlowProps
+
+<a id="payrollexecutionflowprops"></a>
+
+Props for PayrollExecutionFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
+| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
+| `initialPayPeriod?` | [`PayrollPayPeriodType`](../APIModels/index.md#payrollpayperiodtype) | Optional pay period metadata used to seed breadcrumb labels and date context. |
+| `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |
+| `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
+| `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
+| `withReimbursements?` | `boolean` | Optional flag to show or hide reimbursement fields throughout the flow. Defaults to `true`. |
+
+## Events
+
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `runPayroll/edit` | Fired when user chooses to edit payroll | — |
-| `runPayroll/back` | Fired when user navigates back | — |
 | `runPayroll/calculated` | Fired when payroll calculation completes | `{ payrollUuid, payPeriod?, alert? }` |
 | `runPayroll/employee/edit` | Fired when user opens an employee row to edit | `{ employeeId, firstName, lastName }` |
 | `runPayroll/employee/saved` | Fired when employee edits are saved | — |
@@ -42,20 +80,40 @@ with breadcrumb navigation and the standard wire-confirmation UX.
 | `runPayroll/blockers/viewAll` | Fired when user opens the full blockers list | — |
 | `payroll/saveAndExit` | Fired when user uses the save-and-exit CTA | — |
 
-## PayrollExecutionFlowProps
+## Sub-components
 
-<a id="payrollexecutionflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [PayrollConfiguration](blocks.md#payrollconfiguration) | Handles the configuration phase of payroll processing, allowing users to review and modify employee compensation before calculating the payroll. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollEditEmployee](blocks.md#payrolleditemployee) | Editor for an individual employee's compensation within a payroll run. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 
-Props for PayrollExecutionFlow.
+<!-- guide-source: src/components/Payroll/PayrollExecutionFlow/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
-| `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
-| `initialPayPeriod?` | `PayrollPayPeriodType` | Optional pay period metadata used to seed breadcrumb labels and date context. |
-| `initialState?` | [`PayrollExecutionInitialState`](blocks.md#payrollexecutioninitialstate) | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`. |
-| `isDismissalPayroll?` | `boolean` | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`). Defaults to `false`. |
-| `prefixBreadcrumbs?` | `FlowBreadcrumb`[] | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
-| `withReimbursements?` | `boolean` | Optional flag to show or hide reimbursement fields throughout the flow. Defaults to `true`. |
+The execution flow centers on the configuration step (`PayrollConfiguration`) as a hub: from there you can edit an employee, view all blockers, or calculate the payroll to reach the overview, and each of those returns to configuration. The one spoke-to-spoke move is overview → receipts (`runPayroll/receipt/get`); receipts then also returns to the hub. The entry point depends on the `initialState` prop: `'configuration'` (the default) or `'overview'` (drop directly onto the review screen for an already-calculated payroll).
+
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> Configuration["PayrollConfiguration"]
+  Configuration <--> EditEmployee["PayrollEditEmployee"]
+  Configuration <--> Blockers["PayrollBlockerList"]
+  Configuration <--> Overview["PayrollOverview"]
+  Overview --> Receipts["PayrollReceipts"]
+  Receipts --> Configuration
+  Configuration -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  Blockers ---> done
+  Overview --> done
+  Receipts --> done
+  linkStyle 1,2,3 stroke-width:2.5px
+  linkStyle 6,7,8,9 stroke-dasharray:6 4
+```
+
+Edge labels are dropped for legibility (see the events table above); each spoke's events are: edit an employee (`runPayroll/employee/edit`, returning on `runPayroll/employee/saved` / `runPayroll/employee/cancelled`), view all blockers (`runPayroll/blockers/viewAll`), and calculate to reach the overview (`runPayroll/calculated`, returning on `runPayroll/edit` before submission). Overview reaches receipts on `runPayroll/receipt/get`.
+
+`runPayroll/submitting` flips a one-way latch: `runPayroll/edit` returns to configuration only before submission has started, after which the configuration step is hidden and the flow stays on the overview through submission and processing.
+
+The breadcrumb header (`breadcrumb/navigate`) returns to an earlier step, and **Save & exit** (`payroll/saveAndExit`, the dashed edges to the exit node) is available from every step except employee editing. Neither that event nor the status events emitted during the run (`runPayroll/submitted`, `runPayroll/processed`, `runPayroll/processingFailed`, `runPayroll/cancelled`) is handled internally — each surfaces on `onEvent`, with `payroll/saveAndExit` signalling that the flow has been exited.
+<!-- /guide-source (slot: appendix) -->

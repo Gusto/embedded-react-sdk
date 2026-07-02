@@ -12,7 +12,29 @@ custom_edit_url: null
 
 # TransitionFlow
 
-Multi-step flow for running a transition payroll that covers the gap between an old and new pay schedule.
+Guided flow to run a transition payroll between pay schedules.
+
+## Example
+
+```tsx title="App.tsx"
+import { Payroll, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <Payroll.TransitionFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      startDate="2025-01-16"
+      endDate="2025-01-31"
+      payScheduleUuid="c75c1ef6-2ec0-4cca-94a5-8b4cf7e5ea21"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'runPayroll/submitted') {
+          // Payroll submitted — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
 
 ## Remarks
 
@@ -21,13 +43,6 @@ transition pay period). After the payroll is created, the flow hands off to the 
 payroll execution experience — configure compensation, review, submit, and view receipts.
 
 If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
-
-| Event | Description | Data |
-| ----- | ----------- | ---- |
-| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
-| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
-
-Once execution begins, all standard run-payroll events are emitted as well.
 
 ## TransitionFlowProps
 
@@ -43,3 +58,51 @@ Props for TransitionFlow.
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
 | `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |
+
+## Events
+
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `breadcrumb/navigate` | Fired when the user navigates back to the creation step via breadcrumbs | `{ key: string }` |
+| `transition/created` | Fired when the transition payroll is created and the flow advances to execution | `{ payrollUuid: string }` |
+
+Once execution begins, all standard run-payroll events are emitted as well.
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [TransitionCreation](blocks.md#transitioncreation) | Creation form for transition payrolls covering the gap between an old and new pay schedule. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+
+<!-- guide-source: src/components/Payroll/Transition/GUIDE.md (slot: appendix) -->
+## Step flow
+
+A transition payroll covers the workdays that fall between the end of an old pay schedule and the start of a new one, so employees are paid for the gap. The flow's entry point depends on whether `payrollUuid` is supplied: without it, the flow opens on the creation step and advances into execution; with it, the creation step is skipped and the flow starts directly in `PayrollExecutionFlow`.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> hasPayroll{{"payrollUuid provided?"}}
+  hasPayroll -.->|"no"| CreateTransitionPayroll["TransitionCreation"]
+  hasPayroll -.->|"yes"| Execution["PayrollExecutionFlow"]
+  CreateTransitionPayroll -->|"transition/created"| Execution
+  Execution -->|"breadcrumb/navigate"| CreateTransitionPayroll
+  Execution -->|"payroll/saveAndExit"| done@{ shape: fr-circ, label: " " }
+  class hasPayroll branch
+  class Execution flow
+```
+
+Selecting **Save & exit** during execution emits `payroll/saveAndExit`, which the flow does not handle internally — it surfaces on `onEvent` to signal that the flow has been exited.
+
+## Creation step
+
+The creation step shows the transition pay period (`startDate`–`endDate`) and the associated pay schedule name as read-only context, then collects:
+
+- **Check date** — when employees are paid. For ACH processing this must be at least 2 business days out.
+- **Deductions and contributions** — include or skip regular deductions. Defaults to including deductions.
+- **Tax withholding rates** — withholding pay period frequency and rate type (regular or supplemental). Defaults to the regular rate with an every-other-week frequency.
+
+On submission the step creates an off-cycle payroll with the `"Transition from old pay schedule"` reason and advances to execution with `transition/created`.
+
+Transition pay periods should be resolved — run or skipped — before regular payrolls are run. The Gusto API may reject regular payrolls while unresolved transition periods exist.
+<!-- /guide-source (slot: appendix) -->

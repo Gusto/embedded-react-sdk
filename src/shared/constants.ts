@@ -1,5 +1,5 @@
-import { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
-import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import { OnboardingStatus } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidonboardingstatus'
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
 
 /**
  * Event keys emitted by employee-related components.
@@ -218,6 +218,8 @@ export const companyEvents = {
  * @public
  */
 export const contractorEvents = {
+  CONTRACTOR_SELF_ONBOARDING_START: 'contractor/selfOnboarding/start',
+  CONTRACTOR_SELF_ONBOARDING_DONE: 'contractor/selfOnboarding/done',
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
   CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
@@ -235,6 +237,8 @@ export const contractorEvents = {
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
   CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
   CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
+  CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: 'contractor/documents/view',
+  CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
 } as const
 
 /**
@@ -600,7 +604,7 @@ export const ContractorOnboardingStatus = {
  *
  * @public
  */
-export const ContractorSelfOnboardingStatuses = new Set([
+export const ContractorSelfOnboardingStatuses = new Set<ContractorOnboardingStatus1>([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,

@@ -72,14 +72,7 @@ export interface MenuProps extends DataAttributes {
    * @defaultValue `'bottom start'`
    */
   placement?:
-    | 'top'
-    | 'top start'
-    | 'top end'
-    | 'bottom'
-    | 'bottom start'
-    | 'bottom end'
-    | 'left'
-    | 'right'
+    'top' | 'top start' | 'top end' | 'bottom' | 'bottom start' | 'bottom end' | 'left' | 'right'
 }
 
 /**

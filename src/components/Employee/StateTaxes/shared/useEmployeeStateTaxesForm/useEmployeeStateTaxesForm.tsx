@@ -2,20 +2,21 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxeslist'
 import type {
   EmployeeStateTaxesRequest,
   States as EmployeeStateTaxesRequestState,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxesrequest'
-import { useEmployeeTaxSetupGetStateTaxes } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetStateTaxes'
-import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupUpdateStateTaxes'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxesrequest'
+import { useEmployeeTaxSetupGetStateTaxes } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupGetStateTaxes'
+import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeTaxSetupUpdateStateTaxes'
 import {
   createEmployeeStateTaxesSchema,
   type EmployeeStateTaxesFormData,
   type EmployeeStateTaxesFormOutputs,
   type EmployeeStateTaxesMetadataConfig,
 } from './employeeStateTaxesSchema'
-import { createStateFields, type StateTaxFieldsGroup } from './fields'
+import type { StateTaxFields } from './fields'
+import { createStateFields } from './fields'
 import { getQuestionVariant } from './fieldMapping'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
@@ -62,7 +63,7 @@ export interface UseEmployeeStateTaxesFormProps {
 export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
   FieldsMetadata,
   EmployeeStateTaxesFormData,
-  StateTaxFieldsGroup[]
+  StateTaxFields
 > {
   /** Current per-state tax records returned by the server. */
   data: {
@@ -74,15 +75,6 @@ export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
   actions: {
     /** Validates and submits the form, resolving to the updated records on success or `undefined` when validation blocked the submit. */
     onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>
-  }
-  /** Form internals plus the iterable per-state `Fields` array. */
-  form: BaseFormHookReady<
-    FieldsMetadata,
-    EmployeeStateTaxesFormData,
-    StateTaxFieldsGroup[]
-  >['form'] & {
-    /** Iterable, render-ready group + question entries with bound Field components. */
-    Fields: StateTaxFieldsGroup[]
   }
 }
 
@@ -271,9 +263,7 @@ export function useEmployeeStateTaxesForm({
       Fields: fieldsArray,
       fieldsMetadata,
       hookFormInternals,
-      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema) as () =>
-        | Record<string, unknown>
-        | undefined,
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }

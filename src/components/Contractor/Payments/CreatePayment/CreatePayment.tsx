@@ -1,19 +1,19 @@
-import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
-import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsCreate'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsList'
+import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentGroupsCreate'
 import type {
   ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
   SubmissionBlockers,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidcontractorpaymentgroups'
-import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsPreview'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentGroupsPreview'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DOMPurify from 'dompurify'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgrouppreview'
-import { useBankAccountsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
+import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentgrouppreview'
+import { useBankAccountsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
@@ -61,8 +61,18 @@ export interface CreatePaymentProps extends BaseComponentInterface<'Contractor.P
  * Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers.
  *
  * @remarks
- * Active, fully onboarded contractors are listed for the given company. Hours apply to hourly contractors; wages apply to fixed contractors; bonuses and reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
+ * Active, fully onboarded contractors are listed for the given company. Hours and bonuses apply to hourly contractors; wages apply to fixed contractors; reimbursements apply to both. The form previews the payment group before final submission and surfaces Fast ACH submission blockers when applicable.
  *
+ * Features:
+ *
+ * - **Payment date selection** — choose the payment date; a notice shows the resulting payment speed.
+ * - **Per-contractor editing** — edit hours and bonus (hourly contractors), wage (fixed contractors), and reimbursement (all) in a modal, with a running total.
+ * - **Payment method** — choose Check or Direct Deposit per contractor.
+ * - **Live totals** — wage, bonus, reimbursement, and overall totals update as amounts change.
+ * - **Preview before submit** — review per-contractor amounts, debit amount, debit account, debit date, contractor pay date, and the submission deadline before finalizing.
+ * - **Submission blockers** — Fast ACH blockers surface inline with selectable unblock options (wire transfer or slower direct deposit); submission stays disabled until every blocker is resolved.
+ *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/edit` | The edit modal was opened for a contractor. | — |

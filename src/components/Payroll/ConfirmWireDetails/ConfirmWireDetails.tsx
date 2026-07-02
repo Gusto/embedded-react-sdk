@@ -1,7 +1,7 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
 import { Suspense, useMemo, useRef, useState } from 'react'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
@@ -19,7 +19,7 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
  * Displays a banner when wire transfers are awaiting funds and walks the user
  * through viewing wire instructions and confirming transfer details via a modal.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `payroll/wire/startTransfer` | User initiates the wire transfer flow | — |

@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
-import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsGetList'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/informationRequestsGetInformationRequests'
-import { InformationRequestStatus } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
+import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentGroupsGetList'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/informationRequestsGetInformationRequests'
+import { InformationRequestStatus } from '@gusto/embedded-api-v-2026-02-01/models/components/informationrequest'
 import type { InternalAlert } from '../types'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
@@ -30,7 +30,7 @@ export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Pa
  * Supports viewing payment history, creating new payments, and filtering by date range.
  * Surfaces alerts for pending information requests and wire transfer requirements.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/create` | User chooses to create a new payment | — |

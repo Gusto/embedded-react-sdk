@@ -12,21 +12,38 @@ custom_edit_url: null
 
 # PayrollFlow
 
-Guided workflow for selecting and running a company's payroll end to end.
+Hub for running and managing all payrolls across a company's pay schedules.
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function RunPayrollPage() {
-  return <Payroll.PayrollFlow companyId="company-uuid" onEvent={() => {}} />
+  return <Payroll.PayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
 ## Remarks
 
 Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+
+## PayrollFlowProps
+
+<a id="payrollflowprops"></a>
+
+Props accepted by PayrollFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | Identifier of the company whose payroll is being run. |
+| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
+| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -47,17 +64,41 @@ Renders the payroll landing page and orchestrates the full run-payroll experienc
 | `transition/runPayroll` | The user starts a pending transition payroll | — |
 | `payroll/saveAndExit` | The user clicks Save and Exit | — |
 
-## PayrollFlowProps
+## Sub-components
 
-<a id="payrollflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
+| [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
+| [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll between pay schedules. |
+| [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
+| [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
+| [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
 
-Props accepted by PayrollFlow.
+<!-- guide-source: src/components/Payroll/PayrollFlow/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | Identifier of the company whose payroll is being run. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
-| `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
+`PayrollFlow` opens on the landing page (`PayrollLanding`), which lists pending and calculated payrolls and acts as the hub: every path launches from it and returns to it, so the flow has no terminal step. Selecting a payroll to run (`runPayroll/selected`) or reviewing a calculated one (`payroll/review`) hands off to `PayrollExecutionFlow`; starting an off-cycle payroll (`runPayroll/offCycle/start`) or a pending transition payroll (`transition/runPayroll`) hands off to `OffCycleFlow` or `TransitionFlow`; and viewing all blockers (`runPayroll/blockers/viewAll`) opens `PayrollBlockerList`.
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../index.md#basecomponentinterface)._
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> Landing["PayrollLanding"]
+  Landing <--> Execution["PayrollExecutionFlow"]
+  Landing <--> OffCycle["OffCycleFlow"]
+  Landing <--> Transition["TransitionFlow"]
+  Landing <--> Blockers["PayrollBlockerList"]
+  Execution --> SubmittedOverview["PayrollOverview"]
+  OffCycle --> SubmittedOverview
+  Transition --> SubmittedOverview
+  SubmittedOverview --> SubmittedReceipts["PayrollReceipts"]
+  SubmittedOverview --> Landing
+  SubmittedReceipts --> Landing
+  class Execution flow
+  class OffCycle flow
+  class Transition flow
+  linkStyle 1,2,3,4 stroke-width:2.5px
+```
+
+When any run path finishes processing (`runPayroll/processed`), the flow lands on the submitted overview (`PayrollOverview`), which can drill into receipts (`runPayroll/receipt/get` → `PayrollReceipts`). Returning to the landing hub happens via the breadcrumb header (`breadcrumb/navigate`) or **Save & exit** (`payroll/saveAndExit`) — here both are handled internally, returning to landing rather than exiting. A submitted payroll that is later cancelled (`runPayroll/cancelled`) also returns to landing, where a cancellation alert is shown.
+<!-- /guide-source (slot: appendix) -->

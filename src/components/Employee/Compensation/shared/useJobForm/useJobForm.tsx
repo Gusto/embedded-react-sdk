@@ -1,17 +1,18 @@
+import type { ComponentType } from 'react'
 import { useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsCreateJob'
-import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsUpdate'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsUpdateCompensation'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useFederalTaxDetailsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/federalTaxDetailsGet'
+import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsCreateJob'
+import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsUpdate'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsUpdateCompensation'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import { useFederalTaxDetailsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/federalTaxDetailsGet'
 import {
   createJobSchema,
   type JobOptionalFieldsToRequire,
@@ -24,6 +25,13 @@ import {
   TwoPercentShareholderField,
   StateWcCoveredField,
   StateWcClassCodeField,
+} from './fields'
+import type {
+  JobTitleFieldProps,
+  HireDateFieldProps,
+  TwoPercentShareholderFieldProps,
+  StateWcCoveredFieldProps,
+  StateWcClassCodeFieldProps,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -123,16 +131,16 @@ export interface UseJobFormProps {
  * @public
  */
 export interface JobFormFields {
-  /** Job title text input. `undefined` when `withTitleField: false`. */
-  Title: typeof JobTitleField | undefined
-  /** Hire date picker. `undefined` when `withHireDateField: false`. */
-  HireDate: typeof HireDateField | undefined
-  /** S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
-  TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
-  /** Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
-  StateWcCovered: typeof StateWcCoveredField | undefined
-  /** Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
-  StateWcClassCode: typeof StateWcClassCodeField | undefined
+  /** Bound to `title`. Job title text input. `undefined` when `withTitleField: false`. */
+  Title: ComponentType<JobTitleFieldProps> | undefined
+  /** Bound to `hireDate`. Hire date picker. `undefined` when `withHireDateField: false`. */
+  HireDate: ComponentType<HireDateFieldProps> | undefined
+  /** Bound to `twoPercentShareholder`. S-Corp 2% shareholder checkbox. `undefined` when the company is not taxable as an S-Corp (see `data.showTwoPercentShareholder`). */
+  TwoPercentShareholder: ComponentType<TwoPercentShareholderFieldProps> | undefined
+  /** Bound to `stateWcCovered`. Washington state workers' compensation coverage radio group. `undefined` when the active work address is not in Washington (see `data.showStateWc`). */
+  StateWcCovered: ComponentType<StateWcCoveredFieldProps> | undefined
+  /** Bound to `stateWcClassCode`. Washington state workers' compensation risk class code select. `undefined` when the active work address is not in Washington or when `stateWcCovered` is `false`. */
+  StateWcClassCode: ComponentType<StateWcClassCodeFieldProps> | undefined
 }
 
 /**

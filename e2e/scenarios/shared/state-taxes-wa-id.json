@@ -1,0 +1,90 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Company registered in WA and ID via employees with home addresses in each state",
+  "description": "Fresh react_sdk_demo decorated with WA and ID locations and two employees whose home addresses sit in those states. Gusto's tax-nexus activation surfaces state-tax requirement_sets only once the company has actual nexus (typically an employee in the state) — locations alone are insufficient. With both employees in place, the StateTaxesForm applicable_if e2e specs can hit the real /tax_requirements/{WA,ID} endpoints and exercise conditional visibility on whatever defaults the demo provides.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "wa",
+        "street_1": "1700 7th Ave",
+        "city": "Seattle",
+        "state": "WA",
+        "zip": "98101",
+        "filing_address": true,
+        "mailing_address": true
+      },
+      {
+        "key": "id",
+        "street_1": "150 N 8th St",
+        "city": "Boise",
+        "state": "ID",
+        "zip": "83702"
+      }
+    ],
+    "stateTaxes": [
+      {
+        "state": "WA",
+        "requirementSets": [
+          {
+            "key": "taxrates",
+            "requirements": [{ "key": "usedefaultsuirates", "value": true }]
+          }
+        ]
+      },
+      {
+        "state": "ID",
+        "requirementSets": [
+          {
+            "key": "taxrates",
+            "requirements": [{ "key": "suireimbursable", "value": false }]
+          }
+        ]
+      }
+    ],
+    "employees": [
+      {
+        "key": "wa_employee",
+        "first_name": "Wendy",
+        "last_name": "Washington",
+        "home_address": {
+          "street_1": "1700 7th Ave",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101"
+        },
+        "work_address": { "locationKey": "wa" },
+        "job": {
+          "title": "Engineer",
+          "hire_date": "2026-01-01",
+          "locationKey": "wa"
+        }
+      },
+      {
+        "key": "id_employee",
+        "first_name": "Ivan",
+        "last_name": "Idaho",
+        "home_address": {
+          "street_1": "150 N 8th St",
+          "city": "Boise",
+          "state": "ID",
+          "zip": "83702"
+        },
+        "work_address": { "locationKey": "id" },
+        "job": {
+          "title": "Engineer",
+          "hire_date": "2026-01-01",
+          "locationKey": "id"
+        }
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.wa",
+    "locationIds.id",
+    "employeeIds.wa_employee",
+    "employeeIds.id_employee"
+  ]
+}

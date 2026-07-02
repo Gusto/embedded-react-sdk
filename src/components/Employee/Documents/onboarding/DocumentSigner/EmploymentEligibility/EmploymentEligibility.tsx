@@ -1,6 +1,6 @@
-import { GustoEmbeddedError } from '@gusto/embedded-api-v-2025-11-15/models/errors/gustoembeddederror'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationGetAuthorization'
-import { useI9VerificationUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationUpdate'
+import { GustoEmbeddedError } from '@gusto/embedded-api-v-2026-02-01/models/errors/gustoembeddederror'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2026-02-01/react-query/i9VerificationGetAuthorization'
+import { useI9VerificationUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/i9VerificationUpdate'
 import { EmploymentEligibilityPresentation } from './EmploymentEligibilityPresentation'
 import type {
   EmploymentEligibilityInputs,
@@ -31,6 +31,7 @@ export interface EmploymentEligibilityProps extends BaseComponentInterface<'Empl
  * document details required for that status. Updates the employee's I-9
  * authorization record on submit.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/industrySelectionGet'
-import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/industrySelectionUpdate'
+import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/industrySelectionGet'
+import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/industrySelectionUpdate'
 import type { IndustryFormFields } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
@@ -56,7 +56,7 @@ function Root({ children, className, companyId, dictionary }: IndustryProps) {
  *
  * Presents a searchable list of industry options and persists the selection for the given company.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |

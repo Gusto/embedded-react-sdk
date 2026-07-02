@@ -33,6 +33,15 @@ export const zipValidation = z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)
 export const SSN_REGEX = /^(?!(000|666|9))\d{3}(?!00)\d{2}(?!0000)\d{4}$/
 
 /**
+ * Regex matching a federal EIN in the canonical display format `NN-NNNNNNN`
+ * (two digits, a hyphen, then seven digits). Pair with `normalizeEin` to format
+ * raw input before testing.
+ *
+ * @internal
+ */
+export const EIN_REGEX = /^\d{2}-\d{7}$/
+
+/**
  * Zod schema validating a US phone number. Formats the input with the phone mask and accepts it
  * only when the digit-only form is exactly ten digits.
  *
@@ -47,14 +56,29 @@ export const phoneValidation = z
   })
 
 /**
+ * Regex matching a bank routing number (exactly nine digits).
+ *
+ * @internal
+ */
+export const ROUTING_NUMBER_REGEX = /^[0-9]{9}$/
+
+/**
  * Zod schema validating a bank routing number (exactly nine digits).
  *
  * @internal
  */
-export const routingNumberValidation = z.string().regex(/^[0-9]{9}$/)
+export const routingNumberValidation = z.string().regex(ROUTING_NUMBER_REGEX)
+
+/**
+ * Regex matching a bank account number (one to seventeen digits).
+ *
+ * @internal
+ */
+export const ACCOUNT_NUMBER_REGEX = /^[0-9]{1,17}$/
+
 /**
  * Zod schema validating a bank account number (one to seventeen digits).
  *
  * @internal
  */
-export const accountNumberValidation = z.string().regex(/^[0-9]{1,17}$/)
+export const accountNumberValidation = z.string().regex(ACCOUNT_NUMBER_REGEX)

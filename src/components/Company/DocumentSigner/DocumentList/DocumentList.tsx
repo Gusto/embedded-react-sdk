@@ -1,6 +1,6 @@
-import { type Form as FormSchema } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
-import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/companyFormsGetAll'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesList'
+import { type Form as FormSchema } from '@gusto/embedded-api-v-2026-02-01/models/components/form'
+import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/companyFormsGetAll'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/signatoriesList'
 import { Head } from './Head'
 import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
@@ -12,8 +12,19 @@ import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
+/**
+ * Props for {@link DocumentList}.
+ *
+ * @public
+ */
+export interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
+  /** The associated company identifier. */
   companyId: string
+  /**
+   * Identifier of the signatory viewing the documents. When it matches the
+   * company's saved signatory, the user is treated as that signatory and is
+   * allowed to sign documents.
+   */
   signatoryId?: string
 }
 
@@ -28,6 +39,7 @@ interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList
  * When `signatoryId` matches the currently saved signatory's id, the user is treated as the
  * signatory and is allowed to sign documents.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |

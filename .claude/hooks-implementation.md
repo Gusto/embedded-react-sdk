@@ -9,7 +9,7 @@ Reference implementations:
 
 Each hook lives in its own folder following the feature module pattern: `src/components/{Domain}/{Feature}/shared/use{Name}Form/`
 
-```
+```text
 src/components/{Domain}/{Feature}/shared/use{Name}Form/
 ├── use{Name}Form.tsx        # Main hook: data fetching, form setup, return shape
 ├── {domain}Schema.ts        # Zod schema, error codes, form data/output types
@@ -51,6 +51,7 @@ const fieldValidators = {
 export type {Domain}FormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
+/** @internal — useForm's third generic; not part of the public surface (see Exports Checklist). */
 export type {Domain}FormOutputs = {Domain}FormData
 ```
 
@@ -146,14 +147,24 @@ useCompensationForm({
 
 ### When to Use `superRefine` vs. `requiredFieldsConfig` vs. `optionalFieldsToRequire`
 
-| Technique                           | When to use                                                           | Example                             | Metadata-aware?                                    |
-| ----------------------------------- | --------------------------------------------------------------------- | ----------------------------------- | -------------------------------------------------- |
-| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                | Yes                                                |
-| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`          | Yes                                                |
-| `excludeFields`                     | Field conditionally absent from schema                                | `excludeFields: ['startDate']`      | Yes (field absent)                                 |
-| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']` | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
-| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage` | Yes (via Proxy auto-detection)                     |
-| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules     | No — validation only                               |
+| Technique                           | When to use                                                           | Example                                                                         | Metadata-aware?                                    |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `requiredFieldsConfig` rule         | Declarative field-level requiredness                                  | `jobTitle: 'create'`                                                            | Yes                                                |
+| `optionalFieldsToRequire` (partner) | Partner promotes optional field to required                           | `{ create: ['jobTitle'] }`                                                      | Yes                                                |
+| `excludeFields` (array)             | Field statically absent from schema for a hook configuration          | `excludeFields: ['startDate']`                                                  | Yes (field absent)                                 |
+| `excludeFields` (function)          | Field applicability depends on runtime form values (conditional UI)   | `excludeFields: (data, mode) => (data.type === 'Business' ? ['ssn'] : ['ein'])` | Yes (skipped while excluded)                       |
+| `fieldsWithRedactedValues`          | Field has a stored server-side value redacted in the API response     | `fieldsWithRedactedValues: ['ssn']`                                             | Yes (`hasRedactedValue: true`, keeps `isRequired`) |
+| Predicate rule                      | Requiredness depends on runtime form values                           | `data => data.adjustForMinimumWage`                                             | Yes (via Proxy auto-detection)                     |
+| `superRefine`                       | Cross-field validation logic (rate thresholds, cascading constraints) | FLSA + rate + paymentUnit rules                                                 | No — validation only                               |
+
+### Value-aware `excludeFields`
+
+`excludeFields` accepts either form:
+
+- **Array** — `excludeFields: ['startDate']` removes the field from the schema shape at build time. Use it when a field is statically absent for a given hook configuration (e.g. a `withStartDateField` flag).
+- **Function** — `excludeFields: (data, mode) => string[]` is evaluated during the required-check pass with the current form values. The named fields stay in the schema shape, but their requiredness checks are skipped whenever the function excludes them. Use it for fields rendered conditionally on a discriminator (individual vs. business contractor, hourly vs. fixed wage, a self-onboarding toggle) so a hidden field never raises a phantom "required" error.
+
+The function form keeps requiredness **static and promotable**: `requiredFieldsConfig` and the partner's `optionalFieldsToRequire` still decide whether an _applicable_ field is required, while `excludeFields` only gates _applicability_. Build the schema once (no need to rebuild it per keystroke), and drive the component's render-gating from the same discriminators the function reads — the hook watches them with `useWatch` — so the UI and validation always agree on which fields are live. See `createContractorDetailsSchema` / `useContractorDetailsForm` for the canonical example.
 
 ### `z.preprocess` and Type Inference
 
@@ -175,6 +186,7 @@ The `superRefine` callback in `buildFormSchema` options is already typed with th
 - Each field is a thin wrapper around a generic `*HookField` component that binds `name`
 - Export a `*FieldProps` type using `HookFieldProps<*HookFieldProps<TErrorCode, TEntry>>` which strips `name`
 - Derive validation type aliases from the schema's error codes constant so they stay in sync — never hardcode string unions
+- The `*Field` components are `@internal` — partners reach them only via `form.Fields`, and they are **not** exported from `src/index.ts` (only their `*FieldProps` types are public). Tag each with a bare `/** @internal */` — no summary, no `@remarks`. Each field's partner-facing behavior is documented on the public `{Domain}FormFields` member instead (see "Return Shape" below and `.claude/tsdoc-guides/hooks.md`).
 
 ```typescript
 // Derive validation types from the error codes constant — not hardcoded strings
@@ -185,6 +197,7 @@ export type RateValidation = (typeof ErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | '
 export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>
 
+/** @internal */
 export function JobTitleField(props: JobTitleFieldProps) {
   return <TextInputHookField {...props} name="jobTitle" />
 }
@@ -245,6 +258,18 @@ await createJobMutation.mutateAsync({ request: { employeeId: resolvedEmployeeId,
 - Build `resolvedDefaults` from server data, falling back to `partnerDefaults`, then hardcoded defaults
 - Use `values` + `resetOptions: { keepDirtyValues: true }` on `useForm` — NOT manual `useEffect` + `reset()`
 - This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
+
+**Type the `defaultValues` prop as the form-data shape, never as a `Pick` of the API entity.** Partner pre-fill is form input, so it should be `Partial<{Domain}FormData>` (every field a plain `string`/`number`/etc.), the same type the schema produces. API entity types (`@gusto/embedded-api-v-2025-11-15/models/components/*`) declare nullable fields as `string | null | undefined`; if the prop is a `Pick` of one of those, `null` leaks into the partner-facing type and forces a `?? undefined` mapping at every call site. The form-data type carries no `null`, so the component passes `defaultValues` straight through.
+
+`null`-normalization belongs in **one place only — `resolvedDefaults` inside the hook** — where you read the server entity. `?? partnerDefaults?.field ?? ''` already coalesces `null` from both sources, so no caller ever needs to normalize. `useContractorProfile` (`defaultValues?: Partial<ContractorProfileFormData>`, with `existingContractor.firstName || undefined` internally) is the reference.
+
+```typescript
+// Good — form-shaped, no null
+defaultValues?: Partial<{Domain}FormData>
+
+// Bad — drags `string | null` into the partner type and forces call-site mapping
+defaultValues?: Pick<{Entity}, 'street1' | 'city' | 'state' | 'zip'>
+```
 
 ```typescript
 const [schema, metadataConfig] = useMemo(
@@ -329,21 +354,19 @@ if (isDataLoading || !requiredData) {
 // Ready state
 return {
   isLoading: false as const,
-  data: {
-    /* domain entities */
-  },
+  data: {/* domain entities */},
   status: { isPending, mode: isCreateMode ? 'create' : 'update' },
   actions: { onSubmit },
   errorHandling,
   form: {
-    Fields: {
-      /* field components, some possibly undefined */
-    },
+    Fields: {/* field components, some possibly undefined */},
     fieldsMetadata,
     hookFormInternals: { formMethods },
   },
 }
 ```
+
+Declare `form.Fields` against a dedicated `@public` `{Domain}FormFields` interface and type each member as `ComponentType<{Field}FieldProps>` (use `ComponentType<{Field}FieldProps> | undefined` for conditionally rendered fields). Do **not** type members as `typeof {Field}Field` — that would make the public interface reference the `@internal` field component. This interface is the documentation home for each field's partner-facing behavior (validation pattern, available options/defaults, value masking, whether `getOptionLabel` translates labels), since the `*Field` components themselves carry only `/** @internal */`. `useContractorBankAccountForm` / `useContractorPaymentMethodForm` are the reference examples.
 
 ### Submit Handler
 
@@ -407,6 +430,12 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
+The domain `*Field` components (`JobTitleField`, `NameField`, etc.) are also `@internal` and stay off `src/index.ts` — partners reach them via `form.Fields`, never by importing the function. Export only their `*FieldProps` types (partners need those to type `getOptionLabel` / `validationMessages`). Each `*Field` carries a bare `/** @internal */`; its partner-facing behavior is documented on the public `{Domain}FormFields` member instead.
+
+The schema factory `create{Domain}Schema` and its `{Domain}SchemaOptions` are also `@internal`. The inner hook barrel may re-export them for SDK use, but **do not** add them to `src/index.ts`: they are tagged `@internal`, so api-extractor emits an `ae-internal-missing-underscore` warning when they appear on the public entry point. Partners build forms through the hook, not the raw factory — `{Domain}FormData` covers the type they actually need.
+
+`{Domain}FormOutputs` is `@internal` too. It's the resolver-output type (useForm's third generic), an internal seam between the form's input and parsed-output shapes that coincide today (`{Domain}FormOutputs = {Domain}FormData`). Keep it defined for the hook's `useForm` generic, but don't export it from `src/index.ts`: partners type `defaultValues` against `{Domain}FormData` and read parsed values from `form.getFormSubmissionValues` (typed as the form-data shape), so the seam stays ours.
+
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 
 ## 7. Validation Parity with Stable Components
@@ -454,6 +483,7 @@ The `gws-flows` repo has side-by-side comparison pages that render the stable co
 Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies from each form column, then diff them:
 
 1. Install route interception via `browser_run_code`:
+
    ```javascript
    page.__capturedBodies = []
    await page.route('**/fe_sdk/**', async route => {
@@ -468,6 +498,7 @@ Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies
      await route.continue()
    })
    ```
+
 2. Submit each form column, reading captured bodies between submissions
 3. Compare request URLs, methods, and JSON bodies across columns
 

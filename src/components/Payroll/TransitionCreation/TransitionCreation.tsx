@@ -2,13 +2,13 @@ import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsCreateOffCycle'
 import {
   OffCycleReason,
   WithholdingPayPeriod,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/paySchedulesGetAll'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
@@ -29,7 +29,7 @@ import { Form } from '@/components/Common/Form'
  * date, deduction preference, and tax withholding configuration before submitting the
  * resulting off-cycle payroll for execution.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `transition/created` | The transition payroll has been created | `{ payrollUuid: string }` |

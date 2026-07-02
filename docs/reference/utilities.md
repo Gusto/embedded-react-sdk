@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Hook Utilities
-description: Hook Utilities reference.
+title: Hook utilities
+description: Hook utilities reference.
 sidebar_position: 8
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Hook Utilities
+# Hook utilities
 
 ## Components
 
@@ -63,7 +63,7 @@ return (
 
 ### composeErrorHandler()
 
-> **composeErrorHandler**(`sources`, `submitState?`): [`HookErrorHandling`](#hookerrorhandling)
+> **composeErrorHandler**(`sources`: [`MixedErrorSource`](#mixederrorsource)[], `submitState?`: [`SubmitStateForErrorHandling`](#submitstateforerrorhandling)): [`HookErrorHandling`](#hookerrorhandling)
 
 Merges multiple error sources into a single [HookErrorHandling](#hookerrorhandling).
 
@@ -82,7 +82,7 @@ A single `HookErrorHandling` covering every source.
 
 #### Remarks
 
-Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+Accepts any mix of `@gusto/embedded-api-v-2026-02-01` React Query results and SDK hook
 results that already expose an `errorHandling` object (including the value returned by
 [composeSubmitHandler](#composesubmithandler)). Query errors are normalized to `SDKError`, nested hook
 errors are flattened in, and an optional submit-state argument adds a submit error to
@@ -99,7 +99,7 @@ recovery, not a submit callback.
 
 ```tsx
 import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
-import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import { useEmployeeFormsList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsList'
 
 function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
@@ -128,7 +128,7 @@ function EmployeeProfileView({ companyId, employeeId }: { companyId: string; emp
 
 ### composeSubmitHandler()
 
-> **composeSubmitHandler**\<`TForms`\>(`forms`, `onAllValid`): `ComposeSubmitHandlerResult`
+> **composeSubmitHandler**\<`TForms`\>(`forms`: readonly \[\{ \[K in string \| number \| symbol\]: ComposeSubmitInput\<TForms\[K\]\> \}\], `onAllValid`: () => `Promise`\<`void`\>): `ComposeSubmitHandlerResult`
 
 Coordinates validation and submission across multiple form hooks on the same page.
 
@@ -167,7 +167,7 @@ cross-form focus instead.
 
 The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
 can be passed back into [composeErrorHandler](#composeerrorhandler) when you need to add extra
-`@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
+`@gusto/embedded-api-v-2026-02-01` queries or screen-level submit state.
 
 #### Example
 
@@ -237,8 +237,12 @@ parsed values (or `undefined` if invalid).
 - [`UseCompensationFormReady`](employee/hooks/use-compensation-form.md#usecompensationformready)
 - [`UseJobFormReady`](employee/hooks/use-job-form.md#usejobformready)
 - [`UseEmployeeDetailsFormReady`](employee/hooks/use-employee-details-form.md#useemployeedetailsformready)
+- [`UseContractorDetailsFormReady`](contractor/hooks/use-contractor-details-form.md#usecontractordetailsformready)
+- [`UseContractorBankAccountFormReady`](contractor/hooks/use-contractor-bank-account-form.md#usecontractorbankaccountformready)
+- [`UseContractorPaymentMethodFormReady`](contractor/hooks/use-contractor-payment-method-form.md#usecontractorpaymentmethodformready)
 - [`UseWorkAddressFormReady`](employee/hooks/use-work-address-form.md#useworkaddressformready)
 - [`UseHomeAddressFormReady`](employee/hooks/use-home-address-form.md#usehomeaddressformready)
+- [`UseContractorAddressFormReady`](contractor/hooks/use-contractor-address-form.md#usecontractoraddressformready)
 - [`UseBankFormReady`](employee/hooks/use-bank-form.md#usebankformready)
 - [`UsePaymentMethodFormReady`](employee/hooks/use-payment-method-form.md#usepaymentmethodformready)
 - [`UseSplitPaymentsFormReady`](employee/hooks/use-split-payments-form.md#usesplitpaymentsformready)
@@ -247,14 +251,16 @@ parsed values (or `undefined` if invalid).
 - [`UseSignEmployeeFormReady`](employee/hooks/use-sign-employee-form.md#usesignemployeeformready)
 - [`UsePayScheduleFormReady`](company/hooks/use-pay-schedule-form.md#usepayscheduleformready)
 - [`UseSignCompanyFormReady`](company/hooks/use-sign-company-form.md#usesigncompanyformready)
+- [`UseContractorSignatureFormReady`](contractor/hooks/use-contractor-signature-form.md#usecontractorsignatureformready)
 
 #### Type Parameters
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
 | `TFieldsMetadata` *extends* [`FieldsMetadata`](#fieldsmetadata) | [`FieldsMetadata`](#fieldsmetadata) | Shape of the per-field metadata exposed by the hook. |
-| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form. |
+| `TFormData` *extends* `FieldValues` | `FieldValues` | Shape of the form values managed by react-hook-form (the resolver input / `TFieldValues`). |
 | `TFields` *extends* `object` | `Record`\<`string`, `unknown`\> | Shape of the pre-bound `Fields` component map. |
+| `TFormOutputs` | `TFormData` | Shape of the values produced once the schema parses on submit (the resolver output / `TTransformedValues`). Defaults to `TFormData`, which holds whenever the form's input and parsed-output shapes coincide; pass it explicitly when a schema transform makes them diverge. |
 
 #### Properties
 
@@ -266,7 +272,7 @@ parsed values (or `undefined` if invalid).
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | `TFields` | - |
 | `form.fieldsMetadata` | `TFieldsMetadata` | - |
-| `form.getFormSubmissionValues` | () => `Record`\<`string`, `unknown`\> \| `undefined` | - |
+| `form.getFormSubmissionValues` | () => `TFormOutputs` \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](#hookforminternals)\<`TFormData`\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](#hookloadingresult). |
 | `status` | `object` | Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. |
@@ -403,6 +409,7 @@ components to render labels, inline validation, and bounded date pickers.
 | `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
 | `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 | `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
 
 ***
 
@@ -440,6 +447,7 @@ from so callers can read additional attributes off the originating record.
 | `isRequired?` | `boolean` | Whether the field must have a value for the form to submit. |
 | `maxDate?` | `string` \| `null` | ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
 | `minDate?` | `string` \| `null` | ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. |
+| `placeholder?` | `string` | Placeholder text a hook supplies for the field (e.g. a masked value to display while the input is empty). |
 
 ***
 
@@ -612,7 +620,7 @@ attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`RadioGroupProps`](component-inventory.md#radiogroupprops)\> | Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
-| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
 ***
@@ -648,7 +656,7 @@ attributes (`label`, `description`).
 | `description?` | `ReactNode` | Optional helper text rendered below the field. |
 | `FieldComponent?` | `ComponentType`\<[`SelectProps`](component-inventory.md#selectprops)\> | Replaces the default select UI component; must accept the same props as `SelectProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
-| `getOptionLabel?` | (`entry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
+| `getOptionLabel?` | (`entry`: `TEntry`) => `string` | Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. |
 | `portalContainer?` | `HTMLElement` | When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`\> | Custom error text keyed by validation error code. |
 
@@ -715,7 +723,7 @@ attributes (`label`, `description`).
 | `FieldComponent?` | `ComponentType`\<[`TextInputProps`](component-inventory.md#textinputprops)\> | Replaces the default text input UI component; must accept the same props as `TextInputProps`. |
 | `formHookResult?` | [`FormHookResult`](#formhookresult) | Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. |
 | `placeholder?` | `string` | Placeholder text displayed when the field has no value. |
-| `transform?` | (`value`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
+| `transform?` | (`value`: `string`) => `string` | Transforms the raw string value on every change before storing it; use for normalization such as trimming or changing case. |
 | `validationMessages?` | [`ValidationMessages`](#validationmessages)\<`TErrorCode`, `TOptionalErrorCode`\> | Custom error text keyed by validation error code. |
 
 ## Type Aliases
@@ -811,7 +819,7 @@ and can be cleared together with `clearSubmitError`.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| `setSubmitError` | (`error`) => `void` | Sets or clears the submit error. |
+| `setSubmitError` | (`error`: [`SDKError`](index.md#sdkerror) \| `null`) => `void` | Sets or clears the submit error. |
 | `submitError` | [`SDKError`](index.md#sdkerror) \| `null` | The current submit error, or `null` when cleared. |
 
 ***

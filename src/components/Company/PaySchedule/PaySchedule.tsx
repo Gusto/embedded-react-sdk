@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/paySchedulesGetAll'
 import { payScheduleStateMachine } from './payScheduleStateMachine'
 import type { PayScheduleContextInterface } from './PayScheduleComponents'
 import { PayScheduleFormContextual, PayScheduleListContextual } from './PayScheduleComponents'
@@ -19,10 +19,12 @@ import type { RequireAtLeastOne } from '@/types/Helpers'
  * @public
  */
 export type PayScheduleDefaultFields = {
-  [K in keyof Pick<
-    PayScheduleFormData,
-    'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
-  >]: NonNullable<PayScheduleFormData[K]>
+  [
+    K in keyof Pick<
+      PayScheduleFormData,
+      'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
+    >
+  ]: NonNullable<PayScheduleFormData[K]>
 }
 
 /**
@@ -52,6 +54,7 @@ export interface PayScheduleProps extends BaseComponentInterface<'Company.PaySch
  * Renders the schedule list when at least one pay schedule exists and the create form otherwise.
  * Emits the following events through `onEvent`:
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |

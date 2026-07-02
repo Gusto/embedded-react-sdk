@@ -45,7 +45,8 @@ This command creates a new translation file following the i18n guidelines from C
    - If no Figma: Add placeholder text values that describe the key's purpose
 
 6. **Generate types**:
-   - Run `npm run i18n:generate` to generate TypeScript types
+   - Run `npm run i18n:generate` to regenerate the checked-in `src/i18n/types.d.ts` (the `Translations` namespace + `Resources` map that type i18next). Commit it alongside the JSON — CI's `derive-check-i18n` check fails if it's stale.
+   - A new namespace also adds a page to the browsable Translations reference (`docs/reference/Translations`); run `npm run derive` to regenerate that locally.
    - Verify no errors
 
 7. **Provide usage instructions**:

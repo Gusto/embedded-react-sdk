@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
 import {
   useEmployeeEmploymentsGetTerminationsSuspense,
   invalidateAllEmployeeEmploymentsGetTerminations,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsGetTerminations'
-import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeEmploymentsDeleteTermination'
-import { invalidateAllEmployeesList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsGetTerminations'
+import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeEmploymentsDeleteTermination'
+import { invalidateAllEmployeesList } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
 import type { PayrollOption } from '../types'
 import { TerminationSummaryPresentation } from './TerminationSummaryPresentation'
 import { normalizeToDate } from '@/helpers/dateFormatting'
@@ -43,6 +43,7 @@ export interface TerminationSummaryProps extends BaseComponentInterface<'Employe
  * - **Run termination payroll** is shown for the `dismissalPayroll` option and navigates to the dismissal payroll flow.
  * - **Run off-cycle payroll** is shown for the `anotherWay` option and navigates to the off-cycle payroll creation flow.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/termination/edit` | Fired when user clicks to edit termination details | `{ employeeId: string }` |

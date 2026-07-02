@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
-import type { ContractorPayments } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { ContractorPayments } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from './helpers'
@@ -12,6 +12,11 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import {
+  formatDateToStringDate,
+  normalizeDateToLocal,
+  normalizeToDate,
+} from '@/helpers/dateFormatting'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
@@ -50,7 +55,7 @@ export const CreatePaymentPresentation = ({
   isLoading,
   paymentSpeedDays,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
-  const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
+  const { Button, Text, Heading, DatePicker, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
@@ -110,10 +115,12 @@ export const CreatePaymentPresentation = ({
       ))}
 
       <Flex flexDirection="column" gap={8}>
-        <TextInput
-          type="date"
-          value={paymentDate}
-          onChange={onPaymentDateChange}
+        <DatePicker
+          value={paymentDate ? normalizeToDate(paymentDate) : null}
+          onChange={date => {
+            const normalized = normalizeDateToLocal(date)
+            onPaymentDateChange(normalized ? (formatDateToStringDate(normalized) ?? '') : '')
+          }}
           label={t('dateLabel')}
           isRequired
         />

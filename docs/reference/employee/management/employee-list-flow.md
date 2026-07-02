@@ -12,11 +12,11 @@ custom_edit_url: null
 
 # EmployeeListFlow
 
-Top-level workflow that renders the employee list and transitions into the dashboard, termination, and onboarding flows.
+Hub for viewing and managing all employees, including onboarding new ones.
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
@@ -38,8 +38,8 @@ action the admin invokes on a row (or the "Add employee" CTA). A "Back to
 employees" header is added to each sub-flow so the admin can return to the
 list at any time.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
 
 ## EmployeeListFlowProps
@@ -54,3 +54,43 @@ Props for EmployeeListFlow.
 | `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [EmployeeList](blocks.md#employeelist) | Renders a tabbed list of a company's employees split across Active, Onboarding, and Dismissed tabs, with per-row actions tailored to each tab (edit, delete, dismiss, rehire). |
+| [DashboardFlow](dashboard-flow.md) | Hub for viewing and managing a single employee's profile, pay, and documents. |
+| [TerminationFlow](termination-flow.md) | Guided flow to terminate an employee and arrange their final paycheck. |
+| [EmployeeOnboarding.OnboardingExecutionFlow](../onboarding/onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+
+<!-- guide-source: src/components/Employee/EmployeeListFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow rests on the management employee list and routes into one of three sub-flows based on the row action invoked (or the "Add employee" CTA):
+
+- **Edit** (`employee/update`) → `DashboardFlow`
+- **Dismiss** (`employee/dismiss`) → `TerminationFlow`
+- **Add employee** (`employee/create`) → `OnboardingExecutionFlow`
+
+Each sub-flow is given a "Back to employees" header that emits `employee/returnToList` to come back to the list. The onboarding sub-flow also returns to the list when it completes (`company/employees`) or is canceled (`CANCEL`).
+
+The list itself is tabbed into Active, Onboarding, and Dismissed employees, with per-row actions tailored to each tab (edit, delete, dismiss, rehire).
+
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> EmployeeList
+
+  EmployeeList ---->|"employee/update"| DashboardFlow
+  EmployeeList ---->|"employee/dismiss"| TerminationFlow
+  EmployeeList ---->|"employee/create"| OnboardingExecutionFlow["EmployeeOnboarding.<br/>OnboardingExecutionFlow"]
+
+  DashboardFlow -->|"employee/returnToList"| EmployeeList
+  TerminationFlow -->|"employee/returnToList"| EmployeeList
+  OnboardingExecutionFlow -->|"employee/returnToList<br/>company/employees<br/>CANCEL"| EmployeeList
+
+  class DashboardFlow flow
+  class TerminationFlow flow
+  class OnboardingExecutionFlow flow
+```
+<!-- /guide-source (slot: appendix) -->

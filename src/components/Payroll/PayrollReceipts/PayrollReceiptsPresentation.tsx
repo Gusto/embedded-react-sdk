@@ -5,7 +5,7 @@ import type {
   PayrollReceipt,
   Taxes as TaxBreakdownItem,
   PayrollReceiptEmployeeCompensations as EmployeeBreakdownItem,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollreceipt'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/payrollreceipt'
 import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'
 import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
@@ -122,16 +122,14 @@ export const PayrollReceiptsPresentation = ({
         <Components.DescriptionList
           layout="horizontal"
           showSeparators={false}
-          items={receiptDetailsConfig.map(
-            ({ label, value }): DescriptionListItem => ({
-              term: (
-                <Text size="sm" variant="supporting">
-                  {label}
-                </Text>
-              ),
-              description: <Text size="sm">{value}</Text>,
-            }),
-          )}
+          items={receiptDetailsConfig.map(({ label, value }): DescriptionListItem => ({
+            term: (
+              <Text size="sm" variant="supporting">
+                {label}
+              </Text>
+            ),
+            description: <Text size="sm">{value}</Text>,
+          }))}
         />
 
         <Flex flexDirection="column" alignItems="center" gap={12}>

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateOnboardingStatus'
-import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGetOnboardingStatus'
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
+import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdateOnboardingStatus'
+import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetOnboardingStatus'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
 import { SubmitDone } from './SubmitDone'
 import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -25,7 +25,7 @@ export interface ContractorSubmitProps extends BaseComponentInterface<'Contracto
 /**
  * Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |

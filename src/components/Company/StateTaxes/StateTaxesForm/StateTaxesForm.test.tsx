@@ -72,7 +72,16 @@ describe('StateTaxesForm', () => {
       })
     })
 
-    it('renders tax rate fields', async () => {
+    it('hides applicable_if-gated rate fields until the radio is toggled', async () => {
+      const useDefaultRadioYes = await screen.findByRole('radio', { name: /^Yes$/ })
+      expect(useDefaultRadioYes).toBeChecked()
+      expect(screen.queryByLabelText(/Unemployment Insurance Rate/i)).toBeNull()
+
+      const useDefaultRadioNo = screen.getByRole('radio', {
+        name: /No, my agency gave me new rates/i,
+      })
+      await user.click(useDefaultRadioNo)
+
       await waitFor(() => {
         expect(screen.getByLabelText(/Unemployment Insurance Rate/i)).toBeInTheDocument()
       })
@@ -96,6 +105,43 @@ describe('StateTaxesForm', () => {
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
       })
+    })
+
+    it('does not render non-editable requirements', async () => {
+      await waitFor(() => {
+        expect(screen.getByLabelText(/Unified Business ID/i)).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText(/Legacy Read-Only Identifier/i)).toBeNull()
+      expect(screen.queryByText(/Legacy Read-Only Identifier/i)).toBeNull()
+    })
+
+    it('omits non-editable requirements from the submit payload', async () => {
+      let capturedBody: unknown = null
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
+          async ({ request }) => {
+            capturedBody = await request.json()
+            return HttpResponse.json({})
+          },
+        ),
+      )
+
+      const submitButton = await screen.findByRole('button', { name: /Save/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+      })
+
+      const body = capturedBody as {
+        requirement_sets: Array<{
+          key: string
+          requirements: Array<{ key: string; value: string }>
+        }>
+      }
+      const submittedKeys = body.requirement_sets.flatMap(rs => rs.requirements.map(r => r.key))
+      expect(submittedKeys).not.toContain('legacy_read_only_field')
     })
 
     it('submits workers compensation rate values entered by the user', async () => {

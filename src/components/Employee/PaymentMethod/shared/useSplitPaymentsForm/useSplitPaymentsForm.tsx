@@ -3,11 +3,11 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useForm, useFormState, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
-import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodGet'
-import { useEmployeePaymentMethodsGetBankAccounts } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodsGetBankAccounts'
-import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodUpdate'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccount'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/employeepaymentmethod'
+import { useEmployeePaymentMethodGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodsGetBankAccounts } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodsGetBankAccounts'
+import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeePaymentMethodUpdate'
 import {
   PERCENTAGE_TOTAL_PATH,
   SPLIT_BY_VALUES,
@@ -82,7 +82,7 @@ export interface UseSplitPaymentsFormProps {
  * @public
  */
 export interface SplitPaymentsFormFields {
-  /** Bound to `splitBy` — see {@link SplitByField}. */
+  /** Radio group bound to `splitBy`; selects Percentage or Amount split mode. */
   SplitBy: ComponentType<SplitByFieldProps>
   /** One entry per bank account, each carrying a pre-bound `Field` component for the per-split amount. */
   splits: SplitFieldEntry[]
@@ -232,7 +232,7 @@ export function useSplitPaymentsForm({
   optionalFieldsToRequire,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseSplitPaymentsFormProps): HookLoadingResult | UseSplitPaymentsFormReady {
+}: UseSplitPaymentsFormProps): UseSplitPaymentsFormResult {
   const paymentMethodQuery = useEmployeePaymentMethodGet({ employeeId })
   const bankAccountsQuery = useEmployeePaymentMethodsGetBankAccounts({ employeeId })
 

@@ -1,5 +1,5 @@
 import { createMachine } from 'robot3'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/signatoriesList'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/signatoriesList'
 import { useMemo } from 'react'
 import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
@@ -60,19 +60,20 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
  * been assigned for the company yet, the flow starts on the assign-signatory step before
  * presenting the document list.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
- * | `company/forms/view` | Fired when a user selects a form to sign from the document list | {@link Form} |
+ * | `company/forms/view` | Fired when a user selects a form to sign from the document list | {@link APIModels.Form} |
  * | `company/forms/editSignatory` | Fired when the user requests to change the document signatory | The current signatory entity |
  * | `company/forms/done` | Fired when the user completes the document signing process | — |
- * | `company/forms/sign/signForm` | Fired when a form is successfully signed | {@link Form} |
+ * | `company/forms/sign/signForm` | Fired when a form is successfully signed | {@link APIModels.Form} |
  * | `company/forms/sign/done` | Fired when the form signing process is complete | — |
  * | `company/forms/sign/back` | Fired when the user navigates back from the signature form | — |
  * | `company/signatory/assignSignatory/modeUpdated` | Fired when the signatory assignment mode changes | `'createSignatory'` or `'inviteSignatory'` |
  * | `company/signatory/assignSignatory/done` | Fired when the signatory assignment process is complete | — |
- * | `company/signatory/created` | Fired when a new signatory is created successfully | {@link Signatory} |
- * | `company/signatory/updated` | Fired when an existing signatory is updated successfully | {@link Signatory} |
- * | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | {@link Signatory} |
+ * | `company/signatory/created` | Fired when a new signatory is created successfully | {@link APIModels.Signatory} |
+ * | `company/signatory/updated` | Fired when an existing signatory is updated successfully | {@link APIModels.Signatory} |
+ * | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | {@link APIModels.Signatory} |
  *
  * @param props - See {@link DocumentSignerProps}.
  * @returns The document signer flow.

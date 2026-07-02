@@ -12,19 +12,23 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Complete workflow for onboarding an employee — profile, compensation, taxes, payment method, and document signing.
+Guided flow to onboard multiple employees, one at a time.
 
 ## Example
 
-```tsx
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+```tsx title="App.tsx"
+import { EmployeeOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <EmployeeOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       withEmployeeI9
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'employee/onboarding/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -39,15 +43,14 @@ row's "Edit"/"Review" action is invoked; returning from the execution flow
 surfaces the list again. The flow is driven by an internal state machine
 and wraps each step in error and suspense boundaries.
 
-Each step of the flow is also exported as a standalone block — see
-[EmployeeList](blocks.md#employeelist), [Profile](blocks.md#profile), [Compensation](blocks.md#compensation),
-[FederalTaxes](blocks.md#federaltaxes), [StateTaxes](blocks.md#statetaxes), [PaymentMethod](blocks.md#paymentmethod),
-[Deductions](blocks.md#deductions), [EmployeeDocuments](blocks.md#employeedocuments), and
-[OnboardingSummary](blocks.md#onboardingsummary) — for composing a custom workflow when this
-orchestration is the wrong fit.
+The per-employee steps live in [OnboardingExecutionFlow](onboarding-execution-flow.md), which is also
+exported as a standalone block — along with each individual step — for
+composing a custom workflow when this orchestration is the wrong fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
 
 ## OnboardingFlowProps
@@ -66,3 +69,25 @@ Props for OnboardingFlow.
 | `withEmployeeI9?` | `boolean` | | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. |
 
 _Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [EmployeeList](blocks.md#employeelist) | Renders a paginated list of a company's employees with per-row onboarding actions (edit, delete, review, cancel self-onboarding) and an "Add employee" entry point. |
+| [OnboardingExecutionFlow](onboarding-execution-flow.md) | Guided flow to onboard an employee. |
+
+<!-- guide-source: src/components/Employee/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+`OnboardingFlow` pairs the employee list with `OnboardingExecutionFlow`. Adding or editing a list row runs the per-employee onboarding steps; finishing an employee returns to the list, and completing onboarding exits the flow. The step sequence — which varies with self-onboarding and `withEmployeeI9` — is covered on `OnboardingExecutionFlow`.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> EmployeeList
+  EmployeeList -->|"employee/create<br/>employee/update"| OnboardingExecutionFlow
+  OnboardingExecutionFlow -->|"company/employees"| EmployeeList
+  EmployeeList -->|"employee/onboarding/done"| done@{ shape: fr-circ, label: " " }
+  class OnboardingExecutionFlow flow
+```
+<!-- /guide-source (slot: appendix) -->

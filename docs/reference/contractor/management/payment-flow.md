@@ -12,11 +12,11 @@ custom_edit_url: null
 
 # PaymentFlow
 
-Guided workflow for creating, managing, and viewing contractor payment groups for a company.
+Hub for creating and managing contractor payments for a company.
 
 ## Example
 
-```tsx
+```tsx title="App.tsx"
 import { ContractorManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
@@ -29,11 +29,38 @@ function MyApp() {
 }
 ```
 
+<!-- guide-source: src/components/Contractor/Payments/PaymentFlow/GUIDE.md (slot: overview) -->
+## Payment Workflow
+
+The typical step sequence when composing the blocks manually:
+
+1. [`PaymentsList`](./blocks.md#paymentslist) — browse existing payment groups and start a new one.
+2. [`CreatePayment`](./blocks.md#createpayment) — select a date, edit per-contractor amounts, preview, and submit. Handles Fast ACH blockers and wire transfer requirements inline.
+3. [`PaymentSummary`](./blocks.md#paymentsummary) — review the created group, debit details, and wire instructions when required.
+4. [`PaymentHistory`](./blocks.md#paymenthistory) — inspect a payment group's details and cancel individual payments.
+5. [`PaymentStatement`](./blocks.md#paymentstatement) — see the full breakdown for one contractor's payment.
+<!-- /guide-source (slot: overview) -->
+
 ## Remarks
 
-Composes the contractor payment subcomponents into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
+Composes the contractor payment blocks into a complete experience with breadcrumb navigation between the payments list, the create-payment form, the post-creation summary, the payment-history detail view, and individual contractor payment statements. Also routes into the information-requests flow when a payment-related request needs a response, and surfaces wire-transfer confirmation alerts after a wire details submission.
 
-Events emitted by the subcomponents bubble up through the single `onEvent` handler.
+Events emitted by the blocks bubble up through the single `onEvent` handler.
+
+## PaymentFlowProps
+
+<a id="paymentflowprops"></a>
+
+Props for PaymentFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+
+_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -49,15 +76,69 @@ Events emitted by the subcomponents bubble up through the single `onEvent` handl
 | `informationRequest/form/cancel` | Fired when the information-requests flow is cancelled | — |
 | `breadcrumb/navigate` | Fired when the user clicks a breadcrumb to navigate back | `{ key: string, onNavigate: (ctx) => ctx }` |
 
-## PaymentFlowProps
+## Sub-components
 
-<a id="paymentflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [PaymentsList](blocks.md#paymentslist) | Displays a list of contractor payment groups for a company. |
+| [CreatePayment](blocks.md#createpayment) | Form for creating a contractor payment group, including date selection, per-contractor edits, preview, and submission blockers. |
+| [PaymentSummary](blocks.md#paymentsummary) | Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required. |
+| [PaymentHistory](blocks.md#paymenthistory) | Displays a contractor payment group, including each individual contractor payment, with actions to view details or cancel. |
+| [PaymentStatement](blocks.md#paymentstatement) | Displays a single contractor's payment statement within a payment group, including wage breakdown, bonuses, reimbursements, and a receipt card for funded direct-deposit payments. |
+| [InformationRequests.InformationRequestsFlow](../../company/information-requests/information-requests-flow.md) | Hub for viewing and responding to outstanding information requests from Gusto. |
 
-Props for PaymentFlow.
+<!-- guide-source: src/components/Contractor/Payments/PaymentFlow/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+The flow is a hub-and-spoke loop with no terminal state — the payments list is the landing screen, and every path returns to it:
 
-_Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+- **Create a payment** — `PaymentsList` → `CreatePayment` → `PaymentSummary`, then back to the list.
+- **View history** — `PaymentsList` → `PaymentHistory` → `PaymentStatement`; the history view can also cancel a payment and return to the list.
+- **Respond to a request** — `PaymentsList` opens the embedded `InformationRequestsFlow`, returning to the list once the request is submitted or cancelled.
+
+Breadcrumbs navigate back to any prior step, and submitting wire-transfer details surfaces a success alert on the list and summary screens. The diagram below shows the topology; the event behind each transition is listed in the events table above.
+
+```mermaid
+flowchart LR
+  start@{ shape: sm-circ } --> PaymentsList
+
+  PaymentsList --> CreatePayment --> PaymentSummary --> PaymentsList
+
+  PaymentsList --> PaymentHistory --> PaymentStatement
+  PaymentHistory --> PaymentsList
+
+  PaymentsList --> InformationRequests["InformationRequests.<br/>InformationRequestsFlow"] --> PaymentsList
+
+  class InformationRequests flow
+```
+
+## Important Notes
+
+### Payment Timing
+
+- Direct deposit payments submitted before 4pm PT on a business day take 2 business days to complete
+- Fast ACH (2-day) payments have threshold limits; exceeding the threshold requires wire transfer or switching to 4-day processing
+
+### Payment Requirements
+
+- Only active contractors with completed onboarding can receive payments
+- At least one contractor payment must be included in a payment group
+- Bank account must be set up for the company to process payments
+
+### Submission Blockers
+
+Payment submission may be blocked by:
+
+- **Fast ACH Threshold Exceeded**: Payment amount exceeds the fast ACH limit
+  - Options: Wire transfer (fastest) or switch to 4-day direct deposit
+- **Needs Earned Access for Fast ACH**: Company hasn't earned access to faster payments yet
+  - Must use standard 4-day processing
+
+### Wire Transfers
+
+When wire transfer is required:
+
+- Instructions are provided in the payment flow
+- Must be completed by specified deadline to ensure timely payment
+- Confirmation workflow tracks wire transfer submission
+<!-- /guide-source (slot: appendix) -->

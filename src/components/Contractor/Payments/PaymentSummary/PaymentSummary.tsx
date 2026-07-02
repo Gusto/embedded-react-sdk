@@ -1,7 +1,7 @@
-import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsGet'
-import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
-import { useBankAccountsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
-import type { PayrollCreditBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollcreditblockertype'
+import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentGroupsGet'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsList'
+import { useBankAccountsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/bankAccountsGet'
+import type { PayrollCreditBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollcreditblockertype'
 import type { InternalAlert } from '../types'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
@@ -50,6 +50,14 @@ const findWireInRequestUuid = (
  * Displays a summary of a created contractor payment group, including payment totals, debit information, contractor details, and wire transfer instructions when required.
  *
  * @remarks
+ * Features:
+ *
+ * - **Success confirmation** — confirms the number of payments scheduled.
+ * - **Payment summary** — total amount, debit amount, debit account, debit date, and contractor pay date, plus a per-contractor breakdown.
+ * - **Debit account** — shows the company bank account used for the debit.
+ * - **Wire transfer confirmation** — when a wire is required, surfaces the wire-details confirmation workflow.
+ *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `contractor/payments/exit` | User completes the payment flow. | — |

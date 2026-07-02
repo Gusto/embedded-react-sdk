@@ -26,6 +26,7 @@ export interface DeductionsEditFormProps extends BaseComponentInterface<'Employe
  * @remarks
  * Renders the inline form for a post-tax custom deduction or court-ordered garnishment. Looks up the row to edit by `editingDeductionId`; omit it to open in add mode. Resolves its text against the `Employee.Management.Deductions` translation namespace so partner overrides on that namespace flow into the form. For an orchestrated card-plus-form flow, use {@link Deductions}.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `employee/management/deductions/editForm/created` | Fired after a new deduction is saved | The created `Garnishment` |

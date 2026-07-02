@@ -16,7 +16,7 @@ import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
-import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
+import type { GlobalResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
 import type { ObservabilityHook } from '@/types/observability'
 import { normalizeToSDKError } from '@/types/sdkError'
@@ -46,7 +46,7 @@ export interface GustoProviderProps {
   /** API client configuration, including the proxy `baseUrl`, request hooks, and observability. See {@link APIConfig}. */
   config: APIConfig
   /** Translation overrides keyed by language and i18next namespace. Strings supplied here replace the SDK defaults for the matching keys. */
-  dictionary?: ResourceDictionary
+  dictionary?: GlobalResourceDictionary
   /** Active i18next language. Defaults to `'en'`. */
   lng?: string
   /** BCP 47 locale used for number, date, and currency formatting throughout the SDK. Defaults to `'en-US'`. */

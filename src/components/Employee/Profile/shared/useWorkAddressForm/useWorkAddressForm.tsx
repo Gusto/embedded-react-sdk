@@ -1,20 +1,22 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Location } from '@gusto/embedded-api-v-2025-11-15/models/components/location'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
-import { useLocationsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsGet'
-import { useEmployeeAddressesRetrieveWorkAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesRetrieveWorkAddress'
-import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesCreateWorkAddress'
-import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesUpdateWorkAddress'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import type { Location } from '@gusto/embedded-api-v-2026-02-01/models/components/location'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2026-02-01/models/components/employeeworkaddress'
+import { useLocationsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsGet'
+import { useEmployeeAddressesRetrieveWorkAddress } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesRetrieveWorkAddress'
+import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesCreateWorkAddress'
+import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesUpdateWorkAddress'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
 import {
   createWorkAddressSchema,
   type WorkAddressOptionalFieldsToRequire,
   type WorkAddressFormData,
   type WorkAddressFormOutputs,
 } from './workAddressSchema'
+import type { LocationFieldProps, EffectiveDateFieldProps } from './fields'
 import { LocationField, EffectiveDateField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
@@ -107,11 +109,11 @@ export interface UseWorkAddressFormProps {
  *
  * @public
  */
-export interface WorkAddressFields {
-  /** Location selector. Always available. */
-  Location: typeof LocationField
-  /** Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
-  EffectiveDate: typeof EffectiveDateField | undefined
+export interface WorkAddressFormFields {
+  /** Bound to `locationUuid`. Location selector. Always available. */
+  Location: ComponentType<LocationFieldProps>
+  /** Bound to `effectiveDate`. Effective-date picker. Only available when `withEffectiveDateField` is `true`. */
+  EffectiveDate: ComponentType<EffectiveDateFieldProps> | undefined
 }
 
 /**
@@ -126,7 +128,7 @@ export interface WorkAddressFields {
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
   WorkAddressFormData,
-  WorkAddressFields
+  WorkAddressFormFields
 > {
   /** Static entity data resolved from the API. */
   data: {
@@ -157,6 +159,37 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
  * @param props - See {@link UseWorkAddressFormProps}.
  * @returns A {@link HookLoadingResult} while loading, or a {@link UseWorkAddressFormReady} once ready.
  * @public
+ *
+ * @example
+ * ```tsx
+ * import {
+ *   useWorkAddressForm,
+ *   SDKFormProvider,
+ *   type UseWorkAddressFormReady,
+ * } from '@gusto/embedded-react-sdk'
+ *
+ * function WorkAddressPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+ *   const workAddress = useWorkAddressForm({ companyId, employeeId })
+ *
+ *   if (workAddress.isLoading) return <div>Loading...</div>
+ *
+ *   return <WorkAddressReady workAddress={workAddress} />
+ * }
+ *
+ * function WorkAddressReady({ workAddress }: { workAddress: UseWorkAddressFormReady }) {
+ *   const { Fields } = workAddress.form
+ *
+ *   return (
+ *     <SDKFormProvider formHookResult={workAddress}>
+ *       <form onSubmit={e => { e.preventDefault(); void workAddress.actions.onSubmit() }}>
+ *         <Fields.Location label="Work address" />
+ *         {Fields.EffectiveDate && <Fields.EffectiveDate label="Effective date" />}
+ *         <button type="submit" disabled={workAddress.status.isPending}>Save</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
  */
 export function useWorkAddressForm({
   companyId,
@@ -382,9 +415,3 @@ export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormRea
  * @public
  */
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata']
-/**
- * Type of `form.Fields` returned by {@link useWorkAddressForm}.
- *
- * @public
- */
-export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields']

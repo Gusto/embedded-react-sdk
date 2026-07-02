@@ -244,30 +244,48 @@ async function startNewPayment(page: Page): Promise<void> {
 }
 
 async function setPaymentDate(page: Page): Promise<void> {
-  const dateInput = page.getByLabel(/^payment date$/i)
-  await expect(dateInput).toBeVisible({ timeout: LONG_WAIT })
+  const dateGroup = page.getByRole('group', { name: /^payment date$/i })
+  await expect(dateGroup).toBeVisible({ timeout: LONG_WAIT })
 
   // Direct deposit needs a payment date several business days out. Pick the
   // next business day at least 21d ahead — generous so we clear cutoff,
   // weekends, ALL US federal holidays in the next 3 weeks, AND the demo
   // backend's own "next valid date" calculation which sometimes disagrees
   // with ours.
-  const targetIso = nextBusinessDay(new Date(), 21).toISOString().slice(0, 10)
+  const targetDate = nextBusinessDay(new Date(), 21)
 
   // The SDK's CreatePayment component has a useEffect that recomputes the
   // initial payment date once `paymentSpeed` resolves from the API and
   // overwrites whatever the user typed before that effect fired. Setting
   // the date once, then waiting on the read-back, lets us catch the
-  // overwrite case and re-fill: poll the input value until it matches our
-  // target, retrying the fill if the SDK has overwritten it.
+  // overwrite case and re-fill: poll the spinbutton values until they match
+  // our target, retrying the fill if the SDK has overwritten it.
+  const targetMonth = targetDate.getUTCMonth() + 1
+  const targetDay = targetDate.getUTCDate()
+  const targetYear = targetDate.getUTCFullYear()
+
   for (let attempt = 0; attempt < 5; attempt++) {
-    await dateInput.fill(targetIso)
+    await fillDate(page, 'Payment date', {
+      month: targetMonth,
+      day: targetDay,
+      year: targetYear,
+    })
     await page.waitForTimeout(500)
-    const currentValue = await dateInput.inputValue()
-    if (currentValue === targetIso) return
+
+    const monthValue = await dateGroup.getByRole('spinbutton', { name: /^month/i }).textContent()
+    const dayValue = await dateGroup.getByRole('spinbutton', { name: /^day/i }).textContent()
+    const yearValue = await dateGroup.getByRole('spinbutton', { name: /^year/i }).textContent()
+
+    if (
+      monthValue === String(targetMonth) &&
+      dayValue === String(targetDay) &&
+      yearValue === String(targetYear)
+    ) {
+      return
+    }
   }
   throw new Error(
-    `Payment date input did not stick at ${targetIso} after 5 fill attempts; SDK is overwriting via useEffect race`,
+    `Payment date input did not stick at ${targetYear}-${targetMonth}-${targetDay} after 5 fill attempts; SDK is overwriting via useEffect race`,
   )
 }
 

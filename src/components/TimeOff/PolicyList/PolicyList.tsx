@@ -4,16 +4,16 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   useTimeOffPoliciesGetAllSuspense,
   invalidateAllTimeOffPoliciesGetAll,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGetAll'
-import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesDeactivate'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesGetAll'
+import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/timeOffPoliciesDeactivate'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
 import {
   useHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
-} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
-import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesDelete'
-import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+} from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesDelete'
+import type { TimeOffPolicy } from '@gusto/embedded-api-v-2026-02-01/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2026-02-01/models/errors/unprocessableentityerror'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
 import { isListedTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'
@@ -42,7 +42,7 @@ export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff
  * the holiday pay policy (if one exists) is merged into the same list and is deleted via the
  * holiday pay policy API. Both flows go through a confirmation dialog and show a success alert.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `timeOff/createPolicy` | The user clicked the create-policy action. | — |

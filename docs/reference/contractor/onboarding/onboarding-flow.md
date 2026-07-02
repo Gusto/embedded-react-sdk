@@ -12,18 +12,22 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Complete workflow for onboarding a contractor — profile, address, payment method, new hire reporting, and submission.
+Guided flow for admins to onboard a contractor to the company.
 
 ## Example
 
-```tsx
-import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+```tsx title="App.tsx"
+import { ContractorOnboarding, type EventType } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <ContractorOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'contractor/submit/done') {
+          // Contractor onboarding complete — navigate to your next screen
+        }
+      }}
     />
   )
 }
@@ -38,14 +42,29 @@ and transitions into the per-step screens when "Add contractor" or a row's
 The flow is driven by an internal state machine and wraps each step in
 error and suspense boundaries.
 
-Each step of the flow is also exported as a standalone component — see
-[ContractorList](blocks.md#contractorlist), [ContractorProfile](blocks.md#contractorprofile), [Address](blocks.md#address),
-[PaymentMethod](blocks.md#paymentmethod), [NewHireReport](blocks.md#newhirereport), and [ContractorSubmit](blocks.md#contractorsubmit) —
-for composing a custom workflow when this orchestration is the wrong fit.
+Each step of the flow is also exported as a standalone block (see the
+Blocks table) for composing a custom workflow when this orchestration
+is the wrong fit.
 
-The flow forwards every event emitted by its sub-components to `onEvent`;
-see the events table on each sub-component for the full set of events and
+The flow forwards every event emitted by its blocks to `onEvent`;
+see the events table on each block for the full set of events and
 payloads observable from this flow.
+
+## OnboardingFlowProps
+
+<a id="onboardingflowprops"></a>
+
+Props for OnboardingFlow.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -67,16 +86,39 @@ payloads observable from this flow.
 | `contractor/submit/done` | Fired when the contractor submission is complete | `{ message: string }` or `{ onboardingStatus, message: string }` |
 | `contractor/invite/selfOnboarding` | Fired when the contractor is invited for self-onboarding | `{ contractorId: string }` |
 
-## OnboardingFlowProps
+## Sub-components
 
-<a id="onboardingflowprops"></a>
+| Component | Description |
+| ------ | ------ |
+| [ContractorList](blocks.md#contractorlist) | Lists a company's contractors with controls to add, edit, delete, and continue onboarding. |
+| [ContractorProfile](blocks.md#contractorprofile) | Form for creating or editing a contractor profile, supporting both individual and business contractor types. |
+| [Address](blocks.md#address) | Form for collecting and updating a contractor's mailing address. Renders a business or home address title based on the contractor type. |
+| [PaymentMethod](blocks.md#paymentmethod) | Manages a contractor's payment method, capturing a bank account for direct deposit or recording check as the payment method. |
+| [NewHireReport](blocks.md#newhirereport) | Collects new hire reporting information for a contractor and persists it to the contractor record. |
+| [ContractorSubmit](blocks.md#contractorsubmit) | Finalizes contractor onboarding by updating the onboarding status, and in the self-onboarding flow can trigger an invitation to the contractor. |
 
-Props for OnboardingFlow.
+<!-- guide-source: src/components/Contractor/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
 
-| Property | Type | Description |
-| ------ | ------ | ------ |
-| `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
-| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values for individual flow step components — `profile` and/or `address` sub-objects. |
+`OnboardingFlow` begins on the contractor list and steps through the per-step screens once "Add contractor" or a row's "Edit"/"Continue" action is invoked. After the profile step, the path branches on whether the contractor self-onboards:
 
-_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+- **Admin onboarding** (`selfOnboarding = false`) — the admin completes every step, including address and payment method.
+- **Self-onboarding** (`selfOnboarding = true`) — the admin sets up the basics and the contractor completes their own address and payment method later, so those two steps are skipped here.
+
+The progress bar's secondary button emits `CANCEL` from any step, returning to the list.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> ContractorList
+  ContractorList -->|"contractor/create<br/>contractor/update"| ContractorProfile
+  ContractorProfile -->|"contractor/profile/done"| selfOnboarding{{"selfOnboarding?"}}
+  selfOnboarding -.->|false| Address
+  Address -->|"contractor/address/done"| PaymentMethod
+  PaymentMethod -->|"contractor/paymentMethod/done"| NewHireReport
+  selfOnboarding -.->|true| NewHireReport
+  NewHireReport -->|"contractor/newHireReport/done"| ContractorSubmit
+  ContractorSubmit -->|"contractor/submit/done"| done@{ shape: fr-circ, label: " " }
+
+  class selfOnboarding branch
+```
+<!-- /guide-source (slot: appendix) -->

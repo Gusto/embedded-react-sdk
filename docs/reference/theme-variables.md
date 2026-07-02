@@ -3,14 +3,14 @@
 # To update content: edit TSDoc comments in src/.
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
-title: Theme Variables
-description: Theme Variables reference.
+title: Theme variables
+description: Theme variables reference.
 sidebar_position: 6
 generated_by: typedoc
 custom_edit_url: null
 ---
 
-# Theme Variables
+# Theme variables
 
 ## Interfaces
 

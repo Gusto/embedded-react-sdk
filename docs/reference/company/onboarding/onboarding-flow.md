@@ -12,13 +12,48 @@ custom_edit_url: null
 
 # OnboardingFlow
 
-Orchestrated multi-step flow that guides a company through onboarding to Gusto Embedded Payroll.
+Guided flow to onboard a company to Gusto.
+
+## Example
+
+```tsx title="App.tsx"
+import { CompanyOnboarding, type EventType } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <CompanyOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={(eventType: EventType) => {
+        if (eventType === 'company/overview/done') {
+          // Onboarding complete — navigate to your next screen
+        }
+      }}
+    />
+  )
+}
+```
 
 ## Remarks
 
 The flow begins on the overview screen and steps through locations, federal taxes, industry,
 bank account, employee onboarding, pay schedule, state taxes, and document signing before
 returning to the overview.
+
+## OnboardingFlowProps
+
+<a id="onboardingflowprops"></a>
+
+Props for the company onboarding flow orchestrator.
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `companyId` | `string` | The associated company identifier. |
+| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `defaultValues?` | `RequireAtLeastOne`\<[`OnboardingFlowDefaultValues`](blocks.md#onboardingflowdefaultvalues)\> | Default values applied to individual flow step components (federal taxes, pay schedule). |
+
+_Inherits `children`, `className`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+## Events
 
 | Event | Description | Data |
 | ----- | ----------- | ---- |
@@ -33,8 +68,46 @@ returning to the overview.
 | `company/stateTaxes/done` | User completed the state taxes step | — |
 | `company/forms/done` | User completed signing company documents | — |
 
-## Parameters
+Each step is also exported as a standalone block (see the Sub-components
+table) for composing a custom workflow when this orchestration is the wrong
+fit. See the
+[Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition)
+for how to recompose these blocks into your own flow.
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | `OnboardingFlowProps` | See OnboardingFlowProps. |
+## Sub-components
+
+| Component | Description |
+| ------ | ------ |
+| [OnboardingOverview](blocks.md#onboardingoverview) | Displays the company's overall onboarding status, showing completed steps alongside any remaining requirements. |
+| [Locations](blocks.md#locations) | Orchestrated component for managing a company's mailing and filing addresses. |
+| [FederalTaxes](blocks.md#federaltaxes) | Collects company federal tax information including EIN, tax payer type, filing form, and legal name. |
+| [Industry](blocks.md#industry) | Selects and saves the company's industry classification (NAICS code). |
+| [BankAccount](blocks.md#bankaccount) | Manages a company's bank account — adding, viewing, and verifying it. |
+| [EmployeeOnboarding.OnboardingFlow](../../employee/onboarding/onboarding-flow.md) | Guided flow to onboard multiple employees, one at a time. |
+| [PaySchedule](blocks.md#payschedule) | Manages a company's pay schedules, including listing existing schedules and creating or editing one. |
+| [StateTaxes](blocks.md#statetaxes) | Orchestrated flow for managing a company's state tax setup. |
+| [DocumentSigner](blocks.md#documentsigner) | Company onboarding step for reading and signing required company documents. |
+
+<!-- guide-source: src/components/Company/OnboardingFlow/GUIDE.md (slot: appendix) -->
+## Step flow
+
+The flow opens on the overview, then runs the linear step sequence below before returning to the overview to finish. Every step is a `CompanyOnboarding` block except the Employees step, which embeds `EmployeeOnboarding.OnboardingFlow` and owns its own internal navigation.
+
+```mermaid
+flowchart
+  start@{ shape: sm-circ } --> Overview
+  Overview -->|"company/overview/continue"| Locations
+  Locations -->|"company/location/done"| FederalTaxes
+  FederalTaxes -->|"company/federalTaxes/done"| Industry
+  Industry -->|"company/industry/selected"| BankAccount
+  BankAccount -->|"company/bankAccount/done"| Employees["EmployeeOnboarding.OnboardingFlow"]
+  Employees -->|"employee/onboarding/done"| PaySchedule
+  PaySchedule -->|"paySchedule/done"| StateTaxes
+  StateTaxes -->|"company/stateTaxes/done"| DocumentSigner
+  DocumentSigner -->|"company/forms/done"| Overview
+  Overview -->|"company/overview/done"| done@{ shape: fr-circ, label: " " }
+  class Employees flow
+```
+
+Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
+<!-- /guide-source (slot: appendix) -->

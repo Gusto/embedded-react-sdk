@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
@@ -5,16 +6,25 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
-import { useGarnishmentsList } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
+} from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsUpdate'
+import { useGarnishmentsList } from '@gusto/embedded-api-v-2026-02-01/react-query/garnishmentsList'
 import {
   createDeductionFormSchema,
   type DeductionFormData,
   type DeductionFormOutputs,
   type DeductionFormOptionalFieldsToRequire,
 } from './deductionFormSchema'
+import type {
+  DescriptionFieldProps,
+  RecurringFieldProps,
+  DeductAsPercentageFieldProps,
+  AmountFieldProps,
+  TotalAmountFieldProps,
+  AnnualMaximumFieldProps,
+  GarnishmentTypeFieldProps,
+} from './fields'
 import {
   DescriptionField,
   RecurringField,
@@ -107,20 +117,20 @@ export interface UseDeductionFormProps {
  * @public
  */
 export interface DeductionFormFields {
-  /** Description text input. Always available. */
-  Description: typeof DescriptionField
-  /** Recurring vs one-time radio group. Always available. */
-  Recurring: typeof RecurringField
-  /** Fixed-amount vs percentage radio group. Always available. */
-  DeductAsPercentage: typeof DeductAsPercentageField
-  /** Deduction amount input. Always available. */
-  Amount: typeof AmountField
-  /** Only available when `status.isRecurring` is true. */
-  TotalAmount: typeof TotalAmountField | undefined
-  /** Only available when `status.isRecurring` is true. */
-  AnnualMaximum: typeof AnnualMaximumField | undefined
-  /** Only available when `courtOrdered: true`. */
-  GarnishmentType: typeof GarnishmentTypeField | undefined
+  /** Bound to `description`. Description text input. Always available. */
+  Description: ComponentType<DescriptionFieldProps>
+  /** Bound to `recurring`. Recurring vs one-time radio group. Always available. */
+  Recurring: ComponentType<RecurringFieldProps>
+  /** Bound to `deductAsPercentage`. Fixed-amount vs percentage radio group. Always available. */
+  DeductAsPercentage: ComponentType<DeductAsPercentageFieldProps>
+  /** Bound to `amount`. Deduction amount input. Always available. */
+  Amount: ComponentType<AmountFieldProps>
+  /** Bound to `totalAmount`. Only available when `status.isRecurring` is true. */
+  TotalAmount: ComponentType<TotalAmountFieldProps> | undefined
+  /** Bound to `annualMaximum`. Only available when `status.isRecurring` is true. */
+  AnnualMaximum: ComponentType<AnnualMaximumFieldProps> | undefined
+  /** Bound to `garnishmentType`. Only available when `courtOrdered: true`. */
+  GarnishmentType: ComponentType<GarnishmentTypeFieldProps> | undefined
 }
 
 /**
@@ -318,10 +328,7 @@ export function useDeductionForm({
   // deductions after a frequency toggle. Compare against both shapes — mirrors
   // the `deductAsPercentage` handling in StandardDeductionForm.
   const watchedRecurring = useWatch({ control: formMethods.control, name: 'recurring' }) as
-    | boolean
-    | 'true'
-    | 'false'
-    | undefined
+    boolean | 'true' | 'false' | undefined
   const isRecurring = watchedRecurring === true || watchedRecurring === 'true'
 
   const createGarnishmentMutation = useGarnishmentsCreateMutation()

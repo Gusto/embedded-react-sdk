@@ -8,11 +8,9 @@ export type {
   SignCompanyFormFields,
 } from './useSignCompanyForm'
 export {
-  createSignCompanyFormSchema,
   SignCompanyFormErrorCodes,
   type SignCompanyFormErrorCode,
   type SignCompanyFormData,
-  type SignCompanyFormOutputs,
   type SignCompanyFormField,
 } from './signCompanyFormSchema'
 export type {

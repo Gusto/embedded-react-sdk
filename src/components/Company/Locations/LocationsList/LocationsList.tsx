@@ -1,4 +1,4 @@
-import { useLocationsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsGet'
+import { useLocationsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsGet'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
@@ -26,6 +26,7 @@ export interface LocationsListProps extends BaseComponentInterface<'Company.Loca
  * @remarks
  * Standalone building block used internally by the orchestrated `Locations` component for its list view. Use this directly when you need full control over navigation between the list and form views.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/location/add` | A user chose to add a new location | — |

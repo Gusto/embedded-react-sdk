@@ -53,7 +53,49 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [require.resolve('./plugins/global-docs-sidebar')],
+  plugins: [
+    require.resolve('./plugins/global-docs-sidebar'),
+    [
+      'docusaurus-plugin-cookie-consent',
+      {
+        title: 'Your Privacy',
+        description:
+          'Gusto uses cookies and similar technology to keep this documentation site working and, if you allow it, to measure how it is used. See our [Privacy Notice](https://gusto.com/about/privacy) for details.',
+        toastMode: true,
+        acceptAllText: 'Accept and Continue',
+        rejectOptionalText: 'Reject All',
+        showDetailsButton: false,
+        categories: {
+          analytics: {
+            label: 'Performance Cookies',
+            description:
+              'These cookies allow us to count visits and traffic sources so we can measure and improve the performance of this documentation. They help us know which pages are the most and least popular.',
+          },
+        },
+        googleConsentMode: {
+          enabled: true,
+        },
+      },
+    ],
+    // The gtag plugin MUST come after docusaurus-plugin-cookie-consent so its
+    // head-tag injection (gtag.js loader + config call) lands AFTER the
+    // consent-default script. Otherwise GA fires unrestricted and writes _ga*
+    // cookies before consent mode applies. (The classic preset also accepts a
+    // gtag option, but presets are injected before user plugins in head order,
+    // which produces the wrong sequence.) Driven by env var so the plugin is
+    // inert until GOOGLE_GTAG_ID is set in CI/build.
+    ...(process.env.GOOGLE_GTAG_ID
+      ? [
+          [
+            '@docusaurus/plugin-google-gtag',
+            {
+              trackingID: process.env.GOOGLE_GTAG_ID,
+              anonymizeIP: true,
+            },
+          ] satisfies [string, object],
+        ]
+      : []),
+  ],
 
   themes: [
     '@docusaurus/theme-mermaid',
@@ -98,6 +140,16 @@ const config: Config = {
           }),
         },
         blog: false,
+        sitemap: {
+          // robots.txt blocks crawlers from fetching older-minor snapshots; keep
+          // them out of the sitemap too, so it advertises only the canonical,
+          // unprefixed /docs/<page> (the latest minor, driven by lastVersion).
+          // versions[0] is that latest minor served unprefixed, so slice(1) drops
+          // just the /docs/<X.Y>/ snapshots — no maintenance as new minors land.
+          ignorePatterns: hasVersions ? versions.slice(1).map(v => `/docs/${v}/**`) : [],
+          changefreq: 'weekly',
+          priority: 0.5,
+        },
         theme: {
           customCss: ['./src/css/custom.css'],
         },
@@ -132,6 +184,13 @@ const config: Config = {
           '.rough-node.branch > g > path:first-of-type { stroke: var(--diagram-accent-fill); }',
           '.rough-node.branch > g > path:last-of-type { stroke: var(--diagram-accent-stroke); }',
           '.branch .nodeLabel { color: var(--diagram-text); fill: var(--diagram-text); }',
+          // flow (composed-sub-flow) nodes — accent BORDER only, default fill, so a
+          // node that links out to another documented flow pops without reading as a
+          // branch (which fills coral). classic/neo: recolor stroke only; handDrawn:
+          // recolor just the border path (last-of-type), leaving the fill hatch
+          // (first-of-type) at the neutral default. Thicker stroke to emphasize.
+          '.flow > rect, .flow > polygon, .flow > path { stroke: var(--diagram-accent-stroke); stroke-width: 2px; }',
+          '.rough-node.flow > g > path:last-of-type { stroke: var(--diagram-accent-stroke); stroke-width: 2px; }',
           // start/stop markers (sm-circ/fr-circ) don't carry node cssClasses, so
           // target them by their stable node-id pattern. Fill + stroke so the
           // interior is the accent tint, not the gray node background showing through.
@@ -142,6 +201,14 @@ const config: Config = {
           // arrowheads are one shared marker; context-stroke makes each inherit its
           // edge's stroke, so condition arrows turn coral and event arrows stay neutral.
           '.arrowMarkerPath { fill: context-stroke; stroke: context-stroke; }',
+          // subgraph clusters are pure layout-grouping, not content. handDrawn draws
+          // a hatch-fill path (first-of-type) + a border path (last-of-type). Drop the
+          // hatch so only the neutral border remains — a minimal box that groups nodes
+          // without reading as a styled container. Titles are suppressed per-diagram via
+          // empty-string subgraph labels (`[" "]`), not globally, so a real title still
+          // renders if ever wanted. (classic/neo fallback: the single rect gets no fill.)
+          '.cluster > g > path:first-of-type { display: none; }',
+          '.cluster > rect { fill: none; }',
         ].join('\n'),
       },
     },
@@ -194,25 +261,28 @@ const config: Config = {
         {
           title: 'Build',
           items: [
-            { label: 'Workflows', to: '/docs/workflows-overview' },
-            { label: 'Event Handling', to: '/docs/integration-guide/event-handling' },
+            { label: 'Workflows', to: '/docs/guides/workflows-overview' },
+            { label: 'Event Handling', to: '/docs/guides/integration-guide/event-handling' },
             { label: 'Hooks', to: '/docs/hooks' },
           ],
         },
         {
           title: 'Customize',
           items: [
-            { label: 'Component Adapter', to: '/docs/component-adapter' },
-            { label: 'Theming', to: '/docs/theming' },
-            { label: 'Translations', to: '/docs/integration-guide/translation' },
-            { label: 'Bring your own data', to: '/docs/integration-guide/providing-your-own-data' },
+            { label: 'Component Adapter', to: '/docs/guides/component-adapter' },
+            { label: 'Theming', to: '/docs/guides/theming' },
+            { label: 'Translations', to: '/docs/guides/integration-guide/translation' },
+            {
+              label: 'Bring your own data',
+              to: '/docs/guides/integration-guide/providing-your-own-data',
+            },
           ],
         },
         {
           title: 'Get Started',
           items: [
             { label: 'What is the SDK?', to: '/docs/' },
-            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Getting started', to: '/docs/getting-started' },
             { label: 'Authentication', to: '/docs/getting-started/authentication' },
           ],
         },
@@ -231,13 +301,47 @@ const config: Config = {
               label: 'Developer Terms of Service',
               href: 'https://gusto.com/legal/terms/developer-terms-of-service',
             },
+            {
+              label: 'Privacy Notice',
+              href: 'https://gusto.com/about/privacy',
+            },
           ],
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Gusto, Inc.`,
     },
     prism: {
-      theme: prismThemes.github,
+      theme: {
+        ...prismThemes.github,
+        styles: [
+          ...prismThemes.github.styles,
+          {
+            types: ['comment', 'prolog', 'doctype', 'cdata'],
+            style: { color: '#57606a', fontStyle: 'italic' },
+          },
+          { types: ['string', 'attr-value'], style: { color: '#b91c5c' } },
+          {
+            types: [
+              'entity',
+              'url',
+              'symbol',
+              'number',
+              'boolean',
+              'variable',
+              'constant',
+              'property',
+              'regex',
+              'inserted',
+            ],
+            style: { color: '#0a7b78' },
+          },
+          {
+            types: ['atrule', 'keyword', 'attr-name', 'selector'],
+            style: { color: '#0969da' },
+          },
+          { types: ['function', 'deleted', 'tag'], style: { color: '#cf222e' } },
+        ],
+      },
       darkTheme: prismThemes.nightOwl,
       additionalLanguages: ['bash', 'json', 'ruby', 'python', 'java'],
     },

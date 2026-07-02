@@ -1,4 +1,4 @@
-import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/companiesGetOnboardingStatus'
+import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/companiesGetOnboardingStatus'
 import { OnboardingOverviewProvider } from './context'
 import { MissingRequirements } from './MissingRequirements'
 import { Completed } from './Completed'
@@ -8,7 +8,13 @@ import { Flex } from '@/components/Common'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+/**
+ * Props for the {@link OnboardingOverview} component.
+ *
+ * @public
+ */
+export interface OnboardingOverviewProps extends BaseComponentInterface<'Company.OnboardingOverview'> {
+  /** The associated company identifier. */
   companyId: string
 }
 
@@ -21,6 +27,7 @@ interface OnboardingOverviewProps extends BaseComponentInterface<'Company.Onboar
  * steps is rendered with a continue action. Provide `children` to override the default layout while
  * still consuming the onboarding status via context.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |

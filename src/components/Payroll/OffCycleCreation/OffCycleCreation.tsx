@@ -3,13 +3,13 @@ import { FormProvider, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsCreateOffCycle'
 import {
   OffCycleReason as ApiOffCycleReason,
   WithholdingPayPeriod,
-} from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+} from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api-v-2026-02-01/types/rfcdate'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import {
   createOffCyclePayPeriodDateFormSchema,
@@ -40,7 +40,7 @@ const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
  * employees, and setting deduction and tax withholding preferences, then submits the
  * resulting payroll for execution.
  *
- * @remarks
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `offCycle/created` | The off-cycle payroll has been created | `{ payrollUuid: string }` |

@@ -24,6 +24,7 @@ export interface LocationsProps extends BaseComponentInterface<'Company.Location
  * Internally switches between a list view and a create/edit form. For more granular control,
  * use the standalone `LocationForm` component directly.
  *
+ * @events
  * | Event | Description | Data |
  * | ----- | ----------- | ---- |
  * | `company/location/add` | A user chooses to add a new location | — |
