@@ -926,9 +926,10 @@ function reorderHookSections(rendered: string): string {
  * to its `*FormFields` interface), and the alias's own section — opaque
  * `ReturnType<…>` — is replaced with a `Field | Type` table built from them.
  *
- * Hooks whose metadata is a bare `FieldsMetadata` index signature (dynamic
- * keys, e.g. `useEmployeeStateTaxesForm`) produce no per-field rows, so this is
- * a no-op for them.
+ * Hooks whose metadata is an index-signature type (dynamic keys, e.g.
+ * `useEmployeeStateTaxesForm`) produce no per-field rows; for those the
+ * `form.fieldsMetadata` row is simply linked to the alias section (TypeDoc
+ * otherwise leaves it as the unresolved type parameter `TFieldsMetadata`).
  */
 function renderFieldsMetadataAlias(rendered: string): string {
   const lines = rendered.split('\n')
@@ -945,7 +946,7 @@ function renderFieldsMetadataAlias(rendered: string): string {
       childIdxs.add(i)
     }
   })
-  if (parentIdx === -1 || fields.length === 0) return rendered
+  if (parentIdx === -1) return rendered
 
   const headingIdx = lines.findIndex(l => /^### \w*FieldsMetadata\s*$/.test(l))
   if (headingIdx === -1) return rendered
@@ -954,6 +955,12 @@ function renderFieldsMetadataAlias(rendered: string): string {
     /<a id="([^"]+)"><\/a>/.exec(lines[headingIdx - 2] ?? '')?.[1] ?? aliasName.toLowerCase()
 
   lines[parentIdx] = `| \`form.fieldsMetadata\` | [\`${aliasName}\`](#${anchor}) | - |`
+
+  // Pure index-signature metadata (dynamic keys, e.g. useEmployeeStateTaxesForm):
+  // there are no per-field rows to collapse, and TypeDoc renders the inherited
+  // member as the unresolved type parameter `TFieldsMetadata`. Linking the row
+  // to the alias section (above) is the whole fix — nothing else to rewrite.
+  if (fields.length === 0) return lines.join('\n')
 
   const table = [
     '| Field | Type |',

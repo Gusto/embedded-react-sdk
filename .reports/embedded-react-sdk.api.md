@@ -2624,7 +2624,7 @@ export const EmployeeStateTaxesErrorCodes: {
 };
 
 // @public
-export type EmployeeStateTaxesFieldsMetadata = UseEmployeeStateTaxesFormReady['form']['fieldsMetadata'];
+export type EmployeeStateTaxesFieldsMetadata = Record<`states.${string}.${string}`, FieldMetadata | FieldMetadataWithOptions>;
 
 // @public
 export interface EmployeeStateTaxesFormData {
@@ -5890,7 +5890,7 @@ export interface UseEmployeeStateTaxesFormProps {
 }
 
 // @public
-export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<FieldsMetadata, EmployeeStateTaxesFormData, StateTaxFields> {
+export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<EmployeeStateTaxesFieldsMetadata, EmployeeStateTaxesFormData, StateTaxFields> {
     actions: {
         onSubmit: () => Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined>;
     };
