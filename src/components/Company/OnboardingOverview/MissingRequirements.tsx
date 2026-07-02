@@ -19,6 +19,16 @@ export const MissingRequirements = () => {
 
   return (
     <Components.Box
+      header={
+        <Flex flexDirection="column" gap={4}>
+          <Components.Heading as="h2">
+            {t(isInitialSetup ? 'initialSetupTitle' : 'missingRequirementsTitle')}
+          </Components.Heading>
+          <Components.Text variant="supporting">
+            {t(isInitialSetup ? 'initialSetupDescription' : 'missingRequirementsDescription')}
+          </Components.Text>
+        </Flex>
+      }
       footer={
         <ActionsLayout>
           <Components.Button variant="secondary" onClick={handleContinue}>
@@ -28,25 +38,15 @@ export const MissingRequirements = () => {
         </ActionsLayout>
       }
     >
-      <Flex flexDirection="column" alignItems="flex-start" gap={32}>
-        <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h2">
-            {t(isInitialSetup ? 'initialSetupTitle' : 'missingRequirementsTitle')}
-          </Components.Heading>
-          <Components.Text variant="supporting">
-            {t(isInitialSetup ? 'initialSetupDescription' : 'missingRequirementsDescription')}
-          </Components.Text>
-        </Flex>
-        {onboardingSteps && (
-          <RequirementsList
-            requirements={onboardingSteps.map(step => ({
-              completed: step.completed!,
-              title: t(`stepTitles.${step.id!}`),
-              description: t(`stepDescriptions.${step.id!}`),
-            }))}
-          />
-        )}
-      </Flex>
+      {onboardingSteps && (
+        <RequirementsList
+          requirements={onboardingSteps.map(step => ({
+            completed: step.completed!,
+            title: t(`stepTitles.${step.id!}`),
+            description: t(`stepDescriptions.${step.id!}`),
+          }))}
+        />
+      )}
     </Components.Box>
   )
 }
