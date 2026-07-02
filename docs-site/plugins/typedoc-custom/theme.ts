@@ -1172,6 +1172,51 @@ export function defaultValueRestatesLiteralType(reflection: DeclarationReflectio
   return reflection.defaultValue.replace(/^['"]|['"]$/g, '') === String(reflection.type.value)
 }
 
+/** The `Translations` namespace holding the i18n resource-key interfaces (see src/i18n/types.d.ts). */
+const TRANSLATIONS_NAMESPACE = 'Translations'
+
+/**
+ * The `Resources` map interface (namespace name → its key interface). It shares
+ * the Translations page with the leaf key interfaces but is not one: its property
+ * *values* are those interfaces, so its Type column carries the links to them and
+ * must be kept (unlike the leaf glossaries, whose Type column is dropped).
+ */
+const RESOURCES_MAP_INTERFACE = 'Resources'
+
+/**
+ * Whether a reflection lives under the `Translations` namespace (the i18n
+ * resource-key interfaces). Their property tables are pure translation-key
+ * glossaries, so the `Type` column — always `string` (leaf keys) or `object`
+ * (grouping rows, obvious from the dotted path) — is dropped as noise.
+ */
+export function isTranslationsMember(reflection: DeclarationReflection | undefined): boolean {
+  for (let current = reflection?.parent; current; current = current.parent) {
+    if (current.kind === ReflectionKind.Namespace && current.name === TRANSLATIONS_NAMESPACE) {
+      return true
+    }
+  }
+  return false
+}
+
+/** Remove a named column from a GitHub-flavored markdown table. Returns input unchanged if absent. */
+export function dropTableColumn(markdown: string, columnName: string): string {
+  const lines = markdown.split('\n')
+  const headerIndex = lines.findIndex(
+    line => line.startsWith('|') && line.split('|').some(cell => cell.trim() === columnName),
+  )
+  if (headerIndex === -1) return markdown
+  const columnIndex = lines[headerIndex]!.split('|').findIndex(cell => cell.trim() === columnName)
+  return lines
+    .map(line => {
+      if (!line.startsWith('|')) return line
+      const cells = line.split('|')
+      if (columnIndex >= cells.length) return line
+      cells.splice(columnIndex, 1)
+      return cells.join('|')
+    })
+    .join('\n')
+}
+
 /**
  * Collect the string-literal validation codes a type resolves to — walking
  * unions, type-alias references, and `typeof XxxErrorCodes.CODE` queries (whose
@@ -2516,7 +2561,17 @@ export class SDKThemeContext extends MarkdownThemeContext {
         return base
       },
       propertiesTable: (...args: Parameters<typeof origPropertiesTable>) => {
-        const result = origPropertiesTable(...args)
+        let result = origPropertiesTable(...args)
+        // Translations (translation-key) interfaces are all `string` (leaves) / `object`
+        // (groups): the Type column is noise, so drop it for the Default value glossary.
+        // The `Resources` map is the exception — its Type column links each namespace
+        // row to its key interface, so keep it.
+        if (
+          args[0]?.some(prop => isTranslationsMember(prop)) &&
+          args[0]?.[0]?.parent?.name !== RESOURCES_MAP_INTERFACE
+        ) {
+          result = dropTableColumn(result, 'Type')
+        }
         const lines = result.split('\n')
         // Find the Default value column index from the header row so this stays
         // correct if other columns are hidden or reordered.
