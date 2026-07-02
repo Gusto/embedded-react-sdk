@@ -133,7 +133,7 @@ Ready-state shape returned by [useDeductionForm](#usedeductionform) once data ha
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`DeductionFormFields`](#deductionformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`DeductionFormFieldsMetadata`](#deductionformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`DeductionFormData`](#deductionformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`DeductionFormData`](#deductionformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -488,7 +488,15 @@ codes to localized copy in `validationMessages` when composing the hook.
 
 ### DeductionFormFieldsMetadata
 
-> **DeductionFormFieldsMetadata** = [`UseDeductionFormReady`](#usedeductionformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `amount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `annualMaximum` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `deductAsPercentage` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
+| `description` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `garnishmentType` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `recurring` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
+| `totalAmount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Per-field metadata returned by [useDeductionForm](#usedeductionform) as `form.fieldsMetadata`.
 

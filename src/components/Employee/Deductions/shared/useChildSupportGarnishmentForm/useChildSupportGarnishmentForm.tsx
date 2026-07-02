@@ -47,6 +47,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -137,7 +138,7 @@ export interface ChildSupportGarnishmentFormFields {
  * @public
  */
 export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  ChildSupportGarnishmentFormFieldsMetadata,
   ChildSupportGarnishmentFormData,
   ChildSupportGarnishmentFormFields
 > {
@@ -185,6 +186,37 @@ export interface UseChildSupportGarnishmentFormReady extends BaseFormHookReady<
  */
 export type UseChildSupportGarnishmentFormResult =
   HookLoadingResult | UseChildSupportGarnishmentFormReady
+
+/** @internal */
+function buildChildSupportGarnishmentFieldsMetadata(
+  base: Record<keyof ChildSupportGarnishmentFormData, FieldMetadata>,
+  {
+    stateOptions,
+    agencies,
+    countyOptions,
+    counties,
+  }: {
+    stateOptions: Array<{ value: string; label: string }>
+    agencies: StateFieldEntry[]
+    countyOptions: Array<{ value: string; label: string }>
+    counties: CountyEntry[]
+  },
+) {
+  return {
+    state: withOptions(base.state, stateOptions, agencies),
+    fipsCode: withOptions(base.fipsCode, countyOptions, counties),
+    caseNumber: base.caseNumber,
+    orderNumber: base.orderNumber,
+    remittanceNumber: base.remittanceNumber,
+    payPeriodMaximum: base.payPeriodMaximum,
+    amount: base.amount,
+    paymentPeriod: withOptions(
+      base.paymentPeriod,
+      [...PAYMENT_PERIOD_OPTIONS],
+      [...PAYMENT_PERIOD_ENTRIES],
+    ),
+  } satisfies FieldsMetadata
+}
 
 /**
  * Headless hook for creating or updating a child-support garnishment.
@@ -411,20 +443,12 @@ export function useChildSupportGarnishmentForm({
     label: c.county ?? c.fipsCode,
   }))
 
-  const fieldsMetadata = {
-    state: withOptions(baseMetadata.state, stateOptions, agencies),
-    fipsCode: withOptions(baseMetadata.fipsCode, countyOptions, counties),
-    caseNumber: baseMetadata.caseNumber,
-    orderNumber: baseMetadata.orderNumber,
-    remittanceNumber: baseMetadata.remittanceNumber,
-    payPeriodMaximum: baseMetadata.payPeriodMaximum,
-    amount: baseMetadata.amount,
-    paymentPeriod: withOptions(
-      baseMetadata.paymentPeriod,
-      [...PAYMENT_PERIOD_OPTIONS],
-      [...PAYMENT_PERIOD_ENTRIES],
-    ),
-  }
+  const fieldsMetadata = buildChildSupportGarnishmentFieldsMetadata(baseMetadata, {
+    stateOptions,
+    agencies,
+    countyOptions,
+    counties,
+  })
 
   // ── Submit ───────────────────────────────────────────────────────────
 
@@ -569,5 +593,6 @@ export function useChildSupportGarnishmentForm({
  *
  * @public
  */
-export type ChildSupportGarnishmentFormFieldsMetadata =
-  UseChildSupportGarnishmentFormReady['form']['fieldsMetadata']
+export type ChildSupportGarnishmentFormFieldsMetadata = ReturnType<
+  typeof buildChildSupportGarnishmentFieldsMetadata
+>
