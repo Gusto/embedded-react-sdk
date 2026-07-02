@@ -1760,10 +1760,10 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | <a id="property-contractorsignatureformbackcta"></a> `backCta` | `"Back"` |
 | <a id="property-contractorsignatureformcertificationintro"></a> `certificationIntro` | `"Under penalties of perjury, I certify that:"` |
 | <a id="property-contractorsignatureformcertificationpoints"></a> `certificationPoints` | |
-| `certificationPoints.0` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
-| `certificationPoints.1` | `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` |
-| `certificationPoints.2` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
-| `certificationPoints.3` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
+| `certificationPoints.backupWithholding` | `"I am not subject to backup withholding because (a) I am exempt from backup withholding, or (b) I have not been notified by the Internal Revenue Service (IRS) that I am subject to backup withholding as a result of a failure to report all interest or dividends, or (c) the IRS has notified me that I am no longer subject to backup withholding;"` |
+| `certificationPoints.fatca` | `"The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is correct."` |
+| `certificationPoints.taxpayerId` | `"The number shown on this form is my correct taxpayer identification number (or I am waiting for a number to be issued to me);"` |
+| `certificationPoints.usPerson` | `"I am a U.S. citizen or other U.S. person (defined below);"` |
 | <a id="property-contractorsignatureformdownloadprompt"></a> `downloadPrompt` | `"<downloadLink>Download document</downloadLink>"` |
 | <a id="property-contractorsignatureformfields"></a> `fields` | |
 | `fields.account_number` | |
