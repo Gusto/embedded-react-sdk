@@ -96,7 +96,7 @@ export const createTheme = (colors: Partial<GustoSDKThemeColors> = {}): GustoSDK
     inputRadius: toRem(8),
     buttonRadius: toRem(8),
     cardRadius: toRem(8),
-    badgeRadius: toRem(6),
+    badgeRadius: toRem(999),
     bannerRadius: toRem(8),
     boxRadius: toRem(8),
     fontSizeRoot: getRootFontSize(),
