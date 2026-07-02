@@ -5,6 +5,7 @@ import {
   HOOK_GROUPS,
   COMPONENT_PROP_GROUPS,
   VARIABLE_GROUPS,
+  NAMESPACE_GROUPS,
 } from './typedoc-utils.mjs'
 
 export const baseOptions = {
@@ -16,6 +17,7 @@ export const baseOptions = {
 
   groupOrder: [
     'Domains',
+    ...NAMESPACE_GROUPS,
     'Namespaces',
     ...HOOK_GROUPS,
     ...COMPONENT_GROUPS,

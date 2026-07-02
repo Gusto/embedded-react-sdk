@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # @gusto/embedded-react-sdk
 
-## Namespaces
+## Component namespaces
 
 | Namespace | Description |
 | ------ | ------ |
@@ -24,6 +24,12 @@ custom_edit_url: null
 | [InformationRequests](company/information-requests/index.md) | Flows and blocks for viewing and responding to information requests from Gusto. |
 | [Payroll](payroll/namespace.md) | Flows and blocks for running and managing payroll across a company's pay schedules. |
 | [TimeOff](time-off/namespace.md) | Flows and blocks for creating and managing time-off policies — sick, vacation, and holiday. |
+
+## Namespaces
+
+| Namespace | Description |
+| ------ | ------ |
+| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |
 | [Translations](Translations/index.md) | Per-namespace SDK i18n keys, each namespace browsable as its own reference (e.g. [Translations.CompanyAddresses](Translations/index.md#companyaddresses)) with every key's English default. Override defaults through a component's `dictionary` prop or the global `GustoProvider` dictionary. |
 
 ## Components
@@ -905,9 +911,3 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 > **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
-
-## API Models
-
-| Namespace | Description |
-| ------ | ------ |
-| [APIModels](APIModels/index.md) | Gusto API entity types returned by SDK hooks and components. These are re-exported from the Gusto Embedded API client so their shapes are documented here in the SDK reference. |
