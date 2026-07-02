@@ -577,7 +577,9 @@ export class SDKRouter extends MemberRouter {
       const fp = child.sources?.[0]?.fullFileName ?? child.sources?.[0]?.fileName ?? ''
       if (!sources.some(fragment => fp.includes(fragment))) continue
       const inGroup = child.comment?.blockTags.some(
-        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+        t =>
+          t.tag === '@group' &&
+          groups.some(g => g === Comment.combineDisplayParts(t.content).trim()),
       )
       if (!inGroup) continue
 

@@ -118,7 +118,9 @@ export function standalonePageFromSources(reflection: Reflection): string | null
     if (!sources.some(pattern => fp.includes(pattern))) continue
     if (groups) {
       const inGroup = (reflection as DeclarationReflection).comment?.blockTags.some(
-        t => t.tag === '@group' && groups.includes(Comment.combineDisplayParts(t.content).trim()),
+        t =>
+          t.tag === '@group' &&
+          groups.some(g => g === Comment.combineDisplayParts(t.content).trim()),
       )
       if (!inGroup) continue
     }
@@ -419,6 +421,8 @@ export function pageTitle(page: MarkdownPageEvent): string {
   const decl = model as DeclarationReflection
 
   if (isDomainHub(decl)) return decl.name
+  if (decl.name === CUSTOM_GROUPS.hooks) return CUSTOM_GROUPS.hooks
+  if (decl.name === CUSTOM_GROUPS.blockComponents) return 'Sub-components'
 
   return decl.name
 }
