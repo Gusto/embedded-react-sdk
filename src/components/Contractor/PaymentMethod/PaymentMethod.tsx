@@ -133,49 +133,53 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
         <Form onSubmit={handleSubmit}>
           <Flex gap={32} flexDirection="column">
             <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Type
-              label={t('paymentFieldsetLegend')}
-              getOptionLabel={(value: ContractorPaymentMethodFormType) =>
-                value === PAYMENT_METHODS.directDeposit ? t('directDepositLabel') : t('checkLabel')
-              }
-              FieldComponent={TypeFieldComponent}
-              formHookResult={paymentMethodForm}
-            />
-            {isDirectDeposit && (
-              <>
-                <Name
-                  label={t('bankAccountForm.nameLabel')}
-                  validationMessages={{ REQUIRED: t('bankAccountForm.validations.accountName') }}
-                  formHookResult={bankAccountForm}
-                />
-                <RoutingNumber
-                  label={t('bankAccountForm.routingNumberLabel')}
-                  description={t('bankAccountForm.routingNumberDescription')}
-                  validationMessages={{
-                    REQUIRED: t('bankAccountForm.validations.routingNumber'),
-                    INVALID_ROUTING_NUMBER: t('bankAccountForm.validations.routingNumber'),
-                  }}
-                  formHookResult={bankAccountForm}
-                />
-                <AccountNumber
-                  label={t('bankAccountForm.accountNumberLabel')}
-                  validationMessages={{
-                    REQUIRED: t('bankAccountForm.validations.accountNumber'),
-                    INVALID_ACCOUNT_NUMBER: t('bankAccountForm.validations.accountNumber'),
-                  }}
-                  formHookResult={bankAccountForm}
-                />
-                <AccountType
-                  label={t('bankAccountForm.accountTypeLabel')}
-                  getOptionLabel={(value: string) =>
-                    value === 'Checking'
-                      ? t('bankAccountForm.accountTypeChecking')
-                      : t('bankAccountForm.accountTypeSavings')
-                  }
-                  formHookResult={bankAccountForm}
-                />
-              </>
-            )}
+            <Flex flexDirection="column" gap={20}>
+              <Type
+                label={t('paymentFieldsetLegend')}
+                getOptionLabel={(value: ContractorPaymentMethodFormType) =>
+                  value === PAYMENT_METHODS.directDeposit
+                    ? t('directDepositLabel')
+                    : t('checkLabel')
+                }
+                FieldComponent={TypeFieldComponent}
+                formHookResult={paymentMethodForm}
+              />
+              {isDirectDeposit && (
+                <>
+                  <Name
+                    label={t('bankAccountForm.nameLabel')}
+                    validationMessages={{ REQUIRED: t('bankAccountForm.validations.accountName') }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <RoutingNumber
+                    label={t('bankAccountForm.routingNumberLabel')}
+                    description={t('bankAccountForm.routingNumberDescription')}
+                    validationMessages={{
+                      REQUIRED: t('bankAccountForm.validations.routingNumber'),
+                      INVALID_ROUTING_NUMBER: t('bankAccountForm.validations.routingNumber'),
+                    }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <AccountNumber
+                    label={t('bankAccountForm.accountNumberLabel')}
+                    validationMessages={{
+                      REQUIRED: t('bankAccountForm.validations.accountNumber'),
+                      INVALID_ACCOUNT_NUMBER: t('bankAccountForm.validations.accountNumber'),
+                    }}
+                    formHookResult={bankAccountForm}
+                  />
+                  <AccountType
+                    label={t('bankAccountForm.accountTypeLabel')}
+                    getOptionLabel={(value: string) =>
+                      value === 'Checking'
+                        ? t('bankAccountForm.accountTypeChecking')
+                        : t('bankAccountForm.accountTypeSavings')
+                    }
+                    formHookResult={bankAccountForm}
+                  />
+                </>
+              )}
+            </Flex>
             <ActionsLayout>
               <Components.Button type="submit" variant="primary" isDisabled={isPending}>
                 {t('continueCta')}
