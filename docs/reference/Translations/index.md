@@ -1242,6 +1242,7 @@ Translation keys for the `Contractor.Address` i18n namespace.
 | <a id="property-contractoraddressstreet1"></a> `street1` | `"Street 1"` |
 | <a id="property-contractoraddressstreet2"></a> `street2` | `"Street 2"` |
 | <a id="property-contractoraddresssubmit"></a> `submit` | `"Continue"` |
+| <a id="property-contractoraddresssubmitting"></a> `submitting` | `"Saving…"` |
 | <a id="property-contractoraddressvalidations"></a> `validations` | |
 | `validations.city` | `"Please provide valid city name"` |
 | `validations.state` | `"Please select a state"` |
@@ -1392,6 +1393,7 @@ Translation keys for the `Contractor.PaymentMethod` i18n namespace.
 | <a id="property-contractorpaymentmethoddirectdepositdescription"></a> `directDepositDescription` | `"We recommend direct deposit – we’ll deposit paychecks directly into your employee’s bank account."` |
 | <a id="property-contractorpaymentmethoddirectdepositlabel"></a> `directDepositLabel` | `"Direct deposit"` |
 | <a id="property-contractorpaymentmethodpaymentfieldsetlegend"></a> `paymentFieldsetLegend` | `"Select payment method"` |
+| <a id="property-contractorpaymentmethodsubmittingcta"></a> `submittingCta` | `"Saving…"` |
 | <a id="property-contractorpaymentmethodtitle"></a> `title` | `"Contractor payment details"` |
 
 ***
@@ -1756,6 +1758,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | Property | Default value |
 | ------ | ------ |
 | <a id="property-contractorsignatureformacknowledgecta"></a> `acknowledgeCta` | `"Acknowledge"` |
+| <a id="property-contractorsignatureformacknowledgingcta"></a> `acknowledgingCta` | `"Acknowledging…"` |
 | <a id="property-contractorsignatureformagreelabel"></a> `agreeLabel` | `"I agree to electronically sign this form."` |
 | <a id="property-contractorsignatureformbackcta"></a> `backCta` | `"Back"` |
 | <a id="property-contractorsignatureformcertificationintro"></a> `certificationIntro` | `"Under penalties of perjury, I certify that:"` |
@@ -1836,6 +1839,7 @@ Translation keys for the `Contractor.SignatureForm` i18n namespace.
 | `sections.tin` | `"Taxpayer Identification Number (TIN)"` |
 | <a id="property-contractorsignatureformsignaturerequired"></a> `signatureRequired` | `"Signature required"` |
 | <a id="property-contractorsignatureformsigncta"></a> `signCta` | `"Sign"` |
+| <a id="property-contractorsignatureformsigningcta"></a> `signingCta` | `"Signing…"` |
 | <a id="property-contractorsignatureformvalidation"></a> `validation` | |
 | `validation.agreeRequired` | `"You must agree to electronically sign this form."` |
 | `validation.invalidEin` | `"Enter a valid Employer Identification Number."` |
