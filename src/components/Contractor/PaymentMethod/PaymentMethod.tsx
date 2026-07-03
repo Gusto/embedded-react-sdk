@@ -178,7 +178,7 @@ function Root({ contractorId, className, onEvent }: Omit<PaymentMethodProps, 'di
             )}
             <ActionsLayout>
               <Components.Button type="submit" variant="primary" isDisabled={isPending}>
-                {t('continueCta')}
+                {isPending ? t('submittingCta') : t('continueCta')}
               </Components.Button>
             </ActionsLayout>
           </Flex>

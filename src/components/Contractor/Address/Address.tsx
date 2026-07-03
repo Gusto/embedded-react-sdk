@@ -156,8 +156,8 @@ function AddressRoot({
               </Grid>
 
               <ActionsLayout>
-                <Components.Button type="submit" isLoading={contractorAddress.status.isPending}>
-                  {t('submit')}
+                <Components.Button type="submit" isDisabled={contractorAddress.status.isPending}>
+                  {contractorAddress.status.isPending ? t('submitting') : t('submit')}
                 </Components.Button>
               </ActionsLayout>
             </Flex>
