@@ -17,6 +17,20 @@ custom_edit_url: null
 
 Headless React Hook Form hook for creating a contractor's bank account.
 
+## Remarks
+
+Captures the account nickname, routing number, account number, and account
+type. Creating a bank account also updates the contractor's payment method to
+Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
+needs only this submit — no separate payment method update.
+
+When the contractor already has a bank account on file, the account number
+field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
+The API requires `account_number` on every write and treats that exact masked
+value as "keep the existing account," so submitting it unchanged preserves the
+account while still applying any name/routing/type edits; typing a real number
+replaces it.
+
 ## Example
 
 ```tsx title="Example"
@@ -46,20 +60,6 @@ function AddBankAccount({ contractorId }: { contractorId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Captures the account nickname, routing number, account number, and account
-type. Creating a bank account also updates the contractor's payment method to
-Direct Deposit on the Gusto API as a side-effect, so the Direct Deposit path
-needs only this submit — no separate payment method update.
-
-When the contractor already has a bank account on file, the account number
-field is pre-filled with the masked token the API returns (e.g. "XXXX1207").
-The API requires `account_number` on every write and treats that exact masked
-value as "keep the existing account," so submitting it unchanged preserves the
-account while still applying any name/routing/type edits; typing a real number
-replaces it.
 
 ## Props
 
@@ -284,7 +284,7 @@ that only emit `REQUIRED`.
 Validation error codes emitted by the `routingNumber` field of
 [useContractorBankAccountForm](#usecontractorbankaccountform).
 
-## Utility Types
+## Utility types
 <a id="contractoraccounttype"></a>
 
 ### ContractorAccountType

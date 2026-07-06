@@ -17,6 +17,26 @@ custom_edit_url: null
 
 Headless hook for creating or updating an employee's job — title, hire date, S-Corp 2% shareholder flag, and Washington state workers' compensation fields.
 
+## Remarks
+
+Companion hook to `useCompensationForm`. Jobs and their compensations are
+separate entities in the Gusto API and this hook focuses exclusively on
+the job side. Presence of `jobId` selects the verb:
+
+| Hook config | Mode | API call |
+| ----------- | ---- | -------- |
+| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
+| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
+| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
+
+Creating a job auto-creates a stub compensation. To update the stub in the
+same flow, capture `currentCompensationUuid` (and the compensation's
+`version` from `compensations[]`) from the create response and thread them
+into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
+
+When the primary job's `hireDate` changes, secondary compensation effective
+dates are corrected after the PUT; `isPending` stays `true` through that.
+
 ## Example
 
 ```tsx title="Example"
@@ -41,26 +61,6 @@ function JobForm({ employeeId }: { employeeId: string }) {
   )
 }
 ```
-
-## Remarks
-
-Companion hook to `useCompensationForm`. Jobs and their compensations are
-separate entities in the Gusto API and this hook focuses exclusively on
-the job side. Presence of `jobId` selects the verb:
-
-| Hook config | Mode | API call |
-| ----------- | ---- | -------- |
-| `{ employeeId, jobId }` | update | `PUT /v1/jobs/:jobId` (with `version`) |
-| `{ employeeId }` (no `jobId`) | create | `POST /v1/employees/:employeeId/jobs` |
-| `{}` + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
-
-Creating a job auto-creates a stub compensation. To update the stub in the
-same flow, capture `currentCompensationUuid` (and the compensation's
-`version` from `compensations[]`) from the create response and thread them
-into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })`.
-
-When the primary job's `hireDate` changes, secondary compensation effective
-dates are corrected after the PUT; `isPending` stays `true` through that.
 
 ## Props
 
@@ -115,6 +115,12 @@ Branch on `isLoading` to narrow to either [HookLoadingResult](../../utilities.md
 
 Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends
+[BaseFormHookReady](../../utilities.md#baseformhookready) with the job-specific `data`, `status`,
+`actions`, and `form.Fields` shape.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Submit actions exposed by the hook. |
@@ -144,6 +150,14 @@ Ready-state shape returned by [useJobForm](#usejobform) once data has loaded.
 <a id="jobformfields"></a>
 
 Pre-bound field components exposed on `useJobForm().form.Fields`.
+
+**Remarks**
+
+Each property is either the field component or `undefined`. A field is
+`undefined` when conditions for rendering it aren't met — see each member
+for its visibility rule. Always null-check conditional fields (e.g.
+`{Fields.TwoPercentShareholder && <Fields.TwoPercentShareholder ... />}`)
+before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -319,7 +333,7 @@ Currently a single literal — `'REQUIRED'` — surfaced as the key in
 `validationMessages` on each `Fields.*` component. Future schema additions
 may extend the union.
 
-## Utility Types
+## Utility types
 <a id="joberrorcode"></a>
 
 ### JobErrorCode
@@ -338,12 +352,6 @@ Union of every error code produced by the [useJobForm](#usejobform) schema.
 
 Validation error codes produced by the [useJobForm](#usejobform) schema.
 
-#### Type Declaration
-
-| Name | Type |
-| ------ | ------ |
-| `REQUIRED` | `"REQUIRED"` |
-
 #### Remarks
 
 Use these constants as the keys in a field's `validationMessages` prop to
@@ -359,6 +367,12 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
   validationMessages={{ [JobErrorCodes.REQUIRED]: 'Job title is required' }}
 />
 ```
+
+#### Type Declaration
+
+| Name | Type |
+| ------ | ------ |
+| `REQUIRED` | `"REQUIRED"` |
 
 ***
 

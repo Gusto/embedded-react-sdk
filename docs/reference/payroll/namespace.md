@@ -4,7 +4,7 @@
 # To update structure: edit docs-site/typedoc.config.ts or docs-site/plugins/typedoc-custom/.
 # Then run `npm run docs:api:generate` to regenerate.
 title: Payroll
-description: The Payroll namespace.
+description: Flows and blocks for running and managing payroll across a company's pay schedules.
 sidebar_position: 1
 generated_by: typedoc
 custom_edit_url: null
@@ -12,7 +12,7 @@ custom_edit_url: null
 
 # Payroll
 
-The Payroll namespace.
+Flows and blocks for running and managing payroll across a company's pay schedules.
 
 ## 🚂 Workflows
 
@@ -22,7 +22,7 @@ The Payroll namespace.
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [PayrollFlow](payroll-flow.md) | Hub for running and managing all payrolls across a company's pay schedules. |
-| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll between pay schedules. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
 
 ## 🧩 Blocks
 

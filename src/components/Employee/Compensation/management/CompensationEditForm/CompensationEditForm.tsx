@@ -41,7 +41,7 @@ export interface CompensationEditFormProps extends CommonComponentInterface<'Emp
  * @param props - See {@link CompensationEditFormProps}.
  * @returns The rendered compensation edit form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function CompensationEditForm({
   employeeId,

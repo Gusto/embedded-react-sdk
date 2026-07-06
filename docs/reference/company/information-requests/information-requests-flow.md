@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Hub for viewing and responding to outstanding information requests from Gusto.
 
+## Remarks
+
+Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
+On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
+
+Information requests can also block payroll processing; in that case they are surfaced inline within
+`Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -29,14 +37,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Renders the list of open and submitted information requests for a company and hosts the response form in a modal.
-On successful submit, a dismissible success alert appears at the top of the list (when `withAlert` is `true`) and the modal closes.
-
-Information requests can also block payroll processing; in that case they are surfaced inline within
-`Payroll.PayrollBlockerList`, which embeds this flow with `withAlert={false}` so the blocker list owns the alert UX.
-
 ## InformationRequestsFlowProps
 
 <a id="informationrequestsflowprops"></a>
@@ -47,7 +47,7 @@ Props for InformationRequestsFlow.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`InformationRequests`](../../Translations/index.md#informationrequests)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
-| `onEvent?` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its blocks emit an event. |
+| `onEvent?` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked when the flow or its blocks emit an event. |
 | `withAlert?` | `boolean` | When `true` (default), the submission success alert is rendered at the top of this component. Set to `false` when embedding in a parent that renders the alert elsewhere. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from Omit._

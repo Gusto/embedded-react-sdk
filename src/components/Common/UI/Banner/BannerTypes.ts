@@ -5,7 +5,7 @@ import type { HTMLAttributes, ReactNode } from 'react'
  * Renders a full-width notification banner with a colored header and body content area; used for prominent warnings and errors.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface BannerProps extends Pick<
   HTMLAttributes<HTMLDivElement>,

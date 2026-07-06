@@ -19,18 +19,6 @@ custom_edit_url: null
 
 Convenience wrapper around [useWorkAddressForm](#useworkaddressform) that auto-resolves the employee's current work address.
 
-#### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `props` | [`UseCurrentWorkAddressFormProps`](#usecurrentworkaddressformprops) | See [UseCurrentWorkAddressFormProps](#usecurrentworkaddressformprops). |
-
-#### Returns
-
-[`UseWorkAddressFormResult`](#useworkaddressformresult)
-
-A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
-
 #### Remarks
 
 Lists the employee's work addresses and selects the active one (or the
@@ -59,6 +47,18 @@ function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; comp
 }
 ```
 
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`UseCurrentWorkAddressFormProps`](#usecurrentworkaddressformprops) | See [UseCurrentWorkAddressFormProps](#usecurrentworkaddressformprops). |
+
+#### Returns
+
+[`UseWorkAddressFormResult`](#useworkaddressformresult)
+
+A [HookLoadingResult](../../utilities.md#hookloadingresult) while loading, or a [UseWorkAddressFormReady](#useworkaddressformready) once ready.
+
 ***
 
 <a id="useworkaddressform"></a>
@@ -66,6 +66,12 @@ function WorkAddressEditor({ employeeId, companyId }: { employeeId: string; comp
 > **useWorkAddressForm**(`props`: [`UseWorkAddressFormProps`](#useworkaddressformprops)): [`HookLoadingResult`](../../utilities.md#hookloadingresult) \| [`UseWorkAddressFormReady`](#useworkaddressformready)
 
 Form hook for creating or editing an employee's work address.
+
+## Remarks
+
+When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
+when omitted it operates in create mode and issues a POST. The hook requires `companyId`
+to fetch the company's location list — it stays in loading state until `companyId` is known.
 
 ## Example
 
@@ -98,12 +104,6 @@ function WorkAddressReady({ workAddress }: { workAddress: UseWorkAddressFormRead
   )
 }
 ```
-
-## Remarks
-
-When `workAddressUuid` is supplied the hook loads that address and issues a PUT on submit;
-when omitted it operates in create mode and issues a POST. The hook requires `companyId`
-to fetch the company's location list — it stays in loading state until `companyId` is known.
 
 ## Props
 
@@ -153,6 +153,11 @@ Discriminated union returned by [useWorkAddressForm](#useworkaddressform).
 
 Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once data has loaded.
 
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the work-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
+
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `actions` | `object` | Available actions. |
@@ -178,6 +183,11 @@ Ready-state shape returned by [useWorkAddressForm](#useworkaddressform) once dat
 <a id="workaddressformfields"></a>
 
 Pre-bound field components exposed on `useWorkAddressForm().form.Fields`.
+
+**Remarks**
+
+`EffectiveDate` is `undefined` when `withEffectiveDateField` is `false`.
+Always null-check it before rendering.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -261,7 +271,7 @@ The required-field error code produced by [useWorkAddressForm](#useworkaddressfo
 Used as the `validationMessages` key for the location and effective date fields.
 See `WorkAddressErrorCodes`.
 
-## Utility Types
+## Utility types
 <a id="usecurrentworkaddressformprops"></a>
 
 ### UseCurrentWorkAddressFormProps

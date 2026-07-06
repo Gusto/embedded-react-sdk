@@ -115,7 +115,7 @@ export interface DashboardFlowProps extends BaseComponentInterface<never> {
  * @param props - See {@link DashboardFlowProps}.
  * @returns The tabbed dashboard with internal navigation between cards and edit screens.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"

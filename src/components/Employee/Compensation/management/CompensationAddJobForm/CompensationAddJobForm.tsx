@@ -33,7 +33,7 @@ export interface CompensationAddJobFormProps extends CommonComponentInterface<'E
  * @param props - See {@link CompensationAddJobFormProps}.
  * @returns The rendered add-job form.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function CompensationAddJobForm({ dictionary, ...props }: CompensationAddJobFormProps) {
   useComponentDictionary('Employee.Management.Compensation', dictionary)

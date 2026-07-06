@@ -2,7 +2,7 @@
  * Inclusive start/end pair representing a selected date range.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface DateRange {
   /**
@@ -20,7 +20,7 @@ export interface DateRange {
  * Renders a form field wrapping paired `<input type="date" />` elements for selecting an inclusive date range.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface DateRangePickerProps {
   /**

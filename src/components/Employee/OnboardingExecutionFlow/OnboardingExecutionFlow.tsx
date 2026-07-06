@@ -62,7 +62,7 @@ export interface OnboardingExecutionFlowProps {
  * @param props - See {@link OnboardingExecutionFlowProps}.
  * @returns The multi-step onboarding execution flow.
  * @public
- * @group Flow Components
+ * @group Flow components
  *
  * @example
  * ```tsx title="App.tsx"

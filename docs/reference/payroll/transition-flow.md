@@ -12,7 +12,19 @@ custom_edit_url: null
 
 # TransitionFlow
 
-Guided flow to run a transition payroll between pay schedules.
+Guided flow to run a transition payroll when employees move from one pay schedule to another.
+
+## Remarks
+
+When employees switch from an old pay schedule to a new one, the change can leave a gap between
+the last pay period on the old schedule and the first on the new one. A transition payroll covers
+the wages earned during that gap.
+
+Starts on the creation step (configure check date, deductions, and tax withholding for the
+transition pay period). After the payroll is created, the flow hands off to the standard
+payroll execution experience — configure compensation, review, submit, and view receipts.
+
+If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
 
 ## Example
 
@@ -36,14 +48,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Starts on the creation step (configure check date, deductions, and tax withholding for the
-transition pay period). After the payroll is created, the flow hands off to the standard
-payroll execution experience — configure compensation, review, submit, and view receipts.
-
-If a `payrollUuid` is supplied, the flow skips creation and resumes directly in execution.
-
 ## TransitionFlowProps
 
 <a id="transitionflowprops"></a>
@@ -54,7 +58,7 @@ Props for TransitionFlow.
 | ------ | ------ | ------ |
 | `companyId` | `string` | Company running the transition payroll. |
 | `endDate` | `string` | End date of the transition pay period (YYYY-MM-DD). |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked for each event emitted by the flow and its child steps. |
 | `payScheduleUuid` | `string` | UUID of the pay schedule the transition is associated with. |
 | `startDate` | `string` | Start date of the transition pay period (YYYY-MM-DD). |
 | `payrollUuid?` | `string` | UUID of an existing transition payroll. When provided, the flow skips creation and resumes in execution. |

@@ -19,14 +19,14 @@ ruleTester.run('tsdoc-valid-group', rule, {
     `/** @public */\nexport function useHomeAddressForm() {}`,
 
     // Valid component groups
-    `/**\n * @group Flow Components\n * @public\n */\nexport function EmployeeOnboardingFlow() {}`,
-    `/**\n * @group Block Components\n * @public\n */\nexport function DocumentsCard() {}`,
+    `/**\n * @group Flow components\n * @public\n */\nexport function EmployeeOnboardingFlow() {}`,
+    `/**\n * @group Block components\n * @public\n */\nexport function DocumentsCard() {}`,
     `/**\n * @group Components\n * @public\n */\nexport function ApiProvider() {}`,
 
     // Valid hook groups
-    `/**\n * @group Form Hooks\n * @public\n */\nexport function useAddressForm() {}`,
-    `/**\n * @group Data Hooks\n * @public\n */\nexport function useEmployeeList() {}`,
-    `/**\n * @group Utility Hooks\n * @public\n */\nexport function useStateFields() {}`,
+    `/**\n * @group Form hooks\n * @public\n */\nexport function useAddressForm() {}`,
+    `/**\n * @group Data hooks\n * @public\n */\nexport function useEmployeeList() {}`,
+    `/**\n * @group Utility hooks\n * @public\n */\nexport function useStateFields() {}`,
     `/**\n * @group Hooks\n * @public\n */\nexport function useCustomHook() {}`,
 
     // No TSDoc comment at all

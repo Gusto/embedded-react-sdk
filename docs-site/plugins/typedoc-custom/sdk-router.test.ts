@@ -1083,13 +1083,13 @@ describe('buildPages — hook directory controls per-hook page membership', () =
       '/workspace/src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx',
     )
     hook.comment = new Comment()
-    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data Hooks' }]))
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Data hooks' }]))
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
     const urls = pages.map(p => p.url)
 
-    // Goes to its hook dir page, not a 'Data Hooks' page.
+    // Goes to its hook dir page, not a 'Data hooks' page.
     expect(urls).toContain('employee/hooks/use-compensation-form.md')
     expect(urls.some(u => u.includes('data-hooks'))).toBe(false)
   })
@@ -1152,9 +1152,9 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     expect(hookPageModel.children).toContain(errorCodes)
     expect(hookPageModel.children).toContain(propsIface)
     // The hook function keeps its own group; everything else (variables,
-    // interfaces, type aliases) collapses into a single Utility Types group.
+    // interfaces, type aliases) collapses into a single Utility types group.
     expect(hookPageModel.groups?.find(g => g.title === 'Functions')?.children).toContain(hook)
-    const utilityTypes = hookPageModel.groups?.find(g => g.title === 'Utility Types')?.children
+    const utilityTypes = hookPageModel.groups?.find(g => g.title === 'Utility types')?.children
     expect(utilityTypes).toContain(errorCodes)
     expect(utilityTypes).toContain(propsIface)
   })
@@ -1164,7 +1164,7 @@ describe('buildPages — hook directory controls per-hook page membership', () =
     const hook = makeChild(project, 'useAddressForm', ReflectionKind.Function)
     hook.sources = sourceRef('/workspace/src/components/Employee/utils/someUtil.ts')
     hook.comment = new Comment()
-    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Form Hooks' }]))
+    hook.comment.blockTags.push(new CommentTag('@group', [{ kind: 'text', text: 'Form hooks' }]))
 
     const router = new SDKRouter(app)
     const pages = router.buildPages(project)
@@ -1174,7 +1174,7 @@ describe('buildPages — hook directory controls per-hook page membership', () =
       ?.model as DeclarationReflection
     expect(hookPage).toBeDefined()
     // Within that page, the @group tag controls the group title.
-    const group = hookPage.groups?.find(g => g.title === 'Form Hooks')
+    const group = hookPage.groups?.find(g => g.title === 'Form hooks')
     expect(group?.children).toContain(hook)
   })
 
@@ -1516,14 +1516,6 @@ describe('pageTitle', () => {
       'employee/management/dashboard-flow.md',
     )
     expect(pageTitle(page)).toBe('DashboardFlow')
-  })
-
-  it('returns "Sub-components" for a sub-components page', () => {
-    const page = makePage(
-      new DeclarationReflection('Block Components', ReflectionKind.Namespace),
-      'employee/management/blocks.md',
-    )
-    expect(pageTitle(page)).toBe('Sub-components')
   })
 
   it('returns the namespace name for a regular namespace page', () => {

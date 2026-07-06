@@ -5,7 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry for the ComboBox dropdown list.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface ComboBoxOption {
   /**
@@ -23,7 +23,7 @@ export interface ComboBoxOption {
  * Renders a form field wrapping a filterable `<input />` for single-option selection, optionally allowing free-form values.
  *
  * @public
- * @group Component Props
+ * @group Component props
  * @see {@link MultiSelectComboBoxProps}
  */
 export interface ComboBoxProps

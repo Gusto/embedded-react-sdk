@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from 'fs'
 import { scssPreprocessorOptions, svgrPlugin } from '../vite.config'
 import { fetchEntityIds, ENTITY_ID_KEYS, entityIdToEnvVar } from './src/entity-config'
 import { createDemoAndProvision, writeEnvFile, validateHost } from './scripts/demo-provisioner'
+import { registerSandboxCommentsProxy } from './scripts/sandbox-comments'
 
 const SDK_APP_DEFAULT_PORT = 5200
 
@@ -72,6 +73,8 @@ export default defineConfig(() => {
       {
         name: 'sdk-app-server-api',
         configureServer(server) {
+          registerSandboxCommentsProxy(server)
+
           server.middlewares.use('/sdk-app/api/create-demo', async (req, res) => {
             if (req.method !== 'POST') {
               res.statusCode = 405

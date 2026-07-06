@@ -5,7 +5,7 @@ import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/Fie
  * Option entry for a `MultiSelectComboBox` dropdown list.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface MultiSelectComboBoxOption {
   /**
@@ -23,7 +23,7 @@ export interface MultiSelectComboBoxOption {
  * Renders a form field wrapping a typeahead input for multi-option selection.
  *
  * @public
- * @group Component Props
+ * @group Component props
  * @see {@link ComboBoxProps}
  */
 export interface MultiSelectComboBoxProps
