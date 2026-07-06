@@ -1,5 +1,5 @@
 import { posix } from 'path'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import {
   ArrayType,
@@ -84,6 +84,13 @@ function getEndpointInventory(): EndpointInventory {
       posix.dirname(fileURLToPath(import.meta.url)),
       '../../../docs/guides/endpoint-inventory.json',
     )
+    if (!existsSync(inventoryPath)) {
+      throw new Error(
+        `Endpoint inventory not found at ${inventoryPath}. ` +
+          `Run "npm run endpoints:derive" before generating the docs (the TypeDoc ` +
+          `theme reads this file to render each page's Endpoints section).`,
+      )
+    }
     cachedInventory = JSON.parse(readFileSync(inventoryPath, 'utf-8')) as EndpointInventory
   }
   return cachedInventory
