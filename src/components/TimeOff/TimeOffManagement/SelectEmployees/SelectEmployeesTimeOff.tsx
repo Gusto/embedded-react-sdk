@@ -9,6 +9,7 @@ import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicy
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { matchesEmployeeSearch, useSelectEmployeesData } from './useSelectEmployeesData'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { useBase } from '@/components/Base/useBase'
 import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
@@ -229,7 +230,7 @@ function SelectEmployeesTimeOffInner({
           }
         }
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'timeOffPolicies', 'get'],
+          queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
         })
         onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
       })

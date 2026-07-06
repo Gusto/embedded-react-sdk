@@ -10,6 +10,7 @@ import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
 import { LocationsFormProvider } from './useLocationForm'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -98,7 +99,7 @@ function Root({
       // and the form seeds with a stale addressType on first open.
       const refreshLocationsCache = () =>
         queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'Locations'],
+          queryKey: [API_QUERY_NAMESPACE, 'Locations'],
           refetchType: 'all',
         })
 

@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { SDKInternalError } from '@/types/sdkError'
@@ -152,7 +153,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
         })
 
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'timeOffPolicies', 'get'],
+          queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
         })
         onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
       } catch (err) {

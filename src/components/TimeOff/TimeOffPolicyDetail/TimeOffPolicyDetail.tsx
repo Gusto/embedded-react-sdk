@@ -16,6 +16,7 @@ import type {
   PolicySettingsDisplay,
   PolicyTypeKey,
 } from './TimeOffPolicyDetailTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -212,7 +213,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const invalidatePolicy = useCallback(() => {
     void queryClient.invalidateQueries({
-      queryKey: ['@gusto/embedded-api-v-2026-02-01', 'timeOffPolicies', 'get'],
+      queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
     })
   }, [queryClient])
 

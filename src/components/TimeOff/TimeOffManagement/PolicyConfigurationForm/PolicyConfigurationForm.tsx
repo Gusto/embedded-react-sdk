@@ -8,6 +8,7 @@ import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/em
 import { useQueryClient } from '@tanstack/react-query'
 import { PolicyConfigurationFormPresentation } from './PolicyConfigurationFormPresentation'
 import type { PolicyConfigurationFormData } from './PolicyConfigurationFormTypes'
+import { API_QUERY_NAMESPACE } from '@/contexts/ApiProvider/apiVersion'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
@@ -330,7 +331,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
         })
 
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api-v-2026-02-01', 'timeOffPolicies', 'get'],
+          queryKey: [API_QUERY_NAMESPACE, 'timeOffPolicies', 'get'],
         })
 
         onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
