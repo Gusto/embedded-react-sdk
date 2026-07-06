@@ -25,11 +25,26 @@ const INDEX_PATH = join(SRC_DIR, 'index.ts')
 const JSON_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-inventory.json')
 const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
 
+// The dated API version the SDK targets. Kept in step with the
+// @gusto/embedded-api-v-<version> package the rest of this file references.
+const API_VERSION = '2026-02-01'
+// Public API reference for the targeted version. Each endpoint links to its
+// page here, e.g. PUT /v1/garnishments/:garnishmentId ->
+// .../reference/put-v1-garnishments-garnishment_id
+const DOCS_REFERENCE_BASE = `https://docs.gusto.com/embedded-payroll/v${API_VERSION}/reference`
+
+const KNOWN_UNDOCUMENTED_OPERATIONS = new Set(['submit-information-request'])
+
 const isVerifyMode = process.argv.includes('--verify')
 
 interface Endpoint {
   method: string
   path: string
+  /**
+   * URL of the endpoint's page in the public API reference. Omitted for
+   * endpoints in {@link KNOWN_UNDOCUMENTED_OPERATIONS}, which have no such page.
+   */
+  docsUrl?: string
 }
 
 interface BlockEntry {
@@ -86,6 +101,18 @@ function snakeToCamel(snake: string): string {
   return snake.replace(/_([a-z])/g, (_match, letter: string) => letter.toUpperCase())
 }
 
+/**
+ * Builds the public API reference URL for an endpoint from its `operationID`,
+ * which is the exact slug the reference uses for that endpoint's page (e.g.
+ * `get-v1-company-forms`). The reference slug is not always derivable from the
+ * method and path, so the `operationID` carried by the SDK is the source of truth.
+ * Returns `undefined` for operations known to have no public reference page.
+ */
+function endpointDocsUrl(operationId: string): string | undefined {
+  if (KNOWN_UNDOCUMENTED_OPERATIONS.has(operationId)) return undefined
+  return `${DOCS_REFERENCE_BASE}/${operationId}`
+}
+
 function buildSnakeToCamelLookup(project: Project): Map<string, string> {
   const opFiles = project.addSourceFilesAtPaths(join(OPS_DIR, '*.ts'))
   const lookup = new Map<string, string>()
@@ -136,14 +163,15 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
 
 function collectRawFuncPaths(
   project: Project,
-): { funcName: string; path: string; method: string }[] {
+): { funcName: string; path: string; method: string; operationId: string }[] {
   const funcFiles = project.addSourceFilesAtPaths(join(FUNCS_DIR, '*.ts'))
-  const results: { funcName: string; path: string; method: string }[] = []
+  const results: { funcName: string; path: string; method: string; operationId: string }[] = []
 
   for (const file of funcFiles) {
     const funcName = file.getBaseNameWithoutExtension()
     let path = ''
     let method = ''
+    let operationId = ''
 
     file.forEachDescendant(node => {
       if (node.getKind() === SyntaxKind.CallExpression) {
@@ -157,21 +185,34 @@ function collectRawFuncPaths(
       }
       if (node.getKind() === SyntaxKind.PropertyAssignment) {
         const pa = node.asKindOrThrow(SyntaxKind.PropertyAssignment)
-        if (pa.getName() === 'method') {
-          const init = pa.getInitializer()
-          if (init?.getKind() === SyntaxKind.StringLiteral) {
-            method = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
-          }
-        }
+        const init = pa.getInitializer()
+        if (init?.getKind() !== SyntaxKind.StringLiteral) return
+        const value = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
+        if (pa.getName() === 'method') method = value
+        // The operationID mirrors the endpoint's slug in the public API reference.
+        if (pa.getName() === 'operationID') operationId = value
       }
     })
 
     if (path && method) {
-      results.push({ funcName, path, method })
+      results.push({ funcName, path, method, operationId })
     }
   }
 
   return results
+}
+
+function warnIfStaleUndocumentedOperations(knownOperationIds: Set<string>): void {
+  const stale = [...KNOWN_UNDOCUMENTED_OPERATIONS].filter(op => !knownOperationIds.has(op))
+  if (stale.length === 0) return
+
+  console.warn(
+    'WARNING: KNOWN_UNDOCUMENTED_OPERATIONS lists operationIDs that no longer exist in ' +
+      '@gusto/embedded-api-v-2026-02-01 (renamed or removed?):',
+  )
+  for (const op of stale) console.warn(`  ${op}`)
+  console.warn('  Remove each stale entry, or update it to the current operationID.')
+  console.warn('')
 }
 
 function buildFuncLookup(project: Project): Map<string, Endpoint> {
@@ -181,11 +222,14 @@ function buildFuncLookup(project: Project): Map<string, Endpoint> {
     rawFuncs.map(f => f.path),
   )
 
+  warnIfStaleUndocumentedOperations(new Set(rawFuncs.map(f => f.operationId)))
+
   const lookup = new Map<string, Endpoint>()
-  for (const { funcName, path, method } of rawFuncs) {
+  for (const { funcName, path, method, operationId } of rawFuncs) {
     lookup.set(funcName, {
       method,
       path: normalizeEndpointPath(path, paramNameMap),
+      docsUrl: endpointDocsUrl(operationId),
     })
   }
 
@@ -664,7 +708,7 @@ function deriveInventory(): DerivationResult {
     for (const funcName of funcNames) {
       const info = funcLookup.get(funcName)
       if (info) {
-        endpoints.push({ method: info.method, path: info.path })
+        endpoints.push({ method: info.method, path: info.path, docsUrl: info.docsUrl })
       }
     }
 
@@ -710,7 +754,7 @@ function deriveInventory(): DerivationResult {
     for (const funcName of funcNames) {
       const info = funcLookup.get(funcName)
       if (info) {
-        endpoints.push({ method: info.method, path: info.path })
+        endpoints.push({ method: info.method, path: info.path, docsUrl: info.docsUrl })
       }
     }
 
@@ -746,7 +790,7 @@ function generateMarkdown(inventory: Inventory, hookDomains: Record<string, stri
     '',
     "Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).",
     '',
-    'Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond to real IDs at runtime. This data is also available as a machine-readable JSON file at [`endpoint-inventory.json`](./endpoint-inventory.json), which includes the list of variables each block expects. For programmatic access, import it directly from the package:',
+    'Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond to real IDs at runtime, and each links to its page in the API reference. This data is also available as a machine-readable JSON file at [`endpoint-inventory.json`](./endpoint-inventory.json), which includes the reference URL and the list of variables each block expects. For programmatic access, import it directly from the package:',
     '',
     '```typescript',
     "import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'",
@@ -832,7 +876,8 @@ function appendEndpointTable(
     let isFirst = true
     for (const ep of entry.endpoints) {
       const label = isFirst ? `**${name}**` : ''
-      lines.push(`| ${label} | ${ep.method} | \`${ep.path}\` |`)
+      const pathCell = ep.docsUrl ? `[\`${ep.path}\`](${ep.docsUrl})` : `\`${ep.path}\``
+      lines.push(`| ${label} | ${ep.method} | ${pathCell} |`)
       isFirst = false
     }
   }

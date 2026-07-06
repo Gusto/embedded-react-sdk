@@ -59,6 +59,8 @@ import {
 interface InventoryEndpoint {
   method: string
   path: string
+  /** URL of the endpoint's page in the public API reference, if one exists. */
+  docsUrl?: string
 }
 interface InventoryBlockEntry {
   endpoints: InventoryEndpoint[]
@@ -144,7 +146,8 @@ function renderEndpointsSection(endpoints: InventoryEndpoint[], headingLevel: nu
   const heading = '#'.repeat(headingLevel)
   const lines = [`${heading} Endpoints`, '', '| Method | Path |', '| --- | --- |']
   for (const ep of endpoints) {
-    lines.push(`| ${ep.method} | \`${ep.path}\` |`)
+    const pathCell = ep.docsUrl ? `[\`${ep.path}\`](${ep.docsUrl})` : `\`${ep.path}\``
+    lines.push(`| ${ep.method} | ${pathCell} |`)
   }
   return lines.join('\n')
 }
