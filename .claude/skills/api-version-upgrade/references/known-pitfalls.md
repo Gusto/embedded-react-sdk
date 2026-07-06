@@ -2,6 +2,19 @@
 
 Each upgrade has taught us something. This is the durable list of "things that bit us, don't bite us again."
 
+## ⚠️ Current model (since SDK-1086) — read first
+
+The two historical sections below (v0.13.0, v2025-11-15) describe the **pre-alias** mechanics: a ~360-file import-path sweep, hardcoded `queryKey` literals scattered across screens, and a standalone bare-date `CURRENT_API_VERSION` constant in `apiVersionHook.ts`. **None of those apply anymore.** They're kept as history — do not follow their mechanics on a current upgrade.
+
+Today:
+
+- Imports route through the `@gusto/embedded-api` alias; the `sdk-conventions/use-embedded-api-alias` lint rule enforces it. **No import-path sweep.**
+- Hand-written `queryKey` literals use `API_QUERY_NAMESPACE`. **No scattered cache-key sweep.**
+- `apiVersionHook.ts` imports `API_VERSION` from `apiVersion.ts` — there is **no** `CURRENT_API_VERSION`. The bare-date value lives in exactly one place (`API_VERSION`), plus a few test assertions.
+- `src/models/external.ts` is regenerated (`npm run models:derive`), not swept.
+
+So the whole failure class of "missed a file / missed a literal / forgot the header constant" collapses to one invariant: **`API_VERSION` and the `package.json` alias target must name the same date.** See `codemod-commands.md`.
+
 ## v0.13.0 → v2025-11-15 (the original migration)
 
 The first time the SDK moved from the unversioned `@gusto/embedded-api` package to a dated `@gusto/embedded-api-v-<DATE>` package. Reference PR: https://github.com/Gusto/embedded-react-sdk/pull/1814 (kept as fallback, never merged; the migration shipped via per-domain PRs).
@@ -9,7 +22,7 @@ The first time the SDK moved from the unversioned `@gusto/embedded-api` package 
 **What was breaking (verified against the installed v2025-11-15 package):**
 
 1. `useDataView<T>` needed explicit type-argument at 4 call sites: `RecoveryCasesList`, `PayScheduleList`, `DeductionsList`, `InformationRequestList`. Type-only; verified by typecheck.
-2. **Mechanical sweep of ~360 files** to move imports from bare `@gusto/embedded-api` to dated `@gusto/embedded-api-v-2025-11-15`. **This is the dangerous one** — see `codemod-commands.md` for the boundary-anchored sed required when migrating FROM the bare package (a naive global replace corrupts already-dated strings).
+2. **Mechanical sweep of ~360 files** to move imports from the bare `@gusto/embedded-api` package to the dated `@gusto/embedded-api-v-2025-11-15` one, via a boundary-anchored regex (the bare name is a prefix of every dated name, so a naive global replace corrupts already-dated strings). _Superseded by SDK-1086: imports now route through the `@gusto/embedded-api` alias and are never swept on a bump._
 3. Cache namespace prefix changes from `['@gusto/embedded-api']` to `['@gusto/embedded-api-v-2025-11-15']` across all hand-written `queryKey` literals.
 
 **Note on historical claims:** earlier versions of this doc claimed `autoPilot` → `autoPayroll` and `PaymentType.Payroll` → lowercase `'payroll'` were breaking changes in this migration. Verifying against the installed v2025-11-15 package: `autoPayroll` is the field name (the rename, if it happened, was earlier or unverifiable from current state); `PaymentType.Payroll` is **still** `"Payroll"` capitalized in both v2025-11-15 and v2026-02-01 (no enum-value change). Treat any historical breaking-change list as a starting point — always re-verify by diffing the installed packages.
@@ -19,7 +32,7 @@ The first time the SDK moved from the unversioned `@gusto/embedded-api` package 
 - **Per-domain PRs are not necessary.** The original migration was sliced into 6 per-domain PRs (Payroll, Employee, Contractor, TimeOff, InformationRequests, plus a Foundation PR). This was driven by uncertainty — we didn't yet know how small the actual breaking surface would be. With hindsight, a single base PR + minimal sub-PRs (only where 🔴 work requires separate review) is the right pattern. **Default to one PR.**
 - **The Foundation PR concept.** When 13 cross-cutting files (types, helpers, hooks, shared, partner-hook-utils, Common, Base, factories) all import from the API package, they have to migrate together — a per-domain PR can't split them without breakage. This stays true; the codemod handles them all in one commit, no separate Foundation PR needed.
 - **Test/mock files migrate alongside the codemod**, not separately. 30 unit-test MSW mocks in `src/test/mocks/apis/*.ts` are part of the same commit.
-- **Boundary-anchored sed is mandatory when migrating from the bare package.** The bare name is a prefix of every dated name. See `codemod-commands.md` § "Migrating FROM the bare/unversioned package".
+- **Boundary-anchored sed was mandatory when migrating from the bare package** — the bare name is a prefix of every dated name. _Historical: the alias model (SDK-1086) removed import sweeps entirely, so this no longer applies._
 
 ## v2025-11-15 → v2026-02-01 (the second migration)
 
@@ -41,8 +54,8 @@ Reference PR: https://github.com/Gusto/embedded-react-sdk/pull/2233.
 
 - **`migration_status` is not on Company — it's on the migrate response.** This caused a wasted scaffold (the original `03-migration-status-boolean.spec.ts` was scoped to the Company entity, but `migration_status` lives on `PartnerManagedCompanyMigrateResponse`). Always trace a breaking change to the actual API operation before reasoning about consumers.
 - **`migration_blocker` / `migration_warning` are NOT payroll submission_blockers.** They live on `partner_managed_companies/migration_readiness` errors[]. Same word, different endpoint, no shared rendering. Document this explicitly so future-you doesn't conflate them again.
-- **Hardcoded `queryKey` literals are everywhere.** 19 sites (13 files) carry `'@gusto/embedded-api-v-2025-11-15'` as a string literal, spread across `createSdkQueryClient.ts` (4 sites), `ApiProvider.tsx` (1 docstring), TimeOff (~5 sites), Company/Locations (1 site), sdk-app contractor-management (~8 sites). A codemod that only updates import paths leaves these on the old namespace and silently breaks query invalidation. The sed regex catches them because they share the version string, but the failure mode is so high-cost that the verification step (`grep -rln "<OLD>"` after sweep) is non-negotiable. **Don't anchor expectations on a specific count** — re-run the count for each upgrade because the site list drifts as code changes.
-- **🔴 The bare-date `X-Gusto-API-Version` constant.** This is the most dangerous miss of the upgrade. `src/contexts/ApiProvider/apiVersionHook.ts:3` holds `const CURRENT_API_VERSION = '<OLD>'` as a plain date string — NOT inside a package path. The package-name sed sweep does NOT match it. Skipping this site means the SDK sends the OLD version on every HTTP request despite the bumped types: the server answers with old schemas, typecheck and unit tests pass, partners hit production with the wrong API contract. **This was missed in the v2025-11-15 → v2026-02-01 execution and caught only by the api-version-upgrade skill's iteration-2 eval.** Always flip explicitly per `codemod-commands.md` § "CRITICAL — the bare-date X-Gusto-API-Version sweep" and verify with `grep -rn "'<OLD>'" src/ sdk-app/ e2e/`.
+- **Hardcoded `queryKey` literals were everywhere.** 19 sites (13 files) carried `'@gusto/embedded-api-v-2025-11-15'` as a string literal, spread across `createSdkQueryClient.ts`, `ApiProvider.tsx`, TimeOff, Company/Locations, and sdk-app contractor-management. A codemod that only updated import paths left these on the old namespace and silently broke query invalidation. _Superseded by SDK-1086: every one of those literals now reads `API_QUERY_NAMESPACE`, so the risk collapses to the single `API_VERSION`-vs-alias-target invariant — there is nothing scattered left to miss._
+- **🔴 The bare-date `X-Gusto-API-Version` constant.** The most dangerous miss of this era: `apiVersionHook.ts` held `const CURRENT_API_VERSION = '<OLD>'` as a plain date string — NOT inside a package path — so the package-name sed sweep didn't match it. Skipping it made the upgrade a runtime no-op: types bumped, but the SDK still sent the old version on every request, the server answered with old schemas, and typecheck/unit tests passed regardless. It was missed in the v2025-11-15 → v2026-02-01 execution and caught only by this skill's iteration-2 eval. _SDK-1086 fixed this class of bug at the root: the bare date now lives once, as `API_VERSION` in `apiVersion.ts` (which `apiVersionHook.ts` imports), driving both the header and `API_QUERY_NAMESPACE`. See the current-model section at the top — the risk is now the single `API_VERSION`-vs-alias-target invariant._
 - **Don't author sub-PRs for verify-only items.** The original plan was 4 sub-PRs (one per breaking change). 3 of 4 ended up empty after the E2E specs were consolidated onto the base. The 4th had only a docstring update. Time wasted on PR creation + closure.
 - **`getByRole('switch')` hangs on SDK custom controls.** SwitchHookField renders the input as visually-hidden; role-based click hangs on actionability checks. Click the visible label text instead.
 - **`git add -A` picks up `.claude/worktrees/` as submodules.** Use `git add -u` for the codemod commit, or stage files explicitly.
@@ -98,5 +111,5 @@ These apply to every upgrade:
 - **Don't write E2E specs that can't run.** A `test.skip` placeholder is dead weight that hides a coverage gap. If a spec needs a new scenario, file a ticket and skip — but include the ticket number in the skip reason.
 - **Don't conflate naming.** Same word can mean different things on different endpoints. Trace the change to the operation, then to the endpoint URL, then to consumers.
 - **Typecheck CI is the strongest verification of the type contract.** Many "breaking changes" in changelogs are reshape additions that the regenerated Zod schemas accept transparently. Don't write E2Es to verify something the typecheck already proves.
-- **The cache-namespace sweep is non-negotiable.** Even if the diff shows zero shape changes, the cache namespace MUST flip. A missed flip causes silent stale-data bugs that take hours to diagnose post-merge.
+- **`API_VERSION` must match the alias target.** Even if the diff shows zero shape changes, `apiVersion.ts`'s `API_VERSION` and the `@gusto/embedded-api` alias target in `package.json` MUST name the same new date — that keeps the request header, `API_QUERY_NAMESPACE`, and the resolved package in lockstep. A mismatch causes silent stale-data bugs (caches keyed under one version, requests sent under another) that take hours to diagnose post-merge. (Pre-SDK-1086 this was a scattered cache-namespace sweep; it's now this single invariant.)
 - **Default to a single base PR.** Sub-PRs are justified only when ≥2 distinct 🔴 items each warrant separate review focus. Empty sub-PRs are negative-value.

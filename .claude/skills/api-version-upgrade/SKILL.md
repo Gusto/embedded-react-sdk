@@ -7,10 +7,10 @@ description: >-
   version", references a dated API version (e.g. v2026-06-15, v2026-02-01),
   asks to swap `@gusto/embedded-api-v-*` packages, or mentions a SDK-998/SDK-1000
   family Jira ticket. The skill runs the full playbook autonomously:
-  side-by-side package diff to enumerate every breaking change, codemod across
-  all import paths + cache-key string literals, type-level verification, E2E
-  scaffolding for any breaking change with a real SDK consumer, and a draft
-  base PR with the breaking-change matrix in the description.
+  side-by-side package diff to enumerate every breaking change, a minimal
+  version bump, type-level verification, E2E scaffolding for any
+  breaking change with a real SDK consumer, and a draft base PR with the
+  breaking-change matrix in the description.
 ---
 
 # API Version Upgrade
@@ -18,6 +18,8 @@ description: >-
 Take the SDK from `@gusto/embedded-api-v-<OLD>` to `@gusto/embedded-api-v-<NEW>` end-to-end, in one autonomous pass.
 
 The Gusto Embedded API releases dated major versions (e.g. `2025-11-15`, `2026-02-01`, `2026-06-15`). Each version is published as its own npm package — the SDK pins to exactly one at a time. Upgrading is a structured workflow with predictable risks; this skill exists to make it boring.
+
+**Since SDK-1086, the bump itself is nearly mechanical-free.** Every SDK import routes through the version-agnostic `@gusto/embedded-api` alias (enforced by the `sdk-conventions/use-embedded-api-alias` lint rule), and `src/contexts/ApiProvider/apiVersion.ts` is the single source of truth: `API_VERSION` drives both the `X-Gusto-API-Version` header and `API_QUERY_NAMESPACE` (the TanStack key prefix, which resolves to the real dated package name the library bakes into every query key). Bumping the version = update the alias in `package.json` + set `API_VERSION`. There is **no import-path sweep** and **no scattered cache-key literals** to chase. The real work is the breaking-change analysis (Phase 2) and its verification (Phases 4–5).
 
 ## Inputs
 
@@ -61,20 +63,23 @@ For **every** removed export, removed field, and removed enum value found in the
 | ⚠️     | Field shape changed     | Yes (file:line)         | E2E or unit test, depending |
 | ✅     | Bar removed from comp Y | No (grep returns empty) | Typecheck CI is sufficient  |
 
-The cache-namespace string literal `'@gusto/embedded-api-v-<OLD>'` is a special case — it's both an import path AND a hand-written `queryKey` literal in several screens. Catch all of them with a separate sweep. See `references/codemod-commands.md`.
+The cache-namespace string is no longer scattered: hand-written `queryKey` literals read `API_QUERY_NAMESPACE` from `apiVersion.ts`, which derives from `API_VERSION`. There is nothing to sweep — the diff only needs to surface _behavioral_ changes. (As a safety check, confirm no stray dated string literals crept back into source; see `references/codemod-commands.md`.)
 
 **Critical lesson — don't conflate concepts.** Two changes can use the same word ("blocker", "migration") on different endpoints. For instance: payroll `submission_blockers[]` and `partner_managed_companies/migration_readiness` errors[] are unrelated despite both rendering as "blockers". Verify each change against the actual API operation it lives on.
 
-### Phase 3: Codemod (base branch)
+### Phase 3: Version bump (base branch)
 
-Create branch `upgrade/api-<NEW>-base`. Apply the mechanical swap:
+Create branch `upgrade/api-<NEW>-base`. Since SDK-1086 this is a handful of edits, **not** a ~360-file sweep. See `references/codemod-commands.md` for exact commands and verification greps.
 
-1. **Import path sweep** — `find src sdk-app -type f \( -name "*.ts" -o -name "*.tsx" \) -exec sed -i '' "s|@gusto/embedded-api-v-<OLD>|@gusto/embedded-api-v-<NEW>|g" {} +`. **When migrating FROM the bare/unversioned `@gusto/embedded-api` package, use the boundary-anchored regex from `references/codemod-commands.md` instead — a naive global replace corrupts already-dated strings.**
-2. **Cache-key string literal sweep** — the same regex catches `queryKey: ['@gusto/embedded-api-v-<OLD>', ...]` literals because they share the version string. **This catches more sites than just `createSdkQueryClient.ts`** — at minimum: `src/contexts/ApiProvider/`, `src/components/TimeOff/`, `src/components/Company/Locations/`, `sdk-app/src/design/prototypes/contractor-management/`. Verify with `grep -rn "<OLD>" src sdk-app`.
-3. **🔴 CRITICAL — bare-date `X-Gusto-API-Version` sweep.** `src/contexts/ApiProvider/apiVersionHook.ts:3` carries `const CURRENT_API_VERSION = '<OLD>'` as a **bare date string** (NOT a package path). The package-name sed does NOT catch this. If skipped, the upgrade is a **runtime no-op** — types claim the new version, but the SDK sends the old version on every request. See `references/codemod-commands.md` § "CRITICAL — the bare-date `X-Gusto-API-Version` sweep" for the mandatory sites and verification grep.
-4. **Docs + instruction files** — explicitly sed `AGENTS.md`, `CLAUDE.md`, `src/CLAUDE.md`, `docs/api/`, `docs/reference/`, `build/deriveEndpointInventory.ts`, `e2e/utils/validationErrorCollector.test.ts`. Do NOT touch `CHANGELOG.md` (historical) or `.reports/*` (auto-generated).
-5. **`package.json`** — edit the `@gusto/embedded-api-v-<OLD>` dep entry to `@gusto/embedded-api-v-<NEW>` with `^0.0.1` (use the actual lowest published version).
-6. **`npm install`** — regenerates `package-lock.json`.
+1. **Source of truth** — edit `src/contexts/ApiProvider/apiVersion.ts`: set `API_VERSION = '<NEW>'`. This one line drives the `X-Gusto-API-Version` header **and** `API_QUERY_NAMESPACE`, so the request header and every hand-written `queryKey` move together.
+2. **`package.json` alias** — update the `@gusto/embedded-api` alias target to `npm:@gusto/embedded-api-v-<NEW>@^<ver>`, and keep the direct `@gusto/embedded-api-v-<NEW>` dep entry in sync (look up the real lowest published version with `npm view`). Use `Edit`, not sed (JSON comma rules).
+3. **`npm install`** — installs the new package under the alias and regenerates `package-lock.json`.
+4. **Regenerate derived models** — `npm run models:derive` rewrites `src/models/external.ts` against the new package. Never hand-edit that file.
+5. **Test assertions + doc dates** — a few tests hardcode the version as a **bare date** (`apiVersionHook.test.ts`, `ApiProvider.test.tsx` assert the `X-Gusto-API-Version` value), and `CLAUDE.md` / `AGENTS.md` name the pinned version in prose. Update those explicitly.
+
+**No import-path sweep, no cache-key sweep.** Imports use the `@gusto/embedded-api` alias (the `sdk-conventions/use-embedded-api-alias` lint rule keeps them there); cache keys derive from `API_QUERY_NAMESPACE`. If `tsc` or lint surfaces a dated import specifier, that's a stray to fix at the source — not a sweep to run.
+
+**Do NOT touch** `CHANGELOG.md` (historical) or `.reports/*` (auto-generated; regenerates via `npm run derive`).
 
 ### Phase 4: Type-level verification
 
@@ -113,10 +118,10 @@ These are the rules the skill follows without asking:
 
 - **No consumer → typecheck verifies, no E2E needed.** Record in the matrix as ✅. Do not write a placeholder E2E.
 - **Consumer found but field is wider/optional now → ⚠️ verify-only.** Typecheck verifies the consumer still compiles; E2E optional.
-- **Consumer found and shape narrowed or renamed → 🔴 real fix required.** Apply the fix in the codemod commit if mechanical; otherwise stop and report for design input.
+- **Consumer found and shape narrowed or renamed → 🔴 real fix required.** Apply the fix in the version-bump commit if mechanical; otherwise stop and report for design input.
 - **Removed enum value with no `=== '<removed>'` narrowing in src → ✅.** The enum widening is a no-op.
 - **Server-side validation tightening (field exists in both versions, just stricter now) → ✅ trust the error pipeline.** The SDK's `normalizeToSDKError` (`src/types/sdkError.ts`) converts server 422 responses into `SDKError.fieldErrors[]`; form hooks expose them via `errorHandling.error`; the UI renders the field-level message next to the input. UX is identical to a client-side gate — just one extra HTTP round-trip. This is the same pattern as pay-schedule date constraints, frequency rules, etc. Don't write an E2E to verify the error pipeline works; that's not what the upgrade is changing. See `references/known-pitfalls.md` § "Trust the error pipeline" for the full reasoning.
-- **Cache-namespace string sweep is non-negotiable** regardless of how few hits — silent stale-data bugs are the highest-cost failure mode of any upgrade.
+- **`API_VERSION` must equal the alias's dated target.** The one invariant: `apiVersion.ts`'s `API_VERSION`, the `@gusto/embedded-api` alias target in `package.json`, and therefore `API_QUERY_NAMESPACE` must all name the same date. A mismatch is the highest-cost failure mode — the SDK would send one version's header while keying caches under another, causing silent stale-data bugs. Verify with the greps in `references/codemod-commands.md`.
 - **All PRs open as draft** until the user merges.
 
 ## When to break out of full-auto
@@ -131,7 +136,7 @@ Stop and report (do not blindly continue) when:
 ## References
 
 - `references/diff-methodology.md` — exact bash commands for the package diff + how to read the output
-- `references/codemod-commands.md` — sed commands, file globs, cache-key sweep specifics
+- `references/codemod-commands.md` — the exact version-bump edits (`apiVersion.ts`, `package.json` alias, derived models, test/doc dates) + verification greps
 - `references/e2e-patterns.md` — E2E spec patterns, selectors that work, lessons from prior brittleness
 - `references/pr-template.md` — PR description template (breaking-change matrix included)
 - `references/known-pitfalls.md` — concrete lessons from each prior upgrade
