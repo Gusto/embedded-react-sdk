@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import type { Config } from '@docusaurus/types'
 import type * as Preset from '@docusaurus/preset-classic'
 import { themes as prismThemes } from 'prism-react-renderer'
+import { CONFIG } from './src/config'
 
 // Versioning is owned by Gusto/embedded-sdk-docs, not this repo. When this
 // config builds there, `versions.json` exists and lists the cut minors; when it
@@ -55,9 +56,27 @@ const config: Config = {
 
   plugins: [require.resolve('./plugins/global-docs-sidebar')],
 
-  // Page-view-only analytics via the shared gusto-analytics client, gated on
-  // OneTrust consent. See src/gustoAnalytics.ts for the full wiring.
-  clientModules: [require.resolve('./src/gustoAnalytics.ts')],
+  // Load the OneTrust consent platform at the application level, in <head>. OneTrust
+  // is the site-wide cookie-consent gate (all categories, not just analytics), so it
+  // lives here rather than inside any feature module. The domain-script variant is
+  // resolved at build time (see src/analyticsConfig.ts).
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {
+        src: CONFIG.ONE_TRUST.STUB_URL,
+        'data-domain-script': CONFIG.ONE_TRUST.DOMAIN_SCRIPT,
+      },
+    },
+  ],
+
+  // cookieConsent wires the preference-center footer link and exposes the consent
+  // check; gustoAnalytics loads gusto-analytics and emits page views once the OneTrust
+  // consent (loaded above) is granted.
+  clientModules: [
+    require.resolve('./src/cookieConsent.ts'),
+    require.resolve('./src/clientModules/gustoAnalytics.ts'),
+  ],
 
   themes: [
     '@docusaurus/theme-mermaid',
