@@ -6,7 +6,7 @@ Since SDK-1086 the SDK imports the Gusto Embedded API through the version-agnost
 
 - **Imports** — every source file imports from `@gusto/embedded-api/<subpath>` (the alias), never a dated specifier. The `sdk-conventions/use-embedded-api-alias` lint rule enforces this and auto-fixes any dated import. So a version bump touches **zero** import statements.
 - **`X-Gusto-API-Version` header** — sent from `API_VERSION` in `apiVersion.ts` (via `apiVersionHook.ts`, which imports it — there is no separate `CURRENT_API_VERSION` constant anymore).
-- **TanStack query namespace** — hand-written `queryKey` literals use `API_QUERY_NAMESPACE`, which is `` `@gusto/embedded-api-v-${API_VERSION}` ``. The library also bakes its own package name into every generated key, so as long as `API_VERSION` matches the alias target, hand-written and library keys stay in sync automatically.
+- **TanStack query namespace** — hand-written `queryKey` literals use `API_QUERY_NAMESPACE`, which is `` `@gusto/embedded-api-v-${API_VERSION}` `` (the `sdk-conventions/no-literal-api-query-namespace` lint rule errors on a stray dated literal). The library also bakes its own package name into every generated key, so as long as `API_VERSION` matches the alias target, hand-written and library keys stay in sync automatically.
 - **`src/models/external.ts`** — generated (`npm run models:derive`); never hand-edited.
 
 The net effect: `API_VERSION` + the `package.json` alias target are the two values that must name the new date. Everything else derives from them.
@@ -78,9 +78,13 @@ Instruction docs name the pinned version in prose (import paths there already us
 - `docs/` / `docs-site/` partner-facing samples — these must reference the **real published package name** (`@gusto/embedded-api-v-<DATE>`), since integrators don't have our internal alias. If the reference docs embed the version, they regenerate from TSDoc via `npm run derive`; don't hand-edit.
 - `.claude/worktrees/` — sibling worktrees; not part of this checkout.
 
+### 6. `sdk-app` prototype query-key literals
+
+The `sdk-app` design prototypes hardcode the namespace as a bare `queryKey` literal in `queryClient.removeQueries(...)` calls (e.g. `contractor-management/ContractorList.tsx`). They **cannot** use `API_QUERY_NAMESPACE` — the dev app's `@/` alias points at its own `src`, not the SDK's — and the `no-literal-api-query-namespace` lint rule excludes them for that reason. Flip these by hand with the grep in verification (e). They're throwaway prototypes, so the stakes are low, but a missed flip means the prototype's manual cache invalidation silently stops matching the new namespace.
+
 ## Verification
 
-Run all four before committing.
+Run all five before committing.
 
 ```bash
 # (a) No stray DATED import specifiers anywhere in source — the alias is mandatory.
@@ -101,9 +105,13 @@ grep -rn "'${OLD}'\|\"${OLD}\"" src/ sdk-app/ e2e/ | grep -v node_modules
 
 # (d) The lint rule passes clean (proves no dated import regressed).
 npx eslint . --rule '{}' >/dev/null 2>&1 && echo "run: npx eslint <changed files>"
+
+# (e) sdk-app prototype namespace literals — the lint rule excludes sdk-app, so flip these by hand.
+grep -rn "['\"]@gusto/embedded-api-v-${OLD}['\"]" sdk-app --include="*.ts" --include="*.tsx"
+# Expected after the manual flip: empty (all now name <NEW>).
 ```
 
-The linter is the real backstop for import specifiers: `sdk-conventions/use-embedded-api-alias` errors on any dated import and auto-fixes it. If you ever see grep (a) return hits, running `eslint --fix` on those files converts them.
+The linter is the real backstop: `sdk-conventions/use-embedded-api-alias` errors on any dated import specifier, and `sdk-conventions/no-literal-api-query-namespace` errors on any bare dated namespace literal — both auto-fix. If you ever see grep (a) return hits, running `eslint --fix` on those files converts them.
 
 ## Stage safely
 

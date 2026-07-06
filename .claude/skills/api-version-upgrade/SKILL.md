@@ -77,7 +77,7 @@ Create branch `upgrade/api-<NEW>-base`. Since SDK-1086 this is a handful of edit
 4. **Regenerate derived models** — `npm run models:derive` rewrites `src/models/external.ts` against the new package. Never hand-edit that file.
 5. **Test assertions + doc dates** — a few tests hardcode the version as a **bare date** (`apiVersionHook.test.ts`, `ApiProvider.test.tsx` assert the `X-Gusto-API-Version` value), and `CLAUDE.md` / `AGENTS.md` name the pinned version in prose. Update those explicitly.
 
-**No import-path sweep, no cache-key sweep.** Imports use the `@gusto/embedded-api` alias (the `sdk-conventions/use-embedded-api-alias` lint rule keeps them there); cache keys derive from `API_QUERY_NAMESPACE`. If `tsc` or lint surfaces a dated import specifier, that's a stray to fix at the source — not a sweep to run.
+**No import-path sweep, no cache-key sweep.** Imports use the `@gusto/embedded-api` alias (the `sdk-conventions/use-embedded-api-alias` lint rule keeps them there); hand-written cache keys read `API_QUERY_NAMESPACE` (the `sdk-conventions/no-literal-api-query-namespace` lint rule bans stray dated literals). If `tsc` or lint surfaces a dated import specifier or namespace literal, that's a stray to fix at the source — not a sweep to run.
 
 **Do NOT touch** `CHANGELOG.md` (historical) or `.reports/*` (auto-generated; regenerates via `npm run derive`).
 
