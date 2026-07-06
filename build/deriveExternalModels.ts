@@ -14,19 +14,7 @@ const RELATIVE_OUTPUT = 'src/models/external.ts'
 
 const isVerifyMode = process.argv.includes('--verify')
 
-/** Resolve the dated embedded-api package name from package.json so this script survives version bumps. */
-function resolvePackageName(): string {
-  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as {
-    dependencies?: Record<string, string>
-    devDependencies?: Record<string, string>
-  }
-  const deps = { ...pkg.dependencies, ...pkg.devDependencies }
-  const name = Object.keys(deps).find(key => /^@gusto\/embedded-api-v-/.test(key))
-  if (!name) throw new Error('Could not find a @gusto/embedded-api-v-* dependency in package.json')
-  return name
-}
-
-const PACKAGE_NAME = resolvePackageName()
+const PACKAGE_NAME = '@gusto/embedded-api'
 const COMPONENT_IMPORT = new RegExp(
   `^${PACKAGE_NAME.replace(/[/\\^$*+?.()|[\]{}]/g, '\\$&')}/models/components/([a-z0-9]+)$`,
 )

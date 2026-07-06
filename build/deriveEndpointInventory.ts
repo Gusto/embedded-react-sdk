@@ -17,8 +17,8 @@ const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
 const SRC_DIR = join(ROOT, 'src')
-const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2026-02-01/src/funcs')
-const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2026-02-01/src/models/operations')
+const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
+const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
 const JSON_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-inventory.json')
 const MD_OUTPUT_PATH = join(ROOT, 'docs/guides/endpoint-reference.md')
@@ -208,11 +208,11 @@ function collectTransitiveApiImports(
   const funcNames = new Set<string>()
 
   function followSpec(spec: string, getResolved: () => SourceFile | undefined) {
-    if (spec.startsWith('@gusto/embedded-api-v-2026-02-01/react-query/')) {
-      const name = spec.slice('@gusto/embedded-api-v-2026-02-01/react-query/'.length)
+    if (spec.startsWith('@gusto/embedded-api/react-query/')) {
+      const name = spec.slice('@gusto/embedded-api/react-query/'.length)
       if (!name.startsWith('_')) funcNames.add(name)
-    } else if (spec.startsWith('@gusto/embedded-api-v-2026-02-01/funcs/')) {
-      funcNames.add(spec.slice('@gusto/embedded-api-v-2026-02-01/funcs/'.length))
+    } else if (spec.startsWith('@gusto/embedded-api/funcs/')) {
+      funcNames.add(spec.slice('@gusto/embedded-api/funcs/'.length))
     } else if (spec.startsWith('.') || spec.startsWith('@/hooks/')) {
       // Follow relative imports (catches ../shared/ hooks) and cross-cutting utility hooks.
       // Deliberately skip @/components/, @/contexts/, @/helpers/ etc. to avoid
