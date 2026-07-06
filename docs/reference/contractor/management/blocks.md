@@ -69,6 +69,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/payments/created` | The payment group was successfully created. | The created contractor payment group response. |
 | `contractor/payments/rfi/respond` | The user clicked to respond to a payment blocker. | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| POST | [`/v1/companies/:companyId/contractor_payment_groups`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-contractor_payment_groups) |
+| POST | [`/v1/companies/:companyId/contractor_payment_groups/preview`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-contractor_payment_groups-preview) |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
+
 <a id="paymenthistory"></a>
 
 ## PaymentHistory
@@ -115,6 +125,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/payments/view/details` | A row's view-details action was triggered. | `{ contractor: Contractor \| undefined, paymentGroupId: string }` — `contractor` is `undefined` if the contractor UUID is not found in the loaded list |
 | `contractor/payments/cancel` | An individual contractor payment was successfully canceled. | `{ paymentId: string }` — the individual contractor payment UUID, not the payment group UUID passed as `paymentId` prop |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| DELETE | [`/v1/companies/:companyId/contractor_payments/:contractorPaymentId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_id-contractor_payment-contractor-payment) |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractor_payment_groups/:contractorPaymentGroupUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id) |
+
 <a id="paymentslist"></a>
 
 ## PaymentsList
@@ -146,6 +164,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/payments/view` | User selects a payment group to view | `{ paymentId: string }` |
 | `contractor/payments/rfi/respond` | User clicks to respond to an information request alert | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/contractor_payment_groups`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-contractor_payment_groups) |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+
 <a id="paymentstatement"></a>
 
 ## PaymentStatement
@@ -166,6 +191,14 @@ Props for [PaymentStatement](#paymentstatement).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorPaymentsPaymentStatement`](../../Translations/index.md#contractorpaymentspaymentstatement)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractor_payment_groups/:contractorPaymentGroupUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id) |
+| GET | [`/v1/contractor_payments/:contractorPaymentUuid/receipt`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payments-contractor_payment_uuid-receipt) |
 
 <a id="paymentsummary"></a>
 
@@ -199,3 +232,11 @@ Props for [PaymentSummary](#paymentsummary).
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `contractor/payments/exit` | User completes the payment flow. | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractor_payment_groups/:contractorPaymentGroupUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor_payment_groups-contractor_payment_group_id) |

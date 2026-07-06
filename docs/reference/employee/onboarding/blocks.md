@@ -67,6 +67,22 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `employee/compensation/updated` | Fired after compensation details are updated | [Compensation](#compensation) |
 | `employee/compensation/done` | Fired when compensation setup is complete and the parent flow can advance | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details) |
+| PUT | [`/v1/compensations/:compensationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-compensations-compensation_id) |
+| DELETE | [`/v1/compensations/:compensationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-compensations-compensation_id) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs) |
+| POST | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-jobs) |
+| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses) |
+| PUT | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-jobs-job_id) |
+| DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id) |
+| POST | [`/v1/jobs/:jobId/compensations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-compensations-compensation_id) |
+| GET | [`/v1/locations/:locationUuid/minimum_wages`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_uuid-minimum_wages) |
+
 <a id="deductions"></a>
 
 ## Deductions
@@ -120,6 +136,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/deductions/cancelEmpty` | Fired when the user cancels the form and no deductions remain | — |
 | `employee/deductions/done` | Fired when the step is complete and the parent flow can advance | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments) |
+| POST | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments) |
+| PUT | [`/v1/garnishments/:garnishmentId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id) |
+| GET | [`/v1/garnishments/child_support`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-garnishments-child_support) |
+
 <a id="documentlist"></a>
 
 ## DocumentList
@@ -151,6 +176,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/forms/view` | Fired when a form's "Sign" action is selected | `{ uuid: string; name?: string }` |
 | `employee/forms/done` | Fired when all required forms have been signed and the parent flow can advance | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms) |
 
 <a id="documentsigner"></a>
 
@@ -197,6 +228,18 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 - [I9SignatureForm](#i9signatureform)
 - [DocumentList](#documentlist)
 - [SignatureForm](#signatureform)
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-forms) |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf) |
+| PUT | [`/v1/employees/:employeeId/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign) |
+| GET | [`/v1/employees/:employeeId/i9_authorization`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization) |
+| PUT | [`/v1/employees/:employeeId/i9_authorization`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-i9_authorization) |
 
 <a id="editcompensation"></a>
 
@@ -272,6 +315,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/onboardingDocumentsConfig/updated` | Fired after the employee's documents configuration is saved | The updated documents configuration response |
 | `employee/documents/done` | Fired when the step is complete and the parent flow can advance | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| PUT | [`/v1/employees/:employeeId/onboarding_documents_config`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_documents_config) |
+
 <a id="employeelist"></a>
 
 ## EmployeeList
@@ -303,6 +353,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/deleted` | Fired after a row's delete action completes. | `{ employeeId: string }` |
 | `employee/onboardingStatus/updated` | Fired after the "Review" or "Cancel self-onboarding" action updates an employee's onboarding status. | The updated `EmployeeOnboardingStatus` record |
 | `employee/onboarding/done` | Fired when the user clicks the skip/done control to leave the onboarding employee list. | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| DELETE | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employee) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status) |
 
 <a id="employmenteligibility"></a>
 
@@ -337,6 +395,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/employmentEligibility/done` | Fired after the I-9 authorization is saved | The updated I-9 authorization |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/i9_authorization`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization) |
+| PUT | [`/v1/employees/:employeeId/i9_authorization`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-i9_authorization) |
+
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
@@ -368,6 +433,13 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | ----- | ----------- | ---- |
 | `employee/federalTaxes/updated` | Fired after the form is saved | The updated `EmployeeFederalTax` entity |
 | `employee/federalTaxes/done` | Fired after a successful save so the parent flow can advance | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/federal_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes) |
 
 <a id="i9signatureform"></a>
 
@@ -404,6 +476,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/employmentEligibility/change` | Fired when the user requests to change their I-9 eligibility status | — |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf) |
+| PUT | [`/v1/employees/:employeeId/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign) |
+| GET | [`/v1/employees/:employeeId/i9_authorization`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-i9_authorization) |
+
 <a id="jobslist"></a>
 
 ## JobsList
@@ -437,6 +518,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/job/deleted` | Fired after a job is successfully deleted | none |
 | `employee/compensations/done` | Fired when the user continues past the jobs list | none |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/jobs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-jobs) |
+| DELETE | [`/v1/jobs/:jobId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-jobs-job_id) |
+
 <a id="landing"></a>
 
 ## Landing
@@ -459,6 +547,13 @@ Props for the [Landing](#landing) component.
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+
 <a id="onboardingsummary"></a>
 
 ## OnboardingSummary
@@ -480,6 +575,13 @@ Props for [OnboardingSummary](#onboardingsummary).
 | `isAdmin?` | `boolean` | When `true`, renders the admin-facing view of the onboarding summary. Defaults to `false`. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| GET | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-onboarding_status) |
 
 <a id="paymentmethod"></a>
 
@@ -533,6 +635,16 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `employee/bankAccount/created` | Fired after a bank account is successfully added | The created bank account |
 | `employee/bankAccount/deleted` | Fired after a bank account is successfully removed | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts) |
+| POST | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-bank_accounts) |
+| DELETE | [`/v1/employees/:employeeId/bank_accounts/:bankAccountUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-employees-employee_id-bank_accounts-bank_account_id) |
+| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method) |
+| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method) |
+
 <a id="profile"></a>
 
 ## Profile
@@ -579,6 +691,24 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `employee/workAddress/updated` | Fired after the work address is updated (admin variant) | [APIModels.EmployeeWorkAddress](../../APIModels/index.md#employeeworkaddress) |
 | `employee/profile/done` | Fired when all profile saves complete and the parent flow can advance | [APIModels.Employee](../../APIModels/index.md#employee) extended with `startDate` (admin variant) |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees) |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations) |
+| GET | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees) |
+| PUT | [`/v1/employees/:employeeId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees) |
+| GET | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-home_addresses) |
+| POST | [`/v1/employees/:employeeId/home_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-home_addresses) |
+| PUT | [`/v1/employees/:employeeId/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-onboarding_status) |
+| GET | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-work_addresses) |
+| POST | [`/v1/employees/:employeeId/work_addresses`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-work_addresses) |
+| GET | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-home_addresses-home_address_uuid) |
+| PUT | [`/v1/home_addresses/:homeAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-home_addresses-home_address_uuid) |
+| GET | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-work_addresses-work_address_uuid) |
+| PUT | [`/v1/work_addresses/:workAddressUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-work_addresses-work_address_uuid) |
+
 <a id="signatureform"></a>
 
 ## SignatureForm
@@ -612,6 +742,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `employee/forms/sign` | Fired after the form is successfully signed | [APIModels.Form](../../APIModels/index.md#form) |
 | `cancel` | Fired when the user cancels signing and returns to the document list | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form) |
+| GET | [`/v1/employees/:employeeId/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employee-form-pdf) |
+| PUT | [`/v1/employees/:employeeId/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employee-form-sign) |
+
 <a id="statetaxes"></a>
 
 ## StateTaxes
@@ -641,6 +779,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `employee/stateTaxes/updated` | Form was submitted successfully | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
 | `employee/stateTaxes/done` | Onboarding step has finished — emitted immediately after `updated` | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-state_taxes) |
+| PUT | [`/v1/employees/:employeeUuid/state_taxes`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-state_taxes) |
 
 ## Utility types
 
