@@ -53,49 +53,11 @@ const config: Config = {
     locales: ['en'],
   },
 
-  plugins: [
-    require.resolve('./plugins/global-docs-sidebar'),
-    [
-      'docusaurus-plugin-cookie-consent',
-      {
-        title: 'Your Privacy',
-        description:
-          'Gusto uses cookies and similar technology to keep this documentation site working and, if you allow it, to measure how it is used. See our [Privacy Notice](https://gusto.com/about/privacy) for details.',
-        toastMode: true,
-        acceptAllText: 'Accept and Continue',
-        rejectOptionalText: 'Reject All',
-        showDetailsButton: false,
-        categories: {
-          analytics: {
-            label: 'Performance Cookies',
-            description:
-              'These cookies allow us to count visits and traffic sources so we can measure and improve the performance of this documentation. They help us know which pages are the most and least popular.',
-          },
-        },
-        googleConsentMode: {
-          enabled: true,
-        },
-      },
-    ],
-    // The gtag plugin MUST come after docusaurus-plugin-cookie-consent so its
-    // head-tag injection (gtag.js loader + config call) lands AFTER the
-    // consent-default script. Otherwise GA fires unrestricted and writes _ga*
-    // cookies before consent mode applies. (The classic preset also accepts a
-    // gtag option, but presets are injected before user plugins in head order,
-    // which produces the wrong sequence.) Driven by env var so the plugin is
-    // inert until GOOGLE_GTAG_ID is set in CI/build.
-    ...(process.env.GOOGLE_GTAG_ID
-      ? [
-          [
-            '@docusaurus/plugin-google-gtag',
-            {
-              trackingID: process.env.GOOGLE_GTAG_ID,
-              anonymizeIP: true,
-            },
-          ] satisfies [string, object],
-        ]
-      : []),
-  ],
+  plugins: [require.resolve('./plugins/global-docs-sidebar')],
+
+  // Page-view-only analytics via the shared gusto-analytics client, gated on
+  // OneTrust consent. See src/gustoAnalytics.ts for the full wiring.
+  clientModules: [require.resolve('./src/gustoAnalytics.ts')],
 
   themes: [
     '@docusaurus/theme-mermaid',
@@ -304,6 +266,12 @@ const config: Config = {
             {
               label: 'Privacy Notice',
               href: 'https://gusto.com/about/privacy',
+            },
+            {
+              label: 'Cookie Settings',
+              href: '#',
+              // Opens the OneTrust preference center; wired up in src/gustoAnalytics.ts.
+              className: 'docs-cookie-settings',
             },
           ],
         },

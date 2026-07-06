@@ -11,6 +11,7 @@
     "docs/guides/endpoint-inventory.json",
     "docs/test-fests/**",
     "docs-site/docusaurus.config.ts",
+    "docs-site/src/gustoAnalytics.ts",
     "docs-site/build/**",
     "docs-site/.docusaurus/**",
     "docs-site/versioned_docs/**",
