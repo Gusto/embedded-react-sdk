@@ -7,7 +7,7 @@ description: Scaffold a new design prototype in sdk-app's design mode. Use whene
 
 Scaffold a new entry under [sdk-app/src/design/prototypes/](sdk-app/src/design/prototypes/). Each prototype has two surfaces that share the same presentation component:
 
-- **Prototype** — container fetches live data from `@gusto/embedded-api-v-2025-11-15` and renders it through the presentation component
+- **Prototype** — container fetches live data from `@gusto/embedded-api` and renders it through the presentation component
 - **Component states** — `states.tsx` provides mocked fixtures in the same shape and renders them through the same presentation component, with multiple variations (populated, empty, mixed, etc.) viewable in [ComponentStatesPage.tsx](sdk-app/src/design/prototypes/ComponentStatesPage.tsx)
 
 The skill produces a **real starting UI** — a table, detail view, form, etc. — not a generic placeholder. The designer iterates on it by prompting further.
@@ -110,8 +110,8 @@ Starting points by domain:
 
 For "manage employee compensation", the design needs Employee **plus** their current Compensation and Job — not just Employee. The skill should:
 
-1. Look in `node_modules/@gusto/embedded-api-v-2025-11-15/src/models/components/` for the relevant model files and confirm field names exist (e.g. `firstName`, `rate`, `paymentUnit`).
-2. Look in `node_modules/@gusto/embedded-api-v-2025-11-15/src/react-query/` for available Suspense hooks.
+1. Look in `node_modules/@gusto/embedded-api/src/models/components/` for the relevant model files and confirm field names exist (e.g. `firstName`, `rate`, `paymentUnit`).
+2. Look in `node_modules/@gusto/embedded-api/src/react-query/` for available Suspense hooks.
 3. Look in `src/components/<Domain>/` for an existing SDK component that already does something similar — its data flow is the best reference for what hooks to combine.
 
 If multiple hooks are needed (e.g. employees + per-employee compensation), prefer a **single combined hook** if one exists. If not, fall back to fetching just the primary entity and use **derived/mocked secondary fields** in the row shape, with a TODO comment explaining how to wire the secondary fetch later. **Don't generate N+1 hooks per row** — it's a bad pattern for the designer to copy.
@@ -272,7 +272,7 @@ Fill the `<PascalComponent>Row` shape and columns with the actual fields the des
 
 ```tsx
 import { Suspense } from 'react'
-import { /* useXListSuspense */ } from '@gusto/embedded-api-v-2025-11-15/react-query/<hook-file>'
+import { /* useXListSuspense */ } from '@gusto/embedded-api/react-query/<hook-file>'
 import { toRows } from './states'
 import { <PascalComponent> } from '../../../components/<presentation-dir>/<PascalComponent>'
 import { BaseComponent } from '@/components/Base'
@@ -361,7 +361,7 @@ For **uncategorized** designs, the depth changes:
 ### 4. States — `prototypes/<prototype-dir>/states.tsx`
 
 ```tsx
-import type { /* Entity */ } from '@gusto/embedded-api-v-2025-11-15/models/components/<entity-file>'
+import type { /* Entity */ } from '@gusto/embedded-api/models/components/<entity-file>'
 import type { PrototypeComponent } from '../../prototypeTypes'
 import {
   <PascalComponent>,
