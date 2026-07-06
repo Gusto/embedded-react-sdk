@@ -196,7 +196,7 @@ const bigFeatures: BigFeature[] = [
     title: 'Hooks',
     description:
       'Headless React hooks that manage API calls, validation, and state — wire them into your own UI when you need full control.',
-    to: '/docs/hooks',
+    to: '/docs/reference/utilities',
     Icon: GearIcon,
   },
 ]

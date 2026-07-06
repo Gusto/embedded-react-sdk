@@ -464,7 +464,7 @@ Hooks must not own translations: do **not** call `useTranslation` or `t()` insid
 
 ### Step 6: Document the hook
 
-Document the public surface with **inline TSDoc** and let the reference docs autogenerate. Do **not** hand-write a `docs/hooks/use{Name}Form.md` page or hand-maintain a `docs/hooks/hooks.md` row — the partner-facing reference is generated from the TSDoc, so the inline comments are the single source of truth.
+Document the public surface with **inline TSDoc** and let the reference docs autogenerate. Do **not** hand-write a per-hook Markdown page or hand-maintain a hooks index — the partner-facing reference under `docs/reference/**` is generated from the TSDoc, so the inline comments are the single source of truth.
 
 Run `/tsdoc` once the hook compiles and tests pass. It loads `.claude/tsdoc-guides/hooks.md` and writes TSDoc directly onto the exported symbols: `use{Name}Form`, `Use{Domain}FormProps`, the ready/result/outputs types, the `{Domain}ErrorCodes` constant, the `{Domain}FormFields` interface members (the documentation home for each field's behavior), and every field-prop type. Keep the `{Field}Field` components `@internal` with a one-line summary only, and keep `create{Domain}Schema`, `{Domain}SchemaOptions`, and other factory/internal symbols `@internal` (see Step 4) so the generator leaves them out of the reference.
 

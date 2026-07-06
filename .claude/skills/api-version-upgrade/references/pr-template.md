@@ -32,7 +32,7 @@ Every breaking change in v<NEW> is either:
 - N sdk-app/ files: import-path rename.
 - N src/test/mocks/apis/ files: import-path rename.
 - M sites with hardcoded cache-key literals (`['@gusto/embedded-api-v-<OLD>', …]`): namespace flip.
-- Docs + instruction files (`CLAUDE.md`, `AGENTS.md`, `docs/hooks/*`, `docs/api/*`, `docs/reference/*`): version string updates.
+- Docs + instruction files (`CLAUDE.md`, `AGENTS.md`, `docs/api/*`, `docs/reference/*`): version string updates.
 - [list any real type fixes — e.g., `usePreparedPayrollData.ts`: removed `QueryParamSortBy` import (no longer exported)].
 - Drive-by: [list any pre-existing lint fixes surfaced by the touch].
 - N new E2E specs that exercise the breaking-change consumer paths against Demo.
