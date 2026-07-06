@@ -86,7 +86,7 @@ Each endpoint's `docsUrl` links to its page in the API reference (omitted for th
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list grouped by domain. Each component, flow, and hook's own [reference page](../reference/index.md) also lists the endpoints it calls. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 
