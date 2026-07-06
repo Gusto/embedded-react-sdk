@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Guided flow to configure, review, and submit a single payroll.
 
+## Remarks
+
+This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
+by the off-cycle, dismissal, and transition flows after they have created their respective
+payrolls. Render it directly when you have built your own payroll-creation step and want to hand
+the user off to the standard execution experience without re-implementing it. The flow ships
+with breadcrumb navigation and the standard wire-confirmation UX.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -34,14 +42,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused
-by the off-cycle, dismissal, and transition flows after they have created their respective
-payrolls. Render it directly when you have built your own payroll-creation step and want to hand
-the user off to the standard execution experience without re-implementing it. The flow ships
-with breadcrumb navigation and the standard wire-confirmation UX.
-
 ## PayrollExecutionFlowProps
 
 <a id="payrollexecutionflowprops"></a>
@@ -51,7 +51,7 @@ Props for PayrollExecutionFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Event handler that receives the `RUN_PAYROLL_*` events emitted during the flow. |
 | `payrollId` | `string` | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection). |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component to replace the default wire details confirmation UI. |
 | `initialPayPeriod?` | [`PayrollPayPeriodType`](../APIModels/index.md#payrollpayperiodtype) | Optional pay period metadata used to seed breadcrumb labels and date context. |

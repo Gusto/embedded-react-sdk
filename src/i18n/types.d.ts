@@ -1724,6 +1724,8 @@ export namespace Translations {
     zip: string
     /** @defaultValue `"Continue"` */
     submit: string
+    /** @defaultValue `"Saving…"` */
+    submitting: string
     validations: {
       /** @defaultValue `"Street address is required"` */
       street1: string
@@ -1862,6 +1864,8 @@ export namespace Translations {
     checkDescription: string
     /** @defaultValue `"Continue"` */
     continueCta: string
+    /** @defaultValue `"Saving…"` */
+    submittingCta: string
     bankAccountForm: {
       /** @defaultValue `"Account nickname"` */
       nameLabel: string
@@ -2619,8 +2623,12 @@ export namespace Translations {
     backCta: string
     /** @defaultValue `"Sign"` */
     signCta: string
+    /** @defaultValue `"Signing…"` */
+    signingCta: string
     /** @defaultValue `"Acknowledge"` */
     acknowledgeCta: string
+    /** @defaultValue `"Acknowledging…"` */
+    acknowledgingCta: string
   }
   /** Translation keys for the `Contractor.Submit` i18n namespace. */
   export interface ContractorSubmit {

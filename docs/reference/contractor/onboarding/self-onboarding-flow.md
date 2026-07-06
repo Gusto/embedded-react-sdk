@@ -14,6 +14,14 @@ custom_edit_url: null
 
 Guided flow for contractors to complete their own onboarding.
 
+## Remarks
+
+Hands the contractor responsibility for submitting their own profile, address, payment, and document-signing information. Drives a multi-step flow keyed to the contractor being self-onboarded, starting from the self-onboarding landing page and ending on a confirmation summary.
+
+Each step is also exported as a standalone block (see the Blocks table) for composing a custom workflow when this orchestration is the wrong fit.
+
+The flow forwards every event emitted by its blocks to `onEvent`; see the events table on each block for the full set of events and payloads observable from this flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -34,14 +42,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Hands the contractor responsibility for submitting their own profile, address, payment, and document-signing information. Drives a multi-step flow keyed to the contractor being self-onboarded, starting from the self-onboarding landing page and ending on a confirmation summary.
-
-Each step is also exported as a standalone block (see the Blocks table) for composing a custom workflow when this orchestration is the wrong fit.
-
-The flow forwards every event emitted by its blocks to `onEvent`; see the events table on each block for the full set of events and payloads observable from this flow.
-
 ## SelfOnboardingFlowProps
 
 <a id="selfonboardingflowprops"></a>
@@ -52,7 +52,7 @@ Props for SelfOnboardingFlow.
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
 | `contractorId` | `string` | The associated contractor identifier. |
-| `onEvent` | [`OnEventType`](../../index.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../../events.md#oneventtype)\<[`EventType`](../../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 
 _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
 
@@ -82,4 +82,6 @@ flowchart
   DocumentSigner -->|"contractor/documents/done"| OnboardingSummary
   OnboardingSummary -->|"contractor/selfOnboarding/done"| done@{ shape: fr-circ, label: " " }
 ```
+
+Each step above is also exported as a standalone block. When composing these blocks directly instead of using this flow, render the profile step with `isAdmin={false}`: [`ContractorProfile`](blocks.md#contractorprofile) defaults to the admin create/edit form, so omitting the prop renders the wrong screen for self-onboarding. This flow sets `isAdmin={false}` for you. The remaining steps (Address, PaymentMethod, DocumentSigner, OnboardingSummary) take no self-onboarding-specific props.
 <!-- /guide-source (slot: appendix) -->

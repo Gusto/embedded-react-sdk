@@ -17,6 +17,14 @@ custom_edit_url: null
 
 Form hook for editing a contractor's address.
 
+## Remarks
+
+A contractor always has exactly one address (created with the contractor),
+so this hook operates only in update mode and issues a PUT on submit. The
+same address is labelled a "home" address for Individual contractors and a
+"business" address for Business contractors; the hook exposes `contractorType`
+so the consuming component can choose the appropriate copy.
+
 ## Example
 
 ```tsx title="Example"
@@ -56,14 +64,6 @@ function ContractorAddressReady({
 }
 ```
 
-## Remarks
-
-A contractor always has exactly one address (created with the contractor),
-so this hook operates only in update mode and issues a PUT on submit. The
-same address is labelled a "home" address for Individual contractors and a
-"business" address for Business contractors; the hook exposes `contractorType`
-so the consuming component can choose the appropriate copy.
-
 ## Props
 
 ### UseContractorAddressFormProps
@@ -101,6 +101,11 @@ Discriminated union returned by [useContractorAddressForm](#usecontractoraddress
 ### UseContractorAddressFormReady
 
 Ready-state shape returned by [useContractorAddressForm](#usecontractoraddressform) once data has loaded.
+
+**Remarks**
+
+Discriminated by `isLoading: false`. Extends [BaseFormHookReady](../../utilities.md#baseformhookready) with
+the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` shape.
 
 | Property | Type | Description |
 | ------ | ------ | ------ |
@@ -316,7 +321,7 @@ Validation error codes emitted by the `zip` field of [useContractorAddressForm](
 Use these as keys in `validationMessages` on `Fields.Zip`. See
 [ContractorAddressErrorCodes](#contractoraddresserrorcodes).
 
-## Utility Types
+## Utility types
 <a id="contractoraddresserrorcode"></a>
 
 ### ContractorAddressErrorCode

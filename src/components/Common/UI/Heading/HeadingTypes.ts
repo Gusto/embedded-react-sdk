@@ -5,7 +5,7 @@ import type { HTMLAttributes, ReactNode } from 'react'
  * Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled independently from its semantic level.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, 'className' | 'id'> {
   /**

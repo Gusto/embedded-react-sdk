@@ -112,7 +112,7 @@ export interface CompensationProps extends BaseComponentInterface<'Employee.Comp
  * @param props - See {@link CompensationProps}.
  * @returns The compensation onboarding step.
  * @public
- * @group Block Components
+ * @group Block components
  *
  * @example
  * ```tsx

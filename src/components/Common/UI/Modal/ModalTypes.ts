@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
  * Renders a modal overlay with body and footer content.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface ModalProps {
   /**

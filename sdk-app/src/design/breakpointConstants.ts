@@ -24,3 +24,15 @@ export function breakpointToMaxWidth(key: BreakpointOption): number | undefined 
   if (key === 'phone') return PHONE_WIDTH
   return remToPx(BREAKPOINTS_VALUES[key])
 }
+
+/** URL-serializable token for a breakpoint (the "Full"/no-constraint option is `null`). */
+export function breakpointToParam(key: BreakpointOption): string {
+  return key ?? 'full'
+}
+
+/** Parses a `?vw=` token back to a breakpoint, defaulting to Full (unconstrained) when absent/invalid. */
+export function parseBreakpointParam(param: string | null): BreakpointOption {
+  if (param === 'full') return null
+  const match = SWITCHER_OPTIONS.find(option => option.key === param)
+  return match ? match.key : null
+}

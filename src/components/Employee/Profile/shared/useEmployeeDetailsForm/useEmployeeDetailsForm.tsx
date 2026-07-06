@@ -61,7 +61,7 @@ export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSc
  * switch changes the employee's onboarding status as part of an update.
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export interface EmployeeDetailsSubmitCallbacks {
   /** Fired after a new employee is successfully created. */
@@ -99,7 +99,7 @@ export type UseEmployeeDetailsFormSharedProps = {
  * `companyId`).
  *
  * @public
- * @group Utility Types
+ * @group Utility types
  */
 export type UseEmployeeDetailsFormProps =
   | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })

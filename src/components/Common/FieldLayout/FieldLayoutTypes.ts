@@ -9,6 +9,7 @@ import type { DataAttributes } from '@/types/Helpers'
  * so each control exposes a consistent surface for labeling, helper text, and validation messaging.
  *
  * @public
+ * @group Utility types
  */
 export interface SharedFieldLayoutProps extends DataAttributes {
   /**

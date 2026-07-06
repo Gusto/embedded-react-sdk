@@ -43,6 +43,7 @@ import {
 } from './utils.ts'
 import { SDKRouter } from './router.ts'
 import { TYPE_EMOJIS } from './router.config.ts'
+import { CUSTOM_GROUPS } from '../../typedoc-utils.ts'
 import {
   findHookResultAlias,
   formHookModelForPage,
@@ -272,46 +273,6 @@ function renderHookGuidePage(rendered: string, guide: Guide): string {
   return `${rendered.trimEnd()}\n\n## Advanced\n\n${fenced}\n`
 }
 
-/**
- * Reorder a standalone component page's top-level (`##`) sections so the props
- * reference lands last. The default member template emits Props → Remarks →
- * Example, which fronts a reader with the exhaustive props table before they
- * know what the component is or how to call it. This reorders to Example →
- * Remarks → Props: quick-start first, conceptual detail next, full reference
- * last. Everything above the first `##` (H1 + summary) is untouched, and
- * unknown sections keep their original order ahead of the props table.
- */
-function reorderComponentSections(rendered: string): string {
-  const lines = rendered.split('\n')
-  const firstSection = lines.findIndex(l => /^##\s/.test(l))
-  if (firstSection === -1) return rendered
-
-  const preamble = lines.slice(0, firstSection)
-  const sections: { title: string; lines: string[] }[] = []
-  for (const line of lines.slice(firstSection)) {
-    const heading = /^##\s+(.+?)\s*$/.exec(line)
-    if (heading) {
-      sections.push({ title: heading[1]!, lines: [line] })
-    } else {
-      sections[sections.length - 1]!.lines.push(line)
-    }
-  }
-
-  const rank = (title: string): number => {
-    if (/^Examples?$/.test(title)) return 0
-    if (title === 'Remarks') return 1
-    if (/Props$/.test(title)) return 2
-    if (title === 'Events') return 3
-    return 4
-  }
-  const ordered = sections
-    .map((section, index) => ({ section, index }))
-    .sort((a, b) => rank(a.section.title) - rank(b.section.title) || a.index - b.index)
-    .map(({ section }) => section)
-
-  return [...preamble, ...ordered.flatMap(section => section.lines)].join('\n')
-}
-
 function isBlocksPage(model: DeclarationReflection): boolean {
   return model.name === 'Blocks' && model.kind === ReflectionKind.Namespace
 }
@@ -328,7 +289,7 @@ function renderBlocksPage(context: SDKThemeContext, model: DeclarationReflection
     parts.push(context.partials.memberContainer(block, { headingLevel: 2 }))
   }
   if (utilities.length > 0) {
-    parts.push('## Utility types')
+    parts.push(`## ${CUSTOM_GROUPS.utilityTypes}`)
     for (const util of utilities) {
       parts.push(context.partials.memberContainer(util, { headingLevel: 3 }))
     }
@@ -819,7 +780,7 @@ function insertComponentsTable(rendered: string, table: string): string {
 }
 
 /**
- * Remove the hook group heading (`## Hooks`, `## Form Hooks`, etc.) and the
+ * Remove the hook group heading (`## Hooks`, `## Form hooks`, etc.) and the
  * `### hookName()` sub-heading, then shift H4→H2 and H5→H3 for the content
  * inside the hook function section. Each hook page documents exactly one primary
  * hook, so the group heading carries no information and is dropped: it is always
@@ -874,84 +835,13 @@ function reformatHookFunctionSection(rendered: string, hookName: string): string
 }
 
 /**
- * Reorder the top-level (`##`) sections of a hook page into a reader-friendly
- * sequence: Example → Remarks → Props → Returns → everything else (Fields,
- * Variables, Interfaces, Type Aliases — kept in their original relative order).
- *
- * The Props and Returns sections carry hard-coded headings, so they rank by
- * exact title.
- */
-function reorderHookSections(rendered: string): string {
-  const lines = rendered.split('\n')
-  const firstSection = lines.findIndex(l => /^##\s/.test(l))
-  if (firstSection === -1) return rendered
-
-  const preamble = lines.slice(0, firstSection)
-  const sections: { title: string; lines: string[] }[] = []
-  for (const line of lines.slice(firstSection)) {
-    const heading = /^##\s+(.+?)\s*$/.exec(line)
-    if (heading) {
-      sections.push({ title: heading[1]!, lines: [line] })
-    } else {
-      sections[sections.length - 1]!.lines.push(line)
-    }
-  }
-
-  const rank = (title: string): number => {
-    if (/^Examples?/.test(title)) return 0
-    if (title === 'Remarks') return 1
-    if (title === 'Props') return 2
-    if (title === 'Returns') return 3
-    return 99
-  }
-  const ordered = sections
-    .map((section, index) => ({ section, index }))
-    .sort((a, b) => rank(a.section.title) - rank(b.section.title) || a.index - b.index)
-    .map(({ section }) => section)
-
-  return [...preamble, ...ordered.flatMap(section => section.lines)].join('\n')
-}
-
-/**
- * Move the `## Example` section to the top of the hook page — before props,
- * returns, and remarks — so a reader sees a working example immediately after
- * the hook signature and description.
- */
-function moveExampleToTop(rendered: string): string {
-  const lines = rendered.split('\n')
-  const exampleStart = lines.findIndex(l => /^## Example\s*$/.test(l))
-  if (exampleStart === -1) return rendered
-
-  let exampleEnd = lines.length
-  for (let i = exampleStart + 1; i < lines.length; i++) {
-    if (/^## /.test(lines[i]!)) {
-      exampleEnd = i
-      break
-    }
-  }
-
-  const exampleLines = lines.slice(exampleStart, exampleEnd)
-  const withoutExample = [...lines.slice(0, exampleStart), ...lines.slice(exampleEnd)]
-
-  const firstH2 = withoutExample.findIndex(l => /^## /.test(l))
-  if (firstH2 === -1) return rendered
-
-  return [
-    ...withoutExample.slice(0, firstH2),
-    ...exampleLines,
-    '',
-    ...withoutExample.slice(firstH2),
-  ].join('\n')
-}
-
-/**
  * Remove the `## Components` group heading from hook pages. The field
  * component entries (`### XxxField`) are already at H3 and nest naturally
  * under the preceding `## EmployeeDetailsFields` section without needing
  * their own H2 group header.
  */
 function removeComponentsHeader(rendered: string): string {
-  return rendered.replace(/^## Components\s*\n\n?/m, '')
+  return rendered.replace(new RegExp(`^## ${CUSTOM_GROUPS.components}\\s*\\n\\n?`, 'm'), '')
 }
 
 /**
@@ -1445,7 +1335,7 @@ function canRenderFlatFields(fieldsInterface: DeclarationReflection): boolean {
  * declared as `ComponentType<XxxFieldProps>` and/or arrays of field entries —
  * the shape that needs no exported component-function value. Each field's docs
  * are sourced from its `*FieldProps` type (and, for arrays, the entry
- * interface), which are relocated here from "Utility Types" (their anchors are
+ * interface), which are relocated here from "Utility types" (their anchors are
  * preserved so existing links resolve). Returns the markdown plus the set of
  * type names relocated, for the caller to drop from their standalone section.
  *
@@ -1772,7 +1662,7 @@ function buildFlatFieldsSection(
     sections.push(renderGroupBlock(groupRef))
   }
 
-  const markdown = ['## Fields', '', sections.join('\n\n***\n\n')].join('\n')
+  const markdown = [`## ${CUSTOM_GROUPS.fields}`, '', sections.join('\n\n***\n\n')].join('\n')
   return { markdown, relocated }
 }
 
@@ -1808,7 +1698,7 @@ function buildFieldsTable(
   if (fieldChildren.length === 0) return null
 
   // Pair each exposed field with its component by props-type identity.
-  const fieldsGroup = hookNs.groups?.find(g => g.title === 'Components')
+  const fieldsGroup = hookNs.groups?.find(g => g.title === CUSTOM_GROUPS.components)
   const fieldComponents = (fieldsGroup?.children ?? []) as DeclarationReflection[]
   const componentByPropsId = new Map<number, DeclarationReflection>()
   for (const comp of fieldComponents) {
@@ -1907,7 +1797,7 @@ function buildFieldsTable(
   // A hard-coded `## Fields` parent groups the interface and its field
   // components as siblings; the interface keeps its symbol name (and anchor,
   // so cross-references stay valid) at H3.
-  const parts: string[] = ['## Fields', '', `### ${fieldsInterface.name}`]
+  const parts: string[] = [`## ${CUSTOM_GROUPS.fields}`, '', `### ${fieldsInterface.name}`]
   if (context.router.hasUrl(fieldsInterface) && context.options.getValue('useHTMLAnchors')) {
     parts.push(`<a id="${context.router.getAnchor(fieldsInterface)}"></a>`)
   }
@@ -2060,7 +1950,7 @@ function buildFieldsArraySection(
   }
   const companions = (hookNs.children ?? [])
     .filter((c): c is DeclarationReflection => c instanceof DeclarationReflection)
-    .filter(c => hasGroup(c, 'Fields'))
+    .filter(c => hasGroup(c, CUSTOM_GROUPS.fields))
   const ordered = [alias, ...orderByGroupWith(companions, alias)]
   // `@groupWith` is a layout directive consumed by orderByGroupWith above, not
   // documentation — drop it so it doesn't render as a "Group With" block on the
@@ -2080,7 +1970,7 @@ function buildFieldsArraySection(
       ).trimEnd(),
     )
     .join('\n\n***\n\n')
-  return `## Fields\n\n${body}`
+  return `## ${CUSTOM_GROUPS.fields}\n\n${body}`
 }
 
 /**
@@ -2112,7 +2002,7 @@ function injectAfterReturns(rendered: string, section: string): string {
  * they have no per-field Parameters table and are referenced as link targets.
  */
 function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<string> {
-  const group = hookNs.groups?.find(g => g.title === 'Components')
+  const group = hookNs.groups?.find(g => g.title === CUSTOM_GROUPS.components)
   const names = new Set<string>()
   for (const comp of (group?.children ?? []) as DeclarationReflection[]) {
     const paramType = comp.signatures?.[0]?.parameters?.[0]?.type
@@ -2127,18 +2017,20 @@ function fieldComponentPropsAliasNames(hookNs: DeclarationReflection): Set<strin
 }
 
 /**
- * Remove the dropped `*FieldProps` alias entries from the `## Utility Types`
+ * Remove the dropped `*FieldProps` alias entries from the `## Utility types`
  * section. Each names a flat field's props parameter, already documented by the
  * component's expanded Parameters table, so its standalone alias block is pure
  * duplication. Every other alias — `*Validation`, group/variant props, shared
  * base types — is left untouched in place. (Hook pages collapse Variables,
- * Interfaces, and Type Aliases into a single `## Utility Types` group.)
+ * Interfaces, and Type Aliases into a single `## Utility types` group.)
  */
 function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): string {
   if (dropAliasNames.size === 0) return rendered
 
   const lines = rendered.split('\n')
-  const taSectionStart = lines.findIndex(l => /^##\s+Utility Types\s*$/.test(l))
+  const taSectionStart = lines.findIndex(l =>
+    new RegExp(`^##\\s+${CUSTOM_GROUPS.utilityTypes}\\s*$`).test(l),
+  )
   if (taSectionStart === -1) return rendered
 
   let taSectionEnd = lines.length
@@ -2155,7 +2047,7 @@ function dropFieldPropsAliases(rendered: string, dropAliasNames: Set<string>): s
   // lines containing only `***`. Mark the lines of any dropped entry — plus its
   // trailing separator — for removal.
   const linesToRemove = new Set<number>()
-  let i = 1 // skip the ## Utility Types heading line itself
+  let i = 1 // skip the ## Utility types heading line itself
   while (i < taSectionLines.length) {
     if (/^###\s/.test(taSectionLines[i]!) || /^<a id=/.test(taSectionLines[i]!)) {
       const entryStart = i
@@ -2614,9 +2506,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
         }
 
         let rendered = origReflectionTemplate(page)
-        // Standalone component pages are flow pages; front the Example and
-        // Remarks ahead of the props table for readability.
-        if (isComponent(page.model)) rendered = reorderComponentSections(rendered)
         if (componentsTable) rendered = insertComponentsTable(rendered, componentsTable)
 
         // Hook page: reformat section headings and inject fields table.
@@ -2624,8 +2513,6 @@ export class SDKThemeContext extends MarkdownThemeContext {
           const formModel = formHookModelForPage(page.model)
           rendered = reformatHookFunctionSection(rendered, page.model.name)
           rendered = addExampleTitles(rendered)
-          rendered = moveExampleToTop(rendered)
-          rendered = reorderHookSections(rendered)
           let relocatedFieldTypes = new Set<string>()
           if (formModel) {
             // A form hook always gets a `## Fields` section — if neither shape

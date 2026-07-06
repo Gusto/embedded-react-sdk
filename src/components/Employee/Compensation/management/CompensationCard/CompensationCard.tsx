@@ -60,7 +60,7 @@ export interface CompensationCardProps {
  * @param props - See {@link CompensationCardProps}.
  * @returns The rendered compensation card.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function CompensationCard(props: CompensationCardProps) {
   return (

@@ -56,7 +56,7 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
  * @param props - See {@link FederalTaxesProps}.
  * @returns The rendered federal taxes block.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function FederalTaxes({ dictionary, FallbackComponent, ...props }: FederalTaxesProps) {
   useComponentDictionary('Employee.Management.FederalTaxes', dictionary)

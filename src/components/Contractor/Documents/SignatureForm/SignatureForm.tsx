@@ -130,8 +130,14 @@ function Root({ documentUuid, dictionary }: SignatureFormProps) {
               <Components.Button variant="secondary" type="button" onClick={handleBack}>
                 {t('backCta')}
               </Components.Button>
-              <Components.Button type="submit" isLoading={isPending}>
-                {hasFields ? t('signCta') : t('acknowledgeCta')}
+              <Components.Button type="submit" isDisabled={isPending}>
+                {hasFields
+                  ? isPending
+                    ? t('signingCta')
+                    : t('signCta')
+                  : isPending
+                    ? t('acknowledgingCta')
+                    : t('acknowledgeCta')}
               </Components.Button>
             </ActionsLayout>
           </Flex>

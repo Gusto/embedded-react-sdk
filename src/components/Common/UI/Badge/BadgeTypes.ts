@@ -5,7 +5,7 @@ import type { HTMLAttributes, ReactNode } from 'react'
  * Renders a small inline label for status, counts, or tags; optionally dismissible.
  *
  * @public
- * @group Component Props
+ * @group Component props
  */
 export interface BadgeProps extends Pick<
   HTMLAttributes<HTMLSpanElement>,

@@ -41,7 +41,7 @@ export interface FederalTaxesProps extends BaseComponentInterface<'Employee.Fede
  * @param props - See {@link FederalTaxesProps}.
  * @returns The federal taxes onboarding step.
  * @public
- * @group Block Components
+ * @group Block components
  */
 export function FederalTaxes({ FallbackComponent, ...props }: FederalTaxesProps) {
   return (

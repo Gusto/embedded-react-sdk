@@ -14,6 +14,16 @@ custom_edit_url: null
 
 Guided flow to run a dismissed employee's final payroll.
 
+## Remarks
+
+This flow only runs the final payroll for an employee who is being let go; it does not terminate
+the employee. To end employment — set a termination date, choose how to handle the final paycheck,
+and optionally launch this payroll — use [EmployeeManagement.TerminationFlow](../employee/management/termination-flow.md).
+
+Presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period with the `"Dismissed employee"` off-cycle reason, and then transitions into the standard payroll execution flow for configuration, review, submission, and receipts.
+
+When `payrollId` is provided, pay period selection is skipped and the flow starts directly at execution for that payroll. When omitted, the flow starts at pay period selection.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -34,12 +44,6 @@ function MyApp() {
 }
 ```
 
-## Remarks
-
-Presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period with the `"Dismissed employee"` off-cycle reason, and then transitions into the standard payroll execution flow for configuration, review, submission, and receipts.
-
-When `payrollId` is provided, pay period selection is skipped and the flow starts directly at execution for that payroll. When omitted, the flow starts at pay period selection.
-
 ## DismissalFlowProps
 
 <a id="dismissalflowprops"></a>
@@ -49,7 +53,7 @@ Props for DismissalFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | The associated company identifier. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See DismissalFlow for the event table. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Handler for events emitted by the flow. See DismissalFlow for the event table. |
 | `employeeId?` | `string` | The terminated employee whose final payroll is being run. |
 | `payrollId?` | `string` | Optional dismissal payroll identifier. When provided, the flow skips pay period selection and starts directly at payroll execution. |
 

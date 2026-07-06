@@ -14,6 +14,10 @@ custom_edit_url: null
 
 Hub for running and managing all payrolls across a company's pay schedules.
 
+## Remarks
+
+Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
+
 ## Example
 
 ```tsx title="App.tsx"
@@ -24,10 +28,6 @@ function RunPayrollPage() {
 }
 ```
 
-## Remarks
-
-Renders the payroll landing page and orchestrates the full run-payroll experience: selecting a payroll, configuring earnings and reimbursements, reviewing totals, submitting, and viewing receipts. Off-cycle, transition, and edit-employee steps are reachable from the same flow.
-
 ## PayrollFlowProps
 
 <a id="payrollflowprops"></a>
@@ -37,7 +37,7 @@ Props accepted by PayrollFlow.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | `companyId` | `string` | Identifier of the company whose payroll is being run. |
-| `onEvent` | [`OnEventType`](../index.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
+| `onEvent` | [`OnEventType`](../events.md#oneventtype)\<[`EventType`](../events.md#eventtype), `unknown`\> | Callback invoked each time the component emits an event — user interactions, successful API responses, step transitions, or errors. Receives the event type constant and an optional payload whose shape varies by event. See the [Event Handling guide](https://docs.gusto.com/embedded-payroll/docs/event-handling) and each component's event table for the full list of emitted events. |
 | `ConfirmWireDetailsComponent?` | [`ConfirmWireDetailsComponentType`](blocks.md#confirmwiredetailscomponenttype) | Optional custom component that replaces the default wire-details confirmation UI. |
 | `withReimbursements?` | `boolean` | Whether reimbursement fields are shown in the payroll configuration and overview. Defaults to `true`. |
 
@@ -71,7 +71,7 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | [PayrollLanding](blocks.md#payrolllanding) | Main landing surface for payroll operations, with tabs for running payroll and viewing payroll history, plus inline navigation to a payroll's overview and receipt. |
 | [PayrollExecutionFlow](payroll-execution-flow.md) | Guided flow to configure, review, and submit a single payroll. |
 | [OffCycleFlow](off-cycle-flow.md) | Guided flow to create and run a bonus or correction payroll. |
-| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll between pay schedules. |
+| [TransitionFlow](transition-flow.md) | Guided flow to run a transition payroll when employees move from one pay schedule to another. |
 | [PayrollBlockerList](blocks.md#payrollblockerlist) | Displays the list of blockers preventing payroll from being processed for a company. |
 | [PayrollOverview](blocks.md#payrolloverview) | Final review screen for a calculated payroll before submission, with submit, cancel, and edit controls. After submission, tracks processing status and surfaces the receipt and per-employee paystub downloads once complete. |
 | [PayrollReceipts](blocks.md#payrollreceipts) | Displays a detailed receipt for a completed payroll, including the debited total, per-category breakdown, tax breakdown, and a per-employee summary of payment method, garnishments, reimbursements, taxes, and net pay. |
