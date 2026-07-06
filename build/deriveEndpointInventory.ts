@@ -11,6 +11,7 @@ import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { spawnSync } from 'child_process'
 import { Project, SourceFile, SyntaxKind } from 'ts-morph'
+import { DOMAINS } from '../docs-site/plugins/typedoc-custom/router.config'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -429,10 +430,31 @@ function resolveAliasPath(moduleSpecifier: string): string | undefined {
   return candidates.find(candidate => existsSync(candidate))
 }
 
+// Domain grouping mirrors the reference-docs sidebar (DOMAINS in router.config.ts),
+// so this file's sections line up with the Reference nav. Sidebar order is preserved.
+const DOMAIN_ORDER: string[] = DOMAINS.map(domain => domain.label)
+
+const NAMESPACE_TO_DOMAIN = new Map<string, string>()
+const COMPONENT_DIR_TO_DOMAIN = new Map<string, string>()
+for (const domain of DOMAINS) {
+  // `path` doubles as the src/components subdir slug (e.g. 'employee', 'time-off').
+  COMPONENT_DIR_TO_DOMAIN.set(domain.path.replace(/-/g, ''), domain.label)
+  for (const namespace of domain.namespaces) {
+    NAMESPACE_TO_DOMAIN.set(namespace.id, domain.label)
+  }
+}
+
+/** Maps a `Namespace.Component` / `Namespace.Flow` key to its sidebar domain label. */
+function namespaceToDomainLabel(name: string): string {
+  const namespace = name.includes('.') ? name.split('.')[0]! : name
+  return NAMESPACE_TO_DOMAIN.get(namespace) ?? namespace
+}
+
 function deriveHookDomain(moduleSpecifier: string): string {
-  // '@/components/Employee/Compensation/shared/useCompensationForm'  →  "Employee"
+  // '@/components/Employee/.../useCompensationForm'  →  component dir "Employee"  →  "Employees"
   const match = /@\/components\/([^/]+)\//.exec(moduleSpecifier)
-  return match ? match[1] : 'Other'
+  const componentDir = match ? match[1] : ''
+  return COMPONENT_DIR_TO_DOMAIN.get(componentDir.toLowerCase()) ?? componentDir ?? 'Other'
 }
 
 function discoverHooks(project: Project): HookMapping[] {
@@ -720,7 +742,9 @@ function generateMarkdown(inventory: Inventory, hookDomains: Record<string, stri
     '',
     '# Endpoint Reference',
     '',
-    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
+    'Every SDK component ("block") and headless hook makes a specific set of API calls. This reference lists them all, grouped by domain to match the [Reference](../reference/index.md) navigation. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).',
+    '',
+    "Within each domain, **Components** and **Hooks** list the endpoints they call, and **Flows** list the blocks they compose (a flow's endpoints are the union of its blocks' endpoints).",
     '',
     'Paths use named parameters (`:companyId`, `:employeeId`, etc.) that correspond to real IDs at runtime. This data is also available as a machine-readable JSON file at [`endpoint-inventory.json`](./endpoint-inventory.json), which includes the list of variables each block expects. For programmatic access, import it directly from the package:',
     '',
@@ -730,78 +754,89 @@ function generateMarkdown(inventory: Inventory, hookDomains: Record<string, stri
     '',
   ]
 
-  const blocksByDomain = new Map<string, [string, BlockEntry][]>()
+  const blocksByDomain = groupByDomainLabel(Object.entries(inventory.blocks), name =>
+    namespaceToDomainLabel(name),
+  )
+  const flowsByDomain = groupByDomainLabel(Object.entries(inventory.flows), name =>
+    namespaceToDomainLabel(name),
+  )
+  const hooksByDomain = groupByDomainLabel(
+    Object.entries(inventory.hooks),
+    name => hookDomains[name] ?? 'Other',
+  )
 
-  for (const [name, entry] of Object.entries(inventory.blocks)) {
-    const domain = name.includes('.') ? name.split('.')[0] : name
-    if (!blocksByDomain.has(domain)) blocksByDomain.set(domain, [])
-    blocksByDomain.get(domain)!.push([name, entry])
-  }
+  const present = new Set<string>([
+    ...blocksByDomain.keys(),
+    ...flowsByDomain.keys(),
+    ...hooksByDomain.keys(),
+  ])
 
-  for (const [domain, domainBlocks] of blocksByDomain) {
-    lines.push(`## ${domain} components`, '')
-    lines.push('| Component | Method | Path |')
-    lines.push('| --- | --- | --- |')
+  for (const domainLabel of orderDomainLabels(present)) {
+    lines.push(`## ${domainLabel}`, '')
 
-    for (const [blockName, entry] of domainBlocks) {
-      let isFirst = true
-      for (const ep of entry.endpoints) {
-        const label = isFirst ? `**${blockName}**` : ''
-        lines.push(`| ${label} | ${ep.method} | \`${ep.path}\` |`)
-        isFirst = false
-      }
+    const domainBlocks = blocksByDomain.get(domainLabel)
+    if (domainBlocks?.length) {
+      appendEndpointTable(lines, '### Components', 'Component', domainBlocks)
     }
 
-    lines.push('')
-  }
-
-  lines.push('## Flows', '')
-  lines.push(
-    'Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.',
-    '',
-  )
-  lines.push('| Flow | Blocks included |')
-  lines.push('| --- | --- |')
-
-  for (const [flowName, entry] of Object.entries(inventory.flows)) {
-    lines.push(`| **${flowName}** | ${entry.blocks.join(', ')} |`)
-  }
-
-  lines.push('')
-
-  const hooksByDomain = new Map<string, [string, BlockEntry][]>()
-  for (const [name, entry] of Object.entries(inventory.hooks)) {
-    const domain = hookDomains[name] ?? 'Other'
-    if (!hooksByDomain.has(domain)) hooksByDomain.set(domain, [])
-    hooksByDomain.get(domain)!.push([name, entry])
-  }
-
-  if (hooksByDomain.size > 0) {
-    lines.push('## Hooks', '')
-    lines.push(
-      'Headless hooks call the API directly, independent of any block. Each hook below lists the endpoints it accesses.',
-      '',
-    )
-
-    for (const [domain, domainHooks] of hooksByDomain) {
-      lines.push(`### ${domain} hooks`, '')
-      lines.push('| Hook | Method | Path |')
-      lines.push('| --- | --- | --- |')
-
-      for (const [hookName, entry] of domainHooks) {
-        let isFirst = true
-        for (const ep of entry.endpoints) {
-          const label = isFirst ? `**${hookName}**` : ''
-          lines.push(`| ${label} | ${ep.method} | \`${ep.path}\` |`)
-          isFirst = false
-        }
+    const domainFlows = flowsByDomain.get(domainLabel)
+    if (domainFlows?.length) {
+      lines.push('### Flows', '')
+      lines.push('| Flow | Blocks included |')
+      lines.push('| --- | --- |')
+      for (const [flowName, entry] of domainFlows) {
+        lines.push(`| **${flowName}** | ${entry.blocks.join(', ')} |`)
       }
-
       lines.push('')
+    }
+
+    const domainHooks = hooksByDomain.get(domainLabel)
+    if (domainHooks?.length) {
+      appendEndpointTable(lines, '### Hooks', 'Hook', domainHooks)
     }
   }
 
   return lines.join('\n')
+}
+
+function groupByDomainLabel<T>(
+  entries: [string, T][],
+  labelFor: (name: string) => string,
+): Map<string, [string, T][]> {
+  const grouped = new Map<string, [string, T][]>()
+  for (const [name, value] of entries) {
+    const label = labelFor(name)
+    if (!grouped.has(label)) grouped.set(label, [])
+    grouped.get(label)!.push([name, value])
+  }
+  return grouped
+}
+
+/** Sidebar domains first (in DOMAINS order), then any unmapped labels alphabetically. */
+function orderDomainLabels(present: Set<string>): string[] {
+  const known = DOMAIN_ORDER.filter(label => present.has(label))
+  const extras = [...present].filter(label => !DOMAIN_ORDER.includes(label)).sort()
+  return [...known, ...extras]
+}
+
+function appendEndpointTable(
+  lines: string[],
+  heading: string,
+  columnLabel: string,
+  entries: [string, BlockEntry][],
+): void {
+  lines.push(heading, '')
+  lines.push(`| ${columnLabel} | Method | Path |`)
+  lines.push('| --- | --- | --- |')
+  for (const [name, entry] of entries) {
+    let isFirst = true
+    for (const ep of entry.endpoints) {
+      const label = isFirst ? `**${name}**` : ''
+      lines.push(`| ${label} | ${ep.method} | \`${ep.path}\` |`)
+      isFirst = false
+    }
+  }
+  lines.push('')
 }
 
 function validateEndpoints(
