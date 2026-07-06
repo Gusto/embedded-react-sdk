@@ -1,5 +1,278 @@
 # Changelog
 
+## [0.51.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.50.0...v0.51.0) (2026-07-06)
+
+### ⚠ BREAKING CHANGES
+
+- **hooks:** extract precise fieldMetadata types (#2341)
+- removes the EMAIL_REQUIRED_FOR_SELF_ONBOARDING error code from
+  EmployeeDetailsErrorCodes and narrows the Fields.Email validationMessages type
+  to REQUIRED | INVALID_EMAIL. An empty email while self-onboarding is enabled
+  now emits REQUIRED instead of EMAIL_REQUIRED_FOR_SELF_ONBOARDING.
+
+Co-authored-by: Cursor <cursoragent@cursor.com>
+
+- form.getFormSubmissionValues now returns the hook's FormData
+  type instead of Record<string, unknown>. Code that indexed arbitrary keys off
+  the result may need adjustment.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(hooks): give getFormSubmissionValues its own TFormOutputs generic
+
+The previous commit typed the getter as () => TFormData, which is correct only
+because every current hook aliases FormOutputs = FormData (FormData is built
+from z.infer, the parsed-output shape). But getFormSubmissionValues returns the
+schema's _output_ — react-hook-form's TTransformedValues — which is a distinct
+slot from the form-values TFieldValues. EmploymentEligibilitySchema already
+proves the split is real in this codebase (Date input -> ISO-string output via
+.transform()), just outside the headless-hook pattern.
+
+Add a 4th generic TFormOutputs = TFormData and point the getter at it, so the
+output side is modeled honestly alongside hookFormInternals' input side. The
+default keeps all 18 hooks on their existing 3-arg `extends` with an identical
+resolved type; a hook whose schema transforms can pass the 4th arg to diverge
+cleanly. No partner-observable type change versus the prior commit.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(hooks)!: keep the input/output type seam internal
+
+TFormOutputs stays as an internal generic on BaseFormHookReady so the SDK can
+model the resolver-output side honestly, but partners don't need the seam: the
+per-hook *FormOutputs types are now @internal and dropped from the public
+exports. Partners type defaultValues against *FormData and read parsed values
+from form.getFormSubmissionValues (typed as the form-data shape), so there's no
+partner-facing reason to expose a second name that today just aliases FormData.
+
+- useContractorBankAccountForm / useContractorPaymentMethodForm: *FormOutputs
+  retagged @internal, removed from the inner barrels and src/index.ts (the hooks
+  still import it directly from the schema file as useForm's third generic).
+- Guides (tsdoc-guides/hooks.md, create-hook.md, hooks-implementation.md) updated
+  so the upcoming all-hooks sweep follows the same rule.
+
+* ContractorBankAccountFormOutputs and
+  ContractorPaymentMethodFormOutputs are no longer exported. Use the hook's
+  *FormData type, or form.getFormSubmissionValues for parsed submit values.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- feat(eslint): enforce the exemplar form-hook shape
+
+Add two tsdoc-coverage rules that mechanically define the exemplar hook
+shape the contractor payment hooks established, so the remaining form
+hooks can be migrated to match — and can't regress:
+
+- require-form-fields-component-type: a hook's form.Fields interface must
+  type each member as ComponentType<{Field}FieldProps>, never
+  typeof {Field}Field. The latter drags the @internal field component into
+  the @public interface and trips api-extractor's ae-forgotten-export.
+- no-internal-reexport-from-index: src/index.ts must not re-export a hook's
+  @internal building blocks (the FormOutputs seam, the create*Schema
+  factory, or field components). Scoped to src/index.ts; staged off until
+  every form hook is migrated, then flipped to error.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(contractor)!: standardize useContractorAddressForm on ContractorAddressFormFields
+
+Migrate the first hook onto the exemplar shape as the reference for the
+rest of the form-hook migration:
+
+- form.Fields interface renamed ContractorAddressFields ->
+  ContractorAddressFormFields, members typed ComponentType<*FieldProps>;
+  drop the redundant derived alias so the interface is the single home
+- field components reduced to bare @internal; their behavior prose moves
+  onto the FormFields members, which is what partners see in the
+  generated reference
+- FormOutputs seam marked @internal
+- src/index.ts no longer re-exports the schema factory, field components,
+  or FormOutputs for this hook
+
+* removes the ContractorAddressFields type alias and the
+  ContractorAddressFormOutputs, createContractorAddressSchema, and
+  ContractorAddress*Field component exports from the package entry. Type
+  form.Fields via ContractorAddressFormFields instead.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(contractor)!: migrate useContractorDetailsForm to the exemplar shape
+
+Completes the contractor domain on the exemplar hook shape:
+
+- form.Fields interface renamed ContractorDetailsFields ->
+  ContractorDetailsFormFields, all 14 members typed ComponentType<*FieldProps>;
+  drop the redundant derived alias so the interface is the single home
+- field components reduced to bare @internal; the Ssn/Ein auto-format and
+  masked-placeholder behavior is surfaced on the FormFields members
+- FormOutputs seam marked @internal
+- inner barrel + src/index.ts no longer re-export the schema factory, field
+  components, or FormOutputs
+
+Also trims the same now-dead inner-barrel re-exports from
+useContractorAddressForm (field components, factory, and FormOutputs were left
+unused once dropped from src/index.ts in the previous commit; knip flagged
+them). The exemplar inner barrel exports neither.
+
+- removes the ContractorDetailsFields type alias and the
+  ContractorDetailsFormOutputs and ContractorDetails*Field component exports from
+  the package entry. Type form.Fields via ContractorDetailsFormFields instead.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(company)!: migrate company form hooks to the exemplar shape
+
+Bring useSignCompanyForm and usePayScheduleForm onto the exemplar
+{Domain}FormFields shape: type Fields members as ComponentType<*FieldProps>,
+internalize field components and *FormOutputs, and drop the schema factory,
+field components, and FormOutputs from the public surface. Rename the
+PaySchedule Fields interface to PayScheduleFormFields and drop the redundant
+derived alias.
+
+- removes createPayScheduleSchema, createSignCompanyFormSchema,
+  PayScheduleFormOutputs, SignCompanyFormOutputs, the PaySchedule field
+  components, and the PayScheduleFields interface (renamed to
+  PayScheduleFormFields) from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate payment-method form hooks to the exemplar shape
+
+Bring useBankForm and usePaymentMethodForm onto the exemplar
+{Domain}FormFields shape: type Fields members as ComponentType<*FieldProps>,
+internalize field components and *FormOutputs, and drop the schema factory,
+field components, and FormOutputs from the public surface.
+
+- removes createBankFormSchema, createPaymentMethodFormSchema,
+  BankFormOutputs, PaymentMethodFormOutputs, and the bank/payment-method field
+  components (NameField, RoutingNumberField, AccountNumberField, AccountTypeField,
+  PaymentMethodTypeField) from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate compensation form hooks to the exemplar shape
+
+Bring useCompensationForm and useJobForm onto the exemplar {Domain}FormFields
+shape: type Fields members as ComponentType<*FieldProps>, internalize field
+components and *FormOutputs, and drop the schema factory, field components, and
+FormOutputs from the public surface.
+
+- removes createCompensationSchema, createJobSchema,
+  CompensationFormOutputs, JobFormOutputs, CompensationSchemaOptions, and the
+  compensation/job field components from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate deduction form hooks to the exemplar shape
+
+Bring useDeductionForm and useChildSupportGarnishmentForm onto the exemplar
+{Domain}FormFields shape: type Fields members as ComponentType<*FieldProps>,
+internalize field components and *FormOutputs, and drop the schema factory,
+field components, and FormOutputs from the public surface.
+
+- removes createDeductionFormSchema,
+  createChildSupportGarnishmentFormSchema, DeductionFormOutputs,
+  ChildSupportGarnishmentFormOutputs, and the deduction/child-support field
+  components from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate useFederalTaxesForm to the exemplar shape
+
+Rename the FederalTaxesFields interface to the canonical FederalTaxesFormFields
+(dropping the redundant derived alias), type its members as
+ComponentType<*FieldProps>, internalize the field components and
+FederalTaxesFormOutputs, and drop the schema factory, field components, and
+FormOutputs from the public surface.
+
+- renames FederalTaxesFields to FederalTaxesFormFields and
+  removes createFederalTaxesSchema, FederalTaxesFormOutputs, and the federal-taxes
+  field components from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate useSignEmployeeForm to the exemplar shape
+
+Rename the SignEmployeeFormFieldComponents interface to the canonical
+SignEmployeeFormFields (dropping the redundant derived alias), type its members
+as ComponentType<*FieldProps>, internalize the field components and
+SignEmployeeFormOutputs, and drop the schema factory, field components, and
+FormOutputs from the public surface.
+
+- renames SignEmployeeFormFieldComponents to SignEmployeeFormFields
+  and removes createSignEmployeeFormSchema, SignEmployeeFormOutputs, and the
+  sign-employee field components (SignatureField, ConfirmSignatureField,
+  UsedPreparerField) from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- refactor(employee)!: migrate profile form hooks to the exemplar shape
+
+Rename the EmployeeDetailsFields, HomeAddressFields, and WorkAddressFields
+interfaces to the canonical {Domain}FormFields names (dropping the redundant
+derived aliases), type their members as ComponentType<*FieldProps>, internalize
+the field components and *FormOutputs, and drop the schema factories, field
+components, and FormOutputs from the public surface.
+
+- renames EmployeeDetailsFields, HomeAddressFields, and
+  WorkAddressFields to EmployeeDetailsFormFields, HomeAddressFormFields, and
+  WorkAddressFormFields; removes createEmployeeDetailsSchema, createHomeAddressSchema,
+  createWorkAddressSchema, EmployeeDetailsFormOutputs, HomeAddressFormOutputs,
+  WorkAddressFormOutputs, and the profile field components from the public API.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- feat(eslint)!: enforce no-internal-reexport-from-index on the public entry
+
+With every form hook migrated onto the exemplar shape, flip
+tsdoc-coverage/no-internal-reexport-from-index from `off` to `error` and clean
+the remaining @internal/seam leaks from src/index.ts: the raw *HookField
+primitives (TextInputHookField, SelectHookField, CheckboxHookField,
+NumberInputHookField, DatePickerHookField, RadioGroupHookField, SwitchHookField)
+and the useSplitPaymentsForm / useEmployeeStateTaxesForm schema factories and
+FormOutputs. The corresponding *FieldProps types remain exported.
+
+- removes the raw *HookField components, createSplitPaymentsFormSchema,
+  SplitPaymentsFormOutputs, createEmployeeStateTaxesSchema, and
+  EmployeeStateTaxesFormOutputs from the public API. Partners render fields through
+  form.Fields and read submit values via form.getFormSubmissionValues.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+- bump @gusto/embedded-api to v2026-02-01 (#2255)
+
+### Features & Enhancements
+
+- bump @gusto/embedded-api to v2026-02-01 ([#2255](https://github.com/Gusto/embedded-react-sdk/issues/2255)) ([75f7b0a](https://github.com/Gusto/embedded-react-sdk/commit/75f7b0ab7f42dfe660371a7d11c66fbf69254573))
+- **Contractor.SignatureForm:** add contractor W-9 signature form component ([#2319](https://github.com/Gusto/embedded-react-sdk/issues/2319)) ([e998f5f](https://github.com/Gusto/embedded-react-sdk/commit/e998f5fe21a38a78a539d7ba1c2512ec49585220)), closes [#2321](https://github.com/Gusto/embedded-react-sdk/issues/2321)
+- **ContractorOnboarding.SelfOnboardingFlow:** add contractor self-onboarding flow ([#2337](https://github.com/Gusto/embedded-react-sdk/issues/2337)) ([53c2b9b](https://github.com/Gusto/embedded-react-sdk/commit/53c2b9b155bcd97b0f65c7772dc7b5212208218f))
+- **hooks:** extract precise fieldMetadata types ([#2341](https://github.com/Gusto/embedded-react-sdk/issues/2341)) ([6834988](https://github.com/Gusto/embedded-react-sdk/commit/6834988f8d3e8062d280bae3bffa3d1ad62a0ff3))
+- **i18n:** browsable `Resources` reference with per-key English defaults ([#2327](https://github.com/Gusto/embedded-react-sdk/issues/2327)) ([c4edbc3](https://github.com/Gusto/embedded-react-sdk/commit/c4edbc39b763e4992ac9af4cd3728f0991173250))
+- promotable conditional requiredness for form schemas ([#2336](https://github.com/Gusto/embedded-react-sdk/issues/2336)) ([37a65b1](https://github.com/Gusto/embedded-react-sdk/commit/37a65b1e3f40a3ddf850feda08376c7521a04c62))
+- **sdk-app:** design comments tooling for internal review ([#2329](https://github.com/Gusto/embedded-react-sdk/issues/2329)) ([7ff40e5](https://github.com/Gusto/embedded-react-sdk/commit/7ff40e542fb661e1bfa62a84c1d5ed73b3d0bf89))
+- **useContractorSignatureForm:** add contractor W-9 signature form hook ([#2318](https://github.com/Gusto/embedded-react-sdk/issues/2318)) ([f51a0e5](https://github.com/Gusto/embedded-react-sdk/commit/f51a0e5c70f8d6a0985a192807e3fc1d88d90d52))
+
+### Fixes
+
+- **Badge:** increase padding and use pill radius ([#2333](https://github.com/Gusto/embedded-react-sdk/issues/2333)) ([f7b1b5f](https://github.com/Gusto/embedded-react-sdk/commit/f7b1b5f6e8f8eab96d3781c3a5381789639a7d61))
+- **Contractor/PaymentMethod:** tighten form field spacing ([#2343](https://github.com/Gusto/embedded-react-sdk/issues/2343)) ([55bdb7e](https://github.com/Gusto/embedded-react-sdk/commit/55bdb7e1c20d36376e7f8c917d953812a8425cdb))
+- **Contractor:** align submit-button loading UX across onboarding ([#2344](https://github.com/Gusto/embedded-react-sdk/issues/2344)) ([da045db](https://github.com/Gusto/embedded-react-sdk/commit/da045db61f5eff90d7688da43f6ed9270324945f))
+- **SDK-1075:** align admin missing-requirements UI with company onboarding overview ([#2334](https://github.com/Gusto/embedded-react-sdk/issues/2334)) ([9d9c09a](https://github.com/Gusto/embedded-react-sdk/commit/9d9c09a0bfe418d0df58312ab3a5f93f703cd5b7))
+- **sdk-app:** register ContractorOnboarding.SelfOnboardingFlow entity requirements ([#2339](https://github.com/Gusto/embedded-react-sdk/issues/2339)) ([8931422](https://github.com/Gusto/embedded-react-sdk/commit/8931422424f03b38acceeb448d4d4169a02ee255))
+
+### Chores & Maintenance
+
+- add docs skills and update doc guides ([#2284](https://github.com/Gusto/embedded-react-sdk/issues/2284)) ([ed2f543](https://github.com/Gusto/embedded-react-sdk/commit/ed2f54395683c033e7460ec10313845b763900a9))
+- allow search engine indexing ([#2330](https://github.com/Gusto/embedded-react-sdk/issues/2330)) ([84b5ba0](https://github.com/Gusto/embedded-react-sdk/commit/84b5ba06776aab27062c87160b3ccb02ad75e6fb))
+- **ContractorOnboarding.SelfOnboardingFlow:** note isAdmin=false for standalone Profile ([#2340](https://github.com/Gusto/embedded-react-sdk/issues/2340)) ([e3659de](https://github.com/Gusto/embedded-react-sdk/commit/e3659deb561d94b0223c6cd6c20cf8f621b82734))
+- **deps-dev:** bump markdownlint-cli2 from 0.22.1 to 0.23.0 ([#2331](https://github.com/Gusto/embedded-react-sdk/issues/2331)) ([7bec35a](https://github.com/Gusto/embedded-react-sdk/commit/7bec35aaab73e6097e1ee9141590dd1b63d0d7b9))
+- **deps-dev:** bump tsx from 4.22.4 to 4.23.0 ([#2346](https://github.com/Gusto/embedded-react-sdk/issues/2346)) ([66629e9](https://github.com/Gusto/embedded-react-sdk/commit/66629e928693241b8ba7cd1028e3aaff1132036a))
+- **deps:** bump react-hook-form from 7.80.0 to 7.81.0 ([#2345](https://github.com/Gusto/embedded-react-sdk/issues/2345)) ([423c769](https://github.com/Gusto/embedded-react-sdk/commit/423c7695720883aafec5b592ba2d5220d7e4a2d8))
+- **OnboardingOverview:** use Box header for MissingRequirements title ([#2335](https://github.com/Gusto/embedded-react-sdk/issues/2335)) ([796b851](https://github.com/Gusto/embedded-react-sdk/commit/796b85178990bdd081fa42c6c75bab3c8c651dce))
+- remove erroneously restored docs/hooks directory ([#2338](https://github.com/Gusto/embedded-react-sdk/issues/2338)) ([802c7c1](https://github.com/Gusto/embedded-react-sdk/commit/802c7c10000a8451850ce4246978d3bb70e05cbb))
+- **SDK-1071:** reference-docs consistency & accuracy pass ([#2332](https://github.com/Gusto/embedded-react-sdk/issues/2332)) ([1ed7119](https://github.com/Gusto/embedded-react-sdk/commit/1ed71196cee29970dc5c07e2137b8d6cd67811b5))
+- standardize form hooks on the exemplar shape and lock it with lint ([#2326](https://github.com/Gusto/embedded-react-sdk/issues/2326)) ([bf9cfb8](https://github.com/Gusto/embedded-react-sdk/commit/bf9cfb8fbfa5b7ea68e7df17ae6ab2211d208389))
+
 ## [0.50.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.49.0...v0.50.0) (2026-07-01)
 
 ### ⚠ Breaking Changes
