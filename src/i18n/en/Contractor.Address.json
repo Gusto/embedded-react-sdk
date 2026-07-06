@@ -10,6 +10,7 @@
   "statePlaceholder": "Select state...",
   "zip": "Zip",
   "submit": "Continue",
+  "submitting": "Saving…",
   "validations": {
     "street1": "Street address is required",
     "city": "Please provide valid city name",

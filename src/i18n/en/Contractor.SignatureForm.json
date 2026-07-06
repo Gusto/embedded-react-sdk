@@ -110,5 +110,7 @@
   },
   "backCta": "Back",
   "signCta": "Sign",
-  "acknowledgeCta": "Acknowledge"
+  "signingCta": "Signing…",
+  "acknowledgeCta": "Acknowledge",
+  "acknowledgingCta": "Acknowledging…"
 }
