@@ -179,6 +179,7 @@
     "markdown-it": "^14.2.0"
   },
   "dependencies": {
+    "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-02-01@^0.0.1",
     "@gusto/embedded-api-v-2026-02-01": "^0.0.1",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.4.0",
