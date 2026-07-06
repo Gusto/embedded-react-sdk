@@ -118,7 +118,7 @@ the contractor-address-specific `data`, `status`, `actions`, and `form.Fields` s
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorAddressFormFields`](#contractoraddressformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ContractorAddressFieldsMetadata`](#contractoraddressfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorAddressFormData`](#contractoraddressformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorAddressFormData`](#contractoraddressformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -366,7 +366,13 @@ Field names accepted by the contractor address form.
 
 ### ContractorAddressFieldsMetadata
 
-> **ContractorAddressFieldsMetadata** = [`UseContractorAddressFormReady`](#usecontractoraddressformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `city` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `state` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
+| `street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Type of `form.fieldsMetadata` returned by [useContractorAddressForm](#usecontractoraddressform).
 

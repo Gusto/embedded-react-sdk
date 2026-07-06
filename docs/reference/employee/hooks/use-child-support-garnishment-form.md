@@ -140,7 +140,7 @@ that flip with form input live under `status.*`.
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ChildSupportGarnishmentFormFields`](#childsupportgarnishmentformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ChildSupportGarnishmentFormFieldsMetadata`](#childsupportgarnishmentformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ChildSupportGarnishmentFormData`](#childsupportgarnishmentformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -559,7 +559,16 @@ hook.
 
 ### ChildSupportGarnishmentFormFieldsMetadata
 
-> **ChildSupportGarnishmentFormFieldsMetadata** = [`UseChildSupportGarnishmentFormReady`](#usechildsupportgarnishmentformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `amount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `caseNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `fipsCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`CountyEntry`](#countyentry)\> |
+| `orderNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `paymentPeriod` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
+| `payPeriodMaximum` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `remittanceNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `state` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`StateFieldEntry`](#statefieldentry)\> |
 
 Per-field metadata returned by [useChildSupportGarnishmentForm](#usechildsupportgarnishmentform) as `form.fieldsMetadata`.
 

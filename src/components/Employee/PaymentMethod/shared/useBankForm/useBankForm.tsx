@@ -27,6 +27,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -84,7 +85,7 @@ export interface BankFormFields {
  * @public
  */
 export interface UseBankFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  BankFormFieldsMetadata,
   BankFormData,
   BankFormFields
 > {
@@ -98,6 +99,20 @@ export interface UseBankFormReady extends BaseFormHookReady<
       options?: BankFormSubmitOptions,
     ) => Promise<HookSubmitResult<EmployeeBankAccount> | undefined>
   }
+}
+
+/** @internal */
+function buildBankFieldsMetadata(base: Record<keyof BankFormData, FieldMetadata>) {
+  return {
+    name: base.name,
+    routingNumber: base.routingNumber,
+    accountNumber: base.accountNumber,
+    accountType: withOptions<AccountType>(
+      base.accountType,
+      ACCOUNT_TYPES.map(value => ({ value, label: value })),
+      [...ACCOUNT_TYPES],
+    ),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -185,17 +200,8 @@ export function useBankForm({
 
   const errorHandling = composeErrorHandler([], { submitError, setSubmitError })
 
-  const accountTypeOptions = ACCOUNT_TYPES.map(value => ({ value, label: value }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    name: baseMetadata.name,
-    routingNumber: baseMetadata.routingNumber,
-    accountNumber: baseMetadata.accountNumber,
-    accountType: withOptions<AccountType>(baseMetadata.accountType, accountTypeOptions, [
-      ...ACCOUNT_TYPES,
-    ]),
-  }
+  const fieldsMetadata = buildBankFieldsMetadata(baseMetadata)
 
   const onSubmit = async (
     options?: BankFormSubmitOptions,
@@ -276,4 +282,4 @@ export type UseBankFormResult = HookLoadingResult | UseBankFormReady
  *
  * @public
  */
-export type BankFormFieldsMetadata = UseBankFormReady['form']['fieldsMetadata']
+export type BankFormFieldsMetadata = ReturnType<typeof buildBankFieldsMetadata>

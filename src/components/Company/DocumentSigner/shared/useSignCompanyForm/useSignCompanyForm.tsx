@@ -21,6 +21,7 @@ import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getForm
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -66,7 +67,7 @@ export interface SignCompanyFormFields {
  * @public
  */
 export interface UseSignCompanyFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  SignCompanyFormFieldsMetadata,
   SignCompanyFormData,
   SignCompanyFormFields
 > {
@@ -94,6 +95,16 @@ export interface UseSignCompanyFormReady extends BaseFormHookReady<
 const HARDCODED_DEFAULTS: SignCompanyFormData = {
   signature: '',
   confirmSignature: false,
+}
+
+/** @internal */
+function buildSignCompanyFormFieldsMetadata(
+  base: Record<keyof SignCompanyFormData, FieldMetadata>,
+) {
+  return {
+    signature: base.signature,
+    confirmSignature: base.confirmSignature,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -212,10 +223,7 @@ export function useSignCompanyForm({
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    signature: baseMetadata.signature,
-    confirmSignature: baseMetadata.confirmSignature,
-  }
+  const fieldsMetadata = buildSignCompanyFormFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<Form> | undefined> => {
     let submitResult: HookSubmitResult<Form> | undefined
@@ -306,4 +314,4 @@ export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormRea
  *
  * @public
  */
-export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata']
+export type SignCompanyFormFieldsMetadata = ReturnType<typeof buildSignCompanyFormFieldsMetadata>

@@ -15,7 +15,6 @@ import {
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { fieldsMetadataEntry } from '@/test/fieldsMetadata'
-import type { FieldMetadataWithOptions } from '@/partner-hook-utils/types'
 
 type ReadyResult = Extract<UseSignEmployeeFormResult, { isLoading: false }>
 
@@ -749,8 +748,11 @@ describe('useSignEmployeeForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      const usedPreparerMeta = readyResult.form.fieldsMetadata
-        .usedPreparer as FieldMetadataWithOptions
+      if (!('usedPreparer' in readyResult.form.fieldsMetadata)) {
+        throw new Error('invalid')
+      }
+
+      const usedPreparerMeta = readyResult.form.fieldsMetadata.usedPreparer
       expect(usedPreparerMeta).toBeDefined()
       expect(usedPreparerMeta.options).toBeDefined()
       expect(usedPreparerMeta.options).toHaveLength(2)
@@ -769,8 +771,10 @@ describe('useSignEmployeeForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      const preparerStateMeta = readyResult.form.fieldsMetadata
-        .preparerState as FieldMetadataWithOptions
+      if (!('preparerState' in readyResult.form.fieldsMetadata)) {
+        throw new Error('invalid')
+      }
+      const preparerStateMeta = readyResult.form.fieldsMetadata.preparerState
       expect(preparerStateMeta).toBeDefined()
       expect(preparerStateMeta.options).toBeDefined()
       expect(preparerStateMeta.options.length).toBeGreaterThan(0)

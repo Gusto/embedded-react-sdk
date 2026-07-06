@@ -102,7 +102,7 @@ Ready-state return value of [useContractorPaymentMethodForm](#usecontractorpayme
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorPaymentMethodFormFields`](#contractorpaymentmethodformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ContractorPaymentMethodFieldsMetadata`](#contractorpaymentmethodfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorPaymentMethodFormData`](#contractorpaymentmethodformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -185,7 +185,9 @@ hook.
 
 ### ContractorPaymentMethodFieldsMetadata
 
-> **ContractorPaymentMethodFieldsMetadata** = [`UseContractorPaymentMethodFormReady`](#usecontractorpaymentmethodformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Check"` \| `"Direct Deposit"`\> |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 

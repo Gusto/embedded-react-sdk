@@ -129,7 +129,7 @@ Ready-state return value of [useEmployeeStateTaxesForm](#useemployeestatetaxesfo
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`StateTaxFields`](#statetaxfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`EmployeeStateTaxesFieldsMetadata`](#employeestatetaxesfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`EmployeeStateTaxesFormData`](#employeestatetaxesformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`EmployeeStateTaxesFormData`](#employeestatetaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -450,10 +450,18 @@ only a single error code: every required field that is empty emits
 
 ### EmployeeStateTaxesFieldsMetadata
 
-> **EmployeeStateTaxesFieldsMetadata** = [`UseEmployeeStateTaxesFormReady`](#useemployeestatetaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+> **EmployeeStateTaxesFieldsMetadata** = `Record`\<`` `states.${string}.${string}` ``, [`FieldMetadata`](../../utilities.md#fieldmetadata) \| [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\>
 
-Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
-with `isRequired` / `isDisabled` and option lists.
+Field metadata for [useEmployeeStateTaxesForm](#useemployeestatetaxesform), keyed by full form path.
+
+#### Remarks
+
+The set of keys is determined at runtime: one entry per state tax question,
+keyed as `states.<STATE>.<camelCaseQuestionKey>`. Each entry is a
+[FieldMetadata](../../utilities.md#fieldmetadata), or a [FieldMetadataWithOptions](../../utilities.md#fieldmetadatawithoptions) for questions the
+API exposes as a select or radio. Both the questions and their options are
+driven by the API response per state, so neither the keys nor which entries
+carry options are known ahead of time.
 
 ***
 

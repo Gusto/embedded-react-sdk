@@ -13,7 +13,6 @@ import {
   createEmployeeStateTaxesSchema,
   type EmployeeStateTaxesFormData,
   type EmployeeStateTaxesFormOutputs,
-  type EmployeeStateTaxesMetadataConfig,
 } from './employeeStateTaxesSchema'
 import type { StateTaxFields } from './fields'
 import { createStateFields } from './fields'
@@ -25,7 +24,8 @@ import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInter
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
-  FieldsMetadata,
+  FieldMetadata,
+  FieldMetadataWithOptions,
   HookLoadingResult,
   HookSubmitResult,
 } from '@/partner-hook-utils/types'
@@ -61,7 +61,7 @@ export interface UseEmployeeStateTaxesFormProps {
  * @public
  */
 export interface UseEmployeeStateTaxesFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  EmployeeStateTaxesFieldsMetadata,
   EmployeeStateTaxesFormData,
   StateTaxFields
 > {
@@ -205,10 +205,7 @@ export function useEmployeeStateTaxesForm({
     setSubmitError,
   })
 
-  const fieldsMetadata = useDeriveFieldsMetadata(
-    metadataConfig as EmployeeStateTaxesMetadataConfig,
-    formMethods.control,
-  ) as FieldsMetadata
+  const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 
   const onSubmit = async (): Promise<HookSubmitResult<EmployeeStateTaxesList[]> | undefined> => {
     let submitResult: HookSubmitResult<EmployeeStateTaxesList[]> | undefined
@@ -395,13 +392,22 @@ function serializeStatesPayload(
 }
 
 /**
- * Static field metadata keyed by full form path (`states.<STATE>.<camelKey>`),
- * with `isRequired` / `isDisabled` and option lists.
+ * Field metadata for {@link useEmployeeStateTaxesForm}, keyed by full form path.
+ *
+ * @remarks
+ * The set of keys is determined at runtime: one entry per state tax question,
+ * keyed as `states.<STATE>.<camelCaseQuestionKey>`. Each entry is a
+ * {@link FieldMetadata}, or a {@link FieldMetadataWithOptions} for questions the
+ * API exposes as a select or radio. Both the questions and their options are
+ * driven by the API response per state, so neither the keys nor which entries
+ * carry options are known ahead of time.
  *
  * @public
  */
-export type EmployeeStateTaxesFieldsMetadata =
-  UseEmployeeStateTaxesFormReady['form']['fieldsMetadata']
+export type EmployeeStateTaxesFieldsMetadata = Record<
+  `states.${string}.${string}`,
+  FieldMetadata | FieldMetadataWithOptions
+>
 
 /**
  * The array of per-state field groups exposed by

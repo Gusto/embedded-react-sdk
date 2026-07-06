@@ -138,7 +138,7 @@ pay-schedule-specific `data`, `status`, `actions`, and `form.Fields` shape.
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PayScheduleFormFields`](#payscheduleformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`PayScheduleFieldsMetadata`](#payschedulefieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`PayScheduleFormData`](#payscheduleformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PayScheduleFormData`](#payscheduleformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -454,7 +454,15 @@ Union of field names managed by the pay schedule form.
 
 ### PayScheduleFieldsMetadata
 
-> **PayScheduleFieldsMetadata** = [`UsePayScheduleFormReady`](#usepayscheduleformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `anchorEndOfPayPeriod` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `anchorPayDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `customName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `customTwicePerMonth` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`string`\> |
+| `day1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `day2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `frequency` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Every week"` \| `"Every other week"` \| `"Twice per month"` \| `"Monthly"`\> |
 
 Type of `form.fieldsMetadata` returned by [usePayScheduleForm](#usepayscheduleform).
 

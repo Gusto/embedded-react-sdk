@@ -278,6 +278,17 @@ Use this when you need to reference a category value by name (e.g.
 | <a id="property-sdkerrorcategoriesnetwork_error"></a> `NETWORK_ERROR` | `"network_error"` |
 | <a id="property-sdkerrorcategoriesvalidation_error"></a> `VALIDATION_ERROR` | `"validation_error"` |
 
+***
+
+<a id="states_abbr"></a>
+
+### STATES\_ABBR
+
+> `const` **STATES\_ABBR**: readonly \[`"AL"`, `"AK"`, `"AZ"`, `"AR"`, `"CA"`, `"CO"`, `"CT"`, `"DE"`, `"DC"`, `"FL"`, `"GA"`, `"HI"`, `"ID"`, `"IL"`, `"IN"`, `"IA"`, `"KS"`, `"KY"`, `"LA"`, `"ME"`, `"MD"`, `"MA"`, `"MI"`, `"MN"`, `"MS"`, `"MO"`, `"MT"`, `"NE"`, `"NV"`, `"NH"`, `"NJ"`, `"NM"`, `"NY"`, `"NC"`, `"ND"`, `"OH"`, `"OK"`, `"OR"`, `"PA"`, `"RI"`, `"SC"`, `"SD"`, `"TN"`, `"TX"`, `"UT"`, `"VT"`, `"VA"`, `"WA"`, `"WV"`, `"WI"`, `"WY"`\]
+
+Two-letter US state abbreviations (including `'DC'`), in the order presented
+in state selection controls.
+
 ## Interfaces
 
 <a id="aftererrorhook"></a>
@@ -913,3 +924,14 @@ Unit of measure for an [ObservabilityMetric](#observabilitymetric).
 > **SDKErrorCategory** = `"api_error"` \| `"validation_error"` \| `"network_error"` \| `"internal_error"`
 
 High-level classification of where an [SDKError](#sdkerror) originated.
+
+***
+
+<a id="stateabbreviation"></a>
+
+### StateAbbreviation
+
+> **StateAbbreviation** = *typeof* [`STATES_ABBR`](#states_abbr)\[`number`\]
+
+A two-letter US state abbreviation (including `'DC'`). Derived from
+[STATES\_ABBR](#states_abbr).

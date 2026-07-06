@@ -108,7 +108,7 @@ Ready-state return value of [useContractorBankAccountForm](#usecontractorbankacc
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorBankAccountFormFields`](#contractorbankaccountformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ContractorBankAccountFieldsMetadata`](#contractorbankaccountfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorBankAccountFormData`](#contractorbankaccountformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorBankAccountFormData`](#contractorbankaccountformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -330,7 +330,12 @@ hook.
 
 ### ContractorBankAccountFieldsMetadata
 
-> **ContractorBankAccountFieldsMetadata** = [`UseContractorBankAccountFormReady`](#usecontractorbankaccountformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `accountNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `accountType` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Checking"` \| `"Savings"`\> |
+| `name` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `routingNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useContractorBankAccountForm](#usecontractorbankaccountform).
 

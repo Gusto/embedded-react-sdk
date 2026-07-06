@@ -23,6 +23,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -65,7 +66,7 @@ export interface PaymentMethodFormFields {
  * @public
  */
 export interface UsePaymentMethodFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  PaymentMethodFormFieldsMetadata,
   PaymentMethodFormData,
   PaymentMethodFormFields
 > {
@@ -79,6 +80,19 @@ export interface UsePaymentMethodFormReady extends BaseFormHookReady<
   actions: {
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
   }
+}
+
+/** @internal */
+function buildPaymentMethodFieldsMetadata(
+  base: Record<keyof PaymentMethodFormData, FieldMetadata>,
+) {
+  return {
+    type: withOptions<PaymentMethodType>(
+      base.type,
+      PAYMENT_METHOD_TYPES.map(value => ({ value, label: value })),
+      [...PAYMENT_METHOD_TYPES],
+    ),
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -178,12 +192,8 @@ export function usePaymentMethodForm({
     setSubmitError,
   })
 
-  const typeOptions = PAYMENT_METHOD_TYPES.map(value => ({ value, label: value }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    type: withOptions<PaymentMethodType>(baseMetadata.type, typeOptions, [...PAYMENT_METHOD_TYPES]),
-  }
+  const fieldsMetadata = buildPaymentMethodFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<EmployeePaymentMethod> | undefined> => {
     if (!paymentMethod) {
@@ -263,4 +273,4 @@ export type UsePaymentMethodFormResult = HookLoadingResult | UsePaymentMethodFor
  *
  * @public
  */
-export type PaymentMethodFormFieldsMetadata = UsePaymentMethodFormReady['form']['fieldsMetadata']
+export type PaymentMethodFormFieldsMetadata = ReturnType<typeof buildPaymentMethodFieldsMetadata>

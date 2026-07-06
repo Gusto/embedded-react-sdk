@@ -43,6 +43,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -116,7 +117,7 @@ export interface PayScheduleFormFields {
  * @public
  */
 export interface UsePayScheduleFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  PayScheduleFieldsMetadata,
   PayScheduleFormData,
   PayScheduleFormFields
 > {
@@ -175,6 +176,27 @@ function deriveCustomTwicePerMonth(
   if (frequency !== 'Twice per month') return ''
   if (day1 === 15 && day2 === 31) return '1st15th'
   return 'custom'
+}
+
+/** @internal */
+function buildPayScheduleFieldsMetadata(base: Record<keyof PayScheduleFormData, FieldMetadata>) {
+  return {
+    customName: base.customName,
+    frequency: withOptions<PayScheduleFrequency>(
+      base.frequency,
+      FREQUENCY_OPTIONS,
+      FREQUENCY_ENTRIES,
+    ),
+    customTwicePerMonth: withOptions<string>(
+      base.customTwicePerMonth,
+      TWICE_PER_MONTH_OPTIONS,
+      TWICE_PER_MONTH_ENTRIES,
+    ),
+    anchorPayDate: base.anchorPayDate,
+    anchorEndOfPayPeriod: base.anchorEndOfPayPeriod,
+    day1: base.day1,
+    day2: base.day2,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -363,23 +385,7 @@ export function usePayScheduleForm({
   const showDay2 = watchedFrequency === 'Twice per month' && watchedCustomTwicePerMonth === 'custom'
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    customName: baseMetadata.customName,
-    frequency: withOptions<PayScheduleFrequency>(
-      baseMetadata.frequency,
-      FREQUENCY_OPTIONS,
-      FREQUENCY_ENTRIES,
-    ),
-    customTwicePerMonth: withOptions<string>(
-      baseMetadata.customTwicePerMonth,
-      TWICE_PER_MONTH_OPTIONS,
-      TWICE_PER_MONTH_ENTRIES,
-    ),
-    anchorPayDate: baseMetadata.anchorPayDate,
-    anchorEndOfPayPeriod: baseMetadata.anchorEndOfPayPeriod,
-    day1: baseMetadata.day1,
-    day2: baseMetadata.day2,
-  }
+  const fieldsMetadata = buildPayScheduleFieldsMetadata(baseMetadata)
 
   const onSubmit = async (): Promise<HookSubmitResult<PayScheduleShow> | undefined> => {
     let submitResult: HookSubmitResult<PayScheduleShow> | undefined
@@ -489,4 +495,4 @@ export type UsePayScheduleFormResult = HookLoadingResult | UsePayScheduleFormRea
  *
  * @public
  */
-export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata']
+export type PayScheduleFieldsMetadata = ReturnType<typeof buildPayScheduleFieldsMetadata>

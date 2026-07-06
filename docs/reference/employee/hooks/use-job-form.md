@@ -135,7 +135,7 @@ Discriminated by `isLoading: false`. Extends
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`JobFormFields`](#jobformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`JobFieldsMetadata`](#jobfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`JobFormData`](#jobformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`JobFormData`](#jobformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -380,7 +380,13 @@ import { JobErrorCodes } from '@gusto/embedded-react-sdk'
 
 ### JobFieldsMetadata
 
-> **JobFieldsMetadata** = [`UseJobFormReady`](#usejobformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `hireDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `stateWcClassCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`WARiskClassCode`\> |
+| `stateWcCovered` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
+| `title` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `twoPercentShareholder` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Shape of the per-field metadata exposed at `useJobForm().form.fieldsMetadata`.
 

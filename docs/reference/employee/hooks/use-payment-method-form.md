@@ -109,7 +109,7 @@ Ready-state return value of [usePaymentMethodForm](#usepaymentmethodform).
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`PaymentMethodFormFields`](#paymentmethodformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`PaymentMethodFormFieldsMetadata`](#paymentmethodformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`PaymentMethodFormData`](#paymentmethodformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`PaymentMethodFormData`](#paymentmethodformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -236,7 +236,9 @@ Field names accepted by the payment method form.
 
 ### PaymentMethodFormFieldsMetadata
 
-> **PaymentMethodFormFieldsMetadata** = [`UsePaymentMethodFormReady`](#usepaymentmethodformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Check"` \| `"Direct Deposit"`\> |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [usePaymentMethodForm](#usepaymentmethodform).
 

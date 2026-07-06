@@ -27,7 +27,8 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
-  FieldsMetadata,
+  FieldMetadata,
+  FieldMetadataWithOptions,
   HookLoadingResult,
   HookSubmitResult,
 } from '@/partner-hook-utils/types'
@@ -94,7 +95,7 @@ export interface SplitPaymentsFormFields {
  * @public
  */
 export interface UseSplitPaymentsFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  SplitPaymentsFormFieldsMetadata,
   SplitPaymentsFormData,
   SplitPaymentsFormFields
 > {
@@ -414,11 +415,11 @@ export function useSplitPaymentsForm({
 
   const splitByOptions = SPLIT_BY_VALUES.map(value => ({ value, label: value }))
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const dynamicSplitMetadata = useMemo<FieldsMetadata>(() => {
-    const entries: FieldsMetadata = {}
+  const dynamicSplitMetadata = useMemo<Record<`splitAmount.${string}`, FieldMetadata>>(() => {
+    const entries: Record<`splitAmount.${string}`, FieldMetadata> = {}
     const isAmountSplit = watchedSplitBy === SPLIT_BY.amount
     for (const split of splits) {
-      const path = `splitAmount.${split.uuid}`
+      const path = `splitAmount.${split.uuid}` as const
       const isRemainder = isAmountSplit && split.uuid === remainderId
       // Every split — including the remainder — is "required" from the
       // user's perspective: the remainder always carries a value at submit
@@ -433,7 +434,7 @@ export function useSplitPaymentsForm({
     }
     return entries
   }, [splits, watchedSplitBy, remainderId])
-  const fieldsMetadata: FieldsMetadata = {
+  const fieldsMetadata: SplitPaymentsFormFieldsMetadata = {
     splitBy: withOptions<SplitByValue>(baseMetadata.splitBy, splitByOptions, [...SPLIT_BY_VALUES]),
     splitAmount: baseMetadata.splitAmount,
     priority: baseMetadata.priority,
@@ -552,6 +553,20 @@ export type UseSplitPaymentsFormResult = HookLoadingResult | UseSplitPaymentsFor
 /**
  * Per-field metadata exposed on `form.fieldsMetadata` for {@link useSplitPaymentsForm}.
  *
+ * @remarks
+ * The three named fields are always present. In addition, one dynamic entry is
+ * keyed by full form path per split — `splitAmount.<bankAccountUuid>` — so the
+ * number and identity of those keys depend on the employee's bank accounts at
+ * runtime.
+ *
  * @public
+ * @interface
  */
-export type SplitPaymentsFormFieldsMetadata = UseSplitPaymentsFormReady['form']['fieldsMetadata']
+export type SplitPaymentsFormFieldsMetadata = {
+  /** Split mode selector (by percentage or by fixed amount). */
+  splitBy: FieldMetadataWithOptions<SplitByValue>
+  /** The `splitAmount` container field. Per-split values live at `splitAmount.<uuid>`. */
+  splitAmount: FieldMetadata
+  /** The `priority` container field. */
+  priority: FieldMetadata
+} & Record<`splitAmount.${string}`, FieldMetadata>

@@ -131,7 +131,7 @@ Ready-state shape returned by [useSignCompanyForm](#usesigncompanyform) once the
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`SignCompanyFormFields`](#signcompanyformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`SignCompanyFormFieldsMetadata`](#signcompanyformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`SignCompanyFormData`](#signcompanyformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`SignCompanyFormData`](#signcompanyformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -283,7 +283,10 @@ Field names accepted by the sign-company form.
 
 ### SignCompanyFormFieldsMetadata
 
-> **SignCompanyFormFieldsMetadata** = [`UseSignCompanyFormReady`](#usesigncompanyformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Shape of the `form.fieldsMetadata` object returned by [useSignCompanyForm](#usesigncompanyform).
 

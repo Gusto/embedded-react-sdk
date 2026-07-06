@@ -77,6 +77,23 @@ export type Status = (typeof STATUS)[keyof typeof STATUS];
     `)
   })
 
+  it('expands ReturnType<typeof fn> to the object type and removes the orphaned declare function', () => {
+    const { sf, checker } = setup(
+      'returntype-fn.d.ts',
+      `export interface FieldMeta { name: string; }
+declare function buildMeta(): { title: FieldMeta; amount: FieldMeta; };
+export type Meta = ReturnType<typeof buildMeta>;
+`,
+    )
+    expect(processSourceFile(sf, checker)).not.toBeNull()
+    const text = sf.getText()
+    expect(text).toContain('export type Meta = {')
+    expect(text).toContain('title: FieldMeta')
+    expect(text).toContain('amount: FieldMeta')
+    expect(text).not.toContain('ReturnType')
+    expect(text).not.toContain('declare function buildMeta')
+  })
+
   it('expands a mapped type to a concrete object type and removes the orphaned const', () => {
     const { sf, checker } = setup(
       'mapped.d.ts',

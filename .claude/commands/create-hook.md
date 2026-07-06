@@ -57,7 +57,8 @@ Always read:
 - The barrel `index.ts` — what is re-exported and under which names
 - `.claude/hooks-implementation.md` — schema, fields, hook internals, error handling, exports in detail
 - `src/partner-hook-utils/form/buildFormSchema.ts` — the schema builder's full surface (`requiredFieldsConfig`, `excludeFields`, `fieldsWithRedactedValues`, `superRefine`, `OptionalFieldsToRequire`)
-- `src/partner-hook-utils/types.ts` — `BaseFormHookReady`, `HookLoadingResult`, `HookSubmitResult`, `HookErrorHandling`, `FieldsMetadata`, `HookFieldProps`
+- `src/partner-hook-utils/types.ts` — `BaseFormHookReady`, `HookLoadingResult`, `HookSubmitResult`, `HookErrorHandling`, `FieldMetadata`, `FieldMetadataWithOptions`, `FieldsMetadata`, `HookFieldProps`
+- `src/partner-hook-utils/form/withFlags.ts` and `withOptions.ts` — the metadata-entry builders used to assemble `fieldsMetadata` with precise per-field types (see `.claude/hooks-implementation.md → Fields Metadata`)
 
 ### Step 3: Create the directory and files
 
@@ -232,9 +233,11 @@ import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFiel
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
+import { withFlags } from '@/partner-hook-utils/form/withFlags'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -284,8 +287,28 @@ export interface {Domain}FormFields {
   {Field}: ComponentType<{Field}FieldProps>
 }
 
+// Module-level pure builder for the per-field metadata. Extracting it lets
+// {Domain}FieldsMetadata be inferred from its return type (below), which is the
+// only way to type each field's variant precisely (FieldMetadata vs
+// FieldMetadataWithOptions). This is the default (static, finite key set). If the
+// key set varies by a runtime discriminator or is minted at runtime (UUIDs,
+// API-driven names), name the type a different way — discriminated union,
+// static-core + template-literal Record, or a template-literal index signature.
+// See .claude/hooks-implementation.md → "Choosing the metadata type by key
+// structure". Either way the metadata type is always named — never left generic.
+function build{Domain}FieldsMetadata(
+  base: Record<keyof {Domain}FormData, FieldMetadata>,
+  flags: { /* showFoo: boolean, ... */ },
+) {
+  return {
+    // plain fields pass through; withFlags(base.x, { isDisabled }) overrides
+    // flags while preserving the FieldMetadata type; withOptions<TEntry>(...)
+    // marks select/radio fields.
+  } satisfies FieldsMetadata
+}
+
 export interface Use{Domain}FormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  {Domain}FieldsMetadata,
   {Domain}FormData,
   {Domain}FormFields
 > {
@@ -340,13 +363,14 @@ export function use{Domain}Form(props: Use{Domain}FormProps): HookLoadingResult 
   } = useBaseSubmit('{Domain}Form')
   const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
-  // 7. Fields metadata — derive then enrich. `withOptions` adds `options` and
-  //    `entries` to select/radio metadata; `entries` lets the UI translate
-  //    labels via `getOptionLabel` without hooks owning translations.
+  // 7. Fields metadata — derive, then assemble via the module-level builder so
+  //    the type is inferred per-field. `withOptions` adds `options`/`entries` to
+  //    select/radio metadata (entries let the UI translate labels via
+  //    `getOptionLabel`); `withFlags` overrides isRequired/isDisabled while
+  //    preserving the FieldMetadata type. If metadata is redaction/branch
+  //    dependent, keep a `useMemo` and call the builder inside its callback.
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    // ...baseMetadata fields, with isDisabled / withOptions wrappers as needed.
-  }
+  const fieldsMetadata = build{Domain}FieldsMetadata(baseMetadata, { /* flags */ })
 
   // 8. onSubmit — handleSubmit wrapped in a Promise so partners can await it.
   //    Delegate to baseSubmitHandler so APIError/SDKValidationError/etc. flow
@@ -381,7 +405,12 @@ export function use{Domain}Form(props: Use{Domain}FormProps): HookLoadingResult 
 }
 
 export type Use{Domain}FormResult = HookLoadingResult | Use{Domain}FormReady
-export type {Domain}FieldsMetadata = Use{Domain}FormReady['form']['fieldsMetadata']
+// Inferred from the builder — precise per-field types (static, finite key set).
+// For the other tiers, name the type directly instead: a discriminated union of
+// variants, or `` Record<`prefix.${string}`, FieldMetadata | FieldMetadataWithOptions> ``
+// for runtime-minted keys. See hooks-implementation.md → "Choosing the metadata
+// type by key structure". Never `Use{Domain}FormReady['form']['fieldsMetadata']`.
+export type {Domain}FieldsMetadata = ReturnType<typeof build{Domain}FieldsMetadata>
 // {Domain}FormFields is the same as the interface declared above; no alias
 // needed unless you named the interface differently (e.g. EmployeeDetailsFields
 // + an EmployeeDetailsFormFields alias — see useEmployeeDetailsForm.tsx).

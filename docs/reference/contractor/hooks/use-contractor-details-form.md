@@ -147,7 +147,7 @@ The ready-state result returned by [useContractorDetailsForm](#usecontractordeta
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorDetailsFormFields`](#contractordetailsformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ContractorDetailsFieldsMetadata`](#contractordetailsfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorDetailsFormData`](#contractordetailsformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorDetailsFormData`](#contractordetailsformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -715,7 +715,22 @@ hook.
 
 ### ContractorDetailsFieldsMetadata
 
-> **ContractorDetailsFieldsMetadata** = [`UseContractorDetailsFormReady`](#usecontractordetailsformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `businessName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `ein` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `email` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `fileNewHireReport` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `firstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `hourlyRate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `lastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `middleInitial` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `selfOnboarding` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `ssn` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `startDate` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Business"` \| `"Individual"`\> |
+| `wageType` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Fixed"` \| `"Hourly"`\> |
+| `workState` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> |
 
 Shape of `form.fieldsMetadata` returned by [useContractorDetailsForm](#usecontractordetailsform).
 

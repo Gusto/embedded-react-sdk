@@ -122,7 +122,7 @@ document metadata has loaded.
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`ContractorSignatureFormFieldComponents`](#contractorsignatureformfieldcomponents) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`ContractorSignatureFieldsMetadata`](#contractorsignaturefieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`ContractorSignatureFormData`](#contractorsignatureformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`ContractorSignatureFormData`](#contractorsignatureformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -821,7 +821,27 @@ Use as a key in `validationMessages` on `Fields.Ssn`. See
 
 ### ContractorSignatureFieldsMetadata
 
-> **ContractorSignatureFieldsMetadata** = [`UseContractorSignatureFormReady`](#usecontractorsignatureformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `accountNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `agree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `businessName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `companyName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `ein` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `exemptionFromFatca` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `exemptPayeeCode` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `foreignPartners` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `homeAddressCity` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `homeAddressState` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `homeAddressStreet1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `homeAddressStreet2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `homeAddressZip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `llcClassificationCode` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"c"` \| `"s"` \| `"p"`\> |
+| `name` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `otherText` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `signatureText` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `ssn` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `taxClassification` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"other"` \| `"individual_proprietor"` \| `"c_corporation"` \| `"s_corporation"` \| `"partnership"` \| `"trust_estate"` \| `"limited_liability_company"`\> |
 
 Per-field metadata exposed by [useContractorSignatureForm](#usecontractorsignatureform) as `form.fieldsMetadata`.
 

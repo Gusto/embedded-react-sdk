@@ -299,14 +299,14 @@ function W9Fields({ hookResult }: W9FieldsProps) {
             <Fields.Ssn
               label={t('fields.ssn.label')}
               validationMessages={{ ...requiredMessages, INVALID_SSN: t('validation.invalidSsn') }}
-              placeholder={fieldsMetadata.ssn?.placeholder}
+              placeholder={fieldsMetadata.ssn.placeholder}
             />
           )}
           {Fields.Ein && (
             <Fields.Ein
               label={t('fields.ein.label')}
               validationMessages={{ ...requiredMessages, INVALID_EIN: t('validation.invalidEin') }}
-              placeholder={fieldsMetadata.ein?.placeholder}
+              placeholder={fieldsMetadata.ein.placeholder}
             />
           )}
         </Flex>

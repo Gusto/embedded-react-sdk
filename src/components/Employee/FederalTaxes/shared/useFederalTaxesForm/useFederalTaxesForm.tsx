@@ -42,6 +42,7 @@ import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -103,7 +104,7 @@ export interface FederalTaxesFormFields {
  * @public
  */
 export interface UseFederalTaxesFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  FederalTaxesFieldsMetadata,
   FederalTaxesFormData,
   FederalTaxesFormFields
 > {
@@ -139,6 +140,31 @@ function toNumber(value: string | null | undefined): number | undefined {
   if (value === null || value === undefined || value === '') return undefined
   const parsed = Number(value)
   return Number.isNaN(parsed) ? undefined : parsed
+}
+
+/** @internal */
+function buildFederalTaxesFieldsMetadata(
+  base: Record<keyof FederalTaxesFormData, FieldMetadata>,
+  {
+    filingStatusOptions,
+    twoJobsOptions,
+  }: {
+    filingStatusOptions: Array<{ value: FilingStatusValue; label: string }>
+    twoJobsOptions: Array<{ value: string; label: string }>
+  },
+) {
+  return {
+    filingStatus: withOptions<FilingStatusValue>(
+      base.filingStatus,
+      filingStatusOptions,
+      FILING_STATUS_VALUES,
+    ),
+    twoJobs: withOptions<boolean>(base.twoJobs, twoJobsOptions, [true, false]),
+    dependentsAmount: base.dependentsAmount,
+    otherIncome: base.otherIncome,
+    deductions: base.deductions,
+    extraWithholding: base.extraWithholding,
+  } satisfies FieldsMetadata
 }
 
 /**
@@ -251,18 +277,10 @@ export function useFederalTaxesForm({
   const errorHandling = composeErrorHandler([federalTaxesQuery], { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
-    filingStatus: withOptions<FilingStatusValue>(
-      baseMetadata.filingStatus,
-      filingStatusOptions,
-      FILING_STATUS_VALUES,
-    ),
-    twoJobs: withOptions<boolean>(baseMetadata.twoJobs, twoJobsOptions, [true, false]),
-    dependentsAmount: baseMetadata.dependentsAmount,
-    otherIncome: baseMetadata.otherIncome,
-    deductions: baseMetadata.deductions,
-    extraWithholding: baseMetadata.extraWithholding,
-  }
+  const fieldsMetadata = buildFederalTaxesFieldsMetadata(baseMetadata, {
+    filingStatusOptions,
+    twoJobsOptions,
+  })
 
   const onSubmit = async (): Promise<HookSubmitResult<EmployeeFederalTax> | undefined> => {
     let submitResult: HookSubmitResult<EmployeeFederalTax> | undefined
@@ -364,4 +382,4 @@ export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormR
  *
  * @public
  */
-export type FederalTaxesFieldsMetadata = UseFederalTaxesFormReady['form']['fieldsMetadata']
+export type FederalTaxesFieldsMetadata = ReturnType<typeof buildFederalTaxesFieldsMetadata>

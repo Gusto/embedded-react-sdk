@@ -101,7 +101,7 @@ Ready-state return value of [useBankForm](#usebankform).
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`BankFormFields`](#bankformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`BankFormFieldsMetadata`](#bankformfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`BankFormData`](#bankformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`BankFormData`](#bankformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -353,7 +353,12 @@ Field names accepted by the bank account form.
 
 ### BankFormFieldsMetadata
 
-> **BankFormFieldsMetadata** = [`UseBankFormReady`](#usebankformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `accountNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `accountType` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Checking"` \| `"Savings"`\> |
+| `name` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `routingNumber` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useBankForm](#usebankform).
 

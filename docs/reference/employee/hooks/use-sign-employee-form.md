@@ -471,6 +471,27 @@ One-based preparer index used to reference preparer field groups (1–4).
 
 ***
 
+<a id="signemployeebasefieldsmetadata"></a>
+
+### SignEmployeeBaseFieldsMetadata
+
+Field metadata for a standard (non-I-9) employee form — only the signature and
+its confirmation are collected.
+
+#### Remarks
+
+This is the [SignEmployeeFormFieldsMetadata](#signemployeeformfieldsmetadata) variant returned when the
+form being signed is not an I-9. Every entry is a plain [FieldMetadata](../../utilities.md#fieldmetadata).
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The signature-confirmation field. |
+| `signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | The typed-signature field. |
+
+***
+
 <a id="signemployeeformdata"></a>
 
 ### SignEmployeeFormData
@@ -566,8 +587,82 @@ Field names accepted by the I-9 sign-employee form.
 
 ### SignEmployeeFormFieldsMetadata
 
-> **SignEmployeeFormFieldsMetadata** = [`UseSignEmployeeFormReady`](#usesignemployeeformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+> **SignEmployeeFormFieldsMetadata** = [`SignEmployeeBaseFieldsMetadata`](#signemployeebasefieldsmetadata) \| [`SignEmployeeI9FieldsMetadata`](#signemployeei9fieldsmetadata)
 
 Shape of the `form.fieldsMetadata` object returned by [useSignEmployeeForm](#usesignemployeeform).
+
+#### Remarks
+
+A discriminated union keyed on whether the form is an I-9. Narrow with an `in`
+check on a preparer field before reading the I-9 entries:
+
+```ts
+const { fieldsMetadata } = form
+if ('usedPreparer' in fieldsMetadata) {
+  // fieldsMetadata is SignEmployeeI9FieldsMetadata
+  fieldsMetadata.preparerState.options
+}
+```
+
+***
+
+<a id="signemployeei9fieldsmetadata"></a>
+
+### SignEmployeeI9FieldsMetadata
+
+Field metadata for an I-9 employee form, which additionally collects
+preparer/translator certification for up to four preparers.
+
+#### Remarks
+
+A superset of [SignEmployeeBaseFieldsMetadata](#signemployeebasefieldsmetadata). `usedPreparer` is a
+yes/no radio and each `preparer{N}State` is a US-state select
+([StateAbbreviation](../../index.md#stateabbreviation)); every other preparer field is a plain text
+[FieldMetadata](../../utilities.md#fieldmetadata). Preparer entries beyond the active preparer count are
+still typed here but only populated once that preparer section is added.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| `confirmSignature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2Agree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2City` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2FirstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2LastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2Signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2State` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the second preparer's address. |
+| `preparer2Street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2Street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer2Zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3Agree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3City` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3FirstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3LastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3Signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3State` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the third preparer's address. |
+| `preparer3Street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3Street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer3Zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4Agree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4City` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4FirstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4LastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4Signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4State` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the fourth preparer's address. |
+| `preparer4Street1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4Street2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparer4Zip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerAgree` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerCity` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerFirstName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerLastName` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerSignature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerState` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"AL"` \| `"AK"` \| `"AZ"` \| `"AR"` \| `"CA"` \| `"CO"` \| `"CT"` \| `"DE"` \| `"DC"` \| `"FL"` \| `"GA"` \| `"HI"` \| `"ID"` \| `"IL"` \| `"IN"` \| `"IA"` \| `"KS"` \| `"KY"` \| `"LA"` \| `"ME"` \| `"MD"` \| `"MA"` \| `"MI"` \| `"MN"` \| `"MS"` \| `"MO"` \| `"MT"` \| `"NE"` \| `"NV"` \| `"NH"` \| `"NJ"` \| `"NM"` \| `"NY"` \| `"NC"` \| `"ND"` \| `"OH"` \| `"OK"` \| `"OR"` \| `"PA"` \| `"RI"` \| `"SC"` \| `"SD"` \| `"TN"` \| `"TX"` \| `"UT"` \| `"VT"` \| `"VA"` \| `"WA"` \| `"WV"` \| `"WI"` \| `"WY"`\> | US-state select for the first preparer's address. |
+| `preparerStreet1` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerStreet2` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `preparerZip` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `signature` | [`FieldMetadata`](../../utilities.md#fieldmetadata) | - |
+| `usedPreparer` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> | Yes/no radio: whether a preparer or translator assisted with the form. |
 
 ***

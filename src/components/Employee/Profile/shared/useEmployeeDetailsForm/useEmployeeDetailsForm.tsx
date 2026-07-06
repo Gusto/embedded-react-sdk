@@ -40,6 +40,7 @@ import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getForm
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
+  FieldMetadata,
   FieldsMetadata,
   HookLoadingResult,
   HookSubmitResult,
@@ -50,6 +51,21 @@ import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
 export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSchema'
+
+/** @internal */
+function buildEmployeeDetailsFieldsMetadata(
+  base: Record<keyof EmployeeDetailsFormData, FieldMetadata>,
+) {
+  return {
+    firstName: base.firstName,
+    middleInitial: base.middleInitial,
+    lastName: base.lastName,
+    email: base.email,
+    dateOfBirth: base.dateOfBirth,
+    ssn: base.ssn,
+    selfOnboarding: base.selfOnboarding,
+  } satisfies FieldsMetadata
+}
 
 /**
  * Optional callbacks passed to {@link UseEmployeeDetailsFormReady.actions.onSubmit | onSubmit}.
@@ -141,7 +157,7 @@ export interface EmployeeDetailsFormFields {
  * @public
  */
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
-  FieldsMetadata,
+  EmployeeDetailsFieldsMetadata,
   EmployeeDetailsFormData,
   EmployeeDetailsFormFields
 > {
@@ -302,7 +318,8 @@ export function useEmployeeDetailsForm({
   const queries = employeeId ? [employeeQuery] : []
   const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
-  const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+  const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+  const fieldsMetadata = buildEmployeeDetailsFieldsMetadata(baseMetadata)
 
   const onSubmit = async (
     callbacks?: EmployeeDetailsSubmitCallbacks,
@@ -454,4 +471,4 @@ export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetail
  *
  * @public
  */
-export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata']
+export type EmployeeDetailsFieldsMetadata = ReturnType<typeof buildEmployeeDetailsFieldsMetadata>

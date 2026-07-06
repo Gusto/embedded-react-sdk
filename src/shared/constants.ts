@@ -663,7 +663,12 @@ export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
  */
 export const I9_FORM_NAME = 'US_I-9'
 
-/** @internal */
+/**
+ * Two-letter US state abbreviations (including `'DC'`), in the order presented
+ * in state selection controls.
+ *
+ * @public
+ */
 export const STATES_ABBR = [
   'AL',
   'AK',
@@ -717,6 +722,14 @@ export const STATES_ABBR = [
   'WI',
   'WY',
 ] as const
+
+/**
+ * A two-letter US state abbreviation (including `'DC'`). Derived from
+ * {@link STATES_ABBR}.
+ *
+ * @public
+ */
+export type StateAbbreviation = (typeof STATES_ABBR)[number]
 
 /** @internal */
 export const SIGNATORY_TITLES = {

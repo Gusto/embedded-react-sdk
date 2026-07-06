@@ -117,7 +117,7 @@ the federal-taxes specific `data`, `status`, and `actions`.
 | `errorHandling` | [`HookErrorHandling`](../../utilities.md#hookerrorhandling) | Error state and recovery actions. |
 | `form` | `object` | Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. |
 | `form.Fields` | [`FederalTaxesFormFields`](#federaltaxesformfields) | - |
-| `form.fieldsMetadata` | [`FieldsMetadata`](../../utilities.md#fieldsmetadata) | - |
+| `form.fieldsMetadata` | [`FederalTaxesFieldsMetadata`](#federaltaxesfieldsmetadata) | - |
 | `form.getFormSubmissionValues` | () => [`FederalTaxesFormData`](#federaltaxesformdata) \| `undefined` | - |
 | `form.hookFormInternals` | [`HookFormInternals`](../../utilities.md#hookforminternals)\<[`FederalTaxesFormData`](#federaltaxesformdata)\> | - |
 | `isLoading` | `false` | Always `false` in this branch; discriminates from [HookLoadingResult](../../utilities.md#hookloadingresult). |
@@ -377,7 +377,14 @@ Field names accepted by the federal taxes form.
 
 ### FederalTaxesFieldsMetadata
 
-> **FederalTaxesFieldsMetadata** = [`UseFederalTaxesFormReady`](#usefederaltaxesformready)\[`"form"`\]\[`"fieldsMetadata"`\]
+| Field | Type |
+| ------ | ------ |
+| `deductions` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `dependentsAmount` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `extraWithholding` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `filingStatus` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Single"` \| `"Married"` \| `"Head of Household"` \| `"Exempt from withholding"`\> |
+| `otherIncome` | [`FieldMetadata`](../../utilities.md#fieldmetadata) |
+| `twoJobs` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`boolean`\> |
 
 Metadata for each [useFederalTaxesForm](#usefederaltaxesform) field, exposed on `form.fieldsMetadata`.
 
