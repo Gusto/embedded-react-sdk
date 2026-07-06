@@ -26,7 +26,7 @@ Every SDK component makes a known set of API calls. Paths use named parameters (
 
 ### Option A: JSON endpoint inventory (recommended, any platform)
 
-The SDK ships a machine-readable JSON file listing every block and flow with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
+The SDK ships a machine-readable JSON file listing every block, flow, and headless hook with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
 
 Import it from the package:
 
@@ -58,15 +58,24 @@ The JSON structure:
       ],
       "variables": ["companyId", "employeeId"]
     }
+  },
+  "hooks": {
+    "useFederalTaxesForm": {
+      "endpoints": [
+        { "method": "GET", "path": "/v1/employees/:employeeUuid/federal_taxes" },
+        { "method": "PUT", "path": "/v1/employees/:employeeUuid/federal_taxes" }
+      ],
+      "variables": ["employeeUuid"]
+    }
   }
 }
 ```
 
-Look up the flows or blocks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
+Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 
