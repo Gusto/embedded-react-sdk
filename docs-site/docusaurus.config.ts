@@ -59,7 +59,7 @@ const config: Config = {
   // Load the OneTrust consent platform at the application level, in <head>. OneTrust
   // is the site-wide cookie-consent gate (all categories, not just analytics), so it
   // lives here rather than inside any feature module. The domain-script variant is
-  // resolved at build time (see src/analyticsConfig.ts).
+  // resolved at build time (see src/config.ts).
   headTags: [
     {
       tagName: 'script',
@@ -289,7 +289,7 @@ const config: Config = {
             {
               label: 'Cookie Settings',
               href: '#',
-              // Opens the OneTrust preference center; wired up in src/gustoAnalytics.ts.
+              // Opens the OneTrust preference center; wired up in src/cookieConsent.ts.
               className: 'docs-cookie-settings',
             },
           ],
