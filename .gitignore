@@ -195,6 +195,7 @@ test-results/
 
 # E2E local testing
 e2e/.e2e-state.json
+e2e/.e2e-scenarios.json
 e2e/local.config.env
 e2e/recordings/
 e2e-recordings/
