@@ -1,4 +1,4 @@
-import type { GarnishmentType } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import type { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
 import type { DeductionFormErrorCodes } from './deductionFormSchema'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
 import type { NumberInputHookFieldProps } from '@/partner-hook-utils/form/fields/NumberInputHookField'

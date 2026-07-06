@@ -1,4 +1,4 @@
-import type { TaxRequirementsState } from '@gusto/embedded-api-v-2026-02-01/models/components/taxrequirementsstate'
+import type { TaxRequirementsState } from '@gusto/embedded-api/models/components/taxrequirementsstate'
 import { createCompoundContext } from '@/components/Base'
 
 interface StateTaxFormContext {

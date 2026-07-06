@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   AuthorizationStatus,
   DocumentType as I9AuthorizationDocumentType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/i9authorization'
+} from '@gusto/embedded-api/models/components/i9authorization'
 import {
   generateEmploymentEligibilitySchema,
   type EmploymentEligibilityInputs,

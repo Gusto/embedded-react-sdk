@@ -1,4 +1,4 @@
-import type { DocumentSigned } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned'
+import type { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned'
 import { DocumentsList } from '../DocumentsList/DocumentsList'
 import { SignatureForm } from '../SignatureForm/SignatureForm'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'

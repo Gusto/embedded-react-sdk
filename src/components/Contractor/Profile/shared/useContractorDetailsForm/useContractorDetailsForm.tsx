@@ -3,12 +3,12 @@ import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody'
-import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
-import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsCreate'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdate'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
+import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import {
   ContractorType,
   WageType,

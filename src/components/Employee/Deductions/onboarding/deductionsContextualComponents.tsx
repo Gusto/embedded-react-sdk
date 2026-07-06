@@ -1,4 +1,4 @@
-import { type Garnishment } from '@gusto/embedded-api-v-2026-02-01/models/components/garnishment'
+import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useDeductionsList } from '../shared/useDeductionsList'
 import { DeductionsForm } from '../shared/DeductionsForm'
 import { DeductionsList } from './DeductionsList/DeductionsList'

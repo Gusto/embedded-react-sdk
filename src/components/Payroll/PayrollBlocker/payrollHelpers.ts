@@ -1,5 +1,5 @@
-import { PayrollBlockersError } from '@gusto/embedded-api-v-2026-02-01/models/errors/payrollblockerserror'
-import { UnprocessableEntityError } from '@gusto/embedded-api-v-2026-02-01/models/errors/unprocessableentityerror'
+import { PayrollBlockersError } from '@gusto/embedded-api/models/errors/payrollblockerserror'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 
 function hasMetadataKey(metadata: unknown): metadata is { key: string } {
   return (

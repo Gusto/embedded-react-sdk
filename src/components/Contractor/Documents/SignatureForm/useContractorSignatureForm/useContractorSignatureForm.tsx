@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
-import type { DocumentSigned } from '@gusto/embedded-api-v-2026-02-01/models/components/documentsigned'
-import { useContractorDocumentsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsGet'
-import { useContractorDocumentsGetPdf } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsGetPdf'
-import { useContractorDocumentsSignMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsSign'
+import type { Document } from '@gusto/embedded-api/models/components/document'
+import type { DocumentSigned } from '@gusto/embedded-api/models/components/documentsigned'
+import { useContractorDocumentsGet } from '@gusto/embedded-api/react-query/contractorDocumentsGet'
+import { useContractorDocumentsGetPdf } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
+import { useContractorDocumentsSignMutation } from '@gusto/embedded-api/react-query/contractorDocumentsSign'
 import {
   buildW9Defaults,
   getPresentFieldNames,

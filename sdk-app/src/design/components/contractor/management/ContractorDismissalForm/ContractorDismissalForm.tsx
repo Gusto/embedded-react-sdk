@@ -1,4 +1,4 @@
-import type { Contractor } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'

@@ -1,5 +1,5 @@
-import { useContractorDocumentsGetAll } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsGetAll'
-import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
+import { useContractorDocumentsGetAll } from '@gusto/embedded-api/react-query/contractorDocumentsGetAll'
+import type { Document } from '@gusto/embedded-api/models/components/document'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookLoadingResult } from '@/partner-hook-utils/types'
 

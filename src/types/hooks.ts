@@ -10,7 +10,7 @@ import type {
   BeforeRequestContext,
   AfterSuccessContext,
   AfterErrorContext,
-} from '@gusto/embedded-api-v-2026-02-01/hooks/types'
+} from '@gusto/embedded-api/hooks/types'
 
 // Re-export hook types and contexts for consumer use
 export type {

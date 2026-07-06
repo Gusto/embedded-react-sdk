@@ -1,4 +1,4 @@
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 
 /**
  * Returns the FLSA status of the employee's primary job's current compensation,

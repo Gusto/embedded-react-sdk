@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { ContractorPaymentMethod } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorpaymentmethod'
-import { useContractorPaymentMethodGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodGet'
-import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorPaymentMethodUpdate'
+import type { ContractorPaymentMethod } from '@gusto/embedded-api/models/components/contractorpaymentmethod'
+import { useContractorPaymentMethodGet } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
+import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodUpdate'
 import {
   createContractorPaymentMethodSchema,
   type ContractorPaymentMethodFormData,

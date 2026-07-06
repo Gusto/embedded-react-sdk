@@ -1,4 +1,4 @@
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { getPendingCompensationChanges } from '../../shared/getPendingCompensationChanges'
 import { CompensationEditJobForm } from '../CompensationEditJobForm/CompensationEditJobForm'
 import { CompensationEditPendingJobForm } from '../CompensationEditPendingJobForm/CompensationEditPendingJobForm'

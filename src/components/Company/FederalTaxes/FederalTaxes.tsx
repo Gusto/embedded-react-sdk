@@ -1,9 +1,9 @@
-import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/federalTaxDetailsUpdate'
-import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/federalTaxDetailsGet'
+import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api/react-query/federalTaxDetailsUpdate'
+import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import type {
   FilingForm,
   TaxPayerType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/federaltaxdetails'
+} from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {

@@ -1,4 +1,4 @@
-import type { PaymentMethodBankAccount } from '@gusto/embedded-api-v-2026-02-01/models/components/paymentmethodbankaccount'
+import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { useFlow } from '@/components/Flow/useFlow'

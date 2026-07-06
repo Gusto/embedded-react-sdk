@@ -1,13 +1,13 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1EmployeesEmployeeIdWorkAddressesRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidworkaddresses'
-import type { GetV1WorkAddressesWorkAddressUuidRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1workaddressesworkaddressuuid'
+import type { GetV1EmployeesEmployeeIdWorkAddressesRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidworkaddresses'
+import type { GetV1WorkAddressesWorkAddressUuidRequest } from '@gusto/embedded-api/models/operations/getv1workaddressesworkaddressuuid'
 import type {
   DeleteV1WorkAddressesWorkAddressUuidRequest,
   DeleteV1WorkAddressesWorkAddressUuidResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1workaddressesworkaddressuuid'
-import type { PutV1WorkAddressesWorkAddressUuidRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1workaddressesworkaddressuuid'
-import type { PostV1EmployeesEmployeeIdWorkAddressesRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1employeesemployeeidworkaddresses'
+} from '@gusto/embedded-api/models/operations/deletev1workaddressesworkaddressuuid'
+import type { PutV1WorkAddressesWorkAddressUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1workaddressesworkaddressuuid'
+import type { PostV1EmployeesEmployeeIdWorkAddressesRequestBody } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidworkaddresses'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

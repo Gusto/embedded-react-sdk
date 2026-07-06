@@ -1,5 +1,5 @@
 import { http, HttpResponse, type HttpResponseResolver, type PathParams } from 'msw'
-import type { CompensationsRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/compensationsrequestbody'
+import type { CompensationsRequestBody } from '@gusto/embedded-api/models/components/compensationsrequestbody'
 import { API_BASE_URL } from '@/test/constants'
 
 export function handleCreateCompensation(

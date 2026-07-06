@@ -2,10 +2,10 @@ import type { ComponentType, JSX } from 'react'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Form } from '@gusto/embedded-api-v-2026-02-01/models/components/form'
-import { useEmployeeFormsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsGet'
-import { useEmployeeFormsGetPdf } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsGetPdf'
-import { useEmployeeFormsSignMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeFormsSign'
+import type { Form } from '@gusto/embedded-api/models/components/form'
+import { useEmployeeFormsGet } from '@gusto/embedded-api/react-query/employeeFormsGet'
+import { useEmployeeFormsGetPdf } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
+import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
 import {
   createSignEmployeeFormSchema,
   MAX_PREPARERS,

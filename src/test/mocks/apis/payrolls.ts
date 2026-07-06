@@ -1,12 +1,12 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompaniesCompanyIdPayrollsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidpayrolls'
+import type { GetV1CompaniesCompanyIdPayrollsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type {
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,
   GetV1CompaniesCompanyIdPayrollsPayrollIdResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidpayrollspayrollid'
-import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
-import { OffCycleReason } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
+import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
