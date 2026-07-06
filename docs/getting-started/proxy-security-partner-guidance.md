@@ -41,29 +41,40 @@ The JSON structure:
 ```json
 {
   "blocks": {
-    "Employee.FederalTaxes": {
+    "EmployeeManagement.FederalTaxes": {
       "endpoints": [
-        { "method": "GET", "path": "/v1/employees/:employeeId/federal_taxes" },
-        { "method": "PUT", "path": "/v1/employees/:employeeId/federal_taxes" }
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+        }
       ],
-      "variables": ["employeeId"]
+      "variables": ["employeeUuid"]
     }
   },
   "flows": {
-    "Employee.SelfOnboardingFlow": {
-      "blocks": ["Employee.Landing", "Employee.Profile", "..."],
-      "endpoints": [
-        { "method": "GET", "path": "/v1/employees/:employeeId" },
-        { "method": "GET", "path": "/v1/companies/:companyId" }
-      ],
-      "variables": ["companyId", "employeeId"]
+    "CompanyOnboarding.OnboardingFlow": {
+      "blocks": ["CompanyOnboarding.FederalTaxes", "CompanyOnboarding.PaySchedule", "..."]
     }
   },
   "hooks": {
     "useFederalTaxesForm": {
       "endpoints": [
-        { "method": "GET", "path": "/v1/employees/:employeeUuid/federal_taxes" },
-        { "method": "PUT", "path": "/v1/employees/:employeeUuid/federal_taxes" }
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+        }
       ],
       "variables": ["employeeUuid"]
     }
@@ -71,7 +82,7 @@ The JSON structure:
 }
 ```
 
-Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
+Each endpoint's `docsUrl` links to its page in the API reference (omitted for the few endpoints without a public reference page). Blocks and hooks list their `endpoints` directly; a flow lists the `blocks` it composes, and its endpoints are the union of those blocks' endpoints. Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
 
 ### Option B: Static reference
 
