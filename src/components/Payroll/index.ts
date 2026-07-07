@@ -37,6 +37,7 @@ export type { ConfirmWireDetailsProps, ConfirmWireDetailsComponentType } from '.
 export { PayrollBlockerList, type ApiPayrollBlocker } from './PayrollBlocker'
 export type { PayrollBlockerListProps } from './PayrollBlocker/components/PayrollBlockerList'
 export { RecoveryCases } from './RecoveryCases/RecoveryCases'
+export type { RecoveryCasesProps } from './RecoveryCases/RecoveryCases'
 export type {
   OffCyclePayPeriodDateFormData,
   OffCyclePayrollDateType,

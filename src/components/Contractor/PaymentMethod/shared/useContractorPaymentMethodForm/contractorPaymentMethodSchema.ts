@@ -37,7 +37,7 @@ export const PAYMENT_METHOD_TYPES = [PAYMENT_METHODS.directDeposit, PAYMENT_METH
  *
  * @public
  */
-export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHOD_TYPES)[number]
+export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS]
 
 const fieldValidators = {
   type: z.enum(PAYMENT_METHOD_TYPES),

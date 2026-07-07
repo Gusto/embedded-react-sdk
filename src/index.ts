@@ -9,6 +9,7 @@ export * from '@/contexts'
  * @public
  */
 export type * as APIModels from '@/models/external'
+export type { WARiskClassCode } from '@/models/WA_RISK_CODES'
 export {
   componentEvents,
   EmployeeOnboardingStatus,
@@ -53,13 +54,20 @@ export type {
   Translations,
   DeepPartial,
   SupportedLanguages,
+  DataAttributes,
+  RequireAtLeastOne,
 } from '@/types/Helpers'
 
 // Partner hook infrastructure
 export { composeErrorHandler, SDKFormProvider, composeSubmitHandler } from '@/partner-hook-utils'
 export type {
   MixedErrorSource,
+  QueryWithRefetch,
   SubmitStateForErrorHandling,
+  SDKFormProviderProps,
+  ComposeSubmitInput,
+  ComposeSubmitHandlerResult,
+  ComposableFormHookResult,
   HookFormInternals,
   HookLoadingResult,
   HookSubmitResult,
@@ -73,6 +81,7 @@ export type {
   ValidationMessages,
   BaseFieldProps,
   HookFieldProps,
+  InputProps,
   TextInputHookFieldProps,
   SelectHookFieldProps,
   CheckboxHookFieldProps,

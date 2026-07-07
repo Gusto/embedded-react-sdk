@@ -17,6 +17,12 @@ export type DeepPartial<T> = {
       : T[P]
 }
 
+/**
+ * Requires at least one property of `T` to be provided while leaving the rest optional.
+ *
+ * @typeParam T - The object type whose properties are individually optional but collectively required.
+ * @public
+ */
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
 }[keyof T]
@@ -39,6 +45,11 @@ export type MachineTransition = Transition<EventType> | Immediate<EventType>
 //Makes specific property in the given type required
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+/**
+ * An open map of `data-*` attributes that can be spread onto a rendered DOM element.
+ *
+ * @public
+ */
 export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean
 }

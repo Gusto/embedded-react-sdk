@@ -8,11 +8,17 @@ export type {
 } from '../types'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
-export { SDKFormProvider } from './SDKFormProvider'
-
-export { composeSubmitHandler } from './composeSubmitHandler'
+export { SDKFormProvider, type SDKFormProviderProps } from './SDKFormProvider'
 
 export {
+  composeSubmitHandler,
+  type ComposeSubmitInput,
+  type ComposeSubmitHandlerResult,
+  type ComposableFormHookResult,
+} from './composeSubmitHandler'
+
+export {
+  type InputProps,
   TextInputHookField,
   type TextInputHookFieldProps,
   SelectHookField,
