@@ -8,6 +8,9 @@ import { componentEvents } from '@/shared/constants'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
+import { GustoProvider } from '@/contexts'
+import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
+import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 
 describe('StateTaxesForm', () => {
   const onEvent = vi.fn()
@@ -52,6 +55,49 @@ describe('StateTaxesForm', () => {
       await user.click(cancelButton)
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    })
+  })
+
+  // Regression: pressing Enter in a field must submit the form, not cancel it.
+  // The bug only surfaces when the partner supplies a Button that renders a
+  // native <button> (whose default type is "submit"): with the Cancel button
+  // rendered first and missing type="button", the browser's implicit form
+  // submission activates Cancel instead of submitting. This override reproduces
+  // that partner setup; the SDK's built-in react-aria Button already forces
+  // type="button" and would mask the regression.
+  describe('Enter key submits with a native-button component override', () => {
+    const onEvent = vi.fn()
+    const user = userEvent.setup()
+
+    const NativeButton = ({ children, onClick, type, isDisabled }: ButtonProps) => (
+      <button type={type} onClick={onClick} disabled={isDisabled}>
+        {children}
+      </button>
+    )
+
+    beforeEach(() => {
+      onEvent.mockReset()
+      setupApiTestMocks()
+      render(
+        <GustoProvider
+          config={{ baseUrl: API_BASE_URL }}
+          queryClient={createSdkQueryClient()}
+          components={{ Button: NativeButton }}
+        >
+          <StateTaxesForm companyId="company-123" state="GA" onEvent={onEvent} />
+        </GustoProvider>,
+      )
+    })
+
+    it('submits the form when Enter is pressed in a field instead of cancelling', async () => {
+      const taxRateField = await screen.findByLabelText(/Tax Rate/i)
+      await user.click(taxRateField)
+      await user.keyboard('{Enter}')
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.CANCEL)
     })
   })
 

@@ -11,7 +11,7 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.Button variant="secondary" onClick={handleCancel}>
+      <Components.Button type="button" variant="secondary" onClick={handleCancel}>
         {t('cancelCta')}
       </Components.Button>
       <Components.Button variant="primary" type="submit" isDisabled={isPending}>
