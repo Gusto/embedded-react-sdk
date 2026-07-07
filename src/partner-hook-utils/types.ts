@@ -1,6 +1,5 @@
 import type React from 'react'
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
-import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 import type { SDKError } from '@/types/sdkError'
 
 /**
@@ -124,9 +123,13 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
    * focus the visually first invalid field across multiple composed forms.
    * `SDKFormProvider` and the `withFieldElementRegistry` HookField wrapper
    * publish it via context for `useField` to populate.
+   *
+   * Typed `unknown` so the internal `FieldElementRegistry` shape never reaches
+   * the public API surface; the SDK-internal readers cast it back to the
+   * concrete type.
    * @internal
    */
-  _fieldElementRegistry?: FieldElementRegistry
+  _fieldElementRegistry?: unknown
 }
 
 /**
@@ -282,7 +285,8 @@ export type FormHookResult = {
   form: Pick<BaseFormHookReady['form'], 'fieldsMetadata'> & {
     hookFormInternals: {
       formMethods: { control: unknown }
-      _fieldElementRegistry?: FieldElementRegistry
+      /** @internal */
+      _fieldElementRegistry?: unknown
     }
   }
 }

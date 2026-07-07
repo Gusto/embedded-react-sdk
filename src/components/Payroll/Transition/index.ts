@@ -1,5 +1,2 @@
 export { TransitionFlow } from './TransitionFlow'
-export type {
-  TransitionFlowContextInterface,
-  TransitionFlowProps,
-} from './TransitionFlowComponents'
+export type { TransitionFlowProps } from './TransitionFlowComponents'

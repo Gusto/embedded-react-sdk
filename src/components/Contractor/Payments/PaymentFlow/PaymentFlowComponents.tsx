@@ -1,8 +1,8 @@
-import { PaymentsList } from '../PaymentsList/PaymentsList'
+import { PaymentsListInternal } from '../PaymentsList/PaymentsList'
 import { CreatePayment } from '../CreatePayment/CreatePayment'
 import { PaymentHistory } from '../PaymentHistory/PaymentHistory'
 import { PaymentStatement } from '../PaymentStatement/PaymentStatement'
-import { PaymentSummary } from '../PaymentSummary'
+import { PaymentSummaryInternal } from '../PaymentSummary/PaymentSummary'
 import type { InternalAlert } from '../types'
 import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -33,7 +33,9 @@ export interface PaymentFlowContextInterface extends FlowContextInterface {
 /** @internal */
 export function PaymentListContextual() {
   const { companyId, onEvent, alerts } = useFlow<PaymentFlowContextInterface>()
-  return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} alerts={alerts} />
+  return (
+    <PaymentsListInternal onEvent={onEvent} companyId={ensureRequired(companyId)} alerts={alerts} />
+  )
 }
 
 /** @internal */
@@ -67,7 +69,7 @@ export function PaymentSummaryContextual() {
     useFlow<PaymentFlowContextInterface>()
 
   return (
-    <PaymentSummary
+    <PaymentSummaryInternal
       onEvent={onEvent}
       paymentGroupId={ensureRequired(createdPaymentGroupId)}
       companyId={ensureRequired(companyId)}

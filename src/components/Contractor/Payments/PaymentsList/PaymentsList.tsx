@@ -17,10 +17,16 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
   /** UUID of the company whose contractor payment groups should be listed. */
   companyId: string
-  /**
-   * @internal
-   * Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation).
-   */
+}
+
+/**
+ * Props for the flow-internal {@link PaymentsListInternal}, which layers
+ * flow-injected alerts on top of the public {@link PaymentsListProps}.
+ *
+ * @internal
+ */
+export interface PaymentsListInternalProps extends PaymentsListProps {
+  /** Flow-injected alerts (e.g. wire-transfer confirmation, payment cancellation). */
   alerts?: InternalAlert[]
 }
 
@@ -42,6 +48,16 @@ export interface PaymentsListProps extends BaseComponentInterface<'Contractor.Pa
  * @public
  */
 export function PaymentsList(props: PaymentsListProps) {
+  return <PaymentsListInternal {...props} />
+}
+
+/**
+ * Flow-internal entry point for {@link PaymentsList} that accepts flow-injected
+ * alerts. Partners use {@link PaymentsList}; flows render this directly.
+ *
+ * @internal
+ */
+export function PaymentsListInternal(props: PaymentsListInternalProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -63,7 +79,7 @@ const calculateDateRange = (months: number = 3) => {
   }
 }
 
-const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
+const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListInternalProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)

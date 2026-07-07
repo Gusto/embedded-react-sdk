@@ -54,15 +54,24 @@ export interface PayrollExecutionFlowProps {
   /** Optional custom component to replace the default wire details confirmation UI. */
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   /**
-   * Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside
-   * a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent.
-   */
-  prefixBreadcrumbs?: FlowBreadcrumb[]
-  /**
    * Where the flow starts. Use `'overview'` when you want to drop the user directly on the review
    * screen (e.g. resuming an already-calculated payroll). Defaults to `'configuration'`.
    */
   initialState?: PayrollExecutionInitialState
+}
+
+/**
+ * Props for the flow-internal {@link PayrollExecutionInternalFlow}, which layers flow-injected
+ * prefix breadcrumbs on top of the public {@link PayrollExecutionFlowProps}.
+ *
+ * @internal
+ */
+export interface PayrollExecutionInternalFlowProps extends PayrollExecutionFlowProps {
+  /**
+   * Breadcrumbs prepended to the flow's own breadcrumb trail. Set by a parent flow (e.g. an
+   * off-cycle creation step) so the breadcrumb history remains coherent across the handoff.
+   */
+  prefixBreadcrumbs?: FlowBreadcrumb[]
 }
 
 const INITIAL_COMPONENT_MAP = {
@@ -134,7 +143,19 @@ const INITIAL_NAMESPACE_MAP = {
  * }
  * ```
  */
-export function PayrollExecutionFlow({
+export function PayrollExecutionFlow(props: PayrollExecutionFlowProps) {
+  return <PayrollExecutionInternalFlow {...props} />
+}
+
+/**
+ * Flow-internal entry point for {@link PayrollExecutionFlow} that additionally accepts
+ * flow-injected `prefixBreadcrumbs`. Partners use {@link PayrollExecutionFlow}; our own parent
+ * flows (off-cycle, dismissal, transition, and `PayrollFlow`) render this directly to prepend
+ * their own breadcrumb trail.
+ *
+ * @internal
+ */
+export function PayrollExecutionInternalFlow({
   companyId,
   payrollId,
   onEvent,
@@ -144,7 +165,7 @@ export function PayrollExecutionFlow({
   ConfirmWireDetailsComponent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
   initialState = 'configuration',
-}: PayrollExecutionFlowProps) {
+}: PayrollExecutionInternalFlowProps) {
   const executionFlowMachine = useMemo(() => {
     const breadcrumbNodes = getPayrollExecutionBreadcrumbsNodes(isDismissal)
     const baseBreadcrumbs = buildBreadcrumbs(breadcrumbNodes)

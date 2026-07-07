@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
-import { PayrollExecutionFlow } from '../PayrollExecutionFlow/PayrollExecutionFlow'
+import { PayrollExecutionInternalFlow } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import { isDismissalPayroll } from '../helpers'
 import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
@@ -40,7 +40,7 @@ export function PayrollExecutionFlowContextual() {
   )
 }
 
-type PayrollExecutionFlowWithDataProps = React.ComponentProps<typeof PayrollExecutionFlow>
+type PayrollExecutionFlowWithDataProps = React.ComponentProps<typeof PayrollExecutionInternalFlow>
 
 function PayrollExecutionFlowWithData({
   companyId,
@@ -51,7 +51,7 @@ function PayrollExecutionFlowWithData({
   const initialPayPeriod = data.payrollShow?.payPeriod
 
   return (
-    <PayrollExecutionFlow
+    <PayrollExecutionInternalFlow
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}

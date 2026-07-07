@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
-import { InformationRequestForm } from './InformationRequestForm'
+import { InformationRequestForm, Footer } from './InformationRequestForm'
 import { server } from '@/test/mocks/server'
 import { informationRequestEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -126,7 +126,7 @@ describe('InformationRequestForm', () => {
       <FlowContext.Provider value={flowContextValue}>
         <Suspense fallback={<div>Loading...</div>}>
           <InformationRequestForm {...defaultProps} />
-          <InformationRequestForm.Footer onEvent={onEvent} />
+          <Footer onEvent={onEvent} />
         </Suspense>
       </FlowContext.Provider>,
     )
@@ -181,7 +181,7 @@ describe('InformationRequestForm', () => {
       <FlowContext.Provider value={flowContextValue}>
         <Suspense fallback={<div>Loading...</div>}>
           <InformationRequestForm {...defaultProps} />
-          <InformationRequestForm.Footer onEvent={onEvent} />
+          <Footer onEvent={onEvent} />
         </Suspense>
       </FlowContext.Provider>,
     )
@@ -308,7 +308,7 @@ describe('InformationRequestForm', () => {
         <FlowContext.Provider value={flowContextValue}>
           <Suspense fallback={<div>Loading...</div>}>
             <InformationRequestForm {...defaultProps} />
-            <InformationRequestForm.Footer onEvent={onEvent} />
+            <Footer onEvent={onEvent} />
           </Suspense>
         </FlowContext.Provider>,
       )

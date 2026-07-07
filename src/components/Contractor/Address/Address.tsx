@@ -1,11 +1,12 @@
+import type { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import type { FallbackProps } from 'react-error-boundary'
 import styles from './Address.module.scss'
 import { useContractorAddressForm } from './shared/useContractorAddressForm'
 import type { ContractorAddressOptionalFieldsToRequire } from './shared/useContractorAddressForm'
 import type { AddressDefaultValues } from './types'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
-import type { BaseBoundariesProps } from '@/components/Base/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { Form } from '@/components/Common/Form'
 import { Flex, Grid, ActionsLayout } from '@/components/Common'
@@ -39,7 +40,7 @@ export interface AddressProps {
   /** Optional class applied to the wrapping `<section>`. */
   className?: string
   /** Custom React component rendered when an unhandled error is caught by the component-level error boundary. */
-  FallbackComponent?: BaseBoundariesProps['FallbackComponent']
+  FallbackComponent?: (props: FallbackProps) => JSX.Element
 }
 
 /**
