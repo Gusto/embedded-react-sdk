@@ -257,13 +257,13 @@ async function fillSelfOnboardingProfile(
   // the demo has not already stamped one — filling an already-set id can 422.
   if (type === 'individual') {
     const ssnField = page.getByLabel(/social security number/i)
-    if (await ssnField.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    if (await ssnField.isVisible().catch(() => false)) {
       const value = await ssnField.inputValue().catch(() => '')
       if (!value) await ssnField.fill(generateUniqueSSN())
     }
   } else {
     const einField = page.getByLabel(/^ein$/i)
-    if (await einField.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    if (await einField.isVisible().catch(() => false)) {
       const value = await einField.inputValue().catch(() => '')
       if (!value) await einField.fill(generateUniqueEIN())
     }
@@ -294,7 +294,7 @@ async function fillSelfOnboardingAddress(page: Page): Promise<void> {
 
     // The State picker renders as a React Aria Select trigger only while empty.
     const selectStateButton = page.getByRole('button', { name: /select state/i }).first()
-    if (await selectStateButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    if (await selectStateButton.isVisible().catch(() => false)) {
       await selectStateButton.click()
       await page
         .getByRole('option', { name: /^California$/i })
@@ -311,7 +311,7 @@ async function fillSelfOnboardingAddress(page: Page): Promise<void> {
 
 async function fillTextIfEmpty(page: Page, label: RegExp, value: string): Promise<void> {
   const field = page.getByLabel(label).first()
-  if (await field.isVisible({ timeout: 3_000 }).catch(() => false)) {
+  if (await field.isVisible().catch(() => false)) {
     const current = await field.inputValue().catch(() => '')
     if (!current) await field.fill(value)
   }
@@ -321,8 +321,7 @@ async function fillTextIfEmpty(page: Page, label: RegExp, value: string): Promis
 // asynchronously after the contractor is created, so opening a row that looked
 // outstanding can land on either an interactive signature form OR bounce
 // straight back to the Documents list (the doc got signed in the meantime).
-// This races those two outcomes rather than hard-waiting for a Sign button, and
-// when a form is present it fills defensively (fields are usually pre-populated
+// When a form is present it fills defensively (fields are usually pre-populated
 // from the profile/address just entered; "Acknowledge" replaces "Sign" when the
 // W-9 has no fillable fields).
 async function signOpenedDocument(page: Page): Promise<void> {
@@ -330,20 +329,27 @@ async function signOpenedDocument(page: Page): Promise<void> {
     .getByRole('button', { name: /^sign$/i })
     .or(page.getByRole('button', { name: /^acknowledge$/i }))
     .first()
-  const documentsHeading = page.getByRole('heading', { name: /^documents$/i })
 
-  await expect(submitButton.or(documentsHeading).first()).toBeVisible({ timeout: LONG_WAIT })
-
-  // Already bounced back to the list (auto-signed) — nothing to do here.
-  if (!(await submitButton.isVisible({ timeout: 1_000 }).catch(() => false))) {
+  // Wait for the signer form to mount after opening the document. If the demo
+  // already auto-signed the doc it bounces back to the list and the form never
+  // appears — a timeout here just means "nothing to sign" and the caller
+  // re-checks the Continue gate. `waitFor` honors its timeout (unlike
+  // `isVisible`, whose timeout Playwright ignores), so this is a real bounded
+  // wait rather than a meaningless hedge.
+  const formMounted = await submitButton
+    .waitFor({ state: 'visible', timeout: LONG_WAIT })
+    .then(() => true)
+    .catch(() => false)
+  if (!formMounted) {
     return
   }
 
   // Federal tax classification only renders when the W-9 has fillable fields.
+  // The form has mounted, so these are point-in-time snapshots — no timeout.
   const classificationRadio = page
     .getByRole('radio', { name: /individual\/sole proprietor/i })
     .first()
-  if (await classificationRadio.isVisible({ timeout: 3_000 }).catch(() => false)) {
+  if (await classificationRadio.isVisible().catch(() => false)) {
     await classificationRadio.check()
   }
 
@@ -360,7 +366,7 @@ async function signOpenedDocument(page: Page): Promise<void> {
   // with an error alert. Either way, get back to the list (this re-mounts and
   // refetches DocumentsList) so the caller can re-read the Continue state.
   const backButton = page.getByRole('button', { name: /^back$/i })
-  if (await backButton.isVisible({ timeout: 3_000 }).catch(() => false)) {
+  if (await backButton.isVisible().catch(() => false)) {
     await backButton.click()
     await waitForLoadingComplete(page, LONG_WAIT)
   }
@@ -383,7 +389,9 @@ async function completeDocumentsStep(page: Page): Promise<void> {
       break
     }
     const signButton = page.getByRole('button', { name: /^sign document$/i }).first()
-    if (await signButton.isVisible({ timeout: 2_000 }).catch(() => false)) {
+    // Snapshot check (isVisible ignores any timeout); the loop itself provides
+    // the retry via the 5s wait below if the row hasn't rendered yet.
+    if (await signButton.isVisible().catch(() => false)) {
       await signButton.click()
       await signOpenedDocument(page)
       await expect(documentsHeading).toBeVisible({ timeout: LONG_WAIT })
