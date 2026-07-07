@@ -187,7 +187,7 @@ hook.
 
 | Field | Type |
 | ------ | ------ |
-| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<`"Check"` \| `"Direct Deposit"`\> |
+| `type` | [`FieldMetadataWithOptions`](../../utilities.md#fieldmetadatawithoptions)\<[`ContractorPaymentMethodFormType`](#contractorpaymentmethodformtype)\> |
 
 Per-field metadata exposed on `form.fieldsMetadata` for [useContractorPaymentMethodForm](#usecontractorpaymentmethodform).
 

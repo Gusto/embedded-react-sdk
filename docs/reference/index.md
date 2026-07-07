@@ -907,6 +907,20 @@ const hooks: SDKHooks = {
 
 ***
 
+<a id="dataattributes"></a>
+
+### DataAttributes
+
+> **DataAttributes** = `object`
+
+An open map of `data-*` attributes that can be spread onto a rendered DOM element.
+
+#### Index Signature
+
+\[`key`: `` `data-${string}` ``\]: `string` \| `number` \| `boolean`
+
+***
+
 <a id="observabilitymetricunit"></a>
 
 ### ObservabilityMetricUnit
@@ -914,6 +928,22 @@ const hooks: SDKHooks = {
 > **ObservabilityMetricUnit** = `"ms"` \| `"count"` \| `"bytes"` \| `"percent"`
 
 Unit of measure for an [ObservabilityMetric](#observabilitymetric).
+
+***
+
+<a id="requireatleastone"></a>
+
+### RequireAtLeastOne
+
+> **RequireAtLeastOne**\<`T`\> = `{ [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>> }`\[keyof `T`\]
+
+Requires at least one property of `T` to be provided while leaving the rest optional.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | The object type whose properties are individually optional but collectively required. |
 
 ***
 
@@ -935,3 +965,21 @@ High-level classification of where an [SDKError](#sdkerror) originated.
 
 A two-letter US state abbreviation (including `'DC'`). Derived from
 [STATES\_ABBR](#states_abbr).
+
+***
+
+<a id="wariskclasscode"></a>
+
+### WARiskClassCode
+
+> **WARiskClassCode** = `object`
+
+A Washington state workers' compensation risk classification entry, as surfaced
+in the job form's `stateWcClassCode` field options.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-wariskclasscodecode"></a> `code` | `string` | The workers' compensation risk class code. |
+| <a id="property-wariskclasscodedescription"></a> `description` | `string` | Human-readable description of the risk class. |

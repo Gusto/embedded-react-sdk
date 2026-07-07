@@ -314,8 +314,6 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface<never> {
 // @public
 function Address_2(input: AddressProps): JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "RequireAtLeastOne" needs to be exported by the entry point index.d.ts
-//
 // @public
 type AddressDefaultValues = RequireAtLeastOne<ContractorAddressFormData>;
 
@@ -1465,15 +1463,37 @@ export interface ComponentsContextType {
 }
 
 // @public
+export interface ComposableFormHookResult {
+    errorHandling: HookErrorHandling;
+    form: {
+        hookFormInternals: Pick<HookFormInternals, '_fieldElementRegistry'> & {
+            formMethods: {
+                handleSubmit(onValid: () => void, onInvalid?: (errors: Record<string, unknown>) => void): () => Promise<void>;
+                setFocus(name: string): void;
+                formState: {
+                    errors: Record<string, unknown>;
+                };
+            };
+        };
+    };
+}
+
+// @public
 export function composeErrorHandler(sources: MixedErrorSource[], submitState?: SubmitStateForErrorHandling): HookErrorHandling;
 
-// Warning: (ae-forgotten-export) The symbol "ComposeSubmitInput" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ComposeSubmitHandlerResult" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function composeSubmitHandler<TForms extends readonly FieldValues[]>(forms: readonly [...{
     [K in keyof TForms]: ComposeSubmitInput<TForms[K]>;
 }], onAllValid: () => Promise<void>): ComposeSubmitHandlerResult;
+
+// @public
+export interface ComposeSubmitHandlerResult {
+    errorHandling: HookErrorHandling;
+    handleSubmit: (e: SyntheticEvent) => Promise<void>;
+}
+
+// @public
+export type ComposeSubmitInput<T extends FieldValues = FieldValues> = ComposableFormHookResult | UseFormReturn<T>;
 
 // @public
 export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<SignCompanyFormRequiredValidation>>;
@@ -1774,7 +1794,7 @@ export const ContractorPaymentMethodErrorCodes: {
 };
 
 // @public
-export type ContractorPaymentMethodFieldsMetadata = { type: FieldMetadataWithOptions<"Check" | "Direct Deposit">; };
+export type ContractorPaymentMethodFieldsMetadata = { type: FieldMetadataWithOptions<ContractorPaymentMethodFormType>; };
 
 // @public
 export type ContractorPaymentMethodFormData = { type: "Check" | "Direct Deposit"; };
@@ -1787,10 +1807,8 @@ export interface ContractorPaymentMethodFormFields {
     Type: ComponentType<ContractorPaymentMethodTypeFieldProps>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PAYMENT_METHOD_TYPES_2" needs to be exported by the entry point index.d.ts
-//
 // @public
-export type ContractorPaymentMethodFormType = (typeof PAYMENT_METHOD_TYPES_2)[number];
+export type ContractorPaymentMethodFormType = "Check" | "Direct Deposit";
 
 // @public
 export type ContractorPaymentMethodTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, ContractorPaymentMethodFormType>>;
@@ -2064,8 +2082,15 @@ interface DashboardFlowProps extends BaseComponentInterface<never> {
 // @public (undocumented)
 interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
     employeeId: string;
-    // Warning: (ae-forgotten-export) The symbol "DashboardTab" needs to be exported by the entry point index.d.ts
     selectedTab?: DashboardTab;
+}
+
+// @public (undocumented)
+type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents';
+
+// @public
+export type DataAttributes = {
+    [key: `data-${string}`]: string | number | boolean
 }
 
 // @public
@@ -2474,6 +2499,7 @@ declare namespace EmployeeManagement {
         Dashboard,
         DashboardFlowProps,
         DashboardProps,
+        DashboardTab,
         HomeAddress_2 as HomeAddress,
         HomeAddressCard,
         HomeAddressEditForm,
@@ -3198,6 +3224,14 @@ interface InformationRequestsFlowProps extends Omit<BaseComponentInterface<'Info
 }
 
 // @public
+export interface InputProps extends Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder' | 'type' | 'value' | 'onChange' | 'onBlur' | 'onFocus' | 'aria-describedby' | 'aria-labelledby' | 'aria-invalid' | 'min' | 'max' | 'maxLength'> {
+    adornmentEnd?: ReactNode;
+    adornmentStart?: ReactNode;
+    inputRef?: Ref<HTMLInputElement>;
+    isDisabled?: boolean;
+}
+
+// @public
 function InviteSignatory(props: InviteSignatoryProps): JSX;
 
 // @public
@@ -3383,8 +3417,6 @@ interface ManagementEmployeeListProps extends BaseComponentInterface<'Employee.M
 // @public
 export const MAX_PREPARERS = 4;
 
-// Warning: (ae-forgotten-export) The symbol "DataAttributes" needs to be exported by the entry point index.d.ts
-//
 // @public
 export interface MenuItem extends DataAttributes {
     href?: string;
@@ -3411,8 +3443,6 @@ export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<Emp
 // @public
 export type MinimumWageIdFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, MinimumWage>>;
 
-// Warning: (ae-forgotten-export) The symbol "QueryWithRefetch" needs to be exported by the entry point index.d.ts
-//
 // @public
 export type MixedErrorSource = QueryWithRefetch | {
     errorHandling: HookErrorHandling;
@@ -3482,7 +3512,6 @@ export interface NumberInputHookFieldProps<TErrorCode extends string = never> ex
 // @public
 export interface NumberInputProps extends SharedFieldLayoutProps, Pick<InputHTMLAttributes<HTMLInputElement>, 'min' | 'max' | 'name' | 'id' | 'placeholder' | 'className'> {
     adornmentEnd?: InputProps['adornmentEnd'];
-    // Warning: (ae-forgotten-export) The symbol "InputProps" needs to be exported by the entry point index.d.ts
     adornmentStart?: InputProps['adornmentStart'];
     format?: 'currency' | 'decimal' | 'percent';
     inputRef?: Ref<HTMLInputElement>;
@@ -3939,6 +3968,7 @@ declare namespace Payroll {
         ApiPayrollBlocker,
         PayrollBlockerListProps,
         RecoveryCases,
+        RecoveryCasesProps,
         OffCyclePayPeriodDateFormData,
         OffCyclePayrollDateType,
         OffCycleCreation,
@@ -4360,6 +4390,9 @@ export interface ProgressBarProps {
 }
 
 // @public
+export type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>;
+
+// @public
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
     FieldComponent?: ComponentType<RadioGroupProps>;
     formHookResult?: FormHookResult;
@@ -4425,10 +4458,14 @@ export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValida
 // @public
 export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | 'RATE_EXEMPT_THRESHOLD'];
 
-// Warning: (ae-forgotten-export) The symbol "RecoveryCasesInternalProps" needs to be exported by the entry point index.d.ts
-//
 // @public
-function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
+function RecoveryCases(input: RecoveryCasesProps): JSX;
+
+// @public
+interface RecoveryCasesProps extends Omit<BaseComponentInterface<never>, 'onEvent'> {
+    companyId: string;
+    onEvent?: BaseComponentInterface['onEvent'];
+}
 
 // @public
 export type RecurringFieldProps = HookFieldProps<RadioGroupHookFieldProps<DeductionFormRequiredValidation, boolean>>;
@@ -4444,6 +4481,11 @@ interface RemoveDialogState {
     onClose: () => void;
     onConfirm: () => void;
 }
+
+// @public
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
+}[keyof T]
 
 // @public
 type ResetDateType = 'per_anniversary_year' | 'per_calendar_year';
@@ -4713,12 +4755,26 @@ export interface SDKFieldError {
     metadata?: Record<string, unknown>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SDKFormProviderProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function SDKFormProvider<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
 } = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX;
+
+// @public
+export interface SDKFormProviderProps<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
+    [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
+} = Record<string, FieldMetadata | FieldMetadataWithOptions>> {
+    children: ReactNode;
+    formHookResult: {
+        errorHandling: {
+            errors: SDKError[];
+        };
+        form: {
+            fieldsMetadata: TFieldsMetadata;
+            hookFormInternals: HookFormInternals<TFormData>;
+        };
+    };
+}
 
 // @public
 export interface SDKHooks {
@@ -6206,6 +6262,12 @@ export const WageType: {
 };
 
 // @public
+export type WARiskClassCode = {
+    code: string;
+    description: string;
+};
+
+// @public
 type WithholdingType = 'supplemental' | 'regular';
 
 // @public
@@ -6288,10 +6350,6 @@ export type ZipFieldProps = HookFieldProps<TextInputHookFieldProps<ZipValidation
 
 // @public
 export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID_ZIP'];
-
-// Warnings were encountered during analysis:
-//
-// dist/components/Employee/Compensation/shared/useJobForm/useJobForm.d.ts:215:221 - (ae-forgotten-export) The symbol "WARiskClassCode" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

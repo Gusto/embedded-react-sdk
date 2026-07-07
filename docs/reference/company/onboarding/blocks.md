@@ -734,7 +734,7 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 
 ### AssignSignatoryDefaultValues
 
-> **AssignSignatoryDefaultValues** = `RequireAtLeastOne`\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
+> **AssignSignatoryDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<\{ `create?`: [`CreateSignatoryDefaultValues`](#createsignatorydefaultvalues); `invite?`: [`InviteSignatoryDefaultValues`](#invitesignatorydefaultvalues); \}\>
 
 Default values for the create and invite forms rendered by [AssignSignatory](#assignsignatory).
 
@@ -746,7 +746,7 @@ At least one of `create` or `invite` must be provided.
 
 ### CreateSignatoryDefaultValues
 
-> **CreateSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
+> **CreateSignatoryDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"` \| `"phone"` \| `"birthday"`\> & `Pick`\<`NonNullable`\<[`Signatory`](../../APIModels/index.md#signatory)\[`"homeAddress"`\]\>, `"street1"` \| `"street2"` \| `"city"` \| `"state"` \| `"zip"`\> & `object`\>
 
 Initial values for the [CreateSignatory](#createsignatory) form fields. At least one field must be provided.
 
@@ -754,7 +754,7 @@ Initial values for the [CreateSignatory](#createsignatory) form fields. At least
 
 ### FederalTaxesDefaultValues
 
-> **FederalTaxesDefaultValues** = `RequireAtLeastOne`\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
+> **FederalTaxesDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<\{ `filingForm?`: `FederalTaxFormInputs`\[`"filingForm"`\]; `legalName?`: `FederalTaxFormInputs`\[`"legalName"`\]; `taxPayerType?`: `FederalTaxFormInputs`\[`"taxPayerType"`\]; \}\>
 
 Pre-populated values for the company federal tax form, supplied via [FederalTaxesProps](#federaltaxesprops).
 At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
@@ -763,7 +763,7 @@ At least one of `taxPayerType`, `filingForm`, or `legalName` must be provided.
 
 ### InviteSignatoryDefaultValues
 
-> **InviteSignatoryDefaultValues** = `RequireAtLeastOne`\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
+> **InviteSignatoryDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<`Pick`\<[`Signatory`](../../APIModels/index.md#signatory), `"firstName"` \| `"lastName"` \| `"email"` \| `"title"`\> & `object`\>
 
 Default values for the invite signatory form fields: `firstName`, `lastName`, `email`,
 `confirmEmail`, and `title`. At least one field is required.
@@ -772,7 +772,7 @@ Default values for the invite signatory form fields: `firstName`, `lastName`, `e
 
 ### OnboardingFlowDefaultValues
 
-> **OnboardingFlowDefaultValues** = `RequireAtLeastOne`\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
+> **OnboardingFlowDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<\{ `federalTaxes?`: [`FederalTaxesDefaultValues`](#federaltaxesdefaultvalues); `paySchedule?`: [`PayScheduleDefaultValues`](#payscheduledefaultvalues); \}\>
 
 Default values for the company onboarding flow's per-step form components.
 
@@ -794,7 +794,7 @@ The full set of fields that may be pre-filled on the [PaySchedule](#payschedule)
 
 ### PayScheduleDefaultValues
 
-> **PayScheduleDefaultValues** = `RequireAtLeastOne`\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
+> **PayScheduleDefaultValues** = [`RequireAtLeastOne`](../../index.md#requireatleastone)\<`Partial`\<[`PayScheduleDefaultFields`](#payscheduledefaultfields)\>\>
 
 Default values for the [PaySchedule](#payschedule) form fields. Server data for an existing pay schedule
 takes precedence over these defaults when editing.

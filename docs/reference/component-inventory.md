@@ -576,6 +576,47 @@ Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled
 
 ***
 
+<a id="inputprops"></a>
+
+### InputProps
+
+Base text-input primitive used internally by `TextInput` and `NumberInput`.
+
+#### Remarks
+
+Higher-level field components like TextInput and NumberInput reuse the
+`adornmentStart` and `adornmentEnd` slots from this interface.
+
+#### Extends
+
+- `Pick`\<`InputHTMLAttributes`\<`HTMLInputElement`\>, `"className"` \| `"id"` \| `"name"` \| `"placeholder"` \| `"type"` \| `"value"` \| `"onChange"` \| `"onBlur"` \| `"onFocus"` \| `"aria-describedby"` \| `"aria-labelledby"` \| `"aria-invalid"` \| `"min"` \| `"max"` \| `"maxLength"`\>
+
+#### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `adornmentEnd?` | `ReactNode` | | Content to display at the end of the input |
+| `adornmentStart?` | `ReactNode` | | Content to display at the start of the input |
+| `aria-describedby?` | `string` | | Identifies the element (or elements) that describes the object. **See** aria-labelledby |
+| `aria-invalid?` | `boolean` \| `"true"` \| `"false"` \| `"grammar"` \| `"spelling"` | `undefined` | Indicates the entered value does not conform to the format expected by the application. **See** aria-errormessage. |
+| `aria-labelledby?` | `string` | | Identifies the element (or elements) that labels the current element. **See** aria-describedby. |
+| `className?` | `string` | | - |
+| `id?` | `string` | | - |
+| `inputRef?` | `Ref`\<`HTMLInputElement`\> | | Ref for the input element |
+| `isDisabled?` | `boolean` | `false` | Whether the input is disabled |
+| `max?` | `string` \| `number` | `undefined` | - |
+| `maxLength?` | `number` | | - |
+| `min?` | `string` \| `number` | `undefined` | - |
+| `name?` | `string` | | - |
+| `onBlur?` | `FocusEventHandler`\<`HTMLInputElement`\> | | - |
+| `onChange?` | `ChangeEventHandler`\<`HTMLInputElement`, `HTMLInputElement`\> | | - |
+| `onFocus?` | `FocusEventHandler`\<`HTMLInputElement`\> | | - |
+| `placeholder?` | `string` | | - |
+| `type?` | `HTMLInputTypeAttribute` | | - |
+| `value?` | `string` \| `number` \| readonly `string`[] | `undefined` | - |
+
+***
+
 <a id="linkprops"></a>
 
 ### LinkProps
@@ -639,7 +680,7 @@ Renders a popover menu of actions anchored to a trigger element.
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Indexable
 
@@ -1398,7 +1439,7 @@ from the component adapter.
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Indexable
 
@@ -1484,7 +1525,7 @@ so each control exposes a consistent surface for labeling, helper text, and vali
 
 #### Extends
 
-- `DataAttributes`
+- [`DataAttributes`](index.md#dataattributes)
 
 #### Extended by
 
