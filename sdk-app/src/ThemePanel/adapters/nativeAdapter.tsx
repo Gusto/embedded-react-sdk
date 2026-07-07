@@ -9,6 +9,7 @@ import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
@@ -258,6 +259,28 @@ function NativeBox({ children, header, footer, withPadding }: BoxProps) {
           {footer}
         </div>
       )}
+    </div>
+  )
+}
+
+function NativeFormBox({ children, header, withPadding }: FormBoxProps) {
+  return (
+    <div
+      style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '0.5rem',
+        overflow: 'hidden',
+        marginBottom: '0.5rem',
+      }}
+    >
+      {header && (
+        <div
+          style={{ borderBottom: '1px solid #e5e7eb', padding: '0.75rem 1rem', fontWeight: 600 }}
+        >
+          {header}
+        </div>
+      )}
+      <div style={{ padding: withPadding !== false ? '1rem' : 0 }}>{children}</div>
     </div>
   )
 }
@@ -1390,6 +1413,7 @@ export const nativeComponents: ComponentsContextType = {
   Card: (props: CardProps) => <NativeCard {...props} />,
   Box: (props: BoxProps) => <NativeBox {...props} />,
   BoxHeader: (props: BoxHeaderProps) => <NativeBoxHeader {...props} />,
+  FormBox: (props: FormBoxProps) => <NativeFormBox {...props} />,
   Checkbox: (props: CheckboxProps) => <NativeCheckbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <NativeCheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <NativeComboBox {...props} />,

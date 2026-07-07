@@ -5,6 +5,7 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
@@ -145,6 +146,15 @@ export const PlainComponentAdapter: ComponentsContextType = {
         {children}
       </div>
       {footer && <div className="box-footer">{footer}</div>}
+    </div>
+  ),
+
+  FormBox: ({ children, header, withPadding = true, className }: FormBoxProps) => (
+    <div className={`box ${className || ''}`}>
+      {header && <div className="box-header">{header}</div>}
+      <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+        {children}
+      </div>
     </div>
   ),
 

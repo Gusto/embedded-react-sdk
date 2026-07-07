@@ -15,6 +15,7 @@ import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
+import type { FormBoxProps } from '@/components/Common/UI/FormBox/FormBoxTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
@@ -109,6 +110,8 @@ export interface ComponentsContextType {
   Box: FunctionComponent<BoxProps>
   /** Header section of a Box with a title, optional description, and optional inline action. */
   BoxHeader: FunctionComponent<BoxHeaderProps>
+  /** Bordered container for grouping related form fields, with an optional header slot. */
+  FormBox: FunctionComponent<FormBoxProps>
   /** Read-only calendar for visualizing a date range with optional highlighted dates. */
   CalendarPreview: FunctionComponent<CalendarPreviewProps>
   /** Content container with an optional overflow menu and a leading action slot. */
