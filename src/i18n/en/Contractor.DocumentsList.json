@@ -7,6 +7,8 @@
   "signDocumentCta": "Sign document",
   "notSigned": "Not signed",
   "signed": "Complete",
+  "notReadyTitle": "W-9 isn't ready to sign yet",
+  "notReadyBody": "The W-9 form hasn't been fully generated yet. Please check back later, or contact support if the problem continues.",
   "emptyTitle": "No documents found",
   "errorTitle": "Could not load your documents, try again later.",
   "continueCta": "Continue"
