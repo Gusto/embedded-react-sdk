@@ -224,6 +224,209 @@ export async function runBusinessContractorOnboarding(
   await assertOnboardingSuccess(page)
 }
 
+export type ContractorSelfOnboardingType = 'individual' | 'business'
+
+export interface SelfOnboardingOptions {
+  contractorId: string
+  type: ContractorSelfOnboardingType
+}
+
+async function landOnSelfOnboarding(page: Page, contractorId: string): Promise<void> {
+  await page.goto(`/?flow=contractor-self-onboarding&contractorId=${contractorId}`)
+  await waitForLoadingComplete(page, LONG_WAIT)
+
+  // Landing heading: "Welcome, {contractorName}! {companyName} has invited you..."
+  await expect(page.getByRole('heading', { name: /^welcome,/i, level: 2 })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+
+  await page.getByRole('button', { name: /^get started$/i }).click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+}
+
+async function fillSelfOnboardingProfile(
+  page: Page,
+  type: ContractorSelfOnboardingType,
+): Promise<void> {
+  await expect(page.getByRole('heading', { name: /complete your profile/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+
+  // Name fields are pre-filled from the seeded contractor. Only the tax id
+  // (SSN for individuals, EIN for businesses) needs supplying, and only when
+  // the demo has not already stamped one — filling an already-set id can 422.
+  if (type === 'individual') {
+    const ssnField = page.getByLabel(/social security number/i)
+    if (await ssnField.isVisible().catch(() => false)) {
+      const value = await ssnField.inputValue().catch(() => '')
+      if (!value) await ssnField.fill(generateUniqueSSN())
+    }
+  } else {
+    const einField = page.getByLabel(/^ein$/i)
+    if (await einField.isVisible().catch(() => false)) {
+      const value = await einField.inputValue().catch(() => '')
+      if (!value) await einField.fill(generateUniqueEIN())
+    }
+  }
+
+  await page.getByRole('button', { name: /^continue$/i }).click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+}
+
+// Idempotent address step for self-onboarding. Unlike the admin `fillAddressStep`
+// (which always drives the empty React Aria state picker), this tolerates a
+// pre-populated address — the contractor keeps their address across a retry or
+// demo seeding, in which case the state renders as a filled value rather than a
+// "Select state..." trigger and there is nothing to fill.
+async function fillSelfOnboardingAddress(page: Page): Promise<void> {
+  await expect(
+    page
+      .getByRole('heading', { name: /^home address$/i })
+      .or(page.getByRole('heading', { name: /^business address$/i }))
+      .first(),
+  ).toBeVisible({ timeout: LONG_WAIT })
+
+  const street1 = page.getByLabel(/^street 1$/i)
+  const existing = await street1.inputValue().catch(() => '')
+  if (!existing) {
+    await street1.fill('548 Market St')
+    await page.getByLabel(/^city$/i).fill('San Francisco')
+
+    // The State picker renders as a React Aria Select trigger only while empty.
+    const selectStateButton = page.getByRole('button', { name: /select state/i }).first()
+    if (await selectStateButton.isVisible().catch(() => false)) {
+      await selectStateButton.click()
+      await page
+        .getByRole('option', { name: /^California$/i })
+        .first()
+        .click()
+    }
+
+    await page.getByLabel(/^zip$/i).fill('94104')
+  }
+
+  await page.getByRole('button', { name: /^continue$/i }).click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+}
+
+async function fillTextIfEmpty(page: Page, label: RegExp, value: string): Promise<void> {
+  const field = page.getByLabel(label).first()
+  if (await field.isVisible().catch(() => false)) {
+    const current = await field.inputValue().catch(() => '')
+    if (!current) await field.fill(value)
+  }
+}
+
+// Handles a single opened contractor document. The demo auto-signs the W-9
+// asynchronously after the contractor is created, so opening a row that looked
+// outstanding can land on either an interactive signature form OR bounce
+// straight back to the Documents list (the doc got signed in the meantime).
+// When a form is present it fills defensively (fields are usually pre-populated
+// from the profile/address just entered; "Acknowledge" replaces "Sign" when the
+// W-9 has no fillable fields).
+async function signOpenedDocument(page: Page): Promise<void> {
+  const submitButton = page
+    .getByRole('button', { name: /^sign$/i })
+    .or(page.getByRole('button', { name: /^acknowledge$/i }))
+    .first()
+
+  // Wait for the signer form to mount after opening the document. If the demo
+  // already auto-signed the doc it bounces back to the list and the form never
+  // appears — a timeout here just means "nothing to sign" and the caller
+  // re-checks the Continue gate. `waitFor` honors its timeout (unlike
+  // `isVisible`, whose timeout Playwright ignores), so this is a real bounded
+  // wait rather than a meaningless hedge.
+  const formMounted = await submitButton
+    .waitFor({ state: 'visible', timeout: LONG_WAIT })
+    .then(() => true)
+    .catch(() => false)
+  if (!formMounted) {
+    return
+  }
+
+  // Federal tax classification only renders when the W-9 has fillable fields.
+  // The form has mounted, so these are point-in-time snapshots — no timeout.
+  const classificationRadio = page
+    .getByRole('radio', { name: /individual\/sole proprietor/i })
+    .first()
+  if (await classificationRadio.isVisible().catch(() => false)) {
+    await classificationRadio.check()
+  }
+
+  await fillTextIfEmpty(page, /entity or individual name/i, 'Sam Selfstart')
+  await fillTextIfEmpty(page, /social security number \(ssn\)/i, generateUniqueSSN())
+  await fillTextIfEmpty(page, /^signature$/i, 'Sam Selfstart')
+
+  await page.getByRole('checkbox', { name: /electronically sign this form/i }).check()
+
+  await submitButton.click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+
+  // Success returns to the list; an "already signed" race leaves us on the form
+  // with an error alert. Either way, get back to the list (this re-mounts and
+  // refetches DocumentsList) so the caller can re-read the Continue state.
+  const backButton = page.getByRole('button', { name: /^back$/i })
+  if (await backButton.isVisible().catch(() => false)) {
+    await backButton.click()
+    await waitForLoadingComplete(page, LONG_WAIT)
+  }
+}
+
+async function completeDocumentsStep(page: Page): Promise<void> {
+  const documentsHeading = page.getByRole('heading', { name: /^documents$/i })
+  await expect(documentsHeading).toBeVisible({ timeout: LONG_WAIT })
+
+  const continueButton = page.getByRole('button', { name: /^continue$/i })
+
+  // Continue is enabled once every document that requires signing has been
+  // signed (DocumentsList: hasSignedAllDocuments). That enabled state — not the
+  // presence of "Sign document" buttons — is the source of truth. The demo
+  // auto-signs the contractor W-9 asynchronously, so prefer letting Continue
+  // enable on its own; only open a still-outstanding document as a fallback,
+  // and tolerate it bouncing back already-signed.
+  for (let attempt = 0; attempt < 6; attempt++) {
+    if (await continueButton.isEnabled().catch(() => false)) {
+      break
+    }
+    const signButton = page.getByRole('button', { name: /^sign document$/i }).first()
+    // Snapshot check (isVisible ignores any timeout); the loop itself provides
+    // the retry via the 5s wait below if the row hasn't rendered yet.
+    if (await signButton.isVisible().catch(() => false)) {
+      await signButton.click()
+      await signOpenedDocument(page)
+      await expect(documentsHeading).toBeVisible({ timeout: LONG_WAIT })
+    } else {
+      // No outstanding document but Continue not yet enabled — a transient
+      // state while the async auto-sign / list refetch settles. Wait and
+      // re-check rather than proceeding.
+      await page.waitForTimeout(5_000)
+    }
+  }
+
+  await expect(continueButton).toBeEnabled({ timeout: LONG_WAIT })
+  await continueButton.click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+}
+
+export async function runContractorSelfOnboarding(
+  page: Page,
+  _scenario: ScenarioContext,
+  opts: SelfOnboardingOptions,
+): Promise<void> {
+  await landOnSelfOnboarding(page, opts.contractorId)
+  await fillSelfOnboardingProfile(page, opts.type)
+  // fillSelfOnboardingAddress handles both "Home address" (individual) and
+  // "Business address" (business) headings and is idempotent on re-entry;
+  // fillPaymentMethodStep (shared with admin onboarding) picks Check.
+  await fillSelfOnboardingAddress(page)
+  await fillPaymentMethodStep(page)
+  await completeDocumentsStep(page)
+
+  await expect(page.getByRole('heading', { name: /you're all set/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+}
+
 async function landOnPaymentList(page: Page): Promise<void> {
   await page.goto('/?flow=contractor-payment')
   await waitForLoadingComplete(page, LONG_WAIT)
