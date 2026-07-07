@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.51.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.1...v0.51.2) (2026-07-07)
+
+### Fixes
+
+- **Company:** prevent Enter key from cancelling State Taxes and Location edit forms ([#2361](https://github.com/Gusto/embedded-react-sdk/issues/2361)) ([343c78f](https://github.com/Gusto/embedded-react-sdk/commit/343c78f96ce8972cfe40eec992990bd7703411cb))
+- **Contractor/DocumentsList:** key signature status off signedAt and guard unpreparable W-9s ([#2362](https://github.com/Gusto/embedded-react-sdk/issues/2362)) ([8191e91](https://github.com/Gusto/embedded-react-sdk/commit/8191e910885613cbb7e754f7227603986f4c8640))
+
 ## [0.51.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.0...v0.51.1) (2026-07-07)
 
 ### Features & Enhancements
