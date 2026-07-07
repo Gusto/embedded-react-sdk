@@ -118,6 +118,9 @@ export function buildContractorDocumentsList(overrides?: Array<Record<string, un
         name: 'taxpayer_identification_form_w_9',
         requires_signing: true,
         signed_at: null,
+        // The list endpoint's view extends the document `show` view, so each row
+        // carries the full `fields` array (not just the summary attributes).
+        fields: w9DocumentFields,
       },
       {
         uuid: SIGNED_DOCUMENT_UUID,

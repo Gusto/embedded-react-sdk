@@ -227,7 +227,9 @@ Lists a contractor's documents and lets the contractor open each one for signing
 
 Fetches the contractor's documents via [useContractorDocumentsList](../hooks/use-contractor-documents-list.md#usecontractordocumentslist) and
 renders them in a table. The Continue action is disabled until every document
-that requires signing has been signed.
+the contractor can sign has been signed; a document that isn't signable yet
+(e.g. a W-9 whose fields haven't been generated) surfaces a warning instead of
+blocking the flow.
 
 ### DocumentsListProps
 

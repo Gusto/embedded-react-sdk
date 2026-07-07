@@ -1294,6 +1294,8 @@ Translation keys for the `Contractor.DocumentsList` i18n namespace.
 | <a id="property-contractordocumentslistdocumentlistlabel"></a> `documentListLabel` | `"Documents"` |
 | <a id="property-contractordocumentslistemptytitle"></a> `emptyTitle` | `"No documents found"` |
 | <a id="property-contractordocumentslisterrortitle"></a> `errorTitle` | `"Could not load your documents, try again later."` |
+| <a id="property-contractordocumentslistnotreadybody"></a> `notReadyBody` | `"The W-9 form hasn't been fully generated yet. Please check back later, or contact support if the problem continues."` |
+| <a id="property-contractordocumentslistnotreadytitle"></a> `notReadyTitle` | `"W-9 isn't ready to sign yet"` |
 | <a id="property-contractordocumentslistnotsigned"></a> `notSigned` | `"Not signed"` |
 | <a id="property-contractordocumentslistsigndocumentcta"></a> `signDocumentCta` | `"Sign document"` |
 | <a id="property-contractordocumentslistsigned"></a> `signed` | `"Complete"` |

@@ -1786,6 +1786,10 @@ export namespace Translations {
     notSigned: string
     /** @defaultValue `"Complete"` */
     signed: string
+    /** @defaultValue `"W-9 isn't ready to sign yet"` */
+    notReadyTitle: string
+    /** @defaultValue `"The W-9 form hasn't been fully generated yet. Please check back later, or contact support if the problem continues."` */
+    notReadyBody: string
     /** @defaultValue `"No documents found"` */
     emptyTitle: string
     /** @defaultValue `"Could not load your documents, try again later."` */
