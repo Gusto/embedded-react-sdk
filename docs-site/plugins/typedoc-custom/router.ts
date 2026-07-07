@@ -693,6 +693,12 @@ export class SDKRouter extends MemberRouter {
   // flows, read from the hook directory root before sources are cleared.
   readonly hookGuides = new Map<DeclarationReflection, Guide>()
 
+  // Keyed by each namespaced component/flow reflection; value is its
+  // `Namespace.Component` endpoint-inventory key. Captured here because
+  // buildSyntheticPage later reparents blocks to a synthetic "Blocks" namespace,
+  // erasing the original namespace name the theme needs to look up endpoints.
+  readonly endpointKeys = new Map<DeclarationReflection, string>()
+
   /**
    * Pre-scan for domain hooks and consolidate them into one synthetic namespace
    * page per domain (e.g. employee/hooks.md), then delegate everything else to
@@ -948,6 +954,11 @@ export class SDKRouter extends MemberRouter {
 
     if (reflection.kind === ReflectionKind.Namespace) {
       const children = (reflection as DeclarationReflection).children ?? []
+      for (const child of children) {
+        if (child instanceof DeclarationReflection) {
+          this.endpointKeys.set(child, `${reflection.name}.${child.name}`)
+        }
+      }
       const flows = FLAT_NAMESPACES.has(reflection.name)
         ? []
         : children.filter(c => c.name.endsWith('Flow'))

@@ -36,6 +36,14 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `timeOff/holidayAddEmployees/done` | Employee selection is saved | The updated `HolidayPayPolicy` response, or `undefined` when no changes were submitted |
 | `CANCEL` | The user cancels | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/add`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-add) |
+
 <a id="addemployeestopolicy"></a>
 
 ## AddEmployeesToPolicy
@@ -90,6 +98,15 @@ _Inherits `children`, `className`, `defaultValues`, `dictionary`, `FallbackCompo
 | `timeOff/addEmployees/done` | Fired when employee selection is saved | The updated time off policy, or `undefined` when no changes were submitted |
 | `timeOff/addEmployees/back` | Fired when the user navigates back without saving | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/add_employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees) |
+
 <a id="holidayselectionform"></a>
 
 ## HolidaySelectionForm
@@ -123,6 +140,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/holidaySelection/done` | Holidays were saved in create mode | — |
 | `timeOff/holidaySelection/editDone` | Holidays were saved in edit mode | — |
 | `CANCEL` | The user backed out of the form | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| POST | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy) |
 
 <a id="policyconfigurationform"></a>
 
@@ -163,6 +188,14 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `timeOff/policyDetails/done` | Fired after the policy is successfully created or updated | `{ policyId: string, accrualMethod: string }` |
 | `CANCEL` | Fired when the user clicks the cancel button | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-time_off_policies) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
 <a id="policylist"></a>
 
 ## PolicyList
@@ -196,6 +229,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/viewPolicy` | The user opened an existing policy or clicked finish-setup on an incomplete one. | `{ policyId: string, policyType: string }` |
 | `timeOff/deletePolicy/done` | A policy was successfully deleted. | `{ policyId: string }` |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| DELETE | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-holiday_pay_policy) |
+| GET | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-time_off_policies) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/deactivate`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate) |
+
 <a id="policysettings"></a>
 
 ## PolicySettings
@@ -228,6 +271,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/policySettings/done` | Fired when policy settings are saved | The updated `TimeOffPolicy` |
 | `timeOff/policySettings/back` | Fired when the user navigates back | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+
 <a id="policysettingspresentation"></a>
 
 ## PolicySettingsPresentation
@@ -257,6 +307,13 @@ Props for [PolicySettingsPresentation](#policysettingspresentation).
 | `editingPolicyName?` | `string` | Name of the policy being edited. Shown in the heading when `mode` is `'edit'`. |
 | `isPending?` | `boolean` | Whether a submit is in flight. Disables the back button and shows a loading state on the continue button. |
 | `mode?` | `"edit"` \| `"create"` | Whether the form is being used to create a new policy or edit an existing one. Defaults to create. |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid) |
 
 <a id="policytypeselector"></a>
 
@@ -290,6 +347,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `timeOff/policyTypeSelected` | The user confirms a selection | `{ policyType: {@link PolicyType} }` |
 | `CANCEL` | The user cancels | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
 
 <a id="timeoffpolicydetail"></a>
 
@@ -326,6 +389,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/changeSettings` | The change-settings action was clicked. | `{ policyId: string }` |
 | `timeOff/editPolicy` | The edit-policy action was clicked. | `{ policyId: string }` |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
+
 <a id="timeoffpolicydetailpresentation"></a>
 
 ## TimeOffPolicyDetailPresentation
@@ -345,6 +417,15 @@ up the callbacks. The corresponding container component is [TimeOffPolicyDetail]
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `input` | [`TimeOffPolicyDetailPresentationProps`](#timeoffpolicydetailpresentationprops) | See [TimeOffPolicyDetailPresentationProps](#timeoffpolicydetailpresentationprops). |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |
 
 <a id="viewholidayemployees"></a>
 
@@ -379,6 +460,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/editHolidayPolicy` | User clicks to edit holidays | — |
 | `timeOff/backToList` | User navigates back to the policy list | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
 <a id="viewholidaypolicydetails"></a>
 
 ## ViewHolidayPolicyDetails
@@ -409,6 +498,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/holidayAddEmployees` | The user clicked the add-employees action. | — |
 | `timeOff/editHolidayPolicy` | The user clicked the edit-policy action. | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+
 <a id="viewholidayschedule"></a>
 
 ## ViewHolidaySchedule
@@ -438,6 +535,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `timeOff/holidayAddEmployees` | Fired when user clicks to add employees | — |
 | `timeOff/editHolidayPolicy` | Fired when user clicks to edit holidays | — |
 | `timeOff/backToList` | Fired when user navigates back to policy list | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
 
 ## Utility types
 

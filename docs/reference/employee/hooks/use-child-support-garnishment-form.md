@@ -647,3 +647,12 @@ subset via `requiredAttrKeys` so callers can drive their own UI on which
 > **SupportedRequiredAttrKey** = `"case_number"` \| `"order_number"` \| `"remittance_number"`
 
 Union of child support attribute key strings recognized by the form.
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-garnishments) |
+| POST | [`/v1/employees/:employeeId/garnishments`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-employees-employee_id-garnishments) |
+| PUT | [`/v1/garnishments/:garnishmentId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-garnishments-garnishment_id) |
+| GET | [`/v1/garnishments/child_support`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-garnishments-child_support) |

@@ -26,7 +26,7 @@ Every SDK component makes a known set of API calls. Paths use named parameters (
 
 ### Option A: JSON endpoint inventory (recommended, any platform)
 
-The SDK ships a machine-readable JSON file listing every block and flow with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
+The SDK ships a machine-readable JSON file listing every block, flow, and headless hook with their endpoints and required variables. It's auto-generated from source on every build and verified in CI.
 
 Import it from the package:
 
@@ -41,32 +41,52 @@ The JSON structure:
 ```json
 {
   "blocks": {
-    "Employee.FederalTaxes": {
+    "EmployeeManagement.FederalTaxes": {
       "endpoints": [
-        { "method": "GET", "path": "/v1/employees/:employeeId/federal_taxes" },
-        { "method": "PUT", "path": "/v1/employees/:employeeId/federal_taxes" }
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+        }
       ],
-      "variables": ["employeeId"]
+      "variables": ["employeeUuid"]
     }
   },
   "flows": {
-    "Employee.SelfOnboardingFlow": {
-      "blocks": ["Employee.Landing", "Employee.Profile", "..."],
+    "CompanyOnboarding.OnboardingFlow": {
+      "blocks": ["CompanyOnboarding.FederalTaxes", "CompanyOnboarding.PaySchedule", "..."]
+    }
+  },
+  "hooks": {
+    "useFederalTaxesForm": {
       "endpoints": [
-        { "method": "GET", "path": "/v1/employees/:employeeId" },
-        { "method": "GET", "path": "/v1/companies/:companyId" }
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes",
+          "docsUrl": "https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-federal_taxes"
+        }
       ],
-      "variables": ["companyId", "employeeId"]
+      "variables": ["employeeUuid"]
     }
   }
 }
 ```
 
-Look up the flows or blocks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
+Each endpoint's `docsUrl` links to its page in the API reference (omitted for the few endpoints without a public reference page). Blocks and hooks list their `endpoints` directly; a flow lists the `blocks` it composes, and its endpoints are the union of those blocks' endpoints. Look up the flows, blocks, or hooks your app uses, substitute `:param` placeholders with session values, and use the result as your allowlist.
 
 ### Option B: Static reference
 
-See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list. Copy the method + path pairs for the components you use and substitute `:param` placeholders with session values at runtime.
+See the [endpoint reference tables](../guides/endpoint-reference.md) for a human-readable list grouped by domain. Each component, flow, and hook's own [reference page](../reference/index.md) also lists the endpoints it calls. Copy the method + path pairs for the components and hooks you use and substitute `:param` placeholders with session values at runtime.
 
 ## FAQ
 

@@ -46,6 +46,16 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/updated` | An existing signatory was updated (create mode) | Response from the update signatory API request |
 | `company/signatory/invited` | A signatory invitation was sent (invite mode) | Response from the invite signatory API request |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
+| POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-company-signatories) |
+| PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+| POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-signatories-invite) |
+
 <a id="bankaccount"></a>
 
 ## BankAccount
@@ -82,6 +92,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/bankAccount/verified` | Fired when the bank account has been successfully verified | The verified [APIModels.CompanyBankAccount](../../APIModels/index.md#companybankaccount) |
 | `company/bankAccount/done` | Fired when the user chooses to proceed to the next step | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| POST | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-bank-accounts) |
+| PUT | [`/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-bank-accounts-verify) |
+
 <a id="createsignatory"></a>
 
 ## CreateSignatory
@@ -111,6 +129,15 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/created` | A new signatory was created successfully | The created signatory record |
 | `company/signatory/updated` | An existing signatory was updated successfully | The updated signatory record |
 | `company/signatory/createSignatory/done` | The create-signatory flow completed | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
+| POST | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-company-signatories) |
+| PUT | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
 
 <a id="documentlist"></a>
 
@@ -149,6 +176,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/forms/view` | Fired when a user selects a form to sign from the document list | The selected company form |
 | `company/forms/editSignatory` | Fired when user requests to change the document signatory | The current signatory entity |
 | `company/forms/done` | Fired when user completes the document signing process | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
 
 <a id="documentsigner"></a>
 
@@ -193,6 +227,16 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/signatory/updated` | Fired when an existing signatory is updated successfully | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 | `company/signatory/invited` | Fired when a signatory is successfully invited to the company | [APIModels.Signatory](../../APIModels/index.md#signatory) |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-form-sign) |
+
 <a id="federaltaxes"></a>
 
 ## FederalTaxes
@@ -221,6 +265,13 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/federalTaxes/updated` | Federal tax details were successfully updated | [APIModels.FederalTaxDetails](../../APIModels/index.md#federaltaxdetails) |
 | `company/federalTaxes/done` | The federal tax update step is complete | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details) |
+| PUT | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-federal_tax_details) |
+
 <a id="industry"></a>
 
 ## Industry
@@ -248,6 +299,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | Event | Description | Data |
 | ----- | ----------- | ---- |
 | `company/industry/selected` | Fired when an industry is selected and saved | The updated `industry` returned by the industry selection endpoint |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-industry) |
+| PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-industry) |
 
 <a id="invitesignatory"></a>
 
@@ -282,6 +340,14 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | `company/signatory/invited` | A signatory was successfully invited. | The invited signatory entity. |
 | `company/signatory/inviteSignatory/done` | The invite signatory process is complete. | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
+| DELETE | [`/v1/companies/:companyUuid/signatories/:signatoryUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-signatories-signatory_uuid) |
+| POST | [`/v1/companies/:companyUuid/signatories/invite`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-signatories-invite) |
+
 <a id="locationform"></a>
 
 ## LocationForm
@@ -314,6 +380,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/add/done` | Fired when a new location is created | The created location |
 | `company/location/edit/done` | Fired when a location has been successfully edited | The updated location |
 | `CANCEL` | Fired when the user cancels editing | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-locations-location_id) |
 
 <a id="locations"></a>
 
@@ -351,6 +425,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/done` | A user chooses to proceed to the next step | — |
 | `cancel` | A user cancels the create or edit form | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations) |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-locations-location_id) |
+
 <a id="locationslist"></a>
 
 ## LocationsList
@@ -382,6 +465,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/location/add` | A user chose to add a new location | — |
 | `company/location/edit` | A user chose to edit a specific location | `{ uuid: string }` |
 | `company/location/done` | The user chose to proceed to the next step | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations) |
 
 <a id="onboardingoverview"></a>
 
@@ -417,6 +506,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/overview/continue` | Fired when the user chooses to continue to the next outstanding onboarding requirement | — |
 | `company/overview/done` | Fired when the user signals they are done with the overview screen, typically after onboarding ends | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-onboarding-status) |
+
 <a id="payschedule"></a>
 
 ## PaySchedule
@@ -449,6 +544,17 @@ _Inherits `children`, `className`, `FallbackComponent`, `LoaderComponent` from [
 | ----- | ----------- | ---- |
 | `paySchedule/created` | A new pay schedule was created | The created pay schedule entity |
 | `paySchedule/updated` | An existing pay schedule was updated | The updated pay schedule entity |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| POST | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-preview) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
 
 <a id="signatureform"></a>
 
@@ -521,6 +627,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/stateTaxes/done` | The list view was completed | — |
 | `CANCEL` | Editing was cancelled and the form was closed | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+
 <a id="statetaxesform"></a>
 
 ## StateTaxesForm
@@ -570,6 +684,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `company/stateTaxes/updated` | State tax requirements were saved successfully | Response from the update state tax requirements API |
 | `CANCEL` | The user cancelled editing | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+
 <a id="statetaxeslist"></a>
 
 ## StateTaxesList
@@ -600,6 +721,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `company/stateTaxes/edit` | A user chose to edit requirements for a specific state | `{ state: string }` |
 | `company/stateTaxes/done` | The user chose to proceed to the next step | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements) |
 
 ## Utility types
 
