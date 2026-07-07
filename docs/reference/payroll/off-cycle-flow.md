@@ -98,3 +98,11 @@ The creation step supports two off-cycle reasons, each seeding different deducti
 
 When deductions are skipped, all regular deductions and contributions are blocked except 401(k); taxes are always included regardless of the selection.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| POST | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |

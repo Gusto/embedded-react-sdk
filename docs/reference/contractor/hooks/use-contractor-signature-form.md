@@ -935,3 +935,11 @@ an error code to a user-facing message.
 Optional W-9 fields a partner can promote to required.
 
 ***
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document) |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document-pdf) |
+| PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractor-document-sign) |

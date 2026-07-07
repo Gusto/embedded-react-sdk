@@ -89,3 +89,10 @@ The response form is rendered dynamically from the request's required questions.
 
 Each piece is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/information_requests`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-information-requests) |
+| PUT | `/v1/information_requests/:informationRequestUuid/submit` |

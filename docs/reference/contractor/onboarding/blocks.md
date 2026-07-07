@@ -53,6 +53,14 @@ Props for [Address](#address).
 | `contractor/address/updated` | Fired after the address is saved | The updated `ContractorAddress` entity |
 | `contractor/address/done` | Fired after a successful save so the parent flow can advance | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-address) |
+| PUT | [`/v1/contractors/:contractorUuid/address`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-address) |
+
 <a id="contractorlist"></a>
 
 ## ContractorList
@@ -82,6 +90,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/update` | A contractor row's edit action was triggered. | `{ contractorId: string }` |
 | `contractor/deleted` | A contractor was successfully deleted. | `{ contractorId: string }` |
 | `contractor/onboarding/continue` | The continue action was triggered to advance onboarding. | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-contractors) |
+| DELETE | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-contractors-contractor_uuid) |
 
 <a id="contractorprofile"></a>
 
@@ -114,6 +129,14 @@ fields for the contractor to complete.
 | `contractor/updated` | An existing contractor was updated successfully. | The updated contractor entity |
 | `contractor/profile/done` | The contractor profile step finished. | `{ contractorId: string, selfOnboarding: boolean }` |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| POST | [`/v1/companies/:companyUuid/contractors`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-contractors) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid) |
+
 <a id="contractorsubmit"></a>
 
 ## ContractorSubmit
@@ -142,6 +165,14 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/onboardingStatus/updated` | The contractor's onboarding status was successfully updated. | The updated `contractorOnboardingStatus` returned by the API. |
 | `contractor/invite/selfOnboarding` | The invite action was triggered for a self-onboarding contractor. | `{ contractorId: string }` |
 | `contractor/submit/done` | The submission step finished — fired after a successful status update, after an invite, or when the contractor was already onboarded. | `{ message: string }`, optionally with `onboardingStatus` when the contractor was already completed. |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
+| GET | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-onboarding_status) |
+| PUT | [`/v1/contractors/:contractorUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
 
 <a id="documentsigner"></a>
 
@@ -219,6 +250,12 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/documents/view` | Fired when a document's "Sign" action is selected | `{ uuid?: string; title?: string }` |
 | `contractor/documents/done` | Fired when all required documents are signed and the user continues | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/documents`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-documents) |
+
 <a id="landing"></a>
 
 ## Landing
@@ -240,6 +277,13 @@ Props for the [Landing](#landing) component.
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorLanding`](../../Translations/index.md#contractorlanding)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies) |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
 
 <a id="newhirereport"></a>
 
@@ -291,6 +335,13 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | ----- | ----------- | ---- |
 | `contractor/newHireReport/updated` | Fired when the new hire report is saved | The API response object; access the updated contractor at `.contractor` |
 | `contractor/newHireReport/done` | Fired after the new hire report step completes | — |
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid) |
+| PUT | [`/v1/contractors/:contractorUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_uuid) |
 
 <a id="onboardingsummary"></a>
 
@@ -368,6 +419,15 @@ _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `Loader
 | `contractor/paymentMethod/updated` | Fired on the check path after the payment method type is updated | The updated payment method at `.contractorPaymentMethod` |
 | `contractor/paymentMethod/done` | Fired when the payment method step completes | — |
 
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-bank_accounts) |
+| POST | [`/v1/contractors/:contractorUuid/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-contractors-contractor_uuid-bank_accounts) |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-payment_method) |
+| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_id-payment_method) |
+
 <a id="signatureform"></a>
 
 ## SignatureForm
@@ -399,6 +459,14 @@ Props for [SignatureForm](#signatureform).
 | `dictionary?` | `Record`\<`"en"`, [`DeepPartial`](../../Translations/index.md#deeppartial)\<[`ContractorSignatureForm`](../../Translations/index.md#contractorsignatureform)\>\> | Overrides for the component's i18n strings. Supply a partial object whose keys match the component's resource namespace — any omitted keys fall back to SDK defaults. See the [Translation guide](https://docs.gusto.com/embedded-payroll/docs/translation) for details. |
 
 _Inherits `children`, `className`, `defaultValues`, `FallbackComponent`, `LoaderComponent` from [BaseComponentInterface](../../index.md#basecomponentinterface)._
+
+### Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/documents/:documentUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document) |
+| GET | [`/v1/documents/:documentUuid/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractor-document-pdf) |
+| PUT | [`/v1/documents/:documentUuid/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractor-document-sign) |
 
 ## Utility types
 

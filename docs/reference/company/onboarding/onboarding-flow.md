@@ -111,3 +111,34 @@ flowchart
 
 Each step is also exported as a standalone block (see the Sub-components table) for composing a custom workflow when this orchestration is the wrong fit. See the [Composition guide](https://sdk.gusto.com/docs/guides/integration-guide/composition) for how to recompose these blocks into your own flow.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-bank-accounts) |
+| POST | [`/v1/companies/:companyId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-bank-accounts) |
+| PUT | [`/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-bank-accounts-verify) |
+| GET | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-federal_tax_details) |
+| PUT | [`/v1/companies/:companyId/federal_tax_details`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-federal_tax_details) |
+| GET | [`/v1/companies/:companyId/forms`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-forms) |
+| GET | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-industry) |
+| PUT | [`/v1/companies/:companyId/industry_selection`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-industry) |
+| GET | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-locations) |
+| POST | [`/v1/companies/:companyId/locations`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-locations) |
+| GET | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules) |
+| POST | [`/v1/companies/:companyId/pay_schedules`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_id-pay_schedules) |
+| GET | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| PUT | [`/v1/companies/:companyId/pay_schedules/:payScheduleId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+| GET | [`/v1/companies/:companyId/pay_schedules/preview`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-pay_schedules-preview) |
+| GET | [`/v1/companies/:companyUuid/onboarding_status`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-onboarding-status) |
+| GET | [`/v1/companies/:companyUuid/payment_configs`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-payment-configs) |
+| GET | [`/v1/companies/:companyUuid/signatories`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-signatories) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements) |
+| GET | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-tax_requirements-state) |
+| PUT | [`/v1/companies/:companyUuid/tax_requirements/:state`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+| GET | [`/v1/forms/:formId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form) |
+| GET | [`/v1/forms/:formId/pdf`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-company-form-pdf) |
+| PUT | [`/v1/forms/:formId/sign`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-company-form-sign) |
+| GET | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-locations-location_id) |
+| PUT | [`/v1/locations/:locationId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-locations-location_id) |

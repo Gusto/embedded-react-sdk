@@ -117,3 +117,10 @@ Edge labels are dropped for legibility (see the events table above); each spoke'
 
 The breadcrumb header (`breadcrumb/navigate`) returns to an earlier step, and **Save & exit** (`payroll/saveAndExit`, the dashed edges to the exit node) is available from every step except employee editing. Neither that event nor the status events emitted during the run (`runPayroll/submitted`, `runPayroll/processed`, `runPayroll/processingFailed`, `runPayroll/cancelled`) is handled internally — each surfaces on `onEvent`, with `payroll/saveAndExit` signalling that the flow has been exited.
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/payrolls`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls) |
+| GET | [`/v1/companies/:companyId/payrolls/:payrollId`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-payrolls-payroll_id) |
