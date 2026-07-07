@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.51.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.51.0...v0.51.1) (2026-07-07)
+
+### Features & Enhancements
+
+- The SDK now emits page-view analytics events through `gusto-analytics` ([#2347](https://github.com/Gusto/embedded-react-sdk/issues/2347))
+- `Contractor.SignatureForm` groups the W-9 sections into distinct boxes and merges the consent into the signing step for a clearer layout ([#2357](https://github.com/Gusto/embedded-react-sdk/issues/2357))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`typescript-eslint`, `vitest`) ([#2352](https://github.com/Gusto/embedded-react-sdk/issues/2352), [#2353](https://github.com/Gusto/embedded-react-sdk/issues/2353), [#2354](https://github.com/Gusto/embedded-react-sdk/issues/2354), [#2355](https://github.com/Gusto/embedded-react-sdk/issues/2355), [#2356](https://github.com/Gusto/embedded-react-sdk/issues/2356))
+
 ## [0.51.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.50.0...v0.51.0) (2026-07-06)
 
 ### ⚠ Breaking Changes
