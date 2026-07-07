@@ -183,3 +183,23 @@ all are selected by default.
 | Thanksgiving     | Fourth Thursday in November |
 | Christmas Day    | December 25                 |
 <!-- /guide-source (slot: appendix) -->
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/companies/:companyId/employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_id-employees) |
+| GET | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-holiday_pay_policy) |
+| POST | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy) |
+| DELETE | [`/v1/companies/:companyUuid/holiday_pay_policy`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/delete-v1-companies-company_uuid-holiday_pay_policy) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/add`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-add) |
+| PUT | [`/v1/companies/:companyUuid/holiday_pay_policy/remove`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-companies-company_uuid-holiday_pay_policy-remove) |
+| GET | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-companies-company_uuid-time_off_policies) |
+| POST | [`/v1/companies/:companyUuid/time_off_policies`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/post-v1-companies-company_uuid-time_off_policies) |
+| GET | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/add_employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-add_employees) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/balance`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-balance) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/deactivate`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-deactivate) |
+| PUT | [`/v1/time_off_policies/:timeOffPolicyUuid/remove_employees`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-time_off_policies-time_off_policy_uuid-remove_employees) |

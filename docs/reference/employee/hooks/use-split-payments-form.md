@@ -403,3 +403,11 @@ domain data — use it for label construction or lookups by uuid.
 | `priority` | `number` | Ordering value — splits are processed in ascending priority; the highest priority is the remainder. |
 | `splitAmount` | `number` \| `null` | Allocation amount — `null` for the remainder split in Amount mode and for splits that haven't been allocated yet. |
 | `uuid` | `string` | UUID of the underlying bank account. |
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/employees/:employeeId/bank_accounts`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-bank_accounts) |
+| GET | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-employees-employee_id-payment_method) |
+| PUT | [`/v1/employees/:employeeId/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-employees-employee_id-payment_method) |

@@ -226,3 +226,10 @@ Field names accepted by the contractor payment method form.
 Union of payment method type values that the form accepts.
 
 ***
+
+## Endpoints
+
+| Method | Path |
+| --- | --- |
+| GET | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/get-v1-contractors-contractor_uuid-payment_method) |
+| PUT | [`/v1/contractors/:contractorUuid/payment_method`](https://docs.gusto.com/embedded-payroll/v2026-02-01/reference/put-v1-contractors-contractor_id-payment_method) |

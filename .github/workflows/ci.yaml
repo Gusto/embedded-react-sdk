@@ -275,16 +275,13 @@ jobs:
           name: derived-i18n
           path: src/i18n
 
-      - name: Derive endpoint inventory and TypeDoc in parallel
+      # endpoints:derive must finish first: the TypeDoc theme reads the generated
+      # endpoint-inventory.json to render the Endpoints section on each page, so
+      # docs:api:generate depends on it and the two can no longer run in parallel.
+      - name: Derive endpoint inventory, then TypeDoc
         run: |
-          FAIL=0
-          npm run endpoints:derive &
-          PID_ENDPOINTS=$!
-          npm run docs:api:generate &
-          PID_DOCS=$!
-          wait $PID_ENDPOINTS || FAIL=1
-          wait $PID_DOCS || FAIL=1
-          exit $FAIL
+          npm run endpoints:derive
+          npm run docs:api:generate
 
       - name: Check for stale derived files
         id: check
