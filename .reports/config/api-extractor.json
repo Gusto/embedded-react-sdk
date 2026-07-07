@@ -38,20 +38,20 @@
   "messages": {
     "extractorMessageReporting": {
       "ae-missing-release-tag": {
-        "logLevel": "none",
-        "addToApiReportFile": true
+        "logLevel": "error",
+        "addToApiReportFile": false
       },
       "ae-forgotten-export": {
-        "logLevel": "none",
-        "addToApiReportFile": true
+        "logLevel": "error",
+        "addToApiReportFile": false
       },
       "ae-unresolved-link": {
         "logLevel": "none",
         "addToApiReportFile": false
       },
       "ae-incompatible-release-tags": {
-        "logLevel": "none",
-        "addToApiReportFile": true
+        "logLevel": "error",
+        "addToApiReportFile": false
       }
     }
   }
