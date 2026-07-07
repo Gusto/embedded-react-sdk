@@ -19,6 +19,13 @@ ruleTester.run('no-literal-api-query-namespace', rule, {
     `const key = [API_QUERY_NAMESPACE, 'Locations']`,
     // Import specifier with a subpath is owned by use-embedded-api-alias, not this rule
     `import { useFoo } from '@gusto/embedded-api-v-2026-02-01/react-query/foo'`,
+    // Bare-root import matches the bare pattern but is a module specifier, owned by
+    // use-embedded-api-alias — rewriting it here would emit invalid syntax
+    `import GustoEmbedded from '@gusto/embedded-api-v-2026-02-01'`,
+    // Re-export from the bare-root specifier is likewise a specifier position
+    `export { foo } from '@gusto/embedded-api-v-2026-02-01'`,
+    // Dynamic import of the bare-root specifier
+    `const m = import('@gusto/embedded-api-v-2026-02-01')`,
     // The bare alias (no version) is not the dated namespace
     `const s = '@gusto/embedded-api'`,
     // A bare date is the header value, not the namespace literal

@@ -11,9 +11,13 @@
  * namespace. That drift is invisible to typecheck and tests, so a lint rule is the
  * only reliable guard.
  *
- * Complements `use-embedded-api-alias`, which owns *import specifiers* (the
- * dated string followed by a `/subpath`). This rule owns the **bare** namespace
- * literal (no subpath), which appears as a plain string in code.
+ * Complements `use-embedded-api-alias`, which owns *import specifiers*. This rule
+ * owns the **bare** namespace literal (no subpath), which appears as a plain
+ * string in query-key arrays. A bare-root import (`import x from
+ * '@gusto/embedded-api-v-<date>'`, no subpath) matches the bare pattern too, so
+ * the rule skips module-specifier positions (see `isModuleSpecifier`) to avoid
+ * emitting an identifier where a string is required and colliding with the alias
+ * rule's fix.
  *
  * @remarks
  * Scoped to SDK `src/`. Skips:
@@ -36,6 +40,24 @@ const BARE_NAMESPACE = /^@gusto\/embedded-api-v-\d{4}-\d{2}-\d{2}$/
 const CONSTANT = 'API_QUERY_NAMESPACE'
 const MODULE = '@/contexts/ApiProvider/apiVersion'
 const EXCLUDED_FILE = /\.test\.[cm]?[jt]sx?$|(?:^|[/\\])sdk-app[/\\]/
+
+/**
+ * True when the literal sits in a module-specifier position (import/export source
+ * or dynamic `import()`). Those are owned by `use-embedded-api-alias`; rewriting
+ * them to the `API_QUERY_NAMESPACE` identifier here would emit invalid syntax and
+ * collide with that rule's fix. The bare namespace literal is only legitimate in
+ * query-key arrays.
+ */
+function isModuleSpecifier(node: TSESTree.Literal): boolean {
+  const { parent } = node
+  return (
+    (parent.type === AST_NODE_TYPES.ImportDeclaration ||
+      parent.type === AST_NODE_TYPES.ExportNamedDeclaration ||
+      parent.type === AST_NODE_TYPES.ExportAllDeclaration ||
+      parent.type === AST_NODE_TYPES.ImportExpression) &&
+    parent.source === node
+  )
+}
 
 function importsConstant(program: TSESTree.Program): boolean {
   return program.body.some(
@@ -71,6 +93,7 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     return {
       Literal(node) {
         if (typeof node.value !== 'string' || !BARE_NAMESPACE.test(node.value)) return
+        if (isModuleSpecifier(node)) return
 
         context.report({
           node,
