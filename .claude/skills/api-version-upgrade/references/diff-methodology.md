@@ -12,10 +12,10 @@ npm install @gusto/embedded-api-v-<OLD>@^0.0.X --no-save --prefix /tmp/embedded-
 
 After this, you have:
 
-- `node_modules/@gusto/embedded-api-v-<NEW>/esm/` — already in your tree post-codemod
+- `node_modules/@gusto/embedded-api/esm/` — the new version, resolved through the alias post-codemod (the alias is `npm:@gusto/embedded-api-v-<NEW>`; there is no dated `node_modules/@gusto/embedded-api-v-<NEW>` path)
 - `/tmp/embedded-api-v-<OLD>/node_modules/@gusto/embedded-api-v-<OLD>/esm/` — the side-by-side reference
 
-If you're running the diff BEFORE the codemod (preferred for analysis), invert the install: the new package goes to `/tmp/` and the old one stays in `node_modules/`.
+This layout — new via the alias, old in `/tmp` — is what `diff-packages.sh` expects, so run it after the codemod (it asserts the alias resolves to `<NEW>`). If you diff BEFORE the codemod by hand, the alias still points at `<OLD>`, so put the new package in `/tmp` and read the old one from `node_modules/@gusto/embedded-api/esm/` instead.
 
 ## Diff each layer
 
@@ -25,7 +25,7 @@ The package has four layers worth diffing. They have different failure modes.
 
 ```bash
 OLD=/tmp/embedded-api-v-<OLD>/node_modules/@gusto/embedded-api-v-<OLD>/esm/models/components
-NEW=node_modules/@gusto/embedded-api-v-<NEW>/esm/models/components
+NEW=node_modules/@gusto/embedded-api/esm/models/components
 for f in $(ls $OLD/*.d.ts); do
   fname=$(basename $f)
   [ -f "$NEW/$fname" ] || continue
@@ -116,7 +116,7 @@ The diagnostic: find the operation file in `models/operations/` that defines the
 
 ```bash
 # Example: which operation has migration_blocker?
-grep -rn "MigrationBlocker\|migration_blocker" node_modules/@gusto/embedded-api-v-<NEW>/esm/models/ | head -5
+grep -rn "MigrationBlocker\|migration_blocker" node_modules/@gusto/embedded-api/esm/models/ | head -5
 # → operations/postpartnermanagedcompaniescompanyuuidaccepttermsofservice.ts etc.
 # → endpoint: /v1/partner_managed_companies/:uuid/...
 # Now grep src/ for that endpoint or the operation name

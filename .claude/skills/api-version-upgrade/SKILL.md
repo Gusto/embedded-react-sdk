@@ -72,7 +72,7 @@ The cache-namespace string is no longer scattered: hand-written `queryKey` liter
 Create branch `upgrade/api-<NEW>-base`. Since SDK-1086 this is a handful of edits, **not** a ~360-file sweep. See `references/codemod-commands.md` for exact commands and verification greps.
 
 1. **Source of truth** — edit `src/contexts/ApiProvider/apiVersion.ts`: set `API_VERSION = '<NEW>'`. This one line drives the `X-Gusto-API-Version` header **and** `API_QUERY_NAMESPACE`, so the request header and every hand-written `queryKey` move together.
-2. **`package.json` alias** — update the `@gusto/embedded-api` alias target to `npm:@gusto/embedded-api-v-<NEW>@^<ver>`, and keep the direct `@gusto/embedded-api-v-<NEW>` dep entry in sync (look up the real lowest published version with `npm view`). Use `Edit`, not sed (JSON comma rules).
+2. **`package.json` alias** — update the single `@gusto/embedded-api` dependency's alias target to `npm:@gusto/embedded-api-v-<NEW>@^<ver>` (look up the real lowest published version with `npm view`). There is no separate direct dated dep entry — the alias is the only line. Use `Edit`, not sed (JSON comma rules).
 3. **`npm install`** — installs the new package under the alias and regenerates `package-lock.json`.
 4. **Regenerate derived models** — `npm run models:derive` rewrites `src/models/external.ts` against the new package. Never hand-edit that file.
 5. **Test assertions + doc dates** — a few tests hardcode the version as a **bare date** (`apiVersionHook.test.ts`, `ApiProvider.test.tsx` assert the `X-Gusto-API-Version` value), and `CLAUDE.md` / `AGENTS.md` name the pinned version in prose. Update those explicitly.

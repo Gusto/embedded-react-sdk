@@ -37,16 +37,14 @@ Use `Edit`, not sed (sed is dangerous on JSON comma rules). Look up the real low
 npm view @gusto/embedded-api-v-${NEW} versions --json
 ```
 
-Update the alias and keep the direct dated dep entry in sync:
+Update the alias target — a single line:
 
 ```diff
 -    "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-02-01@^0.0.1",
--    "@gusto/embedded-api-v-2026-02-01": "^0.0.1",
 +    "@gusto/embedded-api": "npm:@gusto/embedded-api-v-2026-06-15@^0.0.1",
-+    "@gusto/embedded-api-v-2026-06-15": "^0.0.1",
 ```
 
-The alias is what source code resolves through. The direct dated entry installs the package under its real name too (used by the diff tooling and by `deriveExternalModels.ts`); keep both on the same date. If a future cleanup drops the direct entry once nothing references the dated name outside the alias, that's fine — just keep the alias current.
+The alias is the only entry, and everything (source imports, `deriveExternalModels.ts`, the package diff) resolves through it at `node_modules/@gusto/embedded-api`. There is no separate direct dated dep to keep in sync.
 
 ### 3. `npm install`
 
