@@ -1,23 +1,23 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompaniesCompanyIdEmployeesRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyidemployees'
-import type { GetV1EmployeesRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employees'
-import type { PostV1EmployeesRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1employees'
-import type { PutV1EmployeesRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employees'
+import type { GetV1CompaniesCompanyIdEmployeesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
+import type { GetV1EmployeesRequest } from '@gusto/embedded-api/models/operations/getv1employees'
+import type { PostV1EmployeesRequestBody } from '@gusto/embedded-api/models/operations/postv1employees'
+import type { PutV1EmployeesRequestBody } from '@gusto/embedded-api/models/operations/putv1employees'
 import type {
   DeleteV1EmployeeRequest,
   DeleteV1EmployeeResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1employee'
-import type { GetV1EmployeesEmployeeIdOnboardingStatusRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidonboardingstatus'
-import type { PutV1EmployeesEmployeeIdOnboardingStatusRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidonboardingstatus'
-import type { GetV1EmployeesEmployeeIdJobsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidjobs'
-import type { JobsCreateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/jobscreaterequestbody'
-import type { CompensationsUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/compensationsupdaterequestbody'
-import type { JobsUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/jobsupdaterequestbody'
+} from '@gusto/embedded-api/models/operations/deletev1employee'
+import type { GetV1EmployeesEmployeeIdOnboardingStatusRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidonboardingstatus'
+import type { PutV1EmployeesEmployeeIdOnboardingStatusRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { GetV1EmployeesEmployeeIdJobsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
+import type { JobsCreateRequestBody } from '@gusto/embedded-api/models/components/jobscreaterequestbody'
+import type { CompensationsUpdateRequestBody } from '@gusto/embedded-api/models/components/compensationsupdaterequestbody'
+import type { JobsUpdateRequestBody } from '@gusto/embedded-api/models/components/jobsupdaterequestbody'
 import type {
   DeleteV1JobsJobIdRequest,
   DeleteV1JobsJobIdResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1jobsjobid'
+} from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

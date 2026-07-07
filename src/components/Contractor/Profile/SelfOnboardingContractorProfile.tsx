@@ -1,4 +1,4 @@
-import { useContractorsGet } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
+import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
 import { ContractorType } from './shared/useContractorDetailsForm'
 import { IndividualSelfOnboardingProfile } from './IndividualSelfOnboardingProfile'
 import { BusinessSelfOnboardingProfile } from './BusinessSelfOnboardingProfile'

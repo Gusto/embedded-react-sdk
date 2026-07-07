@@ -1,7 +1,7 @@
-import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGet'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsUpdate'
-import { ContractorType as ApiContractorType } from '@gusto/embedded-api-v-2026-02-01/models/components/contractor'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/components/contractorupdaterequestbody'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { ContractorType as ApiContractorType } from '@gusto/embedded-api/models/components/contractor'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
 import {
   ProfileDetailsForm,
   type ProfileDetailsFormValues,

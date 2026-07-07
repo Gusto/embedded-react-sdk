@@ -1,4 +1,4 @@
-import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
 
 /** @internal */

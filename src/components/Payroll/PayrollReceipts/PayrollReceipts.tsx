@@ -1,4 +1,4 @@
-import { usePayrollsGetReceiptSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsGetReceipt'
+import { usePayrollsGetReceiptSuspense } from '@gusto/embedded-api/react-query/payrollsGetReceipt'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'

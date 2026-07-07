@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import type { Document } from '@gusto/embedded-api-v-2026-02-01/models/components/document'
-import { useContractorDocumentsGetPdf } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorDocumentsGetPdf'
+import type { Document } from '@gusto/embedded-api/models/components/document'
+import { useContractorDocumentsGetPdf } from '@gusto/embedded-api/react-query/contractorDocumentsGetPdf'
 import { DataView, useDataView } from '@/components/Common/DataView'
 import { EmptyData } from '@/components/Common/EmptyData/EmptyData'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

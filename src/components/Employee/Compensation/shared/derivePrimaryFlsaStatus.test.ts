@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { derivePrimaryFlsaStatus } from './derivePrimaryFlsaStatus'
 
 function makeJob(overrides: Partial<Job> = {}): Job {

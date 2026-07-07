@@ -1,5 +1,5 @@
-import type { Compensation } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { describe, expect, it } from 'vitest'
 import { getPendingCompensationChanges } from './getPendingCompensationChanges'
 import { FlsaStatus } from '@/shared/constants'

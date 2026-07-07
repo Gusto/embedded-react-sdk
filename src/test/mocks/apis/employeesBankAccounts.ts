@@ -1,13 +1,13 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1EmployeesEmployeeIdBankAccountsRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidbankaccounts'
-import type { EmployeeBankAccountRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/employeebankaccountrequest'
+import type { GetV1EmployeesEmployeeIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
+import type { EmployeeBankAccountRequest } from '@gusto/embedded-api/models/components/employeebankaccountrequest'
 import type {
   DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdRequest,
   DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1employeesemployeeidbankaccountsbankaccountid'
-import type { GetV1EmployeesEmployeeIdPaymentMethodRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidpaymentmethod'
-import type { PutV1EmployeesEmployeeIdPaymentMethodRequestBody } from '@gusto/embedded-api-v-2026-02-01/models/operations/putv1employeesemployeeidpaymentmethod'
+} from '@gusto/embedded-api/models/operations/deletev1employeesemployeeidbankaccountsbankaccountid'
+import type { GetV1EmployeesEmployeeIdPaymentMethodRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidpaymentmethod'
+import type { PutV1EmployeesEmployeeIdPaymentMethodRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidpaymentmethod'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

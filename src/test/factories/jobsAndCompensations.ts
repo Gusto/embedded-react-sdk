@@ -11,8 +11,8 @@
  * camelCase data inside hooks under test.
  */
 
-import { compensationFromJSON } from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
-import { jobFromJSON } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import { compensationFromJSON } from '@gusto/embedded-api/models/components/compensation'
+import { jobFromJSON } from '@gusto/embedded-api/models/components/job'
 
 export type CompensationFixture = {
   uuid: string

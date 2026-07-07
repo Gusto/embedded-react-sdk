@@ -3,20 +3,17 @@ import type { ComponentType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type {
-  Compensation,
-  PaymentUnit,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/compensation'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2026-02-01/models/components/flsastatustype'
-import type { MinimumWage } from '@gusto/embedded-api-v-2026-02-01/models/components/minimumwage'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
-import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1employeesemployeeidjobs'
-import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsCreateCompensation'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsUpdateCompensation'
-import { useLocationsGetMinimumWages } from '@gusto/embedded-api-v-2026-02-01/react-query/locationsGetMinimumWages'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2026-02-01/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
+import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
+import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateCompensation'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
+import { useLocationsGetMinimumWages } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import {
   createCompensationSchema,
   type CompensationOptionalFieldsToRequire,

@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/operations/postv1companiescompanyidpayrolls'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { WITHHOLDING_PAY_PERIOD_I18N_KEY } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import styles from './OffCycleTaxWithholdingModal.module.scss'

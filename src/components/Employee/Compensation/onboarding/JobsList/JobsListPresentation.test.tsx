@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { JobsListPresentation } from './JobsListPresentation'
 import { FlsaStatus } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

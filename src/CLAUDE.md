@@ -52,23 +52,23 @@ src/components/
 └── Flow/           # Multi-step flow orchestration
 ```
 
-## API Layer (`@gusto/embedded-api-v-2026-02-01`)
+## API Layer (`@gusto/embedded-api`)
 
-All API calls go through the `@gusto/embedded-api-v-2026-02-01` package, which provides React Query hooks with Zod schema validation.
+All API calls go through the `@gusto/embedded-api` package, which provides React Query hooks with Zod schema validation.
 
 ### Import Paths
 
 ```tsx
-import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesList'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsUpdate'
-import type { Employee } from '@gusto/embedded-api-v-2026-02-01/models/components/employee'
-import type { APIError } from '@gusto/embedded-api-v-2026-02-01/models/errors/apierror'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 ```
 
-- `@gusto/embedded-api-v-2026-02-01/react-query/<operation>` -- React Query hooks
-- `@gusto/embedded-api-v-2026-02-01/models/components/<name>` -- Component/entity types
-- `@gusto/embedded-api-v-2026-02-01/models/operations/<name>` -- Operation request/response types
-- `@gusto/embedded-api-v-2026-02-01/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityError`)
+- `@gusto/embedded-api/react-query/<operation>` -- React Query hooks
+- `@gusto/embedded-api/models/components/<name>` -- Component/entity types
+- `@gusto/embedded-api/models/operations/<name>` -- Operation request/response types
+- `@gusto/embedded-api/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityError`)
 
 ### Hook Naming Convention
 

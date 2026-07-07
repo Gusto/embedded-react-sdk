@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
-import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
-import { type Job } from '@gusto/embedded-api-v-2026-02-01/models/components/job'
-import type { FlsaStatusType } from '@gusto/embedded-api-v-2026-02-01/models/components/flsastatustype'
+import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { type Job } from '@gusto/embedded-api/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import {
   InitialEditCompensationContextual,

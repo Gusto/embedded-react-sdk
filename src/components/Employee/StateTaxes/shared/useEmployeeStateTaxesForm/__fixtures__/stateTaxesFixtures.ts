@@ -1,4 +1,4 @@
-import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2026-02-01/models/components/employeestatetaxeslist'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api/models/components/employeestatetaxeslist'
 
 export const caEmployeeStateTaxes: EmployeeStateTaxesList[] = [
   {

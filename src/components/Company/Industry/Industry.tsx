@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/industrySelectionGet'
-import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/industrySelectionUpdate'
+import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api/react-query/industrySelectionGet'
+import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
 import type { IndustryFormFields } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'

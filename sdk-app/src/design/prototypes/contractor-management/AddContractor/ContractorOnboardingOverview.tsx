@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/contractorsGetOnboardingStatus'
+import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/contractorsGetOnboardingStatus'
 import type { WizardStep } from './AddContractorWizard'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGet'
-import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/employeesGetOnboardingStatus'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'

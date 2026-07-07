@@ -1,11 +1,8 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {
-  type PayrollShow,
-  OffCycleReasonType,
-} from '@gusto/embedded-api-v-2026-02-01/models/components/payroll'
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2026-02-01/models/components/payrollsubmissionblockertype'
+import { type PayrollShow, OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

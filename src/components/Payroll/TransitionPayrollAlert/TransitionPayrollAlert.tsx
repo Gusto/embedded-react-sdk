@@ -1,8 +1,8 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
-import { usePaySchedulesGetAll } from '@gusto/embedded-api-v-2026-02-01/react-query/paySchedulesGetAll'
-import { usePayrollsSkipMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/payrollsSkip'
-import { PayrollType } from '@gusto/embedded-api-v-2026-02-01/models/operations/postcompaniespayrollskipcompanyuuid'
-import type { PayPeriod } from '@gusto/embedded-api-v-2026-02-01/models/components/payperiod'
+import { usePaySchedulesGetAll } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
+import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
+import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import {
   TransitionPayrollAlertPresentation,

@@ -1,13 +1,13 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetV1CompaniesCompanyUuidSignatoriesRequest } from '@gusto/embedded-api-v-2026-02-01/models/operations/getv1companiescompanyuuidsignatories'
-import type { SignatoryCreateRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/signatorycreaterequest'
-import type { SignatoryUpdateRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/signatoryupdaterequest'
-import type { SignatoryInviteRequest } from '@gusto/embedded-api-v-2026-02-01/models/components/signatoryinviterequest'
+import type { GetV1CompaniesCompanyUuidSignatoriesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyuuidsignatories'
+import type { SignatoryCreateRequest } from '@gusto/embedded-api/models/components/signatorycreaterequest'
+import type { SignatoryUpdateRequest } from '@gusto/embedded-api/models/components/signatoryupdaterequest'
+import type { SignatoryInviteRequest } from '@gusto/embedded-api/models/components/signatoryinviterequest'
 import type {
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequest,
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse,
-} from '@gusto/embedded-api-v-2026-02-01/models/operations/deletev1companiescompanyuuidsignatoriessignatoryuuid'
+} from '@gusto/embedded-api/models/operations/deletev1companiescompanyuuidsignatoriessignatoryuuid'
 import { API_BASE_URL } from '@/test/constants'
 
 const basicSignatory = {

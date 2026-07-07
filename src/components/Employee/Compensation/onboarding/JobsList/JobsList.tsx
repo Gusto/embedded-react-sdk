@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2026-02-01/react-query/jobsAndCompensationsDelete'
+import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
 import { derivePrimaryFlsaStatus } from '../../shared/derivePrimaryFlsaStatus'
 import { JobsListPresentation } from './JobsListPresentation'
 import { BaseComponent, type BaseComponentInterface, useBase } from '@/components/Base'

@@ -1,4 +1,4 @@
-import { useHolidayPayPoliciesGet } from '@gusto/embedded-api-v-2026-02-01/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesGet } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import type { PolicyType } from './PolicyTypeSelectorTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
