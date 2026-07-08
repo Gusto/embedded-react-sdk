@@ -144,7 +144,7 @@ record. The values mirror the strings returned by the API.
 
 ### EmployeeSelfOnboardingStatuses
 
-> `const` **EmployeeSelfOnboardingStatuses**: `Set`\<`"self_onboarding_invited"` \| `"self_onboarding_invited_started"` \| `"self_onboarding_invited_overdue"`\>
+> `const` **EmployeeSelfOnboardingStatuses**: `Set`\<`string`\>
 
 Set of [EmployeeOnboardingStatus](#employeeonboardingstatus) values that indicate the employee is
 completing self-onboarding.
